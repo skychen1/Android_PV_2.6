@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+	android:id="@+id/recyclerview_null"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/bg_f"
+	>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:drawablePadding="@dimen/x30"
+		android:drawableTop="@mipmap/sspd_ic_zwsjqx"
+		android:gravity="center_horizontal"
+		android:text="暂无数据"
+		android:textSize="@dimen/textsize_18"
+		android:textStyle="bold"
+		/>
+</RelativeLayout>

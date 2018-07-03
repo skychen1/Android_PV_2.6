@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="@dimen/x850"
+				android:layout_height="@dimen/x190"
+				android:layout_gravity="center_horizontal"
+				android:background="@drawable/dialog_bg"
+				android:orientation="vertical"
+	>
+
+	<ImageView
+		android:id="@+id/dialog_closs"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:paddingBottom="@dimen/x10"
+		android:paddingLeft="@dimen/x30"
+		android:paddingRight="@dimen/x30"
+		android:paddingTop="@dimen/x30"
+		android:src="@mipmap/hccz_ic_tc_gb"
+		/>
+
+	<TextView
+		android:id="@+id/dialog_msg"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/x190"
+		android:layout_marginLeft="@dimen/x50"
+		android:drawableLeft="@mipmap/hccz_ic_tk_gth"
+		android:drawablePadding="@dimen/x25"
+		android:gravity="center_vertical"
+		android:text="耗材中包含过期耗材，请查看！"
+		android:textColor="@color/text_color_3"
+		android:textSize="@dimen/textsize_19"/>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:background="@color/bg_color"
+			  android:orientation="vertical"
+	>
+
+	<LinearLayout
+		android:id="@+id/stock_left_alltop"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:layout_marginTop="@dimen/x20"
+		android:background="@color/bg_color"
+		android:orientation="vertical"
+		>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="请选择请领单"
+			android:textColor="@color/text_color_3"
+			android:textSize="@dimen/textsize_16"
+			android:textStyle="bold"/>
+
+		<android.support.v7.widget.RecyclerView
+			android:id="@+id/out_form_rv"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/x10"
+			android:overScrollMode="never"
+			>
+		</android.support.v7.widget.RecyclerView>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/x20"
+			android:text="请领单所含耗材"
+			android:textColor="@color/text_color_3"
+			android:textSize="@dimen/textsize_16"
+			android:textStyle="bold"/>
+	</LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<high.rivamed.myapplication.views.NoScrollViewPager
+			android:id="@+id/cttimecheck_viewpager"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginRight="@dimen/x30"
+
+			android:layout_marginTop="@dimen/x30"
+			android:background="@color/bg_f"
+			android:overScrollMode="never"
+			>
+		</high.rivamed.myapplication.views.NoScrollViewPager>
+
+		<include
+			android:id="@+id/recyclerview_null"
+			layout="@layout/recy_null"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_margin="@dimen/x30"
+			android:visibility="gone"/>
+
+	</RelativeLayout>
+
+</LinearLayout>

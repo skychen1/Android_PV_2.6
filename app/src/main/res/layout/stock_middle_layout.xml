@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:orientation="vertical"
+	>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<include layout="@layout/view_search_et_layout"/>
+
+		<include
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			layout="@layout/view_right_top_layout"
+			android:layout_alignParentRight="true"/>
+
+	</RelativeLayout>
+
+	<include
+		layout="@layout/include_recyclerview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:layout_marginTop="@dimen/x30"
+		/>
+</LinearLayout>

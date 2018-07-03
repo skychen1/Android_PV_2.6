@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@color/bg_color"
+				android:orientation="vertical"
+
+	>
+
+	<android.support.v7.widget.CardView
+		android:layout_width="@dimen/x1410"
+		android:layout_height="@dimen/x760"
+		android:layout_centerInParent="true"
+		android:background="@color/bg_f"
+		app:cardBackgroundColor="@color/white"
+		app:cardCornerRadius="@dimen/x5"
+		app:cardElevation="@dimen/x1"
+		app:cardMaxElevation="@dimen/x1"
+		app:cardPreventCornerOverlap="true"
+		app:cardUseCompatPadding="true">
+
+		<LinearLayout
+			android:layout_width="@dimen/x1410"
+			android:layout_height="@dimen/x760"
+			android:layout_gravity="center"
+			android:background="@color/bg_f"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/setting_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x530"
+				android:layout_marginTop="@dimen/x266"
+				android:drawableLeft="@mipmap/hccz_ic_nc"
+				android:text="姓名：账上"
+				android:textColor="@color/text_color_6"
+				android:drawablePadding="@dimen/x20"
+				android:textSize="@dimen/textsize_17"/>
+
+			<TextView
+				android:id="@+id/setting_department"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x530"
+				android:paddingTop="@dimen/x50"
+				android:drawablePadding="@dimen/x20"
+				android:drawableLeft="@mipmap/hccz_ic_ks"
+				android:textColor="@color/text_color_6"
+				android:text="科室：xxx科室xx库房"
+				android:textSize="@dimen/textsize_17"/>
+
+			<TextView
+				android:id="@+id/setting_position"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x530"
+				android:drawableLeft="@mipmap/hccz_ic_js"
+				android:paddingTop="@dimen/x50"
+				android:textColor="@color/text_color_6"
+				android:drawablePadding="@dimen/x20"
+				android:text="角色：护士-x"
+				android:textSize="@dimen/textsize_17"/>
+
+			<TextView
+				android:id="@+id/setting_remarks"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x530"
+				android:textColor="@color/text_color_6"
+				android:drawableLeft="@mipmap/hccz_ic_grxx_bz"
+				android:drawablePadding="@dimen/x20"
+				android:paddingTop="@dimen/x50"
+				android:text="备注：xxxxx"
+				android:textSize="@dimen/textsize_17"/>
+		</LinearLayout>
+
+	</android.support.v7.widget.CardView>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:elevation="1dp">
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/base_tab_icon_right"
+			android:layout_width="@dimen/x150"
+			android:layout_height="@dimen/x150"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="@dimen/x50"
+			android:src="@mipmap/text_nor"
+			/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="王麻子"
+			android:layout_marginTop="@dimen/x40"
+			android:textSize="@dimen/textsize_22"
+			android:textColor="@color/text_color_3"
+			android:layout_gravity="center_horizontal"/>
+	</LinearLayout>
+
+
+
+</RelativeLayout>

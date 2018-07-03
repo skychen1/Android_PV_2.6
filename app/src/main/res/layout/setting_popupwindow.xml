@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="@dimen/x10"
+		android:src="@mipmap/hccz_ic_xl_pre"/>
+
+	<android.support.v7.widget.CardView
+		android:layout_width="@dimen/x240"
+		android:layout_height="wrap_content"
+		app:cardBackgroundColor="@color/white"
+		app:cardCornerRadius="@dimen/x3"
+		app:cardMaxElevation="@dimen/x1"
+		app:cardPreventCornerOverlap="true"
+		app:cardUseCompatPadding="true">
+
+		<LinearLayout
+			android:layout_width="@dimen/x240"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="@drawable/bg_line"
+			>
+
+			<high.rivamed.myapplication.views.DrawableTextView
+				android:id="@+id/setting_meinfo"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/x25"
+				android:paddingBottom="@dimen/x25"
+				android:layout_gravity="center_horizontal"
+				android:drawableLeft="@mipmap/hccz_ic_grxx"
+				android:drawablePadding="@dimen/x20"
+				android:text="个人信息"
+				android:textColor="@color/text_color_black"
+				android:textSize="@dimen/textsize_16"/>
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/x2"
+				android:background="@color/bg_c"
+				android:layout_marginRight="@dimen/x20"
+				android:layout_marginLeft="@dimen/x20"
+				/>
+			<high.rivamed.myapplication.views.DrawableTextView
+				android:id="@+id/setting_login"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/x25"
+				android:paddingBottom="@dimen/x25"
+				android:layout_gravity="center_horizontal"
+				android:drawableLeft="@mipmap/hccz_ic_dlsz"
+				android:drawablePadding="@dimen/x20"
+				android:text="登录设置"
+				android:textColor="@color/text_color_black"
+				android:textSize="@dimen/textsize_16"/>
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/x2"
+				android:background="@color/bg_c"
+				android:gravity="center_horizontal"
+				android:layout_marginRight="@dimen/x20"
+				android:layout_marginLeft="@dimen/x20"
+				/>
+			<high.rivamed.myapplication.views.DrawableTextView
+				android:id="@+id/setting_loginout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/x25"
+				android:paddingBottom="@dimen/x25"
+				android:drawableLeft="@mipmap/hccz_ic_tcdl"
+				android:layout_gravity="center_horizontal"
+				android:drawablePadding="@dimen/x20"
+				android:text="退出登录"
+				android:textColor="@color/text_color_black"
+				android:textSize="@dimen/textsize_16"/>
+
+		</LinearLayout>
+
+	</android.support.v7.widget.CardView>
+</LinearLayout>
+

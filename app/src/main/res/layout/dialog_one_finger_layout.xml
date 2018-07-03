@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="@dimen/x800"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:background="@drawable/dialog_bg"
+				android:orientation="vertical"
+				android:focusableInTouchMode="true"
+				android:focusable="true"
+	>
+
+	<TextView
+		android:id="@+id/finger_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="@dimen/x39"
+		android:paddingLeft="@dimen/x39"
+		android:text="指纹绑定"
+		android:textColor="@color/color_drak_green"
+		android:textSize="@dimen/textsize_18"/>
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="将识别手指三次，请误离开"
+		android:layout_below="@+id/finger_title"
+		android:paddingLeft="@dimen/x39"
+		android:layout_marginTop="@dimen/x25"
+		android:textColor="@color/color_red"
+		android:textSize="@dimen/textsize_15"/>
+	<ImageView
+		android:id="@+id/dialog_closs"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:padding="@dimen/x39"
+		android:src="@mipmap/hccz_ic_tc_gb"
+		/>
+
+	<ImageView
+		android:id="@+id/finger_icon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:layout_below="@+id/dialog_closs"
+		android:layout_marginTop="@dimen/x60"
+		android:src="@mipmap/hccz_ta_bdzw"
+		/>
+	<TextView
+		android:id="@+id/dialog_right"
+		android:layout_width="@dimen/x400"
+		android:layout_height="@dimen/x68"
+		android:layout_marginTop="@dimen/x60"
+		android:layout_marginBottom="@dimen/x70"
+		android:layout_centerHorizontal="true"
+		android:layout_below="@+id/finger_icon"
+		android:background="@drawable/bg_btn_line_pre"
+		android:gravity="center"
+		android:text="确认"
+		android:textColor="@color/bg_f"
+		android:textSize="@dimen/textsize_17"
+		/>
+
+</RelativeLayout>

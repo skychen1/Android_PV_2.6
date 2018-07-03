@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:orientation="horizontal"
+			  android:background="@color/bg_f"
+	>
+	<FrameLayout
+		android:id="@+id/fl_tab_container"
+		android:layout_marginLeft="@dimen/x260"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		/>
+	<View
+		android:layout_width="@dimen/x2"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/x260"
+		android:background="@color/login_line"/>
+	<LinearLayout
+		android:layout_width="@dimen/x280"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		>
+
+		<ImageView
+			android:id="@+id/home_logo"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/x210"
+			android:paddingRight="@dimen/x20"
+			android:layout_gravity="center"
+			android:src="@mipmap/hckg_logo"
+			/>
+
+		<RadioGroup
+			android:id="@+id/home_rg"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_gravity="center_horizontal"
+			android:gravity="center"
+
+			android:orientation="vertical">
+
+
+
+			<RadioButton
+				android:id="@+id/content_consume_operate"
+				style="@style/content_rb_style"
+				android:drawableTop="@mipmap/hccz_ic"
+				android:text="@string/content_consume_operate"/>
+
+
+			<RadioButton
+				android:id="@+id/content_running_wate"
+				style="@style/content_rb_style"
+				android:drawableTop="@mipmap/hcls_ic"
+				android:text="@string/content_running_wate"/>
+			<RadioButton
+				android:id="@+id/content_stock_status"
+				style="@style/content_rb_style"
+				android:drawableTop="@mipmap/kczt_ic"
+				android:text="@string/content_stock_status"/>
+
+			<RadioButton
+				android:id="@+id/content_timely_check"
+				style="@style/content_rb_style"
+				android:drawableTop="@mipmap/sspd_ic"
+				android:text="@string/content_timely_check"/>
+		</RadioGroup>
+
+	</LinearLayout>
+
+
+</RelativeLayout>

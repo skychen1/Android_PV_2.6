@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="@dimen/x700"
+	android:layout_height="@dimen/x60"
+	android:orientation="horizontal"
+	android:background="@drawable/bg_btn_line_nor"
+	android:focusable="true"
+	android:focusableInTouchMode="true"
+	android:id="@+id/stock_search"
+	>
+
+	<EditText
+		android:id="@+id/search_et"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@null"
+		android:drawableLeft="@mipmap/runwate_search"
+		android:drawablePadding="@dimen/x10"
+		android:hint="请输入耗材名称、操作人、EPC查询"
+		android:imeOptions="actionSearch"
+		android:paddingLeft="@dimen/x30"
+		android:singleLine="true"
+		android:textColorHint="@color/text_color_9"
+		android:textSize="@dimen/textsize_15"
+		/>
+
+	<ImageView
+		android:id="@+id/search_iv_delete"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right|center_vertical"
+		android:layout_marginRight="@dimen/x20"
+		android:src="@mipmap/runwate_del"
+		android:visibility="gone"
+		/>
+
+</FrameLayout>
+

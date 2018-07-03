@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="four_arrays">
+		<item>EPC</item>
+		<item>操作时间</item>
+		<item>最近操作</item>
+		<item>效期</item>
+	</string-array>
+	<string-array name="five_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>库存数量</item>
+		<item>柜号</item>
+		<item>最近效期</item>
+	</string-array>
+	<string-array name="six_dialog_arrays">
+		<item>选择</item>
+		<item>患者姓名</item>
+		<item>患者ID</item>
+		<item>手术时间</item>
+		<item>医生</item>
+		<item>手术间</item>
+	</string-array>
+	<string-array name="six_bing_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>患者</item>
+	</string-array>
+	<string-array name="six_outbox_arrays">
+		<item>选择</item>
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+	</string-array>
+	<string-array name="six_singbox_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="six_ic_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>请领单包含</item>
+	</string-array>
+	<string-array name="seven_order_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>数量</item>
+		<item>患者</item>
+		<item>柜号</item>
+		<item>状态</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="six_order_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>数量</item>
+		<item>柜号</item>
+		<item>状态</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="six_ic_meal_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>套餐包含</item>
+	</string-array>
+	<string-array name="six_ic_sel_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="seven_bing_arrays">
+		<item>选择</item>
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>患者</item>
+
+	</string-array>
+	<string-array name="seven_meal_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>患者</item>
+		<item>套餐包含</item>
+	</string-array>
+	<string-array name="six_real_time_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>实时扫描</item>
+		<item>账面库存</item>
+	</string-array>
+	<string-array name="seven_real_time_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>实时扫描</item>
+		<item>账面库存</item>
+	</string-array>
+	<string-array name="six_meal_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>数量</item>
+		<item>柜号</item>
+		<item>状态</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="seven_outform_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>数量</item>
+		<item>患者</item>
+		<item>柜号</item>
+		<item>状态</item>
+		<item>操作</item>
+	</string-array>
+	<string-array name="eight_runwate_arrays">
+		<item>状态</item>
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>操作时间</item>
+		<item>操作人</item>
+	</string-array>
+</resources>

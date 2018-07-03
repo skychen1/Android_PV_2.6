@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:tl="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:background="@color/bg_color"
+			  android:orientation="vertical"
+	>
+
+	<com.flyco.tablayout.SlidingTabLayout
+		android:id="@+id/home_runwate_rg"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/x80"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:layout_marginTop="@dimen/x18"
+		android:background="@color/bg_color"
+		android:paddingBottom="@dimen/x25"
+		android:paddingTop="@dimen/x20"
+		tl:tl_indicator_color="@color/bg_f"
+		tl:tl_indicator_corner_radius="@dimen/x8"
+		tl:tl_indicator_style="BLOCK"
+		tl:tl_tab_padding="@dimen/x40"
+		tl:tl_textSelectColor="@color/text_color_3"
+		tl:tl_textUnselectColor="@color/text_color_3"
+		tl:tl_textsize="@dimen/textsize_16"
+		tl:tl_underline_gravity="BOTTOM"
+		tl:tl_underline_height="@dimen/x20"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:background="@color/bg_f"
+		android:orientation="vertical"
+		android:paddingLeft="@dimen/x30"
+		android:paddingRight="@dimen/x30">
+
+		<FrameLayout
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/x60"
+			android:background="@color/bg_f"
+			android:orientation="horizontal"
+			>
+
+			<EditText
+				android:id="@+id/search_et"
+				android:layout_width="@dimen/x700"
+				android:layout_height="match_parent"
+				android:background="@drawable/bg_btn_line_nor"
+				android:drawableLeft="@mipmap/runwate_search"
+				android:drawablePadding="@dimen/x10"
+				android:hint="请输入耗材名称、操作人、EPC查询"
+				android:imeOptions="actionSearch"
+				android:paddingLeft="@dimen/x30"
+				android:singleLine="true"
+				android:textColorHint="@color/text_color_9"
+				android:textSize="@dimen/textsize_15"
+				/>
+
+			<ImageView
+				android:id="@+id/search_iv_delete"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right|center_vertical"
+				android:layout_marginRight="@dimen/x20"
+				android:src="@mipmap/runwate_del"
+				android:visibility="gone"
+				/>
+
+		</FrameLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/x25"
+			android:orientation="horizontal">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:gravity="center_vertical"
+				android:text="时间:"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_16"/>
+
+			<RadioGroup
+				android:id="@+id/search_time_rg"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/x50"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+
+				<RadioButton
+					android:id="@+id/search_time_all"
+					style="@style/runwate_btn_style"
+					android:checked="true"
+					android:text="全部"/>
+
+
+				<RadioButton
+					android:id="@+id/search_time_day"
+					style="@style/runwate_btn_style"
+					android:text="天"/>
+
+				<RadioButton
+					android:id="@+id/search_time_week"
+					style="@style/runwate_btn_style"
+					android:text="周"/>
+
+				<RadioButton
+					android:id="@+id/search_time_moon"
+					style="@style/runwate_btn_style"
+					android:text="月"/>
+			</RadioGroup>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_marginLeft="@dimen/x30"
+				android:gravity="center_vertical"
+				android:text="时间段:"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_16"/>
+			<TextView
+				android:id="@+id/search_time_start"
+				style="@style/runwate_textview_style"
+				android:text="2019-10-02 13:00"
+				/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x20"
+				android:text="～"
+				android:textStyle="bold"/>
+			<TextView
+				android:id="@+id/search_time_end"
+				style="@style/runwate_textview_style"
+				android:text="2019-10-02 13:00"
+				/>
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/x25"
+			android:orientation="horizontal">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:gravity="center_vertical"
+				android:text="状态:"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_15"/>
+			<RadioGroup
+				android:id="@+id/search_type_rg"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/x50"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+				<RadioButton
+					android:id="@+id/search_type_all"
+					style="@style/runwate_btn_style"
+					android:checked="true"
+					android:text="全部"/>
+
+				<RadioButton
+					android:id="@+id/search_type_hous"
+					style="@style/runwate_btn_style"
+					android:text="入库"/>
+
+				<RadioButton
+					android:id="@+id/search_type_use"
+					style="@style/runwate_btn_style"
+					android:text="领用"/>
+
+				<RadioButton
+					android:id="@+id/search_type_info"
+					style="@style/runwate_btn_style"
+					android:text="移入"/>
+				<RadioButton
+					android:id="@+id/search_type_out"
+					style="@style/runwate_btn_style"
+					android:text="移出"/>
+				<RadioButton
+					android:id="@+id/search_type_return"
+					style="@style/runwate_btn_style"
+					android:text="退回"/>
+				<RadioButton
+					android:id="@+id/search_type_return_goods"
+					style="@style/runwate_btn_style"
+					android:text="退货"/>
+			</RadioGroup>
+		</LinearLayout>
+	</LinearLayout>
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/home_runwate_viewpager"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:background="@color/bg_c"
+		android:overScrollMode="never"
+		>
+	</android.support.v4.view.ViewPager>
+
+</LinearLayout>

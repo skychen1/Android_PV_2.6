@@ -1,0 +1,21 @@
+<resources>
+	<string name="myapplication_name">高值柜v2.5</string>
+
+	<!--bugly-->
+	<string name="bugly_val">b8f3fdae17</string>
+	<string name="press_again_exit">再按一次退出</string>
+	<string name="login_title">用户名登录</string>
+	<string name="content_stock_status">库存状态</string>
+	<string name="content_consume_operate">耗材操作</string>
+	<string name="content_running_wate">耗材流水</string>
+	<!--<string name="content_fast_return">快速退货</string>-->
+	<string name="content_timely_check">实时盘点</string>
+
+	<string name="seven_name">名称</string>
+	<string name="seven_epc">EPC</string>
+	<string name="seven_model">规格型号</string>
+	<string name="seven_effect_period">效期</string>
+	<string name="seven_number">柜号</string>
+	<string name="seven_timely">实时扫描</string>
+	<string name="seven_book">账面库存</string>
+</resources>

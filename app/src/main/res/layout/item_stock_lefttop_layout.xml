@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			  android:layout_marginRight="@dimen/x25"
+			  android:background="?android:attr/selectableItemBackground"
+
+			  android:orientation="vertical">
+
+	<android.support.v7.widget.CardView
+		android:id="@+id/stock_cardview"
+		android:layout_width="@dimen/x340"
+		android:layout_height="@dimen/x200"
+
+		app:cardElevation="@dimen/x6"
+		app:cardPreventCornerOverlap="true"
+		app:cardUseCompatPadding="true">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/x20"
+			android:gravity="center_vertical"
+			android:orientation="vertical">
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="@dimen/x10"
+					android:layout_height="@dimen/x40"
+					android:background="@color/bg_green"/>
+
+				<TextView
+					android:id="@+id/stock_card_number"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/x20"
+					android:layout_gravity="center_vertical"
+					android:text="1号柜"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_16"
+					android:textStyle="bold"
+					/>
+			</LinearLayout>
+			<TextView
+				android:id="@+id/stock_card_outofdate"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/x20"
+				android:layout_marginLeft="@dimen/x30"
+				android:textSize="@dimen/textsize_15"
+				android:textColor="@color/text_color_9"
+				android:text="● 过期耗材：8种"/>
+
+			<TextView
+				android:id="@+id/stock_card_unexpired"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/x20"
+				android:layout_marginLeft="@dimen/x30"
+				android:textSize="@dimen/textsize_15"
+				android:textColor="@color/text_color_9"
+				android:text="● 近效期耗材：10种"/>
+		</LinearLayout>
+	</android.support.v7.widget.CardView>
+</LinearLayout>
