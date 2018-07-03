@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -19,14 +20,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.InBoxActivity;
-import high.rivamed.myapplication.activity.OutBoxActivity;
+import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -123,6 +125,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		Log.i("TT", " position  " + position);
 		String title = "柜门已开";
 		if (position == 0){
 		   DialogUtils.showNoDialog(mContext, title, 2,"in",null);
@@ -173,31 +176,52 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   switch (id) {
 			case R.id.content_rb_ly:
 			   ToastUtils.showShort("领用！");//拿出
-			   mContext.startActivity(new Intent(mContext, OutBoxActivity.class));
+			   Intent intent0 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent0.putExtra("type","inout");
+			   mContext.startActivity(intent0);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
 			   ToastUtils.showShort("入库！");//拿入
-			   mContext.startActivity(new Intent(mContext, InBoxActivity.class));
+			   Intent intent1 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent1.putExtra("type","inout");
+			   mContext.startActivity(intent1);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+
 			   break;
 			case R.id.content_rb_yc:
 			   ToastUtils.showShort("移出！");//拿出
-			   mContext.startActivity(new Intent(mContext, OutBoxActivity.class));
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent2.putExtra("type","inout");
+			   mContext.startActivity(intent2);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tb:
 			   ToastUtils.showShort("调拨！");//拿出
-			   mContext.startActivity(new Intent(mContext, OutBoxActivity.class));
+			   Intent intent3 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent3);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yr:
 			   ToastUtils.showShort("移入！");//拿入
-			   mContext.startActivity(new Intent(mContext, InBoxActivity.class));
+			   Intent intent4 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent4.putExtra("type","inout");
+			   mContext.startActivity(intent4);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihui:
 			   ToastUtils.showShort("退回！");//拿入
-			   mContext.startActivity(new Intent(mContext, InBoxActivity.class));
+			   Intent intent5 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent5.putExtra("type","inout");
+			   mContext.startActivity(intent5);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihuo:
 			   ToastUtils.showShort("退货！");//拿出
-			   mContext.startActivity(new Intent(mContext, OutBoxActivity.class));
+			   Intent intent6 = new Intent(mContext, InOutBoxTwoActivity.class);
+//			   intent6.putExtra("type","inout");
+			   mContext.startActivity(intent6);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 		   }
 		}

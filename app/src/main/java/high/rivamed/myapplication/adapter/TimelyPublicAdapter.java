@@ -25,6 +25,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
+import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
 
 /**
@@ -97,13 +98,31 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 	if (mSize == 4) {
-	   findId(helper, mSize);
-	   String four = item.four;
-	   mSeven_one.setText(item.one);
-	   mSeven_two.setText(item.two);
-	   mSeven_three.setText(item.three);
-	   mSeven_four.setText(four);
-	   initTermOfValidity(helper, four, mSeven_four);
+	   if (mType != null && mType.equals(STYPE_TIMELY_FOUR_DETAILS)) {
+		findId(helper, mSize);
+		String two = item.two;
+		String three = item.three;
+		String four = item.four;
+		mSeven_one.setText(item.one);
+		mSeven_two.setText(two);
+		mSeven_three.setText(three);
+		if (!three.equals(four)){
+		   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		}else {
+		   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+		}
+		mSeven_four.setText(item.four);
+		initTermOfValidity(helper, two, mSeven_two);
+	   }else {
+		findId(helper, mSize);
+		String four = item.four;
+		mSeven_one.setText(item.one);
+		mSeven_two.setText(item.two);
+		mSeven_three.setText(item.three);
+		mSeven_four.setText(four);
+		initTermOfValidity(helper, four, mSeven_four);
+	   }
+
 	} else if (mSize == 5) {
 	   findId(helper, mSize);
 	   String five = item.five;
@@ -234,13 +253,19 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		findId(helper, mSize);
 		String four = item.four;
 		String three = item.three;
+		String five = item.five;
+		String six = item.six;
 		mSeven_one.setText(item.one);
 		mSeven_two.setText(item.two);
 		mSeven_three.setText(three);
 		mSeven_four.setText(four);
-		mSeven_five.setText(item.five);
-		mSeven_six.setText(item.six);
-		mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		mSeven_five.setText(five);
+		mSeven_six.setText(six);
+		if (!five.equals(six)){
+		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		}else {
+		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+		}
 		initTermOfValidity(helper, three, mSeven_three);
 	   }
 	} else if (mSize == 7) {
@@ -289,14 +314,21 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	   } else {
 		findId(helper, mSize);
 		String four = item.four;
+		String six = item.six;
+		String seven = item.seven;
 		mSeven_one.setText(item.one);
 		mSeven_two.setText(item.two);
 		mSeven_three.setText(item.three);
 		mSeven_four.setText(four);
 		mSeven_five.setText(item.five);
-		mSeven_six.setText(item.six);
-		mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
-		mSeven_seven.setText(item.seven);
+		mSeven_six.setText(six);
+		mSeven_seven.setText(seven);
+		if (!six.equals(seven)){
+		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		}else {
+		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+		}
+
 		initTermOfValidity(helper, four, mSeven_four);
 	   }
 	} else if (mSize == 8) {
@@ -331,6 +363,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
     * @param textview
     */
    private void initTermOfValidity(BaseViewHolder helper, String text, TextView textview) {
+
 	if (text.equals("已过期")) {
 	   textview.setBackgroundResource(R.drawable.bg_text_red);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));

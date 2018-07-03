@@ -42,7 +42,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/30 11:04
- * 描述:        TODO:
+ * 描述:        取出套餐
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$

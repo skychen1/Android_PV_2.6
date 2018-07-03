@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 
-import high.rivamed.myapplication.activity.InBoxActivity;
-import high.rivamed.myapplication.activity.OutBoxActivity;
+import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
+import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
@@ -80,17 +82,22 @@ public class DialogUtils {
 	builder.setLeft("", new DialogInterface.OnClickListener() {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
+		Log.i("TT", " nojump  " +nojump);
 	      if(nojump.equals("out")){
 		   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
 		   if (bing==null){  //没有绑定病人
-			context.startActivity(new Intent(context, OutBoxActivity.class));
+			context.startActivity(new Intent(context, OutBoxFoutActivity.class));
 		   }else {
 			context.startActivity(new Intent(context, OutBoxBingActivity.class));
 
 		   }
 		}else if (nojump.equals("in")){
+		   Log.i("TT", " EventAct  " );
 		   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
-		   context.startActivity(new Intent(context, InBoxActivity.class));
+		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   Intent intent2 = new Intent(context, InOutBoxTwoActivity.class);
+		   context.startActivity(intent2);
+
 		}else if (nojump.equals("form")){
 		   context.startActivity(new Intent(context, OutFormConfirmActivity.class));
 		}

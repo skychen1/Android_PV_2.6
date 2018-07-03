@@ -13,10 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.InBoxActivity;
-import high.rivamed.myapplication.activity.OutBoxActivity;
+import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
+import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 /**
  * 项目名称:    WE_TG
@@ -129,14 +131,16 @@ public class NoDialog extends Dialog {
 			if(mNojump.equals("out")){
 			   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
 			   if (mBing==null){  //没有绑定病人
-				mContext.startActivity(new Intent(mContext, OutBoxActivity.class));
+				mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
 			   }else {
 				mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 
 			   }
 			}else if (mNojump.equals("in")){
 			   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
-			   mContext.startActivity(new Intent(mContext, InBoxActivity.class));
+			   EventBusUtils.postSticky(new Event.EventAct("all"));
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent2);
 			}else if (mNojump.equals("form")){
 			   mContext.startActivity(new Intent(mContext, OutFormConfirmActivity.class));
 			}

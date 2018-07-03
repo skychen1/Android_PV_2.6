@@ -3,6 +3,7 @@ package high.rivamed.myapplication.base;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +13,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +23,10 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -29,12 +35,14 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_STOCK_FOUR_DETAILS;
+import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_FOUR_DETAILS;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_LOSS;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_PROFIT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -92,7 +100,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private View                mHeadView;
    public  String              mData;
    private TableTypeView mTypeView;
+   public String mActivityType;
 
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   public void onEvent(Event.EventAct event) {
+	mActivityType = event.mString;
+   }
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -100,9 +113,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	EventBusUtils.register(this);
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	getCompanyType();
+
 	initData();
 	initlistener();
    }
@@ -119,6 +134,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 数据加载
     */
    private void initData() {
+
+
 	getData();
 	if (getData() != null && getData().equals("我有过期的")) {
 	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
@@ -162,16 +179,26 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 				   mRefreshLayout, ACTIVITY);
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
 	   mBaseTabTvTitle.setText("识别耗材");
-	   mTimelyNumber.setText("入库：4 移入：1 退回：1 耗材种类：2 耗材数量：7");
-	   mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + 4 +
-							   "</big>&emsp</font>移入：<font color='#262626'><big>" +
-							   1 +
-							   "</big>&emsp</font>退回：<font color='#262626'><big>" +
-							   4 +
-							   "</big>&emsp</font>耗材种类：<font color='#262626'><big>" +
-							   2 +
-							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
+	   Log.i("TT","   "+mActivityType);
+	   if (mActivityType.equals("all")){
+		mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + 4 +
+								"</big>&emsp</font>移入：<font color='#262626'><big>" +
+								1 +
+								"</big>&emsp</font>退回：<font color='#262626'><big>" +
+								4 +
+								"</big>&emsp</font>耗材种类：<font color='#262626'><big>" +
+								2 +
+								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								7 + "</big></font>"));
+
+	   }else {
+		mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" +
+								2 +
+								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								7 + "</big></font>"));
+
+	   }
+
 	   mTimelyStartBtn.setVisibility(View.VISIBLE);
 	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	   String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
@@ -216,8 +243,21 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mSize = array.length;
 	   mTypeView= new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout, mRecyclerview,
 						  mRefreshLayout, ACTIVITY, STYPE_FORM_CONF);
+	}else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
+	   mBaseTabTvTitle.setText("耗材详情");
+	   String str = "35";
+	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + 12 +
+							   "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
+							   7 + "</big></font>"));
+	   mTimelyName.setVisibility(View.VISIBLE);
+	   mTimelyName.setText("耗材名称：微创路入系统" + "    型号规格：101");
+	   String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
+	   titeleList = Arrays.asList(array);
+	   mSize = array.length;
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData41(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY,
+						   STYPE_TIMELY_FOUR_DETAILS);
 	}
-
 	//单独做的acitvity的table
 	//TODO:需要修改titleList和真实数据
 	/**
@@ -233,14 +273,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	//				mRefreshLayout, ACTIVITY);
    }
 
-   @Override
-   protected void onStop() {
-	super.onStop();
-	if (mTypeView!=null){
-	   mTypeView.clear();
-	}
 
-   }
 
    /**
     * 上拉下拉刷新
@@ -332,7 +365,41 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+   private List<Movie> genData41() {
 
+	ArrayList<Movie> list = new ArrayList<>();
+	for (int i = 0; i < 15; i++) {
+	   String one = null;
+	   String two = null;
+	   String three = null;
+	   String four = i+"";
+	   if (i == 1) {
+		one = "*15170116220035c2dddddsssssssssss3" + i;
+		two = "已过期";
+		three = 1+"";
+	   } else if (i == 2) {
+		one = "*15170116220035c2" + i;
+		two = "≤100天";
+		three = 2+"";
+	   } else if (i == 3) {
+		one = "*15170116220035c2" + i;
+		two = "≤70天";
+		three = 3+"";
+	   } else if (i == 4) {
+		one = "*15170116220035c2" + i;
+		two = "≤28天";
+		three = 2+"";
+	   } else {
+		one = "*15170116220035sssssss3" + i;
+		two = "2019-10-22";
+		three = i+"";
+	   }
+
+	   Movie movie = new Movie(one, two, three, four, null, null, null, null);
+	   list.add(movie);
+	}
+	return list;
+   }
    private List<Movie> genData6() {
 
 	ArrayList<Movie> list = new ArrayList<>();

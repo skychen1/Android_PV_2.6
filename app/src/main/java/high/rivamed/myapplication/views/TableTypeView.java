@@ -32,6 +32,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -118,15 +119,27 @@ public class TableTypeView extends LinearLayout {
 	switch (mType) {
 	   case ACTIVITY://activity
 		if (mSize == FOUR) {
-		   mLayout = R.layout.item_stockmid_four_layout;
-		   mHeadView = mActivity.getLayoutInflater()
-			   .inflate(R.layout.item_stockmid_four_title_layout,
-					(ViewGroup) mLinearLayout.getParent(), false);
-		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-		   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-		   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-		   mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
+		   if (mDialog != null && mDialog.equals(STYPE_TIMELY_FOUR_DETAILS)) {
+			mLayout = R.layout.item_timely_four_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_stockmid_four_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,STYPE_TIMELY_FOUR_DETAILS);
+		   } else {
+			mLayout = R.layout.item_stockmid_four_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_stockmid_four_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
+		   }
 		} else if (mSize == FIVE) {
 		   mLayout = R.layout.item_act_five_layout;
 		   mHeadView = mActivity.getLayoutInflater()
@@ -214,7 +227,7 @@ public class TableTypeView extends LinearLayout {
 			   }
 			});
 
-		   }else if (mDialog != null && mDialog.equals(STYPE_FORM_CONF)) {
+		   } else if (mDialog != null && mDialog.equals(STYPE_FORM_CONF)) {
 			mLayout = R.layout.item_formcon_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_formcon_six_title_layout,

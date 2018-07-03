@@ -13,7 +13,13 @@ package high.rivamed.myapplication.bean;
  */
 
 public class Event {
+   public static class EventAct {
+	public String mString;
 
+	public EventAct(String trim) {
+	   this.mString = trim;
+	}
+   }
    public static class SettingEvent {
 
 	public static final int SETTING_INFO      = 1;

@@ -26,7 +26,7 @@ public class Constants {
    public static final String STYPE_FORM         = "form";//请领单界面
    public static final String STYPE_FORM_CONF      = "form_ly";//请领单item详情界面
    public static final String STYPE_MEAL_NOBING      = "meal_nobing";//套餐未绑定
-
+   public static final String STYPE_TIMELY_FOUR_DETAILS      = "timely_details";//实时盘点item详情
    public static final int ACTIVITY = 1;
    public static final int FRAGMENT = 2;
 
@@ -37,6 +37,7 @@ public class Constants {
    public static final int ACT_TYPE_HCCZ_OUT           = 4;
    public static final int ACT_TYPE_HCCZ_BING          = 5;
    public static final int ACT_TYPE_FORM_CONFIRM       = 6;
+   public static final int ACT_TYPE_TIMELY_FOUR_DETAILS       = 7;//实时盘点item详情
 
    public static final int TYPE_STOCK_LEFT   = 0;
    public static final int TYPE_STOCK_MIDDLE = 1;

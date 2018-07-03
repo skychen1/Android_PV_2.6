@@ -23,8 +23,9 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
  * 更新描述：   ${TODO}
  */
 
-public class OutBoxActivity extends BaseTimelyActivity {
+public class OutBoxFoutActivity extends BaseTimelyActivity {
    int mType;
+
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_OUT;

@@ -15,7 +15,6 @@ android {
             abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a'
         }
     }
-
     signingConfigs {
         debug_config {
             storeFile file('F:/RUI_HUA/ruihua.jks')
@@ -34,7 +33,6 @@ android {
             v2SigningEnabled true
         }
     }
-
     buildTypes {
         debug {
             buildConfigField "boolean", "API_ENV", "true"
@@ -51,7 +49,7 @@ android {
             signingConfig signingConfigs.release_config
         }
     }
-
+    buildToolsVersion '27.0.2'
 }
 
 dependencies {

@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.StockMidTypeActivity;
+import high.rivamed.myapplication.activity.TimelyDetailsActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
 import high.rivamed.myapplication.activity.TimelyProfitActivity;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
@@ -255,7 +256,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 		   @Override
 		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			Log.i("BaseQuickAdapter", "mPublicAdapter");
+			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
 		   }
 		});
 	   }else {

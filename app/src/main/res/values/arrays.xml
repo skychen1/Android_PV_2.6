@@ -6,6 +6,12 @@
 		<item>最近操作</item>
 		<item>效期</item>
 	</string-array>
+	<string-array name="timely_four_arrays">
+		<item>EPC</item>
+		<item>效期</item>
+		<item>实际扫描</item>
+		<item>账面库存</item>
+	</string-array>
 	<string-array name="five_arrays">
 		<item>名称</item>
 		<item>规格型号</item>
