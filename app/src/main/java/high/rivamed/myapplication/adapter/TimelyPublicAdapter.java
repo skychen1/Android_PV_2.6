@@ -149,11 +149,11 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_five.setText(item.five);
 		mSeven_six.setText(item.six);
 		mCheckBox.setOnCheckedChangeListener(null);
-		mCheckBox.setChecked(mCheckStates2.get(helper.getAdapterPosition()));
+		mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
 		mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 		   @Override
 		   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-			mCheckStates2.put(helper.getAdapterPosition(), b);
+			mCheckStates.put(helper.getAdapterPosition(), b);
 		   }
 		});
 	   } else if (mType != null && mType.equals(STYPE_IN)) {

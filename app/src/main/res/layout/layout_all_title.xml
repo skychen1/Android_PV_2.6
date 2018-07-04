@@ -143,6 +143,7 @@
 					android:paddingRight="@dimen/x15"
 					android:layout_toLeftOf="@+id/base_tab_icon_right"
 					android:src="@mipmap/hccz_dhl_ic_xx"
+					android:visibility="gone"
 					/>
 
 			</RelativeLayout>

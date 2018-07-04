@@ -75,7 +75,7 @@ public class TableTypeView extends LinearLayout {
    private String   mDialog;
    public SparseBooleanArray mCheckStates  = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates1 = new SparseBooleanArray();
-
+   public int mSelectedPos=-1;
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size, Object movies,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
@@ -170,20 +170,21 @@ public class TableTypeView extends LinearLayout {
 			   lp.height = 81 * mMovies.size();
 			}
 			mRecyclerview.setLayoutParams(lp);
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG);
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,mCheckStates);
 
 			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
-				if (checkBox.isChecked()) {
-				   checkBox.setChecked(false);
-				} else {
-				   mCheckStates.put(position, true);
-				   checkBox.setChecked(true);
+
+				for (int i =0;i<mCheckStates.size();i++){
+				   mCheckStates.put(i,false);
 				}
+				mCheckStates.put(position, true);
+				mPublicAdapter.notifyDataSetChanged();
+
 			   }
 			});
+
 		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {
 			mLayout = R.layout.item_singbox_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -292,7 +293,7 @@ public class TableTypeView extends LinearLayout {
 			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-				showRvDialog();
+//				showRvDialog();
 			   }
 			});
 		   }
@@ -375,7 +376,9 @@ public class TableTypeView extends LinearLayout {
 	mRecyclerview.setAdapter(mPublicAdapter);
 	mLinearLayout.addView(mHeadView);
    }
-
+   public  int getSelectedPos(){
+	return mSelectedPos;
+   }
    private void showRvDialog() {
 	RvDialog.Builder builder = new RvDialog.Builder(mActivity, mContext);
 	builder.setMsg("耗材中包含过期耗材，请查看！");

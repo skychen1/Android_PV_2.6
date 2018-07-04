@@ -67,59 +67,61 @@
 			android:layout_centerVertical="true"
 			layout="@layout/view_right_top_layout"
 			android:layout_alignParentRight="true"/>
+		<LinearLayout
+			android:id="@+id/stock_right_btn"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@+id/stock_search"
+			android:layout_gravity="center_vertical"
+			android:layout_marginRight="@dimen/x30"
+			android:layout_marginLeft="@dimen/x30"
+			android:orientation="horizontal"
+			android:layout_centerVertical="true"
+			android:visibility="gone">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:gravity="center_vertical"
+				android:text="状态:"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_17"/>
+
+			<RadioGroup
+				android:id="@+id/stock_right_rg"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/x50"
+				android:layout_gravity="center_horizontal"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+
+				<RadioButton
+					android:id="@+id/stock_right_all"
+					style="@style/runwate_btn_style"
+					android:checked="true"
+					android:text="全部"/>
+
+
+				<RadioButton
+					android:id="@+id/stock_right_unused"
+					style="@style/runwate_btn_style"
+					android:text="未使用"/>
+
+				<RadioButton
+					android:id="@+id/stock_right_tobemovedin"
+					style="@style/runwate_btn_style"
+					android:text="待移入"/>
+
+				<RadioButton
+					android:id="@+id/stock_right_tobestoredin"
+					style="@style/runwate_btn_style"
+					android:text="待入库"/>
+			</RadioGroup>
+
+		</LinearLayout>
 	</RelativeLayout>
-	<LinearLayout
-		android:id="@+id/stock_right_btn"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical"
-		android:layout_marginRight="@dimen/x30"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginTop="@dimen/x25"
-		android:orientation="horizontal"
-		android:visibility="gone">
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center_vertical"
-			android:text="时间:"
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_16"/>
-
-		<RadioGroup
-			android:id="@+id/stock_right_rg"
-			android:layout_width="wrap_content"
-			android:layout_height="@dimen/x50"
-			android:layout_gravity="center_horizontal"
-			android:gravity="center"
-			android:orientation="horizontal">
-
-
-			<RadioButton
-				android:id="@+id/stock_right_all"
-				style="@style/runwate_btn_style"
-				android:checked="true"
-				android:text="全部"/>
-
-
-			<RadioButton
-				android:id="@+id/stock_right_unused"
-				style="@style/runwate_btn_style"
-				android:text="未使用"/>
-
-			<RadioButton
-				android:id="@+id/stock_right_tobemovedin"
-				style="@style/runwate_btn_style"
-				android:text="待移入"/>
-
-			<RadioButton
-				android:id="@+id/stock_right_tobestoredin"
-				style="@style/runwate_btn_style"
-				android:text="待入库"/>
-		</RadioGroup>
-
-	</LinearLayout>
 	<include
 		android:id="@+id/public_ll"
 		android:layout_width="match_parent"

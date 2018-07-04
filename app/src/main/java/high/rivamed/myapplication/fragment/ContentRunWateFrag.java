@@ -22,6 +22,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
 import static high.rivamed.myapplication.cont.Constants.TYPE_RUNWATE;
@@ -144,8 +145,10 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 	   case R.id.search_iv_delete:
 		break;
 	   case R.id.search_time_start:
+		DialogUtils.showTimeDialog(mContext,mSearchTimeStart);
 		break;
 	   case R.id.search_time_end:
+		DialogUtils.showTimeDialog(mContext,mSearchTimeEnd);
 		break;
 	}
    }

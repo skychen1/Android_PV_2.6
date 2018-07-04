@@ -84,15 +84,18 @@
 				android:gravity="center_vertical"
 				android:text="时间:"
 				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_16"/>
+				android:textSize="@dimen/textsize_16"
+				android:visibility="gone"/>
 
 			<RadioGroup
 				android:id="@+id/search_time_rg"
 				android:layout_width="wrap_content"
 				android:layout_height="@dimen/x50"
+				android:layout_marginRight="@dimen/x30"
 				android:layout_gravity="center_horizontal"
 				android:gravity="center"
-				android:orientation="horizontal">
+				android:orientation="horizontal"
+				android:visibility="gone">
 
 
 				<RadioButton
@@ -121,7 +124,7 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
-				android:layout_marginLeft="@dimen/x30"
+
 				android:gravity="center_vertical"
 				android:text="时间段:"
 				android:textColor="@color/text_color_3"
@@ -154,9 +157,9 @@
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:gravity="center_vertical"
-				android:text="状态:"
+				android:text="状    态:"
 				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_15"/>
+				android:textSize="@dimen/textsize_16"/>
 			<RadioGroup
 				android:id="@+id/search_type_rg"
 				android:layout_width="wrap_content"

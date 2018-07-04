@@ -5,12 +5,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.timeutil.DateListener;
+import high.rivamed.myapplication.timeutil.TimeConfig;
+import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
@@ -193,4 +201,33 @@ public class DialogUtils {
 	builder.create().show();
 
    }
+   public static void showTimeDialog(final Context context, final TextView textView){
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String format = sdf.format(date);
+	Log.i("cc","    "+format);
+	TimeSelectorDialog dialog = new TimeSelectorDialog(context);
+	//设置标题
+	dialog.setTimeTitle("选择时间:  ");
+	//显示类型
+	dialog.setIsShowtype(TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE);
+	//默认时间
+	dialog.setCurrentDate(format);
+	//隐藏清除按钮
+	dialog.setEmptyIsShow(false);
+	//设置起始时间
+	dialog.setStartYear(2000);
+	dialog.setDateListener(new DateListener() {
+	   @Override
+	   public void onReturnDate(String time,int year, int month, int day, int hour, int minute, int isShowType) {
+		textView.setText(time);
+		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
+	   }
+	   @Override
+	   public void onReturnDate(String empty) {
+	   }
+	});
+	dialog.show();
+   }
+
 }
