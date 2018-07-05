@@ -59,6 +59,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
    public TimelyPublicAdapter(int layout, List<Movie> data, int size) {
 	super(layout, data);
 	this.mSize = size;
+	this.mData = data;
    }
 
    public TimelyPublicAdapter(int layout, List<Movie> data, int size, String type) {
@@ -66,13 +67,15 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 
 	this.mSize = size;
 	this.mType = type;
+	this.mData = data;
+
 	Log.i("xxx", "mSize   " + mSize);
    }
 
    public TimelyPublicAdapter(
 	   int layout, List<Movie> data, int size, String type, SparseBooleanArray mCheckStates) {
 	super(layout, data);
-
+	this.mData = data;
 	this.mSize = size;
 	this.mType = type;
 	this.mCheckStates = mCheckStates;
@@ -86,6 +89,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	if (mCheckStates2 != null) {
 	   mCheckStates2.clear();
 	}
+	mData.clear();
 	notifyDataSetChanged();
    }
 

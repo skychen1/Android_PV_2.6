@@ -41,7 +41,7 @@ import static android.widget.LinearLayout.VERTICAL;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class MealPopupWindow extends PopupWindow  {
+public class MealPopupWindow extends PopupWindow {
 
    // 坐标的位置（x、y）
    private final int[] mLocation = new int[2];
@@ -51,10 +51,10 @@ public class MealPopupWindow extends PopupWindow  {
    private final View         mView;
 
    private String TAG = "SettingPopupWindow";
-   private       OnClickListener  mItemClickListener;
-   private final MealPopAdapter   mMealPopAdapter;
-   private final List<Movie>      mMovies;
-   private final List<Movie> mMovies1;
+   private       OnClickListener mItemClickListener;
+   private       MealPopAdapter  mMealPopAdapter;
+   private final List<Movie>     mMovies;
+   private final List<Movie>     mMovies1;
 
    public MealPopupWindow(Context context) {
 	mView = LayoutInflater.from(context).inflate(R.layout.meal_popupwindow, null);
@@ -73,8 +73,8 @@ public class MealPopupWindow extends PopupWindow  {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		TextView textView = (TextView) view.findViewById(R.id.item_meal);
 		String trim = textView.getText().toString().trim();
-//		mEditText.setText(trim);
-		EventBusUtils.postSticky(new Event.PopupEvent(true,trim));
+		//		mEditText.setText(trim);
+		EventBusUtils.postSticky(new Event.PopupEvent(true, trim));
 	   }
 	});
 
@@ -148,9 +148,6 @@ public class MealPopupWindow extends PopupWindow  {
 	   dismiss();
 	}
    }
-
-
-
 
    private List<Movie> genData1() {
 

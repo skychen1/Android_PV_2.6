@@ -69,20 +69,54 @@ public class OutMealActivity extends BaseSimpleActivity {
    SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.public_ll)
    LinearLayout       mPublicLl;
+   List<Movie> movies =new ArrayList<>();
    private MealPopupWindow mPopupWindowSearch;
    private TimelyPublicAdapter mPublicAdapter;
    private View                mHeadView;
    private int                 mLayout;
    private int                 mSize;
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onPopupBean(Event.PopupEvent event) {
-	Log.i("CC", " event.isMute   " + event.isMute);
-	Log.i("CC", " event.mString   " + event.mString);
+
 	if (event.isMute) {
 	   mMealTvSearch.setText(event.mString);
 	   mPopupWindowSearch.dismiss();
 	   mRecyclerviewNull.setVisibility(View.GONE);
-	   initData();
+
+	   if (mPublicAdapter==null){
+	      if (event.mString.equals("xxx套餐-1")){
+		   movies.addAll(genData6());
+		   initData(movies);
+		}else if(event.mString.equals("xxx套餐-5")){
+		   movies.addAll(genData61());
+		   initData(movies);
+		}else {
+		   movies.addAll(genData62());
+		   initData(movies);
+		}
+		Log.i("CC", " event.isMute   " );
+	   }else {
+		if (event.mString.equals("xxx套餐-1")){
+		   movies.clear();
+		   movies.addAll(genData6());
+		   mPublicAdapter.notifyDataSetChanged();
+		   Log.i("CC", " event.xxx套餐-1   " );
+		}else if(event.mString.equals("xxx套餐-5")){
+		   movies.clear();
+		   movies.addAll(genData61());
+		   mPublicAdapter.notifyDataSetChanged();
+		   Log.i("CC", " event.xxx套餐-5   " );
+		}else {
+		   movies.clear();
+		   movies.addAll(genData62());
+		   mPublicAdapter.notifyDataSetChanged();
+		   Log.i("CC", " event.isMxxxxxute   " );
+		}
+//		Log.i("CC", " event.isMxxxxxute   " );
+
+	   }
+
 	}
 
    }
@@ -101,7 +135,8 @@ public class OutMealActivity extends BaseSimpleActivity {
 	initlistener();
    }
 
-   private void initData() {
+   private void initData(List<Movie> movies) {
+
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRefreshLayout.setEnableAutoLoadMore(true);
@@ -120,13 +155,16 @@ public class OutMealActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(3));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
-	mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, STYPE_MEAL_NOBING);
-	mLinearLayout.addView(mHeadView);
-	mRecyclerview.setAdapter(mPublicAdapter);
+
+	   mPublicAdapter = new TimelyPublicAdapter(mLayout, movies, mSize, STYPE_MEAL_NOBING);
+	   mLinearLayout.addView(mHeadView);
+	   mRecyclerview.setAdapter(mPublicAdapter);
+	mPublicAdapter.notifyDataSetChanged();
 	mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		String six = mPublicAdapter.getItem(position).five;
+
 		if (!six.equals("已领取")) {
 		   DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
 		} else {
@@ -209,8 +247,50 @@ public class OutMealActivity extends BaseSimpleActivity {
 
 	ArrayList<Movie> list = new ArrayList<>();
 	for (int i = 0; i < 25; i++) {
-	   String one = "微创路入系统";
-	   String two = "FLR01" + i;
+	   String one = "微创路genData6入系统";
+	   String two = "genData6" + i;
+	   String three = "" + i;
+	   String four = i + "号柜";
+	   String five = "";
+	   String six = "打开柜门";
+
+	   if (i == 2) {
+		five = "已领取";
+	   } else {
+		five = "未领取";
+	   }
+	   Movie movie = new Movie(one, two, three, four, five, six, null, null);
+	   list.add(movie);
+	}
+	return list;
+   }
+   private List<Movie> genData61() {
+
+	ArrayList<Movie> list = new ArrayList<>();
+	for (int i = 0; i < 25; i++) {
+	   String one = "微创路入系统genData61";
+	   String two = "genData61" + i;
+	   String three = "" + i;
+	   String four = i + "号柜";
+	   String five = "";
+	   String six = "打开柜门";
+
+	   if (i == 2) {
+		five = "已领取";
+	   } else {
+		five = "未领取";
+	   }
+	   Movie movie = new Movie(one, two, three, four, five, six, null, null);
+	   list.add(movie);
+	}
+	return list;
+   }
+   private List<Movie> genData62() {
+
+	ArrayList<Movie> list = new ArrayList<>();
+	for (int i = 0; i < 25; i++) {
+	   String one = "genData62微创路入系统";
+	   String two = "genData62" + i;
 	   String three = "" + i;
 	   String four = i + "号柜";
 	   String five = "";

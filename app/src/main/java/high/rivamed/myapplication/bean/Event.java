@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.bean;
 
+import high.rivamed.myapplication.adapter.MealPopAdapter;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
