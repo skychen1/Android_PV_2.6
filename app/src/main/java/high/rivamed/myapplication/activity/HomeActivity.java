@@ -2,9 +2,12 @@ package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
@@ -49,6 +52,10 @@ public class HomeActivity extends SimpleActivity {
    @BindView(R.id.home_rg)
    RadioGroup  mHomeRg;
 
+   final static int COUNTS = 8;// 点击次数  2s内点击8次进入注册界面
+   final static long DURATION = 2000;// 规定有效时间
+   long[] mHits = new long[COUNTS];
+
    private SupportFragment[] mFragments = new SupportFragment[4];
 
    public static final int CONSUME = 0;
@@ -69,11 +76,11 @@ public class HomeActivity extends SimpleActivity {
     */
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	EventBusUtils.register(this);
+	//	EventBusUtils.register(this);
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();
-	if (extras!=null){
-	   String  type = extras.getString("type");
+	if (extras != null) {
+	   String type = extras.getString("type");
 	   int number = extras.getInt("number");
 	   mHomeRg.check(R.id.content_stock_status);
 	   LastId = 2;
@@ -89,7 +96,6 @@ public class HomeActivity extends SimpleActivity {
 
    }
 
-
    /**
     * 填充右边fragment
     */
@@ -102,8 +108,7 @@ public class HomeActivity extends SimpleActivity {
 	   mFragments[CHECK] = ContentTimelyCheckFrag.newInstance();
 
 	   loadMultipleRootFragment(R.id.fl_tab_container, CONSUME, mFragments[CONSUME],
-					    mFragments[RUNWATE]  , mFragments[STOCK],
-					    mFragments[CHECK]);
+					    mFragments[RUNWATE], mFragments[STOCK], mFragments[CHECK]);
 	} else {
 	   // 拿到mFragments的引用
 	   mFragments[CONSUME] = firstFragment;
@@ -142,8 +147,26 @@ public class HomeActivity extends SimpleActivity {
 		}
 	   }
 	});
-   }
 
+	mHomeLogo.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		continuousClick(COUNTS, DURATION);
+	   }
+	});
+
+   }
+   private void continuousClick(int count, long time) {
+	//每次点击时，数组向前移动一位
+	System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+	//为数组最后一位赋值
+	mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+	if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+	   mHits = new long[COUNTS];//重新初始化数组
+	   Toast.makeText(this, "连续点击了8次", Toast.LENGTH_LONG).show();
+	   startActivity(new Intent(this,RegisteActivity.class));
+	}
+   }
    /**
     * 连续点击退出
     */

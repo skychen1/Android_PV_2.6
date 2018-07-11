@@ -100,9 +100,9 @@
 		<item>效期</item>
 		<item>柜号</item>
 		<item>患者</item>
-
 	</string-array>
-	<string-array name="seven_meal_arrays">
+	<string-array name="eight_meal_arrays">
+		<item>选择</item>
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
@@ -140,8 +140,8 @@
 		<item>名称</item>
 		<item>规格型号</item>
 		<item>数量</item>
-		<item>患者</item>
 		<item>柜号</item>
+		<item>患者</item>
 		<item>状态</item>
 		<item>操作</item>
 	</string-array>

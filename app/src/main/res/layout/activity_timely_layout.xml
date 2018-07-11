@@ -8,33 +8,50 @@
 			  android:orientation="vertical"
 			  >
 	<RelativeLayout
+		android:id="@+id/timely_rl_title"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:paddingRight="@dimen/x40"
 		android:paddingLeft="@dimen/x40">
-		<LinearLayout
-			android:id="@+id/timely_ll_gone"
+		<RelativeLayout
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<TextView
-				android:id="@+id/timely_start_btn"
-				style="@style/btn_style_sel"
-				android:text="重新扫描"
-				android:layout_marginLeft="0dp"
-				android:visibility="gone"
-				/>
-			<TextView
-				android:id="@+id/ly_bing_btn"
-				style="@style/btn_style_sel"
-				android:text="请选择患者绑定"
+			android:layout_height="wrap_content">
+			<LinearLayout
+				android:id="@+id/timely_ll_gone"
 				android:layout_width="wrap_content"
-				android:layout_marginLeft="@dimen/x30"
-				android:paddingLeft="@dimen/x30"
-				android:paddingRight="@dimen/x30"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+				<TextView
+					android:id="@+id/timely_start_btn"
+					style="@style/btn_style_sel"
+					android:text="重新扫描"
+					android:layout_marginLeft="0dp"
+					android:visibility="gone"
+					/>
+				<TextView
+					android:id="@+id/ly_bing_btn"
+					style="@style/btn_style_sel"
+					android:text="请选择患者绑定"
+					android:layout_width="wrap_content"
+					android:layout_marginLeft="@dimen/x30"
+					android:paddingLeft="@dimen/x30"
+					android:paddingRight="@dimen/x30"
+					android:visibility="gone"
+					/>
+			</LinearLayout>
+			<TextView
+				android:id="@+id/timely_number_left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="耗材名称"
+				android:textStyle="bold"
+				android:paddingTop="@dimen/x10"
+				android:textSize="@dimen/textsize_17"
+				android:textColor="@color/text_color_3"
 				android:visibility="gone"
 				/>
-		</LinearLayout>
+		</RelativeLayout>
+
 
 		<TextView
 			android:id="@+id/timely_name"
@@ -47,16 +64,45 @@
 			android:textColor="@color/text_color_3"
 			android:visibility="gone"
 			/>
-		<TextView
-			android:id="@+id/timely_number"
-			android:layout_width="match_parent"
+		<RelativeLayout
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
-			android:text="盘亏数：3"
-			android:gravity="right"
-			android:paddingTop="@dimen/x10"
-			android:textSize="@dimen/textsize_17"
-			android:textColor="@color/text_color_26"/>
+			android:layout_alignParentRight="true">
+			<LinearLayout
+				android:id="@+id/timely_ll_gone_right"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+				<TextView
+					android:id="@+id/timely_start_btn_right"
+					style="@style/btn_style_sel"
+					android:text="重新扫描"
+					android:layout_marginLeft="0dp"
+					android:visibility="gone"
+					/>
+				<TextView
+					android:id="@+id/ly_bing_btn_right"
+					style="@style/btn_style_sel"
+					android:text="请选择患者绑定"
+					android:layout_width="wrap_content"
+					android:layout_marginLeft="@dimen/x30"
+					android:paddingLeft="@dimen/x30"
+					android:paddingRight="@dimen/x30"
+					android:visibility="gone"
+					/>
+			</LinearLayout>
+			<TextView
+				android:id="@+id/timely_number"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:text="盘亏数：3"
+				android:gravity="right"
+				android:paddingTop="@dimen/x10"
+				android:textSize="@dimen/textsize_17"
+				android:textColor="@color/text_color_26"/>
+		</RelativeLayout>
+
 	</RelativeLayout>
 
 	<include

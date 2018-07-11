@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
+import high.rivamed.myapplication.activity.OutMealBingConfirmActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 
 /**
  * 项目名称:    WE_TG
@@ -128,6 +131,8 @@ public class NoDialog extends Dialog {
 		   @Override
 		   public void run() {
 			mDialog.dismiss();
+			ToastUtils.showShort("mNojump"+mNojump+mBing);
+			Log.i("FF",mNojump+"   "+mBing);
 			if(mNojump.equals("out")){
 			   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
 			   if (mBing==null){  //没有绑定病人
@@ -142,7 +147,13 @@ public class NoDialog extends Dialog {
 			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
 			   mContext.startActivity(intent2);
 			}else if (mNojump.equals("form")){
-			   mContext.startActivity(new Intent(mContext, OutFormConfirmActivity.class));
+			   Log.i("FF","  DDDD   "+mNojump+"   "+mBing);
+			   if (mBing .equals("BING_MEAL")){//绑定患者的套餐
+				mContext.startActivity(new Intent(mContext, OutMealBingConfirmActivity.class));
+
+			   }else {
+				mContext.startActivity(new Intent(mContext, OutFormConfirmActivity.class));
+			   }
 			}
 		   }
 		}, 1000);

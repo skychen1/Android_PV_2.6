@@ -14,6 +14,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
+import high.rivamed.myapplication.activity.OutMealBingConfirmActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -52,9 +53,17 @@ public class DialogUtils {
 	builder.setRight("确认", new DialogInterface.OnClickListener() {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
-		String title = "患者绑定成功";
-		showNoDialog(context,title, 2,"nojump",null);
-		dialog.dismiss();
+
+		for (int x=0;x<= RvDialog.genData5().size();x++){
+		   if (RvDialog.sTableTypeView.mCheckStates.get(x)){
+			RvDialog.sMovie = RvDialog.genData5().get(x);
+			Log.i("vv","   "+RvDialog.sMovie.five+ "   "+RvDialog.sTableTypeView.mCheckStates.get(x));
+			EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.sMovie.five));
+			String title = "患者绑定成功";
+			DialogUtils.showNoDialog(context,title, 2,"nojump",null);
+			dialog.dismiss();
+		   }
+		}
 	   }
 	});
 	builder.create().show();
@@ -107,7 +116,12 @@ public class DialogUtils {
 		   context.startActivity(intent2);
 
 		}else if (nojump.equals("form")){
-		   context.startActivity(new Intent(context, OutFormConfirmActivity.class));
+		   if (bing ==null){
+			context.startActivity(new Intent(context, OutFormConfirmActivity.class));
+		   }else {//绑定患者的套餐
+			context.startActivity(new Intent(context, OutMealBingConfirmActivity.class));
+		   }
+
 		}
 
 		dialog.dismiss();

@@ -204,7 +204,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	   Log.i("BaseQuickAdapter", "mType_size   " + EIGHT);
 	   if (mType_page.equals(STYPE_STOCK_RIGHT)) {
 		mPublicRl.setVisibility(View.VISIBLE);
-		mStockRightLL.setVisibility(View.VISIBLE);
+		mStockRightLL.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
 		mSearchEt.setHint("请输入耗材名称、型号规格、操作人查询");
 	   } else {

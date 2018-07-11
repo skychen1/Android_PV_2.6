@@ -131,8 +131,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   DialogUtils.showNoDialog(mContext, title, 2,"in",null);
 		}else if (position == 1){
 		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
-		}else {
+		}else if (position ==2){
 		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
+		}else if (position == 3){
+		   ToastUtils.showShort("按套餐领用-绑定患者！");
+		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
+		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
+
+		}else if (position ==4){
+
 		}
 		//		if (position == 0) {
 		//		   int mType = 1;//1.8.3未绑定
@@ -233,8 +240,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	ArrayList<Movie> list = new ArrayList<>();
 	String one;
-	for (int i = 1; i < 20; i++) {
-	   if (i == 1) {
+	for (int i = 0; i < 20; i++) {
+	   if (i == 0) {
 		one = "全部开柜";
 	   } else {
 		one = i + "号柜";
@@ -261,6 +268,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		break;
 	   case R.id.function_title_meal:
 		mContext.startActivity(new Intent(mContext,OutMealActivity.class));
+		EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
 		break;
 	   case R.id.fastopen_title_form:
 		mContext.startActivity(new Intent(mContext,OutFormActivity.class));

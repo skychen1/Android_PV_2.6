@@ -28,15 +28,15 @@
 
 		<activity
 			android:name=".activity.HomeActivity"
-		android:screenOrientation="landscape"
+			android:screenOrientation="landscape"
 			android:windowSoftInputMode="adjustPan"
-		>
-		<intent-filter>
-			<action android:name="android.intent.action.MAIN"/>
-			<category android:name="android.intent.category.LAUNCHER"/>
-		</intent-filter>
-	</activity>
-	<!--<activity-->
+			>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<!--<activity-->
 		<!--android:name=".activity.HomeActivity"-->
 		<!--android:screenOrientation="landscape"/>-->
 		<activity
@@ -79,6 +79,13 @@
 		<activity
 			android:name=".activity.TimelyDetailsActivity"
 			android:screenOrientation="landscape"/>
+		<activity
+			android:name=".activity.RegisteActivity"
+			android:screenOrientation="landscape"/>
+		<activity
+			android:name=".activity.OutMealBingConfirmActivity"
+			android:screenOrientation="landscape"/>
+
 	</application>
 
 </manifest>

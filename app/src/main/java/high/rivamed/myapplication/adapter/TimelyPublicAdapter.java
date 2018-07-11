@@ -22,6 +22,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
+import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
@@ -53,8 +54,10 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
    public String TAG = "TimelyPublicAdapter";
    public  int                mSize;
    public  String             mType;
+   public  String             mMealBing;
    private SparseBooleanArray mCheckStates;
    private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
+   public CheckBox mMCheckBox;
 
    public TimelyPublicAdapter(int layout, List<Movie> data, int size) {
 	super(layout, data);
@@ -68,6 +71,17 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	this.mSize = size;
 	this.mType = type;
 	this.mData = data;
+
+	Log.i("xxx", "mSize   " + mSize);
+   }
+
+   public TimelyPublicAdapter(int layout, List<Movie> data, int size, String type, String bing) {
+	super(layout, data);
+
+	this.mSize = size;
+	this.mType = type;
+	this.mData = data;
+	this.mMealBing = bing;
 
 	Log.i("xxx", "mSize   " + mSize);
    }
@@ -110,14 +124,14 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_one.setText(item.one);
 		mSeven_two.setText(two);
 		mSeven_three.setText(three);
-		if (!three.equals(four)){
+		if (!three.equals(four)) {
 		   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.color_red));
-		}else {
+		} else {
 		   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 		}
 		mSeven_four.setText(item.four);
 		initTermOfValidity(helper, two, mSeven_two);
-	   }else {
+	   } else {
 		findId(helper, mSize);
 		String four = item.four;
 		mSeven_one.setText(item.one);
@@ -183,7 +197,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		   }
 		}
 	   } else if (mType != null && mType.equals(STYPE_OUT)) {
-		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+		mMCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
 		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
@@ -191,12 +205,12 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 
 		if (item.seven.equals("1")) {
-		   mCheckBox.setChecked(true);
+		   mMCheckBox.setChecked(true);
 		} else {
 		   Log.i("rr", "helper.getAdapterPosition()  " + helper.getAdapterPosition());
 		   Log.i("rr", "mCheckStates.get(helper.getAdapterPosition())  " +
 				   mCheckStates.get(helper.getAdapterPosition()));
-		   mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+		   mMCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
 		}
 		mSeven_two.setText(item.one);
 		mSeven_three.setText(item.two);
@@ -205,15 +219,15 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_six.setText(item.five);
 		initTermOfValidity(helper, item.four, mSeven_five);
 
-		mCheckBox.setOnCheckedChangeListener(null);
+		mMCheckBox.setOnCheckedChangeListener(null);
 		//		mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
-		mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		mMCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 		   @Override
 		   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 			mCheckStates.put(helper.getAdapterPosition(), b);
 		   }
 		});
-	   }else if (mType != null && mType.equals(STYPE_FORM_CONF)) {
+	   } else if (mType != null && mType.equals(STYPE_FORM_CONF)) {
 		mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -232,10 +246,9 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_five.setText(item.five);
 		initTermOfValidity(helper, item.four, mSeven_four);
 
-	   }else if (mType != null && mType.equals(STYPE_MEAL_NOBING)){
+	   } else if (mType != null && mType.equals(STYPE_MEAL_NOBING)) {
+
 		findId(helper, mSize);
-		LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
-		String four = item.four;
 		mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 		mSeven_one.setText(item.one);
 		mSeven_two.setText(item.two);
@@ -253,7 +266,8 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 		}
-	   }else if (mType != null && mType.equals(TYPE_TIMELY)){
+
+	   } else if (mType != null && mType.equals(TYPE_TIMELY)) {
 		findId(helper, mSize);
 		String four = item.four;
 		String three = item.three;
@@ -265,9 +279,9 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_four.setText(four);
 		mSeven_five.setText(five);
 		mSeven_six.setText(six);
-		if (!five.equals(six)){
+		if (!five.equals(six)) {
 		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
-		}else {
+		} else {
 		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 		}
 		initTermOfValidity(helper, three, mSeven_three);
@@ -315,6 +329,28 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 		}
+	   } else if (mType != null && mType.equals(STYPE_MEAL_NOBING) && mMealBing != null &&
+			  mMealBing.equals("BING_MEAL")) {
+		findId(helper, mSize);
+		//		   LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
+		mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
+		mSeven_one.setText(item.one);
+		mSeven_two.setText(item.two);
+		mSeven_three.setText(item.three);
+		mSeven_four.setText(item.four);
+		mSeven_five.setText(item.five);
+		mSeven_six.setText(item.six);
+		mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
+		mSeven_seven.setText(item.seven);
+		if (item.six.equals("已领取")) {
+		   mSeven_seven.setText("");
+		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+		}
 	   } else {
 		findId(helper, mSize);
 		String four = item.four;
@@ -327,34 +363,69 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_five.setText(item.five);
 		mSeven_six.setText(six);
 		mSeven_seven.setText(seven);
-		if (!six.equals(seven)){
+		if (!six.equals(seven)) {
 		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
-		}else {
+		} else {
 		   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 		}
 
 		initTermOfValidity(helper, four, mSeven_four);
 	   }
 	} else if (mSize == 8) {
-	   findId(helper, mSize);
-	   String five = item.five;
-	   String one = item.one;
-	   mSeven_one.setText(item.one);
-	   mSeven_two.setText(item.two);
-	   mSeven_three.setText(item.three);
-	   mSeven_four.setText(item.four);
-	   mSeven_five.setText(five);
-	   mSeven_six.setText(item.six);
-	   mSeven_seven.setText(item.seven);
-	   mSeven_eight.setText(item.eight);
+	   if (mType != null && mType.equals(STYPE_MEAL_BING)) {
+		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
+		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
+		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
+		mSeven_five = ((TextView) helper.getView(R.id.seven_five));
+		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+		mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
+		ImageView view = (ImageView) helper.getView(R.id.seven_eight);
 
-	   initTermOfValidity(helper, five, mSeven_five);
 
-	   if (one.equals("领用") || one.equals("移出") || one.equals("退货") ||
-		 (mType != null && mType.equals(STYPE_STOCK_RIGHT))) {
-		mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		mSeven_two.setText(item.one);
+		mSeven_three.setText(item.two);
+		mSeven_four.setText(item.three);
+		mSeven_five.setText(item.four);
+		mSeven_six.setText(item.five);
+		mSeven_seven.setText(item.six);
+		if (item.seven.equals("1")) {
+		   view.setVisibility(View.VISIBLE);
+		} else {
+		   view.setVisibility(View.INVISIBLE);
+		}
+
+		mCheckBox.setOnCheckedChangeListener(null);
+		mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+		mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		   @Override
+		   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+			mCheckStates.put(helper.getAdapterPosition(), b);
+		   }
+		});
+		initTermOfValidity(helper, item.four, mSeven_five);
 	   } else {
-		mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
+
+		findId(helper, mSize);
+		String five = item.five;
+		String one = item.one;
+		mSeven_one.setText(item.one);
+		mSeven_two.setText(item.two);
+		mSeven_three.setText(item.three);
+		mSeven_four.setText(item.four);
+		mSeven_five.setText(five);
+		mSeven_six.setText(item.six);
+		mSeven_seven.setText(item.seven);
+		mSeven_eight.setText(item.eight);
+
+		initTermOfValidity(helper, five, mSeven_five);
+
+		if (one.equals("领用") || one.equals("移出") || one.equals("退货") ||
+		    (mType != null && mType.equals(STYPE_STOCK_RIGHT))) {
+		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		} else {
+		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
+		}
 	   }
 	}
    }

@@ -39,6 +39,9 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
  */
 public class RvDialog extends Dialog {
 
+   public static Movie sMovie;
+   public static TableTypeView sTableTypeView;
+
    public RvDialog(Context context) {
 	super(context);
    }
@@ -150,9 +153,10 @@ public class RvDialog extends Dialog {
 //	   titeleList = Arrays.asList(array);
 	   mSize = titeleList.size();
 
-	   new TableTypeView(mContext, mActivity, titeleList, mSize, genData5(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY,STYPE_DIALOG);
-//	   mLayout = R.layout.item_dialog_six_layout;
+	   sTableTypeView = new TableTypeView(mContext, mActivity, titeleList, mSize,
+							  genData5(), mLinearLayout, mRecyclerview,
+							  mRefreshLayout, ACTIVITY, STYPE_DIALOG);
+	   //	   mLayout = R.layout.item_dialog_six_layout;
 //	   mHeadView = mActivity.getLayoutInflater().inflate(R.layout.item_dialog_six_title_layout,
 //								 (ViewGroup) mLinearLayout.getParent(), false);
 //	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
@@ -186,6 +190,7 @@ public class RvDialog extends Dialog {
 	   mDialogRight.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
+
 		   mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
 		}
 	   });

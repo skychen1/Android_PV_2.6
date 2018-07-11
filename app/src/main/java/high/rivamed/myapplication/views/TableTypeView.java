@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,16 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.FRAGMENT;
@@ -31,6 +37,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
+import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
@@ -59,7 +66,7 @@ public class TableTypeView extends LinearLayout {
    public  int                 mType;
    private int                 mLayout;
    private View                mHeadView;
-   private TimelyPublicAdapter mPublicAdapter;
+   public TimelyPublicAdapter mPublicAdapter;
    private static final int FOUR  = 4;
    private static final int FIVE  = 5;
    private static final int SIX   = 6;
@@ -75,11 +82,27 @@ public class TableTypeView extends LinearLayout {
    private String   mDialog;
    public SparseBooleanArray mCheckStates  = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates1 = new SparseBooleanArray();
+   public SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
    public int mSelectedPos=-1;
+   private String mMovie;
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   public void onEventBing(Event.EventCheckbox event) {
+	mMovie = event.mString;
+	Log.i("ff", "mMovie  " + mMovie);
+	if (mMovie!=null){
+	   for (int i =0;i<mMovies.size();i++){
+		mMovies.get(i).six=mMovie;
+
+	   }
+	   mPublicAdapter.notifyDataSetChanged();
+	}
+   }
+
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size, Object movies,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
 	   int type) {
+
 	super(context);
 	this.mActivity = activity;
 	this.mContext = context;
@@ -98,6 +121,8 @@ public class TableTypeView extends LinearLayout {
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
 	   int type, String dialog) {
 	super(context);
+	EventBusUtils.register(this);
+
 	this.mActivity = activity;
 	this.mContext = context;
 	this.titeleList = titeleList;
@@ -218,7 +243,7 @@ public class TableTypeView extends LinearLayout {
 				if (checkBox.isChecked()) {
 				   checkBox.setChecked(false);
 				   mMovies.get(position).seven = "0";
-				   mCheckStates.delete(position);
+				   mCheckStates.put(position,false);
 				} else {
 				   mCheckStates.put(position, true);
 				   mMovies.get(position).seven = "1";
@@ -298,19 +323,56 @@ public class TableTypeView extends LinearLayout {
 			});
 		   }
 		} else if (mSize == EIGHT) {
-		   mLayout = R.layout.item_act_eight_layout;
-		   mHeadView = mActivity.getLayoutInflater()
-			   .inflate(R.layout.item_act_eight_title_layout,
-					(ViewGroup) mLinearLayout.getParent(), false);
-		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-		   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-		   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-		   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-		   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-		   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-		   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
-		   mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
+		   if (mDialog != null && mDialog.equals(STYPE_MEAL_BING)) {
+
+			mLayout = R.layout.item_outbing_eight_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_outbing_eight_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+			((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+			((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+			for (int i =0;i<mMovies.size();i++){
+			   mCheckStates2.put(i,true);
+			}
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,STYPE_MEAL_BING,mCheckStates2);
+			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
+				if (checkBox.isChecked()) {
+				   checkBox.setChecked(false);
+				   mCheckStates2.delete(position);
+				} else {
+				   mCheckStates2.put(position, true);
+				   checkBox.setChecked(true);
+				}
+				mPublicAdapter.notifyDataSetChanged();
+			   }
+			});
+		   }else {
+
+			mLayout = R.layout.item_act_eight_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_act_eight_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+			((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+			((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
+
+		   }
+
 		}
 		break;
 	   case FRAGMENT://fragment

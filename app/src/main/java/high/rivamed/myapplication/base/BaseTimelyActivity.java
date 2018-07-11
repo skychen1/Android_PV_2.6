@@ -6,6 +6,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -22,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -34,6 +34,7 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_FORM_CONFIRM;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
+import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_STOCK_FOUR_DETAILS;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_FOUR_DETAILS;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_LOSS;
@@ -41,6 +42,7 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_PROFIT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
+import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
@@ -61,29 +63,29 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public int my_id;
    public int mSize;
    @BindView(R.id.timely_start_btn)
-   TextView     mTimelyStartBtn;
+   TextView           mTimelyStartBtn;
    @BindView(R.id.ly_bing_btn)
-   TextView     mLyBingBtn;
+   TextView           mLyBingBtn;
    @BindView(R.id.timely_left)
-   TextView     mTimelyLeft;
+   TextView           mTimelyLeft;
    @BindView(R.id.timely_right)
-   TextView     mTimelyRight;
+   TextView           mTimelyRight;
    @BindView(R.id.activity_down_btnll)
-   LinearLayout mActivityDownBtnTwoll;
+   LinearLayout       mActivityDownBtnTwoll;
    @BindView(R.id.btn_four_ly)
-   TextView     mBtnFourLy;
+   TextView           mBtnFourLy;
    @BindView(R.id.btn_four_yc)
-   TextView     mBtnFourYc;
+   TextView           mBtnFourYc;
    @BindView(R.id.btn_four_tb)
-   TextView     mBtnFourTb;
+   TextView           mBtnFourTb;
    @BindView(R.id.btn_four_th)
-   TextView     mBtnFourTh;
+   TextView           mBtnFourTh;
    @BindView(R.id.activity_down_btn_four_ll)
-   LinearLayout mActivityDownBtnFourLl;
+   LinearLayout       mActivityDownBtnFourLl;
    @BindView(R.id.activity_down_btn_one_ll)
    LinearLayout       mDownBtnOneLL;
    @BindView(R.id.activity_btn_one)
-   TextView       mDownBtnOne;
+   TextView           mDownBtnOne;
    @BindView(R.id.timely_name)
    TextView           mTimelyName;
    @BindView(R.id.timely_number)
@@ -94,18 +96,32 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
+   @BindView(R.id.timely_rl_title)
+   RelativeLayout     mRelativeLayout;
+   @BindView(R.id.timely_ll_gone)
+   LinearLayout       mTimelyLlGone;
+   @BindView(R.id.timely_number_left)
+   TextView           mTimelyNumberLeft;
+   @BindView(R.id.timely_start_btn_right)
+   TextView           mTimelyStartBtnRight;
+   @BindView(R.id.ly_bing_btn_right)
+   TextView           mLyBingBtnRight;
+   @BindView(R.id.timely_ll_gone_right)
+   LinearLayout       mTimelyLlGoneRight;
 
-   private TimelyPublicAdapter mPublicAdapter;
    private int                 mLayout;
    private View                mHeadView;
    public  String              mData;
-   private TableTypeView mTypeView;
-   public String mActivityType;
+   private TableTypeView       mTypeView;
+   public  String              mActivityType;
+   private String mMovie;
 
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
    }
+
+
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -135,7 +151,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    private void initData() {
 
-
 	getData();
 	if (getData() != null && getData().equals("我有过期的")) {
 	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
@@ -147,40 +162,39 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	if (my_id == ACT_TYPE_TIMELY_LOSS) {
 	   mBaseTabTvTitle.setText("盘亏耗材详情");
 	   String str = "3";
-	   mTimelyNumber.setText(Html.fromHtml("盘亏数：<font color='#262626'><big>" +
-							   str + "</big></font>"));
+	   mTimelyNumber.setText(
+		   Html.fromHtml("盘亏数：<font color='#262626'><big>" + str + "</big></font>"));
 	   String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(),
-						   mLinearLayout, mRecyclerview,
-						   mRefreshLayout, ACTIVITY);
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY);
 	} else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
 	   mBaseTabTvTitle.setText("盘盈耗材详情");
 	   String str = "3";
-	   mTimelyNumber.setText(Html.fromHtml("盘亏数：<font color='#262626'><big>" +
-							   str + "</big></font>"));
+	   mTimelyNumber.setText(
+		   Html.fromHtml("盘亏数：<font color='#262626'><big>" + str + "</big></font>"));
 	   String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView=  new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY);
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY);
 	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
 	   mBaseTabTvTitle.setText("耗材详情");
 	   String str = "35";
-	   mTimelyNumber.setText(Html.fromHtml("耗材数量：<font color='#262626'><big>" +
-							   str + "</big></font>"));
+	   mTimelyNumber.setText(
+		   Html.fromHtml("耗材数量：<font color='#262626'><big>" + str + "</big></font>"));
 	   mTimelyName.setVisibility(View.VISIBLE);
 	   mTimelyName.setText("耗材名称：微创路入系统" + "    型号规格：101");
 	   String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView=  new TableTypeView(this, this, titeleList, mSize, genData4(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY);
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData4(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY);
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
 	   mBaseTabTvTitle.setText("识别耗材");
-	   Log.i("TT","   "+mActivityType);
-	   if (mActivityType.equals("all")){
+	   Log.i("TT", "   " + mActivityType);
+	   if (mActivityType.equals("all")) {
 		mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + 4 +
 								"</big>&emsp</font>移入：<font color='#262626'><big>" +
 								1 +
@@ -191,9 +205,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 								7 + "</big></font>"));
 
-	   }else {
-		mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" +
-								2 +
+	   } else {
+		mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
 								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 								7 + "</big></font>"));
 
@@ -204,8 +217,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView= new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY, STYPE_IN);
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN);
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
@@ -216,22 +229,26 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView=   new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY, STYPE_OUT);
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   mBaseTabTvTitle.setText("耗材领用");
-	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+	   mTimelyStartBtn.setVisibility(View.GONE);
+	   mLyBingBtn.setVisibility(View.GONE);
+	   mTimelyNumber.setVisibility(View.GONE);
+	   mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	   mLyBingBtnRight.setVisibility(View.VISIBLE);
+	   mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
 							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 							   7 + "</big></font>"));
-	   mTimelyStartBtn.setVisibility(View.VISIBLE);
-	   mLyBingBtn.setVisibility(View.VISIBLE);
-	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	   String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView= new TableTypeView(this, this, titeleList, mSize, genData7(), mLinearLayout, mRecyclerview,
-				   mRefreshLayout, ACTIVITY, STYPE_BING);
-	}else if (my_id == ACT_TYPE_FORM_CONFIRM){
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData7(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
+	} else if (my_id == ACT_TYPE_FORM_CONFIRM) {
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
 							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
@@ -241,9 +258,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   String[] array = mContext.getResources().getStringArray(R.array.six_ic_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
-	   mTypeView= new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout, mRecyclerview,
-						  mRefreshLayout, ACTIVITY, STYPE_FORM_CONF);
-	}else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_FORM_CONF);
+	} else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
 	   mBaseTabTvTitle.setText("耗材详情");
 	   String str = "35";
 	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + 12 +
@@ -257,6 +274,24 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData41(), mLinearLayout,
 						   mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_TIMELY_FOUR_DETAILS);
+	}else if (my_id ==ACT_TYPE_MEAL_BING){//套餐绑定患者的耗材识别
+	   mBaseTabTvTitle.setText("识别耗材");
+	   mTimelyStartBtn.setVisibility(View.GONE);
+	   mLyBingBtn.setVisibility(View.GONE);
+	   mTimelyNumber.setVisibility(View.GONE);
+	   mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	   mLyBingBtnRight.setVisibility(View.VISIBLE);
+	   mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+								 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								 7 + "</big></font>"));
+	   String[] array = mContext.getResources().getStringArray(R.array.eight_meal_arrays);
+	   titeleList = Arrays.asList(array);
+	   mSize = array.length;
+
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData8(), mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_MEAL_BING);
 	}
 	//单独做的acitvity的table
 	//TODO:需要修改titleList和真实数据
@@ -272,8 +307,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	//	new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
 	//				mRefreshLayout, ACTIVITY);
    }
-
-
 
    /**
     * 上拉下拉刷新
@@ -365,6 +398,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
    private List<Movie> genData41() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -372,27 +406,27 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   String one = null;
 	   String two = null;
 	   String three = null;
-	   String four = i+"";
+	   String four = i + "";
 	   if (i == 1) {
 		one = "*15170116220035c2dddddsssssssssss3" + i;
 		two = "已过期";
-		three = 1+"";
+		three = 1 + "";
 	   } else if (i == 2) {
 		one = "*15170116220035c2" + i;
 		two = "≤100天";
-		three = 2+"";
+		three = 2 + "";
 	   } else if (i == 3) {
 		one = "*15170116220035c2" + i;
 		two = "≤70天";
-		three = 3+"";
+		three = 3 + "";
 	   } else if (i == 4) {
 		one = "*15170116220035c2" + i;
 		two = "≤28天";
-		three = 2+"";
+		three = 2 + "";
 	   } else {
 		one = "*15170116220035sssssss3" + i;
 		two = "2019-10-22";
-		three = i+"";
+		three = i + "";
 	   }
 
 	   Movie movie = new Movie(one, two, three, four, null, null, null, null);
@@ -400,6 +434,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
    private List<Movie> genData6() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -507,5 +542,60 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
+   private List<Movie> genData8() {
+
+	ArrayList<Movie> list = new ArrayList<>();
+	for (int i = 0; i < 25; i++) {
+	   String one = null;
+	   String two = null;
+	   String three = null;
+	   String four = null;
+	   String five = null;
+	   String six = "";
+	   String seven = "";
+	   if (i == 1) {
+		two = "*15170116220035c2dddddsssssssssss3" + i;
+		one = "微创路入系统";
+		three = "FLR01" + i;
+		five = i + "号柜";
+		four = "已过期";
+		seven="1";
+	   } else if (i == 2) {
+		two = "*15170116220035c2" + i;
+		one = "微创路入系统";
+		three = "FLR01" + i;
+		four = "≤100天";
+		five = i + "号柜";
+		seven="0";
+	   } else if (i == 3) {
+		one = "微创路入系统";
+		two = "*15170116220035c2" + i;
+		three = "FLR01" + i;
+		four = "≤70天";
+		five = i + "号柜";
+		seven="1";
+	   } else if (i == 4) {
+		one = "微创路入系统";
+		two = "*15170116220035c2" + i;
+		three = "FLR01" + i;
+		four = "≤28天";
+		five = i + "号柜";
+		seven="1";
+	   } else {
+		one = "微创路入系统";
+		three = "FLR01" + i;
+		two = "*15170116220035sssssss3" + i;
+		five = i + "号柜";
+		four = "2019-10-22";
+		seven ="0";
+	   }
+
+	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
+	   list.add(movie);
+	}
+	return list;
+   }
+
 
 }

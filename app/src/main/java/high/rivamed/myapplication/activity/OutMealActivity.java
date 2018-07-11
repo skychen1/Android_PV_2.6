@@ -57,8 +57,8 @@ public class OutMealActivity extends BaseSimpleActivity {
    @BindView(R.id.meal_open_btn)
    TextView mMealOpenBtn;
 
-//   @BindView(R.id.meal_rv)
-//   RecyclerView       mMealRv;
+   //   @BindView(R.id.meal_rv)
+   //   RecyclerView       mMealRv;
    @BindView(R.id.recyclerview_null)
    RelativeLayout     mRecyclerviewNull;
    @BindView(R.id.timely_ll)
@@ -69,12 +69,20 @@ public class OutMealActivity extends BaseSimpleActivity {
    SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.public_ll)
    LinearLayout       mPublicLl;
-   List<Movie> movies =new ArrayList<>();
-   private MealPopupWindow mPopupWindowSearch;
+   List<Movie> movies = new ArrayList<>();
+   private MealPopupWindow     mPopupWindowSearch;
    private TimelyPublicAdapter mPublicAdapter;
    private View                mHeadView;
    private int                 mLayout;
    private int                 mSize;
+   private String              mMealbing;
+   private List<String> titeleList = null;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onActString(Event.EventAct event) {
+	mMealbing = event.mString;
+
+   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onPopupBean(Event.PopupEvent event) {
@@ -84,36 +92,59 @@ public class OutMealActivity extends BaseSimpleActivity {
 	   mPopupWindowSearch.dismiss();
 	   mRecyclerviewNull.setVisibility(View.GONE);
 
-	   if (mPublicAdapter==null){
-	      if (event.mString.equals("xxx套餐-1")){
-		   movies.addAll(genData6());
+	   if (mMealbing != null && mMealbing.equals("BING_MEAL")) {//判断是否是绑定患者的套餐
+		String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
+		titeleList = Arrays.asList(array);
+		mSize = array.length;
+		if (mPublicAdapter == null) {
+		   movies.addAll(genData7());
 		   initData(movies);
-		}else if(event.mString.equals("xxx套餐-5")){
-		   movies.addAll(genData61());
-		   initData(movies);
-		}else {
-		   movies.addAll(genData62());
-		   initData(movies);
+		} else {
+		   movies.clear();
+		   movies.addAll(genData7());
+		   mPublicAdapter.notifyDataSetChanged();
 		}
-		Log.i("CC", " event.isMute   " );
-	   }else {
-		if (event.mString.equals("xxx套餐-1")){
-		   movies.clear();
-		   movies.addAll(genData6());
-		   mPublicAdapter.notifyDataSetChanged();
-		   Log.i("CC", " event.xxx套餐-1   " );
-		}else if(event.mString.equals("xxx套餐-5")){
-		   movies.clear();
-		   movies.addAll(genData61());
-		   mPublicAdapter.notifyDataSetChanged();
-		   Log.i("CC", " event.xxx套餐-5   " );
-		}else {
-		   movies.clear();
-		   movies.addAll(genData62());
-		   mPublicAdapter.notifyDataSetChanged();
-		   Log.i("CC", " event.isMxxxxxute   " );
+
+
+
+	   } else {
+		String[] array = mContext.getResources().getStringArray(R.array.six_meal_arrays);
+		titeleList = Arrays.asList(array);
+		mSize = array.length;
+
+
+		if (mPublicAdapter == null) {
+		   if (event.mString.equals("xxx套餐-1")) {
+			movies.addAll(genData6());
+			initData(movies);
+		   } else if (event.mString.equals("xxx套餐-5")) {
+			movies.addAll(genData61());
+			initData(movies);
+		   } else {
+			movies.addAll(genData62());
+			initData(movies);
+		   }
+		   Log.i("CC", " event.isMute   ");
+		} else {
+		   if (event.mString.equals("xxx套餐-1")) {
+			movies.clear();
+			movies.addAll(genData6());
+			mPublicAdapter.notifyDataSetChanged();
+			Log.i("CC", " event.xxx套餐-1   ");
+		   } else if (event.mString.equals("xxx套餐-5")) {
+			movies.clear();
+			movies.addAll(genData61());
+			mPublicAdapter.notifyDataSetChanged();
+			Log.i("CC", " event.xxx套餐-5   ");
+		   } else {
+			movies.clear();
+			movies.addAll(genData62());
+			mPublicAdapter.notifyDataSetChanged();
+			Log.i("CC", " event.isMxxxxxute   ");
+		   }
 		}
-//		Log.i("CC", " event.isMxxxxxute   " );
+
+		//		Log.i("CC", " event.isMxxxxxute   " );
 
 	   }
 
@@ -143,37 +174,56 @@ public class OutMealActivity extends BaseSimpleActivity {
 	mLayout = R.layout.item_form_seven_layout;
 	mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
 							    (ViewGroup) mLinearLayout.getParent(), false);
-	List<String> titeleList = null;
-	String[] array = mContext.getResources().getStringArray(R.array.six_meal_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	((TextView) mHeadView.findViewById(R.id.seven_four)).setVisibility(View.GONE);
+	if (mMealbing!=null&&mMealbing.equals("BING_MEAL")){
 
-	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(3));
-	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(4));
-	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
+	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 
-	   mPublicAdapter = new TimelyPublicAdapter(mLayout, movies, mSize, STYPE_MEAL_NOBING);
-	   mLinearLayout.addView(mHeadView);
-	   mRecyclerview.setAdapter(mPublicAdapter);
+	}else {
+	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setVisibility(View.GONE);
+	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(3));
+	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(4));
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
+
+	}
+
+	mPublicAdapter = new TimelyPublicAdapter(mLayout, movies, mSize, STYPE_MEAL_NOBING,
+							     mMealbing);
+	mLinearLayout.addView(mHeadView);
+	mRecyclerview.setAdapter(mPublicAdapter);
 	mPublicAdapter.notifyDataSetChanged();
 	mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		String six = mPublicAdapter.getItem(position).five;
 
-		if (!six.equals("已领取")) {
-		   DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
-		} else {
-		   ToastUtils.showShort("此项已领取！");
+		if (mMealbing!=null&&mMealbing.equals("BING_MEAL")){
+		   String six = mPublicAdapter.getItem(position).six;
+		   ToastUtils.showShort("six！"+six);
+		   if (!six.equals("已领取")) {
+			DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
+		   } else {
+			ToastUtils.showShort("此项已领取！");
+		   }
+		}else {
+		   String six = mPublicAdapter.getItem(position).five;
+		   if (!six.equals("已领取")) {
+			DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
+		   } else {
+			ToastUtils.showShort("此项已领取！");
+		   }
 		}
+
 
 	   }
 	});
-
 
    }
 
@@ -243,6 +293,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
    private List<Movie> genData6() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -264,6 +315,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
    private List<Movie> genData61() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -285,6 +337,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
    private List<Movie> genData62() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -302,6 +355,29 @@ public class OutMealActivity extends BaseSimpleActivity {
 		five = "未领取";
 	   }
 	   Movie movie = new Movie(one, two, three, four, five, six, null, null);
+	   list.add(movie);
+	}
+	return list;
+   }
+
+   private List<Movie> genData7() {
+
+	ArrayList<Movie> list = new ArrayList<>();
+	for (int i = 0; i < 25; i++) {
+	   String one = "微创路genData6入系统";
+	   String two = "genData6" + i;
+	   String three = "" + i;
+	   String four = i + "号柜";
+	   String five = "王麻子";
+	   String six = "";
+	   String seven = "打开柜门";
+
+	   if (i == 2) {
+		six = "已领取";
+	   } else {
+		six = "未领取";
+	   }
+	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
 	   list.add(movie);
 	}
 	return list;

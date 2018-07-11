@@ -80,4 +80,6 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //数据库
+    implementation 'org.litepal.android:core:2.0.0'
 }

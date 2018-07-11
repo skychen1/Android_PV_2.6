@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.bean;
 
-import high.rivamed.myapplication.adapter.MealPopAdapter;
-
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -19,6 +17,13 @@ public class Event {
 	public String mString;
 
 	public EventAct(String trim) {
+	   this.mString = trim;
+	}
+   }
+   public static class EventCheckbox {
+	public String mString;
+
+	public EventCheckbox(String trim) {
 	   this.mString = trim;
 	}
    }
