@@ -14,6 +14,7 @@
 	<color name="item_divider">#cccccc</color>
 	<color name="bg_e">#eeeeee</color>
 	<color name="bg_c">#cccccc</color>
+	<color name="bg_de">#dedede</color>
 
 	<color name="color_drak_green">#1B6573</color>
 	<!--用于突出按钮文字激活状态的控件-->
@@ -40,6 +41,6 @@
 	<!--通过等警告提示-->
 	<color name="color_ok_prompt">#52C41A</color>
 	<!--背景色-->
-	<color name="bg_color">#F7F7F7</color>
+	<color name="bg_color">#f0f0f0</color>
 
 </resources>

@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.StockMidTypeActivity;
 import high.rivamed.myapplication.activity.TimelyDetailsActivity;
@@ -76,6 +79,9 @@ public class PublicTimelyFrag extends SimpleFragment {
    TextView           mTimelyBook;
    @BindView(R.id.timely_reality)
    TextView           mTimelyReality;
+
+   @BindView(R.id.timely_reality2)
+   TextView           mTimelyReality2;
    @BindView(R.id.timely_profit)
    TextView           mTimelyProfit;
    @BindView(R.id.timely_loss)
@@ -96,12 +102,28 @@ public class PublicTimelyFrag extends SimpleFragment {
    ImageView          mSearchIvDelete;
    @BindView(R.id.right_top)
    LinearLayout       mRightTop;
+
    @BindView(R.id.stock_right_btn)
    LinearLayout       mStockRightLL;
    @BindView(R.id.public_rl)
    RelativeLayout     mPublicRl;
    @BindView(R.id.public_ll)
-   LinearLayout     mPublicLl;
+   LinearLayout       mPublicLl;
+   @BindView(R.id.stock_left_all)
+   RadioButton        mStockLeftAll;
+   @BindView(R.id.stock_left_guoqi)
+   RadioButton        mStockLeftGuoqi;
+   @BindView(R.id.stock_left_quehuo)
+   RadioButton        mStockLeftQuehuo;
+   @BindView(R.id.stock_left_jinqi)
+   RadioButton        mStockLeftJinqi;
+   @BindView(R.id.stock_left_zhengchang)
+   RadioButton        mStockLeftZhengchang;
+   @BindView(R.id.stock_left_rg)
+   RadioGroup         mStockLeftRg;
+   @BindView(R.id.stock_timely_ll)
+   RelativeLayout     mStockTimelyLl;
+   Unbinder unbinder;
    private int                 mParam;
    private TimelyPublicAdapter mPublicAdapter;
    private int                 mSize; //假数据 举例6个横向格子
@@ -123,7 +145,6 @@ public class PublicTimelyFrag extends SimpleFragment {
 	fragment.setArguments(args);
 	return fragment;
    }
-
 
    @Override
    public int getLayoutId() {
@@ -149,26 +170,44 @@ public class PublicTimelyFrag extends SimpleFragment {
 	//表格的title区分和一部分数据
 	List<String> titeleList = null;
 
-	if (mType_size == FIVE &&
-	    (mType_page.equals(STYPE_STOCK_MIDDLE) || mType_page.equals(STYPE_STOCK_LEFT))) {
-	   Log.i("BaseQuickAdapter", "TYPE_STOCKxxx");
-	   Log.i("BaseQuickAdapter", "xxxxx   " + FIVE);
-	   mSearchEt.setHint("请输入耗材名称、型号规格查询");
-	   mRelativeLayout.setVisibility(View.GONE);
-	   mStockSearch.setVisibility(View.VISIBLE);
-	   String[] array = mContext.getResources().getStringArray(R.array.five_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   if (mType_page.equals(STYPE_STOCK_LEFT)) {
-		mTimelyReality.setText("耗材种类：" + FIVE);
-		mTimelyBook.setText("耗材数量：" + FIVE);
-	   } else {
-		mTimelyReality.setText("耗材种类：" + 6);
-		mTimelyBook.setText("耗材数量：" + 0);
+	if (mType_size == FIVE) {
+	   if (mType_page.equals(STYPE_STOCK_MIDDLE)) {
+		mSearchEt.setHint("请输入耗材名称、型号规格查询");
+		mRelativeLayout.setVisibility(View.GONE);
+		mStockSearch.setVisibility(View.VISIBLE);
+		mStockTimelyLl.setVisibility(View.VISIBLE);
+		mRightTop.setVisibility(View.GONE);
+
+		String[] array = mContext.getResources().getStringArray(R.array.five_arrays);
+		titeleList = Arrays.asList(array);
+		mSize = array.length;
+
+		mTimelyReality2.setVisibility(View.VISIBLE);
+		mTimelyReality2.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+								  "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								  7 + "</big></font>"));
+
+	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {
+
+		mSearchEt.setHint("请输入耗材名称、型号规格查询");
+		mRelativeLayout.setVisibility(View.GONE);
+		mStockSearch.setVisibility(View.VISIBLE);
+
+		mStockTimelyLl.setVisibility(View.GONE);
+
+		String[] array = mContext.getResources().getStringArray(R.array.five_arrays);
+		titeleList = Arrays.asList(array);
+		mSize = array.length;
+
+		mTimelyReality.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+					     "</big></font>"));
+		mTimelyBook.setText(Html.fromHtml("耗材数量：<font color='#262626'><big>" +
+					  7 + "</big></font>"));
+
 	   }
 
 	} else if (mType_size == SIX) {
-	   if ( mType_page.equals(TYPE_TIMELY)){
+	   if (mType_page.equals(TYPE_TIMELY)) {
 		String str = "3";
 		mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
 		String str1 = "99";
@@ -179,20 +218,20 @@ public class PublicTimelyFrag extends SimpleFragment {
 		titeleList = Arrays.asList(array);
 		mSize = array.length;
 	   }
-	} else if (mType_size == SEVEN ) {
-//	   if ( mType_page.equals(TYPE_TIMELY)){
-//		Log.i("BaseQuickAdapter", "mType_size   " + SEVEN);
-//		String str = "3";
-//		mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
-//		String str1 = "99";
-//		mTimelyReality.setText(
-//			Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
-//		mTimelyBook.setText("账面库存数：" + FIVE);
-//		String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-//		titeleList = Arrays.asList(array);
-//		mSize = array.length;
-//	   }else
-	      if (mType_page.equals(STYPE_FORM)){
+	} else if (mType_size == SEVEN) {
+	   //	   if ( mType_page.equals(TYPE_TIMELY)){
+	   //		Log.i("BaseQuickAdapter", "mType_size   " + SEVEN);
+	   //		String str = "3";
+	   //		mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
+	   //		String str1 = "99";
+	   //		mTimelyReality.setText(
+	   //			Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
+	   //		mTimelyBook.setText("账面库存数：" + FIVE);
+	   //		String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+	   //		titeleList = Arrays.asList(array);
+	   //		mSize = array.length;
+	   //	   }else
+	   if (mType_page.equals(STYPE_FORM)) {
 
 		mPublicRl.setVisibility(View.GONE);
 		String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
@@ -251,7 +290,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize,TYPE_TIMELY);
+		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, TYPE_TIMELY);
 
 		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 		   @Override
@@ -259,7 +298,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
 		   }
 		});
-	   }else {
+	   } else {
 		mLayout = R.layout.item_frg_six_layout;
 		mHeadView = getLayoutInflater().inflate(R.layout.item_frg_six_title_layout,
 								    (ViewGroup) mLinearLayout.getParent(), false);
@@ -271,32 +310,32 @@ public class PublicTimelyFrag extends SimpleFragment {
 		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	   }
 
-	} else if (mSize == SEVEN ) {
-//	   if (mType_page.equals(TYPE_TIMELY)) {
-//		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
-//		mLayout = R.layout.item_realtime_seven_layout;
-//		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
-//								    (ViewGroup) mLinearLayout.getParent(), false);
-//		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-//		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-//		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-//		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-//		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-//		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-//		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-//		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
-//
-//		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//		   @Override
-//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//			Log.i("BaseQuickAdapter", "mPublicAdapter");
-//		   }
-//		});
-//	   } else
-	      if (mType_page.equals(STYPE_FORM)) {
+	} else if (mSize == SEVEN) {
+	   //	   if (mType_page.equals(TYPE_TIMELY)) {
+	   //		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
+	   //		mLayout = R.layout.item_realtime_seven_layout;
+	   //		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
+	   //								    (ViewGroup) mLinearLayout.getParent(), false);
+	   //		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	   //		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	   //		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
+	   //
+	   //		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   //		   @Override
+	   //		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+	   //			Log.i("BaseQuickAdapter", "mPublicAdapter");
+	   //		   }
+	   //		});
+	   //	   } else
+	   if (mType_page.equals(STYPE_FORM)) {
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 			LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		lp.setMargins(0,0,0,0);
+		lp.setMargins(0, 0, 0, 0);
 		mPublicLl.setLayoutParams(lp);
 		mLayout = R.layout.item_form_seven_layout;
 		mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
@@ -474,6 +513,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	}
 	return list;
    }
+
    private List<Movie> genData6() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -492,7 +532,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	   }
 	   String one = "微创系统" + i;
 	   String two = "RFID01" + i;
-	   String four = i+"号柜";
+	   String four = i + "号柜";
 	   String five = "1" + i;
 	   String six = "0" + i;
 
@@ -501,6 +541,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	}
 	return list;
    }
+
    private List<Movie> genData72() {
 
 	ArrayList<Movie> list = new ArrayList<>();

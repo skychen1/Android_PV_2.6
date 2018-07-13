@@ -27,7 +27,7 @@
 		</meta-data>
 
 		<activity
-			android:name=".activity.HomeActivity"
+			android:name=".activity.RegisteActivity"
 			android:screenOrientation="landscape"
 			android:windowSoftInputMode="adjustPan"
 			>
@@ -36,9 +36,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<!--<activity-->
-		<!--android:name=".activity.HomeActivity"-->
-		<!--android:screenOrientation="landscape"/>-->
+		<activity
+		android:name=".activity.HomeActivity"
+		android:screenOrientation="landscape"/>
 		<activity
 			android:name=".activity.MyInfoActivity"
 			android:launchMode="singleInstance"
@@ -79,9 +79,9 @@
 		<activity
 			android:name=".activity.TimelyDetailsActivity"
 			android:screenOrientation="landscape"/>
-		<activity
-			android:name=".activity.RegisteActivity"
-			android:screenOrientation="landscape"/>
+		<!--<activity-->
+			<!--android:name=".activity.RegisteActivity"-->
+			<!--android:screenOrientation="landscape"/>-->
 		<activity
 			android:name=".activity.OutMealBingConfirmActivity"
 			android:screenOrientation="landscape"/>

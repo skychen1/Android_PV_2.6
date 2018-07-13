@@ -12,9 +12,10 @@
 		android:id="@+id/login_logo"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/x65"
-		android:layout_marginLeft="@dimen/x109"
-		android:layout_marginTop="@dimen/x65"
+		android:layout_marginBottom="@dimen/x35"
+		android:padding="@dimen/x30"
+		android:layout_marginLeft="@dimen/x79"
+		android:layout_marginTop="@dimen/x35"
 		android:src="@mipmap/bg_login_icon"
 		/>
 

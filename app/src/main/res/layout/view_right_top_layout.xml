@@ -4,6 +4,7 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:id="@+id/right_top"
+	android:layout_gravity="right"
 	android:orientation="horizontal">
 	<TextView
 		android:id="@+id/timely_reality"
