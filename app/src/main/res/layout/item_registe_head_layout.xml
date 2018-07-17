@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:background="@color/bg_green"
+				android:background="@color/bg_f"
 				android:focusable="true"
 				android:focusableInTouchMode="true"
 			  android:layout_marginTop="@dimen/x20"
@@ -24,17 +24,12 @@
 		android:paddingLeft="@dimen/x20"
 		android:textColor="@color/bg_f"
 		android:textSize="@dimen/textsize_18"/>
-
-	<ImageView
-		android:id="@+id/right_delete"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_alignParentRight="true"
-		android:layout_centerVertical="true"
-		android:layout_marginRight="@dimen/x30"
-		android:src="@mipmap/gcms_ic_sc"
-		/>
-
+<LinearLayout
+	android:layout_width="wrap_content"
+	android:layout_height="match_parent"
+	android:orientation="horizontal"
+	android:layout_alignParentRight="true"
+	android:layout_centerVertical="true">
 	<ImageView
 		android:id="@+id/right_fold"
 		android:layout_width="wrap_content"
@@ -45,160 +40,178 @@
 		android:paddingRight="@dimen/x40"
 		android:src="@mipmap/gcms_ic_gz_xl"
 		/>
+	<ImageView
+		android:id="@+id/right_delete"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:paddingRight="@dimen/x40"
+		android:paddingLeft="@dimen/x10"
+		android:src="@mipmap/gcms_ic_sc"
+		/>
+
+
+</LinearLayout>
+
 </RelativeLayout>
-	<LinearLayout  android:layout_width="match_parent"
-				  android:layout_height="@dimen/x70"
-				  android:background="@color/bg_color"
-				  android:orientation="horizontal">
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/recyclerview2"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/white"
+		android:overScrollMode="never"/>
+	<!--<LinearLayout  android:layout_width="match_parent"-->
+				  <!--android:layout_height="@dimen/x70"-->
+				  <!--android:background="@color/bg_color"-->
+				  <!--android:orientation="horizontal">-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-		<TextView
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:gravity="center"
-			android:text="部件名称"
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_15"
-			android:textStyle="bold"/>
+		<!--<TextView-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:gravity="center"-->
+			<!--android:text="部件名称"-->
+			<!--android:textColor="@color/text_color_3"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:textStyle="bold"/>-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-		<TextView
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:gravity="center"
-			android:text="部件标识"
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_15"
-			android:textStyle="bold"/>
+		<!--<TextView-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:gravity="center"-->
+			<!--android:text="部件标识"-->
+			<!--android:textColor="@color/text_color_3"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:textStyle="bold"/>-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-		<TextView
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:gravity="center"
-			android:text="IP 地址"
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_15"
-			android:textStyle="bold"/>
+		<!--<TextView-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:gravity="center"-->
+			<!--android:text="IP 地址"-->
+			<!--android:textColor="@color/text_color_3"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:textStyle="bold"/>-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-		<TextView
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:gravity="center"
-			android:text="操 作"
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_15"
-			android:textStyle="bold"/>
+		<!--<TextView-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="1"-->
+			<!--android:gravity="center"-->
+			<!--android:text="操 作"-->
+			<!--android:textColor="@color/text_color_3"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:textStyle="bold"/>-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:layout_width="match_parent"
-				  android:layout_height="@dimen/x70"
-				  android:orientation="horizontal"
-				  android:background="@color/bg_f">
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
-		<EditText
-			android:id="@+id/foot_name"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:background="@color/bg_f"
-			android:textColor="@color/text_color_6"
-			android:textSize="@dimen/textsize_15"
-			android:gravity="center_vertical"
-			android:paddingLeft="@dimen/x20"
-			/>
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
-		<TextView
-			android:id="@+id/foot_mac"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:background="@color/bg_f"
-			android:drawableRight="@mipmap/gcms_ic_xl"
-			android:paddingRight="@dimen/x15"
-			android:textColor="@color/text_color_6"
-			android:textSize="@dimen/textsize_15"
-			android:gravity="center_vertical"
-			android:paddingLeft="@dimen/x20"
-			/>
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
-		<EditText
-			android:id="@+id/foot_ip"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2"
-			android:background="@color/bg_f"
-			android:textColor="@color/text_color_6"
-			android:textSize="@dimen/textsize_15"
-			android:gravity="center_vertical"
-			android:paddingLeft="@dimen/x20"
-			/>
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
-		<LinearLayout
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:gravity="center"
-			android:orientation="horizontal">
-			<ImageView
-				android:id="@+id/foot_delete"
-				android:layout_width="0dp"
-				android:layout_weight="1"
-				android:layout_marginLeft="@dimen/x15"
-				android:layout_height="wrap_content"
-				android:src="@mipmap/gcms_ic_sj"/>
-			<ImageView
-				android:id="@+id/foot_add"
-				android:layout_width="0dp"
-				android:layout_weight="1"
-				android:layout_marginRight="@dimen/x15"
-				android:layout_height="wrap_content"
-				android:src="@mipmap/gcms_ic_tj"/>
-		</LinearLayout>
+	<!--</LinearLayout>-->
+	<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+				  <!--android:layout_width="match_parent"-->
+				  <!--android:layout_height="@dimen/x70"-->
+				  <!--android:orientation="horizontal"-->
+				  <!--android:background="@color/bg_f">-->
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
+		<!--<EditText-->
+			<!--android:id="@+id/foot_name"-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:background="@color/bg_f"-->
+			<!--android:textColor="@color/text_color_6"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:gravity="center_vertical"-->
+			<!--android:paddingLeft="@dimen/x20"-->
+			<!--/>-->
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
+		<!--<TextView-->
+			<!--android:id="@+id/foot_mac"-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:background="@color/bg_f"-->
+			<!--android:drawableRight="@mipmap/gcms_ic_xl"-->
+			<!--android:paddingRight="@dimen/x15"-->
+			<!--android:textColor="@color/text_color_6"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:gravity="center_vertical"-->
+			<!--android:paddingLeft="@dimen/x20"-->
+			<!--/>-->
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
+		<!--<EditText-->
+			<!--android:id="@+id/foot_ip"-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="2"-->
+			<!--android:background="@color/bg_f"-->
+			<!--android:textColor="@color/text_color_6"-->
+			<!--android:textSize="@dimen/textsize_15"-->
+			<!--android:gravity="center_vertical"-->
+			<!--android:paddingLeft="@dimen/x20"-->
+			<!--/>-->
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
+		<!--<LinearLayout-->
+			<!--android:layout_width="0dp"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_weight="1"-->
+			<!--android:gravity="center"-->
+			<!--android:orientation="horizontal">-->
+			<!--<ImageView-->
+				<!--android:id="@+id/foot_delete"-->
+				<!--android:layout_width="0dp"-->
+				<!--android:layout_weight="1"-->
+				<!--android:layout_marginLeft="@dimen/x15"-->
+				<!--android:layout_height="wrap_content"-->
+				<!--android:src="@mipmap/gcms_ic_sj"/>-->
+			<!--<ImageView-->
+				<!--android:id="@+id/foot_add"-->
+				<!--android:layout_width="0dp"-->
+				<!--android:layout_weight="1"-->
+				<!--android:layout_marginRight="@dimen/x15"-->
+				<!--android:layout_height="wrap_content"-->
+				<!--android:src="@mipmap/gcms_ic_tj"/>-->
+		<!--</LinearLayout>-->
 
-		<View
-			android:layout_width="@dimen/x2"
-			android:layout_height="match_parent"
-			android:background="@color/bg_de"/>
+		<!--<View-->
+			<!--android:layout_width="@dimen/x2"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:background="@color/bg_de"/>-->
 
-	</LinearLayout>
+	<!--</LinearLayout>-->
 </LinearLayout>

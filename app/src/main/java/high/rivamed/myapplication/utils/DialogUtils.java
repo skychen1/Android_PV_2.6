@@ -14,8 +14,8 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
-import high.rivamed.myapplication.activity.OutMealBingConfirmActivity;
 import high.rivamed.myapplication.activity.OutFormConfirmActivity;
+import high.rivamed.myapplication.activity.OutMealBingConfirmActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
@@ -24,6 +24,7 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
+import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -233,9 +234,10 @@ public class DialogUtils {
 	dialog.setStartYear(2000);
 	dialog.setDateListener(new DateListener() {
 	   @Override
-	   public void onReturnDate(String time,int year, int month, int day, int hour, int minute, int isShowType) {
+	   public void onReturnDate(String time,int year, int month, int day, int hour, int minute, int isShowType,long times) {
 		textView.setText(time);
 		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
+
 	   }
 	   @Override
 	   public void onReturnDate(String empty) {
@@ -243,5 +245,20 @@ public class DialogUtils {
 	});
 	dialog.show();
    }
-
+   public static void showRegisteDialog(final Context context,Activity activity){
+	RegisteDialog.Builder builder = new RegisteDialog.Builder(context,activity);
+	builder.setLeft("取消", new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		dialog.dismiss();
+	   }
+	});
+	builder.setRight("确定", new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		EventBusUtils.postSticky(new Event.activationEvent(true,dialog));
+	   }
+	});
+	builder.create().show();
+   }
 }

@@ -61,7 +61,9 @@ public class TimeSelectorDialog extends Dialog {
     static         int          hour;
     static         int          minute;
     private static String       selectTime;
-    public TimeSelectorDialog(Context context) {
+   private static long mToTimestamp;
+
+   public TimeSelectorDialog(Context context) {
         super(context, R.style.Dialog);
         this.context=context;
         setContentView(R.layout.time_select_layout);
@@ -136,18 +138,23 @@ public class TimeSelectorDialog extends Dialog {
             case TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour,
 									 minute);
-                break;
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
+		   break;
             case TimeConfig.YEAR_MONTH_DAY_HOUR:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
                 break;
             case TimeConfig.YEAR_MONTH_DAY:
                 selectTime = PowerDateUtils.getDateStr(year, month, day);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
                 break;
             case TimeConfig.HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 break;
             case TimeConfig.YEAR_MONTH:
                 selectTime = PowerDateUtils.getDateStr(year, month);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month);
                 break;
         }
         return selectTime;
@@ -322,7 +329,7 @@ public class TimeSelectorDialog extends Dialog {
                 if (isShowing()) {
                     selectTime = showTime(isShowtype);
                     dateListener.onReturnDate(selectTime,year, month, day, hour,
-                            minute, isShowtype);
+                            minute, isShowtype,mToTimestamp);
                     dismiss();
                 }
             }
@@ -331,24 +338,29 @@ public class TimeSelectorDialog extends Dialog {
             case TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour,
 									 minute);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
                 break;
             case TimeConfig.YEAR_MONTH_DAY_HOUR:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
                 wv_minute.setVisibility(View.GONE);
                 break;
             case TimeConfig.YEAR_MONTH_DAY:
                 selectTime = PowerDateUtils.getDateStr(year, month, day);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
                 wv_minute.setVisibility(View.GONE);
                 wv_hour.setVisibility(View.GONE);
                 break;
             case TimeConfig.HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 wv_year.setVisibility(View.GONE);
                 wv_month.setVisibility(View.GONE);
                 wv_day.setVisibility(View.GONE);
                 break;
             case TimeConfig.YEAR_MONTH:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
+		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 wv_day.setVisibility(View.GONE);
                 wv_minute.setVisibility(View.GONE);
                 wv_hour.setVisibility(View.GONE);

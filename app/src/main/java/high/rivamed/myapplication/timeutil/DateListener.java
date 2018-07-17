@@ -8,7 +8,7 @@ package high.rivamed.myapplication.timeutil;
 
 public interface DateListener {
     void onReturnDate(
-	    String time, int year, int month, int day, int hour, int minute, int isShowType);
+	    String time, int year, int month, int day, int hour, int minute, int isShowType,long times);
 
     void onReturnDate(String empty);
 }

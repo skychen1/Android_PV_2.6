@@ -56,25 +56,27 @@
 		android:layout_height="match_parent"
 		android:background="@color/bg_de"/>
 	<LinearLayout
+		android:id="@+id/foot_ll"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
-		android:gravity="center"
+		android:gravity="center_vertical"
 		android:orientation="horizontal">
 		<ImageView
-			android:id="@+id/foot_delete"
-			android:layout_width="0dp"
-			android:layout_weight="1"
-			android:layout_marginLeft="@dimen/x15"
-			android:layout_height="wrap_content"
-			android:src="@mipmap/gcms_ic_sj"/>
-		<ImageView
 			android:id="@+id/foot_add"
-			android:layout_width="0dp"
-			android:layout_weight="1"
-			android:layout_marginRight="@dimen/x15"
-			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:paddingLeft="@dimen/x20"
+			android:paddingRight="@dimen/x10"
 			android:src="@mipmap/gcms_ic_tj"/>
+		<ImageView
+			android:id="@+id/foot_delete"
+			android:layout_width="wrap_content"
+			android:paddingLeft="@dimen/x20"
+			android:paddingRight="@dimen/x10"
+			android:layout_height="match_parent"
+			android:src="@mipmap/gcms_ic_sj"/>
+
 	</LinearLayout>
 	<View
 		android:layout_width="@dimen/x2"

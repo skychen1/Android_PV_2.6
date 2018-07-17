@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.bean;
 
+import android.content.DialogInterface;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -52,6 +54,15 @@ public class Event {
 	public PopupEvent(boolean isMute,String trim) {
 	   this.isMute = isMute;
 	   this.mString = trim;
+	}
+   }
+
+   public static class activationEvent{
+	public boolean isActivation;
+	public DialogInterface dialog;
+      public activationEvent(boolean isActivation, DialogInterface dialog){
+	   this.isActivation = isActivation;
+	   this.dialog = dialog;
 	}
    }
 }

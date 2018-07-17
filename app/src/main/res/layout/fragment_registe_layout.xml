@@ -179,7 +179,7 @@
 					android:paddingRight="@dimen/x10"
 					android:textSize="@dimen/textsize_17"
 					android:layout_alignParentRight="true"
-					android:clickable="false"
+					android:enabled="false"
 					android:hint="请输入"
 					android:background="@drawable/bg_edit_e_nor"
 					/>
