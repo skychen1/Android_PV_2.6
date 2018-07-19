@@ -15,9 +15,12 @@
 	<color name="bg_e">#eeeeee</color>
 	<color name="bg_c">#cccccc</color>
 	<color name="bg_de">#dedede</color>
+	<color name="bg_f2">#f2f2f2</color>
+	<color name="bg_f6">#f6f6f6</color>
 
 	<color name="color_drak_green">#1B6573</color>
 	<!--用于突出按钮文字激活状态的控件-->
+	<color name="color_g">#01B362</color>
 	<color name="color_green">#00A98D</color>
 	<color name="bg_green">#27A094</color>
 	<color name="text_color_3">#333333</color>

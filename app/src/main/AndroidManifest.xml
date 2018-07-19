@@ -30,7 +30,7 @@
 		</meta-data>
 
 		<activity
-			android:name=".activity.RegisteActivity"
+			android:name=".activity.LoginActivity"
 			android:screenOrientation="landscape"
 			android:windowSoftInputMode="adjustPan"
 			>
@@ -82,9 +82,12 @@
 		<activity
 			android:name=".activity.TimelyDetailsActivity"
 			android:screenOrientation="landscape"/>
-		<!--<activity-->
-			<!--android:name=".activity.RegisteActivity"-->
-			<!--android:screenOrientation="landscape"/>-->
+		<activity
+			android:name=".activity.RegisteActivity"
+			android:screenOrientation="landscape"/>
+		<activity
+			android:name=".activity.TestLoginActivity"
+			android:screenOrientation="landscape"/>
 		<activity
 			android:name=".activity.OutMealBingConfirmActivity"
 			android:screenOrientation="landscape"/>

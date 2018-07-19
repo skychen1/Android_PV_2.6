@@ -17,6 +17,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.fragment.RegisteFrag;
+import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
+import high.rivamed.myapplication.fragment.RegisteSelfCheckFrag;
+import high.rivamed.myapplication.fragment.RegisteTestFrag;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -42,7 +45,7 @@ public class RegisteActivity extends SimpleActivity {
    SlidingTabLayout mRegisteTl;
    @BindView(R.id.registe_viewpager)
    ViewPager        mRegisteViewpager;
-   private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证"};
+   private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证","数据恢复"};
    private RegistePagerAdapter mPagerAdapter;
 
    @Override
@@ -101,9 +104,11 @@ public class RegisteActivity extends SimpleActivity {
 	   if (position == 0) {
 		return RegisteFrag.newInstance();
 	   } else if (position == 1) {
-		return RegisteFrag.newInstance();
-	   } else {
-		return RegisteFrag.newInstance();
+		return RegisteSelfCheckFrag.newInstance();
+	   } else if (position == 2){
+		return RegisteTestFrag.newInstance();
+	   }else {
+		return RegisteRecoverFrag.newInstance();
 	   }
 	}
 

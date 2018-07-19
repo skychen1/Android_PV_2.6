@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 			  xmlns:tl="http://schemas.android.com/apk/res-auto"
 			  android:orientation="vertical"
 			  android:layout_width="match_parent"
@@ -10,28 +10,30 @@
 		layout="@layout/layout_all_title"
 		/>
 	<com.flyco.tablayout.SlidingTabLayout
+		android:layout_below="@+id/appbar"
 		android:id="@+id/registe_tl"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/x80"
+		android:layout_height="@dimen/x85"
 		android:background="@color/bg_color"
 		android:layout_marginTop="@dimen/x18"
 		android:layout_marginLeft="@dimen/x40"
 		android:paddingTop="@dimen/x20"
-		android:paddingBottom="@dimen/x25"
+		android:paddingBottom="@dimen/x20"
 		android:layout_marginRight="@dimen/x40"
 
 		tl:tl_indicator_color="@color/bg_f"
 		tl:tl_indicator_corner_radius="@dimen/x8"
 		tl:tl_indicator_style="BLOCK"
 		tl:tl_tab_padding="@dimen/x40"
-		tl:tl_textsize="@dimen/textsize_16"
+		tl:tl_textsize="@dimen/textsize_17"
 		tl:tl_textSelectColor="@color/text_color_3"
 		tl:tl_textUnselectColor="@color/text_color_3"
-		tl:tl_underline_height="@dimen/x20"
 		tl:tl_underline_gravity="BOTTOM"/>
 
 
 	<android.support.v4.view.ViewPager
+		android:layout_below="@+id/appbar"
+		android:layout_marginTop="@dimen/x85"
 		android:id="@+id/registe_viewpager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -40,4 +42,4 @@
 		>
 	</android.support.v4.view.ViewPager>
 
-</LinearLayout>
+</RelativeLayout>

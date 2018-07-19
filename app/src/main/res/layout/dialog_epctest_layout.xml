@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="@dimen/x850"
+			  android:layout_height="wrap_content"
+			  android:id="@+id/all_ll"
+			  android:background="@drawable/dialog_bg"
+			  android:focusable="true"
+			  android:focusableInTouchMode="true"
+			  android:orientation="vertical"
+			  android:paddingBottom="@dimen/x40"
+			  android:paddingLeft="@dimen/x40"
+			  android:paddingRight="@dimen/x40"
+	>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight="@dimen/x40"
+			android:paddingTop="@dimen/x40"
+			android:text="设置功率"
+			android:textColor="@color/color_drak_green"
+			android:textSize="@dimen/textsize_18"/>
+
+		<ImageView
+			android:id="@+id/dialog_closs"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:paddingBottom="@dimen/x40"
+			android:paddingLeft="@dimen/x40"
+			android:paddingTop="@dimen/x40"
+			android:src="@mipmap/hccz_ic_tc_gb"
+			/>
+	</RelativeLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="@dimen/x20"
+			android:text="输入EPC:"
+			android:textColor="@color/text_color_3"
+			android:textSize="@dimen/textsize_16"
+			android:textStyle="bold"/>
+
+		<EditText
+			android:id="@+id/search_et"
+			android:layout_width="@dimen/x550"
+			android:layout_height="@dimen/x60"
+			android:background="@drawable/bg_text_line"
+			android:hint="请输入EPC查看柜体是否遗漏"
+			android:imeOptions="actionSearch"
+			android:paddingLeft="@dimen/x20"
+			android:singleLine="true"
+			android:textColorHint="@color/text_color_9"
+			android:textSize="@dimen/textsize_15"
+			/>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/epctest_number_all"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/x20"
+		android:layout_gravity="right"
+		android:text="总数：100"
+		android:textColor="@color/text_color_3"
+		android:textSize="@dimen/textsize_17"/>
+	<View
+		android:layout_width="match_parent"
+		android:layout_marginTop="@dimen/x10"
+		android:layout_height="@dimen/x1"
+		android:background="@color/bg_c"/>
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/x70"
+		android:background="@color/bg_f2"
+
+		android:orientation="horizontal">
+		<View
+			style="@style/view_line_style"/>
+
+		<TextView
+			android:id="@+id/seven_one"
+			android:layout_height="match_parent"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			android:textColor="@color/text_color_6"
+			android:textSize="@dimen/textsize_16"
+			android:textStyle="bold"
+			android:text="EPC"
+			android:gravity="center"
+			/>
+
+		<View
+			style="@style/view_line_style"/>
+
+		<TextView
+			android:id="@+id/seven_two"
+			android:layout_height="match_parent"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:gravity="center"
+			android:textColor="@color/text_color_6"
+			android:textSize="@dimen/textsize_16"
+			android:textStyle="bold"
+			android:text="读取次数"
+			/>
+
+		<View
+			style="@style/view_line_style"/>
+
+	</LinearLayout>
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/x1"
+		android:background="@color/bg_c"/>
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/epctest_recyclerview"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/white"
+		android:overScrollMode="never"/>
+
+
+
+</LinearLayout>

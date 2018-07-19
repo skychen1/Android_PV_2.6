@@ -193,12 +193,27 @@
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">wrap_content</item>
 		<item name="android:textColorHint">@color/bg_c</item>
-		<item name="android:textSize">@dimen/textsize_15</item>
+		<item name="android:textSize">@dimen/textsize_16</item>
 		<item name="android:layout_marginRight">@dimen/x50</item>
 		<item name="android:layout_marginLeft">@dimen/x50</item>
 		<item name="android:layout_marginTop">@dimen/x12</item>
 		<item name="android:drawablePadding">@dimen/x12</item>
 		<item name="android:background">@null</item>
 		<item name="android:drawableBottom">@drawable/bg_register_lines</item>
+	</style>
+
+	<!-- 加载滚动条样式 -->
+	<style name="loading">
+		<item name="android:indeterminate">true</item>
+		<item name="android:indeterminateDrawable">@drawable/whiteloading</item>
+		<item name="android:indeterminateDuration">1000</item>
+		<item name="android:indeterminateOnly">true</item>
+	</style>
+	<!-- 加载滚动条样式 -->
+	<style name="loading2">
+		<item name="android:indeterminate">true</item>
+		<item name="android:indeterminateDrawable">@drawable/grayloading</item>
+		<item name="android:indeterminateDuration">1000</item>
+		<item name="android:indeterminateOnly">true</item>
 	</style>
 </resources>

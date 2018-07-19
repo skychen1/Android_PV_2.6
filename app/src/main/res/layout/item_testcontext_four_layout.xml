@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/seven_ll"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="@dimen/x70"
+			  android:gravity="center_vertical"
+			  android:orientation="horizontal">
+	<View
+		style="@style/view_line_style"/>
+	<TextView
+		android:id="@+id/seven_one"
+		android:layout_height="match_parent"
+		android:paddingLeft="@dimen/x20"
+		android:gravity="center_vertical"
+		android:textColor="@color/text_color_6"
+		android:textSize="@dimen/textsize_16"
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		/>
+
+	<View
+		style="@style/view_line_style"/>
+
+	<RelativeLayout
+		android:id="@+id/seven_two"
+		android:layout_height="match_parent"
+		android:paddingLeft="@dimen/x20"
+		android:layout_width="0dp"
+		android:gravity="center_vertical"
+		android:layout_weight="1">
+		<TextView
+			android:id="@+id/seven_two_text"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent"
+			android:visibility="gone"
+			android:gravity="center_vertical"
+			android:textColor="@color/text_color_6"
+			android:textSize="@dimen/textsize_16"
+			/>
+		<TextView
+			android:visibility="gone"
+			android:id="@+id/seven_two_textbg"
+			android:layout_height="wrap_content"
+			android:layout_width="@dimen/x180"
+			android:gravity="center"
+			android:textColor="@color/bg_f"
+			android:paddingTop="@dimen/x6"
+			android:paddingBottom="@dimen/x6"
+			android:textSize="@dimen/textsize_16"
+			android:background="@drawable/bg_button_pre"
+			/>
+	</RelativeLayout>
+
+
+	<View
+		style="@style/view_line_style"/>
+
+	<RelativeLayout
+		android:id="@+id/seven_three"
+		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:paddingLeft="@dimen/x20"
+		android:gravity="center_vertical"
+		>
+		<TextView
+			android:id="@+id/seven_three_text"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center_vertical"
+			android:textColor="@color/text_color_6"
+			android:textSize="@dimen/textsize_16"
+			/>
+		<ProgressBar
+			android:id="@+id/seven_three_loading"
+			style="@style/loading2"
+			android:visibility="gone"
+			android:layout_width="@dimen/x36"
+			android:layout_height="@dimen/x36"
+			android:layout_centerVertical="true"
+			android:gravity="center_vertical"/>
+	</RelativeLayout>
+
+	<View
+		style="@style/view_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_four"
+		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_weight="2"
+		android:paddingLeft="@dimen/x20"
+		android:gravity="center_vertical"
+		android:textColor="@color/text_color_6"
+		android:textSize="@dimen/textsize_16"
+		/>
+
+	<View
+		style="@style/view_line_style"/>
+
+
+
+</LinearLayout>

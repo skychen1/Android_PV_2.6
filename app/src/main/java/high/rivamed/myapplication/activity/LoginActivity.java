@@ -77,8 +77,11 @@ public class LoginActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+
 	mFragments.add(new LoginPassWordFragment());
 	mFragments.add(new LoginPassFragment());
+	initData();
+	initlistener();
    }
 
    @Override
@@ -101,15 +104,14 @@ public class LoginActivity extends SimpleActivity {
 	mHits[mHits.length - 1] = SystemClock.uptimeMillis();
 	if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
 	   mHits = new long[COUNTS];//重新初始化数组
-	   Toast.makeText(this, "连续点击了8次", Toast.LENGTH_LONG).show();
-	   startActivity(new Intent(this, RegisteActivity.class));
+	   Toast.makeText(this, "已进入工程模式", Toast.LENGTH_LONG).show();
+	   startActivity(new Intent(this, TestLoginActivity.class));
 	}
    }
    @Override
    protected void onStart() {
 	super.onStart();
-	initData();
-	initlistener();
+
    }
 
    private void initData() {

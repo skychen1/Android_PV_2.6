@@ -20,6 +20,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
+import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
@@ -28,6 +29,7 @@ import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TwoDialog;
+import high.rivamed.myapplication.views.WifiDialog;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -259,6 +261,23 @@ public class DialogUtils {
 		EventBusUtils.postSticky(new Event.activationEvent(true,dialog));
 	   }
 	});
+	builder.create().show();
+   }
+
+   /**
+    * 设置功率
+    * @param context
+    */
+   public static void showWifiDialog(final Context context){
+	WifiDialog.Builder builder = new WifiDialog.Builder(context);
+	builder.create().show();
+   }
+   /**
+    * 设置功率
+    * @param context
+    */
+   public static void showEpcDialog(final Context context){
+	EpcTestDialog.Builder builder = new EpcTestDialog.Builder(context);
 	builder.create().show();
    }
 }

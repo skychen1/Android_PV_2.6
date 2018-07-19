@@ -9,6 +9,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="1"
 		android:orientation="horizontal"
+		android:paddingTop="@dimen/x20"
 		android:layout_marginLeft="@dimen/x40"
 		android:layout_marginRight="@dimen/x40"
 		android:focusableInTouchMode="true"
@@ -240,7 +241,7 @@
 					android:layout_height="wrap_content"
 					android:drawableLeft="@drawable/line_top"
 					android:drawablePadding="@dimen/x30"
-					android:paddingBottom="@dimen/x20"
+					android:paddingBottom="@dimen/x40"
 					android:paddingTop="@dimen/x20"
 					android:text="柜体信息："
 					android:textColor="@color/text_color_3"
@@ -252,14 +253,14 @@
 					style="@style/btn_style_sel"
 					android:layout_alignParentRight="true"
 					android:layout_marginRight="@dimen/x30"
-					android:layout_marginTop="@dimen/x10"
+					android:layout_marginTop="@dimen/x15"
 					android:text="添加柜体"
 					/>
 
 				<TextView
 					android:id="@+id/frag_registe_left"
 					style="@style/btn_style_sel"
-					android:layout_marginTop="@dimen/x10"
+					android:layout_marginTop="@dimen/x15"
 					android:layout_toLeftOf="@+id/frag_registe_right"
 					android:text="扫描设备"
 					/>

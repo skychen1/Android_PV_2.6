@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -26,8 +25,6 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-
-import static android.widget.GridLayout.VERTICAL;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -103,7 +100,7 @@ public class RegisteFrag extends SimpleFragment {
 
 	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, generateData());
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+//	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setAdapter(mSmallAdapter);
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), "oneRegiste")) {
