@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/white"
+	android:orientation="vertical">
+
+
+	<ImageView
+		android:id="@+id/login_logo"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="@dimen/x35"
+		android:padding="@dimen/x30"
+		android:layout_marginLeft="@dimen/x79"
+		android:layout_marginTop="@dimen/x35"
+		android:src="@mipmap/bg_login_icon"
+		/>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:background="@mipmap/login_bg"
+		android:orientation="horizontal"
+		>
+		<LinearLayout
+			android:layout_width="@dimen/x670"
+			android:layout_height="@dimen/x610"
+			android:layout_centerVertical="true"
+			android:layout_marginLeft="@dimen/x210"
+			android:orientation="vertical">
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/x20"
+				android:layout_marginLeft="@dimen/x30">
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/textsize_16"
+					android:text="耗材效期监控："
+					android:textColor="@color/bg_f"/>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/x50"
+					android:drawableLeft="@drawable/text_bg_red"
+					android:layout_gravity="center_vertical"
+					android:drawablePadding="@dimen/x15"
+					android:text="过期耗材"
+					android:textColor="@color/bg_f"
+					/>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:drawableLeft="@drawable/text_bg_ye"
+					android:layout_marginLeft="@dimen/x30"
+					android:layout_gravity="center_vertical"
+					android:drawablePadding="@dimen/x15"
+					android:text="近效期耗材"
+					android:textColor="@color/bg_f"
+					/>
+			</LinearLayout>
+			<com.github.mikephil.charting.charts.BarChart
+				android:id="@+id/chart1"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="@dimen/x10"
+				/>
+		</LinearLayout>
+		
+		<android.support.v7.widget.CardView
+			android:layout_width="@dimen/x600"
+			android:layout_height="@dimen/x610"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_marginRight="@dimen/x207"
+			android:background="@color/bg_f"
+			android:gravity="center_vertical"
+			android:orientation="vertical"
+			app:cardBackgroundColor="@color/white"
+			app:cardCornerRadius="@dimen/x5"
+			app:cardElevation="@dimen/x1"
+			app:cardMaxElevation="@dimen/x1"
+			app:cardPreventCornerOverlap="true"
+			app:cardUseCompatPadding="true">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+				android:background="@color/bg_f"
+				android:gravity="center_vertical"
+				android:orientation="vertical"
+				>
+
+				<RadioGroup
+					android:id="@+id/login_radiogroup"
+					android:layout_width="@dimen/x600"
+					android:layout_height="@dimen/x88"
+					android:layout_alignParentBottom="true"
+					android:layout_alignParentRight="true"
+					android:layout_marginTop="@dimen/x5"
+					android:orientation="horizontal">
+
+					<RadioButton
+						android:id="@+id/login_password"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:background="@drawable/selector_login_line_text"
+						android:button="@null"
+						android:checked="true"
+						android:gravity="center"
+						android:paddingBottom="@dimen/x20"
+						android:paddingTop="@dimen/x20"
+						android:text="@string/login_title"
+						android:textColor="@color/selector_login_tab_text"
+						android:textSize="@dimen/textsize_18"
+						/>
+
+					<View
+						android:layout_width="@dimen/x2"
+						android:layout_height="@dimen/x75"
+						android:background="@color/bg_e"/>
+
+					<RadioButton
+						android:id="@+id/login_pass"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:background="@drawable/selector_login_line_text"
+						android:button="@null"
+						android:gravity="center"
+						android:paddingBottom="@dimen/x20"
+						android:paddingTop="@dimen/x20"
+						android:text="紧急登录"
+						android:textColor="@color/selector_login_tab_text"
+						android:textSize="@dimen/textsize_18"
+						/>
+				</RadioGroup>
+
+				<android.support.v4.view.ViewPager
+					android:id="@+id/login_viewpager"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_below="@+id/radiogroup"
+					android:overScrollMode="never">
+				</android.support.v4.view.ViewPager>
+			</LinearLayout>
+		</android.support.v7.widget.CardView>
+	</RelativeLayout>
+
+	<TextView
+		android:id="@+id/down_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:paddingBottom="@dimen/x75"
+		android:paddingTop="@dimen/x75"
+		android:text="智能耗材管理柜 RM-SM-"
+		android:textSize="@dimen/textsize_16"/>
+
+
+</LinearLayout>
