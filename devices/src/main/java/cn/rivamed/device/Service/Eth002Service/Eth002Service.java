@@ -11,6 +11,7 @@ import cn.rivamed.device.ClientHandler.eth002Handler.Eth002Message;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002V26Handler;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002V2Handler;
 import cn.rivamed.device.Service.BaseService;
+import cn.rivamed.device.Service.UhfService.RodinBellUhf.RodinBellService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -39,7 +40,7 @@ public class Eth002Service extends BaseService {
 
     EventLoopGroup group = null;
     ServerBootstrap b = null;
-    boolean serverRunning=false;
+    boolean serverRunning = false;
 
 
     public Eth002Service(Eth002ServiceType serviceType, int port) {
@@ -103,7 +104,7 @@ public class Eth002Service extends BaseService {
                             }
                         });
                 ChannelFuture f = b.bind().sync();
-                serverRunning=true;
+                serverRunning = true;
                 Log.i(LOG_TAG, "启动服务:port=" + port + ",服务类型为HfRfid_ETV001服务");
                 f.channel().closeFuture().sync();
             } catch (InterruptedException e) {
@@ -128,7 +129,7 @@ public class Eth002Service extends BaseService {
 
     @Override
     public boolean StopService() {
-        if (serverRunning && group!=null) {
+        if (serverRunning && group != null) {
             try {
                 group.shutdownGracefully().sync();
             } catch (InterruptedException e) {
@@ -140,7 +141,7 @@ public class Eth002Service extends BaseService {
 
     }
 
-    private class Eth002ClientMessageListener implements Eth002Message{
+    private class Eth002ClientMessageListener implements Eth002Message {
 
         DeviceHandler clientHandler;
 
@@ -151,69 +152,69 @@ public class Eth002Service extends BaseService {
 
         @Override
         public void setDeviceHandler(DeviceHandler handler) {
-            this.clientHandler=handler;
+            this.clientHandler = handler;
         }
 
         @Override
         public void ReciveIDCard(String cardNo) {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnIDCard(this.clientHandler.getIdentification(),cardNo);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnIDCard(this.clientHandler.getIdentification(), cardNo);
                 }
             }
         }
 
         @Override
         public void DoorClosed(boolean success) {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorClosed(clientHandler.getIdentification(),success);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorClosed(clientHandler.getIdentification(), success);
                 }
             }
         }
 
         @Override
         public void DoorOpenRet(boolean opened) {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(),opened);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(), opened);
                 }
             }
         }
 
         @Override
         public void DoorState(boolean opened) {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(),opened);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(), opened);
                 }
             }
         }
 
         @Override
         public void FingerRegisterRet(boolean regestedSuccess, String fingerData, String userid) {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerRegisterRet(this.clientHandler.getIdentification(),regestedSuccess,fingerData);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerRegisterRet(this.clientHandler.getIdentification(), regestedSuccess, fingerData);
                 }
             }
         }
 
         @Override
         public void FingerGetImage(String fingerData) {
-            if(StringUtil.isNullOrEmpty(fingerData))return;
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerFea(this.clientHandler.getIdentification(),fingerData);
+            if (StringUtil.isNullOrEmpty(fingerData)) return;
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerFea(this.clientHandler.getIdentification(), fingerData);
                 }
             }
         }
 
         @Override
         public void FingerRegisgerCmdExcuted() {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerRegExcuted(this.clientHandler.getIdentification(),true);
+            if (Eth002Service.this.getDeviceManager() != null) {
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnFingerRegExcuted(this.clientHandler.getIdentification(), true);
                 }
             }
         }
@@ -225,17 +226,18 @@ public class Eth002Service extends BaseService {
 
         @Override
         public void OnDisconnected() {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                if(Eth002Service.this.getDeviceManager().getDeviceCallBack()!=null){
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDeviceConnected(clientHandler.getDeviceType(),clientHandler.getIdentification());
-                }
+            if (Eth002Service.this.getDeviceManager() != null) {
+                Eth002Service.this.getDeviceManager().fireDeviceDisconnected(clientHandler.getIdentification());
             }
         }
 
         @Override
         public void OnConnected() {
-            if(Eth002Service.this.getDeviceManager()!=null){
-                 Eth002Service.this.getDeviceManager().fireDeviceDisconnected(clientHandler.getIdentification());
+            if (Eth002Service.this.getDeviceManager() != null) {
+                Eth002Service.this.getDeviceManager().AppendConnectedDevice(clientHandler.getIdentification(), clientHandler);
+                if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDeviceConnected(clientHandler.getDeviceType(), clientHandler.getIdentification());
+                }
             }
         }
     }

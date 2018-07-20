@@ -51,7 +51,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
     Thread fingerRegStateThread = new Thread(() -> {
         fingerRegisterTimer = 0;
         Log.i(LOG_TAG, "指纹注册监控线程启动");
-        while (fingerRegisterTimer < 32) {  //指纹注册最长等待时间为30秒
+        while (fingerRegisterTimer < 40) {  //指纹注册最长等待时间为30秒
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -63,12 +63,6 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
             fingerRegisterModel = false;
     });
 
-    /**
-     * 设备通道状态，按位计算，
-     * 从低到高，分别为  0x00 模块本身，0x01 IO 0x02 串口1 0x03 串口2
-     * 指定位为0，表示空闲，指定为为1 表示忙碌，
-     */
-    byte devChannelState = 0x00;
 
     @Override
     public DeviceType getDeviceType() {
@@ -77,12 +71,12 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
 
     @Override
     public String getRemoteIP() {
-        String address=this.getCtx()==null?"":this.getCtx().pipeline().channel().remoteAddress().toString();
-       if(StringUtil.isNullOrEmpty(address)){
-           address=address.replace("/","");
-           address=address.substring(0,address.indexOf(":"));
-       }
-       return  address;
+        String address = this.getCtx() == null ? "" : this.getCtx().pipeline().channel().remoteAddress().toString();
+        if (StringUtil.isNullOrEmpty(address)) {
+            address = address.replace("/", "");
+            address = address.substring(0, address.indexOf(":"));
+        }
+        return address;
     }
 
     int continueIdleCount = 0;
@@ -396,20 +390,19 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
                 Log.d(LOG_TAG, "设备" + getIdentification() + "指纹采集净数据 LEN=" + fingerSData.length + " DATA=" + Transfer.Byte2String(fingerSData));
                 String fingStr = Transfer.byte2Base64StringFun(fingerSData);
                 if (fingerRegisterModel) {
+                    fingerRegisterModel = false;
                     Log.d(LOG_TAG, "设备" + getIdentification() + "指纹注册成功 ,指纹数据为" + fingStr);
                     if (this.messageListener != null) {
                         //todo  fingerRegister userid
                         this.messageListener.FingerRegisterRet(true, fingStr, null);
-
                     }
                 } else {
                     Log.d(LOG_TAG, "设备" + getIdentification() + " 指纹采集成功{}" + fingStr);
                     if (this.messageListener != null) {
                         this.messageListener.FingerGetImage(fingStr);
                     }
-
                 }
-                fingerRegisterModel = false;
+
             }
         }
         if (error || completed) {
@@ -449,9 +442,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
 
     private boolean SendFingerRegister() {
         byte[] buf = new byte[]{0x03, 0x6d, 0x3e, 0x3f, 0x30, 0x31, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x30, 0x31, 0x30, 0x30, 0x30, 0x33, 0x32, 0x31, 0x30, 0x30, 0x32, 0x35};
-        devChannelState |= 0x03;
-        SendBuf(buf);
-        Log.d(LOG_TAG, "设备" + getIdentification() + "发送指纹注册消息 userid=");
+
         fingerRegisterModel = true;
         waitFingerReg = false;
         if (this.messageListener != null) {
@@ -463,14 +454,13 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
             fingerRegStateThread.start();
         }
 
+        SendBuf(buf);
+        Log.d(LOG_TAG, "设备" + getIdentification() + "发送指纹注册消息 userid=");
         return true;
     }
 
     private boolean SendFingerGetImage() {
         byte[] buf = new byte[]{0x03, 0x6d, 0x3e, 0x3f, 0x30, 0x31, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x30, 0x31, 0x30, 0x30, 0x30, 0x33, 0x32, 0x32, 0x30, 0x30, 0x32, 0x36};
-        if ((devChannelState & 0x03) > 0) return false;
-        fingerRegisterModel = false;
-        devChannelState |= 0x03;
         SendBuf(buf);
         Log.d(LOG_TAG, "设备" + getIdentification() + "发送指纹采集消息");
         return true;
@@ -482,7 +472,6 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
     private boolean SendUnLock() {
         //todo 该指令存疑，是检测门锁状态，还是检测继电器状态
         byte[] buf = new byte[]{0x01, 0x70};
-        devChannelState |= 0x01;
         SendBuf(buf);
         return true;
     }
@@ -492,7 +481,6 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
      */
     private void SendCheckLockState() {
         byte[] buf = new byte[]{0x01, 0x72};
-        devChannelState |= 0x01;
         SendBuf(buf);
     }
 
@@ -546,6 +534,13 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
         super.channelInactive(ctx);
     }
 
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.fireExceptionCaught(cause);
+        Close();
+    }
+
     @Override
     public int Close() {
         int ret = super.Close();
@@ -572,7 +567,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
             return FunctionCode.DEVICE_BUSY;
         }
         try {
-            SendUnLock();
+            waitFingerReg=true;
             return FunctionCode.SUCCESS;
         } catch (Exception ex) {
             Log.e(LOG_TAG, "发送关门消息发生错误,message=", ex);

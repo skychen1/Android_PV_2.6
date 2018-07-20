@@ -137,15 +137,14 @@ public class RodinBellService extends BaseService implements UhfService {
         @Override
         public void OnDisconnected() {
             if (RodinBellService.this.getDeviceManager() != null) {
-                if (RodinBellService.this.getDeviceManager().getDeviceCallBack() != null) {
-                    RodinBellService.this.getDeviceManager().getDeviceCallBack().OnDeviceDisConnected(this.deviceHandler.getDeviceType(), this.deviceHandler.getIdentification());
-                }
+                RodinBellService.this.getDeviceManager().fireDeviceDisconnected(deviceHandler.getIdentification());
             }
         }
 
         @Override
         public void OnConnected() {
             if (RodinBellService.this.getDeviceManager() != null) {
+                RodinBellService.this.getDeviceManager().AppendConnectedDevice(deviceHandler.getIdentification(),deviceHandler);
                 if (RodinBellService.this.getDeviceManager().getDeviceCallBack() != null) {
                     RodinBellService.this.getDeviceManager().getDeviceCallBack().OnDeviceConnected(this.deviceHandler.getDeviceType(), this.deviceHandler.getIdentification());
                 }
