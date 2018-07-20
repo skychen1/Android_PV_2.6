@@ -34,6 +34,7 @@ public class DeviceManager {
         return this.eth002_port;
     }
 
+
     /**
      * UHF 阅读器监听服务
      */

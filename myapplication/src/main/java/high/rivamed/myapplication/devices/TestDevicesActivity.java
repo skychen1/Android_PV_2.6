@@ -51,6 +51,19 @@ public class TestDevicesActivity extends SimpleActivity {
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
 
         mTextMessage.setText("程序已启动");
+
+
+        List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+        String s = "";
+        for (DeviceManager.DeviceInfo d : deviceInfos
+                ) {
+            if (d.getDeviceType() == DeviceType.Eth002V2) {
+                eth002DeviceId = d.getIdentifition();
+            }
+            s += d.getIdentifition() + "|||";
+
+        }
+
     }
 
     private void initCallBack() {
@@ -157,9 +170,9 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean ret = DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
-                ret = DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
-                Toast.makeText(TestDevicesActivity.this, "服务启动" + (ret ? "成功" : "失败"), Toast.LENGTH_LONG).show();
+                //   boolean ret = DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
+                //   ret = DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
+                //    Toast.makeText(TestDevicesActivity.this, "服务启动" + (ret ? "成功" : "失败"), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -206,6 +219,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 Toast.makeText(TestDevicesActivity.this, "指纹注册命令已发出" + ret, Toast.LENGTH_LONG).show();
             }
         });
+
 
     }
 
