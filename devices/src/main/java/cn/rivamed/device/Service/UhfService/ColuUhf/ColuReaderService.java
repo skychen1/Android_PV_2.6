@@ -13,6 +13,7 @@ import java.util.Map;
 import cn.rivamed.DeviceManager;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient.ColuUhfReaderHandler;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
@@ -52,7 +53,7 @@ public class ColuReaderService extends BaseService implements UhfService {
     @Override
     public boolean StartService(DeviceManager deviceManager) {
         super.StartService(deviceManager);
-        Log.d(log_tag, "启动科陆 Reader 服务器模式");
+        Log.d(log_tag, "启动科陆 Reader 服务器模式，Port="+coluPort);
         return CLReader.OpenTcpServer("0.0.0.0", coluPort.toString(), new CLReaderMessageCallback());
     }
 
@@ -76,64 +77,8 @@ public class ColuReaderService extends BaseService implements UhfService {
 
         public void PortConnecting(String s) {
             Log.i(log_tag, "接收到ColuReader链接:Connid=" + s);
-            String mac = StringUtil.EMPTY_STRING;
-            try {
-                mac = CLReader._Config.GetReaderMacParam(s);
-                if (mac.equals("Timeout！") || mac.equals("Parameters error！")) {
-                    mac = StringUtil.EMPTY_STRING;
-                }
-            } catch (InterruptedException e) {
-                Log.e(log_tag, "获取MAC地址失败:connid=" + s);
-            }
-            if (mac.equals(StringUtil.EMPTY_STRING)) { //无法获取，则断开
-                CLReader.CloseConn(s);
-            } else {
-                ColuReaderService.this.conneIDs.put(s, mac);
-                ColuUhfReaderHandler handler = new ColuUhfReaderHandler(s, mac);
-                handler.RegisterMessageEvent(new ColuUhfReaderHandler.MessageEventCallBack() {
-                    @Override
-                    public void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-                        if (getDeviceManager() != null) {
-                            if (getDeviceManager().getDeviceCallBack() != null) {
-                                getDeviceManager().getDeviceCallBack().OnUhfScanRet(success, deviceId, userInfo, epcs);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void OnUhfScanComplete(boolean success, String deviceId) {
-                        if (getDeviceManager() != null) {
-                            if (getDeviceManager().getDeviceCallBack() != null) {
-                                getDeviceManager().getDeviceCallBack().OnUhfScanComplete(success, deviceId);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void OnUhfSetPowerRet(String deviceId, boolean success) {
-                        if (getDeviceManager() != null) {
-                            if (getDeviceManager().getDeviceCallBack() != null) {
-                                getDeviceManager().getDeviceCallBack().OnUhfSetPowerRet( deviceId,success);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-                        if (getDeviceManager() != null) {
-                            if (getDeviceManager().getDeviceCallBack() != null) {
-                                getDeviceManager().getDeviceCallBack().OnUhfQueryPowerRet(deviceId,success,power);
-                            }
-                        }
-                    }
-                });
-                if (getDeviceManager() != null) {
-                    getDeviceManager().RemoveConnectedDevice(handler.getIdentification());
-                    if (getDeviceManager().getDeviceCallBack() != null) {
-                        getDeviceManager().getDeviceCallBack().OnDeviceConnected(DeviceType.ColuUhfReader, mac);
-                    }
-                }
-            }
+            ColuUhfReaderHandler handler = new ColuUhfReaderHandler(s);
+            handler.RegisterMessageListener(new ColuMessageListener());
         }
 
         public void PortClosing(String s) {
@@ -176,4 +121,74 @@ public class ColuReaderService extends BaseService implements UhfService {
 
         }
     }
+
+    class ColuMessageListener implements UhfClientMessage {
+
+        DeviceHandler deviceHandler;
+
+        @Override
+        public DeviceHandler getDeviceHandler() {
+            return this.deviceHandler;
+        }
+
+        @Override
+        public void setDeviceHandler(DeviceHandler handler) {
+            this.deviceHandler = deviceHandler;
+        }
+
+        @Override
+        public void OnDisconnected() {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                ColuReaderService.this.getDeviceManager().fireDeviceDisconnected(deviceHandler.getIdentification());
+            }
+        }
+
+        @Override
+        public void OnConnected() {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                ColuReaderService.this.getDeviceManager().AppendConnectedDevice(deviceHandler.getIdentification(), deviceHandler);
+                if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {
+                    ColuReaderService.this.getDeviceManager().getDeviceCallBack().OnDeviceConnected(this.deviceHandler.getDeviceType(), this.deviceHandler.getIdentification());
+                }
+            }
+        }
+
+        @Override
+        public void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {
+                    ColuReaderService.this.getDeviceManager().getDeviceCallBack().OnUhfScanRet(success, this.deviceHandler.getIdentification(), null, epcs);
+                }
+            }
+        }
+
+        @Override
+        public void OnUhfScanComplete(boolean success, String deviceId) {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {
+                    ColuReaderService.this.getDeviceManager().getDeviceCallBack().OnUhfScanComplete(success, this.deviceHandler.getIdentification());
+                }
+            }
+        }
+
+        @Override
+        public void OnUhfSetPowerRet(String deviceId, boolean success) {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {
+                    ColuReaderService.this.getDeviceManager().getDeviceCallBack().OnUhfSetPowerRet(deviceId, success);
+                }
+            }
+        }
+
+        @Override
+        public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+            if (ColuReaderService.this.getDeviceManager() != null) {
+                if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {
+                    ColuReaderService.this.getDeviceManager().getDeviceCallBack().OnUhfQueryPowerRet(deviceId, success, power);
+                }
+            }
+        }
+
+    }
+
 }

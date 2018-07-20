@@ -14,6 +14,7 @@ import java.util.Map;
 import cn.rivamed.FunctionCode;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.NettyDeviceClientHandler;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfHandler;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
@@ -53,23 +54,37 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     }
 
 
+    public ColuUhfReaderHandler(String connId) {
 
-    public ColuUhfReaderHandler(String connId, String mac) {
         this.connId = connId;
-        this.setIdentification(mac);
-        try {
-            antNum = CLReader._Config.GetReaderANT(connId);
-        } catch (InterruptedException e) {
 
-        }
+        new Thread(() -> {
+            //获取mac地址
+            try {
+                String mac = CLReader._Config.GetReaderMacParam(this.connId);
 
-        thread = new Thread(new Runnable() {  //启动线程
-            @Override
-            public void run() {
-                ColuHandlerThreadFun();
+                if (mac.equals("Timeout！") || mac.equals("Parameters error！")) {
+                    Close();
+                    return;
+                }
+                this.setIdentification(mac);
+                if (ColuUhfReaderHandler.this.messageListener != null) {
+                    ColuUhfReaderHandler.this.messageListener.OnConnected();
+                }
+                antNum = CLReader._Config.GetReaderANT(connId);
+            } catch (InterruptedException e) {
             }
-        });
-        thread.start();
+            thread = new Thread(new Runnable() {  //启动线程
+                @Override
+                public void run() {
+                    ColuHandlerThreadFun();
+                }
+            });
+            thread.start();
+        }).start();
+
+
+
     }
 
     public synchronized void UpdateLastReadTime() {
@@ -87,14 +102,14 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             Date current = new Date();
             if (scanMode && current.getTime() - lastReciveTime.getTime() > 1000) {
                 StopScan();
-                if (this.messageEventCallBack != null) {   //发送回调
-                    this.messageEventCallBack.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
+                if (this.messageListener != null) {   //发送回调
+                    this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
 
                     }
-                    this.messageEventCallBack.OnUhfScanComplete(true, this.getIdentification());
+                    this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                 }
                 epcs.clear();
                 scanMode = false;
@@ -147,7 +162,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
 
     @Override
     public String getRemoteIP() {
-        return connId.substring(0,connId.indexOf(":"));
+        return connId.substring(0, connId.indexOf(":"));
     }
 
     @Override
@@ -219,8 +234,8 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         try {
             int ret = CLReader._Config.SetANTPowerParam(this.connId, everyAntPower);
             if (ret == 0) {
-                if (this.messageEventCallBack != null) {
-                    this.messageEventCallBack.OnUhfSetPowerRet(this.getIdentification(), true);
+                if (this.messageListener != null) {
+                    this.messageListener.OnUhfSetPowerRet(this.getIdentification(), true);
                     return FunctionCode.SUCCESS;
                 }
 
@@ -228,7 +243,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "设置功率发生错误;", e);
         }
-        this.messageEventCallBack.OnUhfSetPowerRet(this.getIdentification(), false);
+        this.messageListener.OnUhfSetPowerRet(this.getIdentification(), false);
         return FunctionCode.OPERATION_FAIL;
     }
 
@@ -243,8 +258,8 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                         i = p.getValue();
                     }
                 }
-                if (this.messageEventCallBack != null) {
-                    this.messageEventCallBack.OnUhfQueryPowerRet(this.getIdentification(), true, i);
+                if (this.messageListener != null) {
+                    this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), true, i);
                 }
                 return FunctionCode.SUCCESS;
             }
@@ -252,8 +267,8 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "获取功率发生错误;", e);
         }
-        if (this.messageEventCallBack != null) {
-            this.messageEventCallBack.OnUhfQueryPowerRet(this.getIdentification(), false, -1);
+        if (this.messageListener != null) {
+            this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), false, -1);
         }
         return FunctionCode.OPERATION_FAIL;
 
@@ -267,34 +282,11 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     }
 
 
-    MessageEventCallBack messageEventCallBack;
+    protected UhfClientMessage messageListener;
 
-    public void RegisterMessageEvent(MessageEventCallBack messageEventCallBack) {
-        this.messageEventCallBack = messageEventCallBack;
+    public void RegisterMessageListener(UhfClientMessage messageListener) {
+        this.messageListener = messageListener;
+        this.messageListener.setDeviceHandler(this);
     }
 
-    public interface MessageEventCallBack {
-        void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs);
-
-        void OnUhfScanComplete(boolean success, String deviceId);
-
-        /**
-         * UHF READER 设置功率结果通知
-         *
-         * @param success  是否成功
-         * @param deviceId 设备ID
-         */
-        void OnUhfSetPowerRet(String deviceId, boolean success);
-
-        /**
-         * UHF READER 获取功率结果通知
-         *
-         * @param success  是否成功
-         * @param deviceId 设备ID
-         * @param power    功率
-         */
-        void OnUhfQueryPowerRet(String deviceId, boolean success, int power);
-
-
-    }
 }
