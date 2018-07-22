@@ -14,11 +14,19 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.DeviceManager;
+import cn.rivamed.callback.DeviceCallBack;
+import cn.rivamed.device.DeviceType;
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
@@ -27,10 +35,12 @@ import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
 /**
@@ -85,6 +95,20 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private HomeFastOpenAdapter mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter mHomeFastOpenDownAdapter;
    private List<String>        mTitles;
+   private String eth002DeviceId;
+   private NoDialog.Builder mBuilder;
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onDialogEvent(Event.PopupEvent event) {
+      if (event.isMute) {
+         if (mBuilder==null){
+		mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "in", null);
+	   }
+	}else {
+	   mBuilder.mDialog.dismiss();
+	   mBuilder=null;
+	}
+   }
 
    public static ContentConsumeOperateFrag newInstance() {
 
@@ -101,10 +125,102 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+      EventBusUtils.register(this);
+	initCallBack();
 	initData();
+
+   }
+
+   private void initCallBack() {
+	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+	   @Override
+	   public void OnDeviceConnected(
+		   DeviceType deviceType, String deviceIndentify) {
+		if (deviceType == DeviceType.ColuUhfReader) {
+//		   uhfDeviceId = deviceIndentify;
+		} else if (deviceType == DeviceType.Eth002V2) {
+		   eth002DeviceId = deviceIndentify;
+		}
+	   }
+
+	   @Override
+	   public void OnDeviceDisConnected(
+		   DeviceType deviceType, String deviceIndentify) {
+
+	   }
+
+	   @Override
+	   public void OnCheckState(
+		   DeviceType deviceType, String deviceId, Integer code) {
+
+	   }
+
+	   @Override
+	   public void OnIDCard(String deviceId, String idCard) {
+
+	   }
+
+	   @Override
+	   public void OnFingerFea(String deviceId, String fingerFea) {
+
+	   }
+
+	   @Override
+	   public void OnFingerRegExcuted(String deviceId, boolean success) {
+
+	   }
+
+	   @Override
+	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+
+	   }
+
+	   @Override
+	   public void OnDoorOpened(String deviceIndentify, boolean success) {
+	      if (success){
+		   EventBusUtils.post(new Event.PopupEvent(success,"柜门已开"));
+		}
+	   }
+
+	   @Override
+	   public void OnDoorClosed(String deviceIndentify, boolean success) {
+	      if (success){
+		   EventBusUtils.post(new Event.PopupEvent(false,"关闭"));
+		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+		   mContext.startActivity(intent2);
+		}
+	   }
+
+	   @Override
+	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+	   }
+
+	   @Override
+	   public void OnUhfScanRet(
+		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
+
+	   }
+
+	   @Override
+	   public void OnUhfScanComplete(boolean success, String deviceId) {
+
+	   }
+
+	   @Override
+	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
+
+	   }
+
+	   @Override
+	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+
+	   }
+	});
    }
 
    private void initData() {
+	eth002DeviceId = DevicesUtils.getDeviceId();
 	mTitles = new ArrayList<>();
 	for (int i = 0; i < 14; i++) {
 	   mTitles.add(i + "号柜");
@@ -126,21 +242,25 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		Log.i("TT", " position  " + position);
-		String title = "柜门已开";
-		if (position == 0){
-		   DialogUtils.showNoDialog(mContext, title, 2,"in",null);
-		}else if (position == 1){
-		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
-		}else if (position ==2){
-		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
-		}else if (position == 3){
-		   ToastUtils.showShort("按套餐领用-绑定患者！");
-		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
-		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
+		DeviceManager.getInstance().OpenDoor(eth002DeviceId);
+//		if (position == 0){
+//
+//
+//		}
+		   // else if (position == 1){
+//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
+//		}else if (position ==2){
+//		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
+//		}else if (position == 3){
+//		   ToastUtils.showShort("按套餐领用-绑定患者！");
+//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
+//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
+//
+//		}else if (position ==4){
+//
+//		}
 
-		}else if (position ==4){
 
-		}
 		//		if (position == 0) {
 		//		   int mType = 1;//1.8.3未绑定
 		//		   showTwoDialog(mType);
@@ -234,6 +354,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 	   }
 	});
+   }
+
+   @Override
+   public void onPause() {
+	super.onPause();
+
    }
 
    private List<Movie> genData1() {

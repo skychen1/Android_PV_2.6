@@ -86,7 +86,7 @@ public class RegisteSelfCheckFrag extends SimpleFragment {
                                               (ViewGroup) mSelfcheckRvTitle.getParent(), false);
       ((TextView) mHeadView.findViewById(R.id.seven_one)).setText("");
       ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(0));
-      ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(1));
+//      ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(1));
       ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(2));
       ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(3));
       ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(4));
@@ -112,7 +112,7 @@ public class RegisteSelfCheckFrag extends SimpleFragment {
       mSelfcheckBtn.setEnabled(false);
    }
 
-   //   private List<TBaseDevice.tBaseDevice.partsmacBean> mSmallmac;
+   //   private List<TBaseDevice.tBaseDevices.partsmacBean> mSmallmac;
    //
 
    private ArrayList<MultiItemEntity> generateData1() {
@@ -122,9 +122,9 @@ public class RegisteSelfCheckFrag extends SimpleFragment {
 	ArrayList<MultiItemEntity> res = new ArrayList<>();
 
       for (int i = 0; i < lv0Count; i++) {
-	   SelfCheckBean selfCheckBean = new SelfCheckBean("高值耗材"+i+"号柜","reader"+i,"mac"+i,"192.168.1.2"+i,i);
+	   SelfCheckBean selfCheckBean = new SelfCheckBean("高值耗材"+i+"号柜","","mac"+i,"",i);
          for (int j = 0; j < lv1Count; j++) {
-		SelfCheckTitleBean selfCheckTitleBean = new SelfCheckTitleBean("reader" + j, "type" + j, "mac" + j, "192.168.1.2" + j, j);
+		SelfCheckTitleBean selfCheckTitleBean = new SelfCheckTitleBean("reader" + j, "" , "mac" + j, "192.168.1.2" + j, j);
 		selfCheckBean.addSubItem(selfCheckTitleBean);
          }
          res.add(selfCheckBean);
@@ -137,9 +137,9 @@ public class RegisteSelfCheckFrag extends SimpleFragment {
 //   	mSmallmac = new ArrayList<>();
 //   	mTBaseDevicesAll = new ArrayList<>();
 //   	mTBaseDevicesSmall = new ArrayList<>();
-//   	TBaseDevice.tBaseDevice.partsmacBean partsmacBean1 = new TBaseDevice.tBaseDevice.partsmacBean();
-//   	TBaseDevice.tBaseDevice registeBean1 = new TBaseDevice.tBaseDevice();
-//   	TBaseDevice registeAddBean1 = new TBaseDevice();
+//   	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
+//   	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
+//   	TBaseDevices registeAddBean1 = new TBaseDevices();
 //   	for (int i = 0; i < 5; i++) {//第三层内部部件标识的数据
 //   	   partsmacBean1.setPartsmacnumber("3232323+" + i);
 //   	   mSmallmac.add(partsmacBean1);

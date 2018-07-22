@@ -50,10 +50,16 @@ public class Event {
 
 	public boolean isMute;
 	public String mString;
+	public int mPos;
 
 	public PopupEvent(boolean isMute,String trim) {
 	   this.isMute = isMute;
 	   this.mString = trim;
+	}
+	public PopupEvent(boolean isMute,String trim,int pos) {
+	   this.isMute = isMute;
+	   this.mString = trim;
+	   this.mPos = pos;
 	}
    }
 

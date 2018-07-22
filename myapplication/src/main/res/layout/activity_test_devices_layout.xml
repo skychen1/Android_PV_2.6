@@ -27,6 +27,7 @@
 				android:layout_marginRight="@dimen/x32"
 				android:layout_marginTop="@dimen/x32"
 				android:layout_weight="1"
+				android:textColor="@color/text_color_3"
 				 />
 
 			<Button

@@ -116,9 +116,9 @@ public class RegisteTestFrag extends SimpleFragment {
    //   	mSmallmac = new ArrayList<>();
    //   	mTBaseDevicesAll = new ArrayList<>();
    //   	mTBaseDevicesSmall = new ArrayList<>();
-   //   	TBaseDevice.tBaseDevice.partsmacBean partsmacBean1 = new TBaseDevice.tBaseDevice.partsmacBean();
-   //   	TBaseDevice.tBaseDevice registeBean1 = new TBaseDevice.tBaseDevice();
-   //   	TBaseDevice registeAddBean1 = new TBaseDevice();
+   //   	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
+   //   	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
+   //   	TBaseDevices registeAddBean1 = new TBaseDevices();
    //   	for (int i = 0; i < 5; i++) {//第三层内部部件标识的数据
    //   	   partsmacBean1.setPartsmacnumber("3232323+" + i);
    //   	   mSmallmac.add(partsmacBean1);

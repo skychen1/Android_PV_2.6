@@ -3,9 +3,12 @@ package high.rivamed.myapplication.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -19,12 +22,14 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.TBaseDevice;
+import high.rivamed.myapplication.bean.TBaseDevices;
+import high.rivamed.myapplication.bean.TBaseThingDto;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.WifiUtils;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -54,19 +59,23 @@ public class RegisteFrag extends SimpleFragment {
    TextView     mFragRegisteRight;
    @BindView(R.id.frag_registe_left)
    TextView     mFragRegisteLeft;
-   @BindView(R.id.recyclerview)
-   RecyclerView mRecyclerview;
+
+   public static   RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
    TextView     mFragmentBtnOne;
 
-   private RegisteSmallAdapter           mSmallAdapter;
-   private List<TBaseDevice>             mTBaseDevicesAll;
-   private List<TBaseDevice.tBaseDevice> mTBaseDevicesSmall;
+   private RegisteSmallAdapter             mSmallAdapter;
+   private List<TBaseDevices>              mTBaseDevicesAll;
+   private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
    int i = generateData().size();
+   private String mFootNameStr;
+   private String mFootIpStr;
+   private String mFootMacStr;
+   private String mHeadName;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onActivationEvent(Event.activationEvent  event) {
-	if (event.isActivation){
+   public void onActivationEvent(Event.activationEvent event) {
+	if (event.isActivation) {
 	   event.dialog.dismiss();
 	   SPUtils.putBoolean(UIUtils.getContext(), "activationRegiste", true);//激活
 	   ToastUtils.showShort("设备已激活！");
@@ -75,6 +84,7 @@ public class RegisteFrag extends SimpleFragment {
 	}
 
    }
+
    public static RegisteFrag newInstance() {
 	Bundle args = new Bundle();
 	RegisteFrag fragment = new RegisteFrag();
@@ -92,29 +102,27 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
+		mRecyclerview =mContext.findViewById(R.id.recyclerview);
 	initData();
    }
 
    private void initData() {
 	initListener();
-
+	mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
 	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, generateData());
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-//	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setAdapter(mSmallAdapter);
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), "oneRegiste")) {
-	   if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")){
+	   if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")) {
 		mFragmentBtnOne.setText("已激活");
 		mFragmentBtnOne.setEnabled(false);
-//		mSmallAdapter.mHeadAdapter.getHeaderLayout().getChildAt(0).findViewById(R.id.foot_mac).setVisibility(View.GONE);
-//		mSmallAdapter.mHeadAdapter.getChildAt(0);
-	   }else {
+	   } else {
 		mFragmentBtnOne.setText("激 活");
 		mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View v) {
-			DialogUtils.showRegisteDialog(mContext,_mActivity);
+			DialogUtils.showRegisteDialog(mContext, _mActivity);
 		   }
 		});
 	   }
@@ -123,14 +131,64 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   SPUtils.putBoolean(UIUtils.getContext(), "oneRegiste", true);
-		   initData();
+		   //		   SPUtils.putBoolean(UIUtils.getContext(), "oneRegiste", true);
+
+		   addFromDate();
+		   Gson gson = new Gson();
+		   Log.i("cf", gson.toJson(addFromDate()));
 		   ToastUtils.showShort("注册成功！");
+		   //		   initData();
 		   mFragmentBtnOne.setText("激 活");
+
 		}
 	   });
 	}
 
+   }
+
+   /**
+    * 预注册存入数据
+    */
+   private TBaseThingDto addFromDate() {
+
+	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
+	TBaseThingDto.TBaseThing tBaseThing = new TBaseThingDto.TBaseThing();//设备信息
+	List<TBaseThingDto.TBaseThingVo> tBaseThingVos = new ArrayList<>();//柜子list
+
+	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
+	tBaseThing.setThingType(mFragRegisteModelEdit.getText().toString().trim());
+	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
+	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
+	tBaseThing.setServerIp(mFragRegisteSeveripEdit.getText().toString().trim());
+	TBaseThingDto.setTbasething(tBaseThing);
+
+	for (int i = 0; i < mRecyclerview.getChildCount(); i++) {
+	   TBaseThingDto.TBaseThingVo tBaseThingVoBean = new TBaseThingDto.TBaseThingVo();
+	   mHeadName = ((EditText) mRecyclerview.getChildAt(i)
+		   .findViewById(R.id.head_left_name)).getText().toString().trim();
+	   tBaseThingVoBean.setDeviceName(mHeadName);
+	   RecyclerView mRecyclerView2 = mRecyclerview.getChildAt(i).findViewById(R.id.recyclerview2);
+	   List<TBaseThingDto.TBaseThingVo.TBaseDevice> tBaseDevice = new ArrayList<>();//柜子内部的设备list
+	   for (int x = 0; x < mRecyclerView2.getChildCount() - 1; x++) {
+		TBaseThingDto.TBaseThingVo.TBaseDevice device = new TBaseThingDto.TBaseThingVo.TBaseDevice();
+		mFootNameStr = ((EditText) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.foot_name)).getText().toString().trim();
+		mFootMacStr = ((TextView) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.foot_mac)).getText().toString().trim();
+		mFootIpStr = ((EditText) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.foot_ip)).getText().toString().trim();
+		device.setDeviceName(mFootNameStr);
+		device.setDeviceCode(mFootMacStr);
+		device.setIp(mFootIpStr);
+		tBaseDevice.add(device);
+	   }
+	   tBaseThingVoBean.setTaBaseDevices(tBaseDevice);
+	   tBaseThingVos.add(tBaseThingVoBean);
+	}
+	TBaseThingDto.settBaseThingVos(tBaseThingVos);
+
+
+	return TBaseThingDto;
    }
 
    private void initListener() {
@@ -142,7 +200,7 @@ public class RegisteFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.fragment_btn_one})
+   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -152,20 +210,19 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_left:
 		break;
-	   case R.id.fragment_btn_one:
-		break;
+
 	}
    }
 
-   private List<TBaseDevice.tBaseDevice.partsmacBean> mSmallmac;
+   private List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac;
 
-   private List<TBaseDevice> generateData() {
+   private List<TBaseDevices> generateData() {
 	mSmallmac = new ArrayList<>();
 	mTBaseDevicesAll = new ArrayList<>();
 	mTBaseDevicesSmall = new ArrayList<>();
-	TBaseDevice.tBaseDevice.partsmacBean partsmacBean1 = new TBaseDevice.tBaseDevice.partsmacBean();
-	TBaseDevice.tBaseDevice registeBean1 = new TBaseDevice.tBaseDevice();
-	TBaseDevice registeAddBean1 = new TBaseDevice();
+	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
+	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
+	TBaseDevices registeAddBean1 = new TBaseDevices();
 	for (int i = 0; i < 5; i++) {//第三层内部部件标识的数据
 	   partsmacBean1.setPartsmacnumber("3232323+" + i);
 	   mSmallmac.add(partsmacBean1);
