@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.clou.uhf.G3Lib.CLReader;
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
+import com.clou.uhf.G3Lib.Models.GPI_Model;
 import com.clou.uhf.G3Lib.Models.Tag_Model;
 
 import java.util.HashMap;
@@ -117,7 +118,8 @@ public class ColuReaderService extends BaseService implements UhfService {
             //经测试，基本无法触发
         }
 
-        public void GPIControlMsg(int i, int i1, int i2) {
+        @Override
+        public void GPIControlMsg(GPI_Model gpi_model) {
 
         }
     }
