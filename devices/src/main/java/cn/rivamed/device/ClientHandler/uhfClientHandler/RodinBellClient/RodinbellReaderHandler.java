@@ -7,6 +7,7 @@ import android.util.Log;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import cn.rivamed.FunctionCode;
 import cn.rivamed.Utils.JsonTools;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.NettyDeviceClientHandler;
@@ -171,14 +172,13 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         Log.d(log_tag, "channelActive 事件发生");
         super.channelActive(ctx);
         new Thread(() -> {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                e.printStackTrace();
             }
             SendGetDeviceId();
         }).start();
@@ -210,6 +210,15 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             Log.e(log_tag, "处理RodinBell 设置设备ID信息错误，信息内容为 " + Transfer.Byte2String(buf));
             return true;
         }
+
+        if (buf.length != 17 || buf[3] != DataProtocol.CMD_GETDEVICEID) {
+            SendGetDeviceId();
+            return false;
+        }
+        byte[] idBuf = new byte[12];
+        System.arraycopy(buf, 4, idBuf, 0, 12);
+        super.setIdentification(Transfer.Byte2String(idBuf));
+
         if (this.messageListener != null) {
             messageListener.OnConnected();
         }
@@ -380,7 +389,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     private boolean ProcessScanCompleted() {
         synchronized (locker) {
             scanModel = false;
-            Log.i(log_tag, "扫描完成,发送扫描结果:EpcCount=" + epcList.size() + ",列表="+ JsonTools.getJsonString("EPCLIST",epcList));
+            Log.i(log_tag, "扫描完成,发送扫描结果:EpcCount=" + epcList.size() + ",列表=" + JsonTools.getJsonString("EPCLIST", epcList));
 
             if (this.messageListener != null)
                 messageListener.OnUhfScanComplete(true, this.getIdentification());
@@ -393,10 +402,6 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         return true;
     }
 
-    @Override
-    public String getIdentification() {
-        return null;
-    }
 
     @Override
     public DeviceType getDeviceType() {
@@ -521,11 +526,13 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     @Override
     public int StartScan() {
-        return 0;
+        if (scanModel) return FunctionCode.DEVICE_BUSY;
+        return StartInventory((byte) 3) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int StopScan() {
+        scanModel=false;
         return 0;
     }
 
@@ -557,7 +564,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     public void RegisterMessageListener(UhfClientMessage messageListener) {
         this.messageListener = messageListener;
-        this.messageListener.setDeviceHandler(this);
+        this.messageListener.setDeviceHandler(RodinbellReaderHandler.this);
     }
 
     /**

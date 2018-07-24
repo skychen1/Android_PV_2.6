@@ -1,6 +1,7 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient;
 
 import android.util.Log;
+import android.widget.ThemedSpinnerAdapter;
 
 import com.clou.uhf.G3Lib.CLReader;
 import com.clou.uhf.G3Lib.Enumeration.eReadType;
@@ -40,13 +41,18 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     Date lastReciveTime = new Date();
     String userInfo;
     boolean scanMode = false;
-    int antNum = 8;
+
+    byte[] ants;
 
 
     String identification;
 
     public String getIdentification() {
         return this.identification;
+    }
+
+    public String getConnId() {
+        return this.connId;
     }
 
     protected void setIdentification(String value) {
@@ -61,17 +67,40 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         new Thread(() -> {
             //获取mac地址
             try {
+                String version = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
+
+                Log.d(LOG_TAG, "获取设备版本" + version);
+
                 String mac = CLReader._Config.GetReaderMacParam(this.connId);
 
                 if (mac.equals("Timeout！") || mac.equals("Parameters error！")) {
+                    Log.e(LOG_TAG, "获取UHF设备MAC地址失败，将强制断开");
                     Close();
                     return;
                 }
                 this.setIdentification(mac);
-                if (ColuUhfReaderHandler.this.messageListener != null) {
-                    ColuUhfReaderHandler.this.messageListener.OnConnected();
+                try {
+                    String sAnt = CLReader._Config.GetReaderANT2(this.connId);
+                    Log.d(LOG_TAG, "查询使能天线 ret="+sAnt);
+                    String[] sAnts = sAnt.split(",");
+                    ants = new byte[sAnts.length];
+                    int i = 0;
+                    for (String s : sAnts) {
+                        byte b = Byte.parseByte(s);
+                        ants[i++] = b;
+                    }
+                } catch (Exception ex) {
+                    Log.e(LOG_TAG, "调用SDK获取天线失败，请联系科陆开发工程师进行解决！");
+                    Close();
+                    return;
                 }
-                antNum = CLReader._Config.GetReaderANT(connId);
+
+
+                new Thread(() -> {
+                    if (ColuUhfReaderHandler.this.messageListener != null) {
+                        ColuUhfReaderHandler.this.messageListener.OnConnected();
+                    }
+                }).start();
             } catch (InterruptedException e) {
             }
             thread = new Thread(new Runnable() {  //启动线程
@@ -82,9 +111,6 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             });
             thread.start();
         }).start();
-
-
-
     }
 
     public synchronized void UpdateLastReadTime() {
@@ -115,13 +141,13 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 scanMode = false;
             }
             if ((current.getTime() - lastReciveTime.getTime()) > 5000) {
-                Log.w(LOG_TAG, "Colu Client心跳检测异常，将强行断开");
-                if (CheckKeepAlive()) {
+                if (!CheckKeepAlive()) {
+                    Log.w(LOG_TAG, "Colu Client心跳检测异常，将强行断开");
                     Close();
                 }
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(800);
             } catch (InterruptedException e) {
             }
         }
@@ -134,21 +160,30 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     private boolean CheckKeepAlive() {
         String s = null;
         try {
-            s = CLReader._Config.GetReaderProperty(this.connId);
+            s = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
+            lastReciveTime = new Date();
         } catch (InterruptedException e) {
-            return false;
+            s = "";
         }
-        return StringUtil.isNullOrEmpty(s);
+        boolean ret = !StringUtil.isNullOrEmpty(s) || !"Timeout！".equals(s) || !"Parameters error！".equals(s);
+        if (ret) {
+            Log.d(LOG_TAG, "心跳检测成功");
+        } else {
+            Log.e(LOG_TAG, "心跳检测失败 S=" + s);
+        }
+        return ret;
     }
 
     /**
      * 内部方法，用于和 Colu Service 互动；
      */
     public synchronized void AppendNewTag(String epc, TagInfo tagInfo) {
-        UpdateLastReadTime();
+        if(!scanMode){  CLReader.Stop(connId);}
         if (this.epcs.containsKey(epc)) {
             this.epcs.get(epc).add(tagInfo);
         } else {
+            Log.d(LOG_TAG,"扫描到新的EPC ："+epc);
+            UpdateLastReadTime();
             List<TagInfo> tagInfos = new ArrayList<>();
             tagInfos.add(tagInfo);
             this.epcs.put(epc, tagInfos);
@@ -177,12 +212,8 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      */
     private int getAllAnt() {
         int antNo = 0;
-        for (int i = 0; i < antNum; i++) {
-            if (i == 0) {
-                antNo += 2 >> 1;
-            } else {
-                antNo += 2 << (i - 1);
-            }
+        for (byte b : ants) {
+            antNo |=(int)Math.pow(2,b-1);
         }
         return antNo;
     }
@@ -198,10 +229,11 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
 
         int ret = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
         if (ret == 0) {
+            scanMode=true;
             return FunctionCode.SUCCESS;
         } else {
             Log.e(LOG_TAG, "启动科陆RFID扫描失败:errorCode=" + ret);
-            return FunctionCode.SUCCESS;
+            return FunctionCode.OPERATION_FAIL;
         }
     }
 
@@ -226,7 +258,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         }
 
         HashMap<Integer, Integer> everyAntPower = new HashMap<>();
-        for (int i = 0; i < antNum; i++) {
+        for (int i = 0; i < ants.length; i++) {
             everyAntPower.put(i, power);
         }
 
@@ -238,7 +270,6 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                     this.messageListener.OnUhfSetPowerRet(this.getIdentification(), true);
                     return FunctionCode.SUCCESS;
                 }
-
             }
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "设置功率发生错误;", e);
@@ -263,7 +294,6 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 }
                 return FunctionCode.SUCCESS;
             }
-
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "获取功率发生错误;", e);
         }
@@ -271,7 +301,6 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), false, -1);
         }
         return FunctionCode.OPERATION_FAIL;
-
     }
 
     @Override
@@ -288,5 +317,4 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         this.messageListener = messageListener;
         this.messageListener.setDeviceHandler(this);
     }
-
 }

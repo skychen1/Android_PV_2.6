@@ -54,16 +54,18 @@ public class TestDevicesActivity extends SimpleActivity {
 
 
         List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
-        String s = "";
+        String s = "已连接设备如下";
         for (DeviceManager.DeviceInfo d : deviceInfos
                 ) {
             if (d.getDeviceType() == DeviceType.Eth002V2) {
                 eth002DeviceId = d.getIdentifition();
             }
-            s += d.getIdentifition() + "|||";
-
+            if(d.getDeviceType()==DeviceType.ColuUhfReader){
+                uhfDeviceId=d.getIdentifition();
+            }
+            s +=">>"+d.getDeviceType()+";;;" +d.getIdentifition() +""+ "|||";
         }
-
+        setmTextMessage(s);
     }
 
     private void initCallBack() {

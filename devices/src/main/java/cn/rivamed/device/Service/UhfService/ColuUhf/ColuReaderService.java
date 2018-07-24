@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.clou.uhf.G3Lib.CLReader;
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
-import com.clou.uhf.G3Lib.Models.GPI_Model;
-import com.clou.uhf.G3Lib.Models.Tag_Model;
+import com.clou.uhf.G3Lib.Protocol.Tag_Model;
 
+import java.io.Closeable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class ColuReaderService extends BaseService implements UhfService {
     @Override
     public boolean StartService(DeviceManager deviceManager) {
         super.StartService(deviceManager);
-        Log.d(log_tag, "启动科陆 Reader 服务器模式，Port="+coluPort);
+        Log.d(log_tag, "启动科陆 Reader 服务器模式，Port=" + coluPort);
         return CLReader.OpenTcpServer("0.0.0.0", coluPort.toString(), new CLReaderMessageCallback());
     }
 
@@ -68,6 +68,16 @@ public class ColuReaderService extends BaseService implements UhfService {
 
     private class CLReaderMessageCallback implements IAsynchronousMessage {
 
+        public CLReaderMessageCallback() {
+
+        }
+
+        int index = 0;
+
+        public CLReaderMessageCallback(int index) {
+            index = index;
+        }
+
         public void WriteDebugMsg(String s) {
 
         }
@@ -76,8 +86,10 @@ public class ColuReaderService extends BaseService implements UhfService {
             Log.d(log_tag, "Colu Reader Logs:" + s);
         }
 
+
         public void PortConnecting(String s) {
             Log.i(log_tag, "接收到ColuReader链接:Connid=" + s);
+
             ColuUhfReaderHandler handler = new ColuUhfReaderHandler(s);
             handler.RegisterMessageListener(new ColuMessageListener());
         }
@@ -98,6 +110,7 @@ public class ColuReaderService extends BaseService implements UhfService {
                 }
         }
 
+        @Override
         public void OutPutTags(Tag_Model tag_model) {
             String connId = tag_model._ReaderName;
             if (getDeviceManager() != null) {
@@ -105,10 +118,12 @@ public class ColuReaderService extends BaseService implements UhfService {
                 tagInfo.setAnt(tag_model._ANT_NUM);
                 tagInfo.setRssi(tag_model._RSSI);
                 tagInfo.setPc(tag_model._PC);
-                DeviceHandler handler = getDeviceManager().getDeviceClientHandler(conneIDs.get(connId));
-                if (handler != null) {
-                    if (handler instanceof ColuUhfReaderHandler) {
-                        ((ColuUhfReaderHandler) handler).AppendNewTag(tag_model._EPC, tagInfo);
+                if (ColuReaderService.this.getDeviceManager() != null) {
+                    DeviceHandler handler = ColuReaderService.this.getDeviceManager().getDeviceClientHandler(ColuReaderService.this.conneIDs.get(tag_model._ReaderName));
+                    if (handler != null) {
+                        if (handler instanceof ColuUhfReaderHandler) {
+                            ((ColuUhfReaderHandler) handler).AppendNewTag(tag_model._EPC, tagInfo);
+                        }
                     }
                 }
             }
@@ -119,7 +134,7 @@ public class ColuReaderService extends BaseService implements UhfService {
         }
 
         @Override
-        public void GPIControlMsg(GPI_Model gpi_model) {
+        public void GPIControlMsg(int i, int i1, int i2) {
 
         }
     }
@@ -135,11 +150,14 @@ public class ColuReaderService extends BaseService implements UhfService {
 
         @Override
         public void setDeviceHandler(DeviceHandler handler) {
-            this.deviceHandler = deviceHandler;
+            this.deviceHandler = handler;
         }
 
         @Override
         public void OnDisconnected() {
+            if (ColuReaderService.this.conneIDs.containsKey(((ColuUhfReaderHandler) deviceHandler).getConnId())) {
+                ColuReaderService.this.conneIDs.remove(((ColuUhfReaderHandler) deviceHandler).getConnId());
+            }
             if (ColuReaderService.this.getDeviceManager() != null) {
                 ColuReaderService.this.getDeviceManager().fireDeviceDisconnected(deviceHandler.getIdentification());
             }
@@ -147,6 +165,12 @@ public class ColuReaderService extends BaseService implements UhfService {
 
         @Override
         public void OnConnected() {
+
+            if (deviceHandler instanceof ColuUhfReaderHandler) {
+                ColuReaderService.this.conneIDs.put(((ColuUhfReaderHandler) deviceHandler).getConnId(), deviceHandler.getIdentification());
+            }
+
+
             if (ColuReaderService.this.getDeviceManager() != null) {
                 ColuReaderService.this.getDeviceManager().AppendConnectedDevice(deviceHandler.getIdentification(), deviceHandler);
                 if (ColuReaderService.this.getDeviceManager().getDeviceCallBack() != null) {

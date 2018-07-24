@@ -131,7 +131,7 @@ public class RodinBellService extends BaseService implements UhfService {
 
         @Override
         public void setDeviceHandler(DeviceHandler handler) {
-            this.deviceHandler = deviceHandler;
+            this.deviceHandler = handler;
         }
 
         @Override

@@ -1,5 +1,7 @@
 package cn.rivamed.device.ClientHandler;
 
+import android.util.Log;
+
 import cn.rivamed.FunctionCode;
 import cn.rivamed.device.DeviceType;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,4 +36,11 @@ public abstract class NettyDeviceClientHandler extends ChannelInboundHandlerAdap
         ctx.close();
         return FunctionCode.SUCCESS;
     }
+
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx){
+       this.setCtx(ctx);
+    }
+
 }
