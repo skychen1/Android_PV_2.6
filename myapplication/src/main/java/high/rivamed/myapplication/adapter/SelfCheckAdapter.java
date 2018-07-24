@@ -48,7 +48,7 @@ public class SelfCheckAdapter  extends BaseMultiItemQuickAdapter<MultiItemEntity
 		view.setBackgroundResource(R.color.bg_f6);
 		final SelfCheckBean item1 = (SelfCheckBean) item;
 		((TextView) helper.getView(R.id.seven_two)).setText(item1.nametitle);
-		((TextView) helper.getView(R.id.seven_three)).setText(item1.typetitle);
+//		((TextView) helper.getView(R.id.seven_three)).setText(item1.typetitle);
 		((TextView) helper.getView(R.id.seven_four)).setText(item1.mactitle);
 		((TextView) helper.getView(R.id.seven_five)).setText(item1.iptitle);
 		TextView textView = (TextView) helper.getView(R.id.seven_six_text);
@@ -94,7 +94,7 @@ public class SelfCheckAdapter  extends BaseMultiItemQuickAdapter<MultiItemEntity
 		SelfCheckTitleBean item2 = (SelfCheckTitleBean) item;
 
 		((TextView) helper.getView(R.id.seven_two)).setText(item2.getName());
-		((TextView) helper.getView(R.id.seven_three)).setText(item2.getType());
+//		((TextView) helper.getView(R.id.seven_three)).setText(item2.getType());
 		((TextView) helper.getView(R.id.seven_four)).setText(item2.getMac());
 		((TextView) helper.getView(R.id.seven_five)).setText(item2.getIp());
 		TextView textView2 = (TextView) helper.getView(R.id.seven_six_text);

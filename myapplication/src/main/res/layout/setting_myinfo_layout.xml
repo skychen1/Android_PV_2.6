@@ -34,10 +34,10 @@
 				android:layout_marginLeft="@dimen/x530"
 				android:layout_marginTop="@dimen/x266"
 				android:drawableLeft="@mipmap/hccz_ic_nc"
-				android:text="姓名：账上"
+				android:text="用户名：账上"
 				android:textColor="@color/text_color_6"
 				android:drawablePadding="@dimen/x20"
-				android:textSize="@dimen/textsize_17"/>
+				android:textSize="@dimen/textsize_18"/>
 
 			<TextView
 				android:id="@+id/setting_department"
@@ -49,7 +49,7 @@
 				android:drawableLeft="@mipmap/hccz_ic_ks"
 				android:textColor="@color/text_color_6"
 				android:text="科室：xxx科室xx库房"
-				android:textSize="@dimen/textsize_17"/>
+				android:textSize="@dimen/textsize_18"/>
 
 			<TextView
 				android:id="@+id/setting_position"
@@ -61,7 +61,7 @@
 				android:textColor="@color/text_color_6"
 				android:drawablePadding="@dimen/x20"
 				android:text="角色：护士-x"
-				android:textSize="@dimen/textsize_17"/>
+				android:textSize="@dimen/textsize_18"/>
 
 			<TextView
 				android:id="@+id/setting_remarks"
@@ -73,7 +73,7 @@
 				android:drawablePadding="@dimen/x20"
 				android:paddingTop="@dimen/x50"
 				android:text="备注：xxxxx"
-				android:textSize="@dimen/textsize_17"/>
+				android:textSize="@dimen/textsize_18"/>
 		</LinearLayout>
 
 	</android.support.v7.widget.CardView>
@@ -96,7 +96,7 @@
 			android:layout_height="wrap_content"
 			android:text="王麻子"
 			android:layout_marginTop="@dimen/x40"
-			android:textSize="@dimen/textsize_22"
+			android:textSize="@dimen/textsize_24"
 			android:textColor="@color/text_color_3"
 			android:layout_gravity="center_horizontal"/>
 	</LinearLayout>

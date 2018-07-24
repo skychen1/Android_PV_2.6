@@ -17,7 +17,7 @@ import high.rivamed.myapplication.views.VerificationCodeView;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/13 18:49
- * 描述:        密码登录界面Fragment
+ * 描述:        紧急登录界面Fragment
  * 包名:        high.rivamed.myapplication.fragment
  * <p>
  * 更新者：     $$Author$$

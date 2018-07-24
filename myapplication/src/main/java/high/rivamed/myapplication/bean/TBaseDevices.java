@@ -17,11 +17,11 @@ import java.util.List;
  * 更新描述：   ${TODO}
  */
 
-public class TBaseDevice extends AbstractExpandableItem<TBaseDevice.tBaseDevice>
+public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevices>
 	implements MultiItemEntity {
 
-   private List<tBaseDevice> list;//柜子list信息
-   public  String            boxname;//柜子名字
+   private List<tBaseDevices>     list;//柜子list信息
+   public  String                 boxname;//柜子名字
    private List<RegisteTitleBean> list2;//柜子list信息
 
    public List<RegisteTitleBean> getList2() {
@@ -34,11 +34,11 @@ public class TBaseDevice extends AbstractExpandableItem<TBaseDevice.tBaseDevice>
 
 
 
-   public List<tBaseDevice> getList() {
+   public List<tBaseDevices> getList() {
 	return list;
    }
 
-   public void setList(List<tBaseDevice> list) {
+   public void setList(List<tBaseDevices> list) {
 	this.list = list;
    }
 
@@ -50,7 +50,7 @@ public class TBaseDevice extends AbstractExpandableItem<TBaseDevice.tBaseDevice>
 	this.boxname = boxname;
    }
 
-   public static class RegisteTitleBean extends tBaseDevice implements MultiItemEntity {
+   public static class RegisteTitleBean extends tBaseDevices implements MultiItemEntity {
 
 	public RegisteTitleBean(String name, String mac, String ip, String type) {
 	   this.mName = name;
@@ -114,7 +114,7 @@ public class TBaseDevice extends AbstractExpandableItem<TBaseDevice.tBaseDevice>
 	return 0;
    }
 
-   public static class tBaseDevice implements MultiItemEntity {
+   public static class tBaseDevices implements MultiItemEntity {
 
 	public String partsname;
 	public String partip;

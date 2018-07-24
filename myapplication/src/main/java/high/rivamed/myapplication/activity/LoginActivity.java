@@ -33,12 +33,12 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
-import high.rivamed.myapplication.devices.TestDevicesActivity;
-import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
+import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -70,7 +70,7 @@ public class LoginActivity extends SimpleActivity {
    TextView    mDownText;
    private ArrayList<Fragment> mFragments = new ArrayList<>();
 
-   final static int COUNTS = 8;// 点击次数  2s内点击8次进入注册界面
+   final static int COUNTS = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
 
@@ -81,7 +81,23 @@ public class LoginActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-
+//	SQLiteDatabase db = LitePal.getDatabase();//创建数据库表
+//	BoxIdBean boxIdBean = new BoxIdBean();
+//	boxIdBean.setName("我是谁");
+//	boxIdBean.setBox_id("22");
+//	boxIdBean.setDevice_id("22xxx");
+//	boxIdBean.save();
+//	BoxIdBean boxIdBean2 = new BoxIdBean();
+//	boxIdBean2.setName("dddddddd");
+//	boxIdBean2.setBox_id("2afafafaf2");
+//	boxIdBean2.setDevice_id("wwwwwwwwwwwwwwwxxx");
+//	boxIdBean2.save();
+//	List<BoxIdBean> boxIdBeans = LitePal.where("device_id=?","wwwwwwwwwwwwwwwxxx")
+//		.find(BoxIdBean.class);
+//	//	BoxIdBean idBean = LitePal.find(BoxIdBean.class, 1);
+//	for (int i=0;i<boxIdBeans.size();i++){
+//	   Log.i("dss", boxIdBeans.get(i).getBox_id() + "");
+//	}
 	mFragments.add(new LoginPassWordFragment());
 	mFragments.add(new LoginPassFragment());
 	initData();

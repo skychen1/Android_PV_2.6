@@ -21,9 +21,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.MealPopAdapter;
-import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -51,7 +49,7 @@ public class MacPopupWindow extends PopupWindow {
    private       MealPopAdapter  mMealPopAdapter;
    private final List<Movie>     mMovies;
    private final List<Movie>     mMovies1;
-
+   private       TextView            mTextView;
    public MacPopupWindow(Context context) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
@@ -68,8 +66,8 @@ public class MacPopupWindow extends PopupWindow {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		TextView textView = (TextView) view.findViewById(R.id.item_meal);
 		String trim = textView.getText().toString().trim();
-		//		mEditText.setText(trim);
-		EventBusUtils.postSticky(new Event.PopupEvent(false, trim));
+		mTextView.setText(trim);
+		dismiss();
 	   }
 	});
 
@@ -118,9 +116,9 @@ public class MacPopupWindow extends PopupWindow {
 	mRecyclerView.setLayoutParams(lp);
    }
 
-   public void showPopupWindow(View parent) {
+   public void showPopupWindow(View parent,int pos) {
 	parent.getLocationOnScreen(mLocation);
-
+	this.mTextView =(TextView) parent;
 	this.setContentView(mView);
 	this.setWidth(parent.getWidth()+10);
 	this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);

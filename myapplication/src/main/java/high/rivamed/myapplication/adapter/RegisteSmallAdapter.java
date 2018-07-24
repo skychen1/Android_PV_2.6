@@ -17,7 +17,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.TBaseDevice;
+import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.utils.RotateUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -36,30 +36,32 @@ import static android.widget.GridLayout.VERTICAL;
  * 更新描述：   ${TODO}
  */
 
-public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevice, BaseViewHolder> {
+public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseViewHolder> {
 
    private boolean            mType         = false;
    private SparseBooleanArray mExpanded = new SparseBooleanArray();
-   public RegisteContextAdapter mHeadAdapter;
-   private List<TBaseDevice.tBaseDevice> mList;
+   public RegisteContextAdapter            mHeadAdapter;
+   private List<TBaseDevices.tBaseDevices> mList;
+   public EditText mLeftName;
+   public RecyclerView mRecyclerView2;
 
    public RegisteSmallAdapter(
-	   int layoutResId, @Nullable List<TBaseDevice> data) {
+	   int layoutResId, @Nullable List<TBaseDevices> data) {
 	super(layoutResId, data);
    }
 
    @Override
-   protected void convert(final BaseViewHolder holder, TBaseDevice item) {
+   protected void convert(final BaseViewHolder holder, TBaseDevices item) {
 
-	final TBaseDevice item1 = (TBaseDevice) item;
-	EditText leftName = (EditText) holder.getView(R.id.head_left_name);
-	final RecyclerView recyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
+	final TBaseDevices item1 = (TBaseDevices) item;
+	mLeftName = (EditText) holder.getView(R.id.head_left_name);
+	mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	ImageView rightDelete = (ImageView) holder.getView(R.id.right_delete);
 	if (holder.getAdapterPosition() == 0) {
-	   leftName.setText("1号柜");
+	   mLeftName.setText("1号柜");
 	   rightDelete.setVisibility(View.GONE);
 	} else if (item1.boxname.equals("")) {
-	   leftName.setText("");
+	   mLeftName.setText("");
 	   rightDelete.setVisibility(View.VISIBLE);
 	}
 
@@ -68,15 +70,15 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevice, BaseViewH
 	   @Override
 	   public void onClick(View v) {
 		if (mExpanded.get(holder.getAdapterPosition())) {
-		   ViewGroup.LayoutParams lps = recyclerView2.getLayoutParams();
+		   ViewGroup.LayoutParams lps = mRecyclerView2.getLayoutParams();
 		   lps.height = ViewGroup.LayoutParams.MATCH_PARENT;
-		   recyclerView2.setLayoutParams(lps);
+		   mRecyclerView2.setLayoutParams(lps);
 		   RotateUtils.rotateArrow(rightFold, true);
 		   mExpanded.put(holder.getAdapterPosition(),false);
 		} else {
-		   ViewGroup.LayoutParams lps = recyclerView2.getLayoutParams();
+		   ViewGroup.LayoutParams lps = mRecyclerView2.getLayoutParams();
 		   lps.height = 0;
-		   recyclerView2.setLayoutParams(lps);
+		   mRecyclerView2.setLayoutParams(lps);
 		   RotateUtils.rotateArrow(rightFold, false);
 		   mExpanded.put(holder.getAdapterPosition(),true);
 		}
@@ -91,12 +93,13 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevice, BaseViewH
 	});
 
 	mList = item1.getList();
-	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList, recyclerView2);
-	recyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
-	recyclerView2.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	recyclerView2.setAdapter(mHeadAdapter);
+	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList,
+							     mRecyclerView2,holder.getAdapterPosition());
+	mRecyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
+	mRecyclerView2.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	mRecyclerView2.setAdapter(mHeadAdapter);
 	View view = mLayoutInflater.inflate(R.layout.item_head_small_layout,
-							(ViewGroup) recyclerView2.getParent(), false);
+							(ViewGroup) mRecyclerView2.getParent(), false);
 	if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")){
 	   view.findViewById(R.id.type_de).setVisibility(View.GONE);
 	}else {

@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.devices;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,12 +13,9 @@ import java.util.Map;
 import cn.rivamed.DeviceManager;
 import cn.rivamed.callback.DeviceCallBack;
 import cn.rivamed.device.DeviceType;
-import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
-import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
-import high.rivamed.myapplication.utils.ToastUtils;
 
 
 public class TestDevicesActivity extends SimpleActivity {
@@ -112,6 +110,7 @@ public class TestDevicesActivity extends SimpleActivity {
 
             @Override
             public void OnDoorOpened(String deviceIndentify, boolean success) {
+                Log.i("ffff", success + "  OnDoorOpened    " + deviceIndentify);
                 setmTextMessage("开门结果：" + deviceIndentify + ":::success=" + success);
             }
 

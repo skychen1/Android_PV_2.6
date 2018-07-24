@@ -32,9 +32,8 @@
     	</list>
     -->
     <list>
-        <mapping class="org.litepal.litepalsample.model.Album" />
-        <mapping class="org.litepal.litepalsample.model.Song" />
-        <mapping class="org.litepal.litepalsample.model.Singer" />
+        <!--柜子和柜子内部的id绑定的类-->
+        <mapping class="high.rivamed.myapplication.bean.BoxIdBean" />
 
     </list>
 
@@ -64,6 +63,6 @@
         <storage value="external"></storage>
     -->
 
-    <storage value="external" />
+    <storage value="internal" />
 
 </litepal>

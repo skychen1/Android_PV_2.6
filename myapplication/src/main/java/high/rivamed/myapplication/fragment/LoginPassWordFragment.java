@@ -1,10 +1,21 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.WifiUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -20,6 +31,15 @@ import high.rivamed.myapplication.base.SimpleFragment;
 
 public class LoginPassWordFragment extends SimpleFragment {
 
+   @BindView(R.id.login_name)
+   EditText mLoginName;
+   @BindView(R.id.login_password)
+   EditText mLoginPassword;
+   @BindView(R.id.login_button)
+   TextView mLoginButton;
+   private String mUserPhone;
+   private String mPassword;
+
    @Override
    public int getLayoutId() {
 	return R.layout.login_passname_layout;
@@ -33,5 +53,45 @@ public class LoginPassWordFragment extends SimpleFragment {
    @Override
    public void onBindViewBefore(View view) {
 
+   }
+
+   @OnClick(R.id.login_button)
+   public void onViewClicked() {
+	if (UIUtils.isFastDoubleClick()) {
+	   return;
+	} else {
+	   if (isvalidate() && WifiUtils.isWifi(mContext) != 0) {
+		loadLogin();
+		ToastUtils.showShort("登录");
+	   } else {
+		Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+	   }
+	}
+   }
+
+   private boolean isvalidate() {
+	// 获取控件输入的值
+	mUserPhone = mLoginName.getText().toString().trim();
+	mPassword = mLoginPassword.getText().toString().trim();
+	if (StringUtils.isEmpty(mUserPhone)) {
+	   Toast.makeText(mContext, "用户名不能为空", Toast.LENGTH_SHORT).show();
+	   return false;
+	}
+
+	if (StringUtils.isEmpty(mPassword)) {
+	   Toast.makeText(mContext, "密码不能为空", Toast.LENGTH_SHORT).show();
+	   return false;
+	}
+
+	return true;
+   }
+
+   /**
+    * 获取登录
+    */
+   private void loadLogin() {
+	Intent intent = new Intent(mContext, HomeActivity.class);
+	mContext.startActivity(intent);
+	mContext.finish();
    }
 }

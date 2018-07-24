@@ -193,7 +193,7 @@
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">wrap_content</item>
 		<item name="android:textColorHint">@color/bg_c</item>
-		<item name="android:textSize">@dimen/textsize_16</item>
+		<item name="android:textSize">@dimen/textsize_17</item>
 		<item name="android:layout_marginRight">@dimen/x50</item>
 		<item name="android:layout_marginLeft">@dimen/x50</item>
 		<item name="android:layout_marginTop">@dimen/x12</item>

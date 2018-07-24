@@ -8,6 +8,7 @@
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 	<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
 	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="com.android.example.USB_PERMISSION"></uses-permission>
 
 
@@ -32,7 +33,7 @@
 		</meta-data>
 
 		<activity
-			android:name=".activity.LoginActivity"
+			android:name=".activity.HomeActivity"
 			android:screenOrientation="landscape"
 			android:windowSoftInputMode="adjustPan"
 			>
@@ -41,9 +42,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<activity
-		android:name=".activity.HomeActivity"
-		android:screenOrientation="landscape"/>
+		<!--<activity-->
+		<!--android:name=".activity.HomeActivity"-->
+		<!--android:screenOrientation="landscape"/>-->
 		<activity
 			android:name=".activity.MyInfoActivity"
 			android:launchMode="singleInstance"

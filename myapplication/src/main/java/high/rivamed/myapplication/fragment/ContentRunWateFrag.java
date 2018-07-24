@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,9 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetApi;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
@@ -104,12 +111,49 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	initData();
+	loadData();
 	mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager());
 	mHomeRunWateViewpager.setAdapter(mPagerAdapter);
 	mHomeRunWateViewpager.setCurrentItem(0);
 	mKeys = mTitles.toArray(new String[mTitles.size()]);
 	mHomeRunwateRg.setViewPager(mHomeRunWateViewpager, mKeys);
 	mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
+   }
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	Log.i("onStart", "onStart:");
+	OkGo.<String>get(NetApi.URL_HOME_BOXSIZE).tag(this)
+		.params("thingCode", "23233")
+		.execute(new StringCallback() {
+		   @Override
+		   public void onSuccess(Response<String> response) {
+
+			Log.i("fff", "getAppealMsg:" + response.body());
+		   }
+
+		   @Override
+		   public void onError(Response<String> response) {
+			super.onError(response);
+		   }
+		});
+   }
+
+
+
+   /**
+    * 联网获取数据
+    */
+   private void loadData() {
+
+	NetRequest.getInstance().loadRunWate("23233",null, null, null, null, -1, _mActivity, new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+
+		Log.i("fff", "loadRunWate:" + result);
+	   }
+	});
    }
 
    private void initData() {

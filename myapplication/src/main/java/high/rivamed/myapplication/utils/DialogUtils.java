@@ -3,7 +3,6 @@ package high.rivamed.myapplication.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -11,11 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
-import high.rivamed.myapplication.activity.OutBoxBingActivity;
-import high.rivamed.myapplication.activity.OutBoxFoutActivity;
-import high.rivamed.myapplication.activity.OutFormConfirmActivity;
-import high.rivamed.myapplication.activity.OutMealBingConfirmActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
@@ -95,44 +89,43 @@ public class DialogUtils {
     * @param nojump nojump不跳转，out拿出  in 拿入
     * @param bing 是否是绑定病人
     */
-   public static void showNoDialog(final Context context, String title, int mType, final String nojump,
-					     final String bing) {
+   public static NoDialog.Builder showNoDialog(final Context context, String title, int mType, final String nojump,
+							     final String bing) {
 	final NoDialog.Builder builder = new NoDialog.Builder(context, mType,nojump,bing);
 	builder.setMsg(title);
 	builder.setLeft("", new DialogInterface.OnClickListener() {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
-		Log.i("TT", " nojump  " +nojump);
-	      if(nojump.equals("out")){
-		   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
-		   if (bing==null){  //没有绑定病人
-			context.startActivity(new Intent(context, OutBoxFoutActivity.class));
-		   }else {
-			context.startActivity(new Intent(context, OutBoxBingActivity.class));
-
-		   }
-		}else if (nojump.equals("in")){
-		   Log.i("TT", " EventAct  " );
-		   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
-		   EventBusUtils.postSticky(new Event.EventAct("all"));
-		   Intent intent2 = new Intent(context, InOutBoxTwoActivity.class);
-		   context.startActivity(intent2);
-
-		}else if (nojump.equals("form")){
-		   if (bing ==null){
-			context.startActivity(new Intent(context, OutFormConfirmActivity.class));
-		   }else {//绑定患者的套餐
-			context.startActivity(new Intent(context, OutMealBingConfirmActivity.class));
-		   }
-
-		}
-
+//		Log.i("TT", " nojump  " +nojump);
+//	      if(nojump.equals("out")){
+//		   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
+//		   if (bing==null){  //没有绑定病人
+//			context.startActivity(new Intent(context, OutBoxFoutActivity.class));
+//		   }else {
+//			context.startActivity(new Intent(context, OutBoxBingActivity.class));
+//
+//		   }
+//		}else if (nojump.equals("in")){
+//		   Log.i("TT", " EventAct  " );
+//		   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
+////		   EventBusUtils.postSticky(new Event.EventAct("all"));
+////		   Intent intent2 = new Intent(context, InOutBoxTwoActivity.class);
+////		   context.startActivity(intent2);
+//
+//		}else if (nojump.equals("form")){
+//		   if (bing ==null){
+//			context.startActivity(new Intent(context, OutFormConfirmActivity.class));
+//		   }else {//绑定患者的套餐
+//			context.startActivity(new Intent(context, OutMealBingConfirmActivity.class));
+//		   }
+//
+//		}
 		dialog.dismiss();
 	   }
 	});
 
 	builder.create().show();
-
+	return builder;
    }
 
    public static void showStoreDialog(Context context,int mNumColumn, int mType) {
