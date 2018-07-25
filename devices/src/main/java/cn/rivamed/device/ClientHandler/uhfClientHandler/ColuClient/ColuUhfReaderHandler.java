@@ -5,8 +5,10 @@ import android.widget.ThemedSpinnerAdapter;
 
 import com.clou.uhf.G3Lib.CLReader;
 import com.clou.uhf.G3Lib.Enumeration.eReadType;
+import com.clou.uhf.G3Lib.Param_Set;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +83,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 this.setIdentification(mac);
                 try {
                     String sAnt = CLReader._Config.GetReaderANT2(this.connId);
-                    Log.d(LOG_TAG, "查询使能天线 ret="+sAnt);
+                    Log.d(LOG_TAG, "查询使能天线 ret=" + sAnt);
                     String[] sAnts = sAnt.split(",");
                     ants = new byte[sAnts.length];
                     int i = 0;
@@ -114,7 +116,10 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     }
 
     public synchronized void UpdateLastReadTime() {
-        this.lastReciveTime = new Date();
+        Date now = new Date();
+        if (now.getTime() >= lastReciveTime.getTime()) {
+            this.lastReciveTime = new Date();
+        }
     }
 
     /**
@@ -140,10 +145,12 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 epcs.clear();
                 scanMode = false;
             }
-            if ((current.getTime() - lastReciveTime.getTime()) > 5000) {
+            if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 5000) {
                 if (!CheckKeepAlive()) {
-                    Log.w(LOG_TAG, "Colu Client心跳检测异常，将强行断开");
-                    Close();
+                    Log.w(LOG_TAG, "Colu Client DEVICEID="+getIdentification()+"心跳检测异常，累计满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
+                    if (keepAliveErrorCount >= 3) {
+                        Close();
+                    }
                 }
             }
             try {
@@ -152,6 +159,14 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             }
         }
     }
+
+    /**
+     * 心跳错误基数
+     * 心跳成功则 归0，失败则+1
+     * <p>
+     * 总集数满3 则强制断开
+     */
+    int keepAliveErrorCount = 0;
 
     /***
      * 检测心跳
@@ -165,24 +180,28 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         } catch (InterruptedException e) {
             s = "";
         }
-        boolean ret = !StringUtil.isNullOrEmpty(s) || !"Timeout！".equals(s) || !"Parameters error！".equals(s);
-        if (ret) {
-            Log.d(LOG_TAG, "心跳检测成功");
+        boolean ret = StringUtil.isNullOrEmpty(s) || "Timeout！".equals(s) || "Parameters error！".equals(s);
+        if (!ret) {
+            Log.d(LOG_TAG, "鸿陆RFID CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + " 心跳检测成功");
+            keepAliveErrorCount = 0;
         } else {
-            Log.e(LOG_TAG, "心跳检测失败 S=" + s);
+            Log.e(LOG_TAG, "鸿陆RFID CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + " 心跳检测失败 S=" + s);
+            keepAliveErrorCount++;
         }
-        return ret;
+        return !ret;
     }
 
     /**
      * 内部方法，用于和 Colu Service 互动；
      */
     public synchronized void AppendNewTag(String epc, TagInfo tagInfo) {
-        if(!scanMode){  CLReader.Stop(connId);}
+        if (!scanMode) {
+            CLReader.Stop(connId);
+        }
         if (this.epcs.containsKey(epc)) {
             this.epcs.get(epc).add(tagInfo);
         } else {
-            Log.d(LOG_TAG,"扫描到新的EPC ："+epc);
+            Log.d(LOG_TAG, "鸿陆RFID CONNID=" + this.connId + "  DEVICEID=" + getIdentification()+"扫描到新的EPC ：" + epc);
             UpdateLastReadTime();
             List<TagInfo> tagInfos = new ArrayList<>();
             tagInfos.add(tagInfo);
@@ -202,8 +221,16 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
 
     @Override
     public int Close() {
-        threadKeepAlive = false;
-        CLReader.CloseConn(connId);
+        try {
+            threadKeepAlive = false;
+            CLReader.CloseConn(connId);
+        } catch (Exception ex) {
+            Log.e(LOG_TAG, ex.getMessage());
+        } finally {
+            if (this.messageListener != null) {
+                this.messageListener.OnDisconnected();
+            }
+        }
         return FunctionCode.SUCCESS;
     }
 
@@ -213,7 +240,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     private int getAllAnt() {
         int antNo = 0;
         for (byte b : ants) {
-            antNo |=(int)Math.pow(2,b-1);
+            antNo |= (int) Math.pow(2, b - 1);
         }
         return antNo;
     }
@@ -228,11 +255,16 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         }
 
         int ret = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
+        Calendar calendar = Calendar.getInstance();    //至少扫描3秒
+        calendar.setTime(new Date());
+        calendar.add(Calendar.SECOND, 5);
+        lastReciveTime = calendar.getTime();
+
         if (ret == 0) {
-            scanMode=true;
+            scanMode = true;
             return FunctionCode.SUCCESS;
         } else {
-            Log.e(LOG_TAG, "启动科陆RFID扫描失败:errorCode=" + ret);
+            Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification()+"RFID扫描失败:errorCode=" + ret);
             return FunctionCode.OPERATION_FAIL;
         }
     }
@@ -242,7 +274,10 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      */
     public int StopScan() {
         try {
+            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束");
+            scanMode = false;
             CLReader.Stop(connId);
+            Thread.sleep(150);//听从鸿陆SDK工程师建议，这样可以避免下一次 启动扫描失败，但实际上依然会失败，目测需要停止1秒以上
             return FunctionCode.SUCCESS;
         } catch (Exception ex) {
             Log.e(LOG_TAG, "停止扫描发生错误:" + ex.getMessage());
@@ -256,58 +291,80 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         if (power < 0 || power > 33) {
             return FunctionCode.PARAM_ERROR;
         }
+        boolean success = false;
 
         HashMap<Integer, Integer> everyAntPower = new HashMap<>();
         for (int i = 0; i < ants.length; i++) {
-            everyAntPower.put(i, power);
+            everyAntPower.put((int) ants[i], power);
         }
 
 
         try {
             int ret = CLReader._Config.SetANTPowerParam(this.connId, everyAntPower);
             if (ret == 0) {
-                if (this.messageListener != null) {
-                    this.messageListener.OnUhfSetPowerRet(this.getIdentification(), true);
-                    return FunctionCode.SUCCESS;
-                }
+                success = true;
             }
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "设置功率发生错误;", e);
         }
-        this.messageListener.OnUhfSetPowerRet(this.getIdentification(), false);
-        return FunctionCode.OPERATION_FAIL;
+
+        boolean finalSuccess = success;
+        new Thread(() -> {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+
+            }
+            if (this.messageListener != null) {
+                this.messageListener.OnUhfSetPowerRet(this.getIdentification(), finalSuccess);
+            }
+        }).start();
+
+        return finalSuccess ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int QueryPower() {
+
+        boolean success = false;
+        int power = 100;
         try {
             HashMap<Integer, Integer> everyAntPower = CLReader._Config.GetANTPowerParam(this.connId);
             if (everyAntPower != null && everyAntPower.size() > 0) {
-                int i = 0;
                 for (Map.Entry<Integer, Integer> p : everyAntPower.entrySet()) {
-                    if (p.getValue() < i) {
-                        i = p.getValue();
+                    if (p.getValue() < power) {
+                        power = p.getValue();
                     }
                 }
-                if (this.messageListener != null) {
-                    this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), true, i);
-                }
-                return FunctionCode.SUCCESS;
+                success = true;
             }
         } catch (InterruptedException e) {
             Log.e(LOG_TAG, "获取功率发生错误;", e);
         }
-        if (this.messageListener != null) {
-            this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), false, -1);
-        }
-        return FunctionCode.OPERATION_FAIL;
+
+        boolean finalSuccess = success;
+        int finalPower = power;
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+
+            }
+            if (this.messageListener != null) {
+                this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), finalSuccess, finalPower);
+            }
+        }).start();
+
+
+        return finalSuccess ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int Reset() {
         threadKeepAlive = false;
-// TODO: 2018-07-18  在SDK中未找到Reset 或类似的方法
-        return FunctionCode.DEVICE_NOT_SUPPORT;
+        Param_Set.ReSetReader(this.connId);
+        return FunctionCode.SUCCESS;
     }
 
 

@@ -2,6 +2,7 @@ package cn.rivamed;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -378,6 +379,26 @@ public class DeviceManager {
         return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).CheckLockState();
     }
 
+    public int OpenLight(String deviceId){
+        if (!this.getConnetedDevices().containsKey(deviceId)) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        if (!(this.getConnetedDevices().get(deviceId) instanceof Eth002ClientHandler)) {
+            return FunctionCode.DEVICE_NOT_SUPPORT;
+        }
+        return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).OpenLight();
+    }
+
+    public int CloseLight(String deviceId){
+        if (!this.getConnetedDevices().containsKey(deviceId)) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        if (!(this.getConnetedDevices().get(deviceId) instanceof Eth002ClientHandler)) {
+            return FunctionCode.DEVICE_NOT_SUPPORT;
+        }
+        return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).CloseLight();
+    }
+
     /***
      * 指纹注册
      * @param deviceId 指纹仪连接的Eth模块的设备ID ，每个柜子对应一个Eth002模块
@@ -391,5 +412,23 @@ public class DeviceManager {
             return FunctionCode.DEVICE_NOT_SUPPORT;
         }
         return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).FingerReg();
+    }
+
+    /**
+     * GC
+     * */
+    public  void Release(){
+        StopEth002Service();
+        StopUhfReaderService();
+
+        for (Map.Entry<String, DeviceHandler> handler:this.getConnetedDevices().entrySet()){
+            if(handler.getValue()!=null){
+                try{
+                    handler.getValue().Close();
+                }
+                catch (Exception ex){
+                }
+            }
+        }
     }
 }

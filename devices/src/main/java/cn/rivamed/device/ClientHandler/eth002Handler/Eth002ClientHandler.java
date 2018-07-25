@@ -10,6 +10,8 @@ public interface Eth002ClientHandler {
 
     int OpenLight();
 
+    int CloseLight();
+
     int Close();
 
 

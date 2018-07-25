@@ -15,6 +15,7 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient.ColuUhfReaderHandler;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfHandler;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
@@ -68,16 +69,6 @@ public class ColuReaderService extends BaseService implements UhfService {
 
     private class CLReaderMessageCallback implements IAsynchronousMessage {
 
-        public CLReaderMessageCallback() {
-
-        }
-
-        int index = 0;
-
-        public CLReaderMessageCallback(int index) {
-            index = index;
-        }
-
         public void WriteDebugMsg(String s) {
 
         }
@@ -100,14 +91,14 @@ public class ColuReaderService extends BaseService implements UhfService {
                 mac = conneIDs.get(s);
                 conneIDs.remove(s);
             }
-            if (!StringUtil.isNullOrEmpty(mac))
-                if (getDeviceManager() != null) {
-                    if (getDeviceManager() != null) {
-                        if (getDeviceManager().getDeviceCallBack() != null) {
-                            getDeviceManager().getDeviceCallBack().OnDeviceDisConnected(DeviceType.ColuUhfReader, mac);
-                        }
+            if(StringUtil.isNullOrEmpty(mac)){
+                if(getDeviceManager()!=null){
+                    DeviceHandler handler= getDeviceManager().getDeviceClientHandler(mac);
+                    if(handler!=null){
+                        handler.Close();
                     }
                 }
+            }
         }
 
         @Override

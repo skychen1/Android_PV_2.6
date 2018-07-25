@@ -1,5 +1,6 @@
 package cn.rivamed.device.ClientHandler.eth002Handler;
 
+import cn.rivamed.FunctionCode;
 import cn.rivamed.device.ClientHandler.NettyDeviceClientHandler;
 import cn.rivamed.device.DeviceType;
 import io.netty.util.internal.StringUtil;
@@ -62,5 +63,10 @@ public class Eth002V26Handler extends NettyDeviceClientHandler implements Eth002
     @Override
     public int OpenLight() {
         return 0;
+    }
+
+    @Override
+    public int CloseLight() {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 }

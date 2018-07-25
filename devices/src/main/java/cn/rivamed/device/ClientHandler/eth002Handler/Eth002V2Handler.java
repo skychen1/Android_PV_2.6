@@ -591,6 +591,11 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
         return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
+    @Override
+    public int CloseLight() {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
+    }
+
 
     /***
      * 回调函数与注册
