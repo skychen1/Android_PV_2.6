@@ -25,6 +25,10 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.SocketLeftDownBean;
+import high.rivamed.myapplication.bean.StockDetailsBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.views.TableTypeView;
@@ -60,6 +64,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAIL
 
 public class BaseTimelyActivity extends BaseSimpleActivity {
 
+   private static final String TAG = "BaseTimelyActivity";
    public int my_id;
    public int mSize;
    @BindView(R.id.timely_start_btn)
@@ -115,13 +120,21 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private TableTypeView       mTypeView;
    public  String              mActivityType;
    private String mMovie;
+   List<String> titeleList = null;
+
+   private SocketLeftDownBean.TCstInventoryVosBean mStockDetailsTopBean;
+   private List<StockDetailsBean.TCstInventoryVosBean> mStockDetailsDownList;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
    }
 
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onMidTypeEvent(SocketLeftDownBean.TCstInventoryVosBean  event) {
+	mStockDetailsTopBean = event;
 
+   }
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -158,7 +171,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTimelyRight.setClickable(false);
 	   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
 	}
-	List<String> titeleList = null;
+
 	if (my_id == ACT_TYPE_TIMELY_LOSS) {
 	   mBaseTabTvTitle.setText("盘亏耗材详情");
 	   String str = "3";
@@ -180,17 +193,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout,
 						   mRecyclerview, mRefreshLayout, ACTIVITY);
 	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
-	   mBaseTabTvTitle.setText("耗材详情");
-	   String str = "35";
-	   mTimelyNumber.setText(
-		   Html.fromHtml("耗材数量：<font color='#262626'><big>" + str + "</big></font>"));
-	   mTimelyName.setVisibility(View.VISIBLE);
-	   mTimelyName.setText("耗材名称：微创路入系统" + "    型号规格：101");
-	   String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData4(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY);
+	   loadStockDetails();
+
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
 	   mBaseTabTvTitle.setText("识别耗材");
 	   Log.i("TT", "   " + mActivityType);
@@ -306,6 +310,35 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	 */
 	//	new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
 	//				mRefreshLayout, ACTIVITY);
+   }
+
+   /**
+    * 耗材详情
+    */
+   private void loadStockDetails() {
+	mBaseTabTvTitle.setText("耗材详情");
+	String deviceCode = mStockDetailsTopBean.getDeviceCode();
+	String cstCode = mStockDetailsTopBean.getCstCode();
+	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	NetRequest.getInstance().getStockDetailDate(deviceCode,cstCode,mContext,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		StockDetailsBean detailsBean = mGson.fromJson(result, StockDetailsBean.class);
+		mStockDetailsDownList = detailsBean.getTCstInventoryVos();
+		mTimelyNumber.setText(
+			Html.fromHtml("耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getSize() + "</big></font>"));
+		mTimelyName.setVisibility(View.VISIBLE);
+		mTimelyName.setText("耗材名称：" +mStockDetailsTopBean.getName()+ "    型号规格："+mStockDetailsTopBean.getType());
+		mTypeView = new TableTypeView(mContext, mContext, titeleList, mSize, mStockDetailsDownList, mLinearLayout,
+							mRecyclerview, mRefreshLayout, ACTIVITY);
+	   }
+	});
+
+
+
+
    }
 
    /**

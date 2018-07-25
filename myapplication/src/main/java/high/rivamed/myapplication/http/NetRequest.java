@@ -1,13 +1,11 @@
 package high.rivamed.myapplication.http;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
-
-import java.io.File;
-import java.util.HashMap;
 
 import high.rivamed.myapplication.utils.LogUtils;
 
@@ -32,11 +30,13 @@ public class NetRequest {
    private static Gson       mGson;
 
    public static NetRequest getInstance() {
+
 	if (instance == null) {
 	   synchronized (NetRequest.class) {
 		if (instance == null) {
 		   instance = new NetRequest();
 		   mGson = new Gson();
+
 		}
 	   }
 	}
@@ -47,13 +47,8 @@ public class NetRequest {
     * 获取耗材流水
     */
    public void loadRunWate(String thingCode,
-	   String deviceCode, String term, String startTime, String endTime, Integer status, Object tag,
+	   String deviceCode, String term, String startTime, String endTime, String status, Object tag,
 	   NetResult netResult) {
-	HashMap<String, String> map = new HashMap<>();
-	map.put("deviceCode", deviceCode);
-	map.put("term", term);
-	HttpParams params = new HttpParams();
-	params.put(map);
 
 	OkGo.<String>get(NetApi.URL_HOME_RUNWATE).tag(tag)
 		.params("thingCode", thingCode)
@@ -62,7 +57,7 @@ public class NetRequest {
 		.params("status", status)
 		.params("deviceCode", deviceCode)
 		.params("term", term)
-		.execute(new MyCallBack(tag, netResult, true));
+		.execute(new MyCallBack(tag,netResult, true));
    }
    /**
     * 获取柜子个数
@@ -73,13 +68,67 @@ public class NetRequest {
 
 	OkGo.<String>get(NetApi.URL_HOME_BOXSIZE).tag(tag)
 		.params("thingCode", thingCode)
+		.execute(new MyCallBack(tag,netResult,true));
+   }
+
+
+   /**
+    * 耗材效期监控
+    */
+   public void materialControl(String thingCode, Object tag,
+				   NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_STOCKSTATUS_TOP).tag(tag)
+		.params("thingCode", thingCode)
+		.execute(new MyCallBack(tag, netResult,true));
+   }
+
+   /**
+    * 库存详情和耗材库存预警
+    */
+   public void getStockDown(String thingCode, String nameOrSpecQueryCon, String deviceCode,int mStopFlag,Object tag, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_STOCKSTATUS_DETAILS).tag(tag)
+		.params("thingCode", thingCode)
+		.params("nameOrSpecQueryCon", nameOrSpecQueryCon)
+		.params("deviceCode", deviceCode)
+		.params("StopFlag", mStopFlag)
 		.execute(new MyCallBack(tag, netResult, true));
    }
+
+   /**
+    * 未确认耗材
+    */
+   public void getRightUnconfDate(String thingCode,String deviceCode,String mTrim, Object tag, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_STOCKUNCON_RIGHT).tag(tag)
+		.params("thingCode", thingCode)
+		.params("deviceCode", deviceCode)
+		.params("nameOrSpecQueryCon", mTrim)
+		.execute(new MyCallBack(tag,netResult, true));
+   }
+   /**
+    * 查询单个耗材
+    */
+   public void getStockDetailDate(String deviceCode,String cstCode, Object tag, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_STOCK_DETAIL).tag(tag)
+		.params("cstCode", cstCode)
+		.params("deviceCode", deviceCode)
+		.execute(new MyCallBack(tag,netResult, true));
+   }
+
+   /**
+    * 数据恢复
+    */
+   public void getRecoverDate(String sn, Object tag, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_TEST_SNQUERY).tag(tag)
+		.params("sn", sn)
+		.execute(new MyCallBack(tag,netResult, true));
+   }
+
+
 
    private class MyCallBack extends StringCallback {
 
 
-	private File file;
+
 	private Object tag;
 	private NetResult netResult;
 	private boolean isGet;//是否是get请求
@@ -87,7 +136,7 @@ public class NetRequest {
 	public MyCallBack( Object tag, NetResult netResult,
 		boolean isGet) {
 	   super();
-	   this.file = file;
+
 	   this.tag = tag;
 	   this.netResult = netResult;
 	   this.isGet = isGet;
@@ -97,13 +146,18 @@ public class NetRequest {
 	public void onError(Response<String> response) {
 	   if (netResult != null) {
 		LogUtils.i(TAG, "网络接口联网失败");
-		netResult.onNetFailing(null);
+		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
 	   }
 	}
 
 	@Override
 	public void onSuccess(Response<String> response) {
-
+	   if (netResult!=null){
+		netResult.onSucceed(response.body());
+	   }
+	   Log.i("fff", "response.body()    " + response.body());
+	   Log.i("fff","response.code()    "+response.code());
+	   Log.i("fff","response.message()    "+response.message());
 	}
    }
 }

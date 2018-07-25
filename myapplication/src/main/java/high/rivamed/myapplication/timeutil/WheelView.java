@@ -60,7 +60,7 @@ public class WheelView extends View {
 	/** Items text color */
 	private static final int ITEMS_TEXT_COLOR = 0xFFb5b5b5;
 	/** 标签字体颜色 */
-	private static final int LABLE_TEXT_COLOR = 0xFF599EFF;
+	private static final int LABLE_TEXT_COLOR = 0xFF27A094;
 	//
 	// /** Top and bottom shadows colors */
 	// private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111,

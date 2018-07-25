@@ -15,6 +15,7 @@ import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
+import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
@@ -38,6 +39,9 @@ import high.rivamed.myapplication.views.WifiDialog;
  */
 
 public class DialogUtils {
+
+   private static String sTimes;
+
    public static void showRvDialog(Activity activity, final Context context) {
 	RvDialog.Builder builder = new RvDialog.Builder(activity, context);
 	builder.setMsg("耗材中包含过期耗材，请查看！");
@@ -211,8 +215,9 @@ public class DialogUtils {
 	builder.create().show();
 
    }
-   public static void showTimeDialog(final Context context, final TextView textView){
+   public static String showTimeDialog(final Context context, final TextView textView){
 	Date date = new Date();
+
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
 	Log.i("cc","    "+format);
@@ -232,13 +237,14 @@ public class DialogUtils {
 	   public void onReturnDate(String time,int year, int month, int day, int hour, int minute, int isShowType,long times) {
 		textView.setText(time);
 		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
-
+		sTimes = times + "";
 	   }
 	   @Override
 	   public void onReturnDate(String empty) {
 	   }
 	});
 	dialog.show();
+	return sTimes;
    }
    public static void showRegisteDialog(final Context context,Activity activity){
 	RegisteDialog.Builder builder = new RegisteDialog.Builder(context,activity);
@@ -272,5 +278,11 @@ public class DialogUtils {
    public static void showEpcDialog(final Context context){
 	EpcTestDialog.Builder builder = new EpcTestDialog.Builder(context);
 	builder.create().show();
+   }
+
+   public static LoadingDialog.Builder showLoading(final Context context){
+	LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
+	builder.create().show();
+	return builder;
    }
 }

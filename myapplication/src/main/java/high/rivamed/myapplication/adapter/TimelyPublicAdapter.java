@@ -25,7 +25,6 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
-import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
 import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
 
@@ -58,6 +57,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
    private SparseBooleanArray mCheckStates;
    private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
    public CheckBox mMCheckBox;
+
 
    public TimelyPublicAdapter(int layout, List<Movie> data, int size) {
 	super(layout, data);
@@ -132,13 +132,13 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		mSeven_four.setText(item.four);
 		initTermOfValidity(helper, two, mSeven_two);
 	   } else {
-		findId(helper, mSize);
-		String four = item.four;
-		mSeven_one.setText(item.one);
-		mSeven_two.setText(item.two);
-		mSeven_three.setText(item.three);
-		mSeven_four.setText(four);
-		initTermOfValidity(helper, four, mSeven_four);
+//		findId(helper, mSize);
+//		String four = item.four;
+//		mSeven_one.setText(item.one);
+//		mSeven_two.setText(item.two);
+//		mSeven_three.setText(item.three);
+//		mSeven_four.setText(four);
+//		initTermOfValidity(helper, four, mSeven_four);
 	   }
 
 	} else if (mSize == 5) {
@@ -406,26 +406,26 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 		initTermOfValidity(helper, item.four, mSeven_five);
 	   } else {
 
-		findId(helper, mSize);
-		String five = item.five;
-		String one = item.one;
-		mSeven_one.setText(item.one);
-		mSeven_two.setText(item.two);
-		mSeven_three.setText(item.three);
-		mSeven_four.setText(item.four);
-		mSeven_five.setText(five);
-		mSeven_six.setText(item.six);
-		mSeven_seven.setText(item.seven);
-		mSeven_eight.setText(item.eight);
-
-		initTermOfValidity(helper, five, mSeven_five);
-
-		if (one.equals("领用") || one.equals("移出") || one.equals("退货") ||
-		    (mType != null && mType.equals(STYPE_STOCK_RIGHT))) {
-		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
-		} else {
-		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
-		}
+//		findId(helper, mSize);
+//		String five = item.five;
+//		String one = item.one;
+//		mSeven_one.setText(item.one);
+//		mSeven_two.setText(item.two);
+//		mSeven_three.setText(item.three);
+//		mSeven_four.setText(item.four);
+//		mSeven_five.setText(five);
+//		mSeven_six.setText(item.six);
+//		mSeven_seven.setText(item.seven);
+//		mSeven_eight.setText(item.eight);
+//
+//		initTermOfValidity(helper, five, mSeven_five);
+//
+//		if (one.equals("领用") || one.equals("移出") || one.equals("退货") ||
+//		    (mType != null && mType.equals(STYPE_STOCK_RIGHT))) {
+//		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
+//		} else {
+//		   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
+//		}
 	   }
 	}
    }

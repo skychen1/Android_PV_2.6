@@ -1,12 +1,10 @@
 package high.rivamed.myapplication.devices;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -149,6 +147,11 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnUhfScanComplete(boolean success, String deviceId) {
                 AppendLog("RFID扫描结束：" + deviceId + ":::success=" + success);
+            }
+
+            @Override
+            public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+
             }
 
             @Override

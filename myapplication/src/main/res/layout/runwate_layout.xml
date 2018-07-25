@@ -1,40 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:tl="http://schemas.android.com/apk/res-auto"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:background="@color/bg_color"
-			  android:focusable="true"
-			  android:focusableInTouchMode="true"
+			  android:background="@color/bg_f"
+			  android:layout_marginTop="@dimen/x10"
 			  android:orientation="vertical"
 	>
-
-	<com.flyco.tablayout.SlidingTabLayout
-		android:id="@+id/home_runwate_rg"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x80"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		android:layout_marginTop="@dimen/x18"
-		android:background="@color/bg_color"
-		android:paddingBottom="@dimen/x25"
-		android:paddingTop="@dimen/x20"
-		tl:tl_indicator_color="@color/bg_f"
-		tl:tl_indicator_corner_radius="@dimen/x8"
-		tl:tl_indicator_style="BLOCK"
-		tl:tl_tab_padding="@dimen/x40"
-		tl:tl_textSelectColor="@color/text_color_3"
-		tl:tl_textUnselectColor="@color/text_color_3"
-		tl:tl_textsize="@dimen/textsize_16"
-		tl:tl_underline_gravity="BOTTOM"
-		tl:tl_underline_height="@dimen/x20"/>
-
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		android:visibility="gone"
+
+
 		android:background="@color/bg_f"
 		android:orientation="vertical"
 		android:paddingLeft="@dimen/x30"
@@ -232,16 +208,20 @@
 			</RadioGroup>
 		</LinearLayout>
 	</LinearLayout>
-
-	<android.support.v4.view.ViewPager
-		android:id="@+id/home_runwate_viewpager"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		android:background="@color/bg_c"
-		android:overScrollMode="never"
-		>
-	</android.support.v4.view.ViewPager>
+		android:layout_height="match_parent">
+		<include
+			android:id="@+id/public_ll"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/include_recyclerview"
+			android:layout_marginTop="@dimen/x25"
+			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginRight="@dimen/x30"
+			/>
+		<!--<include layout="@layout/null_activity_loading"/>-->
+	</RelativeLayout>
+
 
 </LinearLayout>

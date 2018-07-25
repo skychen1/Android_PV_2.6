@@ -216,4 +216,11 @@
 		<item name="android:indeterminateDuration">1000</item>
 		<item name="android:indeterminateOnly">true</item>
 	</style>
+	<!-- 加载滚动条样式 -->
+	<style name="loadingbig">
+		<item name="android:indeterminate">true</item>
+		<item name="android:indeterminateDrawable">@drawable/bigloading</item>
+		<item name="android:indeterminateDuration">1000</item>
+		<item name="android:indeterminateOnly">true</item>
+	</style>
 </resources>

@@ -22,7 +22,10 @@ public class BaseResult implements NetResult {
 	public void onSucceed(String result) {
 	
 	}
-	
+   @Override
+   public void onError(String result) {
+
+   }
 	@Override
 	public void onSucceedButNoData() {
 	

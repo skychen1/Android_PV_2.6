@@ -16,12 +16,11 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.MealPopAdapter;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.adapter.PartsmacPopAdapter;
+import high.rivamed.myapplication.bean.TBaseDevices;
 
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -46,17 +45,14 @@ public class MacPopupWindow extends PopupWindow {
 
    private String TAG = "SettingPopupWindow";
    private       OnClickListener mItemClickListener;
-   private       MealPopAdapter  mMealPopAdapter;
-   private final List<Movie>     mMovies;
-   private final List<Movie>     mMovies1;
+   private       PartsmacPopAdapter  mMealPopAdapter;
+
    private       TextView            mTextView;
-   public MacPopupWindow(Context context) {
+   public MacPopupWindow(Context context, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
-	mMovies = genData1();
-	mMovies1 = new ArrayList<>();
-	mMovies1.addAll(mMovies);
-	mMealPopAdapter = new MealPopAdapter(R.layout.item_mac_single, mMovies1);
+
+	mMealPopAdapter = new PartsmacPopAdapter(R.layout.item_mac_single, data);
 	mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 	mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));
 	mRecyclerView.setAdapter(mMealPopAdapter);
@@ -71,7 +67,7 @@ public class MacPopupWindow extends PopupWindow {
 	   }
 	});
 
-	heightMeth();
+	heightMeth(data);
 
 //	mEditText.addTextChangedListener(new TextWatcher() {
 //	   @Override
@@ -106,12 +102,12 @@ public class MacPopupWindow extends PopupWindow {
 //	});
    }
 
-   private void heightMeth() {
+   private void heightMeth(List<TBaseDevices.tBaseDevices.partsmacBean> data) {
 	ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
-	if (mMovies1.size() > 8) {
+	if (data.size() > 8) {
 	   lp.height = 400;
 	} else {
-	   lp.height = 72 * mMovies1.size();
+	   lp.height = 72 * data.size();
 	}
 	mRecyclerView.setLayoutParams(lp);
    }
@@ -142,20 +138,4 @@ public class MacPopupWindow extends PopupWindow {
 	}
    }
 
-   private List<Movie> genData1() {
-
-	List<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 40; i++) {
-	   String one;
-	   if (i%2==0){
-		one = "00000000000000000000000" + i;
-	   }else {
-		one = "12222222222" + i;
-	   }
-
-	   Movie movie = new Movie(one);
-	   list.add(movie);
-	}
-	return list;
-   }
 }

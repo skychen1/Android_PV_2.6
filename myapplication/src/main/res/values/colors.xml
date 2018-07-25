@@ -30,6 +30,7 @@
 	<color name="text_color_9">#999999</color>
 	<color name="color_edit_line">#b2b2b2</color>
 	<color name="color_red">#F5222D</color>
+	<color name="color_red_type">#FF520E</color>
 	<color name="color_line">#979797</color>
 
 	<color name="card_stock_text">#F94641</color>
