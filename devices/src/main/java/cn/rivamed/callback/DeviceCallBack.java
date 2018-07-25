@@ -114,6 +114,18 @@ public interface DeviceCallBack {
      */
     void OnUhfScanComplete(boolean success, String deviceId);
 
+    /**
+     * 获取UHF Reader 的天线状态
+     *
+     * 仅标识已使能的天线 （开启）
+     *
+     * 无法获取 天线是否连接；
+     *
+     * 对部分reader,连接即意味着使能
+     * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
+     *
+     * */
+    void OnGetAnts(String deviceId, boolean success,List<Integer> ants);
 
     /**
      * UHF READER 设置功率结果通知

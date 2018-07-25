@@ -332,6 +332,28 @@ public class DeviceManager {
         return ((UhfHandler) (this.getConnetedDevices().get(deviceId))).QueryPower();
     }
 
+    public int getUhfAnts(String deviceId) {
+        if (!this.getConnetedDevices().containsKey(deviceId)) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        if (!(this.getConnetedDevices().get(deviceId) instanceof UhfHandler)) {
+            return FunctionCode.DEVICE_NOT_SUPPORT;
+        }
+        List<Integer> ants = ((UhfHandler) (this.getConnetedDevices().get(deviceId))).getUhfAnts();
+        new Thread(() -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+
+            }
+            if (this.deviceCallBack != null) {
+                this.deviceCallBack.OnGetAnts(deviceId,true, ants);
+            }
+        }).start();
+        return FunctionCode.SUCCESS;
+
+    }
+
     /**
      * 复位设备，具体操作为 热重启，而不是恢复出厂设置
      *
@@ -379,7 +401,7 @@ public class DeviceManager {
         return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).CheckLockState();
     }
 
-    public int OpenLight(String deviceId){
+    public int OpenLight(String deviceId) {
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -389,7 +411,7 @@ public class DeviceManager {
         return ((Eth002ClientHandler) (this.getConnetedDevices().get(deviceId))).OpenLight();
     }
 
-    public int CloseLight(String deviceId){
+    public int CloseLight(String deviceId) {
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -416,17 +438,16 @@ public class DeviceManager {
 
     /**
      * GC
-     * */
-    public  void Release(){
+     */
+    public void Release() {
         StopEth002Service();
         StopUhfReaderService();
 
-        for (Map.Entry<String, DeviceHandler> handler:this.getConnetedDevices().entrySet()){
-            if(handler.getValue()!=null){
-                try{
+        for (Map.Entry<String, DeviceHandler> handler : this.getConnetedDevices().entrySet()) {
+            if (handler.getValue() != null) {
+                try {
                     handler.getValue().Close();
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                 }
             }
         }

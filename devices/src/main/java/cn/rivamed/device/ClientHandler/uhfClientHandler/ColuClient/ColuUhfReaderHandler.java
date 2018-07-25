@@ -147,7 +147,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             }
             if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 5000) {
                 if (!CheckKeepAlive()) {
-                    Log.w(LOG_TAG, "Colu Client DEVICEID="+getIdentification()+"心跳检测异常，累计满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
+                    Log.w(LOG_TAG, "Colu Client DEVICEID=" + getIdentification() + "心跳检测异常，累计满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
                     if (keepAliveErrorCount >= 3) {
                         Close();
                     }
@@ -201,7 +201,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         if (this.epcs.containsKey(epc)) {
             this.epcs.get(epc).add(tagInfo);
         } else {
-            Log.d(LOG_TAG, "鸿陆RFID CONNID=" + this.connId + "  DEVICEID=" + getIdentification()+"扫描到新的EPC ：" + epc);
+            Log.d(LOG_TAG, "鸿陆RFID CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "扫描到新的EPC ：" + epc);
             UpdateLastReadTime();
             List<TagInfo> tagInfos = new ArrayList<>();
             tagInfos.add(tagInfo);
@@ -264,7 +264,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             scanMode = true;
             return FunctionCode.SUCCESS;
         } else {
-            Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification()+"RFID扫描失败:errorCode=" + ret);
+            Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描失败:errorCode=" + ret);
             return FunctionCode.OPERATION_FAIL;
         }
     }
@@ -358,6 +358,15 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
 
 
         return finalSuccess ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+    }
+
+    @Override
+    public List<Integer> getUhfAnts() {
+        List<Integer> ret = new ArrayList<>();
+        for (byte ant : ants) {
+            ret.add((int) ant);
+        }
+        return ret;
     }
 
     @Override

@@ -547,6 +547,11 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     }
 
     @Override
+    public List<Integer> getUhfAnts() {
+        return null;
+    }
+
+    @Override
     public int Reset() {
         return 0;
     }
