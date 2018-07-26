@@ -2,9 +2,19 @@ package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.SnRecoverBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -19,6 +29,17 @@ import high.rivamed.myapplication.base.SimpleFragment;
  */
 
 public class RegisteRecoverFrag extends SimpleFragment {
+
+   @BindView(R.id.one)
+   TextView     mOne;
+   @BindView(R.id.frag_registe_name_edit)
+   EditText     mFragRegisteNameEdit;
+   @BindView(R.id.frag_registe_name)
+   LinearLayout mFragRegisteName;
+   @BindView(R.id.fragment_btn_one)
+   TextView     mFragmentBtnOne;
+   @BindView(R.id.activity_down_btn_one_ll)
+   LinearLayout mActivityDownBtnOneLl;
 
    public static RegisteRecoverFrag newInstance() {
 	Bundle args = new Bundle();
@@ -37,11 +58,34 @@ public class RegisteRecoverFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mFragRegisteNameEdit.setText("124332431321");
 
+   }
+
+   private void loadDate() {
+	String sn = mFragRegisteNameEdit.getText().toString().trim();
+	NetRequest.getInstance().getRecoverDate(sn, mContext, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		SnRecoverBean snRecoverBean = mGson.fromJson(result, SnRecoverBean.class);
+		EventBusUtils.post(snRecoverBean);
+	   }
+	});
    }
 
    @Override
    public void onBindViewBefore(View view) {
+
+   }
+
+
+   @OnClick(R.id.fragment_btn_one)
+   public void onViewClicked() {
+	if (UIUtils.isFastDoubleClick()) {
+	   return;
+	} else {
+	   loadDate();
+	}
 
    }
 }

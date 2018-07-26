@@ -33,13 +33,17 @@ import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
@@ -58,11 +62,11 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @BindView(R.id.consume_openall_rv)
-   RecyclerView mConsumeOpenallRv;
+   RecyclerView   mConsumeOpenallRv;
    @BindView(R.id.consume_openall_top)
-   LinearLayout mConsumeOpenallTop;
+   LinearLayout   mConsumeOpenallTop;
    @BindView(R.id.function_title_meal)
-   TextView     mFunctionTitleMeal;
+   TextView       mFunctionTitleMeal;
    @BindView(R.id.function_cardview_meal)
    CardView     mFunctionCardviewMeal;
    @BindView(R.id.fastopen_title_form)
@@ -76,37 +80,39 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @BindView(R.id.content_rb_rk)
    RadioButton  mContentRbRk;
    @BindView(R.id.content_rb_yc)
-   RadioButton  mContentRbYc;
+   RadioButton    mContentRbYc;
    @BindView(R.id.content_rb_tb)
-   RadioButton  mContentRbTb;
+   RadioButton    mContentRbTb;
    @BindView(R.id.content_rb_yr)
-   RadioButton  mContentRbYr;
+   RadioButton    mContentRbYr;
    @BindView(R.id.content_rb_tuihui)
-   RadioButton  mContentRbTuihui;
+   RadioButton    mContentRbTuihui;
    @BindView(R.id.content_rb_tuihuo)
-   RadioButton  mContentRbTuihuo;
+   RadioButton    mContentRbTuihuo;
    @BindView(R.id.content_rg)
-   RadioGroup   mContentRg;
+   RadioGroup     mContentRg;
    @BindView(R.id.consume_down_rv)
-   RecyclerView mConsumeDownRv;
+   RecyclerView   mConsumeDownRv;
    @BindView(R.id.consume_down)
-   LinearLayout mConsumeDown;
+   LinearLayout   mConsumeDown;
 
-   private HomeFastOpenAdapter mHomeFastOpenTopAdapter;
-   private HomeFastOpenAdapter mHomeFastOpenDownAdapter;
-   private List<String>        mTitles;
-   private String eth002DeviceId;
-   private NoDialog.Builder mBuilder;
+   private HomeFastOpenAdapter                mHomeFastOpenTopAdapter;
+   private HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
+   private List<String>                       mTitles;
+   private String                             eth002DeviceId;
+   private NoDialog.Builder                   mBuilder;
+   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private LoadingDialog.Builder mBuilder1;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
-      if (event.isMute) {
-         if (mBuilder==null){
+	if (event.isMute) {
+	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "in", null);
 	   }
-	}else {
+	} else {
 	   mBuilder.mDialog.dismiss();
-	   mBuilder=null;
+	   mBuilder = null;
 	}
    }
 
@@ -125,7 +131,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-      EventBusUtils.register(this);
+	EventBusUtils.register(this);
+	mBuilder1 = DialogUtils.showLoading(mContext);
 	initCallBack();
 	initData();
 
@@ -137,7 +144,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void OnDeviceConnected(
 		   DeviceType deviceType, String deviceIndentify) {
 		if (deviceType == DeviceType.ColuUhfReader) {
-//		   uhfDeviceId = deviceIndentify;
+		   //		   uhfDeviceId = deviceIndentify;
 		} else if (deviceType == DeviceType.Eth002V2) {
 		   eth002DeviceId = deviceIndentify;
 		}
@@ -177,15 +184,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-	      if (success){
-		   EventBusUtils.post(new Event.PopupEvent(success,"柜门已开"));
+		if (success) {
+		   EventBusUtils.post(new Event.PopupEvent(success, "柜门已开"));
 		}
 	   }
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-	      if (success){
-		   EventBusUtils.post(new Event.PopupEvent(false,"关闭"));
+		if (success) {
+		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
 		   mContext.startActivity(intent2);
@@ -207,26 +214,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   }
 
-		/**
-		 * 获取UHF Reader 的天线状态
-		 * <p>
-		 * 仅标识已使能的天线 （开启）
-		 * <p>
-		 * 无法获取 天线是否连接；
-		 * <p>
-		 * 对部分reader,连接即意味着使能
-		 * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
-		 *
-		 * @param deviceId
-		 * @param success
-		 * @param ants
-		 */
-		@Override
-		public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+	   @Override
+	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
 
-		}
+	   }
 
-		@Override
+	   @Override
 	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
 
 	   }
@@ -240,11 +233,35 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void initData() {
 	eth002DeviceId = DevicesUtils.getDeviceId();
-	mTitles = new ArrayList<>();
-	for (int i = 0; i < 14; i++) {
-	   mTitles.add(i + "号柜");
-	}
-//	mConsumeOpenallMiddle.setVisibility(View.GONE);//此处部分医院不需要可以隐藏  根据接口来
+	loadDate();
+
+   }
+
+   //数据加载
+   private void loadDate() {
+	NetRequest.getInstance().loadBoxSize("23233", mContext,new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+		mTbaseDevices = boxSizeBean.getTbaseDevices();
+		BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
+		tbaseDevicesBean.setDeviceName("全部开柜");
+		tbaseDevicesBean.setDeviceCode("23233");
+		mTbaseDevices.add(0,tbaseDevicesBean);
+		onSucceedDate();
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		mBuilder1.mDialog.dismiss();
+	   }
+	});
+   }
+
+   //赋值
+   private void onSucceedDate() {
+	mBuilder1.mDialog.dismiss();
+	//	mConsumeOpenallMiddle.setVisibility(View.GONE);//此处部分医院不需要可以隐藏  根据接口来
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabBtnLeft.setText("导管室");
@@ -253,7 +270,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 	mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-									  genData1());
+									  mTbaseDevices);
 	mConsumeOpenallRv.setLayoutManager(layoutManager);
 	mConsumeOpenallRv.setAdapter(mHomeFastOpenTopAdapter);
 
@@ -262,23 +279,22 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		Log.i("TT", " position  " + position);
 		DeviceManager.getInstance().OpenDoor(eth002DeviceId);
-//		if (position == 0){
-//
-//
-//		}
-		   // else if (position == 1){
-//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
-//		}else if (position ==2){
-//		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
-//		}else if (position == 3){
-//		   ToastUtils.showShort("按套餐领用-绑定患者！");
-//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
-//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
-//
-//		}else if (position ==4){
-//
-//		}
-
+		//		if (position == 0){
+		//
+		//
+		//		}
+		// else if (position == 1){
+		//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
+		//		}else if (position ==2){
+		//		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
+		//		}else if (position == 3){
+		//		   ToastUtils.showShort("按套餐领用-绑定患者！");
+		//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
+		//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
+		//
+		//		}else if (position ==4){
+		//
+		//		}
 
 		//		if (position == 0) {
 		//		   int mType = 1;//1.8.3未绑定
@@ -309,7 +325,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
 	layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
 	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-									   genData1());
+									   mTbaseDevices);
 	mConsumeDownRv.setLayoutManager(layoutManager2);
 	mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
 	mHomeFastOpenDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -323,14 +339,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			case R.id.content_rb_ly:
 			   ToastUtils.showShort("领用！");//拿出
 			   Intent intent0 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent0.putExtra("type","inout");
+			   //			   intent0.putExtra("type","inout");
 			   mContext.startActivity(intent0);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
 			   ToastUtils.showShort("入库！");//拿入
 			   Intent intent1 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent1.putExtra("type","inout");
+			   //			   intent1.putExtra("type","inout");
 			   mContext.startActivity(intent1);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 
@@ -338,7 +354,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			case R.id.content_rb_yc:
 			   ToastUtils.showShort("移出！");//拿出
 			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent2.putExtra("type","inout");
+			   //			   intent2.putExtra("type","inout");
 			   mContext.startActivity(intent2);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
@@ -351,21 +367,21 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			case R.id.content_rb_yr:
 			   ToastUtils.showShort("移入！");//拿入
 			   Intent intent4 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent4.putExtra("type","inout");
+			   //			   intent4.putExtra("type","inout");
 			   mContext.startActivity(intent4);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihui:
 			   ToastUtils.showShort("退回！");//拿入
 			   Intent intent5 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent5.putExtra("type","inout");
+			   //			   intent5.putExtra("type","inout");
 			   mContext.startActivity(intent5);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihuo:
 			   ToastUtils.showShort("退货！");//拿出
 			   Intent intent6 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   intent6.putExtra("type","inout");
+			   //			   intent6.putExtra("type","inout");
 			   mContext.startActivity(intent6);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
@@ -412,11 +428,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i("sss", "base_tab_btn_msg");
 		break;
 	   case R.id.function_title_meal:
-		mContext.startActivity(new Intent(mContext,OutMealActivity.class));
+		mContext.startActivity(new Intent(mContext, OutMealActivity.class));
 		EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
 		break;
 	   case R.id.fastopen_title_form:
-		mContext.startActivity(new Intent(mContext,OutFormActivity.class));
+		mContext.startActivity(new Intent(mContext, OutFormActivity.class));
 		break;
 	}
    }

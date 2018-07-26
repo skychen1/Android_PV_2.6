@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.SocketLeftTopBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -23,24 +23,25 @@ import high.rivamed.myapplication.bean.Movie;
  * 更新描述：   ${TODO}
  */
 
-public class StockLeftAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>{
+public class StockLeftAdapter extends BaseQuickAdapter<SocketLeftTopBean.CstExpirationVosBean, BaseViewHolder>{
 
    private TextView mStock_card_number;
    private TextView mStock_card_outofdate;
    private TextView mStock_card_unexpired;
    private CardView mStock_cardview;
-   public StockLeftAdapter(int layout, List<Movie> data) {
+   public StockLeftAdapter(int layout, List<SocketLeftTopBean.CstExpirationVosBean> data) {
       super(layout, data);
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, Movie item) {
+   protected void convert(BaseViewHolder helper, SocketLeftTopBean.CstExpirationVosBean item) {
       findId(helper);
-	int number1 = item.number1;
-	int number2 = item.number2;
-	int number3 = item.number3;
 
-	mStock_card_number.setText(number1+"号柜");
+	String number1 = item.getDeviceName();
+	int number2 = item.getExpireCount();
+	int number3 = item.getNearExpireCount();
+
+	mStock_card_number.setText(number1);
       mStock_card_outofdate.setText("过期耗材：" + number2 +"种");
       mStock_card_unexpired.setText("近效期耗材：" + number3+"种");
 

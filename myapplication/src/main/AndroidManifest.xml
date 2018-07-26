@@ -42,9 +42,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<!--<activity-->
-		<!--android:name=".activity.HomeActivity"-->
-		<!--android:screenOrientation="landscape"/>-->
+		<activity
+		android:name=".activity.HomeActivity"
+		android:screenOrientation="landscape"/>
 		<activity
 			android:name=".activity.MyInfoActivity"
 			android:launchMode="singleInstance"

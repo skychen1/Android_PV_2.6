@@ -42,5 +42,5 @@ public interface NetResult {
 	 */
 	void onDataError(int errorCode, String msg);
 
-	
+   void onError(String result);
 }

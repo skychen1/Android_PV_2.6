@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -18,10 +19,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.SnRecoverBean;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.TBaseThingDto;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -62,8 +65,9 @@ public class RegisteFrag extends SimpleFragment {
 
    public static   RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
-   TextView     mFragmentBtnOne;
-
+   TextView       mFragmentBtnOne;
+   @BindView(R.id.loading_view)
+   RelativeLayout mLoadingView;
    private RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
@@ -72,6 +76,8 @@ public class RegisteFrag extends SimpleFragment {
    private String mFootIpStr;
    private String mFootMacStr;
    private String mHeadName;
+   private List<DeviceManager.DeviceInfo> mDeviceInfos;
+   private List<TBaseDevices> mBaseDevices;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.activationEvent event) {
@@ -83,6 +89,10 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragmentBtnOne.setEnabled(false);
 	}
 
+   }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onRecoverEvent(SnRecoverBean  event) {
+	SnRecoverBean snRecoverBean = event;
    }
 
    public static RegisteFrag newInstance() {
@@ -103,13 +113,27 @@ public class RegisteFrag extends SimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
 		mRecyclerview =mContext.findViewById(R.id.recyclerview);
+	mBaseDevices = generateData();
+	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+	Log.i("xxf","mDeviceInfos==null   "+(mDeviceInfos==null));
+	Log.i("xxf","mDeviceInfos==size   "+mDeviceInfos.size());
+//	loadAllDate();
 	initData();
    }
+
+//   private void loadAllDate() {
+//	NetRequest.getInstance().getRecoverDate(null, mContext,new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+////		SnRecoverBean snRecoverBean = mGson.fromJson(result, SnRecoverBean.class);
+//	   }
+//	});
+//   }
 
    private void initData() {
 	initListener();
 	mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
-	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, generateData());
+	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mBaseDevices);
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.setAdapter(mSmallAdapter);
 
@@ -217,23 +241,31 @@ public class RegisteFrag extends SimpleFragment {
    private List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac;
 
    private List<TBaseDevices> generateData() {
+
 	mSmallmac = new ArrayList<>();
 	mTBaseDevicesAll = new ArrayList<>();
 	mTBaseDevicesSmall = new ArrayList<>();
 	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
 	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
 	TBaseDevices registeAddBean1 = new TBaseDevices();
-	for (int i = 0; i < 5; i++) {//第三层内部部件标识的数据
-	   partsmacBean1.setPartsmacnumber("3232323+" + i);
-	   mSmallmac.add(partsmacBean1);
+	if (mDeviceInfos!=null){
+	   for (int i = 0; i < mDeviceInfos.size(); i++) {//第三层内部部件标识的数据
+		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentifition());
+		Log.i("fdf","deviceInfos.size()   "+mDeviceInfos.size());
+		Log.i("fdf","getIdentifition   "+mDeviceInfos.get(i).getIdentifition());
+		Log.i("fdf","getRemoteIP    "+mDeviceInfos.get(i).getRemoteIP());
+		Log.i("fdf","getDeviceType   "+mDeviceInfos.get(i).getDeviceType());
+		mSmallmac.add(partsmacBean1);
+	   }
 	}
-	for (int i = 0; i < 1; i++) {//第二层柜体内条目的数据
+
+	for (int x = 0; x < 1; x++) {//第二层柜体内条目的数据
 	   registeBean1.setPartsname("");
 	   registeBean1.setPartsmac(mSmallmac);
 	   mTBaseDevicesSmall.add(registeBean1);
 	}
-	for (int i = 0; i < 1; i++) {//第一层数据
-	   if (i == 0) {
+	for (int y = 0; y < 1; y++) {//第一层数据
+	   if (y == 0) {
 		registeAddBean1.setBoxname("1号柜");
 	   } else {
 		registeAddBean1.setBoxname("");

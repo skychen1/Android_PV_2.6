@@ -28,4 +28,9 @@ public interface NetApi {
    String URL_HOME_RUNWATE  = MAIN_URL + "/rmApi/consumables/tCstInventoryJournal/findTCstInventoryJournal";//查询耗材流水
    String URL_HOME_BOXSIZE  = MAIN_URL + "/rmApi/device/tBaseDevice/getCabinetCount";//查询耗材流水
 
+   //库存状态
+   String URL_STOCKSTATUS_TOP  = MAIN_URL + "/rmApi/consumables/tCstInventory/expireStatistics";//库存监控 耗材效期监控
+   String URL_STOCKSTATUS_DETAILS  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryStatusAndDetails";//库存详情和耗材库存预警
+   String URL_STOCKUNCON_RIGHT  = MAIN_URL + "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
+   String URL_STOCK_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/detail";//查询单个耗材
 }

@@ -141,12 +141,13 @@ public           RecyclerView                    recyclerView;
 //		addData(pos, tBaseDevices);
 	   }
 	});
+	List<TBaseDevices.tBaseDevices.partsmacBean> partsmac = item.getPartsmac();
 	mMFootMac.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
 		int pos = helper.getAdapterPosition();
 		Log.i("xxa",helper.getAdapterPosition()+"   条");
-		mMacPopupWindow = new MacPopupWindow(mContext);
+		mMacPopupWindow = new MacPopupWindow(mContext,partsmac);
 		mMacPopupWindow.showPopupWindow(helper.getView(R.id.foot_mac),pos);
 	   }
 	});

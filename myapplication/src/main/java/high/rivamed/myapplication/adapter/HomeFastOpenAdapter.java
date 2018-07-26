@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -23,18 +23,23 @@ import high.rivamed.myapplication.bean.Movie;
  * 更新描述：   ${TODO}
  */
 
-public class HomeFastOpenAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> {
+public class HomeFastOpenAdapter
+	extends BaseQuickAdapter<BoxSizeBean.TbaseDevicesBean, BaseViewHolder> {
 
    TextView mFastopenTitle;
    CardView mFastopenCardview;
-   public HomeFastOpenAdapter(int layout, List<Movie> data) {
+
+   public HomeFastOpenAdapter(int layout, List<BoxSizeBean.TbaseDevicesBean> data) {
 	super(layout, data);
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, Movie item) {
+   protected void convert(BaseViewHolder helper, BoxSizeBean.TbaseDevicesBean item) {
 	findId(helper);
-	mFastopenTitle.setText(item.mString);
+
+	   mFastopenTitle.setText(item.getDeviceName());
+
+
    }
 
    private void findId(BaseViewHolder helper) {

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:orientation="vertical"
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+<LinearLayout  android:orientation="vertical"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
 	android:background="@color/bg_color">
@@ -307,3 +310,5 @@
 
 	</LinearLayout>
 </LinearLayout>
+	<include layout="@layout/null_activity_loading"/>
+</RelativeLayout>

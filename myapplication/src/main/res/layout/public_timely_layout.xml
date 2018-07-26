@@ -104,10 +104,10 @@
 					style="@style/runwate_btn_style"
 					android:text="过期耗材"/>
 
-				<RadioButton
-					android:id="@+id/stock_left_quehuo"
-					style="@style/runwate_btn_style"
-					android:text="缺货耗材"/>
+				<!--<RadioButton-->
+					<!--android:id="@+id/stock_left_quehuo"-->
+					<!--style="@style/runwate_btn_style"-->
+					<!--android:text="缺货耗材"/>-->
 
 				<RadioButton
 					android:id="@+id/stock_left_jinqi"
@@ -192,15 +192,20 @@
 
 		</LinearLayout>
 	</RelativeLayout>
-
-	<include
-		android:id="@+id/public_ll"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		layout="@layout/include_recyclerview"
-		android:layout_marginTop="@dimen/x25"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		/>
+		android:layout_height="match_parent">
+		<include
+			android:id="@+id/public_ll"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			layout="@layout/include_recyclerview"
+			android:layout_marginTop="@dimen/x25"
+			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginRight="@dimen/x30"
+			/>
+		<!--<include layout="@layout/null_activity_loading"/>-->
+	</RelativeLayout>
+
 
 </LinearLayout>

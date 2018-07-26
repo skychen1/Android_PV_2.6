@@ -14,7 +14,7 @@ import java.util.List;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class box implements Serializable {
+public class BoxSizeBean implements Serializable {
 
    /**
     * id : 0

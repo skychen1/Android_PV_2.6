@@ -9,6 +9,10 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,5 +247,21 @@ public class StringUtils {
 		}
 	}
 
+   /**
+    * 将列表中重复的用户移除，重复指的是EPC相同
+    *
+    * @param userList
+    * @return
+    */
+   public static ArrayList<String> removeDuplicteUsers(ArrayList<String> userList) {
+	Set<String> s = new TreeSet<String>(new Comparator<String>() {
 
+	   @Override
+	   public int compare(String o1, String o2) {
+		return o1.compareTo(o2);
+	   }
+	});
+	s.addAll(userList);
+	return new ArrayList<String>(s);
+   }
 }
