@@ -133,21 +133,23 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             Date current = new Date();
             if (scanMode && current.getTime() - lastReciveTime.getTime() > 1000) {
                 StopScan();
-                if (this.messageListener != null) {   //发送回调
-                    this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
+                new Thread(() -> {
+                    if (this.messageListener != null) {   //发送回调
+                        this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
 
+                        }
+                        this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                     }
-                    this.messageListener.OnUhfScanComplete(true, this.getIdentification());
-                }
-                epcs.clear();
-                scanMode = false;
+                    epcs.clear();
+                    scanMode = false;
+                }).start();
             }
-            if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 5000) {
+            if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 10000) {
                 if (!CheckKeepAlive()) {
-                    Log.w(LOG_TAG, "Colu Client DEVICEID=" + getIdentification() + "心跳检测异常，累计满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
+                    Log.w(LOG_TAG, "Colu Client DEVICEID=" + getIdentification() + "心跳检测异常，连续满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
                     if (keepAliveErrorCount >= 3) {
                         Close();
                     }
@@ -176,7 +178,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         String s = null;
         try {
             s = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
-            lastReciveTime = new Date();
+            UpdateLastReadTime();
         } catch (InterruptedException e) {
             s = "";
         }
@@ -224,6 +226,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         try {
             threadKeepAlive = false;
             CLReader.CloseConn(connId);
+            Log.e(LOG_TAG, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage());
         } finally {
@@ -274,9 +277,10 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      */
     public int StopScan() {
         try {
-            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束");
+
             scanMode = false;
-            CLReader.Stop(connId);
+            String ret = CLReader.Stop(connId);
+            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束:RET=" + ret);
             Thread.sleep(150);//听从鸿陆SDK工程师建议，这样可以避免下一次 启动扫描失败，但实际上依然会失败，目测需要停止1秒以上
             return FunctionCode.SUCCESS;
         } catch (Exception ex) {

@@ -151,6 +151,25 @@ public class TestDevicesActivity extends SimpleActivity {
                 AppendLog("RFID扫描结束：" + deviceId + ":::success=" + success);
             }
 
+            /**
+             * 获取UHF Reader 的天线状态
+             * <p>
+             * 仅标识已使能的天线 （开启）
+             * <p>
+             * 无法获取 天线是否连接；
+             * <p>
+             * 对部分reader,连接即意味着使能
+             * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
+             *
+             * @param deviceId
+             * @param success
+             * @param ants
+             */
+            @Override
+            public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+
+            }
+
             @Override
             public void OnUhfSetPowerRet(String deviceId, boolean success) {
                 AppendLog("RFID设置功率结果：" + deviceId + ":::success=" + success);
