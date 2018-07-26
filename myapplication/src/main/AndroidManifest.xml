@@ -33,7 +33,7 @@
 		</meta-data>
 
 		<activity
-			android:name=".activity.HomeActivity"
+			android:name=".activity.LoginActivity"
 			android:screenOrientation="landscape"
 			android:windowSoftInputMode="adjustPan"
 			>
