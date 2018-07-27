@@ -66,7 +66,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
 
     @Override
     public DeviceType getDeviceType() {
-        return DeviceType.Eth002V2;
+        return DeviceType.Eth002;
     }
 
     @Override

@@ -8,24 +8,15 @@ package cn.rivamed.device;
  */
 public enum DeviceType {
     /**
-     * 科陆RfidReader
+     * 通用标识为 超高频阅读器
      */
-    ColuUhfReader,
-    /**
-     * 罗丹贝尔阅读器
-     */
-    RodinBellReader,
+    UHFREADER,
     /**
      * 导引屏
      */
     Hmi,
     /***
-     * ETH002 类型的设备，针对2.0版本耗材柜
+     * ETH002 类型的设备，包含 两种类型 V2,V2.6
      */
-    Eth002V2,
-    /***
-     * EHT002v26 类型的设备，针对V2.6版本的耗材柜
-     */
-    Eth002V26
-
+    Eth002
 }

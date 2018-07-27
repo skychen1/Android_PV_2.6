@@ -213,7 +213,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
 
     @Override
     public DeviceType getDeviceType() {
-        return DeviceType.ColuUhfReader;
+        return DeviceType.UHFREADER;
     }
 
     @Override
@@ -277,10 +277,9 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      */
     public int StopScan() {
         try {
-
             scanMode = false;
             int ret = CLReader._Config.Stop(connId);
-            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束:RET=" + (ret==0?"成功":"失败"));
+            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束:RET=" + (ret == 0 ? "成功" : "失败"));
             Thread.sleep(150);//听从鸿陆SDK工程师建议，这样可以避免下一次 启动扫描失败，但实际上依然会失败，目测需要停止1秒以上
             return FunctionCode.SUCCESS;
         } catch (Exception ex) {

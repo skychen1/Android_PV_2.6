@@ -405,7 +405,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     @Override
     public DeviceType getDeviceType() {
-        return DeviceType.RodinBellReader;
+        return DeviceType.UHFREADER;
     }
 
     @Override
