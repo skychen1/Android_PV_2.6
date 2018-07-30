@@ -26,7 +26,8 @@ public class RegisteTestBean extends AbstractExpandableItem<RegisteTestBean.Regi
 
    public List<RegisteTestTitleBean>   listtitle;
    public List<RegisteTestContextBean> listcontext;
-	public String namebox;
+   public String                       namebox;
+
    public RegisteTestBean(
 	   String nametitle) {
 	this.namebox = nametitle;
@@ -43,7 +44,9 @@ public class RegisteTestBean extends AbstractExpandableItem<RegisteTestBean.Regi
 	return TYPE_TEST_TITLE_BOX;
    }
 
-   public static class RegisteTestTitleBean extends AbstractExpandableItem<RegisteTestBean.RegisteTestContextBean>implements MultiItemEntity {
+   public static class RegisteTestTitleBean
+	   extends AbstractExpandableItem<RegisteTestBean.RegisteTestContextBean>
+	   implements MultiItemEntity {
 
 	public String nametitle;
 	public String testtitle;
@@ -71,13 +74,13 @@ public class RegisteTestBean extends AbstractExpandableItem<RegisteTestBean.Regi
 
    public static class RegisteTestContextBean implements MultiItemEntity {
 
-	public String name;
-	public String test;
-	public String comments;
-	public String type;
+	public String name;//检测项目的文字
+	public String test; //操作栏的文字
+	public String comments;//备注
+	public String type;//信息反馈
 
 	public RegisteTestContextBean(
-		String name, String test, String type,String comments) {
+		String name, String test, String type, String comments) {
 	   this.name = name;
 	   this.test = test;
 	   this.type = type;

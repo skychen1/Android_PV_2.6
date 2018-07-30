@@ -6,10 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -23,16 +20,28 @@ import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.DeviceNameBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.RegisteReturnBean;
 import high.rivamed.myapplication.bean.SnRecoverBean;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.TBaseThingDto;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
+import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -48,51 +57,59 @@ import high.rivamed.myapplication.utils.WifiUtils;
 
 public class RegisteFrag extends SimpleFragment {
 
+   String TAG = "RegisteFrag";
    @BindView(R.id.frag_registe_name_edit)
-   EditText     mFragRegisteNameEdit;
+   EditText mFragRegisteNameEdit;
    @BindView(R.id.frag_registe_model_edit)
-   EditText     mFragRegisteModelEdit;
+   EditText mFragRegisteModelEdit;
    @BindView(R.id.frag_registe_number_edit)
-   EditText     mFragRegisteNumberEdit;
+   EditText mFragRegisteNumberEdit;
    @BindView(R.id.frag_registe_localip_edit)
-   EditText     mFragRegisteLocalipEdit;
+   EditText mFragRegisteLocalipEdit;
    @BindView(R.id.frag_registe_severip_edit)
-   EditText     mFragRegisteSeveripEdit;
+   EditText mFragRegisteSeveripEdit;
+   @BindView(R.id.frag_registe_port_edit)
+   EditText mFragRegistePortEdit;
    @BindView(R.id.frag_registe_right)
-   TextView     mFragRegisteRight;
+   TextView mFragRegisteRight;
    @BindView(R.id.frag_registe_left)
-   TextView     mFragRegisteLeft;
+   TextView mFragRegisteLeft;
 
-   public static   RecyclerView mRecyclerview;
+   public static RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
-   TextView       mFragmentBtnOne;
-   @BindView(R.id.loading_view)
-   RelativeLayout mLoadingView;
+   TextView mFragmentBtnOne;
    private RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
    int i = generateData().size();
-   private String mFootNameStr;
-   private String mFootIpStr;
-   private String mFootMacStr;
-   private String mHeadName;
+   private String                         mFootNameStr;
+   private String                         mFootIpStr;
+   private String                         mFootMacStr;
+   private String                         mHeadName;
    private List<DeviceManager.DeviceInfo> mDeviceInfos;
-   private List<TBaseDevices> mBaseDevices;
+   private List<TBaseDevices>             mBaseDevices;
+	private int dateType;
+   private DeviceNameBean mNameBean;
+   private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
+   private SnRecoverBean mSnRecoverBean;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onActivationEvent(Event.activationEvent event) {
-	if (event.isActivation) {
+   public void onActivationEvent(Event.dialogEvent event) {
+
+	if (event.dialog!=null) {
+	   String s = mGson.toJson(
+		   addFromDate(event.deptCode, event.storehouseCode, event.operationRoomNo));
+	   LogUtils.i(TAG,"激活的   "+s);
+	   setSaveRegister(s,true);
 	   event.dialog.dismiss();
-	   SPUtils.putBoolean(UIUtils.getContext(), "activationRegiste", true);//激活
-	   ToastUtils.showShort("设备已激活！");
-	   mFragmentBtnOne.setText("已激活");
-	   mFragmentBtnOne.setEnabled(false);
 	}
 
    }
+
+
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onRecoverEvent(SnRecoverBean  event) {
-	SnRecoverBean snRecoverBean = event;
+   public void onRecoverEvent(SnRecoverBean event) {
+	mSnRecoverBean = event;
    }
 
    public static RegisteFrag newInstance() {
@@ -112,37 +129,39 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-		mRecyclerview =mContext.findViewById(R.id.recyclerview);
-	mBaseDevices = generateData();
+	mRecyclerview = mContext.findViewById(R.id.recyclerview);
+
+	mFragRegisteNameEdit.setText("2.6柜子");
+	mFragRegisteModelEdit.setText("rivamed26");
+	mFragRegisteNumberEdit.setText("123456789");
+	mFragRegisteSeveripEdit.setText("192.168.2.32");
+	mFragRegistePortEdit.setText("8015");
+
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
-	Log.i("xxf","mDeviceInfos==null   "+(mDeviceInfos==null));
-	Log.i("xxf","mDeviceInfos==size   "+mDeviceInfos.size());
-//	loadAllDate();
+	mBaseDevices = generateData();
 	initData();
    }
 
-//   private void loadAllDate() {
-//	NetRequest.getInstance().getRecoverDate(null, mContext,new BaseResult() {
-//	   @Override
-//	   public void onSucceed(String result) {
-////		SnRecoverBean snRecoverBean = mGson.fromJson(result, SnRecoverBean.class);
-//	   }
-//	});
-//   }
-
    private void initData() {
 	initListener();
-	mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
-	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mBaseDevices);
-	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.setAdapter(mSmallAdapter);
+	if (WifiUtils.isWifi(mContext) == 2) {
+	   mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());
+	} else {
+	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
+	}
 
-	if (SPUtils.getBoolean(UIUtils.getContext(), "oneRegiste")) {
-	   if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")) {
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
+	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
+		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
+		setRegiestDate(string);
 		mFragmentBtnOne.setText("已激活");
 		mFragmentBtnOne.setEnabled(false);
 	   } else {
 		mFragmentBtnOne.setText("激 活");
+		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
+		setRegiestDate(string);
+LogUtils.i(TAG,"string   "+string);
+
 		mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View v) {
@@ -152,66 +171,201 @@ public class RegisteFrag extends SimpleFragment {
 	   }
 	} else {
 	   mFragmentBtnOne.setText("预注册");
+
+	   mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mBaseDevices);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRecyclerview.setAdapter(mSmallAdapter);
 	   mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   //		   SPUtils.putBoolean(UIUtils.getContext(), "oneRegiste", true);
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
+		   String fromDate = mGson.toJson(addFromDate(null,null,null));
 
-		   addFromDate();
-		   Gson gson = new Gson();
-		   Log.i("cf", gson.toJson(addFromDate()));
-		   ToastUtils.showShort("注册成功！");
-		   //		   initData();
-		   mFragmentBtnOne.setText("激 活");
-
+		   Log.i(TAG, "fromDate   " + fromDate);
+		   setSaveRegister(fromDate,false);//注册
+		   //		   addFromDate();
 		}
 	   });
 	}
 
    }
 
+   //已有数据的时候   给激活之前添加界面数据
+   private void setRegiestDate(String string) {
+	RegisteReturnBean returnBean = mGson.fromJson(string, RegisteReturnBean.class);
+	List<RegisteReturnBean.TBaseDeviceVosBean> tBaseDeviceVos = returnBean.getTBaseDeviceVos();
+
+	List<TBaseDevices.tBaseDevices.partsmacBean>   mSmallmac = new ArrayList<>();
+	List<TBaseDevices>                             mTBaseDevicesAll = new ArrayList<>();
+
+	List<TBaseDevices.tBaseDevices.partsnameBean> deviceTypes = new ArrayList<>();//部件查询后的信息
+
+	if (mDeviceInfos != null) {
+	   for (int i = 0; i < mDeviceInfos.size(); i++) {//第三层内部部件标识的数据
+		TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
+		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentifition());
+		partsmacBean1.setPartsIp(mDeviceInfos.get(i).getRemoteIP());
+		mSmallmac.add(partsmacBean1);
+	   }
+	}
+	if (mNameList!= null) {
+	   for (int f = 0; f < mNameList.size(); f++) {//第三层内部部件标识的数据
+		TBaseDevices.tBaseDevices.partsnameBean partsnameBean = new TBaseDevices.tBaseDevices.partsnameBean();
+		partsnameBean.setName(mNameList.get(f).getName());
+		partsnameBean.setDictId(mNameList.get(f).getDictId());
+		partsnameBean.setDeviceType(mNameList.get(f).getDeviceType());
+
+		deviceTypes.add(partsnameBean);
+	   }
+	}
+	for (int y = 0; y < tBaseDeviceVos.size(); y++) {//第一层数据
+	   RegisteReturnBean.TBaseDeviceVosBean tBaseDeviceVosBean = tBaseDeviceVos.get(y);
+	   List<TBaseDevices.tBaseDevices>    mTBaseDevicesSmall = new ArrayList<>();
+	   TBaseDevices registeAddBean1 = new TBaseDevices();
+	   registeAddBean1.setBoxname(tBaseDeviceVosBean.getDeviceName());
+	   registeAddBean1.setBoxCode(tBaseDeviceVosBean.getDeviceCode());
+	   registeAddBean1.setList(mTBaseDevicesSmall);
+	   for (int x = 0; x < tBaseDeviceVosBean.getTaBaseDevices().size(); x++) {//第二层柜体内条目的数据
+		RegisteReturnBean.TBaseDeviceVosBean.TaBaseDevicesBean devicesBean = tBaseDeviceVosBean.getTaBaseDevices().get(x);
+		TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
+		registeBean1.setPartsmacName(deviceTypes);
+		registeBean1.setPartsname(devicesBean.getDeviceName());
+		registeBean1.setPartmac(devicesBean.getIdentification());
+		registeBean1.setPartip(devicesBean.getIp());
+		registeBean1.setPartsmac(mSmallmac);
+		registeBean1.setDictId(devicesBean.getDictId());
+		registeBean1.setDeviceType(devicesBean.getDeviceType());
+		registeBean1.setDeviceCodes(devicesBean.getDeviceCode());
+
+
+
+		mTBaseDevicesSmall.add(registeBean1);
+	   }
+	   mTBaseDevicesAll.add(registeAddBean1);
+	}
+
+	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mTBaseDevicesAll);
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	mRecyclerview.setAdapter(mSmallAdapter);
+   }
+
+   //提交预注册的数据
+   private void setSaveRegister(String fromDate,boolean type) {
+	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+
+		RegisteReturnBean registeReturnBean = mGson.fromJson(result, RegisteReturnBean.class);
+		if (registeReturnBean.isOperateSuccess()) {
+		   if (type) {
+			SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
+			ToastUtils.showShort("设备已激活！");
+			mFragmentBtnOne.setText("已激活");
+			mFragmentBtnOne.setEnabled(false);
+		   }else {
+			ToastUtils.showShort("注册成功！");
+			mFragmentBtnOne.setText("激 活");
+		   }
+
+		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
+		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, registeReturnBean.getTbaseThing().getSn());
+		   SPUtils.putString(UIUtils.getContext(), THING_CODE, registeReturnBean.getTbaseThing().getThingCode());
+		   putDbDate(registeReturnBean);
+		   initData();
+		}
+		Log.i(TAG, "result   " + result);
+	   }
+	});
+   }
+
+   //数据库绑定IP
+   private void putDbDate(RegisteReturnBean registeReturnBean) {
+
+	for (RegisteReturnBean.TBaseDeviceVosBean b : registeReturnBean.getTBaseDeviceVos()) {
+	   BoxIdBean boxIdBean = new BoxIdBean();
+	   String boxName = b.getDeviceName();
+	   String boxCode = b.getDeviceCode();
+	   boxIdBean.setName(boxName);//柜子名字
+	   boxIdBean.setBox_id(null);//柜子id
+	   boxIdBean.setDevice_id(boxCode);//柜子子ID
+	   boxIdBean.save();
+	   List<RegisteReturnBean.TBaseDeviceVosBean.TaBaseDevicesBean> taBaseDevices = b.getTaBaseDevices();
+	   for (RegisteReturnBean.TBaseDeviceVosBean.TaBaseDevicesBean x : taBaseDevices) {
+		BoxIdBean boxIdBean1 = new BoxIdBean();
+		String parent = x.getParent();
+		String identification = x.getIdentification();
+		String deviceName = x.getDeviceType();
+		boxIdBean1.setName(deviceName);
+		boxIdBean1.setBox_id(parent);
+		boxIdBean1.setDevice_id(identification);
+		boxIdBean1.save();
+	   }
+	}
+   }
+
    /**
     * 预注册存入数据
     */
-   private TBaseThingDto addFromDate() {
+   private TBaseThingDto addFromDate(String deptCode,String storehouseCode,String operationRoomNo) {
 
 	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
 	TBaseThingDto.TBaseThing tBaseThing = new TBaseThingDto.TBaseThing();//设备信息
-	List<TBaseThingDto.TBaseThingVo> tBaseThingVos = new ArrayList<>();//柜子list
+	List<high.rivamed.myapplication.bean.TBaseThingDto.TBaseDeviceVo> tBaseThingVos = new ArrayList<>();//柜子list
+
+	TBaseThingDto.HospitalInfoVo hospitalInfoVo = new TBaseThingDto.HospitalInfoVo();
+
+	hospitalInfoVo.setDeptCode(deptCode);
+	hospitalInfoVo.setStorehouseCode(storehouseCode);
+	hospitalInfoVo.setOperationRoomNo(operationRoomNo);
+
 
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingType(mFragRegisteModelEdit.getText().toString().trim());
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
 	tBaseThing.setServerIp(mFragRegisteSeveripEdit.getText().toString().trim());
-	TBaseThingDto.setTbasething(tBaseThing);
+	tBaseThing.setPortNumber(mFragRegistePortEdit.getText().toString().trim());
+	tBaseThing.setThingCode(SPUtils.getString(mContext,THING_CODE));
+	TBaseThingDto.settBaseThing(tBaseThing);
 
 	for (int i = 0; i < mRecyclerview.getChildCount(); i++) {
-	   TBaseThingDto.TBaseThingVo tBaseThingVoBean = new TBaseThingDto.TBaseThingVo();
+	   TBaseThingDto.TBaseDeviceVo tBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
 	   mHeadName = ((EditText) mRecyclerview.getChildAt(i)
 		   .findViewById(R.id.head_left_name)).getText().toString().trim();
+	  String boxCode =((TextView) mRecyclerview.getChildAt(i)
+		   .findViewById(R.id.gone_box_code)).getText().toString().trim();
 	   tBaseThingVoBean.setDeviceName(mHeadName);
+	   tBaseThingVoBean.setDeviceCode(boxCode);
 	   RecyclerView mRecyclerView2 = mRecyclerview.getChildAt(i).findViewById(R.id.recyclerview2);
-	   List<TBaseThingDto.TBaseThingVo.TBaseDevice> tBaseDevice = new ArrayList<>();//柜子内部的设备list
+	   List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice = new ArrayList<>();//柜子内部的设备list
 	   for (int x = 0; x < mRecyclerView2.getChildCount() - 1; x++) {
-		TBaseThingDto.TBaseThingVo.TBaseDevice device = new TBaseThingDto.TBaseThingVo.TBaseDevice();
-		mFootNameStr = ((EditText) mRecyclerView2.getChildAt(x + 1)
+		TBaseThingDto.TBaseDeviceVo.TBaseDevice device = new TBaseThingDto.TBaseDeviceVo.TBaseDevice();
+		mFootNameStr = ((TextView) mRecyclerView2.getChildAt(x + 1)
 			.findViewById(R.id.foot_name)).getText().toString().trim();
 		mFootMacStr = ((TextView) mRecyclerView2.getChildAt(x + 1)
 			.findViewById(R.id.foot_mac)).getText().toString().trim();
 		mFootIpStr = ((EditText) mRecyclerView2.getChildAt(x + 1)
 			.findViewById(R.id.foot_ip)).getText().toString().trim();
+		String gone_dictid = ((TextView) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.gone_dictid)).getText().toString().trim();
+		String gone_devicetype = ((TextView) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.gone_devicetype)).getText().toString().trim();
+		String gone_deviceCode = ((TextView) mRecyclerView2.getChildAt(x + 1)
+			.findViewById(R.id.gone_device_code)).getText().toString().trim();
+		LogUtils.i(TAG,"gone_dictid   "+gone_dictid+"   gone_devicetype   "+gone_devicetype);
+		device.setDictId(gone_dictid);
+		device.setDeviceType(gone_devicetype);
+		device.setDeviceCode(gone_deviceCode);
 		device.setDeviceName(mFootNameStr);
-		device.setDeviceCode(mFootMacStr);
+		device.setIdentification(mFootMacStr);
 		device.setIp(mFootIpStr);
 		tBaseDevice.add(device);
 	   }
 	   tBaseThingVoBean.setTaBaseDevices(tBaseDevice);
 	   tBaseThingVos.add(tBaseThingVoBean);
 	}
-	TBaseThingDto.settBaseThingVos(tBaseThingVos);
-
-
+	TBaseThingDto.settBaseDeviceVos(tBaseThingVos);
+	TBaseThingDto.setHospitalInfoVo(hospitalInfoVo);
 	return TBaseThingDto;
    }
 
@@ -233,6 +387,27 @@ public class RegisteFrag extends SimpleFragment {
 		i++;
 		break;
 	   case R.id.frag_registe_left:
+		mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+		List<String> strings = new ArrayList<>();
+		for (int i = 0; i < mDeviceInfos.size(); i++) {
+		   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
+		   Log.i("xxf", "getIdentifition   " + mDeviceInfos.get(i).getIdentifition());
+		   Log.i("xxf", "getRemoteIP   " + mDeviceInfos.get(i).getRemoteIP());
+		   Log.i("xxf", "getDeviceType   " + mDeviceInfos.get(i).getDeviceType().toString());
+		}
+		NetRequest.getInstance().getDeviceInfosDate(strings,_mActivity,new BaseResult(){
+		   @Override
+		   public void onSucceed(String result) {
+			Log.i("xxf", "result   " + result);
+			mNameBean = mGson.fromJson(result, DeviceNameBean.class);
+			mNameList = mNameBean.getTBaseDeviceDictVos();
+			mBaseDevices = generateData();
+			initData();
+		   }
+		});
+
+		Log.i("xxf", "mDeviceInfos==size   " + mDeviceInfos.size());
+
 		break;
 
 	}
@@ -243,29 +418,41 @@ public class RegisteFrag extends SimpleFragment {
    private List<TBaseDevices> generateData() {
 
 	mSmallmac = new ArrayList<>();
+
+	List<TBaseDevices.tBaseDevices.partsnameBean> deviceTypes = new ArrayList<>();
 	mTBaseDevicesAll = new ArrayList<>();
 	mTBaseDevicesSmall = new ArrayList<>();
-	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
+	//	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
 	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
 	TBaseDevices registeAddBean1 = new TBaseDevices();
-	if (mDeviceInfos!=null){
+	if (mDeviceInfos != null) {
 	   for (int i = 0; i < mDeviceInfos.size(); i++) {//第三层内部部件标识的数据
+		TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
 		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentifition());
-		Log.i("fdf","deviceInfos.size()   "+mDeviceInfos.size());
-		Log.i("fdf","getIdentifition   "+mDeviceInfos.get(i).getIdentifition());
-		Log.i("fdf","getRemoteIP    "+mDeviceInfos.get(i).getRemoteIP());
-		Log.i("fdf","getDeviceType   "+mDeviceInfos.get(i).getDeviceType());
+		partsmacBean1.setPartsIp(mDeviceInfos.get(i).getRemoteIP());
+
 		mSmallmac.add(partsmacBean1);
 	   }
 	}
+	if (mNameList!= null) {
+	   for (int f = 0; f < mNameList.size(); f++) {//第三层内部部件标识的数据
+		TBaseDevices.tBaseDevices.partsnameBean partsnameBean = new TBaseDevices.tBaseDevices.partsnameBean();
+		partsnameBean.setName(mNameList.get(f).getName());
+		partsnameBean.setDictId(mNameList.get(f).getDictId());
+		partsnameBean.setDeviceType(mNameList.get(f).getDeviceType());
 
+		deviceTypes.add(partsnameBean);
+	   }
+	}
 	for (int x = 0; x < 1; x++) {//第二层柜体内条目的数据
 	   registeBean1.setPartsname("");
 	   registeBean1.setPartsmac(mSmallmac);
+	   registeBean1.setPartsmacName(deviceTypes);
 	   mTBaseDevicesSmall.add(registeBean1);
 	}
 	for (int y = 0; y < 1; y++) {//第一层数据
-	   if (y == 0) {
+
+	   if (mSmallAdapter==null &&y==0) {
 		registeAddBean1.setBoxname("1号柜");
 	   } else {
 		registeAddBean1.setBoxname("");

@@ -90,7 +90,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 //   }
 
    public void getMiddleDate() {
-	NetRequest.getInstance().loadBoxSize("23233", mContext, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);

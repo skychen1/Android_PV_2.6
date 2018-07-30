@@ -33,7 +33,7 @@
     -->
     <list>
         <!--柜子和柜子内部的id绑定的类-->
-        <mapping class="high.rivamed.myapplication.bean.BoxIdBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.BoxIdBean" />
 
     </list>
 

@@ -5,7 +5,10 @@
 				android:layout_height="@dimen/x70"
 				android:background="@color/bg_green">
 
-
+	<TextView
+		android:id="@+id/gone_box_code"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"/>
 	<TextView
 		android:id="@+id/head_left_name"
 		android:layout_width="@dimen/x400"

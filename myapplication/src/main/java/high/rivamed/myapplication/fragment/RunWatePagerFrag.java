@@ -258,7 +258,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    private void loadRunWateDate(
 	   String deviceCode, String term, String startTime, String endTime, String status) {
 	NetRequest.getInstance()
-		.loadRunWate("23233", deviceCode, term, startTime, endTime, status, mContext,
+		.loadRunWate(deviceCode, term, startTime, endTime, status, mContext,
 				 new BaseResult() {
 				    @Override
 				    public void onSucceed(String result) {

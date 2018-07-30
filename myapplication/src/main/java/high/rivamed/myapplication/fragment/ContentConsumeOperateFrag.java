@@ -16,8 +16,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,17 +37,25 @@ import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.InBoxDtoBean;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -62,11 +72,11 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @BindView(R.id.consume_openall_rv)
-   RecyclerView   mConsumeOpenallRv;
+   RecyclerView mConsumeOpenallRv;
    @BindView(R.id.consume_openall_top)
-   LinearLayout   mConsumeOpenallTop;
+   LinearLayout mConsumeOpenallTop;
    @BindView(R.id.function_title_meal)
-   TextView       mFunctionTitleMeal;
+   TextView     mFunctionTitleMeal;
    @BindView(R.id.function_cardview_meal)
    CardView     mFunctionCardviewMeal;
    @BindView(R.id.fastopen_title_form)
@@ -80,29 +90,33 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @BindView(R.id.content_rb_rk)
    RadioButton  mContentRbRk;
    @BindView(R.id.content_rb_yc)
-   RadioButton    mContentRbYc;
+   RadioButton  mContentRbYc;
    @BindView(R.id.content_rb_tb)
-   RadioButton    mContentRbTb;
+   RadioButton  mContentRbTb;
    @BindView(R.id.content_rb_yr)
-   RadioButton    mContentRbYr;
+   RadioButton  mContentRbYr;
    @BindView(R.id.content_rb_tuihui)
-   RadioButton    mContentRbTuihui;
+   RadioButton  mContentRbTuihui;
    @BindView(R.id.content_rb_tuihuo)
-   RadioButton    mContentRbTuihuo;
+   RadioButton  mContentRbTuihuo;
    @BindView(R.id.content_rg)
-   RadioGroup     mContentRg;
+   RadioGroup   mContentRg;
    @BindView(R.id.consume_down_rv)
-   RecyclerView   mConsumeDownRv;
+   RecyclerView mConsumeDownRv;
    @BindView(R.id.consume_down)
-   LinearLayout   mConsumeDown;
+   LinearLayout mConsumeDown;
 
    private HomeFastOpenAdapter                mHomeFastOpenTopAdapter;
-   private HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
-   private List<String>                       mTitles;
-   private String                             eth002DeviceId;
-   private NoDialog.Builder                   mBuilder;
-   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
-   private LoadingDialog.Builder mBuilder1;
+   private       HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
+   private       List<String>                       eth002DeviceIdList;
+   private       String                             eth002DeviceId;
+   private       String                             uhfDeviceId;
+   private       NoDialog.Builder                   mBuilder;
+   private       List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private       LoadingDialog.Builder              mBuilder1;
+   private       HashMap<String, String>            mReaderMap;
+   private       List<String>                       mReaderDeviceId;
+   public static List<String>                       mReaderIdList;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -143,9 +157,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void OnDeviceConnected(
 		   DeviceType deviceType, String deviceIndentify) {
-		if (deviceType == DeviceType.ColuUhfReader) {
-		   //		   uhfDeviceId = deviceIndentify;
-		} else if (deviceType == DeviceType.Eth002V2) {
+		if (deviceType == DeviceType.UHFREADER) {
+		   uhfDeviceId = deviceIndentify;
+		} else if (deviceType == DeviceType.Eth002) {
 		   eth002DeviceId = deviceIndentify;
 		}
 	   }
@@ -192,10 +206,25 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
 		if (success) {
-		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		   EventBusUtils.postSticky(new Event.EventAct("all"));
-		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-		   mContext.startActivity(intent2);
+		   //		   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?" , deviceIndentify)
+		   //			   .find(BoxIdBean.class);
+		   //		   mReaderMap = new HashMap<>();
+		   //		   for (BoxIdBean boxIdBean :boxIdBeans){
+		   //			String device_id = boxIdBean.getDevice_id();
+		   //			String box_id = boxIdBean.getBox_id();
+		   //			mReaderMap.put(device_id, box_id);
+		   //		   }
+
+		   int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId);
+		   LogUtils.i(TAG, "关门了，开始扫描了" + ret);
+		   for (String readerid : mReaderIdList) {
+			LogUtils.i(TAG, "关门了，readerid    " + readerid);
+			DeviceManager.getInstance().StartUhfScan(readerid);
+		   }
+		   //		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		   //		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   //		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+		   //		   mContext.startActivity(intent2);
 		}
 	   }
 
@@ -207,6 +236,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
 
+		getDeviceDate(deviceId, epcs);
 	   }
 
 	   @Override
@@ -231,23 +261,71 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	});
    }
 
+   /**
+    * 扫描后传值
+    */
+
+   private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+
+	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
+	List<TCstInventory> epcList = new ArrayList<>();
+
+	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+	   TCstInventory tCstInventory = new TCstInventory();
+	   tCstInventory.setEpc(v.getKey());
+	   epcList.add(tCstInventory);
+	}
+	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
+	List<DeviceInventoryVo> deviceList = new ArrayList<>();
+
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String box_id = boxIdBean.getBox_id();
+	   Log.i(TAG, "device_id   " + box_id);
+	   deviceInventoryVo.setDeviceCode(box_id);
+	}
+	deviceInventoryVo.settCstInventories(epcList);
+	deviceList.add(deviceInventoryVo);
+
+	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	tCstInventoryDto.setDeviceInventoryVos(deviceList);
+
+	String toJson = mGson.toJson(tCstInventoryDto);
+	LogUtils.i(TAG, "toJson    " + toJson);
+	NetRequest.getInstance().putEPCDate(toJson, _mActivity, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		Log.i(TAG, "result    " + result);
+		//TCstInventoryDto
+		InBoxDtoBean inBoxDtoBean = mGson.fromJson(result, InBoxDtoBean.class);
+//		List<InBoxDtoBean.TCstInventoryVosBean> cstInventoryVos = inBoxDtoBean.getTCstInventoryVos();
+		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		EventBusUtils.postSticky(new Event.EventAct("all"));
+		Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+		EventBusUtils.postSticky(inBoxDtoBean);
+		mContext.startActivity(intent2);
+
+	   }
+	});
+   }
+
    private void initData() {
-	eth002DeviceId = DevicesUtils.getDeviceId();
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	loadDate();
 
    }
 
    //数据加载
    private void loadDate() {
-	NetRequest.getInstance().loadBoxSize("23233", mContext,new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
 		tbaseDevicesBean.setDeviceName("全部开柜");
-		tbaseDevicesBean.setDeviceCode("23233");
-		mTbaseDevices.add(0,tbaseDevicesBean);
+		mTbaseDevices.add(0, tbaseDevicesBean);
 		onSucceedDate();
 	   }
 
@@ -277,8 +355,44 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		Log.i("TT", " position  " + position);
-		DeviceManager.getInstance().OpenDoor(eth002DeviceId);
+		LogUtils.i("TT", " position  " + position);
+
+		if (position == 0) {
+		   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
+			   .find(BoxIdBean.class);
+		   mReaderMap = new HashMap<>();
+		   for (BoxIdBean boxIdBean : boxIdBeans) {
+			String device_id = boxIdBean.getDevice_id();
+			String box_id = boxIdBean.getBox_id();
+			mReaderMap.put(device_id, box_id);
+		   }
+		   for (String deviceId : eth002DeviceIdList) {
+			DeviceManager.getInstance().OpenDoor(deviceId);
+		   }
+		} else {
+		   BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
+		   String deviceCode = devicesBean.getDeviceCode();
+		   LogUtils.i(TAG, "deviceCode   " + deviceCode + " READER_TYPE  " + READER_TYPE);
+		   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode,
+									    READER_TYPE).find(BoxIdBean.class);
+		   if (mReaderIdList != null) {
+			mReaderIdList.clear();
+		   } else {
+			mReaderIdList = new ArrayList<>();
+		   }
+
+		   for (BoxIdBean boxIdBean : boxIdBeans) {
+			String device_id = boxIdBean.getDevice_id();
+			mReaderIdList.add(device_id);
+		   }
+		   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+			if ((position - 1) == i) {
+			   DeviceManager.getInstance().OpenDoor(eth002DeviceIdList.get(i));
+			}
+		   }
+		}
+
+		//		DeviceManager.getInstance().OpenDoor("xxx");
 		//		if (position == 0){
 		//
 		//
@@ -397,22 +511,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    }
 
-   private List<Movie> genData1() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	String one;
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		one = "全部开柜";
-	   } else {
-		one = i + "号柜";
-	   }
-	   Movie movie = new Movie(one);
-	   list.add(movie);
-	}
-	return list;
-   }
-
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
 	   R.id.function_title_meal, R.id.fastopen_title_form})
    public void onViewClicked(View view) {
@@ -421,11 +519,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   case R.id.base_tab_tv_name:
 		mPopupWindow = new SettingPopupWindow(mContext);
 		mPopupWindow.showPopupWindow(mBaseTabIconRight);
-		LogUtils.i("sss", "base_tab_tv_name");
+
 		popupClick();
 		break;
 	   case R.id.base_tab_btn_msg:
-		LogUtils.i("sss", "base_tab_btn_msg");
+
 		break;
 	   case R.id.function_title_meal:
 		mContext.startActivity(new Intent(mContext, OutMealActivity.class));
@@ -436,4 +534,5 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		break;
 	}
    }
+
 }

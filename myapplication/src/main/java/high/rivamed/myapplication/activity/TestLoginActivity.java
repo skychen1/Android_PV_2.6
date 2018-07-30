@@ -12,7 +12,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -69,15 +71,16 @@ public class TestLoginActivity extends SimpleActivity {
 		finish();
 		break;
 	   case R.id.dialog_right:
-//		if (UIUtils.isFastDoubleClick()) {
-//		   return;
-//		} else {
-//		   if (isvalidate() && WifiUtils.isWifi(mContext) != 0) {
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+
+//		   if (isvalidate()&&contrast()) {
 			loadLogin();
 //		   } else {
 //			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
 //		   }
-//		}
+		}
 
 		break;
 	   case R.id.login_all:
@@ -101,6 +104,20 @@ public class TestLoginActivity extends SimpleActivity {
 	}
 
 	return true;
+   }
+   //对比名字和密码
+   public boolean contrast(){
+	String testLoginName = SPUtils.getString(this, "TestLoginName");
+	String testLoginPass = SPUtils.getString(this, "TestLoginPass");
+	if (!mUserPhone.equals(testLoginName)) {
+	   Toast.makeText(mContext, "用户名错误！", Toast.LENGTH_SHORT).show();
+	   return false;
+	}
+	if (!mPassword.equals(testLoginPass)) {
+	   Toast.makeText(mContext, "密码错误！", Toast.LENGTH_SHORT).show();
+	   return false;
+	}
+      return true;
    }
    /**
     * 获取登录

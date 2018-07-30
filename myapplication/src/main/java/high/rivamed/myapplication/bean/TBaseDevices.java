@@ -22,7 +22,16 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 
    private List<tBaseDevices>     list;//柜子list信息
    public  String                 boxname;//柜子名字
+   public  String                 boxCode;//柜子名字
    private List<RegisteTitleBean> list2;//柜子list信息
+
+   public String getBoxCode() {
+	return boxCode;
+   }
+
+   public void setBoxCode(String boxCode) {
+	this.boxCode = boxCode;
+   }
 
    public List<RegisteTitleBean> getList2() {
 	return list2;
@@ -115,9 +124,65 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
    }
 
    public static class tBaseDevices implements MultiItemEntity {
-
+	private String dictId;
+	private String dictName;
+	private String deviceType;
 	public String partsname;
 	public String partip;
+	public List<partsmacBean> partsmac;
+	public List<partsnameBean> partsmacName;
+	public String              partsmactext;
+	public String              partmac;
+	public String              deviceCodes;
+
+	public String getDeviceCodes() {
+	   return deviceCodes;
+	}
+
+	public void setDeviceCodes(String deviceCodes) {
+	   this.deviceCodes = deviceCodes;
+	}
+
+	public String getDictId() {
+	   return dictId;
+	}
+
+	public void setDictId(String dictId) {
+	   this.dictId = dictId;
+	}
+
+	public String getDictName() {
+	   return dictName;
+	}
+
+	public void setDictName(String dictName) {
+	   this.dictName = dictName;
+	}
+
+	public String getDeviceType() {
+	   return deviceType;
+	}
+
+	public void setDeviceType(String deviceType) {
+	   this.deviceType = deviceType;
+	}
+
+	public List<partsnameBean> getPartsmacName() {
+	   return partsmacName;
+	}
+
+	public void setPartsmacName(
+		List<partsnameBean> partsmacName) {
+	   this.partsmacName = partsmacName;
+	}
+	public String getPartmac() {
+	   return partmac;
+	}
+
+	public void setPartmac(String partmac) {
+	   this.partmac = partmac;
+	}
+
 
 	public String getPartsname() {
 	   return partsname;
@@ -144,8 +209,6 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 	   this.partsmac = partsmac;
 	}
 
-	public List<partsmacBean> partsmac;
-
 	public String getPartsmactext() {
 	   return partsmactext;
 	}
@@ -154,7 +217,7 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 	   this.partsmactext = partsmactext;
 	}
 
-	public String partsmactext;
+
 
 	@Override
 	public int getItemType() {
@@ -170,9 +233,53 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 	   public void setPartsmacnumber(String partsmacnumber) {
 		this.partsmacnumber = partsmacnumber;
 	   }
-
+	   public String partsIp;
+	   public String partName;
 	   public String partsmacnumber;
 
+	   public String getPartName() {
+		return partName;
+	   }
+
+	   public void setPartName(String partName) {
+		this.partName = partName;
+	   }
+
+
+	   public String getPartsIp() {
+		return partsIp;
+	   }
+
+	   public void setPartsIp(String partsIp) {
+		this.partsIp = partsIp;
+	   }
+
+
+
+	}
+	public static class partsnameBean {
+
+	   /**
+	    * dictId : 14
+	    * name : 罗丹贝尔-reader
+	    * deviceType : UHFREADER
+	    */
+
+	   private String dictId;
+	   private String name;
+	   private String deviceType;
+
+	   public String getDictId() { return dictId;}
+
+	   public void setDictId(String dictId) { this.dictId = dictId;}
+
+	   public String getName() { return name;}
+
+	   public void setName(String name) { this.name = name;}
+
+	   public String getDeviceType() { return deviceType;}
+
+	   public void setDeviceType(String deviceType) { this.deviceType = deviceType;}
 	}
    }
 }

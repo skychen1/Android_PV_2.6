@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
-<LinearLayout  android:orientation="vertical"
+
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+			   android:orientation="vertical"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
 	android:background="@color/bg_color">
@@ -36,11 +34,92 @@
 				android:textColor="@color/text_color_3"
 				android:textSize="@dimen/x30"
 				android:textStyle="bold"/>
+
+			<RelativeLayout
+				android:id="@+id/frag_registe_severip"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/x66"
+				android:orientation="horizontal"
+				>
+
+				<TextView
+					android:id="@+id/five"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="* "
+					android:layout_centerVertical="true"
+					android:textColor="@color/color_red"
+					android:textSize="@dimen/textsize_19"/>
+
+				<TextView
+					android:layout_toRightOf="@+id/five"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/x28"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="服务器IP："/>
+				<EditText
+					android:id="@+id/frag_registe_severip_edit"
+					android:layout_width="@dimen/x500"
+					android:layout_height="match_parent"
+					android:layout_marginLeft="@dimen/x55"
+					android:paddingLeft="@dimen/x10"
+					android:paddingRight="@dimen/x10"
+					android:textSize="@dimen/textsize_17"
+					android:layout_alignParentRight="true"
+					android:hint="请输入"
+					android:textColor="@color/text_color_58"
+					android:background="@drawable/bg_password_line_nor"
+					/>
+			</RelativeLayout>
+			<RelativeLayout
+				android:id="@+id/frag_registe_port"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/x66"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/x30"
+				>
+
+				<TextView
+					android:id="@+id/six"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="* "
+					android:layout_centerVertical="true"
+					android:textColor="@color/color_red"
+					android:textSize="@dimen/textsize_19"/>
+
+				<TextView
+					android:layout_toRightOf="@+id/six"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/x28"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="服务器端口："/>
+				<EditText
+					android:id="@+id/frag_registe_port_edit"
+					android:layout_width="@dimen/x500"
+					android:layout_height="match_parent"
+					android:layout_marginLeft="@dimen/x55"
+					android:paddingLeft="@dimen/x10"
+					android:paddingRight="@dimen/x10"
+					android:textSize="@dimen/textsize_17"
+					android:layout_alignParentRight="true"
+					android:hint="请输入"
+					android:textColor="@color/text_color_58"
+					android:background="@drawable/bg_password_line_nor"
+					/>
+			</RelativeLayout>
+
+
 			<RelativeLayout
 				android:id="@+id/frag_registe_name"
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/x60"
 				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/x30"
 				>
 
 				<TextView
@@ -192,45 +271,6 @@
 					android:background="@drawable/bg_edit_e_nor"
 					/>
 			</RelativeLayout>
-			<RelativeLayout
-				android:id="@+id/frag_registe_severip"
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/x66"
-				android:orientation="horizontal"
-				android:layout_marginTop="@dimen/x30"
-				>
-
-				<TextView
-					android:id="@+id/five"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="* "
-					android:layout_centerVertical="true"
-					android:textColor="@color/color_red"
-					android:textSize="@dimen/textsize_19"/>
-
-				<TextView
-					android:layout_toRightOf="@+id/five"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="@dimen/x28"
-					android:textColor="@color/text_color_58"
-					android:layout_centerVertical="true"
-					android:text="服务器IP："/>
-				<EditText
-					android:id="@+id/frag_registe_severip_edit"
-					android:layout_width="@dimen/x500"
-					android:layout_height="match_parent"
-					android:layout_marginLeft="@dimen/x55"
-					android:paddingLeft="@dimen/x10"
-					android:paddingRight="@dimen/x10"
-					android:textSize="@dimen/textsize_17"
-					android:layout_alignParentRight="true"
-					android:hint="请输入"
-					android:textColor="@color/text_color_58"
-					android:background="@drawable/bg_password_line_nor"
-					/>
-			</RelativeLayout>
 
 		</LinearLayout>
 		<LinearLayout
@@ -310,5 +350,3 @@
 
 	</LinearLayout>
 </LinearLayout>
-	<include layout="@layout/null_activity_loading"/>
-</RelativeLayout>

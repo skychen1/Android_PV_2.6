@@ -16,24 +16,65 @@ import java.util.List;
  */
 public class TBaseThingDto implements Serializable {
 
-   private TBaseThing         tbasething;
-   private List<TBaseThingVo> tBaseThingVos;
+   private TBaseThing     tBaseThing;
+   private HospitalInfoVo hospitalInfoVo;
 
-   public TBaseThing getTbasething() {
-	return tbasething;
+   private List<TBaseDeviceVo> tBaseDeviceVos;//柜子LIST
+
+   public TBaseThing gettBaseThing() {
+	return tBaseThing;
    }
 
-   public void setTbasething(TBaseThing tbasething) {
-	this.tbasething = tbasething;
+   public void settBaseThing(TBaseThing tBaseThing) {
+	this.tBaseThing = tBaseThing;
    }
 
-   public List<TBaseThingVo> gettBaseThingVos() {
-	return tBaseThingVos;
+   public List<TBaseDeviceVo> gettBaseDeviceVos() {
+	return tBaseDeviceVos;
    }
 
-   public void settBaseThingVos(
-	   List<TBaseThingVo> tBaseThingVos) {
-	this.tBaseThingVos = tBaseThingVos;
+   public void settBaseDeviceVos(
+	   List<TBaseDeviceVo> tBaseDeviceVos) {
+	this.tBaseDeviceVos = tBaseDeviceVos;
+   }
+
+   public HospitalInfoVo getHospitalInfoVo() {
+	return hospitalInfoVo;
+   }
+
+   public void setHospitalInfoVo(
+	   HospitalInfoVo hospitalInfoVo) {
+	this.hospitalInfoVo = hospitalInfoVo;
+   }
+
+   public static class HospitalInfoVo {//激活的时候医院信息
+	private String         storehouseCode;
+	private String         deptCode;
+	private String         operationRoomNo;
+
+	public String getStorehouseCode() {
+	   return storehouseCode;
+	}
+
+	public void setStorehouseCode(String storehouseCode) {
+	   this.storehouseCode = storehouseCode;
+	}
+
+	public String getDeptCode() {
+	   return deptCode;
+	}
+
+	public void setDeptCode(String deptCode) {
+	   this.deptCode = deptCode;
+	}
+
+	public String getOperationRoomNo() {
+	   return operationRoomNo;
+	}
+
+	public void setOperationRoomNo(String operationRoomNo) {
+	   this.operationRoomNo = operationRoomNo;
+	}
    }
 
    public static class TBaseThing {//设备信息
@@ -42,6 +83,24 @@ public class TBaseThingDto implements Serializable {
 	private String sn;            //设备序列号
 	private String localIp;       //设备IP
 	private String serverIp;      //服务器IP
+	private String portNumber;
+	private String thingCode;
+
+	public String getThingCode() {
+	   return thingCode;
+	}
+
+	public void setThingCode(String thingCode) {
+	   this.thingCode = thingCode;
+	}
+
+	public String getPortNumber() {
+	   return portNumber;
+	}
+
+	public void setPortNumber(String portNumber) {
+	   this.portNumber = portNumber;
+	}
 
 	public String getThingName() {
 	   return thingName;
@@ -84,7 +143,7 @@ public class TBaseThingDto implements Serializable {
 	}
    }
 
-   public static class TBaseThingVo {//柜体信息
+   public static class TBaseDeviceVo {//柜体信息
 	private String            deviceName;     //柜子名称
 	private String            deviceCode;      //柜子编码
 	private List<TBaseDevice> taBaseDevices;//柜子内部设备
@@ -116,16 +175,11 @@ public class TBaseThingDto implements Serializable {
 
 	public static class TBaseDevice {//柜子内部设备信息
 	   private String deviceName;      //设备名称
-	   private String deviceCode;      //设备编码
+	   private String identification;      //设备编码
 	   private String ip;      //设备
-
-	   public String getDeviceName() {
-		return deviceName;
-	   }
-
-	   public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	   }
+	   private String dictId;      //设备配置ID
+	   private String deviceType;      //类型
+	   private String deviceCode;      //code
 
 	   public String getDeviceCode() {
 		return deviceCode;
@@ -133,6 +187,38 @@ public class TBaseThingDto implements Serializable {
 
 	   public void setDeviceCode(String deviceCode) {
 		this.deviceCode = deviceCode;
+	   }
+
+	   public String getDictId() {
+		return dictId;
+	   }
+
+	   public void setDictId(String dictId) {
+		this.dictId = dictId;
+	   }
+
+	   public String getDeviceType() {
+		return deviceType;
+	   }
+
+	   public void setDeviceType(String deviceType) {
+		this.deviceType = deviceType;
+	   }
+
+	   public String getIdentification() {
+		return identification;
+	   }
+
+	   public void setIdentification(String identification) {
+		this.identification = identification;
+	   }
+
+	   public String getDeviceName() {
+		return deviceName;
+	   }
+
+	   public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	   }
 
 	   public String getIp() {

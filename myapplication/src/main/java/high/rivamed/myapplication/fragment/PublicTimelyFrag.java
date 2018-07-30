@@ -450,7 +450,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	NetRequest.getInstance()
-		.getStockDown("23233", null, mDeviceCode, -1, mContext, new BaseResult() {
+		.getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			mLeftDownBean = mGson.fromJson(result, SocketLeftDownBean.class);
@@ -562,7 +562,7 @@ public class PublicTimelyFrag extends SimpleFragment {
    private void LoadMiddleRgDate(String mDeviceCode, int mStopFlag, String editString) {
 
 	NetRequest.getInstance()
-		.getStockDown("23233", editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
+		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			if (mTCstInventoryVos != null) {
@@ -653,7 +653,7 @@ public class PublicTimelyFrag extends SimpleFragment {
     */
    private void loadStockRightDate(String deviceCode, String mTrim) {
 	NetRequest.getInstance()
-		.getRightUnconfDate("23233", deviceCode, mTrim, mContext, new BaseResult() {
+		.getRightUnconfDate(deviceCode, mTrim, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			Log.i("ffa", "result   " + result);

@@ -94,7 +94,7 @@ public abstract class BaseStockFrag extends SimpleFragment {
 
 
    private void getLeftDownDate() {
-	NetRequest.getInstance().getStockDown("23233",null,null, -1,mContext,new BaseResult() {
+	NetRequest.getInstance().getStockDown(null,null, -1,mContext,new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 
@@ -119,7 +119,7 @@ public abstract class BaseStockFrag extends SimpleFragment {
    }
 
    public void getLeftDate() {
-	NetRequest.getInstance().materialControl("23233", mContext,new BaseResult() {
+	NetRequest.getInstance().materialControl( mContext,new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		mLeftTopBean = mGson.fromJson(result, SocketLeftTopBean.class);

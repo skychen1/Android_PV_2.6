@@ -21,12 +21,16 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MacPopupWindow;
+import high.rivamed.myapplication.views.TypePopupWindow;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 
 /**
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
  * 创建时间:    2018/7/16 13:41
- * 描述:        TODO:
+ * 描述:        柜体信息内部部件列表adapter
  * 包名:        high.rivamed.myapplication.adapter
  * <p>
  * 更新者：     $$Author$$
@@ -44,11 +48,16 @@ public           RecyclerView                    recyclerView;
    public int mTopPos;
    public TextView mMFootMac;
    private MacPopupWindow mMacPopupWindow;
-   public EditText mMFootName;
+   public TextView mMFootName;
    public EditText mMFootIp;
    public ImageView mMFootDelete;
    public ImageView mMFootAdd;
-
+   private TypePopupWindow mTypePopupWindow;
+   private List<TBaseDevices.tBaseDevices.partsmacBean> mPartsmac;
+   private List<TBaseDevices.tBaseDevices.partsnameBean> mPartsmacName;
+   private TextView mGone_dictid;
+   private TextView mGone_devicetype;
+   private TextView mGone_deviceCode;
 
    public RegisteContextAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices.tBaseDevices> data, RecyclerView recyclerView,int mTopPos) {
@@ -64,11 +73,14 @@ public           RecyclerView                    recyclerView;
    @Override
    protected void convert(
 	   final BaseViewHolder helper, TBaseDevices.tBaseDevices item) {
-	mMFootName = (EditText) helper.getView(R.id.foot_name);
+	mMFootName = (TextView) helper.getView(R.id.foot_name);
 	mMFootMac = (TextView) helper.getView(R.id.foot_mac);
 	mMFootIp = (EditText) helper.getView(R.id.foot_ip);
 	mMFootDelete = (ImageView) helper.getView(R.id.foot_delete);
 	mMFootAdd = (ImageView) helper.getView(R.id.foot_add);
+	mGone_dictid = (TextView)helper.getView(R.id.gone_dictid);
+	mGone_devicetype =(TextView) helper.getView(R.id.gone_devicetype);
+	mGone_deviceCode =(TextView) helper.getView(R.id.gone_device_code);
 	final LinearLayout mLinearLayout = (LinearLayout) helper.getView(R.id.foot_ll);
 
 //	if (mTBaseList.size()>0){
@@ -76,11 +88,25 @@ public           RecyclerView                    recyclerView;
 //	}else {
 //	   mFootIp.setText("");
 //	}
-	if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")){
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
+//	   List<TBaseDevices.tBaseDevices.partsmacBean> partsmac = item.getPartsmac();
+
+	   mMFootName.setText(item.getPartsname());
+	   mMFootMac.setText(item.getPartmac());
+	   mMFootIp.setText(item.getPartip());
+	   mGone_dictid.setText(item.getDictId());
+	   mGone_devicetype.setText(item.getDeviceType());
+	   mGone_deviceCode.setText(item.getDeviceCodes());
+	}
+
+
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
 	   mLinearLayout.setVisibility(View.GONE);
 	}else {
 	   mLinearLayout.setVisibility(View.VISIBLE);
 	}
+
+
 	if (mData.size()==1){
 	   mMFootDelete.setVisibility(View.GONE);
 	   mMFootAdd.setVisibility(View.VISIBLE);
@@ -91,10 +117,7 @@ public           RecyclerView                    recyclerView;
 	   mMFootDelete.setVisibility(View.VISIBLE);
 	   mMFootAdd.setVisibility(View.GONE);
 	}
-//	int pos = helper.getAdapterPosition();
-//	Log.i("xxa", (pos-1) + "   xxx");
-////	mFootDelete.setOnClickListener(mDeleteListener);
-////	mFootDelete.setTag(pos-1);
+
 	mMFootDelete.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
@@ -103,14 +126,6 @@ public           RecyclerView                    recyclerView;
 
 		data.remove(pos-1);
 
-
-//		mData.add(0,tBaseDevices);
-//		notifyItemMoved(pos-1, 0);
-//		notifyItemRangeChanged(pos,getItemCount());
-//		if (mTBaseList.get(pos-1)!=null&&mData.size()==mTBaseList.size()){
-//		   mTBaseList.remove(pos-1);
-//		}
-//		notifyItemChanged(pos);
 		RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 		if (mData.size()==1){
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_delete).setVisibility(View.GONE);
@@ -122,6 +137,9 @@ public           RecyclerView                    recyclerView;
 
 	   }
 	});
+
+	mPartsmac = item.getPartsmac();
+	mPartsmacName = item.getPartsmacName();
 	mMFootAdd.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
@@ -129,26 +147,39 @@ public           RecyclerView                    recyclerView;
 		mMFootDelete.setVisibility(View.VISIBLE);
 		mMFootAdd.setVisibility(View.GONE);
 		ToastUtils.showShort("" + mData.size()+"    "+pos);
-//		mTBaseDevice = new TBaseDevices.tBaseDevices();
-//		mTBaseDevice.setPartsname(mFootName.getText().toString().trim());
-//		mTBaseDevice.setPartip(mFootIp.getText().toString().trim());
-//		mTBaseDevice.setPartsmactext(mFootMac.getText().toString().trim());
-//		mTBaseList.add(pos-1,mTBaseDevice);
+
 		TBaseDevices.tBaseDevices tBaseDevice = new TBaseDevices.tBaseDevices();
+		tBaseDevice.setPartsmac(mPartsmac);
+		tBaseDevice.setPartsmacName(mPartsmacName);
 		data.add(pos, tBaseDevice);
-//		notifyItemChanged(pos);
 		notifyItemInserted(pos+1);
-//		addData(pos, tBaseDevices);
+
 	   }
 	});
-	List<TBaseDevices.tBaseDevices.partsmacBean> partsmac = item.getPartsmac();
+
+
 	mMFootMac.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
 		int pos = helper.getAdapterPosition();
 		Log.i("xxa",helper.getAdapterPosition()+"   条");
-		mMacPopupWindow = new MacPopupWindow(mContext,partsmac);
-		mMacPopupWindow.showPopupWindow(helper.getView(R.id.foot_mac),pos);
+		Log.i("xxa","mPartsmac   "+(data.get(pos-1).getPartsmac()));
+		Log.i("xxa","mPartsmac   "+(data.get(pos-1).getPartsmac().size()));
+		mMacPopupWindow = new MacPopupWindow(mContext, data.get(pos-1).getPartsmac());
+		mMacPopupWindow.showPopupWindow(helper.getView(R.id.foot_mac),helper.getView(R.id.foot_ip),pos);
+	   }
+	});
+
+	mMFootName.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		int pos = helper.getAdapterPosition();
+
+		Log.i("xxa",helper.getAdapterPosition()+"   条");
+		View foot_name = helper.getView(R.id.foot_name);
+
+		mTypePopupWindow = new TypePopupWindow(mContext, data.get(pos-1).getPartsmacName());
+		mTypePopupWindow.showPopupWindow(foot_name, mGone_dictid, mGone_devicetype, pos);
 	   }
 	});
 

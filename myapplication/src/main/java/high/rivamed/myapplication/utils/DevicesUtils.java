@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.rivamed.DeviceManager;
@@ -18,20 +19,40 @@ import cn.rivamed.device.DeviceType;
  */
 public class DevicesUtils {
 
-   static String eth002DeviceId = "";
-
-   public static String getDeviceId() {
+   /**
+    * 获取锁
+    * @return
+    */
+   public static List<String> getEthDeviceId() {
 	List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance()
 		.QueryConnectedDevice();
 	String s = "";
+	List<String> identifition = new ArrayList<>();
 	for (DeviceManager.DeviceInfo d : deviceInfos) {
-	   if (d.getDeviceType() == DeviceType.Eth002V2) {
-		eth002DeviceId = d.getIdentifition();
+	   if (d.getDeviceType() == DeviceType.Eth002) {
+		String eth002DeviceId = d.getIdentifition();
+		identifition.add(eth002DeviceId);
 	   }
 	   s += d.getIdentifition() + "|||";
 
 	}
-	return eth002DeviceId;
+	return identifition;
+   }
+   /**
+    * 获取reader
+    * @return
+    */
+   public static List<String> getReaderDeviceId() {
+	List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance()
+		.QueryConnectedDevice();
+	List<String> identifition = new ArrayList<>();
+	for (DeviceManager.DeviceInfo d : deviceInfos) {
+	   if (d.getDeviceType() == DeviceType.UHFREADER) {
+		String uhfDeviceId = d.getIdentifition();
+		identifition.add(uhfDeviceId);
+	   }
+	}
+	return identifition;
    }
 
 }

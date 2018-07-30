@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -28,6 +30,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,11 +39,16 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.utils.MyValueFormatter;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -73,6 +82,7 @@ public class LoginActivity extends SimpleActivity {
    final static int COUNTS = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
+   private SQLiteDatabase mDb;
 
    @Override
    public int getLayoutId() {
@@ -81,7 +91,21 @@ public class LoginActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	SQLiteDatabase db = LitePal.getDatabase();//创建数据库表
+	//创建数据库表
+	mDb = LitePal.getDatabase();
+	Log.i("dss", SPUtils.getString(mContext,THING_CODE)+ "");
+
+	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)){
+	   	LitePal.deleteAll(BoxIdBean.class);
+	}
+
+//	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?" , "402882a064da53150164da71e5100011", "Reader罗丹贝尔")
+//		.find(BoxIdBean.class);
+//
+//	for (int i=0;i<boxIdBeans.size();i++){
+//	   Log.i("dss", boxIdBeans.get(i).getDevice_id() + "");
+//	}
+//	loadBoxDate();
 //	BoxIdBean boxIdBean = new BoxIdBean();
 //	boxIdBean.setName("我是谁");
 //	boxIdBean.setBox_id("22");
@@ -103,6 +127,17 @@ public class LoginActivity extends SimpleActivity {
 	initData();
 	initlistener();
    }
+//获取box个数和数据
+//   private void loadBoxDate() {
+//	NetRequest.getInstance().loadBoxSize( mContext,new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+//		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+//		List<BoxSizeBean.TbaseDevicesBean> tbaseDevices = boxSizeBean.getTbaseDevices();
+//
+//	   }
+//	});
+//   }
 
    @Override
    public void onBindViewBefore() {

@@ -1,4 +1,4 @@
-package high.rivamed.myapplication.model;
+package high.rivamed.myapplication.dbmodel;
 
 import org.litepal.crud.LitePalSupport;
 

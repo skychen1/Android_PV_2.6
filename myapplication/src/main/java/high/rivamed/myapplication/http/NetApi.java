@@ -23,6 +23,15 @@ public interface NetApi {
 
    //工程模式
    String URL_TEST_SNQUERY  = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
+   String URL_TEST_REGISTE  = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册
+   String URL_TEST_FINDDEVICE  = MAIN_URL + "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
+   String URL_TEST_FIND_HOSPHOME  = MAIN_URL + "/rmApi/dept/tBaseHospital/findByHospName";//输入医院查询医院信息
+   String URL_TEST_FIND_BRANCH  = MAIN_URL + "/rmApi/dept/tBaseDept/findBranch";//根据医院id查询院区信息
+   String URL_TEST_FIND_DEPT  = MAIN_URL + "/rmApi/dept/tBaseDept/findDept";//根据院区编码查询科室信息
+   String URL_TEST_FIND_BYDEPT  = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况
+   String URL_TEST_FIND_OPERROOMS  = MAIN_URL + "/rmApi/dept/tBaseOperationRoom/findOperRoomsByDept";//根据科室查询手术室信息
+   String URL_TEST_ACTIVAT  = MAIN_URL + "/rmApi/device/tBaseThing/activatEquipment";//设备激活
+
 
    //耗材流水
    String URL_HOME_RUNWATE  = MAIN_URL + "/rmApi/consumables/tCstInventoryJournal/findTCstInventoryJournal";//查询耗材流水
@@ -33,4 +42,8 @@ public interface NetApi {
    String URL_STOCKSTATUS_DETAILS  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryStatusAndDetails";//库存详情和耗材库存预警
    String URL_STOCKUNCON_RIGHT  = MAIN_URL + "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
    String URL_STOCK_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/detail";//查询单个耗材
+
+   //耗材操作
+
+   String URL_OPERATE_QUERY  = MAIN_URL + "/rmApi/consumables/tCstInventory/findTCstInventory";//查询扫描出来的耗材和数据库耗材情况
 }

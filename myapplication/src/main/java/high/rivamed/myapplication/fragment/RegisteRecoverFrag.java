@@ -58,7 +58,7 @@ public class RegisteRecoverFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mFragRegisteNameEdit.setText("124332431321");
+	mFragRegisteNameEdit.setText("123456789");
 
    }
 
