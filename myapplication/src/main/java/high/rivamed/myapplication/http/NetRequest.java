@@ -12,6 +12,7 @@ import java.util.List;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -192,35 +193,55 @@ public class NetRequest {
    /**
     * 耗材操作开柜扫描提交数据
     */
-   public void putEPCDate(String deviceInventoryVos,Object tag, NetResult netResult) {
+   public void putEPCDate(String deviceInventoryVos, Object tag,LoadingDialog.Builder dialog, NetResult netResult) {
 	OkGo.<String>post(NetApi.URL_OPERATE_QUERY).tag(tag)
 		.upJson(deviceInventoryVos)
-		.execute(new MyCallBack(tag,netResult, false));
+		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
-
+   /**
+    * 耗材操作确认操作
+    */
+   public void putOperateYes(String operateTCstInventory,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_OPERATE_INBOX_YES).tag(tag)
+		.upJson(operateTCstInventory)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
    private class MyCallBack extends StringCallback {
 
 
 
 	private Object tag;
 	private NetResult netResult;
+	private LoadingDialog.Builder dialog;
 	private boolean isGet;//是否是get请求
 
-	public MyCallBack( Object tag, NetResult netResult,
+	public MyCallBack( Object tag,LoadingDialog.Builder dialog, NetResult netResult,
 		boolean isGet) {
 	   super();
 
 	   this.tag = tag;
 	   this.netResult = netResult;
 	   this.isGet = isGet;
+	   this.dialog = dialog;
 	}
+	public MyCallBack( Object tag, NetResult netResult,
+				 boolean isGet) {
+	   super();
 
+	   this.tag = tag;
+	   this.netResult = netResult;
+	   this.isGet = isGet;
+	}
 	@Override
 	public void onError(Response<String> response) {
 	   if (netResult != null) {
 		LogUtils.i(TAG, "网络接口联网失败");
 		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
 	   }
+	   if (dialog!=null){
+		dialog.mDialog.dismiss();
+	   }
+
 	   Log.i("fff", "response.body()    " + response.body());
 	   Log.i("fff","response.code()    "+response.code());
 	   Log.i("fff","response.message()    "+response.message());
@@ -231,6 +252,11 @@ public class NetRequest {
 	   if (netResult!=null){
 		netResult.onSucceed(response.body());
 	   }
+	   if (dialog!=null){
+		dialog.mDialog.dismiss();
+	   }
+
+
 	   Log.i("fff", "response.body()    " + response.body());
 	   Log.i("fff","response.code()    "+response.code());
 	   Log.i("fff","response.message()    "+response.message());

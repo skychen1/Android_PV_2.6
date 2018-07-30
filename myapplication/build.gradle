@@ -80,6 +80,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.5'
+    implementation 'com.alibaba:fastjson:1.2.47'
     //下拉刷新框架
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'

@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -9,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.InBoxDtoBean;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
@@ -25,16 +26,16 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 
-public class InBoxAllAdapter extends BaseQuickAdapter<InBoxDtoBean.TCstInventoryVosBean,BaseViewHolder>{
+public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo,BaseViewHolder>{
 
    public InBoxAllAdapter(
-	   int layoutResId,  List<InBoxDtoBean.TCstInventoryVosBean> data) {
+	   int layoutResId,  List<TCstInventoryVo> data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, InBoxDtoBean.TCstInventoryVosBean item) {
+	   BaseViewHolder helper, TCstInventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -56,7 +57,8 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InBoxDtoBean.TCstInventory
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(status);
 	UIUtils.initTermOfValidity(mContext,helper, item.getStopFlag(), mSeven_four);
-	if (status.equals("禁止入库")||status.equals("禁止移入")||status.equals("禁止退回")  ) {
+	Log.i("InOutBoxTwoActivity", "status   " + status);
+	if (status.equals("禁止入库")||status.equals("禁止移入")||status.equals("禁止退回")) {
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));

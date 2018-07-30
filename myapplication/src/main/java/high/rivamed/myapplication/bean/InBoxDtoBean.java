@@ -301,18 +301,18 @@ public class InBoxDtoBean implements Serializable{
 	private String deviceName;
 	private String status;
 	private int    stopFlag;
-	private Object storehouseCode;
+	private String storehouseCode;
 	private String deviceCode;
 	private String cstCode;
-	private Object operation;
-	private Object storehouseRemark;
-	private Object remake;
+	private String operation;
+	private String storehouseRemark;
+	private String remake;
 	private int    countStock;
 	private int    countActual;
 	private int    count;
-	private Object lastUpdateDate;
-	private Object userName;
-	private Object statusStr;
+	private String lastUpdateDate;
+	private String userName;
+	private String statusStr;
 
 	public String getCstName() { return cstName;}
 
@@ -346,9 +346,9 @@ public class InBoxDtoBean implements Serializable{
 
 	public void setStopFlag(int stopFlag) { this.stopFlag = stopFlag;}
 
-	public Object getStorehouseCode() { return storehouseCode;}
+	public String getStorehouseCode() { return storehouseCode;}
 
-	public void setStorehouseCode(Object storehouseCode) { this.storehouseCode = storehouseCode;}
+	public void setStorehouseCode(String storehouseCode) { this.storehouseCode = storehouseCode;}
 
 	public String getDeviceCode() { return deviceCode;}
 
@@ -358,18 +358,18 @@ public class InBoxDtoBean implements Serializable{
 
 	public void setCstCode(String cstCode) { this.cstCode = cstCode;}
 
-	public Object getOperation() { return operation;}
+	public String getOperation() { return operation;}
 
-	public void setOperation(Object operation) { this.operation = operation;}
+	public void setOperation(String operation) { this.operation = operation;}
 
-	public Object getStorehouseRemark() { return storehouseRemark;}
+	public String getStorehouseRemark() { return storehouseRemark;}
 
 	public void setStorehouseRemark(
-		Object storehouseRemark) { this.storehouseRemark = storehouseRemark;}
+		String storehouseRemark) { this.storehouseRemark = storehouseRemark;}
 
-	public Object getRemake() { return remake;}
+	public String getRemake() { return remake;}
 
-	public void setRemake(Object remake) { this.remake = remake;}
+	public void setRemake(String remake) { this.remake = remake;}
 
 	public int getCountStock() { return countStock;}
 
@@ -383,16 +383,16 @@ public class InBoxDtoBean implements Serializable{
 
 	public void setCount(int count) { this.count = count;}
 
-	public Object getLastUpdateDate() { return lastUpdateDate;}
+	public String getLastUpdateDate() { return lastUpdateDate;}
 
-	public void setLastUpdateDate(Object lastUpdateDate) { this.lastUpdateDate = lastUpdateDate;}
+	public void setLastUpdateDate(String lastUpdateDate) { this.lastUpdateDate = lastUpdateDate;}
 
-	public Object getUserName() { return userName;}
+	public String getUserName() { return userName;}
 
-	public void setUserName(Object userName) { this.userName = userName;}
+	public void setUserName(String userName) { this.userName = userName;}
 
-	public Object getStatusStr() { return statusStr;}
+	public String getStatusStr() { return statusStr;}
 
-	public void setStatusStr(Object statusStr) { this.statusStr = statusStr;}
+	public void setStatusStr(String statusStr) { this.statusStr = statusStr;}
    }
 }

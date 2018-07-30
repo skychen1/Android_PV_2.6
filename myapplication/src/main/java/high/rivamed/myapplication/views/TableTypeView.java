@@ -27,12 +27,14 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.InBoxAllAdapter;
+import high.rivamed.myapplication.adapter.OutBoxAllAdapter;
 import high.rivamed.myapplication.adapter.StockDetailsAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.InBoxDtoBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.StockDetailsBean;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 
@@ -74,7 +76,8 @@ public class TableTypeView extends LinearLayout {
    private View                                        mHeadView;
    public  TimelyPublicAdapter                         mPublicAdapter;
    public  List<StockDetailsBean.TCstInventoryVosBean> mStockDetails;
-   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos;
+//   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos;
+   public  List<TCstInventoryVo>                       mTCstInventoryVos;
    private static final int FOUR  = 4;
    private static final int FIVE  = 5;
    private static final int SIX   = 6;
@@ -94,6 +97,7 @@ public class TableTypeView extends LinearLayout {
    public int                mSelectedPos  = -1;
    private String          mMovie;
    public  InBoxAllAdapter mInBoxAllAdapter;
+   public OutBoxAllAdapter mOutBoxAllAdapter;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
@@ -109,7 +113,7 @@ public class TableTypeView extends LinearLayout {
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventBing(InBoxDtoBean event) {
+   public void onEventBing(TCstInventoryDto event) {
 	mTCstInventoryVos = event.gettCstInventoryVos();
 	LogUtils.i("fafa", "mTCstInventoryVos  mTCstInventoryVos  " + mTCstInventoryVos.size());
 	initData();
@@ -173,7 +177,7 @@ public class TableTypeView extends LinearLayout {
 
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size,
-	   List<InBoxDtoBean.TCstInventoryVosBean> movies, LinearLayout linearLayout,
+	   List<TCstInventoryVo> movies, LinearLayout linearLayout,
 	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type, String dialog) {
 	super(context);
 	EventBusUtils.register(this);
@@ -296,7 +300,7 @@ public class TableTypeView extends LinearLayout {
 			mRefreshLayout.setEnableAutoLoadMore(true);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
-		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {
+		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
 
 			mLayout = R.layout.item_singbox_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -312,14 +316,15 @@ public class TableTypeView extends LinearLayout {
 			   mInBoxAllAdapter.notifyDataSetChanged();
 			} else {
 			   mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mTCstInventoryVos);
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRecyclerview.setAdapter(mInBoxAllAdapter);
+			   mLinearLayout.addView(mHeadView);
 			}
 
-			mHeadView.setBackgroundResource(R.color.bg_green);
-			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mInBoxAllAdapter);
-			mLinearLayout.addView(mHeadView);
+
 		   } else if (mDialog != null && mDialog.equals(STYPE_OUT)) {
 			mLayout = R.layout.item_out_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -331,31 +336,38 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_OUT,
-									     mCheckStates);
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			for (int i=0;i<mTCstInventoryVos.size();i++){
+			   mCheckStates.put(i,true);
+			}
+			if (mOutBoxAllAdapter != null) {
+			   mOutBoxAllAdapter.notifyDataSetChanged();
+			} else {
+
+			   mOutBoxAllAdapter = new OutBoxAllAdapter(mLayout,
+										  mTCstInventoryVos,
+										  mCheckStates);
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRecyclerview.setAdapter(mOutBoxAllAdapter);
+			   mLinearLayout.addView(mHeadView);
+			}
+			mOutBoxAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
 				if (checkBox.isChecked()) {
 				   checkBox.setChecked(false);
-				   mMovies.get(position).seven = "0";
 				   mCheckStates.put(position, false);
 				} else {
 				   mCheckStates.put(position, true);
-				   mMovies.get(position).seven = "1";
 				   checkBox.setChecked(true);
 				}
-				mPublicAdapter.notifyDataSetChanged();
+				mOutBoxAllAdapter.notifyDataSetChanged();
 			   }
 			});
-			mHeadView.setBackgroundResource(R.color.bg_green);
 
-			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
-			mLinearLayout.addView(mHeadView);
 		   } else if (mDialog != null && mDialog.equals(STYPE_FORM_CONF)) {
 			mLayout = R.layout.item_formcon_six_layout;
 			mHeadView = mActivity.getLayoutInflater()

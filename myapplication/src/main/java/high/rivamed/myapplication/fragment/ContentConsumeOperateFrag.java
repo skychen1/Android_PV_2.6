@@ -31,13 +31,13 @@ import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
+import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.InBoxDtoBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
@@ -70,7 +70,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  */
 
 public class ContentConsumeOperateFrag extends BaseSimpleFragment {
-
+String TAG ="ContentConsumeOperateFrag";
    @BindView(R.id.consume_openall_rv)
    RecyclerView mConsumeOpenallRv;
    @BindView(R.id.consume_openall_top)
@@ -105,7 +105,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    RecyclerView mConsumeDownRv;
    @BindView(R.id.consume_down)
    LinearLayout mConsumeDown;
-
+   private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter                mHomeFastOpenTopAdapter;
    private       HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
    private       List<String>                       eth002DeviceIdList;
@@ -200,6 +200,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(success, "柜门已开"));
+		}else {
+		   mShowLoading.mDialog.dismiss();
+
+//		   ToastUtils.showShort("开门异常，请重试！");
+
+
 		}
 	   }
 
@@ -215,16 +221,23 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   //			mReaderMap.put(device_id, box_id);
 		   //		   }
 
-		   int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId);
-		   LogUtils.i(TAG, "关门了，开始扫描了" + ret);
+
 		   for (String readerid : mReaderIdList) {
-			LogUtils.i(TAG, "关门了，readerid    " + readerid);
+			int ret = DeviceManager.getInstance().StartUhfScan(readerid);
+		      if (mReaderIdList==null||ret==2){
+		         mShowLoading.mDialog.dismiss();
+			}
+
+			LogUtils.i(TAG, "开始扫描了状态    " + ret);
+
 			DeviceManager.getInstance().StartUhfScan(readerid);
 		   }
 		   //		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   //		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   //		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
 		   //		   mContext.startActivity(intent2);
+		}else {
+		   mShowLoading.mDialog.dismiss();
 		}
 	   }
 
@@ -235,7 +248,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
+	      if (!success){
+		   mShowLoading.mDialog.dismiss();
+		   ToastUtils.showShort("扫描失败，请重试！");
+		}
 		getDeviceDate(deviceId, epcs);
 	   }
 
@@ -292,21 +308,37 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
-	NetRequest.getInstance().putEPCDate(toJson, _mActivity, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		Log.i(TAG, "result    " + result);
-		//TCstInventoryDto
-		InBoxDtoBean inBoxDtoBean = mGson.fromJson(result, InBoxDtoBean.class);
-//		List<InBoxDtoBean.TCstInventoryVosBean> cstInventoryVos = inBoxDtoBean.getTCstInventoryVos();
-		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		EventBusUtils.postSticky(new Event.EventAct("all"));
-		Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-		EventBusUtils.postSticky(inBoxDtoBean);
-		mContext.startActivity(intent2);
 
-	   }
-	});
+	   NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading,new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Log.i(TAG, "result    " + result);
+		   TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		   LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos()==null));
+		   if (cstInventoryDto.gettCstInventoryVos()==null&&cstInventoryDto.gettCstInventoryVos().size()<1){
+			mBuilder.mDialog.dismiss();
+			mShowLoading.mDialog.dismiss();
+			ToastUtils.showShort("未扫描到操作的耗材");
+		   }else {
+			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
+			EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+			EventBusUtils.postSticky(new Event.EventAct("all"));
+			if (cstInventoryDto.getType()==0){//放入
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent2);
+			}else {//拿出
+			   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
+			}
+			EventBusUtils.postSticky(cstInventoryDto);
+		   }
+		   if (cstInventoryDto.getType()==0){
+
+		   }
+
+		}
+	   });
+
+
    }
 
    private void initData() {
@@ -356,6 +388,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		LogUtils.i("TT", " position  " + position);
+		mShowLoading = DialogUtils.showLoading(mContext);
 
 		if (position == 0) {
 		   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)

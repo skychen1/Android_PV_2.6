@@ -1,21 +1,16 @@
 package high.rivamed.myapplication.dto.vo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class TCstInventoryVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	public static final String expiration_first = "001";	//近效期第一阶段
-	public static final String expiration_second = "002";	//近效期第二阶段
-	public static final String expiration_third = "003";	//近效期第三阶段	
-	public static final String noComfirm_day = "004";
+
 	
 	
 	private String cstName;
 	private String epc;
 	private String cstSpec;
-	private Date expirationTime;
+	private String expirationTime;
 	private String expiration;
 	private String deviceName;
 	private String status;
@@ -28,64 +23,91 @@ public class TCstInventoryVo implements Serializable {
 	private String operation;
 	private String storehouseRemark;
 	private String remake;
-	private Long countStock = 0l; // 库存情况
-	private Long countActual = 0l; // 扫描出来的库存
+	private String countStock ; // 库存情况
+	private String countActual ; // 扫描出来的库存
 
-	private Long count = 0l;
-	private Date lastUpdateDate;
+	private String count ;
+	private String lastUpdateDate;
 	private String userName;
 	// 前端状态显示字段
 
 	private String statusStr;
 
-	public TCstInventoryVo() {
-
-	}
-	public TCstInventoryVo(String cstName,Date expirationTime) {
-		super();
-		this.cstName = cstName;
-		this.expirationTime = expirationTime;
-	}
 
 
-	public TCstInventoryVo(String cstSpec, String deviceName, Long countActual) {
-		super();
-		this.cstSpec = cstSpec;
-		this.deviceName = deviceName;
-		this.countActual = countActual;
-	}
-	public TCstInventoryVo(String cstName, String cstSpec,String cstCode, Date expirationTime, String deviceName, String deviceCode,
-			Long countStock) {
-		super();
-		this.cstName = cstName;
-		this.cstSpec = cstSpec;
-		this.cstCode=cstCode;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.deviceCode = deviceCode;
-		this.countStock = countStock;
-	}
-	public TCstInventoryVo(String cstName, String cstSpec,String cstCode, Date expirationTime, String deviceName, Long countActual,String deviceCode
-			) {
-		super();
-		this.cstName = cstName;
-		this.cstSpec = cstSpec;
-		this.cstCode=cstCode;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.deviceCode = deviceCode;
-		this.countActual = countActual;
-	}
-	public TCstInventoryVo(String cstName, String cstSpec, String epc, Date expirationTime, String deviceName,
-			String deviceCode) {
-		super();
-		this.cstName = cstName;
-		this.cstSpec = cstSpec;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.deviceCode = deviceCode;
-		this.epc = epc;
-	}
+   public String getCstName() {
+	return cstName;
+   }
+
+   public void setCstName(String cstName) {
+	this.cstName = cstName;
+   }
+
+   public String getEpc() {
+	return epc;
+   }
+
+   public void setEpc(String epc) {
+	this.epc = epc;
+   }
+
+   public String getCstSpec() {
+	return cstSpec;
+   }
+
+   public void setCstSpec(String cstSpec) {
+	this.cstSpec = cstSpec;
+   }
+
+   public String getExpirationTime() {
+	return expirationTime;
+   }
+
+   public void setExpirationTime(String expirationTime) {
+	this.expirationTime = expirationTime;
+   }
+
+   public String getDeviceName() {
+	return deviceName;
+   }
+
+   public void setDeviceName(String deviceName) {
+	this.deviceName = deviceName;
+   }
+
+   public String getCount() {
+	return count;
+   }
+
+   public void setCount(String count) {
+	this.count = count;
+   }
+
+   public String getLastUpdateDate() {
+	return lastUpdateDate;
+   }
+
+   public void setLastUpdateDate(String lastUpdateDate) {
+	this.lastUpdateDate = lastUpdateDate;
+   }
+
+   public String getUserName() {
+	return userName;
+   }
+
+   public void setUserName(String userName) {
+	this.userName = userName;
+   }
+
+   public String getStatusStr() {
+	return statusStr;
+   }
+
+   public void setStatusStr(String statusStr) {
+	this.statusStr = statusStr;
+   }
+
+   
 //
 //	public TCstInventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
 //			String status) {
@@ -98,18 +120,7 @@ public class TCstInventoryVo implements Serializable {
 //		this.status = status;
 //	}
 	
-	public TCstInventoryVo(String cstName, String cstSpec,  String cstCode,String epc, Date expirationTime, String deviceName,
-			String deviceCode) {
-		super();
-		this.cstName = cstName;
-		this.cstSpec = cstSpec;
-		this.cstSpec = cstSpec;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.deviceCode = deviceCode;
-		this.epc = epc;
-		this.cstCode=cstCode;
-	}
+	
 
 
 	@Override
@@ -144,60 +155,7 @@ public class TCstInventoryVo implements Serializable {
 		return true;
 	}
 
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public TCstInventoryVo(String cstName,String epc, Date lastUpdateDate, String status, Date expirationTime) {
-		super();
-		this.cstName = cstName;
-		this.epc = epc;
-		this.expirationTime = expirationTime;
-		this.status = status;
-		this.lastUpdateDate = lastUpdateDate;
-	}
-
-	public TCstInventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
-			String status, String storehouseCode, String deviceCode, String cstCode) {
-		super();
-		this.cstName = cstName;
-		this.epc = epc;
-		this.cstSpec = cstSpec;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.status = status;
-		this.storehouseCode = storehouseCode;
-		this.deviceCode = deviceCode;
-		this.cstCode = cstCode;
-	}
-
-	public TCstInventoryVo(String cstName, String cstSpec, Date expirationTime, String deviceName, String deviceCode,
-			String cstCode, Long count) {
-		super();
-		this.cstName = cstName;
-		this.cstSpec = cstSpec;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.deviceCode = deviceCode;
-		this.cstCode = cstCode;
-		this.count = count;
-	}
-
-
-	public TCstInventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
-			Date lastUpdateDate, String userName) {
-		this.cstName = cstName;
-		this.epc = epc;
-		this.cstSpec = cstSpec;
-		this.expirationTime = expirationTime;
-		this.deviceName = deviceName;
-		this.epc = epc;
-		this.expirationTime = expirationTime;
-		this.lastUpdateDate = lastUpdateDate;
-		this.userName = userName;
-	}
+	
 
 	public String getStatus() {
 		return status;
@@ -271,19 +229,19 @@ public class TCstInventoryVo implements Serializable {
 		this.remake = remake;
 	}
 
-	public Long getCountStock() {
+	public String getCountStock() {
 		return countStock;
 	}
 
-	public void setCountStock(Long countStock) {
+	public void setCountStock(String countStock) {
 		this.countStock = countStock;
 	}
 
-	public Long getCountActual() {
+	public String getCountActual() {
 		return countActual;
 	}
 
-	public void setCountActual(Long countActual) {
+	public void setCountActual(String countActual) {
 		this.countActual = countActual;
 	}
 

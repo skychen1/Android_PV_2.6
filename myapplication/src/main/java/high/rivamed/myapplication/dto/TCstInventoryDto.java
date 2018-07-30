@@ -35,7 +35,7 @@ public class TCstInventoryDto {
 	private String  deviceCode;
 	private int     operation;
 	private String  requestResult;
-	private Integer type;	//0 放入 1取出
+	private int type;	//0 放入 1取出
 	private String  cstSpec;
 	private Account account;
 	//名称及规格查询条件
@@ -47,8 +47,56 @@ public class TCstInventoryDto {
 	private String  storehouseRemark;	//移出备注
 	private String  storehouseCode;		//调拨库房
 	private int     stopFlag;		//效期情况 0过期 1-3近效期 4正常
+   private int                          countTwoin;
+   private int                          countMoveIn;
+   private int                          countBack;
+   private int                          countTempopary;
 
-	public String getRemake() {
+   public static long getSerialVersionUID() {
+	return serialVersionUID;
+   }
+
+   public int getId() {
+	return id;
+   }
+
+   public void setId(int id) {
+	this.id = id;
+   }
+
+   public int getCountTwoin() {
+	return countTwoin;
+   }
+
+   public void setCountTwoin(int countTwoin) {
+	this.countTwoin = countTwoin;
+   }
+
+   public int getCountMoveIn() {
+	return countMoveIn;
+   }
+
+   public void setCountMoveIn(int countMoveIn) {
+	this.countMoveIn = countMoveIn;
+   }
+
+   public int getCountBack() {
+	return countBack;
+   }
+
+   public void setCountBack(int countBack) {
+	this.countBack = countBack;
+   }
+
+   public int getCountTempopary() {
+	return countTempopary;
+   }
+
+   public void setCountTempopary(int countTempopary) {
+	this.countTempopary = countTempopary;
+   }
+
+   public String getRemake() {
 		return remake;
 	}
 
@@ -120,11 +168,11 @@ public class TCstInventoryDto {
 		this.requestResult = requestResult;
 	}
 
-	public Integer getType() {
+	public int getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
