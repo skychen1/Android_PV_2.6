@@ -1,8 +1,15 @@
 package cn.rivamed;
 
 
+import android.content.Context;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -321,6 +328,10 @@ public class DeviceManager {
      * @return
      */
     public int StopUhfScan(String deviceId) {
+        Thread thread=new Thread(()->{
+
+
+        });
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -484,5 +495,26 @@ public class DeviceManager {
                 }
             }
         }
+    }
+
+    public static String getIP(){
+
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
+                {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address))
+                    {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        }
+        catch (SocketException ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

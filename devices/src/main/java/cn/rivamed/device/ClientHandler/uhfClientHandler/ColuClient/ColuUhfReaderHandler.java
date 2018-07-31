@@ -135,7 +135,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 StopScan();
                 new Thread(() -> {
                     if (this.messageListener != null) {   //发送回调
-                        Log.d(LOG_TAG,"触发扫描完成回调");
+                        Log.d(LOG_TAG, "触发扫描完成回调");
                         this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
                         this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                     }
@@ -156,6 +156,8 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         }
     }
 
+    Object locker = new Object();
+
     /**
      * 心跳错误基数
      * 心跳成功则 归0，失败则+1
@@ -171,7 +173,9 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     private boolean CheckKeepAlive() {
         String s = null;
         try {
-            s = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
+            synchronized (locker) {
+                s = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
+            }
             UpdateLastReadTime();
         } catch (InterruptedException e) {
             s = "";
@@ -192,7 +196,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      */
     public synchronized void AppendNewTag(String epc, TagInfo tagInfo) {
         if (!scanMode) {
-            CLReader.Stop(connId);
+            return;
         }
         if (this.epcs.containsKey(epc)) {
             this.epcs.get(epc).add(tagInfo);
@@ -229,7 +233,9 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     public int Close() {
         try {
             threadKeepAlive = false;
-            CLReader.CloseConn(connId);
+            synchronized (locker) {
+                CLReader.CloseConn(connId);
+            }
             Log.e(LOG_TAG, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage());
@@ -261,39 +267,66 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             return FunctionCode.DEVICE_BUSY;
         }
 
+        final int[] ret = {FunctionCode.OPERATION_FAIL};
         epcs.clear();
-        int ret = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
 
-        if (ret == 0) {
+        Thread thread = new Thread(() -> {
+            synchronized (locker) {
+                int uhfRet = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
+                if (uhfRet == 0)
+                    ret[0] = FunctionCode.SUCCESS;
+            }
 
+        });
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+
+        }
+        if (ret[0] == FunctionCode.SUCCESS) {
             Calendar calendar = Calendar.getInstance();    //至少扫描3秒
             calendar.setTime(new Date());
             calendar.add(Calendar.SECOND, 3);
             lastReciveTime = calendar.getTime();
             scanMode = true;
-            Log.d(LOG_TAG,"启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描成功");
-            return FunctionCode.SUCCESS;
+            Log.d(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描成功");
         } else {
-            Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描失败:errorCode=" + ret);
-            return FunctionCode.OPERATION_FAIL;
+            Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描失败");
         }
+        return ret[0];
     }
 
     /**
      * 停止扫描
      */
     public synchronized int StopScan() {
+        final int[] ret = {FunctionCode.OPERATION_FAIL};
+        Thread thread = new Thread(() -> {
+            try {
+                scanMode = false;
+                int uhfRet = -1;
+                synchronized (locker) {
+                    uhfRet = CLReader._Config.Stop(connId);
+                }
+                Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束:RET=" + (uhfRet == 0 ? "成功" : "失败") + "ret=" + uhfRet);
+                Thread.sleep(150);//听从鸿陆SDK工程师建议，这样可以避免下一次 启动扫描失败，但实际上依然会失败，目测需要停止1秒以上
+                ret[0] = FunctionCode.SUCCESS;
+                return;
+            } catch (Exception ex) {
+                Log.e(LOG_TAG, "停止扫描发生错误:" + ex.getMessage());
+                Close();
+            }
+            ret[0] = FunctionCode.OPERATION_FAIL;
+        });
+        thread.start();
         try {
-            scanMode = false;
-            int ret = CLReader._Config.Stop(connId);
-            Log.i(LOG_TAG, "鸿陆RFID " + this.connId + " 扫描结束:RET=" + (ret == 0 ? "成功" : "失败"));
-            Thread.sleep(150);//听从鸿陆SDK工程师建议，这样可以避免下一次 启动扫描失败，但实际上依然会失败，目测需要停止1秒以上
-            return FunctionCode.SUCCESS;
-        } catch (Exception ex) {
-            Log.e(LOG_TAG, "停止扫描发生错误:" + ex.getMessage());
-            Close();
+            thread.join(1000);
+        } catch (InterruptedException e) {
+
         }
-        return FunctionCode.OPERATION_FAIL;
+        return ret[0];
     }
 
     @Override
@@ -301,73 +334,93 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         if (power < 0 || power > 33) {
             return FunctionCode.PARAM_ERROR;
         }
-        boolean success = false;
+        final boolean[] success = {false};
 
-        HashMap<Integer, Integer> everyAntPower = new HashMap<>();
-        for (int i = 0; i < ants.length; i++) {
-            everyAntPower.put((int) ants[i], power);
-        }
-
-
-        try {
-            int ret = CLReader._Config.SetANTPowerParam(this.connId, everyAntPower);
-            if (ret == 0) {
-                success = true;
+        Thread thread = new Thread(() -> {
+            HashMap<Integer, Integer> everyAntPower = new HashMap<>();
+            for (int i = 0; i < ants.length; i++) {
+                everyAntPower.put((int) ants[i], power);
             }
-        } catch (InterruptedException e) {
-            Log.e(LOG_TAG, "设置功率发生错误;", e);
-        }
 
-        boolean finalSuccess = success;
-        new Thread(() -> {
+
             try {
-                Thread.sleep(300);
+                int ret = -1;
+                synchronized (locker) {
+                    ret = CLReader._Config.SetANTPowerParam(this.connId, everyAntPower);
+                }
+                if (ret == 0) {
+                    success[0] = true;
+                }
             } catch (InterruptedException e) {
-
+                Log.e(LOG_TAG, "设置功率发生错误;", e);
             }
-            if (this.messageListener != null) {
-                this.messageListener.OnUhfSetPowerRet(this.getIdentification(), finalSuccess);
-            }
-        }).start();
 
-        return finalSuccess ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+
+                }
+                if (this.messageListener != null) {
+                    this.messageListener.OnUhfSetPowerRet(this.getIdentification(), success[0]);
+                }
+            }).start();
+        });
+        thread.start();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return success[0] ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int QueryPower() {
 
-        boolean success = false;
-        int power = 100;
-        try {
-            HashMap<Integer, Integer> everyAntPower = CLReader._Config.GetANTPowerParam(this.connId);
-            if (everyAntPower != null && everyAntPower.size() > 0) {
-                for (Map.Entry<Integer, Integer> p : everyAntPower.entrySet()) {
-                    if (p.getValue() < power) {
-                        power = p.getValue();
-                    }
+        final boolean[] success = {false};
+
+
+        Thread thread = new Thread(() -> {
+            int power = 100;
+            try {
+                HashMap<Integer, Integer> everyAntPower = null;
+                synchronized (locker) {
+                    everyAntPower = CLReader._Config.GetANTPowerParam(this.connId);
                 }
-                success = true;
+                if (everyAntPower != null && everyAntPower.size() > 0) {
+                    for (Map.Entry<Integer, Integer> p : everyAntPower.entrySet()) {
+                        if (p.getValue() < power) {
+                            power = p.getValue();
+                        }
+                    }
+                    success[0] = true;
+                }
+            } catch (InterruptedException e) {
+                Log.e(LOG_TAG, "获取功率发生错误;", e);
             }
+
+            boolean finalSuccess = success[0];
+            int finalPower = power;
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+
+                }
+                if (this.messageListener != null) {
+                    this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), finalSuccess, finalPower);
+                }
+            }).start();
+        });
+        thread.start();
+        try {
+            thread.join(1000);
         } catch (InterruptedException e) {
-            Log.e(LOG_TAG, "获取功率发生错误;", e);
         }
 
-        boolean finalSuccess = success;
-        int finalPower = power;
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-
-            }
-            if (this.messageListener != null) {
-                this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), finalSuccess, finalPower);
-            }
-        }).start();
-
-
-        return finalSuccess ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+        return success[0] ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override

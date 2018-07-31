@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class TestDevicesActivity extends SimpleActivity {
     private EditText txt_power;
     private Button bt_queryConnDev;
     private Button bt_back;
-
+    private ScrollView scroll_log;
     String uhfDeviceId = "";
     String eth002DeviceId = "";
 
@@ -66,6 +67,9 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_uhf_reset = (Button) findViewById(R.id.bt_uhf_reset);
         bt_back=(Button) findViewById(R.id.bt_back);
         bt_clear=(Button)findViewById(R.id.bt_clear);
+        scroll_log=(ScrollView)findViewById(R.id.scroll_log);
+
+
         initListener();
         initCallBack();
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
@@ -193,6 +197,13 @@ public class TestDevicesActivity extends SimpleActivity {
                 Date time = new Date();
                 String s = ">>>>" + simpleDateFormat.format(time) + "  " + msg + "\n";
                 TestDevicesActivity.this.txt_log.append(s);
+
+
+                int offset=txt_log.getMeasuredHeight()-scroll_log.getMeasuredHeight();
+                if(offset<0){
+                    offset=0;
+                }
+                scroll_log.scrollTo(0,offset);
             }
         });
     }
@@ -237,8 +248,7 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
-//                int ret = DeviceManager.getInstance().OpenDoor(eth002DeviceId);
-                int ret = DeviceManager.getInstance().OpenDoor("");
+                int ret = DeviceManager.getInstance().OpenDoor(eth002DeviceId);
                 AppendLog("开门命令已发出 ret=" + ret);
             }
         });
