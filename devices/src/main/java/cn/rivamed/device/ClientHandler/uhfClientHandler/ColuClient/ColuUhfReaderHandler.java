@@ -135,13 +135,13 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
                 StopScan();
                 new Thread(() -> {
                     if (this.messageListener != null) {   //发送回调
+                        Log.d(LOG_TAG,"触发扫描完成回调");
                         this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
                         this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                     }
-                    epcs.clear();
                 }).start();
             }
-            if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 10000) {
+            if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 4000) {
                 if (!CheckKeepAlive()) {
                     Log.w(LOG_TAG, "Colu Client DEVICEID=" + getIdentification() + "心跳检测异常，连续满3次将强制断开，目前是第" + keepAliveErrorCount + "次");
                     if (keepAliveErrorCount >= 3) {
@@ -251,9 +251,11 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
             return FunctionCode.DEVICE_BUSY;
         }
 
+        epcs.clear();
         int ret = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
 
         if (ret == 0) {
+
             Calendar calendar = Calendar.getInstance();    //至少扫描3秒
             calendar.setTime(new Date());
             calendar.add(Calendar.SECOND, 3);
