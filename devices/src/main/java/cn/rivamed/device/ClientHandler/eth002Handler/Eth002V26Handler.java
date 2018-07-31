@@ -44,6 +44,15 @@ public class Eth002V26Handler extends NettyDeviceClientHandler implements Eth002
         this.eth002Message = messageListener;
         this.eth002Message.setDeviceHandler(this);
     }
+    @Override
+    public String getProducer() {
+        return "Eth";
+    }
+
+    @Override
+    public String getVersion() {
+        return "V2.6";
+    }
 
     @Override
     public int OpenDoor() {

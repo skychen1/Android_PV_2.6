@@ -418,6 +418,16 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         return address;
     }
 
+    @Override
+    public String getProducer() {
+        return "RodinBell";
+    }
+
+    @Override
+    public String getVersion() {
+        return "V1.0";
+    }
+
     private void SendBuf(byte cmd, byte[] buf) {
         if (super.getCtx() != null) {
             byte[] bufSend = DataProtocol.PieceCommond(address, cmd, buf);

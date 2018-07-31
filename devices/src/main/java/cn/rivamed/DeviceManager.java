@@ -197,7 +197,7 @@ public class DeviceManager {
         List<DeviceInfo> deviceInfos = new ArrayList<>();
         for (Map.Entry<String, DeviceHandler> d : this.getConnetedDevices().entrySet()) {
             if (d.getValue() != null)
-                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getDeviceType(), d.getValue().getRemoteIP()));
+                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getDeviceType(), d.getValue().getRemoteIP(),d.getValue().getProducer(),d.getValue().getVersion()));
         }
         return deviceInfos;
     }

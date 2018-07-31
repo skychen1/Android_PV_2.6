@@ -17,6 +17,10 @@ public interface DeviceHandler {
 
     String getRemoteIP();
 
+    String getProducer();
+
+    String getVersion();
+
     int Close();
 
 }

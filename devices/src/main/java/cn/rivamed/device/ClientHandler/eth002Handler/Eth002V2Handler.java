@@ -79,6 +79,16 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
         return address;
     }
 
+    @Override
+    public String getProducer() {
+        return "Eth";
+    }
+
+    @Override
+    public String getVersion() {
+        return "V2.0";
+    }
+
     int continueIdleCount = 0;
 
     @Override

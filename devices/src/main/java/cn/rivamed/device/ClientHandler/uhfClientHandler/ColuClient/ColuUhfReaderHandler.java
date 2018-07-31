@@ -216,6 +216,16 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     }
 
     @Override
+    public String getProducer() {
+        return "鸿陆";
+    }
+
+    @Override
+    public String getVersion() {
+        return "V1.0";
+    }
+
+    @Override
     public int Close() {
         try {
             threadKeepAlive = false;
