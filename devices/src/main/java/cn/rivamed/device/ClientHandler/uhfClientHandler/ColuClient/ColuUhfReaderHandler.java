@@ -131,20 +131,14 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         threadKeepAlive = true;
         while (threadKeepAlive) {
             Date current = new Date();
-            if (scanMode && current.getTime() - lastReciveTime.getTime() > 1000) {
+            if (scanMode && (current.getTime() - lastReciveTime.getTime() > 1000)) {
                 StopScan();
                 new Thread(() -> {
                     if (this.messageListener != null) {   //发送回调
                         this.messageListener.OnUhfScanRet(true, this.getIdentification(), userInfo, epcs);
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-
-                        }
                         this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                     }
                     epcs.clear();
-                    scanMode = false;
                 }).start();
             }
             if (!scanMode && (current.getTime() - lastReciveTime.getTime()) > 10000) {
@@ -252,19 +246,20 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
      * 开始扫描
      */
 
-    public int StartScan() {
+    public synchronized int StartScan() {
         if (scanMode) {
             return FunctionCode.DEVICE_BUSY;
         }
 
         int ret = CLReader._Tag6C.GetEPC(connId, getAllAnt(), eReadType.Inventory);
-        Calendar calendar = Calendar.getInstance();    //至少扫描3秒
-        calendar.setTime(new Date());
-        calendar.add(Calendar.SECOND, 5);
-        lastReciveTime = calendar.getTime();
 
         if (ret == 0) {
+            Calendar calendar = Calendar.getInstance();    //至少扫描3秒
+            calendar.setTime(new Date());
+            calendar.add(Calendar.SECOND, 3);
+            lastReciveTime = calendar.getTime();
             scanMode = true;
+            Log.d(LOG_TAG,"启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描成功");
             return FunctionCode.SUCCESS;
         } else {
             Log.e(LOG_TAG, "启动鸿陆CONNID=" + this.connId + "  DEVICEID=" + getIdentification() + "RFID扫描失败:errorCode=" + ret);
@@ -275,7 +270,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     /**
      * 停止扫描
      */
-    public int StopScan() {
+    public synchronized int StopScan() {
         try {
             scanMode = false;
             int ret = CLReader._Config.Stop(connId);

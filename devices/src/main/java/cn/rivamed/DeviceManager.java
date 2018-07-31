@@ -124,6 +124,19 @@ public class DeviceManager {
     public class DeviceInfo {
 
         String identifition;
+        DeviceType deviceType;
+        String remoteIP;
+
+
+        /**
+         * 生产厂家
+         * */
+        String Product;
+        /**
+         * 版本
+         * */
+        String Version;
+
 
         public String getIdentifition() {
             return identifition;
@@ -149,13 +162,34 @@ public class DeviceManager {
             this.remoteIP = remoteIP;
         }
 
-        DeviceType deviceType;
-        String remoteIP;
+
+        public String getProduct() {
+            return Product;
+        }
+
+        public void setProduct(String product) {
+            Product = product;
+        }
+
+        public String getVersion() {
+            return Version;
+        }
+
+        public void setVersion(String version) {
+            Version = version;
+        }
 
         public DeviceInfo(String identifition, DeviceType deviceType, String remoteIP) {
             this.identifition = identifition;
             this.deviceType = deviceType;
             this.remoteIP = remoteIP;
+        }
+
+        public DeviceInfo(String identifition,DeviceType deviceType,String remoteIP,String product,String version)
+        {
+            this(identifition,deviceType,remoteIP);
+            this.Product=product;
+            this.Version=version;
         }
     }
 

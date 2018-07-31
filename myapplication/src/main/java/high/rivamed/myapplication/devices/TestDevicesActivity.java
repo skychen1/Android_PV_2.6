@@ -33,6 +33,7 @@ public class TestDevicesActivity extends SimpleActivity {
     private Button bt_getpower;
     private Button bt_setpower;
     private Button bt_uhf_reset;
+    private Button bt_clear;
 
     private EditText txt_power;
     private Button bt_queryConnDev;
@@ -64,6 +65,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_queryConnDev = (Button) findViewById(R.id.bt_queryConnDev);
         bt_uhf_reset = (Button) findViewById(R.id.bt_uhf_reset);
         bt_back=(Button) findViewById(R.id.bt_back);
+        bt_clear=(Button)findViewById(R.id.bt_clear);
         initListener();
         initCallBack();
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
@@ -323,6 +325,13 @@ public class TestDevicesActivity extends SimpleActivity {
             public void onClick(View v) {
                 int ret = DeviceManager.getInstance().ResetUhfReader(uhfDeviceId);
                 AppendLog("复位RFID reader功率指令发送 设备Ｉ=" + uhfDeviceId + " RET=" + ret);
+            }
+        });
+
+        bt_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TestDevicesActivity.this.txt_log.setText("");
             }
         });
     }
