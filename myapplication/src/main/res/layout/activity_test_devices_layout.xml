@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <ScrollView
+            android:id="@+id/scroll_log"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -25,6 +26,9 @@
                 android:layout_weight="2"
                 android:inputType="textMultiLine|textImeMultiLine"
                 android:textAllCaps="false"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbarFadeDuration="2000"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="18sp"
                 android:textStyle="bold">

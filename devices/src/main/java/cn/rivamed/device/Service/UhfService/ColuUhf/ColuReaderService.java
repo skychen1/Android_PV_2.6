@@ -55,8 +55,12 @@ public class ColuReaderService extends BaseService implements UhfService {
     @Override
     public boolean StartService(DeviceManager deviceManager) {
         super.StartService(deviceManager);
-        Log.d(log_tag, "启动科陆 Reader 服务器模式，Port=" + coluPort);
-        return CLReader.OpenTcpServer("0.0.0.0", coluPort.toString(), new CLReaderMessageCallback());
+        String ip = this.getDeviceManager().getIP();
+        if (StringUtil.isNullOrEmpty(ip)) {
+            ip = "0.0.0.0";
+        }
+        Log.d(log_tag, "启动科陆 Reader 服务器模式，IP=" + ip + ";Port=" + coluPort);
+        return CLReader.OpenTcpServer(ip, coluPort.toString(), new CLReaderMessageCallback());
     }
 
     @Override
@@ -86,19 +90,21 @@ public class ColuReaderService extends BaseService implements UhfService {
         }
 
         public void PortClosing(String s) {
-            String mac = StringUtil.EMPTY_STRING;
-            if (conneIDs.containsKey(s)) {
-                mac = conneIDs.get(s);
-                conneIDs.remove(s);
-            }
-            if(StringUtil.isNullOrEmpty(mac)){
-                if(getDeviceManager()!=null){
-                    DeviceHandler handler= getDeviceManager().getDeviceClientHandler(mac);
-                    if(handler!=null){
-                        handler.Close();
+            new Thread(() -> {
+                String mac = StringUtil.EMPTY_STRING;
+                if (conneIDs.containsKey(s)) {
+                    mac = conneIDs.get(s);
+                    conneIDs.remove(s);
+                }
+                if (StringUtil.isNullOrEmpty(mac)) {
+                    if (getDeviceManager() != null) {
+                        DeviceHandler handler = getDeviceManager().getDeviceClientHandler(mac);
+                        if (handler != null) {
+                            handler.Close();
+                        }
                     }
                 }
-            }
+            }).start();
         }
 
         @Override
@@ -119,6 +125,7 @@ public class ColuReaderService extends BaseService implements UhfService {
                 }
             }
         }
+
 
         public void OutPutTagsOver() {
             //经测试，基本无法触发
