@@ -69,6 +69,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         new Thread(() -> {
             //获取mac地址
             try {
+                CLReader.Stop(this.connId); //有时候Reader处于扫描状态，断掉后不会自动终止扫描
                 String version = CLReader._Config.GetReaderBaseBandSoftVersion(this.connId);
 
                 Log.d(LOG_TAG, "获取设备版本" + version);
