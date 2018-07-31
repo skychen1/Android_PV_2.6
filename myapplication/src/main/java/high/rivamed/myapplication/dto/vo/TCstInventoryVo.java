@@ -1,0 +1,248 @@
+package high.rivamed.myapplication.dto.vo;
+
+import java.io.Serializable;
+
+public class TCstInventoryVo implements Serializable {
+
+
+	
+	
+	private String cstName;
+	private String epc;
+	private String cstSpec;
+	private String expirationTime;
+	private String expiration;
+	private String deviceName;
+	private String status;
+
+	// 0 已过期
+	private Integer stopFlag = 1;
+	private String storehouseCode;
+	private String deviceCode;
+	private String cstCode;
+	private String operation;
+	private String storehouseRemark;
+	private String remake;
+	private String countStock ; // 库存情况
+	private String countActual ; // 扫描出来的库存
+
+	private String count ;
+	private String lastUpdateDate;
+	private String userName;
+	// 前端状态显示字段
+
+	private String statusStr;
+
+
+
+   public String getCstName() {
+	return cstName;
+   }
+
+   public void setCstName(String cstName) {
+	this.cstName = cstName;
+   }
+
+   public String getEpc() {
+	return epc;
+   }
+
+   public void setEpc(String epc) {
+	this.epc = epc;
+   }
+
+   public String getCstSpec() {
+	return cstSpec;
+   }
+
+   public void setCstSpec(String cstSpec) {
+	this.cstSpec = cstSpec;
+   }
+
+   public String getExpirationTime() {
+	return expirationTime;
+   }
+
+   public void setExpirationTime(String expirationTime) {
+	this.expirationTime = expirationTime;
+   }
+
+   public String getDeviceName() {
+	return deviceName;
+   }
+
+   public void setDeviceName(String deviceName) {
+	this.deviceName = deviceName;
+   }
+
+   public String getCount() {
+	return count;
+   }
+
+   public void setCount(String count) {
+	this.count = count;
+   }
+
+   public String getLastUpdateDate() {
+	return lastUpdateDate;
+   }
+
+   public void setLastUpdateDate(String lastUpdateDate) {
+	this.lastUpdateDate = lastUpdateDate;
+   }
+
+   public String getUserName() {
+	return userName;
+   }
+
+   public void setUserName(String userName) {
+	this.userName = userName;
+   }
+
+   public String getStatusStr() {
+	return statusStr;
+   }
+
+   public void setStatusStr(String statusStr) {
+	this.statusStr = statusStr;
+   }
+
+   
+//
+//	public TCstInventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
+//			String status) {
+//		super();
+//		this.cstName = cstName;
+//		this.epc = epc;
+//		this.cstSpec = cstSpec;
+//		this.expirationTime = expirationTime;
+//		this.deviceName = deviceName;
+//		this.status = status;
+//	}
+	
+	
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TCstInventoryVo tCstInventoryVo = (TCstInventoryVo) obj;
+		if (cstCode == null) {
+			if (tCstInventoryVo.cstCode != null)
+				return false;
+		} else if (!cstCode.equals(tCstInventoryVo.cstCode))
+			return false;
+		if (cstName == null) {
+			if (tCstInventoryVo.cstName != null)
+				return false;
+		} else if (!cstName.equals(tCstInventoryVo.cstName))
+			return false;
+		if (cstSpec == null) {
+			if (tCstInventoryVo.cstSpec != null)
+				return false;
+		} else if (!cstSpec.equals(tCstInventoryVo.cstSpec))
+			return false;
+		if (epc == null) {
+			if (tCstInventoryVo.epc != null)
+				return false;
+		} else if (!epc.equals(tCstInventoryVo.epc))
+			return false;
+		return true;
+	}
+
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getExpiration() {
+		return expiration;
+	}
+
+	public void setExpiration(String expiration) {
+		this.expiration = expiration;
+	}
+
+	public Integer getStopFlag() {
+		return stopFlag;
+	}
+
+	public void setStopFlag(Integer stopFlag) {
+		this.stopFlag = stopFlag;
+	}
+
+	public String getStorehouseCode() {
+		return storehouseCode;
+	}
+
+	public void setStorehouseCode(String storehouseCode) {
+		this.storehouseCode = storehouseCode;
+	}
+
+	public String getDeviceCode() {
+		return deviceCode;
+	}
+
+	public void setDeviceCode(String deviceCode) {
+		this.deviceCode = deviceCode;
+	}
+
+	public String getCstCode() {
+		return cstCode;
+	}
+
+	public void setCstCode(String cstCode) {
+		this.cstCode = cstCode;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
+
+	public String getStorehouseRemark() {
+		return storehouseRemark;
+	}
+
+	public void setStorehouseRemark(String storehouseRemark) {
+		this.storehouseRemark = storehouseRemark;
+	}
+
+	public String getRemake() {
+		return remake;
+	}
+
+	public void setRemake(String remake) {
+		this.remake = remake;
+	}
+
+	public String getCountStock() {
+		return countStock;
+	}
+
+	public void setCountStock(String countStock) {
+		this.countStock = countStock;
+	}
+
+	public String getCountActual() {
+		return countActual;
+	}
+
+	public void setCountActual(String countActual) {
+		this.countActual = countActual;
+	}
+
+}

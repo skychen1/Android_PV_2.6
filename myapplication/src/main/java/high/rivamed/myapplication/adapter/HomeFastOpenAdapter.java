@@ -36,8 +36,7 @@ public class HomeFastOpenAdapter
    @Override
    protected void convert(BaseViewHolder helper, BoxSizeBean.TbaseDevicesBean item) {
 	findId(helper);
-
-	   mFastopenTitle.setText(item.getDeviceName());
+	mFastopenTitle.setText(item.getDeviceName());
 
 
    }

@@ -12,12 +12,17 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.MealPopAdapter;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.adapter.HospPopAdapter;
+import high.rivamed.myapplication.adapter.HospPopFiveAdapter;
+import high.rivamed.myapplication.adapter.HospPopFourAdapter;
+import high.rivamed.myapplication.adapter.HospPopThreeAdapter;
+import high.rivamed.myapplication.adapter.HospPopTwoAdapter;
+import high.rivamed.myapplication.bean.HospNameBean;
 
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -39,44 +44,74 @@ public class hospitalPopupWindow extends PopupWindow {
 
    private final RecyclerView mRecyclerView;
    private final View         mView;
+  TextView mGoneView;
 
    private String TAG = "SettingPopupWindow";
-   private       OnClickListener mItemClickListener;
-   public        MealPopAdapter  mMealPopAdapter;
-   private final List<Movie>     mMovies;
-//   private final List<Movie>     mMovies1;
+   private       OnClickListener                       mItemClickListener;
+   public        HospPopAdapter                        mHospPopAdar;
+   public  HospPopTwoAdapter mHospPopTwoAdapter;
+   public HospPopThreeAdapter mThreeAdapter;
+   public  HospPopFourAdapter mFourAdapter;
+   public  HospPopFiveAdapter mFiveAdapter;
 
-   public hospitalPopupWindow(Context context,List<Movie> movie) {
+   public hospitalPopupWindow(Context context, HospNameBean hospNameBean,int type) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
-	mMovies = movie;
-//	mMovies1 = new ArrayList<>();
-//	mMovies1.addAll(mMovies);
-	mMealPopAdapter = new MealPopAdapter(R.layout.item_mac_single, mMovies);
+
+	if (type == 1) {
+	   List<HospNameBean.TbaseHospitalsBean> tbaseHospitals = hospNameBean.getTbaseHospitals();
+	   mHospPopAdar = new HospPopAdapter(R.layout.item_mac_single, tbaseHospitals);
+	   mRecyclerView.setAdapter(mHospPopAdar);
+	   heightMeth(tbaseHospitals.size());
+	}else if (type==2){
+	   List<HospNameBean.TbaseInfoBean> tbaseInfo = hospNameBean.getTbaseInfo();
+	   mHospPopTwoAdapter = new HospPopTwoAdapter(R.layout.item_mac_single,
+								    tbaseInfo);
+	   mRecyclerView.setAdapter(mHospPopTwoAdapter);
+	   heightMeth(tbaseInfo.size());
+	}else if (type ==3){
+	   List<HospNameBean.TbaseInfoBean> tbaseInfo = hospNameBean.getTbaseInfo();
+	   mThreeAdapter = new HospPopThreeAdapter(R.layout.item_mac_single,
+								 tbaseInfo);
+
+	   mRecyclerView.setAdapter(mThreeAdapter);
+	   heightMeth(tbaseInfo.size());
+	}else if (type ==4){
+	   List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
+	   mFourAdapter = new HospPopFourAdapter(R.layout.item_mac_single,
+							     baseStorehouses);
+	   mRecyclerView.setAdapter(mFourAdapter);
+	   heightMeth(baseStorehouses.size());
+	}else {
+	   List<HospNameBean.TbaseOperationRoomsBean> operationRooms = hospNameBean.getTbaseOperationRooms();
+	   mFiveAdapter = new HospPopFiveAdapter(R.layout.item_mac_single,
+							     operationRooms);
+	   mRecyclerView.setAdapter(mFiveAdapter);
+	   heightMeth(operationRooms.size());
+	}
 	mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 	mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));
-	mRecyclerView.setAdapter(mMealPopAdapter);
 
-//	mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//	   @Override
-//	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//		TextView textView = (TextView) view.findViewById(R.id.item_meal);
-//		String trim = textView.getText().toString().trim();
-//		//		mEditText.setText(trim);
-//		EventBusUtils.postSticky(new Event.PopupEvent(true, trim));
-//	   }
-//	});
+	//	mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	//	   @Override
+	//	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+	//		TextView textView = (TextView) view.findViewById(R.id.item_meal);
+	//		String trim = textView.getText().toString().trim();
+	//		//		mEditText.setText(trim);
+	//		EventBusUtils.postSticky(new Event.PopupEvent(true, trim));
+	//	   }
+	//	});
 
-	heightMeth();
+
 
    }
 
-   private void heightMeth() {
+   private void heightMeth(int size) {
 	ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
-	if (mMovies.size() > 8) {
+	if (size > 8) {
 	   lp.height = 370;
 	} else {
-	   lp.height = 60 * mMovies.size();
+	   lp.height = 62 * size;
 	}
 	mRecyclerView.setLayoutParams(lp);
    }
@@ -98,14 +133,12 @@ public class hospitalPopupWindow extends PopupWindow {
 
 	if (!this.isShowing()) {
 
-	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0]-5,
-				mLocation[1] +20);
-//	   	   showAtLocation(parent, Gravity.NO_GRAVITY, 190,
-//					485);
+	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0] - 5, mLocation[1] + 20);
+	   //	   	   showAtLocation(parent, Gravity.NO_GRAVITY, 190,
+	   //					485);
 	} else {
 	   dismiss();
 	}
    }
-
 
 }

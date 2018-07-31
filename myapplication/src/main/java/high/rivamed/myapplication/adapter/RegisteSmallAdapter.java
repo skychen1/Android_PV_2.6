@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -23,6 +24,8 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -38,12 +41,13 @@ import static android.widget.GridLayout.VERTICAL;
 
 public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseViewHolder> {
 
-   private boolean            mType         = false;
+   private boolean            mType     = false;
    private SparseBooleanArray mExpanded = new SparseBooleanArray();
-   public RegisteContextAdapter            mHeadAdapter;
+   public  RegisteContextAdapter           mHeadAdapter;
    private List<TBaseDevices.tBaseDevices> mList;
-   public EditText mLeftName;
-   public RecyclerView mRecyclerView2;
+   public  EditText                        mLeftName;
+   public  TextView                        mLeftCode;
+   //   public RecyclerView mRecyclerView2;
 
    public RegisteSmallAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices> data) {
@@ -52,57 +56,71 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
    @Override
    protected void convert(final BaseViewHolder holder, TBaseDevices item) {
-
-	final TBaseDevices item1 = (TBaseDevices) item;
 	mLeftName = (EditText) holder.getView(R.id.head_left_name);
-	mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
-	ImageView rightDelete = (ImageView) holder.getView(R.id.right_delete);
-	if (holder.getAdapterPosition() == 0) {
-	   mLeftName.setText("1号柜");
-	   rightDelete.setVisibility(View.GONE);
-	} else if (item1.boxname.equals("")) {
-	   mLeftName.setText("");
-	   rightDelete.setVisibility(View.VISIBLE);
-	}
+	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
 
+	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
+	ImageView rightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
+
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
+	   mLeftName.setText(item.getBoxname());
+	   mLeftCode.setText(item.getBoxCode());
+	   if (holder.getAdapterPosition() == 0) {
+		rightDelete.setVisibility(View.GONE);
+	   } else {
+		rightDelete.setVisibility(View.VISIBLE);
+	   }
+
+	} else {
+
+	   if (holder.getAdapterPosition() == 0) {
+		mLeftName.setText("1号柜");
+		rightDelete.setVisibility(View.GONE);
+	   } else if (item.boxname.equals("")) {
+		mLeftName.setText("");
+		rightDelete.setVisibility(View.VISIBLE);
+	   }
+   }
+
 	rightFold.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
+		Log.i("ffa", "holder.getAdapterPosition()   " + holder.getAdapterPosition());
 		if (mExpanded.get(holder.getAdapterPosition())) {
 		   ViewGroup.LayoutParams lps = mRecyclerView2.getLayoutParams();
 		   lps.height = ViewGroup.LayoutParams.MATCH_PARENT;
 		   mRecyclerView2.setLayoutParams(lps);
 		   RotateUtils.rotateArrow(rightFold, true);
-		   mExpanded.put(holder.getAdapterPosition(),false);
+		   mExpanded.put(holder.getAdapterPosition(), false);
 		} else {
 		   ViewGroup.LayoutParams lps = mRecyclerView2.getLayoutParams();
 		   lps.height = 0;
 		   mRecyclerView2.setLayoutParams(lps);
 		   RotateUtils.rotateArrow(rightFold, false);
-		   mExpanded.put(holder.getAdapterPosition(),true);
+		   mExpanded.put(holder.getAdapterPosition(), true);
 		}
 	   }
 	});
 	rightDelete.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-	      mData.remove(holder.getAdapterPosition());
+		mData.remove(holder.getAdapterPosition());
 		notifyItemRemoved(holder.getAdapterPosition());
 	   }
 	});
 
-	mList = item1.getList();
+	mList = item.getList();
 	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList,
-							     mRecyclerView2,holder.getAdapterPosition());
+							     mRecyclerView2, holder.getAdapterPosition());
 	mRecyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerView2.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerView2.setAdapter(mHeadAdapter);
 	View view = mLayoutInflater.inflate(R.layout.item_head_small_layout,
 							(ViewGroup) mRecyclerView2.getParent(), false);
-	if (SPUtils.getBoolean(UIUtils.getContext(), "activationRegiste")){
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 	   view.findViewById(R.id.type_de).setVisibility(View.GONE);
-	}else {
+	} else {
 	   view.findViewById(R.id.type_de).setVisibility(View.VISIBLE);
 	}
 	mHeadAdapter.addHeaderView(view);
@@ -112,16 +130,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 		Log.i("xxa", position + "   我是多少条");
 	   }
 	});
-
    }
-//   private RegisteContextAdapter.DeleteClickListener mDeleteListener =new RegisteContextAdapter.DeleteClickListener() {
-//	@Override
-//	public void myOnClick(int position, View v) {
-//
-//	   Log.i("xxa", position + "   条");
-//	   mList.remove(position);
-//	   mHeadAdapter.notifyItemRemoved(position+1);
-//	}
-//   };
+
 
 }

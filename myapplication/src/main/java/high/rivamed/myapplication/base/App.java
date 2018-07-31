@@ -1,7 +1,9 @@
 package high.rivamed.myapplication.base;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Handler;
+import android.support.multidex.MultiDex;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -25,6 +27,7 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
@@ -50,14 +53,24 @@ public class App extends Application {
     }
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base); MultiDex.install(this);
+    }
+    @Override
     public void onCreate() {
         super.onCreate();
+        SPUtils.putString(this, "TestLoginName", "");
+        SPUtils.putString(this,"TestLoginPass","");
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();
         mAppCache = ACache.get(UIUtils.getContext());
         Logger.addLogAdapter(new AndroidLogAdapter());
         initServer();
+
+
+
+
 
         //		initBugly();
 

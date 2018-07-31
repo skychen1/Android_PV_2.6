@@ -132,7 +132,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize("23233", mContext, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize( mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);

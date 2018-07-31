@@ -3,7 +3,6 @@ package high.rivamed.myapplication.base;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,10 +26,14 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.SocketLeftDownBean;
 import high.rivamed.myapplication.bean.StockDetailsBean;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -72,9 +75,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.ly_bing_btn)
    TextView           mLyBingBtn;
    @BindView(R.id.timely_left)
-   TextView           mTimelyLeft;
+  public TextView           mTimelyLeft;
    @BindView(R.id.timely_right)
-   TextView           mTimelyRight;
+   public TextView           mTimelyRight;
    @BindView(R.id.activity_down_btnll)
    LinearLayout       mActivityDownBtnTwoll;
    @BindView(R.id.btn_four_ly)
@@ -94,7 +97,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.timely_name)
    TextView           mTimelyName;
    @BindView(R.id.timely_number)
-   TextView           mTimelyNumber;
+ public   TextView           mTimelyNumber;
    @BindView(R.id.timely_ll)
    LinearLayout       mLinearLayout;
    @BindView(R.id.recyclerview)
@@ -122,8 +125,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private String mMovie;
    List<String> titeleList = null;
 
-   private SocketLeftDownBean.TCstInventoryVosBean mStockDetailsTopBean;
+   private SocketLeftDownBean.TCstInventoryVosBean     mStockDetailsTopBean;
    private List<StockDetailsBean.TCstInventoryVosBean> mStockDetailsDownList;
+   public  List<TCstInventoryVo>                       mTCstInventoryVos; //入柜扫描到的epc信息
+//   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos; //入柜扫描到的epc信息
+   private TCstInventoryDto                            mInBoxDtoBean;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
@@ -133,6 +139,33 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onMidTypeEvent(SocketLeftDownBean.TCstInventoryVosBean  event) {
 	mStockDetailsTopBean = event;
+
+   }
+
+   /**
+    * 接收入库的数据
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onInBoxEvent(TCstInventoryDto event) {
+	LogUtils.i(TAG,"event  "+(event==null));
+      if (mInBoxDtoBean!=null&&mTCstInventoryVos!=null){
+	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
+	   mTCstInventoryVos.clear();
+	   mTCstInventoryVos.addAll(tCstInventoryVos);
+
+	   if (my_id==ACT_TYPE_HCCZ_OUT){
+		setOutBoxTitles();
+		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+	   }else if (my_id == ACT_TYPE_HCCZ_IN){
+		setInBoxTitles();
+		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+	   }
+
+	}else {
+	   mInBoxDtoBean = event;
+	   mTCstInventoryVos = event.gettCstInventoryVos();
+	}
 
    }
    @Override
@@ -163,14 +196,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 数据加载
     */
    private void initData() {
-
-	getData();
-	if (getData() != null && getData().equals("我有过期的")) {
-	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
-	   mTimelyLeft.setClickable(true);
-	   mTimelyRight.setClickable(false);
-	   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
-	}
+//
+//	getData();
+//	if (getData() != null && getData().equals("我有过期的")) {
+//	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+//	   mTimelyLeft.setClickable(true);
+//	   mTimelyRight.setClickable(false);
+//	   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
+//	}
 
 	if (my_id == ACT_TYPE_TIMELY_LOSS) {
 	   mBaseTabTvTitle.setText("盘亏耗材详情");
@@ -196,45 +229,10 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   loadStockDetails();
 
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
-	   mBaseTabTvTitle.setText("识别耗材");
-	   Log.i("TT", "   " + mActivityType);
-	   if (mActivityType.equals("all")) {
-		mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + 4 +
-								"</big>&emsp</font>移入：<font color='#262626'><big>" +
-								1 +
-								"</big>&emsp</font>退回：<font color='#262626'><big>" +
-								4 +
-								"</big>&emsp</font>耗材种类：<font color='#262626'><big>" +
-								2 +
-								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-								7 + "</big></font>"));
-
-	   } else {
-		mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
-								"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-								7 + "</big></font>"));
-
-	   }
-
-	   mTimelyStartBtn.setVisibility(View.VISIBLE);
-	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	   String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN);
+	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   mBaseTabTvTitle.setText("识别耗材");
-	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
-							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
-	   mTimelyStartBtn.setVisibility(View.VISIBLE);
-	   mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
-	   String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
+	   setOutBoxDate();
+
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   mBaseTabTvTitle.setText("耗材领用");
 	   mTimelyStartBtn.setVisibility(View.GONE);
@@ -310,6 +308,89 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	 */
 	//	new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
 	//				mRefreshLayout, ACTIVITY);
+   }
+
+   /**
+    * 快速开柜拿出数据
+    */
+   private void setOutBoxDate() {
+	mBaseTabTvTitle.setText("识别耗材");
+	setOutBoxTitles();
+	mTimelyStartBtn.setVisibility(View.VISIBLE);
+	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
+	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
+   }
+
+   /**
+    * 取出耗材 重新扫描后增减的数据  title显示
+    */
+   private void setOutBoxTitles() {
+	ArrayList<String> strings = new ArrayList<>();
+	for (TCstInventoryVo vosBean:mTCstInventoryVos){
+	   strings.add(vosBean.getCstCode());
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							mTCstInventoryVos.size() + "</big></font>"));
+   }
+
+   /**
+    * 快速开柜入柜后赋值界面
+    */
+   private void setInBoxDate() {
+	mBaseTabTvTitle.setText("识别耗材");
+	mTimelyStartBtn.setVisibility(View.VISIBLE);
+	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+
+	if (mActivityType.equals("all")) {
+	   setInBoxTitles();
+
+	} else {
+	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							   7 + "</big></font>"));
+
+	}
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN);
+   }
+
+   /**
+    * 给入柜的顶部设置数据和调整底部按钮选择状态
+    */
+   private void setInBoxTitles() {
+	ArrayList<String> strings = new ArrayList<>();
+	for (TCstInventoryVo vosBean:mTCstInventoryVos){
+	   strings.add(vosBean.getCstCode());
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+	mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + mInBoxDtoBean.getCountTwoin() +
+							"</big>&emsp</font>移入：<font color='#262626'><big>" +
+							mInBoxDtoBean.getCountMoveIn() +
+							"</big>&emsp</font>退回：<font color='#262626'><big>" +
+							mInBoxDtoBean.getCountBack() +
+							"</big>&emsp</font>耗材种类：<font color='#262626'><big>" +
+							list.size() +
+							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							mTCstInventoryVos.size() + "</big></font>"));
+
+	for (TCstInventoryVo b:mTCstInventoryVos){
+	   String status = b.getStatus();
+	   if (status.equals("禁止入库")||status.equals("禁止移入")||status.equals("禁止退回")){
+		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+		return;
+	   }
+	}
    }
 
    /**

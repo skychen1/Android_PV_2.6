@@ -89,7 +89,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 //   }
 
    public void getLeftDate() {
-	NetRequest.getInstance().materialControl("23233", mContext, new BaseResult() {
+	NetRequest.getInstance().materialControl( mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		mLeftTopBean = mGson.fromJson(result, SocketLeftTopBean.class);

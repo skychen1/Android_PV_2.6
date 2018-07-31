@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,10 +47,13 @@ public class MacPopupWindow extends PopupWindow {
    private       PartsmacPopAdapter  mMealPopAdapter;
 
    private       TextView            mTextView;
+   private       TextView            mTextViewIp;
+   private final List<TBaseDevices.tBaseDevices.partsmacBean> mDate;
+
    public MacPopupWindow(Context context, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
-
+	mDate = data;
 	mMealPopAdapter = new PartsmacPopAdapter(R.layout.item_mac_single, data);
 	mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 	mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));
@@ -63,11 +65,14 @@ public class MacPopupWindow extends PopupWindow {
 		TextView textView = (TextView) view.findViewById(R.id.item_meal);
 		String trim = textView.getText().toString().trim();
 		mTextView.setText(trim);
+		String partsIp = mDate.get(position).getPartsIp();
+//		partsIp=partsIp.replace("/","");
+		mTextViewIp.setText(partsIp);
 		dismiss();
 	   }
 	});
 
-	heightMeth(data);
+//	heightMeth(mDate);
 
 //	mEditText.addTextChangedListener(new TextWatcher() {
 //	   @Override
@@ -102,19 +107,21 @@ public class MacPopupWindow extends PopupWindow {
 //	});
    }
 
-   private void heightMeth(List<TBaseDevices.tBaseDevices.partsmacBean> data) {
-	ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
-	if (data.size() > 8) {
-	   lp.height = 400;
-	} else {
-	   lp.height = 72 * data.size();
-	}
-	mRecyclerView.setLayoutParams(lp);
-   }
+//   private void heightMeth(List<TBaseDevices.tBaseDevices.partsmacBean> data) {
+//	ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
+//	if (data!=null&&data.size() > 8) {
+//	   lp.height = 400;
+//	} else {
+//	   lp.height = 72 * data.size();
+//	}
+//	mRecyclerView.setLayoutParams(lp);
+//   }
 
-   public void showPopupWindow(View parent,int pos) {
+   public void showPopupWindow(View parent,View ip,int pos) {
+
 	parent.getLocationOnScreen(mLocation);
 	this.mTextView =(TextView) parent;
+	this.mTextViewIp =(TextView) ip;
 	this.setContentView(mView);
 	this.setWidth(parent.getWidth()+10);
 	this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);

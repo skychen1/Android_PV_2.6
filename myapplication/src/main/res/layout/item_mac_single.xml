@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="@dimen/x60"
+	android:orientation="horizontal">
+<TextView
 		  android:layout_width="match_parent"
-		  android:layout_height="@dimen/x70"
+		  android:layout_height="@dimen/x60"
 		  android:id="@+id/item_meal"
 		  android:gravity="center_vertical"
 		  android:textSize="@dimen/textsize_15"
@@ -10,3 +15,8 @@
 		  android:paddingRight="@dimen/x20">
 
 </TextView>
+	<TextView
+		android:id="@+id/gone_meal"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"/>
+</LinearLayout>

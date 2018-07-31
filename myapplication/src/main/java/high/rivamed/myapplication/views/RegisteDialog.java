@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.LogUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -38,15 +41,12 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 public class RegisteDialog extends Dialog {
 
-   private String mString;
 
-   public RegisteDialog(Context context) {
-	super(context);
-   }
 
    public RegisteDialog(Context context, int theme) {
 	super(context, theme);
    }
+
 
    @Override
    public void show() {
@@ -61,6 +61,7 @@ public class RegisteDialog extends Dialog {
 
    public static class Builder {
 
+	private static final String TAG = "RegisteDialog";
 	ImageView mDialogCloss;
 	EditText  mAddressOne;
 	TextView  mAddressTwo;
@@ -84,9 +85,16 @@ public class RegisteDialog extends Dialog {
 	private int      mType;
 	private TextView mDialogMsg;
 	private TextView mDialogBtn;
-	List<Movie> mMovies;
+	//	List<Movie> mMovies;
 	List<Movie> mMovies1 = new ArrayList<>();
-	private hospitalPopupWindow mMhospWindow;
+	private hospitalPopupWindow                   mMhospWindow;
+	private TextView                              mGoneOneType;
+	private List<HospNameBean.TbaseHospitalsBean> mHospitalsName;
+	private TextView                              mGoneFiveType;
+	private TextView                              mGoneFourType;
+	private TextView                              mGoneThreeType;
+	private TextView                              mGoneTwoType;
+
 
 	public Builder(Context context, Activity activity) {
 	   this.mContext = context;
@@ -141,13 +149,18 @@ public class RegisteDialog extends Dialog {
 	   dialog.addContentView(layout, new ViewGroup.LayoutParams(860,
 											ViewGroup.LayoutParams.WRAP_CONTENT));
 
-	   mMovies = genDatax();
 	   mDialogCloss = (ImageView) layout.findViewById(R.id.dialog_closs);
+	   mGoneOneType = (TextView) layout.findViewById(R.id.gone_one_type);
 	   mAddressOne = (EditText) layout.findViewById(R.id.address_one);
 	   mAddressTwo = (TextView) layout.findViewById(R.id.address_two);
 	   mAddressThree = (TextView) layout.findViewById(R.id.address_three);
 	   mAddressFour = (TextView) layout.findViewById(R.id.address_four);
 	   mAddressFive = (TextView) layout.findViewById(R.id.address_five);
+	   mGoneTwoType = (TextView) layout.findViewById(R.id.gone_two_type);
+	   mGoneThreeType = (TextView) layout.findViewById(R.id.gone_three_type);
+	   mGoneFourType = (TextView) layout.findViewById(R.id.gone_four_type);
+	   mGoneFiveType = (TextView) layout.findViewById(R.id.gone_five_type);
+
 	   mDialogLeft = (TextView) layout.findViewById(R.id.dialog_left);
 	   mDialogRight = (TextView) layout.findViewById(R.id.dialog_right);
 
@@ -160,37 +173,9 @@ public class RegisteDialog extends Dialog {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
 		   String trim = mAddressOne.getText().toString().trim();
-		   if (trim.length() != 0) {
-			Log.i("ttt", "w jin");
-			mMovies1.clear();
-			for (Movie detail : mMovies) {
-
-			   if (detail.mString.contains(trim)) {
-				mMovies1.add(detail);
-			   }
-			}
-			mMhospWindow = new hospitalPopupWindow(mContext, mMovies1);
-			mMhospWindow.showPopupWindow(mAddressOne);
-			mMhospWindow.mMealPopAdapter.setOnItemClickListener(
-				new BaseQuickAdapter.OnItemClickListener() {
-				   @Override
-				   public void onItemClick(
-					   BaseQuickAdapter adapter, View view, int position) {
-					mMhospWindow.dismiss();
-					UIUtils.hideSoftInput(mContext,
-								    layout.findViewById(R.id.address_one));
-					TextView textView = (TextView) view.findViewById(R.id.item_meal);
-					String trim = textView.getText().toString().trim();
-					mAddressOne.setText(trim);
-					mMhospWindow.dismiss();
-					mAddressOne.clearFocus();
-				   }
-				});
-		   } else {
-			mMovies1.clear();
-			mMhospWindow.dismiss();
+		   if (mGoneOneType.getText().toString().length()==0){
+			getHospDate(trim, mAddressOne, mGoneOneType, 1);
 		   }
-
 		}
 
 		@Override
@@ -198,69 +183,40 @@ public class RegisteDialog extends Dialog {
 
 		}
 	   });
-
+	   //所属院区
 	   mAddressTwo.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   final hospitalPopupWindow window = new hospitalPopupWindow(mContext, mMovies);
-		   window.showPopupWindow(mAddressTwo);
-		   window. mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			   TextView textView = (TextView) view.findViewById(R.id.item_meal);
-			   String trim = textView.getText().toString().trim();
-			   mAddressTwo.setText(trim);
-			   window.dismiss();
-			}
-		   });
+		   if (mAddressOne.getText().toString().trim().length() > 0 ) {
+			String trim = mGoneOneType.getText().toString().trim();
+			LogUtils.i(TAG,"mGoneOneType   "+trim);
+			getHospBranch(trim, mAddressTwo, mGoneTwoType, 2);
+		   }
+
 		}
 	   });
 	   mAddressThree.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   final hospitalPopupWindow window = new hospitalPopupWindow(mContext, mMovies);
-		   window.showPopupWindow(mAddressThree);
-		   window. mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			   TextView textView = (TextView) view.findViewById(R.id.item_meal);
-			   String trim = textView.getText().toString().trim();
-			   mAddressThree.setText(trim);
-			   window.dismiss();
-			}
-		   });
+		   String trim = mGoneTwoType.getText().toString().trim();
+		   LogUtils.i(TAG,"mGoneTwoType   "+trim);
+		   getHospDept(trim, mAddressThree, mGoneThreeType, 3);
 		}
 	   });
 	   mAddressFour.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   final hospitalPopupWindow window = new hospitalPopupWindow(mContext, mMovies);
-		   window.showPopupWindow(mAddressFour);
-		   window. mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			   TextView textView = (TextView) view.findViewById(R.id.item_meal);
-			   String trim = textView.getText().toString().trim();
-			   mAddressFour.setText(trim);
-			   window.dismiss();
-			}
-		   });
+		   String trim = mGoneThreeType.getText().toString().trim();
+		   LogUtils.i(TAG,"mGoneThreeType   "+trim);
+		   getHospBydept(trim, mAddressFour, mGoneFourType, 4);
 		}
 	   });
 	   mAddressFive.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   final hospitalPopupWindow window = new hospitalPopupWindow(mContext, mMovies);
-		   window.showPopupWindow(mAddressFive);
-		   window. mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			   TextView textView = (TextView) view.findViewById(R.id.item_meal);
-			   String trim = textView.getText().toString().trim();
-			   mAddressFive.setText(trim);
-			   window.dismiss();
-			}
-		   });
+		   String trim = mGoneThreeType.getText().toString().trim();
+		   LogUtils.i(TAG,"mGoneFourType   "+trim);
+		   getHospRooms(trim, mAddressFive, mGoneFiveType, 5);
 		}
 	   });
 
@@ -278,41 +234,215 @@ public class RegisteDialog extends Dialog {
 	   });
 	   mDialogRight.setOnClickListener(new View.OnClickListener() {
 		@Override
-		public void onClick(View view) {
-		   mRightBtn.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+		public void onClick(View v) {
+		   if (myListener!=null){
+			String deptCode = mGoneThreeType.getText().toString().trim();
+			String storehouseCode = mGoneFourType.getText().toString().trim();
+			String operationRoomNo = mGoneFiveType.getText().toString().trim();
+			myListener.getDialogDate(deptCode,storehouseCode,operationRoomNo,dialog);
+		   }
 		}
 	   });
+
 	   return dialog;
 	}
-   }
 
-   private static List<Movie> genDatax() {
 
-	List<Movie> list = new ArrayList<>();
-	String one;
-	for (int i = 0; i < 40; i++) {
-	   if (i == 1) {
-		one = "协和医院_医院" + i;
-	   } else if (i == 2) {
-		one = "协和ss_医院" + i;
-	   } else if (i == 3) {
-		one = "协和ssss_医院" + i;
-	   } else if (i == 4) {
-		one = "医院" + i;
-	   } else if (i == 5) {
-		one = "协和" + i;
-	   } else if (i == 6) {
-		one = "协和ss_医院" + i;
-	   } else if (i == 7) {
-		one = "ccss_医院" + i;
+	private SettingListener myListener = null;
+	public interface SettingListener {
+	   public void getDialogDate(String deptCode,String storehouseCode,String operationRoomNo,Dialog dialog);
+	}
+	public void setOnSettingListener(SettingListener listener) {
+	   myListener = listener;
+	}
+	/**
+	 * 获取医院名字
+	 */
+	private void getHospDate(String name, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospNameDate(name, mActivity, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Gson gson = new Gson();
+		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
+		   LogUtils.i(TAG, "result   " + result);
+		   setAdapterDate(hospNameBean, textview, goneview, type);
+
+		}
+	   });
+	}
+
+	/**
+	 * 给列表赋值
+	 *
+	 * @param hospNameBean
+	 * @param textview
+	 * @param goneview
+	 */
+	private void setAdapterDate(
+		HospNameBean hospNameBean, TextView textview, TextView goneview, int type) {
+	   if (hospNameBean != null) {
+		mMhospWindow = new hospitalPopupWindow(mContext, hospNameBean, type);
+		mMhospWindow.showPopupWindow(textview);
+		adapterOnClick(mMhospWindow,textview, goneview, type);
 	   } else {
-		one = "xx-" + i;
+		mMhospWindow.dismiss();
+	   }
+	}
+
+	/**
+	 * adapter点击
+	 *
+	 * @param mMhospWindow
+	 * @param goneview
+	 * @param type
+	 */
+	private void adapterOnClick(hospitalPopupWindow mMhospWindow,TextView textview, TextView goneview, int type) {
+	   if (type == 1) {
+		mMhospWindow.mHospPopAdar.setOnItemClickListener(
+			new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(
+				   BaseQuickAdapter adapter, View view, int position) {
+				TextView textView = (TextView) view.findViewById(R.id.item_meal);
+				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
+				String trim = textView.getText().toString().trim();
+				String mGoneText = mGoneMeal.getText().toString().trim();
+				mAddressOne.setText(trim);
+				mAddressOne.clearFocus();
+				goneview.setText(mGoneText);
+				mMhospWindow.dismiss();
+			   }
+			});
+	   } else if (type == 2) {
+		mMhospWindow.mHospPopTwoAdapter.setOnItemClickListener(
+			new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(
+				   BaseQuickAdapter adapter, View view, int position) {
+				TextView textView = (TextView) view.findViewById(R.id.item_meal);
+				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
+				String trim = textView.getText().toString().trim();
+				mAddressTwo.setText(trim);
+				String mGoneText = mGoneMeal.getText().toString().trim();
+				goneview.setText(mGoneText);
+				mAddressOne.clearFocus();
+				mMhospWindow.dismiss();
+			   }
+			});
+	   } else if (type == 3) {
+		mMhospWindow.mThreeAdapter.setOnItemClickListener(
+			new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(
+				   BaseQuickAdapter adapter, View view, int position) {
+				TextView textView = (TextView) view.findViewById(R.id.item_meal);
+				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
+				String trim = textView.getText().toString().trim();
+				mAddressThree.setText(trim);
+
+				String mGoneText = mGoneMeal.getText().toString().trim();
+				goneview.setText(mGoneText);
+				mMhospWindow.dismiss();
+
+			   }
+			});
+	   } else if (type == 4) {
+		mMhospWindow.mFourAdapter.setOnItemClickListener(
+			new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
+				TextView textView = (TextView) view.findViewById(R.id.item_meal);
+				String trim = textView.getText().toString().trim();
+				String mGoneText = mGoneMeal.getText().toString().trim();
+				goneview.setText(mGoneText);
+				mAddressFour.setText(trim);
+				mMhospWindow.dismiss();
+			   }
+			});
+
+	   } else {
+		mMhospWindow.mFiveAdapter.setOnItemClickListener(
+			new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+				TextView textView = (TextView) view.findViewById(R.id.item_meal);
+				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
+				String trim = textView.getText().toString().trim();
+				String mGoneText = mGoneMeal.getText().toString().trim();
+				goneview.setText(mGoneText);
+				mAddressFive.setText(trim);
+				goneview.setText(mGoneText);
+				mMhospWindow.dismiss();
+			   }
+			});
+
 	   }
 
-	   Movie movie = new Movie(one);
-	   list.add(movie);
 	}
-	return list;
+
+	/**
+	 * 根据医院id查询院区信息
+	 */
+	private void getHospBranch(
+		String hospIds, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospBranch(hospIds, mActivity, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Gson gson = new Gson();
+		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
+		   LogUtils.i(TAG, "result getHospBranch  " + result);
+		   setAdapterDate(hospNameBean, textview, goneview, type);
+		}
+	   });
+	}
+
+	/**
+	 * 根据院区编码查询科室信息
+	 */
+	private void getHospDept(String branchCode, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospDept(branchCode, mActivity, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Gson gson = new Gson();
+		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
+		   LogUtils.i(TAG, "result getHospDept   " + result);
+		   setAdapterDate(hospNameBean, textview, goneview, type);
+		}
+	   });
+	}
+
+	/**
+	 * 根据科室查询库房情况
+	 */
+	private void getHospBydept(String deptCode, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospBydept(deptCode, mActivity, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Gson gson = new Gson();
+		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
+		   LogUtils.i(TAG, "result getHospBydept   " + result);
+		   setAdapterDate(hospNameBean, textview, goneview, type);
+		}
+	   });
+	}
+
+	/**
+	 * 根据科室查询手术间
+	 */
+	private void getHospRooms(String deptCode, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospRooms(deptCode, mActivity, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   Gson gson = new Gson();
+		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
+		   LogUtils.i(TAG, "result getHospRooms   " + result);
+		   setAdapterDate(hospNameBean, textview, goneview, type);
+		}
+	   });
+	}
    }
 
 }

@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,12 +10,22 @@ import android.view.View;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import cn.rivamed.DeviceManager;
+import cn.rivamed.callback.DeviceCallBack;
+import cn.rivamed.device.DeviceType;
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
 import high.rivamed.myapplication.adapter.RegisteTestAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.RegisteTestBean;
+import high.rivamed.myapplication.utils.DevicesUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -35,6 +46,9 @@ public class RegisteTestFrag extends SimpleFragment {
    @BindView(R.id.test_recyclerview)
    RecyclerView mTestRecyclerview;
    private int mLv0Count = 3;
+   private  String uhfDeviceId = "";
+   private String eth002DeviceId ;
+   private List<String> eth002DeviceIdList ;
 
    public static RegisteTestFrag newInstance() {
 	Bundle args = new Bundle();
@@ -53,6 +67,9 @@ public class RegisteTestFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	initCallBack();
+
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	initData();
    }
 
@@ -83,25 +100,23 @@ public class RegisteTestFrag extends SimpleFragment {
 		for (int j = 0; j < lv1Count; j++) {
 		   if (j == 0) {
 			RegisteTestBean.RegisteTestContextBean testContextBean = new RegisteTestBean.RegisteTestContextBean(
-				"指纹仪", "采集指纹",null,"按下指纹采集，超过5S无反馈数据为失败");
+				"指纹仪", "采集指纹", null, "按下指纹采集，超过5S无反馈数据为失败");
 			testTitleBean.addSubItem(testContextBean);
-		   }else if (j==1){
+		   } else if (j == 1) {
 			RegisteTestBean.RegisteTestContextBean testContextBean = new RegisteTestBean.RegisteTestContextBean(
-				"IC卡", "识别IC卡",null,"超过5S无反馈数据为失败");
+				"IC卡", "识别IC卡", null, "超过5S无反馈数据为失败");
 			testTitleBean.addSubItem(testContextBean);
-		   }
-		   else if (j==2){
+		   } else if (j == 2) {
 			RegisteTestBean.RegisteTestContextBean testContextBean = new RegisteTestBean.RegisteTestContextBean(
-				"门锁", "开锁",null,"锁状态显示与要求不一致为失败");
+				"门锁", "开锁", null, "锁状态显示与要求不一致为失败");
 			testTitleBean.addSubItem(testContextBean);
-		   }
-		   else if (j==3){
+		   } else if (j == 3) {
 			RegisteTestBean.RegisteTestContextBean testContextBean = new RegisteTestBean.RegisteTestContextBean(
-				"天线功率", "设置功率",null,"超过5S无反馈数据为失败");
+				"天线功率", "设置功率", null, "超过5S无反馈数据为失败");
 			testTitleBean.addSubItem(testContextBean);
-		   }else {
+		   } else {
 			RegisteTestBean.RegisteTestContextBean testContextBean = new RegisteTestBean.RegisteTestContextBean(
-				"标签读取", "开始","查看读取结果","锁状态显示与要求不一致为失败");
+				"标签读取", "开始", "查看读取结果", "锁状态显示与要求不一致为失败");
 			testTitleBean.addSubItem(testContextBean);
 		   }
 		}
@@ -111,33 +126,96 @@ public class RegisteTestFrag extends SimpleFragment {
 	return res;
    }
 
-   //
-   //      private List<TBaseDevice> generateData() {
-   //   	mSmallmac = new ArrayList<>();
-   //   	mTBaseDevicesAll = new ArrayList<>();
-   //   	mTBaseDevicesSmall = new ArrayList<>();
-   //   	TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
-   //   	TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
-   //   	TBaseDevices registeAddBean1 = new TBaseDevices();
-   //   	for (int i = 0; i < 5; i++) {//第三层内部部件标识的数据
-   //   	   partsmacBean1.setPartsmacnumber("3232323+" + i);
-   //   	   mSmallmac.add(partsmacBean1);
-   //   	}
-   //   	for (int i = 0; i < 1; i++) {//第二层柜体内条目的数据
-   //   	   registeBean1.setPartsname("");
-   //   	   registeBean1.setPartsmac(mSmallmac);
-   //   	   mTBaseDevicesSmall.add(registeBean1);
-   //   	}
-   //   	for (int i = 0; i < 1; i++) {//第一层数据
-   //   	   if (i == 0) {
-   //   		registeAddBean1.setBoxname("1号柜");
-   //   	   } else {
-   //   		registeAddBean1.setBoxname("");
-   //   	   }
-   //   	   registeAddBean1.setList(mTBaseDevicesSmall);
-   //   	   mTBaseDevicesAll.add(registeAddBean1);
-   //   	}
-   //   	return mTBaseDevicesAll;
-   //      }
+   private void initCallBack() {
+	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+	   @Override
+	   public void OnDeviceConnected(
+		   DeviceType deviceType, String deviceIndentify) {
+		if (deviceType == DeviceType.UHFREADER) {
+		   uhfDeviceId = deviceIndentify;
+		} else if (deviceType == DeviceType.Eth002) {
+		   eth002DeviceId = deviceIndentify;
+		}
+	   }
 
+	   @Override
+	   public void OnDeviceDisConnected(
+		   DeviceType deviceType, String deviceIndentify) {
+
+	   }
+
+	   @Override
+	   public void OnCheckState(
+		   DeviceType deviceType, String deviceId, Integer code) {
+
+	   }
+
+	   @Override
+	   public void OnIDCard(String deviceId, String idCard) {
+
+	   }
+
+	   @Override
+	   public void OnFingerFea(String deviceId, String fingerFea) {
+
+	   }
+
+	   @Override
+	   public void OnFingerRegExcuted(String deviceId, boolean success) {
+
+	   }
+
+	   @Override
+	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+
+	   }
+
+	   @Override
+	   public void OnDoorOpened(String deviceIndentify, boolean success) {
+		if (success) {
+		   EventBusUtils.post(new Event.PopupEvent(success, "柜门已开"));
+		}
+	   }
+
+	   @Override
+	   public void OnDoorClosed(String deviceIndentify, boolean success) {
+		if (success) {
+		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+		   mContext.startActivity(intent2);
+		}
+	   }
+
+	   @Override
+	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+	   }
+
+	   @Override
+	   public void OnUhfScanRet(
+		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
+
+	   }
+
+	   @Override
+	   public void OnUhfScanComplete(boolean success, String deviceId) {
+
+	   }
+
+	   @Override
+	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+
+	   }
+
+	   @Override
+	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
+
+	   }
+
+	   @Override
+	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+
+	   }
+	});
+   }
 }

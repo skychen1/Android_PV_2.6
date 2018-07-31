@@ -237,7 +237,8 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().OpenDoor(eth002DeviceId);
+//                int ret = DeviceManager.getInstance().OpenDoor(eth002DeviceId);
+                int ret = DeviceManager.getInstance().OpenDoor("");
                 AppendLog("开门命令已发出 ret=" + ret);
             }
         });

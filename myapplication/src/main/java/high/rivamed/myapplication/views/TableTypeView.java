@@ -26,12 +26,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.adapter.InBoxAllAdapter;
+import high.rivamed.myapplication.adapter.OutBoxAllAdapter;
 import high.rivamed.myapplication.adapter.StockDetailsAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.StockDetailsBean;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.FRAGMENT;
@@ -57,19 +62,22 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAIL
 
 public class TableTypeView extends LinearLayout {
 
-   public  Activity            mActivity;
-   public  Context             mContext;
-   public  List<String>        titeleList;
-   public  int                 mSize;
-   public  List<Movie>         mMovies;
-   public  LinearLayout        mLinearLayout;
-   public  RecyclerView        mRecyclerview;
-   public  RefreshLayout       mRefreshLayout;
-   public  int                 mType;
-   private int                 mLayout;
-   private View                mHeadView;
-   public TimelyPublicAdapter mPublicAdapter;
-   public List<StockDetailsBean.TCstInventoryVosBean> mStockDetails;
+   public Activity     mActivity;
+   public Context      mContext;
+   public List<String> titeleList;
+   public int          mSize;
+   public Object       mMoviess;
+   public List<Movie> mMovies = (List<Movie>) mMoviess;
+   public  LinearLayout                                mLinearLayout;
+   public  RecyclerView                                mRecyclerview;
+   public  RefreshLayout                               mRefreshLayout;
+   public  int                                         mType;
+   private int                                         mLayout;
+   private View                                        mHeadView;
+   public  TimelyPublicAdapter                         mPublicAdapter;
+   public  List<StockDetailsBean.TCstInventoryVosBean> mStockDetails;
+//   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos;
+   public  List<TCstInventoryVo>                       mTCstInventoryVos;
    private static final int FOUR  = 4;
    private static final int FIVE  = 5;
    private static final int SIX   = 6;
@@ -86,37 +94,49 @@ public class TableTypeView extends LinearLayout {
    public SparseBooleanArray mCheckStates  = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates1 = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
-   public int mSelectedPos=-1;
-   private String mMovie;
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   public int                mSelectedPos  = -1;
+   private String          mMovie;
+   public  InBoxAllAdapter mInBoxAllAdapter;
+   public OutBoxAllAdapter mOutBoxAllAdapter;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
 	mMovie = event.mString;
 	Log.i("ff", "mMovie  " + mMovie);
-	if (mMovie!=null){
-	   for (int i =0;i<mMovies.size();i++){
-		mMovies.get(i).six=mMovie;
+	if (mMovie != null) {
+	   for (int i = 0; i < mMovies.size(); i++) {
+		mMovies.get(i).six = mMovie;
 
 	   }
 	   mPublicAdapter.notifyDataSetChanged();
 	}
    }
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventBing(TCstInventoryDto event) {
+	mTCstInventoryVos = event.gettCstInventoryVos();
+	LogUtils.i("fafa", "mTCstInventoryVos  mTCstInventoryVos  " + mTCstInventoryVos.size());
+	initData();
+   }
+
    public TableTypeView(
-	   Context context, Activity activity, List<String> titeleList, int size, List<StockDetailsBean.TCstInventoryVosBean> movies,
-	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
-	   int type) {
+	   Context context, Activity activity, List<String> titeleList, int size,
+	   List<StockDetailsBean.TCstInventoryVosBean> movies, LinearLayout linearLayout,
+	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type) {
 
 	super(context);
 	this.mActivity = activity;
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mStockDetails=  movies;
+	this.mStockDetails = movies;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
 	this.mType = type;
 	initData();
    }
+
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size, Object movies,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
@@ -127,7 +147,7 @@ public class TableTypeView extends LinearLayout {
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mMovies = (List<Movie>) movies;
+	this.mMoviess = movies;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
@@ -146,7 +166,27 @@ public class TableTypeView extends LinearLayout {
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mMovies = (List<Movie>) movies;
+	this.mMoviess = movies;
+	this.mLinearLayout = linearLayout;
+	this.mRecyclerview = recyclerview;
+	this.mRefreshLayout = refreshLayout;
+	this.mType = type;
+	this.mDialog = dialog;
+	initData();
+   }
+
+   public TableTypeView(
+	   Context context, Activity activity, List<String> titeleList, int size,
+	   List<TCstInventoryVo> movies, LinearLayout linearLayout,
+	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type, String dialog) {
+	super(context);
+	EventBusUtils.register(this);
+
+	this.mActivity = activity;
+	this.mContext = context;
+	this.titeleList = titeleList;
+	this.mSize = size;
+	this.mTCstInventoryVos = movies;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
@@ -172,7 +212,8 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,STYPE_TIMELY_FOUR_DETAILS);
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,
+									     STYPE_TIMELY_FOUR_DETAILS);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
@@ -181,7 +222,7 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
-		      //-----------库存状态耗材详情-----------
+			//-----------库存状态耗材详情-----------
 			mLayout = R.layout.item_stockmid_four_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_stockmid_four_title_layout,
@@ -190,7 +231,8 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-			StockDetailsAdapter detailsAdapter = new StockDetailsAdapter(mLayout, mStockDetails);
+			StockDetailsAdapter detailsAdapter = new StockDetailsAdapter(mLayout,
+													 mStockDetails);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -236,14 +278,15 @@ public class TableTypeView extends LinearLayout {
 			   lp.height = 81 * mMovies.size();
 			}
 			mRecyclerview.setLayoutParams(lp);
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,mCheckStates);
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
+									     mCheckStates);
 
 			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-				for (int i =0;i<mCheckStates.size();i++){
-				   mCheckStates.put(i,false);
+				for (int i = 0; i < mCheckStates.size(); i++) {
+				   mCheckStates.put(i, false);
 				}
 				mCheckStates.put(position, true);
 				mPublicAdapter.notifyDataSetChanged();
@@ -257,7 +300,8 @@ public class TableTypeView extends LinearLayout {
 			mRefreshLayout.setEnableAutoLoadMore(true);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
-		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {
+		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
+
 			mLayout = R.layout.item_singbox_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_singbox_six_title_layout,
@@ -268,14 +312,19 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_IN);
-			mHeadView.setBackgroundResource(R.color.bg_green);
+			if (mInBoxAllAdapter != null) {
+			   mInBoxAllAdapter.notifyDataSetChanged();
+			} else {
+			   mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mTCstInventoryVos);
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRecyclerview.setAdapter(mInBoxAllAdapter);
+			   mLinearLayout.addView(mHeadView);
+			}
 
-			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
-			mLinearLayout.addView(mHeadView);
+
 		   } else if (mDialog != null && mDialog.equals(STYPE_OUT)) {
 			mLayout = R.layout.item_out_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -287,31 +336,38 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_OUT,
-									     mCheckStates);
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			for (int i=0;i<mTCstInventoryVos.size();i++){
+			   mCheckStates.put(i,true);
+			}
+			if (mOutBoxAllAdapter != null) {
+			   mOutBoxAllAdapter.notifyDataSetChanged();
+			} else {
+
+			   mOutBoxAllAdapter = new OutBoxAllAdapter(mLayout,
+										  mTCstInventoryVos,
+										  mCheckStates);
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRecyclerview.setAdapter(mOutBoxAllAdapter);
+			   mLinearLayout.addView(mHeadView);
+			}
+			mOutBoxAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
 				if (checkBox.isChecked()) {
 				   checkBox.setChecked(false);
-				   mMovies.get(position).seven = "0";
-				   mCheckStates.put(position,false);
+				   mCheckStates.put(position, false);
 				} else {
 				   mCheckStates.put(position, true);
-				   mMovies.get(position).seven = "1";
 				   checkBox.setChecked(true);
 				}
-				mPublicAdapter.notifyDataSetChanged();
+				mOutBoxAllAdapter.notifyDataSetChanged();
 			   }
 			});
-			mHeadView.setBackgroundResource(R.color.bg_green);
 
-			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
-			mLinearLayout.addView(mHeadView);
 		   } else if (mDialog != null && mDialog.equals(STYPE_FORM_CONF)) {
 			mLayout = R.layout.item_formcon_six_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -325,15 +381,16 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_FORM_CONF,
 									     mCheckStates);
+			mHeadView.setBackgroundResource(R.color.bg_green);
 
+			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRecyclerview.setAdapter(mPublicAdapter);
+			mLinearLayout.removeView(mHeadView);
+			mLinearLayout.addView(mHeadView);
 		   }
-		   mHeadView.setBackgroundResource(R.color.bg_green);
 
-		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(true);
-		   mRecyclerview.setAdapter(mPublicAdapter);
-		   mLinearLayout.addView(mHeadView);
 		} else if (mSize == SEVEN) {
 		   if (mDialog != null && mDialog.equals(STYPE_BING)) {
 			mLayout = R.layout.item_outbing_seven_layout;
@@ -390,7 +447,7 @@ public class TableTypeView extends LinearLayout {
 			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//				showRvDialog();
+				//				showRvDialog();
 			   }
 			});
 		   }
@@ -416,10 +473,11 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 			((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 			((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
-			for (int i =0;i<mMovies.size();i++){
-			   mCheckStates2.put(i,true);
+			for (int i = 0; i < mMovies.size(); i++) {
+			   mCheckStates2.put(i, true);
 			}
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,STYPE_MEAL_BING,mCheckStates2);
+			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_MEAL_BING,
+									     mCheckStates2);
 			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -441,7 +499,7 @@ public class TableTypeView extends LinearLayout {
 			mRefreshLayout.setEnableAutoLoadMore(true);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
-		   }else {
+		   } else {
 
 			mLayout = R.layout.item_act_eight_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -529,11 +587,12 @@ public class TableTypeView extends LinearLayout {
 		break;
 	}
 
-
    }
-   public  int getSelectedPos(){
+
+   public int getSelectedPos() {
 	return mSelectedPos;
    }
+
    private void showRvDialog() {
 	RvDialog.Builder builder = new RvDialog.Builder(mActivity, mContext);
 	builder.setMsg("耗材中包含过期耗材，请查看！");

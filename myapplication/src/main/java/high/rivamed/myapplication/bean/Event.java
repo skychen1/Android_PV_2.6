@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.bean;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 
 /**
@@ -69,6 +70,19 @@ public class Event {
       public activationEvent(boolean isActivation, DialogInterface dialog){
 	   this.isActivation = isActivation;
 	   this.dialog = dialog;
+	}
+   }
+   public static class dialogEvent{
+	public Dialog dialog;
+	public String deptCode;
+	public String storehouseCode;
+	public String operationRoomNo;
+	public dialogEvent( String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+
+	   this.deptCode = deptCode;
+	   this.storehouseCode = storehouseCode;
+	   this.dialog = dialog;
+	   this.operationRoomNo = operationRoomNo;
 	}
    }
 }
