@@ -91,6 +91,8 @@ public class LoginActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+
+
 	//创建数据库表
 	mDb = LitePal.getDatabase();
 	Log.i("dss", SPUtils.getString(mContext,THING_CODE)+ "");
@@ -169,11 +171,7 @@ public class LoginActivity extends SimpleActivity {
 	   startActivity(new Intent(this, TestLoginActivity.class));
 	}
    }
-   @Override
-   protected void onStart() {
-	super.onStart();
 
-   }
 
    private void initData() {
       if (mLoginRadiogroup.getCheckedRadioButtonId()==R.id.login_password){

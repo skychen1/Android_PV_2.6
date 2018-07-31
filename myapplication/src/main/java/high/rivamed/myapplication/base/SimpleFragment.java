@@ -11,12 +11,15 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 
+import java.util.List;
+
 import butterknife.Unbinder;
 import high.rivamed.myapplication.base.mvp.IPresent;
 import high.rivamed.myapplication.base.mvp.IViewFrg;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -42,14 +45,17 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	private   View           rootView;
 	protected LayoutInflater layoutInflater;
 	
-	public Gson mGson;
-
-	private Unbinder unbinder;
+	public  Gson         mGson;
+   public    List<String> mReaderDeviceId;
+   public    List<String> eth002DeviceIdList;
+	private Unbinder     unbinder;
 	
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		layoutInflater = inflater;
+	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		if (rootView == null && getLayoutId() > 0) {
 			rootView = inflater.inflate(getLayoutId(), null);
 		   onBindViewBefore(rootView);
@@ -69,6 +75,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		bindEvent();
+
 		initDataAndEvent(savedInstanceState);
 	}
 	
@@ -93,8 +100,15 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 		}
 		return p;
 	}
-	
-	@Override
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+   }
+
+   @Override
 	public void onResume() {
 		super.onResume();
 	}

@@ -239,7 +239,8 @@ public class RegisteDialog extends Dialog {
 			String deptCode = mGoneThreeType.getText().toString().trim();
 			String storehouseCode = mGoneFourType.getText().toString().trim();
 			String operationRoomNo = mGoneFiveType.getText().toString().trim();
-			myListener.getDialogDate(deptCode,storehouseCode,operationRoomNo,dialog);
+			String branchCode = mGoneTwoType.getText().toString().trim();
+			myListener.getDialogDate(branchCode,deptCode,storehouseCode,operationRoomNo,dialog);
 		   }
 		}
 	   });
@@ -250,7 +251,7 @@ public class RegisteDialog extends Dialog {
 
 	private SettingListener myListener = null;
 	public interface SettingListener {
-	   public void getDialogDate(String deptCode,String storehouseCode,String operationRoomNo,Dialog dialog);
+	   public void getDialogDate(String branchCode,String deptCode,String storehouseCode,String operationRoomNo,Dialog dialog);
 	}
 	public void setOnSettingListener(SettingListener listener) {
 	   myListener = listener;

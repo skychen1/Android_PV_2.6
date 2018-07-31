@@ -23,6 +23,7 @@ public class HospNameBean extends Movie implements Serializable {
     */
 
    private List<TbaseHospitalsBean> tbaseHospitals;
+   private List<StoreHousesBean> storeHouses;
 
    public HospNameBean(String one) {
 	super(one);
@@ -32,6 +33,12 @@ public class HospNameBean extends Movie implements Serializable {
 
    public void setTbaseHospitals(
 	   List<TbaseHospitalsBean> tbaseHospitals) { this.tbaseHospitals = tbaseHospitals;}
+
+   public List<StoreHousesBean> getStoreHouses() { return storeHouses;}
+
+   public void setStoreHouses(List<StoreHousesBean> storeHouses) { this.storeHouses = storeHouses;}
+
+
 
    public static class TbaseHospitalsBean extends Movie{
 
@@ -205,7 +212,6 @@ public class HospNameBean extends Movie implements Serializable {
     * tcstBaseStorehouses : [{"storehouseCode":"25","deptNamesStr":null,"name":"物资1库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null},{"storehouseCode":"23","deptNamesStr":null,"name":"内科一库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null},{"storehouseCode":"24","deptNamesStr":null,"name":"胸外科库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null}]
     */
 
-
    private List<TcstBaseStorehousesBean> tcstBaseStorehouses;
 
 
@@ -242,5 +248,24 @@ public class HospNameBean extends Movie implements Serializable {
 	public String getName() { return name;}
 
 	public void setName(String name) { this.name = name;}
+   }
+
+   public static class StoreHousesBean {
+
+	/**
+	 * deptNamesStr : 谷志科 胸外科库房
+	 * storehouseCode : 24
+	 */
+
+	private String deptNamesStr;
+	private String storehouseCode;
+
+	public String getDeptNamesStr() { return deptNamesStr;}
+
+	public void setDeptNamesStr(String deptNamesStr) { this.deptNamesStr = deptNamesStr;}
+
+	public String getStorehouseCode() { return storehouseCode;}
+
+	public void setStorehouseCode(String storehouseCode) { this.storehouseCode = storehouseCode;}
    }
 }

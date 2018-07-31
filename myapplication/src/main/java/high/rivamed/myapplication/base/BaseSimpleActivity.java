@@ -10,6 +10,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,9 +60,10 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    @BindView(R.id.base_tab_rlayout)
    public RelativeLayout  mBaseTabRlayout;
 
-
-   public ViewStub           mStub;
-   public SettingPopupWindow mPopupWindow;
+   private List<String>       mReaderDeviceId;
+   private List<String>       eth002DeviceIdList;
+   public  ViewStub           mStub;
+   public  SettingPopupWindow mPopupWindow;
 
    @Override
    public int getLayoutId() {

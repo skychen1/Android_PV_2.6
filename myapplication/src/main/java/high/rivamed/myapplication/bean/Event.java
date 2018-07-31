@@ -77,12 +77,26 @@ public class Event {
 	public String deptCode;
 	public String storehouseCode;
 	public String operationRoomNo;
-	public dialogEvent( String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+	public String branchCode;
+	public dialogEvent( String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
 
 	   this.deptCode = deptCode;
 	   this.storehouseCode = storehouseCode;
 	   this.dialog = dialog;
 	   this.operationRoomNo = operationRoomNo;
+	   this.operationRoomNo = branchCode;
+	}
+   }
+   public static class outBoxEvent{
+	public Dialog dialog;
+	public String type;
+	public String context;
+	public outBoxEvent( String type,String text, Dialog dialog){
+
+	   this.dialog = dialog;
+	   this.type = type;
+	   this.context = text;
+
 	}
    }
 }

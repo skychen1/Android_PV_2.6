@@ -66,6 +66,7 @@ public class TableTypeView extends LinearLayout {
    public Context      mContext;
    public List<String> titeleList;
    public int          mSize;
+   public int          mOperation;
    public Object       mMoviess;
    public List<Movie> mMovies = (List<Movie>) mMoviess;
    public  LinearLayout                                mLinearLayout;
@@ -194,7 +195,26 @@ public class TableTypeView extends LinearLayout {
 	this.mDialog = dialog;
 	initData();
    }
+   public TableTypeView(
+	   Context context, Activity activity, List<String> titeleList, int size,
+	   List<TCstInventoryVo> movies, LinearLayout linearLayout,
+	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type, String dialog,int operation) {
+	super(context);
+	EventBusUtils.register(this);
 
+	this.mActivity = activity;
+	this.mContext = context;
+	this.titeleList = titeleList;
+	this.mSize = size;
+	this.mOperation = operation;
+	this.mTCstInventoryVos = movies;
+	this.mLinearLayout = linearLayout;
+	this.mRecyclerview = recyclerview;
+	this.mRefreshLayout = refreshLayout;
+	this.mType = type;
+	this.mDialog = dialog;
+	initData();
+   }
    public void clear() {
 	mPublicAdapter.clear();
    }
@@ -315,7 +335,7 @@ public class TableTypeView extends LinearLayout {
 			if (mInBoxAllAdapter != null) {
 			   mInBoxAllAdapter.notifyDataSetChanged();
 			} else {
-			   mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mTCstInventoryVos);
+			   mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mTCstInventoryVos,mOperation);
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -450,14 +470,15 @@ public class TableTypeView extends LinearLayout {
 				//				showRvDialog();
 			   }
 			});
-		   }
-		   mHeadView.setBackgroundResource(R.color.bg_green);
+			mHeadView.setBackgroundResource(R.color.bg_green);
 
-		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(true);
-		   mRecyclerview.setAdapter(mPublicAdapter);
-		   mLinearLayout.addView(mHeadView);
+			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRecyclerview.setAdapter(mPublicAdapter);
+			mLinearLayout.addView(mHeadView);
+		   }
+
 		} else if (mSize == EIGHT) {
 		   if (mDialog != null && mDialog.equals(STYPE_MEAL_BING)) {
 

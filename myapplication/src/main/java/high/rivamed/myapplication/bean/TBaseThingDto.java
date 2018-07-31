@@ -51,6 +51,15 @@ public class TBaseThingDto implements Serializable {
 	private String         storehouseCode;
 	private String         deptCode;
 	private String         operationRoomNo;
+	private String         branchCode;
+
+	public String getBranchCode() {
+	   return branchCode;
+	}
+
+	public void setBranchCode(String branchCode) {
+	   this.branchCode = branchCode;
+	}
 
 	public String getStorehouseCode() {
 	   return storehouseCode;

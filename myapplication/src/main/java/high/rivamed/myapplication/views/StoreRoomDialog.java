@@ -19,7 +19,11 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.gridviewAdapter;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.DialogBean;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.HospNameBean;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -60,12 +64,16 @@ public class StoreRoomDialog extends Dialog {
 	private TextView        mRigtht;
 	private ImageView       mLeft;
 	private int mLeftTextColor = -1;
-	private int mRightTextColor;
+	private int          mRightTextColor;
+	private HospNameBean mHospNameBean;
+	private String mName;
+	private String mCode;
 
-	public Builder(Context context, int NumColumn,int mType) {
+	public Builder(Context context, int NumColumn, int mType, HospNameBean hospNameBean) {
 	   this.mContext = context;
 	   this.mNumColumn = NumColumn;
 	   this.mType = mType;
+	   this.mHospNameBean = hospNameBean;
 	}
 
 	public Builder setList(List title) {
@@ -118,97 +126,94 @@ public class StoreRoomDialog extends Dialog {
 									    ViewGroup.LayoutParams.WRAP_CONTENT));
 	   sGridView = (GridView) layout.findViewById(R.id.storeroom_view);
 	   sGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-	   List<Movie> list = new ArrayList<>();
-	   if (mNumColumn == 2) {//1.7和1.8退货
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-			LinearLayout.LayoutParams.FILL_PARENT, 80);
-		lp.setMargins(80,40,80,40);
-		mRigtht.setLayoutParams(lp);
-		if (mType==2){//1.7
-		   String one;
-		   for (int i = 1; i < 17; i++) {
-			if (i == 1) {
-			   one = "清理库存";
-			} else if (i == 2) {
-			   one = "耗材过期";
-			} else if (i == 3) {
-			   one = "型号错误";
-			} else if (i == 4) {
-			   one = "包装破损";
-			} else if (i == 5) {
-			   one = "厂家召回";
-			} else {
-			   one = "其他";
-			}
+	   List<DialogBean> list = new ArrayList<>();
+	   mTitle.setText(mMsgTitle);
+	   sGridView.setNumColumns(2);
 
-			Movie movie = new Movie(one);
-			list.add(movie);
+	   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+		   LinearLayout.LayoutParams.FILL_PARENT, 80);
+	   lp.setMargins(80, 40, 80, 40);
+	   mRigtht.setLayoutParams(lp);
+	   if (mType == 2) {////1.7和1.8退货
+		String one;
+		for (int i = 1; i < 7; i++) {
+		   if (i == 1) {
+			one = "清理库存";
+		   } else if (i == 2) {
+			one = "耗材过期";
+		   } else if (i == 3) {
+			one = "型号错误";
+		   } else if (i == 4) {
+			one = "包装破损";
+		   } else if (i == 5) {
+			one = "厂家召回";
+		   } else {
+			one = "其他";
 		   }
 
-		}else {
-		   String one;
-		   for (int i = 1; i < 26; i++) {
-			if (i == 1) {
-			   one = "骨科";
-			} else if (i == 2) {
-			   one = "心内科";
-			} else if (i == 3) {
-			   one = "呼吸科";
-			} else if (i == 4) {
-			   one = "放射科";
-			} else  {
-			   one = "神经内科";
-			}
+		   DialogBean dialogBean = new DialogBean();
+		   dialogBean.setName(one);
+		   list.add(dialogBean);
+		}
 
-			Movie movie = new Movie(one);
-			list.add(movie);
-		   }
-		}
-		mTitle.setText(mMsgTitle);
-		sGridView.setNumColumns(2);
-		ViewGroup.LayoutParams lps = sGridView.getLayoutParams();
-		if (list.size() >=8) {
-		   lps.height = 450;
-		} else {
-		   lps.height = 130 * list.size()/2;
-		}
-		sGridView.setLayoutParams(lps);
+	   } else if (mType == 1) {//1.6移出
+		List<HospNameBean.TcstBaseStorehousesBean> storehouses = mHospNameBean.getTcstBaseStorehouses();
 
-	   } else {//1.6移出
-		for (int i = 1; i < 30; i++) {
-		   String one = i + "号柜";
-		   Movie movie = new Movie(one);
-		   list.add(movie);
+		for (int i = 0; i < storehouses.size(); i++) {
+		   DialogBean dialogBean = new DialogBean();
+		   dialogBean.setCode(storehouses.get(i).getStorehouseCode());
+		   dialogBean.setName(storehouses.get(i).getName());
+		   list.add(dialogBean);
 		}
-		ViewGroup.LayoutParams lps = sGridView.getLayoutParams();
-		if (list.size() >=12) {
-		   lps.height = 450;
-		} else {
-		   lps.height = 130 * list.size()/2;
+
+	   } else {//调拨
+		List<HospNameBean.StoreHousesBean> storeHouses = mHospNameBean.getStoreHouses();
+		for (int i = 0; i < storeHouses.size(); i++) {
+		   DialogBean dialogBean = new DialogBean();
+		   dialogBean.setCode(storeHouses.get(i).getStorehouseCode());
+		   dialogBean.setName(storeHouses.get(i).getDeptNamesStr());
+		   list.add(dialogBean);
 		}
-		sGridView.setLayoutParams(lps);
 	   }
 
-
+	   ViewGroup.LayoutParams lps = sGridView.getLayoutParams();
+	   if (list.size() >= 8) {
+		lps.height = 450;
+	   } else if (list.size()<3){
+		lps.height = 130 * list.size();
+	   }else {
+		lps.height = 130 * list.size() / 2;
+	   }
+	   sGridView.setLayoutParams(lps);
 	   sAdapter = new gridviewAdapter(mContext, R.layout.item_tag, list, mNumColumn);
 	   sGridView.setAdapter(sAdapter);
 
 	   /*
 	    * 选中
 	    */
+	   if (list.size()>0){
+		mCode =list.get(0).getCode();
+		mName =list.get(0).getName();
+	   }
+
+	   LogUtils.i("OutBoxFoutActivity","默认mName  "+mName+"   mCode "+mCode);
 	   sGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		   sAdapter.setSelected(position);
 		   sAdapter.notifyDataSetChanged();
-
+		   TextView textView = (TextView)view.findViewById(R.id.tag);
+		   TextView goneText = (TextView)view.findViewById(R.id.gone_tag);
+		   mName = textView.getText().toString();
+		   mCode = goneText.getText().toString();
+		   LogUtils.i("OutBoxFoutActivity","mName  "+mName+"   mCode "+mCode);
 		}
 	   });
 
 	   if (mLeftTextColor != -1) {
 		mRigtht.setTextColor(mRightTextColor);
 	   }
-	   mRigtht.setText(mRightText);
+	   mRigtht.setText("确认");
 	   mLeft.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
@@ -218,7 +223,13 @@ public class StoreRoomDialog extends Dialog {
 	   mRigtht.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+		   if (mType==1){
+			EventBusUtils.postSticky(new Event.outBoxEvent("1",mCode,dialog));
+		   }else if (mType==2){
+			EventBusUtils.postSticky(new Event.outBoxEvent("2",mName,dialog));
+		   }else {
+			EventBusUtils.postSticky(new Event.outBoxEvent("3",mCode,dialog));
+		   }
 		}
 	   });
 	   return dialog;

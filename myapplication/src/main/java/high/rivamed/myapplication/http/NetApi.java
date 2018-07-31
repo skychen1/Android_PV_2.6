@@ -44,12 +44,14 @@ public interface NetApi {
 
    //耗材操作
 
-   String URL_OPERATE_QUERY  = MAIN_URL + "/rmApi/consumables/tCstInventory/findTCstInventory";//查询扫描出来的耗材和数据库耗材情况
-   String URL_OPERATE_INBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/operateTCstInventory";//查询后入柜的确认操作
+   String URL_OPERATE_QUERY        = MAIN_URL + "/rmApi/consumables/tCstInventory/findTCstInventory";//查询扫描出来的耗材和数据库耗材情况
+   String URL_OPERATE_INOUTBOX_YES = MAIN_URL + "/rmApi/consumables/tCstInventory/operateTCstInventory";//查询后入柜出柜的确认操作
+   String URL_OPERATE_YC_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
+   String URL_OPERATE_DB_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
 
 //   实时盘点
-//   String URL_OPERATE_INBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
-//   String URL_OPERATE_INBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
+//   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
+//   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
 
 }

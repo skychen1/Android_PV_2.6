@@ -30,7 +30,7 @@ public class TCstInventoryDto {
 	
 	//效期数量监控
 	private List<CstExpirationVo> cstExpirationVos;
-	
+   private String   configPatientCollar;
 	private String  thingCode;
 	private String  deviceCode;
 	private int     operation;
@@ -51,6 +51,14 @@ public class TCstInventoryDto {
    private int                          countMoveIn;
    private int                          countBack;
    private int                          countTempopary;
+
+   public String getConfigPatientCollar() {
+	return configPatientCollar;
+   }
+
+   public void setConfigPatientCollar(String configPatientCollar) {
+	this.configPatientCollar = configPatientCollar;
+   }
 
    public static long getSerialVersionUID() {
 	return serialVersionUID;

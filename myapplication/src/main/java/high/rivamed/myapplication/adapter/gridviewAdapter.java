@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.DialogBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -27,12 +27,12 @@ import high.rivamed.myapplication.bean.Movie;
 
 public class gridviewAdapter extends BaseAdapter {
    private int selected=0;
-   Context     mContext;
-   int         layoutResourceId;
-   int         mNumColumn;
-   List<Movie> mGridData;
+   Context          mContext;
+   int              layoutResourceId;
+   int              mNumColumn;
+   List<DialogBean> mGridData;
 
-   public gridviewAdapter(Context context, int resource, List<Movie> objects,int mNumColumn) {
+   public gridviewAdapter(Context context, int resource, List<DialogBean> objects, int mNumColumn) {
       this.mContext = context;
       this.layoutResourceId = resource;
       this.mGridData = objects;
@@ -63,19 +63,23 @@ public class gridviewAdapter extends BaseAdapter {
          convertView = inflater.inflate(layoutResourceId, parent, false);
          holder = new ViewHolder();
          holder.textView = (TextView) convertView.findViewById(R.id.tag);
-         if (mNumColumn==2){
-		ViewGroup.LayoutParams params = holder.textView.getLayoutParams();
-		params.width = 300;
-		holder.textView.setLayoutParams(params);
-	   }
+         holder.mGoneTextView = (TextView) convertView.findViewById(R.id.gone_tag);
+//         if (mNumColumn==2){
+//		ViewGroup.LayoutParams params = holder.textView.getLayoutParams();
+//		params.width = 300;
+//		holder.textView.setLayoutParams(params);
+//	   }
          convertView.setTag(holder);
       } else {
          holder = (ViewHolder) convertView.getTag();
       }
-	Movie movie = mGridData.get(position);
+
+
+
       disposalView(position,holder);
 
-	holder.textView.setText(movie.mString);
+	holder.textView.setText(mGridData.get(position).getName());
+	holder.mGoneTextView.setText(mGridData.get(position).getCode());
       return convertView;
    }
 
@@ -93,6 +97,7 @@ public class gridviewAdapter extends BaseAdapter {
    }
    private class ViewHolder {
       TextView  textView;
+      TextView  mGoneTextView;
    }
 
 }

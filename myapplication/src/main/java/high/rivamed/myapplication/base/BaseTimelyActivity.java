@@ -129,11 +129,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private List<StockDetailsBean.TCstInventoryVosBean> mStockDetailsDownList;
    public  List<TCstInventoryVo>                       mTCstInventoryVos; //入柜扫描到的epc信息
 //   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos; //入柜扫描到的epc信息
-   private TCstInventoryDto                            mInBoxDtoBean;
+public TCstInventoryDto                            mTCstInventoryDto;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
+	LogUtils.i(TAG,"  mActivityType    "+mActivityType);
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -149,21 +150,23 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onInBoxEvent(TCstInventoryDto event) {
 	LogUtils.i(TAG,"event  "+(event==null));
-      if (mInBoxDtoBean!=null&&mTCstInventoryVos!=null){
+      if (mTCstInventoryDto != null && mTCstInventoryVos != null){
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
 	   mTCstInventoryVos.clear();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);
 
 	   if (my_id==ACT_TYPE_HCCZ_OUT){
+		LogUtils.i(TAG,"event  "+ "ACT_TYPE_HCCZ_OUT");
 		setOutBoxTitles();
 		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	   }else if (my_id == ACT_TYPE_HCCZ_IN){
+		LogUtils.i(TAG,"event  "+ "ACT_TYPE_HCCZ_IN");
 		setInBoxTitles();
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   }
 
 	}else {
-	   mInBoxDtoBean = event;
+	   mTCstInventoryDto = event;
 	   mTCstInventoryVos = event.gettCstInventoryVos();
 	}
 
@@ -352,15 +355,42 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	if (mActivityType.equals("all")) {
 	   setInBoxTitles();
-
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN);
 	} else {
-	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+	   ArrayList<String> strings = new ArrayList<>();
+	   for (TCstInventoryVo vosBean:mTCstInventoryVos){
+		strings.add(vosBean.getCstCode());
+	   }
+	   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
+							   mTCstInventoryVos.size() + "</big></font>"));
+
+	   int operation = mTCstInventoryDto.getOperation();
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN,operation);
+	   for (TCstInventoryVo b:mTCstInventoryVos){
+		String status = b.getStatus();
+		if ((operation==3 && status.contains("领用")) ||
+		    (operation==2 && status.contains("入库")) ||
+		    (operation==9 && status.contains("移出")) ||
+		    (operation==11 && status.contains("调拨")) ||
+		    (operation==10&& status.contains("移入")) ||
+		    (operation==7 && status.contains("退回")) ||
+		    (operation==8 && status.contains("退货"))) {
+		   LogUtils.i(TAG,"我走了truestatus   " +status  +"    operation  "+operation);
+		}else {
+		   LogUtils.i(TAG,"我走了false");
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   return;
+		}
+
+	   }
 
 	}
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_IN);
+
    }
 
    /**
@@ -372,11 +402,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   strings.add(vosBean.getCstCode());
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + mInBoxDtoBean.getCountTwoin() +
+	mTimelyNumber.setText(Html.fromHtml("入库：<font color='#262626'><big>" + mTCstInventoryDto.getCountTwoin() +
 							"</big>&emsp</font>移入：<font color='#262626'><big>" +
-							mInBoxDtoBean.getCountMoveIn() +
+							mTCstInventoryDto.getCountMoveIn() +
 							"</big>&emsp</font>退回：<font color='#262626'><big>" +
-							mInBoxDtoBean.getCountBack() +
+							mTCstInventoryDto.getCountBack() +
 							"</big>&emsp</font>耗材种类：<font color='#262626'><big>" +
 							list.size() +
 							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +

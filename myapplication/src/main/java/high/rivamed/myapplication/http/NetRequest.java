@@ -202,8 +202,25 @@ public class NetRequest {
     * 耗材操作确认操作
     */
    public void putOperateYes(String operateTCstInventory,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-	OkGo.<String>post(NetApi.URL_OPERATE_INBOX_YES).tag(tag)
+	OkGo.<String>post(NetApi.URL_OPERATE_INOUTBOX_YES).tag(tag)
 		.upJson(operateTCstInventory)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
+   /**
+    * 根据科室查询库房情况    移出查
+    */
+   public void getOperateYcDeptYes(String deptCode,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_OPERATE_YC_YES).tag(tag)
+		.params("deptCode", deptCode)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
+   /**
+    * 查询非本科室的库房    调拨查
+    */
+   public void getOperateDbDialog(String deptCode,String branchCode,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_OPERATE_DB_YES).tag(tag)
+		.params("deptCode", deptCode)
+		.params("branchCode", branchCode)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
    private class MyCallBack extends StringCallback {

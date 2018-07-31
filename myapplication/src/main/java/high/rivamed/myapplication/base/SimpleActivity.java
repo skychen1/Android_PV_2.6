@@ -9,12 +9,15 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 
+import java.util.List;
+
 import butterknife.Unbinder;
 import high.rivamed.myapplication.base.mvp.IPresent;
 import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
@@ -34,12 +37,13 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	IView<P> {
 	
 	
-	private VDelegate vDelegate;
-	private P         p;
-	public  Activity  mContext;
-	public  Gson      mGson;
-	
-	private Unbinder unbinder;
+	private VDelegate    vDelegate;
+	private P            p;
+	public  Activity     mContext;
+	public  Gson         mGson;
+   public    List<String> mReaderDeviceId;
+   public    List<String> eth002DeviceIdList;
+	private Unbinder     unbinder;
 	
 	
 	@Override
@@ -47,6 +51,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 		super.onCreate(savedInstanceState);
 		mContext = this;
 		mGson = new Gson();
+	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		if (getLayoutId() > 0) {
 		   setContentView(getLayoutId());
 		   onBindViewBefore();
@@ -78,12 +84,13 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 		}
 		return p;
 	}
-	
-	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-	
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+   }
 	
 	@Override
 	protected void onResume() {

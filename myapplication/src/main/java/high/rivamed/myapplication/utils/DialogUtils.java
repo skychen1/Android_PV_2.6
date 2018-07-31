@@ -12,6 +12,7 @@ import java.util.Date;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
@@ -125,6 +126,7 @@ public class DialogUtils {
 		//		   }
 		//
 		//		}
+
 		dialog.dismiss();
 	   }
 	});
@@ -133,11 +135,13 @@ public class DialogUtils {
 	return builder;
    }
 
-   public static void showStoreDialog(Context context, int mNumColumn, int mType) {
-	StoreRoomDialog.Builder builder = new StoreRoomDialog.Builder(context, mNumColumn, mType);
+   public static void showStoreDialog(Context context, int mNumColumn, int mType,HospNameBean hospNameBean) {
+	StoreRoomDialog.Builder builder = new StoreRoomDialog.Builder(context, mNumColumn, mType,hospNameBean);
 	if (mType == 2) {
 	   builder.setTitle("请选择退货原因");
-	} else {
+	} else if (mType ==1){
+	   builder.setTitle("请选择库房");
+	}else {
 	   builder.setTitle("请选择目标科室");
 	}
 	builder.setLeft("", new DialogInterface.OnClickListener() {
@@ -146,12 +150,7 @@ public class DialogUtils {
 		dialog.dismiss();
 	   }
 	});
-	builder.setRight("确认", new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		dialog.dismiss();
-	   }
-	});
+
 	builder.create().show();
    }
 
@@ -268,8 +267,9 @@ public class DialogUtils {
 	builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
 	   @Override
 	   public void getDialogDate(
-		   String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog) {
-		EventBusUtils.postSticky(new Event.dialogEvent(deptCode,storehouseCode,operationRoomNo,dialog));
+		   String branchCode, String deptCode, String storehouseCode, String operationRoomNo,
+		   Dialog dialog) {
+		EventBusUtils.postSticky(new Event.dialogEvent(branchCode,deptCode,storehouseCode,operationRoomNo,dialog));
 	   }
 	});
 

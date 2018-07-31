@@ -38,6 +38,8 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
@@ -98,7 +100,7 @@ public class RegisteFrag extends SimpleFragment {
 
 	if (event.dialog!=null) {
 	   String s = mGson.toJson(
-		   addFromDate(event.deptCode, event.storehouseCode, event.operationRoomNo));
+		   addFromDate(event.branchCode,event.deptCode, event.storehouseCode, event.operationRoomNo));
 	   LogUtils.i(TAG,"激活的   "+s);
 	   setSaveRegister(s,true);
 	   event.dialog.dismiss();
@@ -179,7 +181,7 @@ LogUtils.i(TAG,"string   "+string);
 		@Override
 		public void onClick(View v) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
-		   String fromDate = mGson.toJson(addFromDate(null,null,null));
+		   String fromDate = mGson.toJson(addFromDate(null,null,null,null));
 
 		   Log.i(TAG, "fromDate   " + fromDate);
 		   setSaveRegister(fromDate,false);//注册
@@ -270,6 +272,8 @@ LogUtils.i(TAG,"string   "+string);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, registeReturnBean.getTbaseThing().getSn());
 		   SPUtils.putString(UIUtils.getContext(), THING_CODE, registeReturnBean.getTbaseThing().getThingCode());
+		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, "22");
+		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, "22");
 		   putDbDate(registeReturnBean);
 		   initData();
 		}
@@ -306,7 +310,7 @@ LogUtils.i(TAG,"string   "+string);
    /**
     * 预注册存入数据
     */
-   private TBaseThingDto addFromDate(String deptCode,String storehouseCode,String operationRoomNo) {
+   private TBaseThingDto addFromDate(String branchCode,String deptCode,String storehouseCode,String operationRoomNo) {
 
 	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
 	TBaseThingDto.TBaseThing tBaseThing = new TBaseThingDto.TBaseThing();//设备信息
@@ -315,6 +319,7 @@ LogUtils.i(TAG,"string   "+string);
 	TBaseThingDto.HospitalInfoVo hospitalInfoVo = new TBaseThingDto.HospitalInfoVo();
 
 	hospitalInfoVo.setDeptCode(deptCode);
+	hospitalInfoVo.setBranchCode(branchCode);
 	hospitalInfoVo.setStorehouseCode(storehouseCode);
 	hospitalInfoVo.setOperationRoomNo(operationRoomNo);
 

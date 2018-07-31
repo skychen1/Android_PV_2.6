@@ -108,15 +108,16 @@ String TAG ="ContentConsumeOperateFrag";
    private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter                mHomeFastOpenTopAdapter;
    private       HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
-   private       List<String>                       eth002DeviceIdList;
+
    private       String                             eth002DeviceId;
    private       String                             uhfDeviceId;
    private       NoDialog.Builder                   mBuilder;
    private       List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
    private       LoadingDialog.Builder              mBuilder1;
    private       HashMap<String, String>            mReaderMap;
-   private       List<String>                       mReaderDeviceId;
+
    public static List<String>                       mReaderIdList;
+   private int mRbKey;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -201,11 +202,10 @@ String TAG ="ContentConsumeOperateFrag";
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(success, "柜门已开"));
 		}else {
-		   mShowLoading.mDialog.dismiss();
-
+		   if (mShowLoading!=null){
+			mShowLoading.mDialog.dismiss();
+		   }
 //		   ToastUtils.showShort("开门异常，请重试！");
-
-
 		}
 	   }
 
@@ -224,10 +224,9 @@ String TAG ="ContentConsumeOperateFrag";
 
 		   for (String readerid : mReaderIdList) {
 			int ret = DeviceManager.getInstance().StartUhfScan(readerid);
-		      if (mReaderIdList==null||ret==2){
+		      if (mReaderIdList==null||ret==100){
 		         mShowLoading.mDialog.dismiss();
 			}
-
 			LogUtils.i(TAG, "开始扫描了状态    " + ret);
 
 			DeviceManager.getInstance().StartUhfScan(readerid);
@@ -305,7 +304,12 @@ String TAG ="ContentConsumeOperateFrag";
 
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
-
+	LogUtils.i(TAG, "mRbKey    " + mRbKey);
+	if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
+	   tCstInventoryDto.setOperation(mRbKey);
+	}else {
+	   tCstInventoryDto.setOperation(mRbKey);
+	}
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 
@@ -315,23 +319,37 @@ String TAG ="ContentConsumeOperateFrag";
 		   Log.i(TAG, "result    " + result);
 		   TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		   LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos()==null));
-		   if (cstInventoryDto.gettCstInventoryVos()==null&&cstInventoryDto.gettCstInventoryVos().size()<1){
+		   if (cstInventoryDto.gettCstInventoryVos()==null||cstInventoryDto.gettCstInventoryVos().size()<1){
 			mBuilder.mDialog.dismiss();
 			mShowLoading.mDialog.dismiss();
 			ToastUtils.showShort("未扫描到操作的耗材");
 		   }else {
 			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
 			EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-			EventBusUtils.postSticky(new Event.EventAct("all"));
 			if (cstInventoryDto.getType()==0){//放入
-			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   mContext.startActivity(intent2);
+			   if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
+				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+				mContext.startActivity(intent2);
+				EventBusUtils.postSticky(new Event.EventAct("inout"));
+				EventBusUtils.postSticky(cstInventoryDto);
+			   }else {
+				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+				mContext.startActivity(intent2);
+				EventBusUtils.postSticky(new Event.EventAct("all"));
+				EventBusUtils.postSticky(cstInventoryDto);
+			   }
 			}else {//拿出
-			   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
+			   if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
+			      Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+				mContext.startActivity(intent2);
+				EventBusUtils.postSticky(new Event.EventAct("inout"));
+				EventBusUtils.postSticky(cstInventoryDto);
+			   }else {
+				mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
+				EventBusUtils.postSticky(cstInventoryDto);
+			   }
+
 			}
-			EventBusUtils.postSticky(cstInventoryDto);
-		   }
-		   if (cstInventoryDto.getType()==0){
 
 		   }
 
@@ -342,8 +360,7 @@ String TAG ="ContentConsumeOperateFrag";
    }
 
    private void initData() {
-	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
-	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+
 	loadDate();
 
    }
@@ -387,44 +404,8 @@ String TAG ="ContentConsumeOperateFrag";
 	mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		LogUtils.i("TT", " position  " + position);
-		mShowLoading = DialogUtils.showLoading(mContext);
-
-		if (position == 0) {
-		   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
-			   .find(BoxIdBean.class);
-		   mReaderMap = new HashMap<>();
-		   for (BoxIdBean boxIdBean : boxIdBeans) {
-			String device_id = boxIdBean.getDevice_id();
-			String box_id = boxIdBean.getBox_id();
-			mReaderMap.put(device_id, box_id);
-		   }
-		   for (String deviceId : eth002DeviceIdList) {
-			DeviceManager.getInstance().OpenDoor(deviceId);
-		   }
-		} else {
-		   BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
-		   String deviceCode = devicesBean.getDeviceCode();
-		   LogUtils.i(TAG, "deviceCode   " + deviceCode + " READER_TYPE  " + READER_TYPE);
-		   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode,
-									    READER_TYPE).find(BoxIdBean.class);
-		   if (mReaderIdList != null) {
-			mReaderIdList.clear();
-		   } else {
-			mReaderIdList = new ArrayList<>();
-		   }
-
-		   for (BoxIdBean boxIdBean : boxIdBeans) {
-			String device_id = boxIdBean.getDevice_id();
-			mReaderIdList.add(device_id);
-		   }
-		   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-			if ((position - 1) == i) {
-			   DeviceManager.getInstance().OpenDoor(eth002DeviceIdList.get(i));
-			}
-		   }
-		}
-
+		mRbKey=-1;
+		openDoor(position);
 		//		DeviceManager.getInstance().OpenDoor("xxx");
 		//		if (position == 0){
 		//
@@ -484,58 +465,100 @@ String TAG ="ContentConsumeOperateFrag";
 		} else {
 		   switch (id) {
 			case R.id.content_rb_ly:
+			   mRbKey = 3;
 			   ToastUtils.showShort("领用！");//拿出
-			   Intent intent0 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent0.putExtra("type","inout");
-			   mContext.startActivity(intent0);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
+			   mRbKey = 2;
 			   ToastUtils.showShort("入库！");//拿入
-			   Intent intent1 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent1.putExtra("type","inout");
-			   mContext.startActivity(intent1);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
-
 			   break;
 			case R.id.content_rb_yc:
+			   mRbKey = 9;
 			   ToastUtils.showShort("移出！");//拿出
-			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent2.putExtra("type","inout");
-			   mContext.startActivity(intent2);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tb:
+			   mRbKey = 11;
 			   ToastUtils.showShort("调拨！");//拿出
-			   Intent intent3 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   mContext.startActivity(intent3);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yr:
+			   mRbKey = 10;
 			   ToastUtils.showShort("移入！");//拿入
-			   Intent intent4 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent4.putExtra("type","inout");
-			   mContext.startActivity(intent4);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihui:
+			   mRbKey = 7;
 			   ToastUtils.showShort("退回！");//拿入
-			   Intent intent5 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent5.putExtra("type","inout");
-			   mContext.startActivity(intent5);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihuo:
+			   mRbKey = 8;
 			   ToastUtils.showShort("退货！");//拿出
-			   Intent intent6 = new Intent(mContext, InOutBoxTwoActivity.class);
-			   //			   intent6.putExtra("type","inout");
-			   mContext.startActivity(intent6);
+			   openDoor(position);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 		   }
 		}
 	   }
 	});
+   }
+
+   private void openDoor(int position) {
+	mShowLoading = DialogUtils.showLoading(mContext);
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+	if (position == 0) {
+	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
+		   .find(BoxIdBean.class);
+	   mReaderMap = new HashMap<>();
+	   for (BoxIdBean boxIdBean : boxIdBeans) {
+		String device_id = boxIdBean.getDevice_id();
+		String box_id = boxIdBean.getBox_id();
+		mReaderMap.put(device_id, box_id);
+	   }
+	   for (int i=0;i<eth002DeviceIdList.size();i++){
+		DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+	   }
+	} else {
+	   BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
+	   String deviceCode = devicesBean.getDeviceCode();
+	   LogUtils.i(TAG, "deviceCode   " + deviceCode + " READER_TYPE  " + READER_TYPE);
+	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode,
+								    READER_TYPE).find(BoxIdBean.class);
+
+	   if (mReaderIdList != null) {
+		mReaderIdList.clear();
+	   } else {
+		mReaderIdList = new ArrayList<>();
+	   }
+	   for (BoxIdBean boxIdBean : boxIdBeans) {
+		String device_id = boxIdBean.getDevice_id();
+		LogUtils.i(TAG, "device_id   " + device_id);
+		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
+		for (int i=0;i<mReaderDeviceId.size();i++){
+		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
+		   if (mReaderDeviceId.get(i).equals(device_id)){
+			mReaderIdList.add(device_id);
+		   }
+		}
+	   }
+	   LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+	   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+		if ((position - 1) == i) {
+		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+		}
+	   }
+	}
    }
 
    @Override

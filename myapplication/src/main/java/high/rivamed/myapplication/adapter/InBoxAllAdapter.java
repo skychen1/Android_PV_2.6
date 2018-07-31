@@ -26,11 +26,19 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 
-public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo,BaseViewHolder>{
+public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+
+   int mOperation;
 
    public InBoxAllAdapter(
-	   int layoutResId,  List<TCstInventoryVo> data) {
+	   int layoutResId, List<TCstInventoryVo> data) {
 	super(layoutResId, data);
+   }
+
+   public InBoxAllAdapter(
+	   int layoutResId, List<TCstInventoryVo> data, int operation) {
+	super(layoutResId, data);
+	this.mOperation = operation;
    }
 
    @Override
@@ -41,8 +49,9 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo,BaseViewHo
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
-	LogUtils.i("faf","   mTCstInventoryVos  "+item.getCstName());
-	LogUtils.i("faf","   mTCstInventoryVos  "+item.getDeviceName());
+
+	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getCstName());
+	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getDeviceName());
 	TextView mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	TextView mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	TextView mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -56,9 +65,27 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo,BaseViewHo
 	mSeven_four.setText(item.getExpiration());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(status);
-	UIUtils.initTermOfValidity(mContext,helper, item.getStopFlag(), mSeven_four);
+	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
 	Log.i("InOutBoxTwoActivity", "status   " + status);
-	if (status.equals("禁止入库")||status.equals("禁止移入")||status.equals("禁止退回")) {
+	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   if (helper.getAdapterPosition() % 2 == 0) {
+		mSeven_four.setBackgroundResource(R.color.bg_color);
+	   } else {
+		mSeven_four.setBackgroundResource(R.color.bg_f);
+	   }
+	} else if ((mOperation == 3 && !status.contains("领用")) ||
+		     (mOperation == 2 && !status.contains("入库")) ||
+		     (mOperation == 9 && !status.contains("移出")) ||
+		     (mOperation == 11 && !status.contains("调拨")) ||
+		     (mOperation == 10 && !status.contains("移入")) ||
+		     (mOperation == 7 && !status.contains("退回")) ||
+		     (mOperation == 8 && !status.contains("退货"))) {
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
