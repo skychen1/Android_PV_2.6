@@ -15,8 +15,11 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
-
-import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
+import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.views.LoadingDialog;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -38,11 +41,13 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    ViewPager        mCttimecheckViewpager;
    private List<Integer> mList;
    private       int TOTAL_SIZE = 26;
-   private final int PAGE_SIZE  =20;
+   private final int PAGE_SIZE  = 20;
    private       int mCount     = 0;
-   private CttimeCheckPagerAdapter mPagerAdapter;
-   private List<String> mTitles;
-   private String[] mKeys;
+   private CttimeCheckPagerAdapter            mPagerAdapter;
+   private List<String>                       mTitles;
+   private String[]                           mKeys;
+   public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private LoadingDialog.Builder              mBuilder;
 
    public static ContentTimelyCheckFrag newInstance() {
 	Bundle args = new Bundle();
@@ -59,81 +64,105 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	initData();
-	mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager());
-	mCttimecheckViewpager.setAdapter(mPagerAdapter);
-	mCttimecheckViewpager.setCurrentItem(0);
-	mKeys = mTitles.toArray(new String[mTitles.size()]);
-	mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager, mKeys);
+
    }
 
    private void initData() {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("实时盘点");
-
-	mList = new ArrayList<>();
-	mTitles = new ArrayList<>();
-	for (int i = 0; i < PAGE_SIZE; i++) {
-	   if (i==0){
-		mTitles.add("全部");
-	   }else {
-		mTitles.add(i+"号柜");
-	   }
-	   mCount++;
-	   mList.add(mCount);
-	}
-
+	mBuilder = DialogUtils.showLoading(mContext);
+	loadTopBoxSize();
    }
 
+   private void loadTopBoxSize() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+		mTbaseDevices = boxSizeBean.getTbaseDevices();
+		if (mTbaseDevices != null) {
+		   BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+		   devicesBean1.setDeviceName("全部");
+		   devicesBean1.setDeviceCode("");
+		   mTbaseDevices.add(0, devicesBean1);
+		   mBuilder.mDialog.dismiss();
+		   ArrayList<Fragment> fragments = new ArrayList<>();
+		   for (int i=0;i<mTbaseDevices.size();i++){
+			fragments.add(new TimelyAllFrag(mTbaseDevices,i));
+		   }
+		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
+		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+		   mCttimecheckViewpager.setCurrentItem(0);
+		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+
+		   //		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
+		}
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		mBuilder.mDialog.dismiss();
+	   }
+	});
+   }
 
    private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
 
-	public CttimeCheckPagerAdapter(FragmentManager fm) {
+	private List<Fragment> mFragments;
+
+	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
 	   super(fm);
+	   this.mFragments = Fragments;
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-		return PublicTimelyFrag.newInstance(6,TYPE_TIMELY);
+
+	   return mFragments.get(position);
+
 	}
+
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   return mKeys[position];
+	   return mTbaseDevices.get(position).getDeviceName();
 	}
+
 	@Override
 	public int getCount() {
-	   return mList == null ? 0 : mList.size();
+	   return mFragments.size();
 	}
    }
-
-   private class PageChangeListener implements ViewPager.OnPageChangeListener {
-
-	@Override
-	public void onPageScrolled(
-		int position, float offsetPerc, int offsetPixel) {
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-	   int size = mList.size();
-	   if (position == size - 1 && TOTAL_SIZE > size) {
-		//实际项目中是网络请求下一页的列表数据
-		getMoreDetailList();
-	   }
-
-	}
-   }
-
-   private void getMoreDetailList() {
-	for (int i = mCount; i < TOTAL_SIZE; i++) {
-	   mCount++;
-	   mList.add(mCount);
-	}
-	mPagerAdapter.notifyDataSetChanged();
-   }
-
 }
+
+//   private class PageChangeListener implements ViewPager.OnPageChangeListener {
+//
+//	@Override
+//	public void onPageScrolled(
+//		int position, float offsetPerc, int offsetPixel) {
+//	}
+//
+//	@Override
+//	public void onPageScrollStateChanged(int state) {
+//	}
+//
+//	@Override
+//	public void onPageSelected(int position) {
+//	   int size = mList.size();
+//	   if (position == size - 1 && TOTAL_SIZE > size) {
+//		//实际项目中是网络请求下一页的列表数据
+//		getMoreDetailList();
+//	   }
+//
+//	}
+//   }
+//
+//   private void getMoreDetailList() {
+//	for (int i = mCount; i < TOTAL_SIZE; i++) {
+//	   mCount++;
+//	   mList.add(mCount);
+//	}
+//	mPagerAdapter.notifyDataSetChanged();
+//   }
+
+

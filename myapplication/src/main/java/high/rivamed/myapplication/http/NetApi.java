@@ -53,7 +53,7 @@ public interface NetApi {
    String URL_USER_LOGIN  = MAIN_URL + "/rmApi/restLogin/login";//登录
 
 //   实时盘点
-//   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
+   String URL_TIMELY_ONE  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
 //   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
 
 }

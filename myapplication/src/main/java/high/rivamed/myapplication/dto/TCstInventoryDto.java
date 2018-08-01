@@ -40,8 +40,8 @@ public class TCstInventoryDto {
 	private Account account;
 	//名称及规格查询条件
 	private String  nameOrSpecQueryCon;
-	private Integer add;	// 库存情况
-	private Integer reduce;	// 扫描出来的库存
+	private int add;	// 库存情况
+	private int reduce;	// 扫描出来的库存
 	private String  cstCode;
 	private String  remake;	//退货备注
 	private String  storehouseRemark;	//移出备注
@@ -216,19 +216,19 @@ public class TCstInventoryDto {
 		this.cstSpec = cstSpec;
 	}
 
-	public Integer getAdd() {
+	public int getAdd() {
 		return add;
 	}
 
-	public void setAdd(Integer add) {
+	public void setAdd(int add) {
 		this.add = add;
 	}
 
-	public Integer getReduce() {
+	public int getReduce() {
 		return reduce;
 	}
 
-	public void setReduce(Integer reduce) {
+	public void setReduce(int reduce) {
 		this.reduce = reduce;
 	}
 

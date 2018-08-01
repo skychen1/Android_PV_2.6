@@ -36,7 +36,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.StockMidTypeActivity;
-import high.rivamed.myapplication.activity.TimelyDetailsActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
 import high.rivamed.myapplication.activity.TimelyProfitActivity;
 import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
@@ -214,6 +213,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mStockTimelyLl.setVisibility(View.VISIBLE);
 		mRightTop.setVisibility(View.GONE);
 		Log.i("ccc", "ssfsfsf:  " + mDeviceCode );
+
 		getMiddleDate(mDeviceCode, mSearchEt);
 
 	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {
@@ -223,29 +223,12 @@ public class PublicTimelyFrag extends SimpleFragment {
 
 	} else if (mType_size == SIX) {
 	   if (mType_page.equals(TYPE_TIMELY)) {
-		String str = "3";
-		mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
-		String str1 = "99";
-		mTimelyReality.setText(
-			Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
-		mTimelyBook.setText("账面库存数：" + SIX);
-		String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
-		titeleList = Arrays.asList(array);
-		mSize = array.length;
+
+	      getTimelyDate(mDeviceCode);
+
 	   }
 	} else if (mType_size == SEVEN) {
-	   //	   if ( mType_page.equals(TYPE_TIMELY)){
-	   //		Log.i("BaseQuickAdapter", "mType_size   " + SEVEN);
-	   //		String str = "3";
-	   //		mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
-	   //		String str1 = "99";
-	   //		mTimelyReality.setText(
-	   //			Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
-	   //		mTimelyBook.setText("账面库存数：" + FIVE);
-	   //		String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	   //		titeleList = Arrays.asList(array);
-	   //		mSize = array.length;
-	   //	   }else
+
 	   if (mType_page.equals(STYPE_FORM)) {
 
 		mPublicRl.setVisibility(View.GONE);
@@ -292,24 +275,32 @@ public class PublicTimelyFrag extends SimpleFragment {
 	}
 	//各个表格不同区分
 	if (mSize == SIX) {
-	   if (mType_page.equals(TYPE_TIMELY)) {
-		mLayout = R.layout.item_realtime_six_layout;
-		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_six_title_layout,
-								    (ViewGroup) mLinearLayout.getParent(), false);
-		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, TYPE_TIMELY);
-
-		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-		   @Override
-		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
-		   }
-		});
+	   if (mType_page.equals(TYPE_TIMELY)) {//实时盘点
+//
+//		mLayout = R.layout.item_realtime_six_layout;
+//		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_six_title_layout,
+//								    (ViewGroup) mLinearLayout.getParent(), false);
+//		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+//		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+//		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+//		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+//		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+//		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+//
+//		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, TYPE_TIMELY);
+//
+//		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//		   @Override
+//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
+//		   }
+//		});
+//		mHeadView.setBackgroundResource(R.color.bg_green);
+//		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+//		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+//		mRefreshLayout.setEnableAutoLoadMore(true);
+//		mRecyclerview.setAdapter(mPublicAdapter);
+//		mLinearLayout.addView(mHeadView);
 	   } else {
 		mLayout = R.layout.item_frg_six_layout;
 		mHeadView = getLayoutInflater().inflate(R.layout.item_frg_six_title_layout,
@@ -320,35 +311,36 @@ public class PublicTimelyFrag extends SimpleFragment {
 		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+		mHeadView.setBackgroundResource(R.color.bg_green);
+		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+		mRefreshLayout.setEnableAutoLoadMore(true);
+		mRecyclerview.setAdapter(mPublicAdapter);
+		mLinearLayout.addView(mHeadView);
 	   }
-	   mHeadView.setBackgroundResource(R.color.bg_green);
-	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	   mRefreshLayout.setEnableAutoLoadMore(true);
-	   mRecyclerview.setAdapter(mPublicAdapter);
-	   mLinearLayout.addView(mHeadView);
+
 	} else if (mSize == SEVEN) {
-	   //	   if (mType_page.equals(TYPE_TIMELY)) {
-	   //		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
-	   //		mLayout = R.layout.item_realtime_seven_layout;
-	   //		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
-	   //								    (ViewGroup) mLinearLayout.getParent(), false);
-	   //		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-	   //		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-	   //		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
-	   //
-	   //		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-	   //		   @Override
-	   //		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-	   //			Log.i("BaseQuickAdapter", "mPublicAdapter");
-	   //		   }
-	   //		});
-	   //	   } else
+//	   	   if (mType_page.equals(TYPE_TIMELY)) {
+//	   		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
+//	   		mLayout = R.layout.item_realtime_seven_layout;
+//	   		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
+//	   								    (ViewGroup) mLinearLayout.getParent(), false);
+//	   		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+//	   		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+//	   		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
+//
+//	   		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//	   		   @Override
+//	   		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//	   			Log.i("BaseQuickAdapter", "mPublicAdapter");
+//	   		   }
+//	   		});
+//	   	   } else
 	   if (mType_page.equals(STYPE_FORM)) {
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 			LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -378,13 +370,14 @@ public class PublicTimelyFrag extends SimpleFragment {
 
 		   }
 		});
+		mHeadView.setBackgroundResource(R.color.bg_green);
+		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+		mRefreshLayout.setEnableAutoLoadMore(true);
+		mRecyclerview.setAdapter(mPublicAdapter);
+		mLinearLayout.addView(mHeadView);
 	   }
-	   mHeadView.setBackgroundResource(R.color.bg_green);
-	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	   mRefreshLayout.setEnableAutoLoadMore(true);
-	   mRecyclerview.setAdapter(mPublicAdapter);
-	   mLinearLayout.addView(mHeadView);
+
 	} else if (mSize == EIGHT && (mType_page.equals(TYPE_RUNWATE))) {
 	   Log.i("BaseQuickAdapter", "mType_page   " + EIGHT);
 //	   mLayout = R.layout.item_runwate_eight_layout;
@@ -412,6 +405,25 @@ public class PublicTimelyFrag extends SimpleFragment {
 //	   mLinearLayout.addView(mHeadView);
 	}
 
+   }
+
+   /**
+    * 获取实时盘点的数据
+    * @param deviceCode
+    */
+   private void getTimelyDate(String deviceCode) {
+
+
+
+	String str = "3";
+	mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
+	String str1 = "99";
+	mTimelyReality.setText(
+		Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
+	mTimelyBook.setText("账面库存数：" + SIX);
+	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
    }
 
    private void initlistener() {
@@ -740,61 +752,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	}
    }
 
-   private List<Movie> genData5() {
 
-	ArrayList<Movie> list = new ArrayList<>();
-	String five;
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		five = "已过期";
-	   } else if (i == 1) {
-		five = "≤100天";
-	   } else if (i == 2) {
-		five = "≤70天";
-	   } else if (i == 3) {
-		five = "≤28天";
-	   } else {
-		five = "2019-10-22";
-	   }
-	   String one = "电动腔镜直线型血管切割吻合器和钉仓" + i;
-	   String two = "大圈（ASJ-1-S）" + i;
-	   String three = "1" + i;
-	   String four = "1";
-
-	   Movie movie = new Movie(one, two, three, four, five, null, null, null);
-	   list.add(movie);
-	}
-	return list;
-   }
-
-   private List<Movie> genData7() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	String four;
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		four = "已过期";
-	   } else if (i == 1) {
-		four = "≤100天";
-	   } else if (i == 2) {
-		four = "≤70天";
-	   } else if (i == 3) {
-		four = "≤28天";
-	   } else {
-		four = "2019-10-22";
-	   }
-	   String one = "微创系统" + i;
-	   String two = "*15151223333ddd3" + i;
-	   String three = "RFID01" + i;
-	   String five = "1" + i;
-	   String six = "0" + i;
-	   String seven = "1" + i;
-
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
 
    private List<Movie> genData6() {
 
@@ -848,76 +806,5 @@ public class PublicTimelyFrag extends SimpleFragment {
 	return list;
    }
 
-   private List<Movie> genData82() {
-	String one;
-	String five = null;
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		one = "未使用";
-		five = "已过期";
-	   } else if (i == 1) {
-		one = "待入库";
-		five = "≤100天";
-	   } else if (i == 2) {
-		one = "待移入";
-		five = "≤70天";
-	   } else if (i == 3) {
-		one = "未使用";
-		five = "≤28天";
-	   } else if (i == 4) {
-		one = "未使用";
-	   } else {
-		one = "未使用";
-		five = "2019-10-22";
-	   }
-	   String two = "微创录入系统";
-	   String three = "*15151223333ddd3" + i;
-	   String four = "RFID01" + i;
-	   String six = "1" + i;
-	   String seven = "2019-10-22\n16:2" + i;
-	   String eight = "张小" + i;
-
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, eight);
-	   list.add(movie);
-	}
-	return list;
-   }
-
-   private List<Movie> genData8() {
-	String one;
-	String five = null;
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		one = "退货";
-		five = "已过期";
-	   } else if (i == 1) {
-		one = "移入";
-		five = "≤100天";
-	   } else if (i == 2) {
-		one = "返回";
-		five = "≤70天";
-	   } else if (i == 3) {
-		one = "领用";
-		five = "≤28天";
-	   } else if (i == 4) {
-		one = "移出";
-	   } else {
-		one = "入库";
-		five = "2019-10-22";
-	   }
-	   String two = "微创录入系统";
-	   String three = "*15151223333ddd3" + i;
-	   String four = "RFID01" + i;
-	   String six = "1" + i;
-	   String seven = "2019-10-22\n16:2" + i;
-	   String eight = "张小" + i;
-
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, eight);
-	   list.add(movie);
-	}
-	return list;
-   }
 
 }

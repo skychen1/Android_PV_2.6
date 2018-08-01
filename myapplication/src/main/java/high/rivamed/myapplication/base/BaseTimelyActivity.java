@@ -149,8 +149,10 @@ public TCstInventoryDto                            mTCstInventoryDto;
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onInBoxEvent(TCstInventoryDto event) {
+
 	LogUtils.i(TAG,"event  "+(event==null));
       if (mTCstInventoryDto != null && mTCstInventoryVos != null){
+	   mTCstInventoryDto = event;
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
 	   mTCstInventoryVos.clear();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);

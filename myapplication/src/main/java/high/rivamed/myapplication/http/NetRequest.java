@@ -234,6 +234,16 @@ public class NetRequest {
 		.params("branchCode", branchCode)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+   /**
+    * 库存盘点
+    */
+   public void startTimelyScan(String tCstInventoryDto,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_TIMELY_ONE).tag(tag)
+		.upJson(tCstInventoryDto)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
+
+
    private class MyCallBack extends StringCallback {
 
 
