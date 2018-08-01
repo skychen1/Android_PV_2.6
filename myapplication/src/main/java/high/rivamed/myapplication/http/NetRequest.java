@@ -71,6 +71,17 @@ public class NetRequest {
 		.execute(new MyCallBack(tag,netResult,true));
    }
 
+ /**
+    * 预注册
+    */
+   public void userLogin(String username,String password, Object tag, NetResult netResult) {
+
+	OkGo.<String>get(NetApi.URL_USER_LOGIN).tag(tag)
+		.params("username", username)
+		.params("password", password)
+		.execute(new MyCallBack(tag,netResult,true));
+   }
+
    /**
     * 获取耗材流水
     */

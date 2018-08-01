@@ -49,6 +49,8 @@ public interface NetApi {
    String URL_OPERATE_YC_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
    String URL_OPERATE_DB_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
+   //用户
+   String URL_USER_LOGIN  = MAIN_URL + "/rmApi/restLogin/login";//登录
 
 //   实时盘点
 //   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
