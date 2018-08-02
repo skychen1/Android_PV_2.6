@@ -55,5 +55,6 @@ public class Constants {
    public static final String SAVE_ACTIVATION_REGISTE  = "activationRegiste";//激活的状态存入
    public static final String SAVE_BRANCH_CODE  = "branchCode";//院区存入code
    public static final String SAVE_DEPT_CODE  = "deptCode";//科室存入code
+   public static final String SAVE_DEPT_NAME  = "deptName";//科室存入code
 
 }

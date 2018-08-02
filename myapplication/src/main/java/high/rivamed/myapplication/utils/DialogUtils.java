@@ -267,9 +267,9 @@ public class DialogUtils {
 	builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
 	   @Override
 	   public void getDialogDate(
-		   String branchCode, String deptCode, String storehouseCode, String operationRoomNo,
+		   String deptName,  String branchCode, String deptCode, String storehouseCode, String operationRoomNo,
 		   Dialog dialog) {
-		EventBusUtils.postSticky(new Event.dialogEvent(branchCode,deptCode,storehouseCode,operationRoomNo,dialog));
+		EventBusUtils.postSticky(new Event.dialogEvent(deptName,branchCode,deptCode,storehouseCode,operationRoomNo,dialog));
 	   }
 	});
 

@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.utils.SPUtils;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -56,9 +59,11 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
    }
 
    private void initData() {
+
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mRgGroup.setVisibility(View.VISIBLE);
 	mBaseTabLl.setVisibility(View.VISIBLE);
+	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
    }
 
    private void initListener() {

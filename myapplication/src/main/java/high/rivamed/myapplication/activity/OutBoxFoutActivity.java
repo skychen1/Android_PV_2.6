@@ -322,13 +322,13 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			}
 		   });
 	} else {//绑定患者
-	   //	   NetRequest.getInstance()
-	   //		   .putOperateYes(mTCstInventoryDtoJson, this, mShowLoading, new BaseResult() {
-	   //			@Override
-	   //			public void onSucceed(String result) {
-	   //			   startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
-	   //			}
-	   //		   });
+	   	   NetRequest.getInstance()
+	   		   .putOperateYes(mTCstInventoryDtoJson, this, mShowLoading, new BaseResult() {
+	   			@Override
+	   			public void onSucceed(String result) {
+	   			   startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
+	   			}
+	   		   });
 	}
    }
 

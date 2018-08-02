@@ -26,8 +26,11 @@ import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -127,7 +130,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment
 	mSearchTimeEnd = mContext.findViewById(R.id.search_time_end);
 	mSearchTimeStart = mContext.findViewById(R.id.search_time_start);
 	mSearchEt.setHint("请输入耗材名称、型号规格、操作人");
-
+	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
 	loadTopBoxSize();
    }
 

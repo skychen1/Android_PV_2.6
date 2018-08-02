@@ -23,7 +23,6 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.RegisteReturnBean;
-import high.rivamed.myapplication.bean.SnRecoverBean;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.TBaseThingDto;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -40,6 +39,7 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
@@ -93,26 +93,39 @@ public class RegisteFrag extends SimpleFragment {
    private int                                         dateType;
    private DeviceNameBean                              mNameBean;
    private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
-   private SnRecoverBean                               mSnRecoverBean;
+   private RegisteReturnBean                           mSnRecoverBean;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
 
 	if (event.dialog != null) {
-	   String s = mGson.toJson(addFromDate(event.branchCode, event.deptCode, event.storehouseCode,
-							   event.operationRoomNo));
+	   String s = mGson.toJson(
+		   addFromDate(event.deptName, event.branchCode, event.deptCode, event.storehouseCode,
+				   event.operationRoomNo));
 	   LogUtils.i(TAG, "激活的   " + s);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 	   setSaveRegister(s, true);
 	   event.dialog.dismiss();
 	}
 
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onRecoverEvent(SnRecoverBean event) {
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onRecoverEvent(RegisteReturnBean event) {
 	mSnRecoverBean = event;
+	String s = mGson.toJson(event);
+	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
+	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
+	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
+				mSnRecoverBean.getTbaseThing().getDeptName());
+	setRegiestDate(s);
+	setSaveRegister(s, true);
+
+	Log.i(TAG, "我是恢复的   " + s);
+	//	setSaveRegister(s, true);
    }
 
    public static RegisteFrag newInstance() {
@@ -133,12 +146,12 @@ public class RegisteFrag extends SimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
-
-	mFragRegisteNameEdit.setText("2.6柜子");
-	mFragRegisteModelEdit.setText("rivamed26");
-	mFragRegisteNumberEdit.setText("123456789");
-	mFragRegisteSeveripEdit.setText("192.168.2.32");
-	mFragRegistePortEdit.setText("8015");
+	Log.i(TAG,"SAVE_DEPT_NAME    "+  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
+	//	mFragRegisteNameEdit.setText("2.6柜子");
+	//	mFragRegisteModelEdit.setText("rivamed26");
+	//	mFragRegisteNumberEdit.setText("123456789");
+	//	mFragRegisteSeveripEdit.setText("192.168.2.32");
+	//	mFragRegistePortEdit.setText("8015");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
@@ -157,6 +170,7 @@ public class RegisteFrag extends SimpleFragment {
 	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
 		setRegiestDate(string);
+		Log.i(TAG, "原有的   " + string);
 		mFragmentBtnOne.setText("已激活");
 		mFragmentBtnOne.setEnabled(false);
 	   } else {
@@ -168,7 +182,11 @@ public class RegisteFrag extends SimpleFragment {
 		mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View v) {
-			DialogUtils.showRegisteDialog(mContext, _mActivity);
+			if (UIUtils.isFastDoubleClick()) {
+			   return;
+			} else {
+			   DialogUtils.showRegisteDialog(mContext, _mActivity);
+			}
 		   }
 		});
 	   }
@@ -181,11 +199,15 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
-		   String fromDate = mGson.toJson(addFromDate(null, null, null, null));
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			mFragmentBtnOne.setEnabled(false);
+			String fromDate = mGson.toJson(addFromDate(null, null, null, null, null));
+			Log.i(TAG, "fromDate   " + fromDate);
+			setSaveRegister(fromDate, false);//注册
+		   }
 
-		   //		   Log.i(TAG, "fromDate   " + fromDate);
-		   setSaveRegister(fromDate, false);//注册
 		   //		   addFromDate();
 		}
 	   });
@@ -197,7 +219,12 @@ public class RegisteFrag extends SimpleFragment {
    private void setRegiestDate(String string) {
 	RegisteReturnBean returnBean = mGson.fromJson(string, RegisteReturnBean.class);
 	List<RegisteReturnBean.TBaseDeviceVosBean> tBaseDeviceVos = returnBean.getTBaseDeviceVos();
-
+	RegisteReturnBean.TbaseThingBean tbaseThing = returnBean.getTbaseThing();
+	mFragRegisteNameEdit.setText(tbaseThing.getThingName());
+	mFragRegisteModelEdit.setText(tbaseThing.getThingType());
+	mFragRegisteNumberEdit.setText(tbaseThing.getSn());
+	mFragRegisteSeveripEdit.setText(tbaseThing.getServerIp());
+	mFragRegistePortEdit.setText(tbaseThing.getPortNumber());
 	List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac = new ArrayList<>();
 	List<TBaseDevices> mTBaseDevicesAll = new ArrayList<>();
 
@@ -253,6 +280,7 @@ public class RegisteFrag extends SimpleFragment {
 
    //提交预注册的数据
    private void setSaveRegister(String fromDate, boolean type) {
+	Log.i(TAG, "调用了几次");
 	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -267,7 +295,8 @@ public class RegisteFrag extends SimpleFragment {
 			mFragmentBtnOne.setEnabled(false);
 		   } else {
 			ToastUtils.showShort("注册成功！");
-
+			mFragmentBtnOne.setEnabled(true);
+			SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 			mFragmentBtnOne.setText("激 活");
 		   }
 
@@ -314,11 +343,12 @@ public class RegisteFrag extends SimpleFragment {
     * 预注册存入数据
     */
    private TBaseThingDto addFromDate(
-	   String branchCode, String deptCode, String storehouseCode, String operationRoomNo) {
+	   String deptName, String branchCode, String deptCode, String storehouseCode,
+	   String operationRoomNo) {
 
 	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
 	TBaseThingDto.TBaseThing tBaseThing = new TBaseThingDto.TBaseThing();//设备信息
-	List<high.rivamed.myapplication.bean.TBaseThingDto.TBaseDeviceVo> tBaseThingVos = new ArrayList<>();//柜子list
+	List<TBaseThingDto.TBaseDeviceVo> tBaseThingVos = new ArrayList<>();//柜子list
 
 	TBaseThingDto.HospitalInfoVo hospitalInfoVo = new TBaseThingDto.HospitalInfoVo();
 
@@ -326,6 +356,7 @@ public class RegisteFrag extends SimpleFragment {
 	hospitalInfoVo.setBranchCode(branchCode);
 	hospitalInfoVo.setStorehouseCode(storehouseCode);
 	hospitalInfoVo.setOperationRoomNo(operationRoomNo);
+	hospitalInfoVo.setDeptName(deptName);
 
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingType(mFragRegisteModelEdit.getText().toString().trim());
@@ -361,7 +392,8 @@ public class RegisteFrag extends SimpleFragment {
 		String gone_deviceCode = ((TextView) mRecyclerView2.getChildAt(x + 1)
 			.findViewById(R.id.gone_device_code)).getText().toString().trim();
 		LogUtils.i(TAG,
-			     "gone_dictid   " + gone_dictid + "   gone_devicetype   " + gone_devicetype);
+			     "gone_dictid   " + gone_dictid + "   gone_devicetype   " + gone_devicetype +
+			     "    gone_deviceCode   " + gone_deviceCode);
 		device.setDictId(gone_dictid);
 		device.setDeviceType(gone_devicetype);
 		device.setDeviceCode(gone_deviceCode);
@@ -406,26 +438,27 @@ public class RegisteFrag extends SimpleFragment {
 		}
 		if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
 		    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
-			ToastUtils.showShort("请先填写服务器IP和端口");
-		}else {
-		   String url = "http://"+mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
+		   ToastUtils.showShort("请先填写服务器IP和端口");
+		} else {
+		   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
 				    mFragRegistePortEdit.getText().toString().trim() + "/cst";
-		   Log.i(TAG,"url   "+url);
-		   NetRequest.getInstance().getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
-			@Override
-			public void onSucceed(String result) {
-			   Log.i("xxf", "result   " + result);
-			   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
-			   mNameList = mNameBean.getTBaseDeviceDictVos();
-			   mBaseDevices = generateData();
-			   initData();
-			}
+		   Log.i(TAG, "url   " + url);
+		   NetRequest.getInstance()
+			   .getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+				   Log.i("xxf", "result   " + result);
+				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
+				   mNameList = mNameBean.getTBaseDeviceDictVos();
+				   mBaseDevices = generateData();
+				   initData();
+				}
 
-			@Override
-			public void onError(String result) {
-			   ToastUtils.showShort("服务器异常，请检查网络！");
-			}
-		   });
+				@Override
+				public void onError(String result) {
+				   ToastUtils.showShort("服务器异常，请检查网络！");
+				}
+			   });
 		}
 
 		break;

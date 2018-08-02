@@ -43,8 +43,7 @@ public class RegisteActivity extends SimpleActivity {
    CircleImageView  mBaseTabIconRight;
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;
-   @BindView(R.id.registe_viewpager)
-   ViewPager        mRegisteViewpager;
+  public static ViewPager        mRegisteViewpager;
    private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证","数据恢复"};
    private RegistePagerAdapter mPagerAdapter;
 
@@ -55,6 +54,7 @@ public class RegisteActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mRegisteViewpager = mContext.findViewById(R.id.registe_viewpager);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("工程模式");
 	mBaseTabTvName.setText("退出  ");

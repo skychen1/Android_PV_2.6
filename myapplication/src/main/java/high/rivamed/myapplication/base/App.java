@@ -64,10 +64,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-//        CrashReport.initCrashReport(getApplicationContext(), "b1e233c8-c369-4dd6-9cd7-1573962f7ab2", true);
 
-        SPUtils.putString(this, "TestLoginName", "1");
-        SPUtils.putString(this,"TestLoginPass","1");
+        SPUtils.putString(this, "TestLoginName", "");
+        SPUtils.putString(this,"TestLoginPass","");
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();

@@ -80,9 +80,11 @@ public class Event {
 	public String storehouseCode;
 	public String operationRoomNo;
 	public String branchCode;
-	public dialogEvent( String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+	public String deptName;
+	public dialogEvent(String deptName, String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
 
 	   this.deptCode = deptCode;
+	   this.deptName = deptName;
 	   this.storehouseCode = storehouseCode;
 	   this.dialog = dialog;
 	   this.operationRoomNo = operationRoomNo;

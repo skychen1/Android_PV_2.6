@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -10,11 +11,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
-import high.rivamed.myapplication.bean.SnRecoverBean;
+import high.rivamed.myapplication.bean.RegisteReturnBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.activity.RegisteActivity.mRegisteViewpager;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -67,8 +70,10 @@ public class RegisteRecoverFrag extends SimpleFragment {
 	NetRequest.getInstance().getRecoverDate(sn, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		SnRecoverBean snRecoverBean = mGson.fromJson(result, SnRecoverBean.class);
-		EventBusUtils.post(snRecoverBean);
+		RegisteReturnBean snRecoverBean = mGson.fromJson(result, RegisteReturnBean.class);
+		Log.i("RegisteFrag","sn    "+result);
+		mRegisteViewpager.setCurrentItem(0);
+		EventBusUtils.postSticky(snRecoverBean);
 	   }
 	});
    }
