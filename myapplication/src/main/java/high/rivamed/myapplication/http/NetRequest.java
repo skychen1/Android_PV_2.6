@@ -54,9 +54,9 @@ public class NetRequest {
    /**
     * 预注册和激活的时候获取部件名称和ID
     */
-   public void getDeviceInfosDate(List<String> deviceTypes, Object tag, NetResult netResult) {
+   public void getDeviceInfosDate(String url,List<String> deviceTypes, Object tag, NetResult netResult) {
 
-	OkGo.<String>get(NetApi.URL_TEST_FINDDEVICE).tag(tag)
+	OkGo.<String>get(url+NetApi.URL_TEST_FINDDEVICE).tag(tag)
 		.addUrlParams("deviceTypes", deviceTypes)
 		.execute(new MyCallBack(tag,netResult,true));
    }
@@ -235,15 +235,39 @@ public class NetRequest {
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
    /**
-    * 库存盘点
+    * 盘点
     */
    public void startTimelyScan(String tCstInventoryDto,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
 	OkGo.<String>post(NetApi.URL_TIMELY_ONE).tag(tag)
 		.upJson(tCstInventoryDto)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+   /**
+    * 盘亏
+    */
+   public void getLossesDate(String tCstInventoryDto,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_TIMELY_LOSSES).tag(tag)
+		.upJson(tCstInventoryDto)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
 
+   /**
+    * 盘盈
+    */
+   public void getProfitDate(String tCstInventoryDto,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_TIMELY_PROFIT).tag(tag)
+		.upJson(tCstInventoryDto)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
 
+   /**
+    * 盘点后的详情
+    */
+   public void getDetailDate(String tCstInventoryDto,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_TIMELY_DETAIL).tag(tag)
+		.upJson(tCstInventoryDto)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
    private class MyCallBack extends StringCallback {
 
 

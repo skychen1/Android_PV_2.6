@@ -84,30 +84,31 @@ public class RegisteFrag extends SimpleFragment {
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
    int i = generateData().size();
-   private String                         mFootNameStr;
-   private String                         mFootIpStr;
-   private String                         mFootMacStr;
-   private String                         mHeadName;
-   private List<DeviceManager.DeviceInfo> mDeviceInfos;
-   private List<TBaseDevices>             mBaseDevices;
-	private int dateType;
-   private DeviceNameBean mNameBean;
+   private String                                      mFootNameStr;
+   private String                                      mFootIpStr;
+   private String                                      mFootMacStr;
+   private String                                      mHeadName;
+   private List<DeviceManager.DeviceInfo>              mDeviceInfos;
+   private List<TBaseDevices>                          mBaseDevices;
+   private int                                         dateType;
+   private DeviceNameBean                              mNameBean;
    private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
-   private SnRecoverBean mSnRecoverBean;
+   private SnRecoverBean                               mSnRecoverBean;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
 
-	if (event.dialog!=null) {
-	   String s = mGson.toJson(
-		   addFromDate(event.branchCode,event.deptCode, event.storehouseCode, event.operationRoomNo));
-	   LogUtils.i(TAG,"激活的   "+s);
-	   setSaveRegister(s,true);
+	if (event.dialog != null) {
+	   String s = mGson.toJson(addFromDate(event.branchCode, event.deptCode, event.storehouseCode,
+							   event.operationRoomNo));
+	   LogUtils.i(TAG, "激活的   " + s);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
+	   setSaveRegister(s, true);
 	   event.dialog.dismiss();
 	}
 
    }
-
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRecoverEvent(SnRecoverBean event) {
@@ -162,7 +163,7 @@ public class RegisteFrag extends SimpleFragment {
 		mFragmentBtnOne.setText("激 活");
 		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
 		setRegiestDate(string);
-LogUtils.i(TAG,"string   "+string);
+		LogUtils.i(TAG, "string   " + string);
 
 		mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		   @Override
@@ -181,10 +182,10 @@ LogUtils.i(TAG,"string   "+string);
 		@Override
 		public void onClick(View v) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
-		   String fromDate = mGson.toJson(addFromDate(null,null,null,null));
+		   String fromDate = mGson.toJson(addFromDate(null, null, null, null));
 
-		   Log.i(TAG, "fromDate   " + fromDate);
-		   setSaveRegister(fromDate,false);//注册
+		   //		   Log.i(TAG, "fromDate   " + fromDate);
+		   setSaveRegister(fromDate, false);//注册
 		   //		   addFromDate();
 		}
 	   });
@@ -197,8 +198,8 @@ LogUtils.i(TAG,"string   "+string);
 	RegisteReturnBean returnBean = mGson.fromJson(string, RegisteReturnBean.class);
 	List<RegisteReturnBean.TBaseDeviceVosBean> tBaseDeviceVos = returnBean.getTBaseDeviceVos();
 
-	List<TBaseDevices.tBaseDevices.partsmacBean>   mSmallmac = new ArrayList<>();
-	List<TBaseDevices>                             mTBaseDevicesAll = new ArrayList<>();
+	List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac = new ArrayList<>();
+	List<TBaseDevices> mTBaseDevicesAll = new ArrayList<>();
 
 	List<TBaseDevices.tBaseDevices.partsnameBean> deviceTypes = new ArrayList<>();//部件查询后的信息
 
@@ -210,7 +211,7 @@ LogUtils.i(TAG,"string   "+string);
 		mSmallmac.add(partsmacBean1);
 	   }
 	}
-	if (mNameList!= null) {
+	if (mNameList != null) {
 	   for (int f = 0; f < mNameList.size(); f++) {//第三层内部部件标识的数据
 		TBaseDevices.tBaseDevices.partsnameBean partsnameBean = new TBaseDevices.tBaseDevices.partsnameBean();
 		partsnameBean.setName(mNameList.get(f).getName());
@@ -222,13 +223,14 @@ LogUtils.i(TAG,"string   "+string);
 	}
 	for (int y = 0; y < tBaseDeviceVos.size(); y++) {//第一层数据
 	   RegisteReturnBean.TBaseDeviceVosBean tBaseDeviceVosBean = tBaseDeviceVos.get(y);
-	   List<TBaseDevices.tBaseDevices>    mTBaseDevicesSmall = new ArrayList<>();
+	   List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall = new ArrayList<>();
 	   TBaseDevices registeAddBean1 = new TBaseDevices();
 	   registeAddBean1.setBoxname(tBaseDeviceVosBean.getDeviceName());
 	   registeAddBean1.setBoxCode(tBaseDeviceVosBean.getDeviceCode());
 	   registeAddBean1.setList(mTBaseDevicesSmall);
 	   for (int x = 0; x < tBaseDeviceVosBean.getTaBaseDevices().size(); x++) {//第二层柜体内条目的数据
-		RegisteReturnBean.TBaseDeviceVosBean.TaBaseDevicesBean devicesBean = tBaseDeviceVosBean.getTaBaseDevices().get(x);
+		RegisteReturnBean.TBaseDeviceVosBean.TaBaseDevicesBean devicesBean = tBaseDeviceVosBean.getTaBaseDevices()
+			.get(x);
 		TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
 		registeBean1.setPartsmacName(deviceTypes);
 		registeBean1.setPartsname(devicesBean.getDeviceName());
@@ -238,8 +240,6 @@ LogUtils.i(TAG,"string   "+string);
 		registeBean1.setDictId(devicesBean.getDictId());
 		registeBean1.setDeviceType(devicesBean.getDeviceType());
 		registeBean1.setDeviceCodes(devicesBean.getDeviceCode());
-
-
 
 		mTBaseDevicesSmall.add(registeBean1);
 	   }
@@ -252,7 +252,7 @@ LogUtils.i(TAG,"string   "+string);
    }
 
    //提交预注册的数据
-   private void setSaveRegister(String fromDate,boolean type) {
+   private void setSaveRegister(String fromDate, boolean type) {
 	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -261,19 +261,22 @@ LogUtils.i(TAG,"string   "+string);
 		if (registeReturnBean.isOperateSuccess()) {
 		   if (type) {
 			SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
+
 			ToastUtils.showShort("设备已激活！");
 			mFragmentBtnOne.setText("已激活");
 			mFragmentBtnOne.setEnabled(false);
-		   }else {
+		   } else {
 			ToastUtils.showShort("注册成功！");
+
 			mFragmentBtnOne.setText("激 活");
 		   }
 
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
-		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, registeReturnBean.getTbaseThing().getSn());
-		   SPUtils.putString(UIUtils.getContext(), THING_CODE, registeReturnBean.getTbaseThing().getThingCode());
-		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, "22");
-		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, "22");
+		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER,
+					   registeReturnBean.getTbaseThing().getSn());
+		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
+					   registeReturnBean.getTbaseThing().getThingCode());
+
 		   putDbDate(registeReturnBean);
 		   initData();
 		}
@@ -310,7 +313,8 @@ LogUtils.i(TAG,"string   "+string);
    /**
     * 预注册存入数据
     */
-   private TBaseThingDto addFromDate(String branchCode,String deptCode,String storehouseCode,String operationRoomNo) {
+   private TBaseThingDto addFromDate(
+	   String branchCode, String deptCode, String storehouseCode, String operationRoomNo) {
 
 	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
 	TBaseThingDto.TBaseThing tBaseThing = new TBaseThingDto.TBaseThing();//设备信息
@@ -323,21 +327,20 @@ LogUtils.i(TAG,"string   "+string);
 	hospitalInfoVo.setStorehouseCode(storehouseCode);
 	hospitalInfoVo.setOperationRoomNo(operationRoomNo);
 
-
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingType(mFragRegisteModelEdit.getText().toString().trim());
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
 	tBaseThing.setServerIp(mFragRegisteSeveripEdit.getText().toString().trim());
 	tBaseThing.setPortNumber(mFragRegistePortEdit.getText().toString().trim());
-	tBaseThing.setThingCode(SPUtils.getString(mContext,THING_CODE));
+	tBaseThing.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.settBaseThing(tBaseThing);
 
 	for (int i = 0; i < mRecyclerview.getChildCount(); i++) {
 	   TBaseThingDto.TBaseDeviceVo tBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
 	   mHeadName = ((EditText) mRecyclerview.getChildAt(i)
 		   .findViewById(R.id.head_left_name)).getText().toString().trim();
-	  String boxCode =((TextView) mRecyclerview.getChildAt(i)
+	   String boxCode = ((TextView) mRecyclerview.getChildAt(i)
 		   .findViewById(R.id.gone_box_code)).getText().toString().trim();
 	   tBaseThingVoBean.setDeviceName(mHeadName);
 	   tBaseThingVoBean.setDeviceCode(boxCode);
@@ -357,7 +360,8 @@ LogUtils.i(TAG,"string   "+string);
 			.findViewById(R.id.gone_devicetype)).getText().toString().trim();
 		String gone_deviceCode = ((TextView) mRecyclerView2.getChildAt(x + 1)
 			.findViewById(R.id.gone_device_code)).getText().toString().trim();
-		LogUtils.i(TAG,"gone_dictid   "+gone_dictid+"   gone_devicetype   "+gone_devicetype);
+		LogUtils.i(TAG,
+			     "gone_dictid   " + gone_dictid + "   gone_devicetype   " + gone_devicetype);
 		device.setDictId(gone_dictid);
 		device.setDeviceType(gone_devicetype);
 		device.setDeviceCode(gone_deviceCode);
@@ -400,18 +404,29 @@ LogUtils.i(TAG,"string   "+string);
 		   Log.i("xxf", "getRemoteIP   " + mDeviceInfos.get(i).getRemoteIP());
 		   Log.i("xxf", "getDeviceType   " + mDeviceInfos.get(i).getDeviceType().toString());
 		}
-		NetRequest.getInstance().getDeviceInfosDate(strings,_mActivity,new BaseResult(){
-		   @Override
-		   public void onSucceed(String result) {
-			Log.i("xxf", "result   " + result);
-			mNameBean = mGson.fromJson(result, DeviceNameBean.class);
-			mNameList = mNameBean.getTBaseDeviceDictVos();
-			mBaseDevices = generateData();
-			initData();
-		   }
-		});
+		if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
+		    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
+			ToastUtils.showShort("请先填写服务器IP和端口");
+		}else {
+		   String url = "http://"+mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
+				    mFragRegistePortEdit.getText().toString().trim() + "/cst";
+		   Log.i(TAG,"url   "+url);
+		   NetRequest.getInstance().getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
+			@Override
+			public void onSucceed(String result) {
+			   Log.i("xxf", "result   " + result);
+			   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
+			   mNameList = mNameBean.getTBaseDeviceDictVos();
+			   mBaseDevices = generateData();
+			   initData();
+			}
 
-		Log.i("xxf", "mDeviceInfos==size   " + mDeviceInfos.size());
+			@Override
+			public void onError(String result) {
+			   ToastUtils.showShort("服务器异常，请检查网络！");
+			}
+		   });
+		}
 
 		break;
 
@@ -439,7 +454,7 @@ LogUtils.i(TAG,"string   "+string);
 		mSmallmac.add(partsmacBean1);
 	   }
 	}
-	if (mNameList!= null) {
+	if (mNameList != null) {
 	   for (int f = 0; f < mNameList.size(); f++) {//第三层内部部件标识的数据
 		TBaseDevices.tBaseDevices.partsnameBean partsnameBean = new TBaseDevices.tBaseDevices.partsnameBean();
 		partsnameBean.setName(mNameList.get(f).getName());
@@ -457,7 +472,7 @@ LogUtils.i(TAG,"string   "+string);
 	}
 	for (int y = 0; y < 1; y++) {//第一层数据
 
-	   if (mSmallAdapter==null &&y==0) {
+	   if (mSmallAdapter == null && y == 0) {
 		registeAddBean1.setBoxname("1号柜");
 	   } else {
 		registeAddBean1.setBoxname("");

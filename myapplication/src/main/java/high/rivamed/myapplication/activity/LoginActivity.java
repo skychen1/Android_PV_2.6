@@ -1,16 +1,22 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,6 +35,9 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 
 import org.litepal.LitePal;
 
@@ -89,8 +98,40 @@ public class LoginActivity extends SimpleActivity {
 	return R.layout.activity_login;
    }
 
+   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+      //-----检测分辨率---------------------------------------
+	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+	DisplayMetrics dm = new DisplayMetrics();
+	wm.getDefaultDisplay().getMetrics(dm);
+	Point size = new Point();
+	size.x = dm.widthPixels;
+	size.y = dm.heightPixels;
+
+	Log.d("fbl", size.x + " , " + size.y + " , " );
+
+	//---------------------------------------------------
+
+	OkGo.<String>post("https://192.168.10.231:8443/cas/v1/tickets").tag(this).
+	params("username", "adminUM").
+	params("password", "000000")
+	.execute(new StringCallback() {
+	   @Override
+	   public void onSuccess(Response<String> response) {
+		Log.i("fff", "response.body()    " + response.body());
+		Log.i("fff","response.code()    "+response.code());
+		Log.i("fff","response.message()    "+response.message());
+	   }
+
+	   @Override
+	   public void onError(Response<String> response) {
+		Log.i("fff", "response.body()    " + response.body());
+		Log.i("fff","response.code()    "+response.code());
+		Log.i("fff","response.message()    "+response.message());
+	   }
+	});
+
 
 
 	//创建数据库表

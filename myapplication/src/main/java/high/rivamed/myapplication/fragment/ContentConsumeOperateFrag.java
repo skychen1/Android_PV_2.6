@@ -70,7 +70,8 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  */
 
 public class ContentConsumeOperateFrag extends BaseSimpleFragment {
-String TAG ="ContentConsumeOperateFrag";
+
+   String TAG = "ContentConsumeOperateFrag";
    @BindView(R.id.consume_openall_rv)
    RecyclerView mConsumeOpenallRv;
    @BindView(R.id.consume_openall_top)
@@ -106,18 +107,21 @@ String TAG ="ContentConsumeOperateFrag";
    @BindView(R.id.consume_down)
    LinearLayout mConsumeDown;
    private LoadingDialog.Builder mShowLoading;
-   private HomeFastOpenAdapter                mHomeFastOpenTopAdapter;
-   private       HomeFastOpenAdapter                mHomeFastOpenDownAdapter;
+   private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
+   private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
 
-   private       String                             eth002DeviceId;
-   private       String                             uhfDeviceId;
-   private       NoDialog.Builder                   mBuilder;
-   private       List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
-   private       LoadingDialog.Builder              mBuilder1;
-   private       HashMap<String, String>            mReaderMap;
+   private String                             eth002DeviceId;
+   private String                             uhfDeviceId;
+   private NoDialog.Builder                   mBuilder;
+   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices2;
+   private LoadingDialog.Builder              mBuilder1;
+   private HashMap<String, String>            mReaderMap;
 
-   public static List<String>                       mReaderIdList;
-   private int mRbKey;
+   public static List<String> mReaderIdList;
+   private       int          mRbKey;
+   private       BoxSizeBean  mBoxSizeBean;
+   private       BoxSizeBean  mBoxSizeBean2;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -201,11 +205,11 @@ String TAG ="ContentConsumeOperateFrag";
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(success, "柜门已开"));
-		}else {
-		   if (mShowLoading!=null){
+		} else {
+		   if (mShowLoading != null) {
 			mShowLoading.mDialog.dismiss();
 		   }
-//		   ToastUtils.showShort("开门异常，请重试！");
+		   //		   ToastUtils.showShort("开门异常，请重试！");
 		}
 	   }
 
@@ -221,11 +225,10 @@ String TAG ="ContentConsumeOperateFrag";
 		   //			mReaderMap.put(device_id, box_id);
 		   //		   }
 
-
 		   for (String readerid : mReaderIdList) {
 			int ret = DeviceManager.getInstance().StartUhfScan(readerid);
-		      if (mReaderIdList==null||ret==100){
-		         mShowLoading.mDialog.dismiss();
+			if (mReaderIdList == null || ret == 100) {
+			   mShowLoading.mDialog.dismiss();
 			}
 			LogUtils.i(TAG, "开始扫描了状态    " + ret);
 
@@ -235,7 +238,7 @@ String TAG ="ContentConsumeOperateFrag";
 		   //		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   //		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
 		   //		   mContext.startActivity(intent2);
-		}else {
+		} else {
 		   mShowLoading.mDialog.dismiss();
 		}
 	   }
@@ -247,7 +250,7 @@ String TAG ="ContentConsumeOperateFrag";
 	   @Override
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-	      if (!success){
+		if (!success) {
 		   mShowLoading.mDialog.dismiss();
 		   ToastUtils.showShort("扫描失败，请重试！");
 		}
@@ -305,57 +308,60 @@ String TAG ="ContentConsumeOperateFrag";
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
 	LogUtils.i(TAG, "mRbKey    " + mRbKey);
-	if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
+	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
+	    mRbKey == 7 || mRbKey == 8) {
 	   tCstInventoryDto.setOperation(mRbKey);
-	}else {
+	} else {
 	   tCstInventoryDto.setOperation(mRbKey);
 	}
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 
-	   NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading,new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   Log.i(TAG, "result    " + result);
-		   TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		   LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos()==null));
-		   if (cstInventoryDto.gettCstInventoryVos()==null||cstInventoryDto.gettCstInventoryVos().size()<1){
-			mBuilder.mDialog.dismiss();
-			mShowLoading.mDialog.dismiss();
-			ToastUtils.showShort("未扫描到操作的耗材");
-		   }else {
-			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
-			EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-			if (cstInventoryDto.getType()==0){//放入
-			   if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
-				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-				mContext.startActivity(intent2);
-				EventBusUtils.postSticky(new Event.EventAct("inout"));
-				EventBusUtils.postSticky(cstInventoryDto);
-			   }else {
-				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-				mContext.startActivity(intent2);
-				EventBusUtils.postSticky(new Event.EventAct("all"));
-				EventBusUtils.postSticky(cstInventoryDto);
-			   }
-			}else {//拿出
-			   if (mRbKey==3||mRbKey==2||mRbKey==9||mRbKey==11||mRbKey==10||mRbKey==7||mRbKey==8){
-			      Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-				mContext.startActivity(intent2);
-				EventBusUtils.postSticky(new Event.EventAct("inout"));
-				EventBusUtils.postSticky(cstInventoryDto);
-			   }else {
-				mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
-				EventBusUtils.postSticky(cstInventoryDto);
-			   }
-
+	NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		Log.i(TAG, "result    " + result);
+		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
+		if (cstInventoryDto.gettCstInventoryVos() == null ||
+		    cstInventoryDto.gettCstInventoryVos().size() < 1) {
+		   mBuilder.mDialog.dismiss();
+		   mShowLoading.mDialog.dismiss();
+		   ToastUtils.showShort("未扫描到操作的耗材");
+		} else {
+		   LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
+		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		   if (cstInventoryDto.getType() == 0) {//放入
+			if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
+			    mRbKey == 7 || mRbKey == 8) {
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent2);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   EventBusUtils.postSticky(cstInventoryDto);
+			} else {
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent2);
+			   EventBusUtils.postSticky(new Event.EventAct("all"));
+			   EventBusUtils.postSticky(cstInventoryDto);
+			}
+		   } else {//拿出
+			if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
+			    mRbKey == 7 || mRbKey == 8) {
+			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+			   mContext.startActivity(intent2);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   EventBusUtils.postSticky(cstInventoryDto);
+			} else {
+			   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
+			   EventBusUtils.postSticky(cstInventoryDto);
 			}
 
 		   }
 
 		}
-	   });
 
+	   }
+	});
 
    }
 
@@ -370,8 +376,10 @@ String TAG ="ContentConsumeOperateFrag";
 	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getTbaseDevices();
+		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+		mBoxSizeBean2 = mGson.fromJson(result, BoxSizeBean.class);
+		mTbaseDevices2 = mBoxSizeBean2.getTbaseDevices();//顶部数据
+		mTbaseDevices = mBoxSizeBean.getTbaseDevices();
 		BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
 		tbaseDevicesBean.setDeviceName("全部开柜");
 		mTbaseDevices.add(0, tbaseDevicesBean);
@@ -396,16 +404,28 @@ String TAG ="ContentConsumeOperateFrag";
 
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-	mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-									  mTbaseDevices);
+
+	if (mTbaseDevices2.size() <= 1) {
+	   mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
+									     mTbaseDevices2);
+	} else {
+	   mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
+									     mTbaseDevices);
+	}
+
 	mConsumeOpenallRv.setLayoutManager(layoutManager);
 	mConsumeOpenallRv.setAdapter(mHomeFastOpenTopAdapter);
 
 	mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		mRbKey=-1;
-		openDoor(position);
+		mRbKey = -1;
+		if (mTbaseDevices2.size() <= 1) {
+		   openDoor(position, "top", mTbaseDevices2);
+		} else {
+		   openDoor(position, "down", mTbaseDevices);
+		}
+
 		//		DeviceManager.getInstance().OpenDoor("xxx");
 		//		if (position == 0){
 		//
@@ -452,6 +472,7 @@ String TAG ="ContentConsumeOperateFrag";
 	});
 	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
 	layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+
 	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
 									   mTbaseDevices);
 	mConsumeDownRv.setLayoutManager(layoutManager2);
@@ -467,43 +488,43 @@ String TAG ="ContentConsumeOperateFrag";
 			case R.id.content_rb_ly:
 			   mRbKey = 3;
 			   ToastUtils.showShort("领用！");//拿出
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
 			   mRbKey = 2;
 			   ToastUtils.showShort("入库！");//拿入
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yc:
 			   mRbKey = 9;
 			   ToastUtils.showShort("移出！");//拿出
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tb:
 			   mRbKey = 11;
 			   ToastUtils.showShort("调拨！");//拿出
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yr:
 			   mRbKey = 10;
 			   ToastUtils.showShort("移入！");//拿入
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihui:
 			   mRbKey = 7;
 			   ToastUtils.showShort("退回！");//拿入
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihuo:
 			   mRbKey = 8;
 			   ToastUtils.showShort("退货！");//拿出
-			   openDoor(position);
+			   openDoor(position, "down", mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 		   }
@@ -512,52 +533,72 @@ String TAG ="ContentConsumeOperateFrag";
 	});
    }
 
-   private void openDoor(int position) {
+   private void openDoor(
+	   int position, String type, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	mShowLoading = DialogUtils.showLoading(mContext);
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-	if (position == 0) {
-	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
-		   .find(BoxIdBean.class);
-	   mReaderMap = new HashMap<>();
-	   for (BoxIdBean boxIdBean : boxIdBeans) {
-		String device_id = boxIdBean.getDevice_id();
-		String box_id = boxIdBean.getBox_id();
-		mReaderMap.put(device_id, box_id);
-	   }
-	   for (int i=0;i<eth002DeviceIdList.size();i++){
-		DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
-	   }
-	} else {
-	   BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
-	   String deviceCode = devicesBean.getDeviceCode();
-	   LogUtils.i(TAG, "deviceCode   " + deviceCode + " READER_TYPE  " + READER_TYPE);
-	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode,
-								    READER_TYPE).find(BoxIdBean.class);
-
-	   if (mReaderIdList != null) {
-		mReaderIdList.clear();
-	   } else {
-		mReaderIdList = new ArrayList<>();
-	   }
-	   for (BoxIdBean boxIdBean : boxIdBeans) {
-		String device_id = boxIdBean.getDevice_id();
-		LogUtils.i(TAG, "device_id   " + device_id);
-		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
-		for (int i=0;i<mReaderDeviceId.size();i++){
-		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
-		   if (mReaderDeviceId.get(i).equals(device_id)){
-			mReaderIdList.add(device_id);
-		   }
+	if (type.equals("down")) {//第一个为全部开柜
+	   if (position == 0) {
+		List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
+			.find(BoxIdBean.class);
+		mReaderMap = new HashMap<>();
+		for (BoxIdBean boxIdBean : boxIdBeans) {
+		   String device_id = boxIdBean.getDevice_id();
+		   String box_id = boxIdBean.getBox_id();
+		   mReaderMap.put(device_id, box_id);
 		}
-	   }
-	   LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
-	   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-		if ((position - 1) == i) {
-		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		}
+	   } else {
+		oneOpenBox(position, type, mTbaseDevices);
 	   }
+	} else {//只有一个柜子
+	   oneOpenBox(position, type, mTbaseDevices);
+	}
+
+   }
+
+   private void oneOpenBox(
+	   int position, String type, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
+	String deviceCode = devicesBean.getDeviceCode();
+	LogUtils.i(TAG, "deviceCode   " + deviceCode + " READER_TYPE  " + READER_TYPE);
+	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode, READER_TYPE)
+		.find(BoxIdBean.class);
+
+	if (mReaderIdList != null) {
+	   mReaderIdList.clear();
+	} else {
+	   mReaderIdList = new ArrayList<>();
+	}
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String device_id = boxIdBean.getDevice_id();
+	   LogUtils.i(TAG, "device_id   " + device_id);
+	   LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
+	   for (int i = 0; i < mReaderDeviceId.size(); i++) {
+		LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
+		if (mReaderDeviceId.get(i).equals(device_id)) {
+		   mReaderIdList.add(device_id);
+		}
+	   }
+	}
+	LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+	   if (type.equals("down")) {//第一个为全部开柜
+		if ((position - 1) == i) {
+		   LogUtils.i(TAG,
+				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+		}
+	   } else {
+
+		LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+
+	   }
+
 	}
    }
 

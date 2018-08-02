@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.SocketRightBean;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,7 +25,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class StockRightAdapter
-	extends BaseQuickAdapter<SocketRightBean.TCstInventoryVosBean, BaseViewHolder> {
+	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
 
    private TextView mSeven_one;
    private TextView mSeven_two;
@@ -37,13 +37,13 @@ public class StockRightAdapter
    private TextView mSeven_eight;
 
    public StockRightAdapter(
-	   int layoutResId, @Nullable List<SocketRightBean.TCstInventoryVosBean> data) {
+	   int layoutResId, @Nullable List<TCstInventoryVo>  data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, SocketRightBean.TCstInventoryVosBean item) {
+	   BaseViewHolder helper, TCstInventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {

@@ -153,6 +153,8 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		deviceCode = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceCode();
 	   }
 	   mStockLeftAlltop.setVisibility(View.VISIBLE);
+	   mBuilder.mDialog.dismiss();
+
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, deviceCode);
 
 	}

@@ -44,8 +44,8 @@ import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.RunWateBean;
-import high.rivamed.myapplication.bean.SocketLeftDownBean;
-import high.rivamed.myapplication.bean.SocketRightBean;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -142,15 +142,15 @@ public class PublicTimelyFrag extends SimpleFragment {
    private int                 mType_size;
    private String              mType_page;
    private String              mDeviceCode;
-   private SocketLeftDownBean  mLeftDownBean;
+   private TCstInventoryDto  mLeftDownBean;
    List<String> titeleList = null;
-   private int                                           mStopFlag;
-   private SocketLeftDownBean                            mMiddleBean;
-   private List<SocketLeftDownBean.TCstInventoryVosBean> mTCstInventoryVos;
-   private StockLeftDownAdapter                          mDownAdapter;
-   private String                                        mTrim;
-   private List<SocketRightBean.TCstInventoryVosBean>    mTCstStockRightList;
-   private StockRightAdapter                             mRightAdapter;
+   private int                        mStopFlag;
+   private TCstInventoryDto           mTCstInventoryDto;
+   private List<TCstInventoryVo>      mTCstInventoryVos;
+   private StockLeftDownAdapter       mDownAdapter;
+   private String                     mTrim;
+   private List<TCstInventoryVo>      mTCstStockRightList;
+   private StockRightAdapter          mRightAdapter;
    private List<RunWateBean.RowsBean> mWateBeanRows;
 
    /**
@@ -212,7 +212,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mStockSearch.setVisibility(View.VISIBLE);
 		mStockTimelyLl.setVisibility(View.VISIBLE);
 		mRightTop.setVisibility(View.GONE);
-		Log.i("ccc", "ssfsfsf:  " + mDeviceCode );
+		Log.i("ccc", "ssfsfsf:  " + mDeviceCode);
 
 		getMiddleDate(mDeviceCode, mSearchEt);
 
@@ -224,7 +224,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	} else if (mType_size == SIX) {
 	   if (mType_page.equals(TYPE_TIMELY)) {
 
-	      getTimelyDate(mDeviceCode);
+		getTimelyDate(mDeviceCode);
 
 	   }
 	} else if (mType_size == SEVEN) {
@@ -236,8 +236,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		titeleList = Arrays.asList(array);
 		mSize = array.length;
 	   }
-	} else if (mType_size == EIGHT &&
-		     ( mType_page.equals(STYPE_STOCK_RIGHT))) {
+	} else if (mType_size == EIGHT && (mType_page.equals(STYPE_STOCK_RIGHT))) {
 
 	   mRightTop.setVisibility(View.GONE);
 	   mRelativeLayout.setVisibility(View.GONE);
@@ -276,31 +275,31 @@ public class PublicTimelyFrag extends SimpleFragment {
 	//各个表格不同区分
 	if (mSize == SIX) {
 	   if (mType_page.equals(TYPE_TIMELY)) {//实时盘点
-//
-//		mLayout = R.layout.item_realtime_six_layout;
-//		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_six_title_layout,
-//								    (ViewGroup) mLinearLayout.getParent(), false);
-//		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-//		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-//		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-//		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-//		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-//		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-//
-//		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, TYPE_TIMELY);
-//
-//		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//		   @Override
-//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
-//		   }
-//		});
-//		mHeadView.setBackgroundResource(R.color.bg_green);
-//		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-//		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-//		mRefreshLayout.setEnableAutoLoadMore(true);
-//		mRecyclerview.setAdapter(mPublicAdapter);
-//		mLinearLayout.addView(mHeadView);
+		//
+		//		mLayout = R.layout.item_realtime_six_layout;
+		//		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_six_title_layout,
+		//								    (ViewGroup) mLinearLayout.getParent(), false);
+		//		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+		//		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+		//		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+		//		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+		//		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+		//		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+		//
+		//		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, TYPE_TIMELY);
+		//
+		//		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+		//		   @Override
+		//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		//			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
+		//		   }
+		//		});
+		//		mHeadView.setBackgroundResource(R.color.bg_green);
+		//		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+		//		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+		//		mRefreshLayout.setEnableAutoLoadMore(true);
+		//		mRecyclerview.setAdapter(mPublicAdapter);
+		//		mLinearLayout.addView(mHeadView);
 	   } else {
 		mLayout = R.layout.item_frg_six_layout;
 		mHeadView = getLayoutInflater().inflate(R.layout.item_frg_six_title_layout,
@@ -320,27 +319,27 @@ public class PublicTimelyFrag extends SimpleFragment {
 	   }
 
 	} else if (mSize == SEVEN) {
-//	   	   if (mType_page.equals(TYPE_TIMELY)) {
-//	   		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
-//	   		mLayout = R.layout.item_realtime_seven_layout;
-//	   		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
-//	   								    (ViewGroup) mLinearLayout.getParent(), false);
-//	   		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-//	   		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-//	   		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
-//
-//	   		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//	   		   @Override
-//	   		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//	   			Log.i("BaseQuickAdapter", "mPublicAdapter");
-//	   		   }
-//	   		});
-//	   	   } else
+	   //	   	   if (mType_page.equals(TYPE_TIMELY)) {
+	   //	   		Log.i("BaseQuickAdapter", "mType_page   " + SEVEN);
+	   //	   		mLayout = R.layout.item_realtime_seven_layout;
+	   //	   		mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_seven_title_layout,
+	   //	   								    (ViewGroup) mLinearLayout.getParent(), false);
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	   //	   		((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	   //	   		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData7(), mSize);
+	   //
+	   //	   		mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   //	   		   @Override
+	   //	   		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+	   //	   			Log.i("BaseQuickAdapter", "mPublicAdapter");
+	   //	   		   }
+	   //	   		});
+	   //	   	   } else
 	   if (mType_page.equals(STYPE_FORM)) {
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 			LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -380,46 +379,44 @@ public class PublicTimelyFrag extends SimpleFragment {
 
 	} else if (mSize == EIGHT && (mType_page.equals(TYPE_RUNWATE))) {
 	   Log.i("BaseQuickAdapter", "mType_page   " + EIGHT);
-//	   mLayout = R.layout.item_runwate_eight_layout;
-//	   mHeadView = getLayoutInflater().inflate(R.layout.item_runwate_eight_title_layout,
-//								 (ViewGroup) mLinearLayout.getParent(), false);
-//	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
-//	   //	   if (mType_page.equals(STYPE_STOCK_RIGHT)) {
-//	   //		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData82(), mSize,
-//	   //								     STYPE_STOCK_RIGHT);
-//	   //	   } else {
-//	   mPublicAdapter = new TimelyPublicAdapter(mLayout, genData8(), mSize);
-//	   //	   }
-//	   mHeadView.setBackgroundResource(R.color.bg_green);
-//	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-//	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-//	   mRefreshLayout.setEnableAutoLoadMore(true);
-//	   mRecyclerview.setAdapter(mPublicAdapter);
-//	   mLinearLayout.addView(mHeadView);
+	   //	   mLayout = R.layout.item_runwate_eight_layout;
+	   //	   mHeadView = getLayoutInflater().inflate(R.layout.item_runwate_eight_title_layout,
+	   //								 (ViewGroup) mLinearLayout.getParent(), false);
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	   //	   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+	   //	   //	   if (mType_page.equals(STYPE_STOCK_RIGHT)) {
+	   //	   //		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData82(), mSize,
+	   //	   //								     STYPE_STOCK_RIGHT);
+	   //	   //	   } else {
+	   //	   mPublicAdapter = new TimelyPublicAdapter(mLayout, genData8(), mSize);
+	   //	   //	   }
+	   //	   mHeadView.setBackgroundResource(R.color.bg_green);
+	   //	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	   //	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   //	   mRefreshLayout.setEnableAutoLoadMore(true);
+	   //	   mRecyclerview.setAdapter(mPublicAdapter);
+	   //	   mLinearLayout.addView(mHeadView);
 	}
 
    }
 
    /**
     * 获取实时盘点的数据
+    *
     * @param deviceCode
     */
    private void getTimelyDate(String deviceCode) {
 
-
-
 	String str = "3";
 	mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + str + "</font>"));
 	String str1 = "99";
-	mTimelyReality.setText(
-		Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
+	mTimelyReality.setText(Html.fromHtml("实际扫描数：" + "<font color='#F5222D'>" + str1 + "</font>"));
 	mTimelyBook.setText("账面库存数：" + SIX);
 	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
 	titeleList = Arrays.asList(array);
@@ -461,54 +458,42 @@ public class PublicTimelyFrag extends SimpleFragment {
 	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	NetRequest.getInstance()
-		.getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			mLeftDownBean = mGson.fromJson(result, SocketLeftDownBean.class);
-			List<SocketLeftDownBean.TCstInventoryVosBean> inventoryVos = mLeftDownBean.getTCstInventoryVos();
-			if (inventoryVos != null) {
+	NetRequest.getInstance().getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		mLeftDownBean = mGson.fromJson(result, TCstInventoryDto.class);
+		List<TCstInventoryVo> inventoryVos = mLeftDownBean.gettCstInventoryVos();
+		if (inventoryVos != null) {
 
-			   mLayout = R.layout.item_stockmid_five_layout;
-			   mHeadView = LayoutInflater.from(_mActivity)
-				   .inflate(R.layout.item_stockmid_five_title_layout,
-						(ViewGroup) mLinearLayout.getParent(), false);
-			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-			   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-				   titeleList.get(2));
-			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-				   titeleList.get(3));
-			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-				   titeleList.get(4));
-			   StockLeftDownAdapter mPublicAdapter = new StockLeftDownAdapter(mLayout,
-														inventoryVos,
-														mSize);
-			   mPublicAdapter.setOnItemClickListener(
-				   new BaseQuickAdapter.OnItemClickListener() {
-					@Override
-					public void onItemClick(
-						BaseQuickAdapter adapter, View view, int position) {
-					   mContext.startActivity(
-						   new Intent(mContext, StockMidTypeActivity.class));
-					   SocketLeftDownBean.TCstInventoryVosBean vosBean = inventoryVos
-						   .get(position);
-					   vosBean.setName(vosBean.getCstName());
-					   vosBean.setType(vosBean.getCstSpec());
-					   vosBean.setSize(vosBean.getCount());
-					   EventBusUtils.postSticky(vosBean);
-					}
-				   });
-			   mHeadView.setBackgroundResource(R.color.bg_green);
-			   mRecyclerview.addItemDecoration(
-				   new DividerItemDecoration(_mActivity, VERTICAL));
-			   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
-			   mRefreshLayout.setEnableAutoLoadMore(true);
-			   mRecyclerview.setAdapter(mPublicAdapter);
-			   mLinearLayout.addView(mHeadView);
+		   mLayout = R.layout.item_stockmid_five_layout;
+		   mHeadView = LayoutInflater.from(_mActivity)
+			   .inflate(R.layout.item_stockmid_five_title_layout,
+					(ViewGroup) mLinearLayout.getParent(), false);
+		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+		   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+		   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+		   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+		   StockLeftDownAdapter mPublicAdapter = new StockLeftDownAdapter(mLayout, inventoryVos,
+													mSize);
+		   mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClick(
+				BaseQuickAdapter adapter, View view, int position) {
+			   mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
+			   TCstInventoryVo vosBean = inventoryVos.get(position);
+			   EventBusUtils.postSticky(vosBean);
 			}
-		   }
-		});
+		   });
+		   mHeadView.setBackgroundResource(R.color.bg_green);
+		   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
+		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
+		   mRefreshLayout.setEnableAutoLoadMore(true);
+		   mRecyclerview.setAdapter(mPublicAdapter);
+		   mLinearLayout.addView(mHeadView);
+		}
+	   }
+	});
    }
 
    /**
@@ -544,24 +529,24 @@ public class PublicTimelyFrag extends SimpleFragment {
 		switch (checkedId) {
 		   case R.id.stock_left_all://全部
 			mStopFlag = -1;
-			mMiddleBean = null;
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode );
+			mTCstInventoryDto = null;
+			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 			break;
 		   case R.id.stock_left_guoqi:
 			mStopFlag = 0;
-			mMiddleBean = null;
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode );
+			mTCstInventoryDto = null;
+			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 			break;
 		   case R.id.stock_left_jinqi:
 			mStopFlag = 1;
-			mMiddleBean = null;
+			mTCstInventoryDto = null;
 			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 			break;
 		   case R.id.stock_left_zhengchang:
 			mStopFlag = 4;
-			mMiddleBean = null;
+			mTCstInventoryDto = null;
 			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 			break;
 		}
@@ -577,16 +562,19 @@ public class PublicTimelyFrag extends SimpleFragment {
 		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
+
 			if (mTCstInventoryVos != null) {
 			   mTCstInventoryVos.clear();
-			   mMiddleBean = mGson.fromJson(result, SocketLeftDownBean.class);
-			   List<SocketLeftDownBean.TCstInventoryVosBean> tCstInventoryVos = mMiddleBean.getTCstInventoryVos();
+			   //			   mTCstInventoryDto = mGson.fromJson(result, SocketLeftDownBean.class);
+			   mTCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+
+			   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
 			   mTCstInventoryVos.addAll(tCstInventoryVos);
 			   ArrayList<String> strings = new ArrayList<>();
 			   int SIZE = 0;
-			   for (SocketLeftDownBean.TCstInventoryVosBean vosBean:tCstInventoryVos){
+			   for (TCstInventoryVo vosBean : tCstInventoryVos) {
 				strings.add(vosBean.getCstCode());
-				SIZE+= vosBean.getCount();
+				SIZE += vosBean.getCount();
 			   }
 			   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 			   mTimelyReality2.setText(Html.fromHtml(
@@ -595,8 +583,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 				   "</big></font>"));
 			   mDownAdapter.notifyDataSetChanged();
 			} else {
-			   mMiddleBean = mGson.fromJson(result, SocketLeftDownBean.class);
-			   mTCstInventoryVos = mMiddleBean.getTCstInventoryVos();
+			   mTCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+			   mTCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
 			   if (mTCstInventoryVos != null) {
 				mLayout = R.layout.item_stockmid_five_layout;
 				mHeadView = LayoutInflater.from(_mActivity)
@@ -618,14 +606,13 @@ public class PublicTimelyFrag extends SimpleFragment {
 				mDownAdapter.setOnItemClickListener(
 					new BaseQuickAdapter.OnItemClickListener() {
 					   @Override
-					   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-						mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
-						SocketLeftDownBean.TCstInventoryVosBean vosBean = mTCstInventoryVos
-							.get(position);
-						vosBean.setName(vosBean.getCstName());
-						vosBean.setType(vosBean.getCstSpec());
-						vosBean.setSize(vosBean.getCount());
-						EventBusUtils.postSticky(vosBean);
+					   public void onItemClick(
+						   BaseQuickAdapter adapter, View view, int position) {
+						mContext.startActivity(
+							new Intent(mContext, StockMidTypeActivity.class));
+						TCstInventoryVo tCstInventoryVo = mTCstInventoryVos.get(
+							position);
+						EventBusUtils.postSticky(tCstInventoryVo);
 					   }
 					});
 				mHeadView.setBackgroundResource(R.color.bg_green);
@@ -637,13 +624,12 @@ public class PublicTimelyFrag extends SimpleFragment {
 				mLinearLayout.addView(mHeadView);
 				ArrayList<String> strings = new ArrayList<>();
 				int SIZE = 0;
-				for (SocketLeftDownBean.TCstInventoryVosBean vosBean:mTCstInventoryVos){
+				for (TCstInventoryVo vosBean : mTCstInventoryVos) {
 				   strings.add(vosBean.getCstCode());
-				   SIZE+= vosBean.getCount();
+				   SIZE += vosBean.getCount();
 
 				}
 				ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-
 
 				mTimelyReality2.setText(Html.fromHtml(
 					"耗材种类：<font color='#262626'><big>" + list.size() +
@@ -664,53 +650,45 @@ public class PublicTimelyFrag extends SimpleFragment {
     * @param deviceCode
     */
    private void loadStockRightDate(String deviceCode, String mTrim) {
-	NetRequest.getInstance()
-		.getRightUnconfDate(deviceCode, mTrim, mContext, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			Log.i("ffa", "result   " + result);
-			if (mTCstStockRightList != null) {
-			   mTCstStockRightList.clear();
-			   SocketRightBean socketRightBean = mGson.fromJson(result,
-											    SocketRightBean.class);
-			   List<SocketRightBean.TCstInventoryVosBean> tCstInventoryVos = socketRightBean.getTCstInventoryVos();
-			   mTCstStockRightList.addAll(tCstInventoryVos);
-			   mRightAdapter.notifyDataSetChanged();
+	NetRequest.getInstance().getRightUnconfDate(deviceCode, mTrim, mContext, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		Log.i("ffa", "result   " + result);
+		if (mTCstStockRightList != null) {
+		   mTCstStockRightList.clear();
+		   TCstInventoryDto socketRightBean = mGson.fromJson(result, TCstInventoryDto.class);
+		   List<TCstInventoryVo> tCstInventoryVos = socketRightBean.gettCstInventoryVos();
+		   mTCstStockRightList.addAll(tCstInventoryVos);
+		   mRightAdapter.notifyDataSetChanged();
 
-			} else {
-			   SocketRightBean socketRightBean = mGson.fromJson(result,
-											    SocketRightBean.class);
-			   mTCstStockRightList = socketRightBean.getTCstInventoryVos();
-			   mLayout = R.layout.item_runwate_eight_layout;
-			   mHeadView = LayoutInflater.from(_mActivity)
-				   .inflate(R.layout.item_runwate_eight_title_layout,
-						(ViewGroup) mLinearLayout.getParent(), false);
-			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-			   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-				   titeleList.get(2));
-			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-				   titeleList.get(3));
-			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-				   titeleList.get(4));
-			   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
-				   titeleList.get(6));
-			   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(
-				   titeleList.get(7));
+		} else {
+		   TCstInventoryDto socketRightBean = mGson.fromJson(result, TCstInventoryDto.class);
+		   mTCstStockRightList = socketRightBean.gettCstInventoryVos();
+		   mLayout = R.layout.item_runwate_eight_layout;
+		   mHeadView = LayoutInflater.from(_mActivity)
+			   .inflate(R.layout.item_runwate_eight_title_layout,
+					(ViewGroup) mLinearLayout.getParent(), false);
+		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+		   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+		   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+		   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+		   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+		   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+		   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
 
-			   mRightAdapter = new StockRightAdapter(mLayout, mTCstStockRightList);
+		   mRightAdapter = new StockRightAdapter(mLayout, mTCstStockRightList);
 
-			   mHeadView.setBackgroundResource(R.color.bg_green);
-			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRefreshLayout.setEnableAutoLoadMore(true);
-			   mRecyclerview.setAdapter(mRightAdapter);
-			   mLinearLayout.addView(mHeadView);
-			}
-		   }
+		   mHeadView.setBackgroundResource(R.color.bg_green);
+		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+		   mRefreshLayout.setEnableAutoLoadMore(true);
+		   mRecyclerview.setAdapter(mRightAdapter);
+		   mLinearLayout.addView(mHeadView);
+		}
+	   }
 
-		});
+	});
    }
 
    @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss, R.id.search_iv_delete})
@@ -754,34 +732,6 @@ public class PublicTimelyFrag extends SimpleFragment {
 
 
 
-   private List<Movie> genData6() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	String three;
-	for (int i = 0; i < 20; i++) {
-	   if (i == 0) {
-		three = "已过期";
-	   } else if (i == 1) {
-		three = "≤100天";
-	   } else if (i == 2) {
-		three = "≤70天";
-	   } else if (i == 3) {
-		three = "≤28天";
-	   } else {
-		three = "2019-10-22";
-	   }
-	   String one = "微创系统" + i;
-	   String two = "RFID01" + i;
-	   String four = i + "号柜";
-	   String five = "1" + i;
-	   String six = "0" + i;
-
-	   Movie movie = new Movie(one, two, three, four, five, six, null, null);
-	   list.add(movie);
-	}
-	return list;
-   }
-
    private List<Movie> genData72() {
 
 	ArrayList<Movie> list = new ArrayList<>();
@@ -805,6 +755,5 @@ public class PublicTimelyFrag extends SimpleFragment {
 	}
 	return list;
    }
-
 
 }

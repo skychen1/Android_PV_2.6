@@ -24,7 +24,7 @@ public interface NetApi {
    //工程模式
    String URL_TEST_SNQUERY  = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
    String URL_TEST_REGISTE  = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册  设备激活
-   String URL_TEST_FINDDEVICE  = MAIN_URL + "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
+   String URL_TEST_FINDDEVICE  = "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
    String URL_TEST_FIND_HOSPHOME  = MAIN_URL + "/rmApi/dept/tBaseHospital/findByHospName";//输入医院查询医院信息
    String URL_TEST_FIND_BRANCH  = MAIN_URL + "/rmApi/dept/tBaseDept/findBranch";//根据医院id查询院区信息
    String URL_TEST_FIND_DEPT  = MAIN_URL + "/rmApi/dept/tBaseDept/findDept";//根据院区编码查询科室信息
@@ -54,6 +54,8 @@ public interface NetApi {
 
 //   实时盘点
    String URL_TIMELY_ONE  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
-//   String URL_OPERATE_INOUTBOX_YES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
+   String URL_TIMELY_PROFIT  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
+   String URL_TIMELY_LOSSES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况
+   String URL_TIMELY_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
 
 }

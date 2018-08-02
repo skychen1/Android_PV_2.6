@@ -93,6 +93,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		mBuilder.mDialog.dismiss();
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
@@ -135,6 +136,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
 	   }
 	   mStockLeftAlltop.setVisibility(View.GONE);
+	   mBuilder.mDialog.dismiss();
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE,deviceCode);
 
 	}

@@ -19,7 +19,6 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
@@ -59,7 +58,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-      mBuilder = DialogUtils.showLoading(mContext);
+//      mBuilder = DialogUtils.showLoading(mContext);
       getRightDate();
    }
 
@@ -67,6 +66,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
       NetRequest.getInstance().loadBoxSize( mContext, new BaseResult() {
          @Override
          public void onSucceed(String result) {
+//            mBuilder.mDialog.dismiss();
             BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
             mTbaseDevices = boxSizeBean.getTbaseDevices();
             if (mTbaseDevices != null) {
@@ -75,13 +75,12 @@ public class StockRightUnconfFrag extends SimpleFragment {
          }
          @Override
          public void onError(String result) {
-            mBuilder.mDialog.dismiss();
+//            mBuilder.mDialog.dismiss();
          }
       });
    }
 
    private void onSucceedDate() {
-      mBuilder.mDialog.dismiss();
 
       mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
       mCttimecheckViewpager.setAdapter(mPagerAdapter);
