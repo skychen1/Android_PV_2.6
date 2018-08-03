@@ -3,10 +3,16 @@ package high.rivamed.myapplication.activity;
 import android.content.Intent;
 import android.view.View;
 
+import java.util.List;
+
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
@@ -26,15 +32,29 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 
 public class OutBoxBingActivity extends BaseTimelyActivity {
 
+   private static final String TAG = "OutBoxBingActivity";
+
+//   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//   public void onEventBing(Event.EventCheckbox event) {
+//	String patient= event.mString;
+//	Log.i("ff", "mMovie  " + mMovie);
+//	if (mMovie != null) {
+//	   for (int i = 0; i < mMovies.size(); i++) {
+//		mMovies.get(i).six = mMovie;
+//
+//	   }
+//	   mPublicAdapter.notifyDataSetChanged();
+//	}
+//   }
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_BING;
 	return my_id;
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right,
-	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_left,
-	   R.id.timely_right, R.id.timely_start_btn_right, R.id.ly_bing_btn_right})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+	   R.id.base_tab_back, R.id.timely_left, R.id.timely_right, R.id.timely_start_btn_right,
+	   R.id.ly_bing_btn_right})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -75,7 +95,6 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
 		loadBingDate();
-		DialogUtils.showRvDialog(this, mContext);
 		break;
 	}
    }
@@ -84,6 +103,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     * 获取
     */
    private void loadBingDate() {
+	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+												 BingFindSchedulesBean.class);
+		List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
+		DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext,patientInfos);
 
+		LogUtils.i(TAG, "result   " + result);
+	   }
+	});
    }
 }

@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.NetWorkReceiver;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -59,7 +62,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 更新描述：   ${TODO}
  */
 
-public class RegisteFrag extends SimpleFragment {
+public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAction {
 
    String TAG = "RegisteFrag";
    @BindView(R.id.frag_registe_name_edit)
@@ -148,6 +151,7 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
+	applyNet();
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG,"SAVE_DEPT_NAME    "+  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
 		mFragRegisteNameEdit.setHint("2.6柜子");
@@ -160,14 +164,44 @@ public class RegisteFrag extends SimpleFragment {
 	mBaseDevices = generateData();
 	initData();
    }
+   private void applyNet() {
+	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+	NetWorkReceiver netWorkReceiver = new NetWorkReceiver();
+	mContext.registerReceiver(netWorkReceiver, filter);
+	netWorkReceiver.setInteractionListener(this);
 
+   }
+
+   @Override
+   public void setText(String d) {
+
+   }
+
+   /**
+    * 获取本地和WIFI的IP  显示
+    * @param k
+    */
+   @Override
+   public void setInt(int k) {
+	if (k != -1) {
+	   if (k == 2) {
+		mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
+	   } else if (k == 0) {
+		mFragRegisteLocalipEdit.setText("");
+	   } else if (k == 1) {
+		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
+	   }
+	}
+   }
    private void initData() {
 	initListener();
-	if (WifiUtils.isWifi(mContext) == 2) {
-	   mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());
-	} else {
-	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
-	}
+//
+//
+//	if (WifiUtils.isWifi(mContext) == 2) {
+//	   mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());
+//	} else {
+//	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));
+//	}
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
@@ -452,7 +486,7 @@ public class RegisteFrag extends SimpleFragment {
 				@Override
 				public void onSucceed(String result) {
 				   SPUtils.putString(mContext,SAVE_SEVER_IP,url);
-				   App.initServer();
+				   App.initServer();//给设备设置IP
 				   Log.i("xxf", "result   " + result);
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();

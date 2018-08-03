@@ -64,4 +64,6 @@ public interface NetApi {
    String URL_TIMELY_LOSSES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况
    String URL_TIMELY_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
 
+   //患者绑定
+   String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatients";//患者查询
 }

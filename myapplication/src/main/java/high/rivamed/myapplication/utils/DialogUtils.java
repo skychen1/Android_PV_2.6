@@ -8,17 +8,11 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginInfoActivity;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -52,8 +46,8 @@ public class DialogUtils {
 
    private static String sTimes;
 
-   public static void showRvDialog(Activity activity, final Context context) {
-	RvDialog.Builder builder = new RvDialog.Builder(activity, context);
+   public static void showRvDialog(Activity activity, final Context context,List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+	RvDialog.Builder builder = new RvDialog.Builder(activity, context,patientInfos);
 	builder.setMsg("耗材中包含过期耗材，请查看！");
 	builder.setLeft("取消", new DialogInterface.OnClickListener() {
 	   @Override
@@ -65,12 +59,12 @@ public class DialogUtils {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
 
-		for (int x = 0; x <= RvDialog.genData5().size(); x++) {
+		for (int x = 0; x <= patientInfos.size(); x++) {
 		   if (RvDialog.sTableTypeView.mCheckStates.get(x)) {
-			RvDialog.sMovie = RvDialog.genData5().get(x);
-			Log.i("vv", "   " + RvDialog.sMovie.five + "   " +
+			RvDialog.patientInfosBean = patientInfos.get(x);
+			Log.i("vv", "   " + RvDialog.patientInfosBean.getPatientName() + "   " +
 					RvDialog.sTableTypeView.mCheckStates.get(x));
-			EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.sMovie.five));
+			EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.patientInfosBean.getPatientName()));
 			String title = "患者绑定成功";
 			DialogUtils.showNoDialog(context, title, 2, "nojump", null);
 			dialog.dismiss();
@@ -212,108 +206,20 @@ public class DialogUtils {
 
    }
 
-	public static void showOneFingerDialog(Context context, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
-		int[] times = {0};
-		List<String> fingerList = new ArrayList<String>();
-		OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int i) {
-				onfingerprintBackListener.OnfingerprintBack(fingerList);
-				dialog.dismiss();
-			}
-		});
+   public static void showOneFingerDialog(Context context) {
+	OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+	builder.setRight("确认", new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
 
-		builder.create().show();
-		DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
-			@Override
-			public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
+		dialog.dismiss();
+	   }
+	});
 
-			}
+	builder.create().show();
 
-			@Override
-			public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
+   }
 
-			}
-
-			@Override
-			public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
-
-			}
-
-			@Override
-			public void OnIDCard(String deviceId, String idCard) {
-
-			}
-
-			@Override
-			public void OnFingerFea(String deviceId, String fingerFea) {
-				times[0]++;
-				if (times[0] == 1) {
-					fingerList.add(fingerFea);
-					ToastUtils.showShort("请再次按下");
-				} else if (times[0] == 2) {
-					fingerList.add(fingerFea);
-					ToastUtils.showShort("请第三次按下");
-				} else if (times[0] == 3) {
-					fingerList.add(fingerFea);
-					ToastUtils.showShort("采集成功!请按确定键!");
-				}
-			}
-
-			@Override
-			public void OnFingerRegExcuted(String deviceId, boolean success) {
-
-			}
-
-			@Override
-			public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-			}
-
-			@Override
-			public void OnDoorOpened(String deviceIndentify, boolean success) {
-
-			}
-
-			@Override
-			public void OnDoorClosed(String deviceIndentify, boolean success) {
-
-			}
-
-			@Override
-			public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-
-			}
-
-			@Override
-			public void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
-			}
-
-			@Override
-			public void OnUhfScanComplete(boolean success, String deviceId) {
-
-			}
-
-			@Override
-			public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-			}
-
-			@Override
-			public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-			}
-
-			@Override
-			public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-
-			}
-		});
-
-
-	}
    public static String showTimeDialog(final Context context, final TextView textView) {
 	Date date = new Date();
 
@@ -353,24 +259,24 @@ public class DialogUtils {
 
    public static void showRegisteDialog(final Context context, Activity activity) {
 
-       RegisteDialog.Builder builder = new RegisteDialog.Builder(context, activity);
-       builder.setLeft("取消", new DialogInterface.OnClickListener() {
-           @Override
-           public void onClick(DialogInterface dialog, int i) {
-               dialog.dismiss();
-           }
-       });
-       builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
-           @Override
-           public void getDialogDate(
-                   String deptName,  String branchCode, String deptCode, String storehouseCode, String operationRoomNo,
-                   Dialog dialog) {
-               EventBusUtils.postSticky(new Event.dialogEvent(deptName,branchCode,deptCode,storehouseCode,operationRoomNo,dialog));
-           }
-       });
+	RegisteDialog.Builder builder = new RegisteDialog.Builder(context, activity);
+	builder.setLeft("取消", new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		dialog.dismiss();
+	   }
+	});
+	builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
+	   @Override
+	   public void getDialogDate(
+		   String deptName,  String branchCode, String deptCode, String storehouseCode, String operationRoomNo,
+		   Dialog dialog) {
+		EventBusUtils.postSticky(new Event.dialogEvent(deptName,branchCode,deptCode,storehouseCode,operationRoomNo,dialog));
+	   }
+	});
 
 
-       builder.create().show();
+	builder.create().show();
    }
 
    /**
