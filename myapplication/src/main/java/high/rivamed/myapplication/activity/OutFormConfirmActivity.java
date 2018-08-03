@@ -1,13 +1,16 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_FORM_CONFIRM;
 
@@ -48,6 +51,24 @@ public class OutFormConfirmActivity extends BaseTimelyActivity{
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
 			   case 2:
+				   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+				   builder.setTwoMsg("您确认要退出登录吗?");
+				   builder.setMsg("温馨提示");
+				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.setRight("确认", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+						   App.getInstance().removeALLActivity_();
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.create().show();
 				break;
 			}
 		   }

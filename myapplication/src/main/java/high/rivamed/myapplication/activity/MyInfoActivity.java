@@ -50,23 +50,30 @@ public class MyInfoActivity extends BaseSimpleActivity {
     }
 
     private void initData() {
-        String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
+        try {
+            String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
 
-        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
+            LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 
-        LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
+            LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-        List<String> roleNames = appAccountInfoVo.getRoleNames();
-        String roleName = "";
-        for (int i = 0; i < roleNames.size(); i++) {
-            roleName = roleName + roleNames.get(i);
-            if (i < roleNames.size() - 1) {
-                roleName = roleName + "/";
+            List<String> roleNames = appAccountInfoVo.getRoleNames();
+            String roleName = "";
+            for (int i = 0; i < roleNames.size(); i++) {
+                roleName = roleName + roleNames.get(i);
+                if (i < roleNames.size() - 1) {
+                    roleName = roleName + "/";
+                }
             }
+            mSettingAccountName.setText(appAccountInfoVo.getAccountName());
+            mSettingName.setText("用户名：" + appAccountInfoVo.getUserName());
+            mSettingPosition.setText("角色：" + roleName);
+            mBaseTabTvName.setText(appAccountInfoVo.getAccountName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mSettingAccountName.setText(appAccountInfoVo.getAccountName());
-        mSettingName.setText("用户名：" + appAccountInfoVo.getUserName());
-        mSettingPosition.setText("角色：" + roleName);
+
+
     }
 
     @Override

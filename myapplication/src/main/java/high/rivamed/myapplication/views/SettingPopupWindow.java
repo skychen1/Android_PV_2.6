@@ -32,12 +32,14 @@ public class SettingPopupWindow extends PopupWindow implements OnClickListener {
    private final TextView mSettingLogin;
    private final TextView mSettingLoginOut;
    private final View     mView;
+	private final Context mContext;
 
-   private String TAG = "SettingPopupWindow";
+	private String TAG = "SettingPopupWindow";
    private OnClickListener mItemClickListener;
 
-   public SettingPopupWindow(Context context) {
-	mView = LayoutInflater.from(context).inflate(R.layout.setting_popupwindow, null);
+	public SettingPopupWindow(Context context) {
+		mContext = context;
+		mView = LayoutInflater.from(context).inflate(R.layout.setting_popupwindow, null);
 	mSettingMeInfo = (TextView) mView.findViewById(R.id.setting_meinfo);
 	mSettingLogin = (TextView) mView.findViewById(R.id.setting_login);
 	mSettingLoginOut = (TextView) mView.findViewById(R.id.setting_loginout);

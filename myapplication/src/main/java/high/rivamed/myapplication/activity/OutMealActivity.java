@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,6 +27,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
@@ -34,6 +36,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
@@ -250,6 +253,24 @@ public class OutMealActivity extends BaseSimpleActivity {
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
 			   case 2:
+				   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+				   builder.setTwoMsg("您确认要退出登录吗?");
+				   builder.setMsg("温馨提示");
+				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.setRight("确认", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+						   App.getInstance().removeALLActivity_();
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.create().show();
 				break;
 			}
 		   }

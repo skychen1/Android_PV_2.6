@@ -151,7 +151,7 @@ public class OnePassWordDialog extends Dialog {
                         ToastUtils.showShort("两次密码输入不一致");
                     } else {
                         mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                        setNewPass(passOne,dialog);
+                        setNewPass(passOne, dialog);
                     }
                 }
             });
@@ -160,6 +160,9 @@ public class OnePassWordDialog extends Dialog {
 
         private void setNewPass(String passOne, OnePassWordDialog dialog) {
             String accountData = SPUtils.getString(mContext, KEY_ACCOUNT_DATA, "");
+            if (TextUtils.isEmpty(accountData))
+                return;
+
 
             LoginResultBean data = new Gson().fromJson(accountData, LoginResultBean.class);
 
@@ -185,7 +188,7 @@ public class OnePassWordDialog extends Dialog {
                         if (resultBean.isOperateSuccess()) {
                             ToastUtils.showShort("设置成功");
                             dialog.dismiss();
-                        }else {
+                        } else {
                             ToastUtils.showShort("设置失败");
                         }
                     } catch (Exception e) {

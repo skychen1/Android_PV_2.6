@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.base;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
@@ -21,6 +22,8 @@ import org.litepal.LitePal;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -38,6 +41,7 @@ import okhttp3.OkHttpClient;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 public class App extends Application {
+    private List<Activity> oList;//用于存放所有启动的Activity的集合
 
     public static final String TAG = "BaseApplication";
 
@@ -65,7 +69,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        oList = new ArrayList<Activity>();
 
         SPUtils.putString(this, "TestLoginName", "");
         SPUtils.putString(this,"TestLoginPass","");
@@ -196,5 +200,36 @@ public class App extends Application {
             }
         }
         return null;
+    }
+
+    /**
+     * 添加Activity
+     */
+    public void addActivity_(Activity activity) {
+        // 判断当前集合中不存在该Activity
+        if (!oList.contains(activity)) {
+            oList.add(activity);//把当前Activity添加到集合中
+        }
+    }
+
+    /**
+     * 销毁单个Activity
+     */
+    public void removeActivity_(Activity activity) {
+        //判断当前集合中存在该Activity
+        if (oList.contains(activity)) {
+            oList.remove(activity);//从集合中移除
+            activity.finish();//销毁当前Activity
+        }
+    }
+
+    /**
+     * 销毁所有的Activity
+     */
+    public void removeALLActivity_() {
+        //通过循环，把集合中的所有Activity销毁
+        for (Activity activity : oList) {
+            activity.finish();
+        }
     }
 }

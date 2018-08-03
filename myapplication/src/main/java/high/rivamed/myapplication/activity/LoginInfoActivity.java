@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.RegisterFingerBean;
@@ -24,6 +26,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
@@ -65,20 +68,24 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     }
 
     private void initData() {
-        String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
+        try {
+            String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
 
-        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
+            LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 
-        LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
+            LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-        mUserId = appAccountInfoVo.getUserId();
-        if (appAccountInfoVo.getIsFinger() == 0) {
-            //指纹未绑定
-            mSettingFingerprintEdit.setText("未绑定");
-            mSettingFingerprintBind.setText("绑定");
-        } else {
-            //已绑定
-            mSettingFingerprintEdit.setText("已绑定");
+            mUserId = appAccountInfoVo.getUserId();
+            if (appAccountInfoVo.getIsFinger() == 0) {
+                //指纹未绑定
+                mSettingFingerprintEdit.setText("未绑定");
+                mSettingFingerprintBind.setText("绑定");
+            } else {
+                //已绑定
+                mSettingFingerprintEdit.setText("已绑定");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -106,7 +113,24 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                             case 1:
                                 mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
                                 break;
-                            case 2:
+                            case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+                                builder.setTwoMsg("您确认要退出登录吗?");
+                                builder.setMsg("温馨提示");
+                                builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setRight("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                                        App.getInstance().removeALLActivity_();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.create().show();
                                 break;
                         }
                     }

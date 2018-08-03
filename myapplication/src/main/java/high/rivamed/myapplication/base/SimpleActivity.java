@@ -60,7 +60,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 		   bindEvent();
 		}
 		initDataAndEvent(savedInstanceState);
-		
+		App.getInstance().addActivity_(this);
 	}
 	
 	@Override
