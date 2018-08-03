@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBean;
 import high.rivamed.myapplication.bean.Event;
@@ -122,8 +123,7 @@ public class RegisteFrag extends SimpleFragment {
 	String s = mGson.toJson(event);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
-	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
-				mSnRecoverBean.getTbaseThing().getDeptName());
+	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, mSnRecoverBean.getTbaseThing().getDeptName());
 	setRegiestDate(s);
 	setSaveRegister(s, true);
 
@@ -150,11 +150,11 @@ public class RegisteFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG,"SAVE_DEPT_NAME    "+  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
-	//	mFragRegisteNameEdit.setText("2.6柜子");
-	//	mFragRegisteModelEdit.setText("rivamed26");
-	//	mFragRegisteNumberEdit.setText("123456789");
-	//	mFragRegisteSeveripEdit.setText("192.168.2.32");
-	//	mFragRegistePortEdit.setText("8015");
+		mFragRegisteNameEdit.setHint("2.6柜子");
+		mFragRegisteModelEdit.setHint("rivamed26");
+		mFragRegisteNumberEdit.setHint("123456789");
+		mFragRegisteSeveripEdit.setHint("192.168.2.32");
+		mFragRegistePortEdit.setHint("8015");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
@@ -446,12 +446,13 @@ public class RegisteFrag extends SimpleFragment {
 		   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
 				    mFragRegistePortEdit.getText().toString().trim() + "/cst";
 		   Log.i(TAG, "url   " + url);
+
 		   NetRequest.getInstance()
 			   .getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
 				@Override
 				public void onSucceed(String result) {
 				   SPUtils.putString(mContext,SAVE_SEVER_IP,url);
-
+				   App.initServer();
 				   Log.i("xxf", "result   " + result);
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();

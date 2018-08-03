@@ -74,8 +74,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
+		loadBingDate();
 		DialogUtils.showRvDialog(this, mContext);
 		break;
 	}
+   }
+
+   /**
+    * 获取
+    */
+   private void loadBingDate() {
+
    }
 }

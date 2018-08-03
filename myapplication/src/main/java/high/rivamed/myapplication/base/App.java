@@ -48,7 +48,7 @@ public class App extends Application {
      */
     private static ACache mAppCache;
 
-    public static String MAIN_URL = NetApi.BETA_URL;
+    public static String MAIN_URL = null;
 
     public static Handler getHandler() {
         return mHandler;
@@ -114,7 +114,7 @@ public class App extends Application {
     /**
      * 选择服务器
      */
-    private void initServer() {
+    public static  void initServer() {
         if (BuildConfig.API_ENV) {
 
             if (SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP)==null){

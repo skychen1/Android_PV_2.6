@@ -369,7 +369,7 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mLyBingBtnRight.setVisibility(View.VISIBLE);
-	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
 	ArrayList<String> strings = new ArrayList<>();
 	for (TCstInventoryVo vosBean:mTCstInventoryVos){
 	   strings.add(vosBean.getCstCode());

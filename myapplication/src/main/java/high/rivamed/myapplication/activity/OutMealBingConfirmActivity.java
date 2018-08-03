@@ -6,7 +6,6 @@ import android.view.View;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
@@ -70,7 +69,7 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
-		DialogUtils.showRvDialog(this, mContext);
+//		DialogUtils.showRvDialog(this, mContext);
 		break;
 	}
    }
