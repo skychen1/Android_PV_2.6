@@ -71,15 +71,44 @@ public class NetRequest {
 		.execute(new MyCallBack(tag,netResult,true));
    }
 
- /**
-    * 预注册
+   /**
+    * 用户登录
     */
-   public void userLogin(String username,String password, Object tag, NetResult netResult) {
-
-	OkGo.<String>get(NetApi.URL_USER_LOGIN).tag(tag)
-		.params("username", username)
-		.params("password", password)
-		.execute(new MyCallBack(tag,netResult,true));
+   public void userLogin(String account, Object tag, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_USER_LOGIN).tag(tag)
+		.upJson(account)
+		.execute(new NetRequest.MyCallBack(tag, netResult, false));
+   }
+   /**
+    * 获取用户信息
+    */
+   public void findAppAccountInfo(String json, Object tag, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_USER_GET_INFO).tag(tag)
+		.upJson(json)
+		.execute(new NetRequest.MyCallBack(tag, netResult, false));
+   }
+   /**
+    * 绑定指纹
+    */
+   public void registerFinger(String json, Object tag, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_USER_REGISTER_FINGER).tag(tag)
+		.upJson(json)
+		.execute(new NetRequest.MyCallBack(tag, netResult, false));
+   }
+   /**
+    * 指纹登录
+    */
+   public void validateLoginFinger(String json, Object tag, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_USER_VALIDATELOGIN_FINGER).tag(tag)
+		.upJson(json)
+		.execute(new NetRequest.MyCallBack(tag, netResult, false));
+   }/**
+    * 重置密码
+    */
+   public void resetPassword(String json, Object tag, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_USER_RESET_PASSWORD).tag(tag)
+		.upJson(json)
+		.execute(new NetRequest.MyCallBack(tag, netResult, false));
    }
 
    /**
@@ -102,7 +131,7 @@ public class NetRequest {
     * 获取柜子个数
     */
    public void loadBoxSize(Object tag,
-	   NetResult netResult) {
+				   NetResult netResult) {
 
 	OkGo.<String>get(NetApi.URL_HOME_BOXSIZE).tag(tag)
 		.params("thingCode", sThingCode)
@@ -114,7 +143,7 @@ public class NetRequest {
     * 耗材效期监控
     */
    public void materialControl( Object tag,
-				   NetResult netResult) {
+					  NetResult netResult) {
 	OkGo.<String>get(NetApi.URL_STOCKSTATUS_TOP).tag(tag)
 		.params("thingCode", sThingCode)
 		.execute(new MyCallBack(tag, netResult,true));
@@ -268,7 +297,6 @@ public class NetRequest {
 		.upJson(tCstInventoryDto)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
-
    /**
     * 查询患者信息
     */
@@ -288,7 +316,7 @@ public class NetRequest {
 	private boolean isGet;//是否是get请求
 
 	public MyCallBack( Object tag,LoadingDialog.Builder dialog, NetResult netResult,
-		boolean isGet) {
+				 boolean isGet) {
 	   super();
 
 	   this.tag = tag;
