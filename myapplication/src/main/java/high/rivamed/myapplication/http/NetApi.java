@@ -16,13 +16,14 @@ import static high.rivamed.myapplication.base.App.MAIN_URL;
 
 public interface NetApi {
 
-   //正式
-   String RELEASED_URL = "http://cc.p5w.net/";
-   //测试
-//   String BETA_URL     = "http://192.168.2.32:8015/cst";
-   String BETA_URL     = "http://192.168.10.25:8015/cst";
+    //正式
+    String RELEASED_URL = "http://cc.p5w.net/";
+    //测试
+//    String BETA_URL     = "http://192.168.2.32:8015/cst";
+    String BETA_URL     = "http://192.168.10.25:8015/cst";
+    String BETA_URL2     = "http://192.168.2.41:8015/cst";
 
-   //工程模式
+    //工程模式
    String URL_TEST_SNQUERY  = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
    String URL_TEST_REGISTE  = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册  设备激活
    String URL_TEST_FINDDEVICE  = "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
@@ -51,9 +52,13 @@ public interface NetApi {
    String URL_OPERATE_DB_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
    //用户
-   String URL_USER_LOGIN  = MAIN_URL + "/rmApi/restLogin/login";//登录
+   String URL_USER_LOGIN  = BETA_URL2 + "/rmApi/restLogin/validateLoginPassword";//登录
+    String URL_USER_GET_INFO  = BETA_URL2 + "/rmApi/userManage/account/findAppAccountInfo";//获取用户信息
+    String URL_USER_REGISTER_FINGER  = BETA_URL2 + "/rmApi/userManage/userFeature/registerFinger";//绑定指纹
+    String URL_USER_VALIDATELOGIN_FINGER  = BETA_URL2 + "/rmApi/login/accountLogin/validateLoginFinger";//指纹登录
+    String URL_USER_RESET_PASSWORD  = BETA_URL2 + "/rmApi/userManage/account/resetPassword";//重置密码
 
-//   实时盘点
+    //   实时盘点
    String URL_TIMELY_ONE  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
    String URL_TIMELY_PROFIT  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
    String URL_TIMELY_LOSSES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况

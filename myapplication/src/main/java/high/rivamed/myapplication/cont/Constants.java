@@ -48,15 +48,15 @@ public class Constants {
 
    //sp存入的key
    public static final String SAVE_SEVER_IP  = "SAVE_SEVER_IP";//存入服务器IP
-   public static final String READER_TYPE  = "3";
-   public static final String SN_NUMBER  = "sn_number";
-   public static final String THING_CODE  = "thing_code";
-   public static final String SAVE_REGISTE_DATE  = "registe_date";//预注册保存到本地的数据
-   public static final String SAVE_ONE_REGISTE  = "oneRegiste";//第一次预注册的状态存入
-   public static final String SAVE_ACTIVATION_REGISTE  = "activationRegiste";//激活的状态存入
-   public static final String SAVE_BRANCH_CODE  = "branchCode";//院区存入code
-   public static final String SAVE_DEPT_CODE  = "deptCode";//科室存入code
-   public static final String SAVE_DEPT_NAME  = "deptName";//科室存入code
-
+    public static final String READER_TYPE  = "3";
+    public static final String SN_NUMBER  = "sn_number";
+    public static final String THING_CODE  = "thing_code";
+    public static final String SAVE_REGISTE_DATE  = "registe_date";//预注册保存到本地的数据
+    public static final String SAVE_ONE_REGISTE  = "oneRegiste";//第一次预注册的状态存入
+    public static final String SAVE_ACTIVATION_REGISTE  = "activationRegiste";//激活的状态存入
+    public static final String SAVE_BRANCH_CODE  = "branchCode";//院区存入code
+    public static final String SAVE_DEPT_CODE  = "deptCode";//科室存入code
+    public static final String SAVE_DEPT_NAME  = "deptName";//科室存入code
+    public static final String KEY_ACCOUNT_DATA = "key_account_data";//用户资料
 
 }

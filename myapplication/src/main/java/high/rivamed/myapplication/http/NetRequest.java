@@ -71,16 +71,45 @@ public class NetRequest {
 		.execute(new MyCallBack(tag,netResult,true));
    }
 
- /**
-    * 预注册
-    */
-   public void userLogin(String username,String password, Object tag, NetResult netResult) {
-
-	OkGo.<String>get(NetApi.URL_USER_LOGIN).tag(tag)
-		.params("username", username)
-		.params("password", password)
-		.execute(new MyCallBack(tag,netResult,true));
-   }
+    /**
+     * 用户登录
+     */
+    public void userLogin(String account, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_LOGIN).tag(tag)
+                .upJson(account)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
+    /**
+     * 获取用户信息
+     */
+    public void findAppAccountInfo(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_GET_INFO).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
+    /**
+     * 绑定指纹
+     */
+    public void registerFinger(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_REGISTER_FINGER).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
+    /**
+     * 指纹登录
+     */
+    public void validateLoginFinger(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_VALIDATELOGIN_FINGER).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }/**
+     * 重置密码
+     */
+    public void resetPassword(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_RESET_PASSWORD).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
 
    /**
     * 获取耗材流水
@@ -268,16 +297,15 @@ public class NetRequest {
 		.upJson(tCstInventoryDto)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
-
-   /**
-    * 查询患者信息
-    */
-   public void findSchedulesDate(String optienNameOrId,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-	OkGo.<String>get(NetApi.URL_TIMELY_DETAIL).tag(tag)
-		.params("thingCode", sThingCode)
-		.params("optienNameOrId", optienNameOrId)
-		.execute(new MyCallBack(tag,dialog,netResult, false));
-   }
+    /**
+     * 查询患者信息
+     */
+    public void findSchedulesDate(String optienNameOrId,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(NetApi.URL_TIMELY_DETAIL).tag(tag)
+                .params("thingCode", sThingCode)
+                .params("optienNameOrId", optienNameOrId)
+                .execute(new MyCallBack(tag,dialog,netResult, false));
+    }
    private class MyCallBack extends StringCallback {
 
 
