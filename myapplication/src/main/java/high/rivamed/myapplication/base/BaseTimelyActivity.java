@@ -307,22 +307,8 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	   setOutBoxDate();
 
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   mBaseTabTvTitle.setText("耗材领用");
-	   mTimelyStartBtn.setVisibility(View.GONE);
-	   mLyBingBtn.setVisibility(View.GONE);
-	   mTimelyNumber.setVisibility(View.GONE);
-	   mTimelyNumberLeft.setVisibility(View.VISIBLE);
-	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyStartBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
-							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
-	   String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData7(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
+	   setAfterBing();
+
 	} else if (my_id == ACT_TYPE_FORM_CONFIRM) {
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
@@ -370,6 +356,34 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	 */
 	//	new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
 	//				mRefreshLayout, ACTIVITY);
+   }
+
+   /**
+    * 先绑定患者
+    */
+   private void setAfterBing() {
+	mBaseTabTvTitle.setText("耗材领用");
+	mTimelyStartBtn.setVisibility(View.GONE);
+	mLyBingBtn.setVisibility(View.GONE);
+	mTimelyNumber.setVisibility(View.GONE);
+	mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mLyBingBtnRight.setVisibility(View.VISIBLE);
+	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+	ArrayList<String> strings = new ArrayList<>();
+	for (TCstInventoryVo vosBean:mTCstInventoryVos){
+	   strings.add(vosBean.getCstCode());
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+
+	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							    mTCstInventoryVos.size()  + "</big></font>"));
+	String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
    }
 
    /**

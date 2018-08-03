@@ -47,6 +47,7 @@ public class Constants {
 
 
    //sp存入的key
+   public static final String SAVE_SEVER_IP  = "SAVE_SEVER_IP";//存入服务器IP
    public static final String READER_TYPE  = "3";
    public static final String SN_NUMBER  = "sn_number";
    public static final String THING_CODE  = "thing_code";
@@ -56,5 +57,6 @@ public class Constants {
    public static final String SAVE_BRANCH_CODE  = "branchCode";//院区存入code
    public static final String SAVE_DEPT_CODE  = "deptCode";//科室存入code
    public static final String SAVE_DEPT_NAME  = "deptName";//科室存入code
+
 
 }

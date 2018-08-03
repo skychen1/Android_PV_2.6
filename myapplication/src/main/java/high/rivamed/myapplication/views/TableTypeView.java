@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.adapter.AfterBingAdapter;
 import high.rivamed.myapplication.adapter.InBoxAllAdapter;
 import high.rivamed.myapplication.adapter.OutBoxAllAdapter;
 import high.rivamed.myapplication.adapter.StockDetailsAdapter;
@@ -450,7 +451,7 @@ public class TableTypeView extends LinearLayout {
 		   }
 
 		} else if (mSize == SEVEN) {
-		   if (mDialog != null && mDialog.equals(STYPE_BING)) {
+		   if (mDialog != null && mDialog.equals(STYPE_BING)) {//绑定患者
 			mLayout = R.layout.item_outbing_seven_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_outbing_seven_title_layout,
@@ -463,22 +464,27 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
-									     mCheckStates1);
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+
+			for (int i=0;i<mTCstInventoryVos.size();i++){
+			   mCheckStates1.put(i,true);
+			}
+			AfterBingAdapter afterBingAdapter = new AfterBingAdapter(mLayout,
+												   mTCstInventoryVos,
+												   mCheckStates1);
+			//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
+//									     mCheckStates1);
+			afterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
 				if (checkBox.isChecked()) {
 				   checkBox.setChecked(false);
-				   mMovies.get(position).seven = "0";
-				   mCheckStates1.delete(position);
+				   mCheckStates1.put(position, false);
 				} else {
 				   mCheckStates1.put(position, true);
-				   mMovies.get(position).seven = "1";
 				   checkBox.setChecked(true);
 				}
-				mPublicAdapter.notifyDataSetChanged();
+				afterBingAdapter.notifyDataSetChanged();
 			   }
 			});
 			mHeadView.setBackgroundResource(R.color.bg_green);
@@ -486,7 +492,7 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
+			mRecyclerview.setAdapter(afterBingAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
 			//盘亏盘盈
@@ -503,12 +509,7 @@ public class TableTypeView extends LinearLayout {
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
 			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout, mInventorys);
-			//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
-//			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//			   @Override
-//			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//			   }
-//			});
+
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));

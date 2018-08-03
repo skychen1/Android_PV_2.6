@@ -19,7 +19,8 @@ public interface NetApi {
    //正式
    String RELEASED_URL = "http://cc.p5w.net/";
    //测试
-   String BETA_URL     = "http://192.168.2.32:8015/cst";
+//   String BETA_URL     = "http://192.168.2.32:8015/cst";
+   String BETA_URL     = "http://192.168.10.25:8015/cst";
 
    //工程模式
    String URL_TEST_SNQUERY  = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询

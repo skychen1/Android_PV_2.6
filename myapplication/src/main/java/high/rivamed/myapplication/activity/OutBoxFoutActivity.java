@@ -79,7 +79,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG,"TAG    "+event.context);
 
    }
+   /**
+    * 接收入库的数据
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onInBoxEvent(TCstInventoryDto event) {
 
+	   mTCstInventoryDto = event;
+	   mTCstInventoryVos = event.gettCstInventoryVos();
+   }
    /**
     * 提交所有调拨的数据
     * @param event
@@ -322,13 +331,15 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			}
 		   });
 	} else {//绑定患者
-	   	   NetRequest.getInstance()
-	   		   .putOperateYes(mTCstInventoryDtoJson, this, mShowLoading, new BaseResult() {
-	   			@Override
-	   			public void onSucceed(String result) {
-	   			   startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
-	   			}
-	   		   });
+	   startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
+	   if (mTCstInventoryDtoFour == null) {
+		mTCstInventoryDto.setOperation(3);
+		EventBusUtils.postSticky(mTCstInventoryDto);
+	   } else {
+		mTCstInventoryDtoFour.setOperation(3);
+		EventBusUtils.postSticky(mTCstInventoryDtoFour);
+	   }
+
 	}
    }
 

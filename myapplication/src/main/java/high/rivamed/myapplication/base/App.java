@@ -35,6 +35,8 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+
 public class App extends Application {
 
     public static final String TAG = "BaseApplication";
@@ -46,7 +48,7 @@ public class App extends Application {
      */
     private static ACache mAppCache;
 
-    public static String MAIN_URL = NetApi.RELEASED_URL;
+    public static String MAIN_URL = NetApi.BETA_URL;
 
     public static Handler getHandler() {
         return mHandler;
@@ -114,9 +116,20 @@ public class App extends Application {
      */
     private void initServer() {
         if (BuildConfig.API_ENV) {
-            MAIN_URL = NetApi.BETA_URL;
+
+            if (SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP)==null){
+                MAIN_URL = NetApi.BETA_URL;
+            }else {
+                MAIN_URL = SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+            }
+
         } else {
-            MAIN_URL = NetApi.RELEASED_URL;
+            if (SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP)==null){
+                MAIN_URL = NetApi.RELEASED_URL;
+            }else {
+                MAIN_URL = SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+            }
+
         }
     }
 

@@ -42,6 +42,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -107,6 +108,8 @@ public class RegisteFrag extends SimpleFragment {
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
+
+//	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
 	   setSaveRegister(s, true);
 	   event.dialog.dismiss();
 	}
@@ -447,6 +450,8 @@ public class RegisteFrag extends SimpleFragment {
 			   .getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
 				@Override
 				public void onSucceed(String result) {
+				   SPUtils.putString(mContext,SAVE_SEVER_IP,url);
+
 				   Log.i("xxf", "result   " + result);
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();

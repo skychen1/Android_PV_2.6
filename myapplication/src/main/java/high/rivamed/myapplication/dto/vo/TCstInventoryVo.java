@@ -32,10 +32,27 @@ public class TCstInventoryVo implements Serializable {
 	// 前端状态显示字段
 
 	private String statusStr;
-
+   private String patientName;
+   private String patientId;
    private int    size;
    private String name;
    private String type;
+
+   public String getPatientName() {
+	return patientName;
+   }
+
+   public void setPatientName(String patientName) {
+	this.patientName = patientName;
+   }
+
+   public String getPatientId() {
+	return patientId;
+   }
+
+   public void setPatientId(String patientId) {
+	this.patientId = patientId;
+   }
 
    public int getSize() {
 	return size;

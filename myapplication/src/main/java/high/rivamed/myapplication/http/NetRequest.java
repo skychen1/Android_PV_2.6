@@ -268,6 +268,16 @@ public class NetRequest {
 		.upJson(tCstInventoryDto)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+
+   /**
+    * 查询患者信息
+    */
+   public void findSchedulesDate(String optienNameOrId,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_TIMELY_DETAIL).tag(tag)
+		.params("thingCode", sThingCode)
+		.params("optienNameOrId", optienNameOrId)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
    private class MyCallBack extends StringCallback {
 
 
