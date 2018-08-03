@@ -27,9 +27,14 @@ public class Event {
    }
    public static class EventCheckbox {
 	public String mString;
+	public String id;
 
 	public EventCheckbox(String trim) {
 	   this.mString = trim;
+	}
+	public EventCheckbox(String trim,String id) {
+	   this.mString = trim;
+	   this.id = id;
 	}
    }
    public static class SettingEvent {

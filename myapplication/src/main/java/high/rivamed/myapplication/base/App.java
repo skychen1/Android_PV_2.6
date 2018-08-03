@@ -34,6 +34,7 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
@@ -85,6 +86,8 @@ public class App extends Application {
         initOkGo();
 
         InitDeviceService();
+
+	 LogcatHelper.getInstance(this).start();
     }
 
     private void InitDeviceService(){

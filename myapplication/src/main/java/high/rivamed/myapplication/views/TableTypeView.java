@@ -102,18 +102,20 @@ public class TableTypeView extends LinearLayout {
    public OutBoxAllAdapter mOutBoxAllAdapter;
    private TimeDetailsAdapter mTimeDetailsAdapter;
    private List<TCstInventoryDto.InventorysBean> mInventorys;
-   private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
+   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
    public BingDialogOutAdapter mBingOutAdapter;
-   //   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public AfterBingAdapter mAfterBingAdapter;
+//      @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
 //   public void onEventBing(Event.EventCheckbox event) {
-//	mMovie = event.mString;
-//	Log.i("ff", "mMovie  " + mMovie);
-//	if (mMovie != null) {
-//	   for (int i = 0; i < mMovies.size(); i++) {
-//		mMovies.get(i).six = mMovie;
+//	   String patient= event.mString;
+//	   Log.i("ff", "mMovie  " + patient);
+//	   if (patient != null) {
+//		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+//		   mTCstInventoryVos.get(i).setPatientName(patient);
+//		   mTCstInventoryVos.get(i).setPatientId(event.id);
+//		}
 //
-//	   }
-//	   mPublicAdapter.notifyDataSetChanged();
+//		mAfterBingAdapter.notifyDataSetChanged();
 //	}
 //   }
 
@@ -326,7 +328,7 @@ public class TableTypeView extends LinearLayout {
 //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
 //									     mCheckStates);
 
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			mBingOutAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
@@ -335,7 +337,6 @@ public class TableTypeView extends LinearLayout {
 				}
 				mCheckStates.put(position, true);
 				mBingOutAdapter.notifyDataSetChanged();
-
 			   }
 			});
 			mHeadView.setBackgroundResource(R.color.bg_green);
@@ -454,12 +455,12 @@ public class TableTypeView extends LinearLayout {
 			for (int i=0;i<mTCstInventoryVos.size();i++){
 			   mCheckStates1.put(i,true);
 			}
-			AfterBingAdapter afterBingAdapter = new AfterBingAdapter(mLayout,
-												   mTCstInventoryVos,
-												   mCheckStates1);
+			mAfterBingAdapter = new AfterBingAdapter(mLayout,
+									     mTCstInventoryVos,
+									     mCheckStates1);
 			//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
 //									     mCheckStates1);
-			afterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			mAfterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
@@ -470,7 +471,7 @@ public class TableTypeView extends LinearLayout {
 				   mCheckStates1.put(position, true);
 				   checkBox.setChecked(true);
 				}
-				afterBingAdapter.notifyDataSetChanged();
+				mAfterBingAdapter.notifyDataSetChanged();
 			   }
 			});
 			mHeadView.setBackgroundResource(R.color.bg_green);
@@ -478,7 +479,7 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(afterBingAdapter);
+			mRecyclerview.setAdapter(mAfterBingAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
 			//盘亏盘盈

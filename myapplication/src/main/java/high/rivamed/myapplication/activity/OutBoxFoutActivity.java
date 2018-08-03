@@ -27,6 +27,7 @@ import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -64,6 +65,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private LoadingDialog.Builder mShowLoading;
    private TCstInventoryDto      mTCstInventoryDtoFour;
    private String                uhfDeviceId;
+   private TCstInventoryDto mDtoLyFour;
+   private TCstInventoryDto mDtoLy = new TCstInventoryDto();;
 
    /**
     * dialog操作数据
@@ -89,8 +92,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onInBoxEvent(TCstInventoryDto event) {
 
-	   mTCstInventoryDto = event;
-	   mTCstInventoryVos = event.gettCstInventoryVos();
+	mTCstInventoryDto = event;
+	mTCstInventoryVos = event.gettCstInventoryVos();
    }
    /**
     * 提交所有调拨的数据
@@ -324,43 +327,67 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 耗材领用区分 0 绑定患者；1直接领用
     */
    private void setLyDate() {
-	String mTCstInventoryDtoJson;
+	String mTCstInventoryDtoJson=null;
 	if (mTCstInventoryDtoFour == null) {
-	   mTCstInventoryDto.setOperation(3);
-	   mTCstInventoryDtoJson = mGson.toJson(mTCstInventoryDto);
+	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDto);
 	} else {
-	   mTCstInventoryDtoFour.setOperation(3);
-	   mTCstInventoryDtoJson = mGson.toJson(mTCstInventoryDtoFour);
+	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 	}
 	if (mTCstInventoryDto.getConfigPatientCollar().equals("0") ||
 	    (mTCstInventoryDtoFour != null &&
 	     mTCstInventoryDtoFour.getConfigPatientCollar().equals("0"))) {//直接领取
 	   LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
-	   NetRequest.getInstance()
-		   .putOperateYes(mTCstInventoryDtoJson, this, mShowLoading, new BaseResult() {
-			@Override
-			public void onSucceed(String result) {
-			   LogUtils.i(TAG, "result 领用 " + result);
-			   DialogUtils.showNoDialog(mContext, "耗材领用成功！", 2, "nojump", null);
-			   finish();
-			}
+	   if (mDtoLy!=null&&mDtoLy.gettCstInventoryVos().size()==0){
+	      ToastUtils.showShort("未选择耗材");
+	   }else {
+		NetRequest.getInstance()
+			.putOperateYes(mTCstInventoryDtoJson, this, mShowLoading, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i(TAG, "result 领用 " + result);
+				DialogUtils.showNoDialog(mContext, "耗材领用成功！", 2, "nojump", null);
+				finish();
+			   }
 
-			@Override
-			public void onError(String result) {
-			   DialogUtils.showNoDialog(mContext, "耗材领用失败，请重试！", 1, "nojump", null);
-			}
-		   });
-	} else {//绑定患者
-	   startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
-	   if (mTCstInventoryDtoFour == null) {
-		mTCstInventoryDto.setOperation(3);
-		EventBusUtils.postSticky(mTCstInventoryDto);
-	   } else {
-		mTCstInventoryDtoFour.setOperation(3);
-		EventBusUtils.postSticky(mTCstInventoryDtoFour);
+			   @Override
+			   public void onError(String result) {
+				DialogUtils.showNoDialog(mContext, "耗材领用失败，请重试！", 1, "nojump", null);
+			   }
+			});
 	   }
 
+	} else {//绑定患者
+	   if (mDtoLy!=null&&mDtoLy.gettCstInventoryVos().size()==0){
+		ToastUtils.showShort("未选择耗材");
+	   }else {
+		startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
+		if (mTCstInventoryDtoFour == null) {
+		   EventBusUtils.postSticky(mDtoLy);
+		} else {
+		   EventBusUtils.postSticky(mDtoLy);
+		}
+	   }
 	}
+   }
+
+   /**
+    * 给选择后的数据赋值
+    * @param tCstInventoryDto
+    */
+   private String setNewDate(TCstInventoryDto tCstInventoryDto) {
+	mDtoLy.setThingCode(tCstInventoryDto.getThingCode());
+	mDtoLy.setOperation(3);
+	mDtoLy.setType(tCstInventoryDto.getType());
+	mDtoLy.setConfigPatientCollar(tCstInventoryDto.getConfigPatientCollar());
+	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	for (int i=0;i<tCstInventoryDto.gettCstInventoryVos().size();i++){
+	   if (mTypeView.mCheckStates.get(i)){
+		tCstInventoryVos.add(tCstInventoryDto.gettCstInventoryVos().get(i));
+	   }
+	}
+	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	String mTCstInventoryDtoJson = mGson.toJson(mDtoLy);
+	return mTCstInventoryDtoJson;
    }
 
    private void initCallBack() {

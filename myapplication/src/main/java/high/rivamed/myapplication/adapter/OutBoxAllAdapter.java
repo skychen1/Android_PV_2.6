@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,7 +30,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
 
-   private SparseBooleanArray mCheckStates;
+   public SparseBooleanArray mCheckStates;
    public  CheckBox           mMCheckBox;
    private TextView           mSeven_two;
    private TextView           mSeven_three;
@@ -78,6 +79,8 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   @Override
 	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 		mCheckStates.put(helper.getAdapterPosition(), b);
+		Log.i("OutBoxFoutActivity","b  "+b);
+		Log.i("OutBoxFoutActivity","mCheckStates.  "+mCheckStates.get(helper.getAdapterPosition()));
 	   }
 	});
    }

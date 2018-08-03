@@ -301,7 +301,7 @@ public class NetRequest {
     * 查询患者信息
     */
    public void findSchedulesDate(String optienNameOrId,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-	OkGo.<String>get(NetApi.URL_TIMELY_DETAIL).tag(tag)
+	OkGo.<String>get(NetApi.URL_PATIENTS_FIND).tag(tag)
 		.params("thingCode", sThingCode)
 		.params("optienNameOrId", optienNameOrId)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
@@ -341,7 +341,7 @@ public class NetRequest {
 	   if (dialog!=null){
 		dialog.mDialog.dismiss();
 	   }
-
+//	   ToastUtils.showLong("response.code()= "+response.code()+"\n"+"response.message()="+response.message());
 	   Log.i("fff", "response.body()    " + response.body());
 	   Log.i("fff","response.code()    "+response.code());
 	   Log.i("fff","response.message()    "+response.message());
@@ -356,7 +356,7 @@ public class NetRequest {
 		dialog.mDialog.dismiss();
 	   }
 
-
+//	   ToastUtils.showLong("response.code()= "+response.code()+"\n"+"response.message()="+response.message());
 	   Log.i("fff", "response.body()    " + response.body());
 	   Log.i("fff","response.code()    "+response.code());
 	   Log.i("fff","response.message()    "+response.message());

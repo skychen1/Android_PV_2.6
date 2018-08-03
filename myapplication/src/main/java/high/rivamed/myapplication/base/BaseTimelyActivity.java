@@ -119,7 +119,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private int                 mLayout;
    private View                mHeadView;
    public  String              mData;
-   private TableTypeView       mTypeView;
+   public TableTypeView       mTypeView;
    public  String              mActivityType;
    private String mMovie;
    List<String> titeleList = null;
@@ -129,6 +129,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public  List<TCstInventoryVo>                       mTCstInventoryVos; //入柜扫描到的epc信息
 //   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos; //入柜扫描到的epc信息
 public TCstInventoryDto                            mTCstInventoryDto;
+
+
    private TCstInventoryDto mDto;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

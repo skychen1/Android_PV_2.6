@@ -2,7 +2,11 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -11,6 +15,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -36,19 +41,22 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 public class OutBoxBingActivity extends BaseTimelyActivity {
 
    private static final String TAG = "OutBoxBingActivity";
+   private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
 
-//   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-//   public void onEventBing(Event.EventCheckbox event) {
-//	String patient= event.mString;
-//	Log.i("ff", "mMovie  " + mMovie);
-//	if (mMovie != null) {
-//	   for (int i = 0; i < mMovies.size(); i++) {
-//		mMovies.get(i).six = mMovie;
-//
-//	   }
-//	   mPublicAdapter.notifyDataSetChanged();
-//	}
-//   }
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventBing(Event.EventCheckbox event) {
+	String patient= event.mString;
+	Log.i("ff", "mMovie  " + patient);
+	if (patient != null) {
+	   for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+		mTCstInventoryVos.get(i).setPatientName(patient);
+		mTCstInventoryVos.get(i).setPatientId(event.id);
+	   }
+	   mTimelyLeft.setEnabled(true);
+	   mTimelyRight.setEnabled(true);
+	   mTypeView.mAfterBingAdapter.notifyDataSetChanged();
+	}
+   }
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_BING;
@@ -128,8 +136,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
 												 BingFindSchedulesBean.class);
-		List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
-		DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext,patientInfos);
+		mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+		DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos);
 
 		LogUtils.i(TAG, "result   " + result);
 	   }

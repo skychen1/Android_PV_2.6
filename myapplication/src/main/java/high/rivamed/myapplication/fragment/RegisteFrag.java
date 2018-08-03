@@ -154,11 +154,16 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	applyNet();
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG,"SAVE_DEPT_NAME    "+  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
-		mFragRegisteNameEdit.setHint("2.6柜子");
-		mFragRegisteModelEdit.setHint("rivamed26");
-		mFragRegisteNumberEdit.setHint("123456789");
-		mFragRegisteSeveripEdit.setHint("192.168.2.32");
-		mFragRegistePortEdit.setHint("8015");
+//		mFragRegisteNameEdit.setHint("2.6柜子");
+//	mFragRegisteModelEdit.setHint("rivamed26");
+//	mFragRegisteNumberEdit.setHint("123456789");
+//	mFragRegisteSeveripEdit.setHint("192.168.2.32");
+//	mFragRegistePortEdit.setHint("8015");
+	mFragRegisteNameEdit.setText("2.6柜子");
+	mFragRegisteModelEdit.setText("rivamed26");
+	mFragRegisteNumberEdit.setText("1212121212");
+	mFragRegisteSeveripEdit.setText("192.168.10.25");
+	mFragRegistePortEdit.setText("8015");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
@@ -239,9 +244,9 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   if (UIUtils.isFastDoubleClick()) {
 			return;
 		   } else {
-			mFragmentBtnOne.setEnabled(false);
+//			mFragmentBtnOne.setEnabled(false);
 			String fromDate = mGson.toJson(addFromDate(null, null, null, null, null));
-			Log.i(TAG, "fromDate   " + fromDate);
+//			Log.i(TAG, "fromDate   " + fromDate);
 			setSaveRegister(fromDate, false);//注册
 		   }
 
@@ -348,6 +353,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		}
 		Log.i(TAG, "result   " + result);
 	   }
+
 	});
    }
 
