@@ -2,6 +2,10 @@ package cn.rivamed;
 
 
 import android.content.Context;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -127,6 +131,8 @@ public class DeviceManager {
     public boolean CheckDeviceConnected(String deviceId) {
         return this.connetedDevices.containsKey(deviceId);
     }
+
+
 
     public class DeviceInfo {
 

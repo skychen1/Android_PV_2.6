@@ -1,7 +1,11 @@
 package high.rivamed.myapplication.devices;
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -73,6 +77,15 @@ public class TestDevicesActivity extends SimpleActivity {
         initListener();
         initCallBack();
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
+
+        try{
+            WindowManager wm = (WindowManager)  getSystemService(Context.WINDOW_SERVICE);
+            DisplayMetrics dm = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(dm);
+            AppendLog("获取有效屏幕分辨率:X="+ dm.widthPixels+";Y="+ dm.heightPixels);
+        }catch (Throwable e){
+
+        }
 
         AppendLog("程序已启动");
 
