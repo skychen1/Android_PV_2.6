@@ -26,6 +26,7 @@ import cn.rivamed.device.ConnetedDevices;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.device.Service.Eth002Service.Eth002Service;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
+import cn.rivamed.device.Service.UhfService.ColuUhf.ColuNettyService;
 import cn.rivamed.device.Service.UhfService.ColuUhf.ColuReaderService;
 import cn.rivamed.device.Service.UhfService.RodinBellUhf.RodinBellService;
 import cn.rivamed.device.Service.UhfService.UhfDeviceType;
@@ -264,6 +265,8 @@ public class DeviceManager {
                 case UHF_READER_RODINBELL:
                     uhfService = new RodinBellService(this.uhf_Port);
                     break;
+                case  UHF_READER_COLU_NETTY:
+                    uhfService=new ColuNettyService(this.uhf_Port);
                 case UHF_READER_COLU:
                     uhfService = new ColuReaderService(this.uhf_Port);
                     break;
