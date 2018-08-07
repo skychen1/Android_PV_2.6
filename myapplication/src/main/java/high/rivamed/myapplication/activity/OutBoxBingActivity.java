@@ -42,20 +42,30 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    private static final String TAG = "OutBoxBingActivity";
    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
-
+   private String mRvEventString;
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
 	String patient= event.mString;
 	Log.i("ff", "mMovie  " + patient);
-	if (patient != null) {
-	   for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-		mTCstInventoryVos.get(i).setPatientName(patient);
-		mTCstInventoryVos.get(i).setPatientId(event.id);
+	if (event.type!=null && event.type.equals("firstBind")){
+
+	}else {
+	   if (patient != null) {
+		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+		   mTCstInventoryVos.get(i).setPatientName(patient);
+		   mTCstInventoryVos.get(i).setPatientId(event.id);
+		}
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
+		mTypeView.mAfterBingAdapter.notifyDataSetChanged();
 	   }
-	   mTimelyLeft.setEnabled(true);
-	   mTimelyRight.setEnabled(true);
-	   mTypeView.mAfterBingAdapter.notifyDataSetChanged();
 	}
+
+   }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onRvEvent(Event.EventString event) {
+	mRvEventString = event.mString;
+	loadBingDate(mRvEventString);
    }
    @Override
    public int getCompanyType() {
@@ -122,23 +132,23 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
-		loadBingDate();
+		loadBingDate("");
 		break;
 	}
    }
 
    /**
-    * 获取
+    * 获取需要绑定的患者
     */
-   private void loadBingDate() {
-	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
+   private void loadBingDate(String optienNameOrId) {
+
+	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
 												 BingFindSchedulesBean.class);
 		mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-		DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos);
-
+		DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos,"afterBind",-1,null);
 		LogUtils.i(TAG, "result   " + result);
 	   }
 	});

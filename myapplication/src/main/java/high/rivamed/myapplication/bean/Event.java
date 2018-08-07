@@ -3,6 +3,8 @@ package high.rivamed.myapplication.bean;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import java.util.List;
+
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 /**
@@ -28,6 +30,9 @@ public class Event {
    public static class EventCheckbox {
 	public String mString;
 	public String id;
+	public String type;
+	public int position;
+	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
 	public EventCheckbox(String trim) {
 	   this.mString = trim;
@@ -35,6 +40,18 @@ public class Event {
 	public EventCheckbox(String trim,String id) {
 	   this.mString = trim;
 	   this.id = id;
+	}
+	public EventCheckbox(String trim,String id,String type) {
+	   this.mString = trim;
+	   this.id = id;
+	   this.type = type;
+	}
+	public EventCheckbox(String name,String id,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   this.mString = name;
+	   this.id = id;
+	   this.type = type;
+	   this.position = position;
+	   this.mTbaseDevices = mTbaseDevices;
 	}
    }
    public static class SettingEvent {
@@ -116,6 +133,20 @@ public class Event {
 	   this.type = type;
 	   this.tCstInventoryDto = tCstInventoryDto;
 
+	}
+   }
+   public static class EventString {
+	public String mString;
+
+	public EventString(String text) {
+	   this.mString = text;
+	}
+   }
+   public static class EventBoolean {
+	public boolean mBoolean;
+
+	public EventBoolean(boolean booleans) {
+	   this.mBoolean = booleans;
 	}
    }
 }

@@ -20,6 +20,7 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -53,7 +54,7 @@ public class DialogUtils {
 
    private static String sTimes;
 
-	public static void showRvDialog(Activity activity, final Context context,List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+	public static void showRvDialog(Activity activity, final Context context,List<BingFindSchedulesBean.PatientInfosBean> patientInfos,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 		RvDialog.Builder builder = new RvDialog.Builder(activity, context,patientInfos);
 		builder.setMsg("耗材中包含过期耗材，请查看！");
 		builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -65,17 +66,24 @@ public class DialogUtils {
 		builder.setRight("确认", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int i) {
-
-				for (int x = 0; x <= patientInfos.size(); x++) {
+				if (type.equals("firstBind")){//先绑定患者
+				   for (int x = 0; x <= patientInfos.size(); x++) {
 					if (RvDialog.sTableTypeView.mCheckStates.get(x)) {
-						RvDialog.patientInfosBean = patientInfos.get(x);
-						Log.i("vv", "   " + RvDialog.patientInfosBean.getPatientName() + "   " +
-								RvDialog.sTableTypeView.mCheckStates.get(x));
-						EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.patientInfosBean.getPatientName()));
-						String title = "患者绑定成功";
-						DialogUtils.showNoDialog(context, title, 2, "nojump", null);
-						dialog.dismiss();
+					   RvDialog.patientInfosBean = patientInfos.get(x);
+					   EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.patientInfosBean.getPatientName(),RvDialog.patientInfosBean.getPatientId(),"firstBind",position,mTbaseDevices));
+					   dialog.dismiss();
 					}
+				   }
+				}else {//后绑定
+				   for (int x = 0; x <= patientInfos.size(); x++) {
+					if (RvDialog.sTableTypeView.mCheckStates.get(x)) {
+					   RvDialog.patientInfosBean = patientInfos.get(x);
+					   EventBusUtils.postSticky(new Event.EventCheckbox(RvDialog.patientInfosBean.getPatientName(),RvDialog.patientInfosBean.getPatientId()));
+					   String title = "患者绑定成功";
+					   DialogUtils.showNoDialog(context, title, 2, "nojump", null);
+					   dialog.dismiss();
+					}
+				   }
 				}
 			}
 		});
@@ -367,6 +375,7 @@ public class DialogUtils {
                dialog.dismiss();
            }
        });
+
        builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
            @Override
            public void getDialogDate(

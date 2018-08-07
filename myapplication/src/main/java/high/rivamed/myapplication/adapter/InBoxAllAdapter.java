@@ -49,7 +49,6 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
-
 	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getCstName());
 	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getDeviceName());
 	TextView mSeven_one = ((TextView) helper.getView(R.id.seven_one));
@@ -58,6 +57,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	TextView mSeven_four = ((TextView) helper.getView(R.id.seven_four));
 	TextView mSeven_five = ((TextView) helper.getView(R.id.seven_five));
 	TextView mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+
 	String status = item.getStatus();
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
@@ -98,5 +98,6 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 		mSeven_four.setBackgroundResource(R.color.bg_f);
 	   }
 	}
+
    }
 }

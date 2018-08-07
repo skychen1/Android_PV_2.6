@@ -64,7 +64,7 @@ public class LoadingDialog extends Dialog {
 	   View layout = inflater.inflate(R.layout.dialog_loading_layout, null);
 	   mDialog.addContentView(layout,
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-									    ViewGroup.LayoutParams.WRAP_CONTENT));
+									    ViewGroup.LayoutParams.MATCH_PARENT));
 
 	   return mDialog;
 	}

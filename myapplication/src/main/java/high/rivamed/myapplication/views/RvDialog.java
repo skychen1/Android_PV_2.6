@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,8 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
-import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
@@ -52,7 +55,7 @@ public class RvDialog extends Dialog {
    }
 
    public static class Builder {
-	EditText           mSearchEt;
+	public EditText           mSearchEt;
 	ImageView          mSearchIvDelete;
 	FrameLayout        mStockSearch;
 	LinearLayout       mLinearLayout;
@@ -176,7 +179,23 @@ public class RvDialog extends Dialog {
 //
 //		}
 //	   });
+	   mSearchEt.addTextChangedListener(new TextWatcher() {
+		@Override
+		public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+		}
+
+		@Override
+		public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+		   String trim = charSequence.toString().trim();
+		   EventBusUtils.postSticky(new Event.EventString(trim));
+		}
+
+		@Override
+		public void afterTextChanged(Editable editable) {
+
+		}
+	   });
 	   if (mLeftTextColor != -1) {
 		mDialogLeft.setTextColor(mLeftTextColor);
 		mDialogRight.setTextColor(mRightTextColor);
@@ -198,22 +217,5 @@ public class RvDialog extends Dialog {
 	   });
 	   return dialog;
 	}
-   }
-
-   public static List<Movie> genData5() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-
-	for (int i = 0; i < 15; i++) {
-	   String three = "33333" + i;
-	   String four = "2019-11-22 13:20";
-	   String five = "王麻子"+i;
-	   String six = i+"号手术间";
-	   String two = "王麻"+i;
-
-	   Movie movie = new Movie(null, two, three, four, five, six, null, null);
-	   list.add(movie);
-	}
-	return list;
    }
 }

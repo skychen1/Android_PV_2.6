@@ -132,7 +132,7 @@ public class NetRequest {
     */
    public void loadBoxSize(Object tag,
 				   NetResult netResult) {
-
+LogUtils.i("cc",NetApi.URL_HOME_BOXSIZE);
 	OkGo.<String>get(NetApi.URL_HOME_BOXSIZE).tag(tag)
 		.params("thingCode", sThingCode)
 		.execute(new MyCallBack(tag,netResult,true));
@@ -297,6 +297,16 @@ public class NetRequest {
 		.upJson(tCstInventoryDto)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+
+   /**
+    * 患者绑定
+    */
+   public void bingPatientsDate(String tCstInventoryVo ,Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>post(NetApi.URL_BIND_PATIENT).tag(tag)
+		.upJson(tCstInventoryVo )
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
+
    /**
     * 查询患者信息
     */
@@ -306,6 +316,16 @@ public class NetRequest {
 		.params("optienNameOrId", optienNameOrId)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+
+   /**
+    * 查询所有的配置项
+    */
+   public void findThingConfigDate(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	OkGo.<String>get(NetApi.URL_THING_CONFIG_FIND).tag(tag)
+		.params("thingCode", sThingCode)
+		.execute(new MyCallBack(tag,dialog,netResult, false));
+   }
+
    private class MyCallBack extends StringCallback {
 
 

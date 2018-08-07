@@ -57,7 +57,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    int mType;
    private InBoxDtoBean          mInBoxDtoBean;
    private boolean               mSuccess;
-   private TCstInventoryDto      mTCstInventoryDto;
+   private TCstInventoryDto      mTCstInventoryDtos;
    private LoadingDialog.Builder mShowLoading;
    private String                uhfDeviceId;
 
@@ -155,7 +155,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	TCstInventoryDto dto = new TCstInventoryDto();
 	dto.settCstInventoryVos(mTCstInventoryVos);
-	dto.setOperation(-1);//多个操作
+	dto.setOperation(mTCstInventoryDto.getOperation());
+//	if (mTCstInventoryDto)
+//	dto.setOperation(-1);//多个操作
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
 	NetRequest.getInstance().putOperateYes(s, this, mShowLoading, new BaseResult() {
@@ -285,6 +287,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	deviceList.add(deviceInventoryVo);
 
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
 
 	String toJson = mGson.toJson(tCstInventoryDto);
@@ -293,13 +296,14 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
-		mTCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		if (mTCstInventoryDto.gettCstInventoryVos() == null) {
+		mTCstInventoryDtos = mGson.fromJson(result, TCstInventoryDto.class);
+		if (mTCstInventoryDtos.gettCstInventoryVos() == null) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		} else {
-		   EventBusUtils.postSticky(mTCstInventoryDto);
+		   EventBusUtils.postSticky(mTCstInventoryDtos);
+		   EventBusUtils.postSticky(mActivityType);
 		}
 
 		mShowLoading.mDialog.dismiss();

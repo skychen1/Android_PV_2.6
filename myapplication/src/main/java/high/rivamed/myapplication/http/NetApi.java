@@ -20,7 +20,8 @@ public interface NetApi {
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
 //    String BETA_URL     = "http://192.168.2.32:8015/cst";
-    String BETA_URL     = "http://192.168.10.25:8015/cst";
+//    String BETA_URL     = "";
+    String BETA_URL     = "http://192.168.11.60:8016/cst";
     String BETA_URL2     = "http://192.168.2.41:8015/cst";
 
     //工程模式
@@ -51,6 +52,7 @@ public interface NetApi {
    String URL_OPERATE_YC_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
    String URL_OPERATE_DB_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
+
    //用户
    String URL_USER_LOGIN  = BETA_URL2 + "/rmApi/restLogin/validateLoginPassword";//登录
     String URL_USER_GET_INFO  = BETA_URL2 + "/rmApi/userManage/account/findAppAccountInfo";//获取用户信息
@@ -66,4 +68,10 @@ public interface NetApi {
 
    //患者绑定
    String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatients";//患者查询
+   String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/saveGetPatientCst";//患者绑定
+
+   //查询配置项
+   String URL_THING_CONFIG_FIND = MAIN_URL + "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项
+
+
 }

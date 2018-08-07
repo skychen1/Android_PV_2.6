@@ -47,6 +47,7 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -436,12 +437,15 @@ public class TimelyAllFrag extends SimpleFragment {
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
 
 	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
-	List<TCstInventoryVo> tcstInventoryVos = new ArrayList<>();            //耗材信息
-
+//	List<TCstInventoryVo> tcstInventoryVos = new ArrayList<>();
+	List<TCstInventory> epcList = new ArrayList<>(); //耗材信息
 	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-	   TCstInventoryVo tCstInventoryVo = new TCstInventoryVo();
-	   tCstInventoryVo.setEpc(v.getKey());
-	   tcstInventoryVos.add(tCstInventoryVo);
+	   TCstInventory tCstInventory = new TCstInventory();
+	   tCstInventory.setEpc(v.getKey());
+	   epcList.add(tCstInventory);
+//	   TCstInventoryVo tCstInventoryVo = new TCstInventoryVo();
+//	   tCstInventoryVo.setEpc(v.getKey());
+//	   tcstInventoryVos.add(tCstInventoryVo);
 	}
 	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
 	List<DeviceInventoryVo> deviceList = new ArrayList<>();
@@ -452,7 +456,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	   Log.i(TAG, "device_id   " + box_id);
 	   deviceInventoryVo.setDeviceCode(box_id);
 	}
-	deviceInventoryVo.settCstInventoryVos(tcstInventoryVos);
+//	deviceInventoryVo.settCstInventoryVos(tcstInventoryVos);
+	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);
 
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));

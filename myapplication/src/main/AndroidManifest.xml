@@ -35,10 +35,12 @@
 
         <meta-data
             android:name="design_width"
-            android:value="1920"></meta-data>
+            android:value="1920">
+        </meta-data>
         <meta-data
             android:name="design_height"
-            android:value="1200"></meta-data>
+            android:value="1200">
+        </meta-data>
 
         <activity
             android:name=".activity.LoginActivity"
@@ -51,7 +53,9 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            />
+
         <activity
             android:name=".activity.MyInfoActivity"
             android:launchMode="singleInstance"
@@ -92,7 +96,8 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.RegisteActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".activity.OutMealBingConfirmActivity"

@@ -96,7 +96,7 @@ public class TableTypeView extends LinearLayout {
    public SparseBooleanArray mCheckStates  = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates1 = new SparseBooleanArray();
    public SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
-   public int                mSelectedPos  = -1;
+
    private String          mMovie;
    public  InBoxAllAdapter mInBoxAllAdapter;
    public OutBoxAllAdapter mOutBoxAllAdapter;
@@ -327,15 +327,29 @@ public class TableTypeView extends LinearLayout {
 										 mCheckStates);
 //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
 //									     mCheckStates);
-
+			for (int i = 0; i < mCheckStates.size(); i++) {
+			   mCheckStates.put(i, false);
+			}
 			mBingOutAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
-				for (int i = 0; i < mCheckStates.size(); i++) {
-				   mCheckStates.put(i, false);
+				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
+				if (checkBox.isChecked()) {
+				   checkBox.setChecked(false);
+				   mCheckStates.put(position, false);
+				} else {
+				   mCheckStates.put(position, true);
+				   checkBox.setChecked(true);
 				}
-				mCheckStates.put(position, true);
+				for (int i = 0; i < mCheckStates.size(); i++) {
+				   if (i==position){
+					mCheckStates.put(i, true);
+					checkBox.setChecked(true);
+				   }else {
+					mCheckStates.put(i, false);
+					checkBox.setChecked(false);
+				   }
+				}
 				mBingOutAdapter.notifyDataSetChanged();
 			   }
 			});

@@ -21,7 +21,6 @@ import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBean;
 import high.rivamed.myapplication.bean.Event;
@@ -40,13 +39,17 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.initServer;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -99,11 +102,14 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    private DeviceNameBean                              mNameBean;
    private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
    private RegisteReturnBean                           mSnRecoverBean;
+   private NetWorkReceiver mNetWorkReceiver;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
 
 	if (event.dialog != null) {
+	   event.dialog.dismiss();
+	   event.dialog=null;
 	   String s = mGson.toJson(
 		   addFromDate(event.deptName, event.branchCode, event.deptCode, event.storehouseCode,
 				   event.operationRoomNo));
@@ -115,7 +121,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
 //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
 	   setSaveRegister(s, true);
-	   event.dialog.dismiss();
+
 	}
 
    }
@@ -124,13 +130,14 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    public void onRecoverEvent(RegisteReturnBean event) {
 	mSnRecoverBean = event;
 	String s = mGson.toJson(event);
+	LogUtils.i(TAG, "我是恢复的   " + s);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, mSnRecoverBean.getTbaseThing().getDeptName());
 	setRegiestDate(s);
 	setSaveRegister(s, true);
 
-	Log.i(TAG, "我是恢复的   " + s);
+
 	//	setSaveRegister(s, true);
    }
 
@@ -157,13 +164,13 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 //		mFragRegisteNameEdit.setHint("2.6柜子");
 //	mFragRegisteModelEdit.setHint("rivamed26");
 //	mFragRegisteNumberEdit.setHint("123456789");
-//	mFragRegisteSeveripEdit.setHint("192.168.2.32");
+//	mFragRegisteSeveripEdit.setHint("192.168.10.25");
 //	mFragRegistePortEdit.setHint("8015");
-	mFragRegisteNameEdit.setText("2.6柜子");
-	mFragRegisteModelEdit.setText("rivamed26");
-	mFragRegisteNumberEdit.setText("1212121212");
-	mFragRegisteSeveripEdit.setText("192.168.10.25");
-	mFragRegistePortEdit.setText("8015");
+//	mFragRegisteNameEdit.setText("2.6柜子");
+//	mFragRegisteModelEdit.setText("rivamed26");
+//	mFragRegisteNumberEdit.setText("1212121212");
+//	mFragRegisteSeveripEdit.setText("192.168.10.25");
+//	mFragRegistePortEdit.setText("8015");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
@@ -171,10 +178,15 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    }
    private void applyNet() {
 	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-	NetWorkReceiver netWorkReceiver = new NetWorkReceiver();
-	mContext.registerReceiver(netWorkReceiver, filter);
-	netWorkReceiver.setInteractionListener(this);
+	mNetWorkReceiver = new NetWorkReceiver();
+	   _mActivity.registerReceiver(mNetWorkReceiver, filter);
+	   mNetWorkReceiver.setInteractionListener(this);
+   }
 
+   @Override
+   public void onDestroy() {
+	super.onDestroy();
+	_mActivity.unregisterReceiver(mNetWorkReceiver);
    }
 
    @Override
@@ -211,8 +223,9 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
+		LogUtils.i(TAG, "原有的   " + string);
 		setRegiestDate(string);
-		Log.i(TAG, "原有的   " + string);
+
 		mFragmentBtnOne.setText("已激活");
 		mFragmentBtnOne.setEnabled(false);
 	   } else {
@@ -244,13 +257,11 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   if (UIUtils.isFastDoubleClick()) {
 			return;
 		   } else {
-//			mFragmentBtnOne.setEnabled(false);
+			mFragmentBtnOne.setEnabled(false);
 			String fromDate = mGson.toJson(addFromDate(null, null, null, null, null));
-//			Log.i(TAG, "fromDate   " + fromDate);
+			LogUtils.i(TAG, "fromDate   " + fromDate);
 			setSaveRegister(fromDate, false);//注册
 		   }
-
-		   //		   addFromDate();
 		}
 	   });
 	}
@@ -265,8 +276,8 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	mFragRegisteNameEdit.setText(tbaseThing.getThingName());
 	mFragRegisteModelEdit.setText(tbaseThing.getThingType());
 	mFragRegisteNumberEdit.setText(tbaseThing.getSn());
-	mFragRegisteSeveripEdit.setText(tbaseThing.getServerIp());
-	mFragRegistePortEdit.setText(tbaseThing.getPortNumber());
+	mFragRegisteSeveripEdit.setText(SPUtils.getString(mContext,SAVE_SEVER_IP_TEXT));
+	mFragRegistePortEdit.setText(SPUtils.getString(mContext,SAVE_SEVER_CODE));
 	List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac = new ArrayList<>();
 	List<TBaseDevices> mTBaseDevicesAll = new ArrayList<>();
 
@@ -322,7 +333,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
    //提交预注册的数据
    private void setSaveRegister(String fromDate, boolean type) {
-	Log.i(TAG, "调用了几次");
+
 	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -351,7 +362,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   putDbDate(registeReturnBean);
 		   initData();
 		}
-		Log.i(TAG, "result   " + result);
+		LogUtils.i(TAG, "result   " + result);
 	   }
 
 	});
@@ -475,9 +486,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		List<String> strings = new ArrayList<>();
 		for (int i = 0; i < mDeviceInfos.size(); i++) {
 		   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
-		   Log.i("xxf", "getIdentifition   " + mDeviceInfos.get(i).getIdentifition());
-		   Log.i("xxf", "getRemoteIP   " + mDeviceInfos.get(i).getRemoteIP());
-		   Log.i("xxf", "getDeviceType   " + mDeviceInfos.get(i).getDeviceType().toString());
 		}
 		if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
 		    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
@@ -492,8 +500,13 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				@Override
 				public void onSucceed(String result) {
 				   SPUtils.putString(mContext,SAVE_SEVER_IP,url);
-				   App.initServer();//给设备设置IP
-				   Log.i("xxf", "result   " + result);
+				   SPUtils.putString(mContext,SAVE_SEVER_IP_TEXT, mFragRegisteSeveripEdit.getText().toString().trim());
+				   SPUtils.putString(mContext,SAVE_SEVER_CODE, mFragRegistePortEdit.getText().toString().trim());
+//				   App.initServer();//给设备设置IP
+				   initServer();
+//				   MAIN_URL=SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+				   Log.i(TAG, "App.MAIN_URL   " + MAIN_URL);
+				   LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext,SAVE_SEVER_IP));
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();
 				   mBaseDevices = generateData();
