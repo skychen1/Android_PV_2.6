@@ -44,6 +44,7 @@ import high.rivamed.myapplication.activity.TimelyProfitActivity;
 import high.rivamed.myapplication.adapter.TimelyAllAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
@@ -51,6 +52,7 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -138,6 +140,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private       List<TCstInventoryVo> mTCstInventoryVos;
    private       TCstInventoryDto      mCstInventoryDto;
    private       TimelyAllAdapter      mTimelyAllAdapter;
+   private       String                mToJson;
    //   private LoadingDialog.Builder mBuilder;
 
    public TimelyAllFrag(List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices, int position) {
@@ -166,7 +169,6 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + reduce + "</font>"));
 	mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
-
 	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -181,21 +183,38 @@ public class TimelyAllFrag extends SimpleFragment {
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 
-//	if (mTCstInventoryVos == null) {
-	   mHeadView.setBackgroundResource(R.color.bg_green);
-	   mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
-	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	   mRefreshLayout.setEnableAutoLoadMore(true);
-	   mLinearLayout.addView(mHeadView);
-	   mRecyclerview.setAdapter(mTimelyAllAdapter);
-	   View inflate = getLayoutInflater().inflate(R.layout.recy_null, null);
-	   mTimelyAllAdapter.setEmptyView(inflate);
-//	}
+	mHeadView.setBackgroundResource(R.color.bg_green);
+	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
+	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	mRefreshLayout.setEnableAutoLoadMore(true);
+	mLinearLayout.addView(mHeadView);
+	mRecyclerview.setAdapter(mTimelyAllAdapter);
+	View inflate = getLayoutInflater().inflate(R.layout.recy_null, null);
+	mTimelyAllAdapter.setEmptyView(inflate);
 	mTimelyAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
+
+		LogUtils.i(TAG, "详情 position   " + position);
+		String cstCode = mTCstInventoryVos.get(position).getCstCode();
+		LogUtils.i(TAG, "cstCode  " + cstCode);
+		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
+		tCstInventoryDto.setCstCode(cstCode);
+		String s = mGson.toJson(tCstInventoryDto);
+		LogUtils.i(TAG, "详情 s   " + s);
+		NetRequest.getInstance().getDetailDate(s, this, null, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "详情 result   " + result);
+			TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
+											   TCstInventoryDto.class);
+			tCstInventoryDto.setEpcName(mTCstInventoryVos.get(position).getCstName());
+			tCstInventoryDto.setCstSpec(mTCstInventoryVos.get(position).getCstSpec());
+			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
+			EventBusUtils.postSticky(new Event.timelyDate("详情", tCstInventoryDto));
+		   }
+		});
 	   }
 	});
 
@@ -219,14 +238,56 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
+		   if (mToJson == null) {
+			ToastUtils.showShort("请先盘点后再查看");
+		   } else {
+			LogUtils.i(TAG, "盘盈 s   " + mToJson);
+			NetRequest.getInstance().getProfitDate(mToJson, this, null, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i(TAG, "盘盈 result   " + result);
+				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
+												   TCstInventoryDto.class);
+				if (tCstInventoryDto.getInventorys().size()>0){
+				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
+				   tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
+				   EventBusUtils.postSticky(new Event.timelyDate("盘盈", tCstInventoryDto));
+				}else {
+				  ToastUtils.showShort("暂无详情数据");
+				}
+			   }
+			});
+		   }
+
+		   //		   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
+		   //		   EventBusUtils.postSticky(new Event.EventAct("盘盈"));
 		}
 		break;
 	   case R.id.timely_loss://盘亏
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
+		   if (mToJson == null) {
+			ToastUtils.showShort("请先盘点后再查看");
+		   } else {
+			LogUtils.i(TAG, "盘亏 s   " + mToJson);
+			NetRequest.getInstance().getLossesDate(mToJson, this, null, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i(TAG, "盘亏 result   " + result);
+				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
+												   TCstInventoryDto.class);
+				tCstInventoryDto.setReduce(mCstInventoryDto.getReduce());
+				if (tCstInventoryDto.getInventorys().size()>0){
+				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
+				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", tCstInventoryDto));
+				}else {
+				   ToastUtils.showShort("暂无详情数据");
+				}
+			   }
+			});
+		   }
+
 		}
 		break;
 	}
@@ -397,10 +458,10 @@ public class TimelyAllFrag extends SimpleFragment {
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
 
-	String toJson = mGson.toJson(tCstInventoryDto);
-	LogUtils.i(TAG, "toJson    " + toJson);
+	mToJson = mGson.toJson(tCstInventoryDto);
+	LogUtils.i(TAG, "toJson    " + mToJson);
 
-	NetRequest.getInstance().startTimelyScan(toJson, _mActivity, null, new BaseResult() {
+	NetRequest.getInstance().startTimelyScan(mToJson, _mActivity, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
@@ -408,6 +469,12 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (mTCstInventoryVos == null) {
 		   mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		   mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+		   int number = 0;
+		   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
+			number += TCstInventoryVo.getCountStock();
+		   }
+		   initDate(epcs.size(), mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(),
+				number);
 		} else {
 		   mCstInventoryDto = null;
 		   mTCstInventoryVos.clear();
@@ -415,12 +482,21 @@ public class TimelyAllFrag extends SimpleFragment {
 		   List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
 		   mTCstInventoryVos.addAll(tCstInventoryVos);
 		   mTimelyAllAdapter.notifyDataSetChanged();
+		   int number = 0;
+		   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
+			number += TCstInventoryVo.getCountStock();
+		   }
+		   mTimelyReality.setText(Html.fromHtml(
+			   "实际扫描数：<font color='#F5222D'><big>" + epcs.size() + "</big>&emsp</font>"));
+		   mTimelyBook.setText(Html.fromHtml(
+			   "账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
+
+		   mTimelyLoss.setText(Html.fromHtml(
+			   "盘亏：" + "<font color='#F5222D'>" + mCstInventoryDto.getReduce() + "</font>"));
+		   mTimelyProfit.setText(Html.fromHtml(
+			   "盘盈：" + "<font color='#F5222D'>" + mCstInventoryDto.getAdd() + "</font>"));
 		}
-		int number = 0;
-		for (TCstInventoryVo TCstInventoryVo:mTCstInventoryVos){
-		   number += TCstInventoryVo.getCountStock();
-		}
-		initDate(epcs.size(), mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(), number);
+
 	   }
 	});
 

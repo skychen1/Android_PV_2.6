@@ -154,26 +154,26 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	} else if (mSize == 6) {
 	   Log.i("xxx", "xxxxxxxxxxxxxxxxxx");
 	   if (mType != null && mType.equals(STYPE_DIALOG)) {
-		LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
-		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
-		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-		mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-		mSeven_two.setText(item.two);
-		mSeven_three.setText(item.three);
-		mSeven_four.setText(item.four);
-		mSeven_five.setText(item.five);
-		mSeven_six.setText(item.six);
-		mCheckBox.setOnCheckedChangeListener(null);
-		mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
-		mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-		   @Override
-		   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-			mCheckStates.put(helper.getAdapterPosition(), b);
-		   }
-		});
+//		LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
+//		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+//		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
+//		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
+//		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
+//		mSeven_five = ((TextView) helper.getView(R.id.seven_five));
+//		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+//		mSeven_two.setText(item.two);
+//		mSeven_three.setText(item.three);
+//		mSeven_four.setText(item.four);
+//		mSeven_five.setText(item.five);
+//		mSeven_six.setText(item.six);
+//		mCheckBox.setOnCheckedChangeListener(null);
+//		mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+//		mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//		   @Override
+//		   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//			mCheckStates.put(helper.getAdapterPosition(), b);
+//		   }
+//		});
 	   } else if (mType != null && mType.equals(STYPE_IN)) {
 		findId(helper, mSize);
 		mSeven_one.setText(item.one);
@@ -288,26 +288,26 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
 	   }
 	} else if (mSize == 7) {
 	   if (mType != null && mType.equals(STYPE_BING)) {
-		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
-		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-		mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-		mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-
-		if (item.seven.equals("1")) {
-		   mCheckBox.setChecked(true);
-		} else {
-		   mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
-		}
-		mSeven_two.setText(item.one);
-		mSeven_three.setText(item.two);
-		mSeven_four.setText(item.three);
-		mSeven_five.setText(item.four);
-		mSeven_six.setText(item.five);
-		mSeven_seven.setText(item.six);
-		initTermOfValidity(helper, item.four, mSeven_five);
+//		CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+//		mSeven_two = ((TextView) helper.getView(R.id.seven_two));
+//		mSeven_three = ((TextView) helper.getView(R.id.seven_three));
+//		mSeven_four = ((TextView) helper.getView(R.id.seven_four));
+//		mSeven_five = ((TextView) helper.getView(R.id.seven_five));
+//		mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+//		mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
+//
+//		if (item.seven.equals("1")) {
+//		   mCheckBox.setChecked(true);
+//		} else {
+//		   mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+//		}
+//		mSeven_two.setText(item.one);
+//		mSeven_three.setText(item.two);
+//		mSeven_four.setText(item.three);
+//		mSeven_five.setText(item.four);
+//		mSeven_six.setText(item.five);
+//		mSeven_seven.setText(item.six);
+//		initTermOfValidity(helper, item.four, mSeven_five);
 	   } else if (mType != null && mType.equals(STYPE_FORM)) {
 		findId(helper, mSize);
 		LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);

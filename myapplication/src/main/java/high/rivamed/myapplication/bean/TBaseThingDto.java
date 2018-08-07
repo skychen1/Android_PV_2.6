@@ -50,8 +50,17 @@ public class TBaseThingDto implements Serializable {
    public static class HospitalInfoVo {//激活的时候医院信息
 	private String         storehouseCode;
 	private String         deptCode;
+	private String         deptName;
 	private String         operationRoomNo;
 	private String         branchCode;
+
+	public String getDeptName() {
+	   return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+	   this.deptName = deptName;
+	}
 
 	public String getBranchCode() {
 	   return branchCode;

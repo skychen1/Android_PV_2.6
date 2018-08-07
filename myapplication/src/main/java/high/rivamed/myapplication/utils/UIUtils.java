@@ -3,6 +3,8 @@ package high.rivamed.myapplication.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -148,4 +150,21 @@ public class UIUtils {
 	}
 
    }
+
+	private static InputFilter filter = new InputFilter() {
+		@Override
+		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+			//返回null表示接收输入的字符,返回空字符串表示不接受输入的字符
+			if (source.equals(" "))
+				return "";
+			else
+				return null;
+		}
+	};
+
+	public static void setInputLenWithNoBlank(TextView textView, int max) {
+
+		textView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(max), filter});
+
+	}
 }

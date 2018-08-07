@@ -26,14 +26,57 @@ public class TCstInventoryVo implements Serializable {
 	private int countStock ; // 库存情况  账面
 	private int countActual ; // 扫描出来的库存
 
-	private String count ;
+	private int count ;
 	private String lastUpdateDate;
 	private String userName;
 	// 前端状态显示字段
 
 	private String statusStr;
+   private String patientName;
+   private String patientId;
+   private int    size;
+   private String name;
+   private String type;
 
+   public String getPatientName() {
+	return patientName;
+   }
 
+   public void setPatientName(String patientName) {
+	this.patientName = patientName;
+   }
+
+   public String getPatientId() {
+	return patientId;
+   }
+
+   public void setPatientId(String patientId) {
+	this.patientId = patientId;
+   }
+
+   public int getSize() {
+	return size;
+   }
+
+   public void setSize(int size) {
+	this.size = size;
+   }
+
+   public String getName() {
+	return name;
+   }
+
+   public void setName(String name) {
+	this.name = name;
+   }
+
+   public String getType() {
+	return type;
+   }
+
+   public void setType(String type) {
+	this.type = type;
+   }
 
    public String getCstName() {
 	return cstName;
@@ -75,11 +118,11 @@ public class TCstInventoryVo implements Serializable {
 	this.deviceName = deviceName;
    }
 
-   public String getCount() {
+   public int getCount() {
 	return count;
    }
 
-   public void setCount(String count) {
+   public void setCount(int count) {
 	this.count = count;
    }
 

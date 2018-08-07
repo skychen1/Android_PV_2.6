@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.SocketLeftDownBean;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -27,7 +27,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 
-public class StockLeftDownAdapter extends BaseQuickAdapter<SocketLeftDownBean.TCstInventoryVosBean, BaseViewHolder> {
+public class StockLeftDownAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
 
    private TextView mSeven_one;
    private TextView mSeven_two;
@@ -45,7 +45,7 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<SocketLeftDownBean.TC
    private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
    public CheckBox mMCheckBox;
 
-   public StockLeftDownAdapter(int layout, List<SocketLeftDownBean.TCstInventoryVosBean> inventoryVos, int size) {
+   public StockLeftDownAdapter(int layout, List<TCstInventoryVo> inventoryVos, int size) {
 	super(layout, inventoryVos);
 	this.mSize = size;
 	this.mData = inventoryVos;
@@ -64,7 +64,7 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<SocketLeftDownBean.TC
    }
 
    @Override
-   protected void convert(final BaseViewHolder helper, SocketLeftDownBean.TCstInventoryVosBean item) {
+   protected void convert(final BaseViewHolder helper, TCstInventoryVo item) {
 	Log.i("xxx", "xxxxxxxxxxxxxxxxxx");
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);

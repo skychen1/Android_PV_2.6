@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
+	Log.i("TimelyAllFrag", "item.getCstCode()   " + item.getCstCode());
 	int six = item.getCountStock();
 	int five = item.getCountActual();
 	mSeven_one.setText(item.getCstName());

@@ -34,7 +34,7 @@
 				android:layout_marginLeft="@dimen/x530"
 				android:layout_marginTop="@dimen/x266"
 				android:drawableLeft="@mipmap/hccz_ic_nc"
-				android:text="用户名：账上"
+				android:text=""
 				android:textColor="@color/text_color_6"
 				android:drawablePadding="@dimen/x20"
 				android:textSize="@dimen/textsize_18"/>
@@ -49,6 +49,7 @@
 				android:drawableLeft="@mipmap/hccz_ic_ks"
 				android:textColor="@color/text_color_6"
 				android:text="科室：xxx科室xx库房"
+				android:visibility="gone"
 				android:textSize="@dimen/textsize_18"/>
 
 			<TextView
@@ -60,7 +61,7 @@
 				android:paddingTop="@dimen/x50"
 				android:textColor="@color/text_color_6"
 				android:drawablePadding="@dimen/x20"
-				android:text="角色：护士-x"
+				android:text=""
 				android:textSize="@dimen/textsize_18"/>
 
 			<TextView
@@ -73,6 +74,7 @@
 				android:drawablePadding="@dimen/x20"
 				android:paddingTop="@dimen/x50"
 				android:text="备注：xxxxx"
+				android:visibility="gone"
 				android:textSize="@dimen/textsize_18"/>
 		</LinearLayout>
 
@@ -92,9 +94,10 @@
 			android:src="@mipmap/text_nor"
 			/>
 		<TextView
+			android:id="@+id/setting_account_name"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="王麻子"
+			android:text=""
 			android:layout_marginTop="@dimen/x40"
 			android:textSize="@dimen/textsize_24"
 			android:textColor="@color/text_color_3"

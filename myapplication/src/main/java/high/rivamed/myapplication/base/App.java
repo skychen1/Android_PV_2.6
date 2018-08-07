@@ -1,9 +1,11 @@
 package high.rivamed.myapplication.base;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
+import android.text.TextUtils;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -17,6 +19,11 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import org.litepal.LitePal;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -27,11 +34,15 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+
 public class App extends Application {
+    private List<Activity> oList;//用于存放所有启动的Activity的集合
 
     public static final String TAG = "BaseApplication";
 
@@ -42,7 +53,7 @@ public class App extends Application {
      */
     private static ACache mAppCache;
 
-    public static String MAIN_URL = NetApi.RELEASED_URL;
+    public static String MAIN_URL = null;
 
     public static Handler getHandler() {
         return mHandler;
@@ -59,8 +70,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        SPUtils.putString(this, "TestLoginName", "1");
-        SPUtils.putString(this,"TestLoginPass","1");
+        oList = new ArrayList<Activity>();
+
+        SPUtils.putString(this, "TestLoginName", "");
+        SPUtils.putString(this,"TestLoginPass","");
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();
@@ -68,15 +81,13 @@ public class App extends Application {
         Logger.addLogAdapter(new AndroidLogAdapter());
         initServer();
 
-
-
-
-
-        //		initBugly();
+        initBugly();
 
         initOkGo();
 
         InitDeviceService();
+
+	 LogcatHelper.getInstance(this).start();
     }
 
     private void InitDeviceService(){
@@ -90,9 +101,17 @@ public class App extends Application {
          * 参数2：APPID，平台注册时得到,注意替换成你的appId
          * 参数3：是否开启调试模式，调试模式下会输出'CrashReport'tag的日志
          */
-        //		CrashReport.initCrashReport(getApplicationContext(), UIUtils.getString(R.string.bugly_val), BuildConfig.API_ENV);
-        CrashReport.initCrashReport(getApplicationContext(), UIUtils.getString(R.string.bugly_val),
-                true);//测试
+
+        Context context = getApplicationContext();
+        // 获取当前包名
+        String packageName = context.getPackageName();
+        // 获取当前进程名
+        String processName = getProcessName(android.os.Process.myPid());
+        // 设置是否为上报进程
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+        // 初始化Bugly
+        CrashReport.initCrashReport(context, UIUtils.getString(R.string.bugly_val), true, strategy);
     }
 
     public ACache getAppCache() {
@@ -102,11 +121,22 @@ public class App extends Application {
     /**
      * 选择服务器
      */
-    private void initServer() {
+    public static  void initServer() {
         if (BuildConfig.API_ENV) {
-            MAIN_URL = NetApi.BETA_URL;
+
+            if (SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP)==null){
+                MAIN_URL = NetApi.BETA_URL;
+            }else {
+                MAIN_URL = SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+            }
+
         } else {
-            MAIN_URL = NetApi.RELEASED_URL;
+            if (SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP)==null){
+                MAIN_URL = NetApi.RELEASED_URL;
+            }else {
+                MAIN_URL = SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+            }
+
         }
     }
 
@@ -146,5 +176,63 @@ public class App extends Application {
                         3);                              //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 
     }
+    /**
+     * 获取进程号对应的进程名
+     *
+     * @param pid 进程号
+     * @return 进程名
+     */
+    private static String getProcessName(int pid) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
+            String processName = reader.readLine();
+            if (!TextUtils.isEmpty(processName)) {
+                processName = processName.trim();
+            }
+            return processName;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return null;
+    }
 
+    /**
+     * 添加Activity
+     */
+    public void addActivity_(Activity activity) {
+        // 判断当前集合中不存在该Activity
+        if (!oList.contains(activity)) {
+            oList.add(activity);//把当前Activity添加到集合中
+        }
+    }
+
+    /**
+     * 销毁单个Activity
+     */
+    public void removeActivity_(Activity activity) {
+        //判断当前集合中存在该Activity
+        if (oList.contains(activity)) {
+            oList.remove(activity);//从集合中移除
+            activity.finish();//销毁当前Activity
+        }
+    }
+
+    /**
+     * 销毁所有的Activity
+     */
+    public void removeALLActivity_() {
+        //通过循环，把集合中的所有Activity销毁
+        for (Activity activity : oList) {
+            activity.finish();
+        }
+    }
 }

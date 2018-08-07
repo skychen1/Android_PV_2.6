@@ -19,7 +19,10 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -72,7 +75,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("实时盘点");
 	mBuilder = DialogUtils.showLoading(mContext);
-	loadTopBoxSize();
+	loadTopBoxSize();mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
    }
 
    private void loadTopBoxSize() {

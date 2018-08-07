@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import cn.rivamed.callback.DeviceCallBack;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.InBoxDtoBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -32,6 +34,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -83,7 +86,24 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
+			   case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+				   builder.setTwoMsg("您确认要退出登录吗?");
+				   builder.setMsg("温馨提示");
+				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.setRight("确认", new DialogInterface.OnClickListener() {
+					   @Override
+					   public void onClick(DialogInterface dialog, int i) {
+						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+						   App.getInstance().removeALLActivity_();
+						   dialog.dismiss();
+					   }
+				   });
+				   builder.create().show();
 				break;
 			}
 		   }

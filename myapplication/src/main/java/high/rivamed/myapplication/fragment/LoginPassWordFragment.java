@@ -2,25 +2,31 @@ package high.rivamed.myapplication.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.JsonSyntaxException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.LoginResultBean;
+import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -44,7 +50,7 @@ public class LoginPassWordFragment extends SimpleFragment {
     TextView mLoginButton;
     private String mUserPhone;
     private String mPassword;
-    private LoadingDialog.Builder              mBuilder;
+    private LoadingDialog.Builder mBuilder;
 
     @Override
     public int getLayoutId() {
@@ -95,15 +101,26 @@ public class LoginPassWordFragment extends SimpleFragment {
      */
     private void loadLogin() {
         mBuilder = DialogUtils.showLoading(mContext);
-        NetRequest.getInstance().userLogin(mUserPhone, mPassword, _mActivity, new BaseResult() {
+        UserLoginDto userLoginDto = new UserLoginDto();
+        UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
+        accountBean.setAccountName(mUserPhone);
+        accountBean.setPassword(mPassword);
+        userLoginDto.setAccount(accountBean);
+        NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                if (!TextUtils.isEmpty(result) && "true".equals(result)) {
-                    Intent intent = new Intent(mContext, HomeActivity.class);
-                    mContext.startActivity(intent);
-                    mContext.finish();
-                } else {
-                    ToastUtils.showShort("登录失败");
+                try {
+                    LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
+                    if (loginResultBean.isOperateSuccess()) {
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+                        Intent intent = new Intent(mContext, HomeActivity.class);
+                        mContext.startActivity(intent);
+                        mContext.finish();
+                    }else {
+                        ToastUtils.showShort("登录失败");
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
                 }
                 mBuilder.mDialog.dismiss();
             }
@@ -111,11 +128,9 @@ public class LoginPassWordFragment extends SimpleFragment {
             @Override
             public void onError(String result) {
                 super.onError(result);
-                ToastUtils.showShort("登录失败"+result);
+                ToastUtils.showShort("登录失败" + result);
                 mBuilder.mDialog.dismiss();
             }
         });
-
-
     }
 }

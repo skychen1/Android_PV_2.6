@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.v7.widget.CardView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -36,9 +37,8 @@ public class HomeFastOpenAdapter
    @Override
    protected void convert(BaseViewHolder helper, BoxSizeBean.TbaseDevicesBean item) {
 	findId(helper);
-	mFastopenTitle.setText(item.getDeviceName());
 
-
+	   mFastopenTitle.setText(item.getDeviceName());
    }
 
    private void findId(BaseViewHolder helper) {

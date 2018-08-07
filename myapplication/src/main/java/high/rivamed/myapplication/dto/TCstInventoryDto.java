@@ -27,7 +27,7 @@ public class TCstInventoryDto {
 	private List<TCstInventory>     tCstInventorys;
 	private List<DeviceInventoryVo> deviceInventoryVos;
 	private List<TCstInventoryVo>   tCstInventoryVos;
-	
+   private List<InventorysBean>         inventorys;
 	//效期数量监控
 	private List<CstExpirationVo> cstExpirationVos;
    private String   configPatientCollar;
@@ -51,6 +51,24 @@ public class TCstInventoryDto {
    private int                          countMoveIn;
    private int                          countBack;
    private int                          countTempopary;
+   private String                          epcName;
+
+   public List<InventorysBean> getInventorys() {
+	return inventorys;
+   }
+
+   public void setInventorys(
+	   List<InventorysBean> inventorys) {
+	this.inventorys = inventorys;
+   }
+
+   public String getEpcName() {
+	return epcName;
+   }
+
+   public void setEpcName(String epcName) {
+	this.epcName = epcName;
+   }
 
    public String getConfigPatientCollar() {
 	return configPatientCollar;
@@ -279,5 +297,64 @@ public class TCstInventoryDto {
 		this.stopFlag = stopFlag;
 	}
 
+   public static class InventorysBean {
 
+	/**
+	 * epc : 00020820180613000014
+	 * cstName : 弯型和直型腔内吻合器
+	 * cstSpec : 支
+	 * expiration : 已过期
+	 * deviceName : 1号柜
+	 * stopFlag : 0
+	 */
+
+	private String epc;
+	private String cstName;
+	private String cstSpec;
+	private String expiration;
+	private String deviceName;
+	private String stopFlag;
+	private String countStock;
+	private String countActual;
+
+	public String getCountStock() {
+	   return countStock;
+	}
+
+	public void setCountStock(String countStock) {
+	   this.countStock = countStock;
+	}
+
+	public String getCountActual() {
+	   return countActual;
+	}
+
+	public void setCountActual(String countActual) {
+	   this.countActual = countActual;
+	}
+
+	public String getEpc() { return epc;}
+
+	public void setEpc(String epc) { this.epc = epc;}
+
+	public String getCstName() { return cstName;}
+
+	public void setCstName(String cstName) { this.cstName = cstName;}
+
+	public String getCstSpec() { return cstSpec;}
+
+	public void setCstSpec(String cstSpec) { this.cstSpec = cstSpec;}
+
+	public String getExpiration() { return expiration;}
+
+	public void setExpiration(String expiration) { this.expiration = expiration;}
+
+	public String getDeviceName() { return deviceName;}
+
+	public void setDeviceName(String deviceName) { this.deviceName = deviceName;}
+
+	public String getStopFlag() { return stopFlag;}
+
+	public void setStopFlag(String stopFlag) { this.stopFlag = stopFlag;}
+   }
 }

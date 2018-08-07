@@ -74,6 +74,7 @@ public class RegisteReturnBean implements Serializable{
 	private String thingCode;
 	private int    appScene;
 	private Object deptCode;
+	private String deptName;
 	private String localIp;
 	private String serverIp;
 	private Object macAddress;
@@ -86,6 +87,14 @@ public class RegisteReturnBean implements Serializable{
 	private String thingType;
 	private int    status;
 	private String portNumber;
+
+	public String getDeptName() {
+	   return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+	   this.deptName = deptName;
+	}
 
 	public String getThingCode() { return thingCode;}
 

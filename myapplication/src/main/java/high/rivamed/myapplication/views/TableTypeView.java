@@ -2,13 +2,11 @@ package high.rivamed.myapplication.views;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +24,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.adapter.AfterBingAdapter;
+import high.rivamed.myapplication.adapter.BingDialogOutAdapter;
 import high.rivamed.myapplication.adapter.InBoxAllAdapter;
 import high.rivamed.myapplication.adapter.OutBoxAllAdapter;
 import high.rivamed.myapplication.adapter.StockDetailsAdapter;
+import high.rivamed.myapplication.adapter.TimeDetailsAdapter;
+import high.rivamed.myapplication.adapter.TimelyLossAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
-import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.StockDetailsBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -76,7 +77,7 @@ public class TableTypeView extends LinearLayout {
    private int                                         mLayout;
    private View                                        mHeadView;
    public  TimelyPublicAdapter                         mPublicAdapter;
-   public  List<StockDetailsBean.TCstInventoryVosBean> mStockDetails;
+//   public  List<StockDetailsBean.TCstInventoryVosBean> mStockDetails;
 //   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos;
    public  List<TCstInventoryVo>                       mTCstInventoryVos;
    private static final int FOUR  = 4;
@@ -99,19 +100,24 @@ public class TableTypeView extends LinearLayout {
    private String          mMovie;
    public  InBoxAllAdapter mInBoxAllAdapter;
    public OutBoxAllAdapter mOutBoxAllAdapter;
-
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventBing(Event.EventCheckbox event) {
-	mMovie = event.mString;
-	Log.i("ff", "mMovie  " + mMovie);
-	if (mMovie != null) {
-	   for (int i = 0; i < mMovies.size(); i++) {
-		mMovies.get(i).six = mMovie;
-
-	   }
-	   mPublicAdapter.notifyDataSetChanged();
-	}
-   }
+   private TimeDetailsAdapter mTimeDetailsAdapter;
+   private List<TCstInventoryDto.InventorysBean> mInventorys;
+   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
+   public BingDialogOutAdapter mBingOutAdapter;
+   public AfterBingAdapter mAfterBingAdapter;
+//      @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//   public void onEventBing(Event.EventCheckbox event) {
+//	   String patient= event.mString;
+//	   Log.i("ff", "mMovie  " + patient);
+//	   if (patient != null) {
+//		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+//		   mTCstInventoryVos.get(i).setPatientName(patient);
+//		   mTCstInventoryVos.get(i).setPatientId(event.id);
+//		}
+//
+//		mAfterBingAdapter.notifyDataSetChanged();
+//	}
+//   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(TCstInventoryDto event) {
@@ -121,25 +127,7 @@ public class TableTypeView extends LinearLayout {
    }
 
    public TableTypeView(
-	   Context context, Activity activity, List<String> titeleList, int size,
-	   List<StockDetailsBean.TCstInventoryVosBean> movies, LinearLayout linearLayout,
-	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type) {
-
-	super(context);
-	this.mActivity = activity;
-	this.mContext = context;
-	this.titeleList = titeleList;
-	this.mSize = size;
-	this.mStockDetails = movies;
-	this.mLinearLayout = linearLayout;
-	this.mRecyclerview = recyclerview;
-	this.mRefreshLayout = refreshLayout;
-	this.mType = type;
-	initData();
-   }
-
-   public TableTypeView(
-	   Context context, Activity activity, List<String> titeleList, int size, Object movies,
+	   Context context, Activity activity, List<String> titeleList,List<TCstInventoryDto.InventorysBean> inventorys, int size,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
 	   int type) {
 
@@ -148,14 +136,13 @@ public class TableTypeView extends LinearLayout {
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mMoviess = movies;
+	this.mInventorys = inventorys;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
 	this.mType = type;
 	initData();
    }
-
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size, Object movies,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
@@ -175,7 +162,25 @@ public class TableTypeView extends LinearLayout {
 	this.mDialog = dialog;
 	initData();
    }
+   public TableTypeView(
+	   Context context, Activity activity, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, List<String> titeleList, int size,
+	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
+	   int type, String dialog) {
+	super(context);
+	EventBusUtils.register(this);
 
+	this.mActivity = activity;
+	this.mContext = context;
+	this.titeleList = titeleList;
+	this.mSize = size;
+	this.patientInfos = patientInfos;
+	this.mLinearLayout = linearLayout;
+	this.mRecyclerview = recyclerview;
+	this.mRefreshLayout = refreshLayout;
+	this.mType = type;
+	this.mDialog = dialog;
+	initData();
+   }
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size,
 	   List<TCstInventoryVo> movies, LinearLayout linearLayout,
@@ -195,6 +200,7 @@ public class TableTypeView extends LinearLayout {
 	this.mDialog = dialog;
 	initData();
    }
+
    public TableTypeView(
 	   Context context, Activity activity, List<String> titeleList, int size,
 	   List<TCstInventoryVo> movies, LinearLayout linearLayout,
@@ -215,6 +221,24 @@ public class TableTypeView extends LinearLayout {
 	this.mDialog = dialog;
 	initData();
    }
+   public TableTypeView(
+	   Context context, Activity activity, List<String> titeleList, int size,  List<TCstInventoryVo> movies,
+	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
+	   int type) {
+
+	super(context);
+	this.mActivity = activity;
+	this.mContext = context;
+	this.titeleList = titeleList;
+	this.mSize = size;
+	this.mTCstInventoryVos = movies;
+	this.mLinearLayout = linearLayout;
+	this.mRecyclerview = recyclerview;
+	this.mRefreshLayout = refreshLayout;
+	this.mType = type;
+	initData();
+   }
+
    public void clear() {
 	mPublicAdapter.clear();
    }
@@ -232,14 +256,14 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize,
-									     STYPE_TIMELY_FOUR_DETAILS);
-			mHeadView.setBackgroundResource(R.color.bg_green);
+			mTimeDetailsAdapter = new TimeDetailsAdapter(mLayout,
+										   mTCstInventoryVos);
 
+			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
+			mRecyclerview.setAdapter(mTimeDetailsAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
 			//-----------库存状态耗材详情-----------
@@ -252,7 +276,7 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			StockDetailsAdapter detailsAdapter = new StockDetailsAdapter(mLayout,
-													 mStockDetails);
+													 mTCstInventoryVos);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -292,16 +316,19 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 			ViewGroup.LayoutParams lp = mRecyclerview.getLayoutParams();
-			if (mMovies.size() > 7) {
+			if (patientInfos.size() > 7) {
 			   lp.height = 575;
 			} else {
-			   lp.height = 81 * mMovies.size();
+			   lp.height = 81 * patientInfos.size();
 			}
 			mRecyclerview.setLayoutParams(lp);
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
-									     mCheckStates);
 
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos,
+										 mCheckStates);
+//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
+//									     mCheckStates);
+
+			mBingOutAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
@@ -309,8 +336,7 @@ public class TableTypeView extends LinearLayout {
 				   mCheckStates.put(i, false);
 				}
 				mCheckStates.put(position, true);
-				mPublicAdapter.notifyDataSetChanged();
-
+				mBingOutAdapter.notifyDataSetChanged();
 			   }
 			});
 			mHeadView.setBackgroundResource(R.color.bg_green);
@@ -318,7 +344,7 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
+			mRecyclerview.setAdapter(mBingOutAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
 
@@ -412,7 +438,7 @@ public class TableTypeView extends LinearLayout {
 		   }
 
 		} else if (mSize == SEVEN) {
-		   if (mDialog != null && mDialog.equals(STYPE_BING)) {
+		   if (mDialog != null && mDialog.equals(STYPE_BING)) {//绑定患者
 			mLayout = R.layout.item_outbing_seven_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_outbing_seven_title_layout,
@@ -425,22 +451,27 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
+
+			for (int i=0;i<mTCstInventoryVos.size();i++){
+			   mCheckStates1.put(i,true);
+			}
+			mAfterBingAdapter = new AfterBingAdapter(mLayout,
+									     mTCstInventoryVos,
 									     mCheckStates1);
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
+//									     mCheckStates1);
+			mAfterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			   @Override
 			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
 				if (checkBox.isChecked()) {
 				   checkBox.setChecked(false);
-				   mMovies.get(position).seven = "0";
-				   mCheckStates1.delete(position);
+				   mCheckStates1.put(position, false);
 				} else {
 				   mCheckStates1.put(position, true);
-				   mMovies.get(position).seven = "1";
 				   checkBox.setChecked(true);
 				}
-				mPublicAdapter.notifyDataSetChanged();
+				mAfterBingAdapter.notifyDataSetChanged();
 			   }
 			});
 			mHeadView.setBackgroundResource(R.color.bg_green);
@@ -448,9 +479,10 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
+			mRecyclerview.setAdapter(mAfterBingAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
+			//盘亏盘盈
 			mLayout = R.layout.item_realtime_seven_layout;
 			mHeadView = mActivity.getLayoutInflater()
 				.inflate(R.layout.item_realtime_seven_title_layout,
@@ -463,19 +495,14 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize);
-			mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			   @Override
-			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-				//				showRvDialog();
-			   }
-			});
+			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout, mInventorys);
+
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
-			mRecyclerview.setAdapter(mPublicAdapter);
+			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRecyclerview.setAdapter(timelyLossAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }
 
@@ -608,28 +635,6 @@ public class TableTypeView extends LinearLayout {
 		break;
 	}
 
-   }
-
-   public int getSelectedPos() {
-	return mSelectedPos;
-   }
-
-   private void showRvDialog() {
-	RvDialog.Builder builder = new RvDialog.Builder(mActivity, mContext);
-	builder.setMsg("耗材中包含过期耗材，请查看！");
-	builder.setLeft("取消", new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		dialog.dismiss();
-	   }
-	});
-	builder.setRight("确认", new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		dialog.dismiss();
-	   }
-	});
-	builder.create().show();
    }
 
    private void findId() {

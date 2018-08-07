@@ -3,6 +3,8 @@ package high.rivamed.myapplication.bean;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -25,9 +27,14 @@ public class Event {
    }
    public static class EventCheckbox {
 	public String mString;
+	public String id;
 
 	public EventCheckbox(String trim) {
 	   this.mString = trim;
+	}
+	public EventCheckbox(String trim,String id) {
+	   this.mString = trim;
+	   this.id = id;
 	}
    }
    public static class SettingEvent {
@@ -78,9 +85,11 @@ public class Event {
 	public String storehouseCode;
 	public String operationRoomNo;
 	public String branchCode;
-	public dialogEvent( String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+	public String deptName;
+	public dialogEvent(String deptName, String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
 
 	   this.deptCode = deptCode;
+	   this.deptName = deptName;
 	   this.storehouseCode = storehouseCode;
 	   this.dialog = dialog;
 	   this.operationRoomNo = operationRoomNo;
@@ -96,6 +105,16 @@ public class Event {
 	   this.dialog = dialog;
 	   this.type = type;
 	   this.context = text;
+
+	}
+   }
+   public static class timelyDate{
+	public String type;
+	public TCstInventoryDto tCstInventoryDto;
+	public timelyDate( String type,TCstInventoryDto tCstInventoryDto){
+
+	   this.type = type;
+	   this.tCstInventoryDto = tCstInventoryDto;
 
 	}
    }

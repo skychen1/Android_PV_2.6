@@ -75,11 +75,11 @@ public class TestLoginActivity extends SimpleActivity {
 		   return;
 		} else {
 
-		   if (isvalidate()&&contrast()) {
+//		   if (isvalidate()&&contrast()) {
 			loadLogin();
-		   } else {
-			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-		   }
+//		   } else {
+//			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+//		   }
 		}
 
 		break;

@@ -21,6 +21,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -39,7 +40,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
  */
 public class RvDialog extends Dialog {
 
-   public static Movie sMovie;
+   public static BingFindSchedulesBean.PatientInfosBean patientInfosBean;
    public static TableTypeView sTableTypeView;
 
    public RvDialog(Context context) {
@@ -78,10 +79,11 @@ public class RvDialog extends Dialog {
 	private TextView mDialogMsg;
 	private TextView mDialogRed;
 	private Activity mActivity;
-
-	public Builder(Activity mActivity,Context context) {
+	private	List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
+	public Builder(Activity mActivity,Context context,List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
 	   this.mContext = context;
 	   this.mActivity = mActivity;
+	   this.patientInfos = patientInfos;
 
 	}
 
@@ -153,8 +155,8 @@ public class RvDialog extends Dialog {
 //	   titeleList = Arrays.asList(array);
 	   mSize = titeleList.size();
 
-	   sTableTypeView = new TableTypeView(mContext, mActivity, titeleList, mSize,
-							  genData5(), mLinearLayout, mRecyclerview,
+	   sTableTypeView = new TableTypeView(mContext, mActivity,patientInfos, titeleList, mSize,
+							   mLinearLayout, mRecyclerview,
 							  mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 	   //	   mLayout = R.layout.item_dialog_six_layout;
 //	   mHeadView = mActivity.getLayoutInflater().inflate(R.layout.item_dialog_six_title_layout,

@@ -3,6 +3,7 @@ package high.rivamed.myapplication.base;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,8 +25,6 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.SocketLeftDownBean;
-import high.rivamed.myapplication.bean.StockDetailsBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -120,25 +119,110 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private int                 mLayout;
    private View                mHeadView;
    public  String              mData;
-   private TableTypeView       mTypeView;
+   public TableTypeView       mTypeView;
    public  String              mActivityType;
    private String mMovie;
    List<String> titeleList = null;
 
-   private SocketLeftDownBean.TCstInventoryVosBean     mStockDetailsTopBean;
-   private List<StockDetailsBean.TCstInventoryVosBean> mStockDetailsDownList;
+   private TCstInventoryVo     mStockDetailsTopBean;
+   private List<TCstInventoryVo>  mStockDetailsDownList;
    public  List<TCstInventoryVo>                       mTCstInventoryVos; //入柜扫描到的epc信息
 //   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos; //入柜扫描到的epc信息
 public TCstInventoryDto                            mTCstInventoryDto;
+
+
+   private TCstInventoryDto mDto;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
 	LogUtils.i(TAG,"  mActivityType    "+mActivityType);
+
+   }
+
+   /**
+    * 盘点详情、盘亏、盘盈
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onTimelyEvent(Event.timelyDate event) {
+	String s= event.type;
+	mDto = event.tCstInventoryDto;
+//	if (s.equals("详情")){
+//	   loadTimelyDetailsDate();
+//	}else if (s.equals("盘盈")){
+//	   loadTimelyProfitDate(event.tCstInventoryDto);
+//	}else if (s.equals("盘亏")){
+//	   loadTimelyLossesDate(event.tCstInventoryDto);
+//	}
+   }
+
+   /**
+    * 获取盘亏数据
+    */
+   private void loadTimelyLossesDate() {
+	mBaseTabTvTitle.setText("盘亏耗材详情");
+	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
+
+	mTimelyNumber.setText(
+		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
+	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+
+	   mTypeView = new TableTypeView(this, this, titeleList,inventorys, mSize,  mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY);
+
+
+   }
+
+   /**
+    * 获取盘盈数据
+    */
+   private void loadTimelyProfitDate() {
+
+	mBaseTabTvTitle.setText("盘盈耗材详情");
+	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
+
+	mTimelyNumber.setText(
+		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
+	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTypeView = new TableTypeView(this, this, titeleList,inventorys, mSize,  mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY);
+   }
+
+   /**
+    * 获取耗材盘点详情
+    */
+   private void loadTimelyDetailsDate() {
+	mBaseTabTvTitle.setText("耗材详情");
+	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+	int number = 0;
+	int Actual = 0;
+	for (TCstInventoryVo TCstInventoryVo : tCstInventoryVos) {
+	   number += TCstInventoryVo.getCountStock();
+	   Actual += TCstInventoryVo.getCountActual();
+	   Log.i(TAG," TCstInventoryVo.getCountStock()   "+ TCstInventoryVo.getCountStock());
+	   Log.i(TAG," TCstInventoryVo.getCountActual()   "+ TCstInventoryVo.getCountActual());
+	}
+
+	mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
+							"</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
+							number + "</big></font>"));
+	mTimelyName.setVisibility(View.VISIBLE);
+	mTimelyName.setText("耗材名称："+mDto.getEpcName() + "    型号规格："+mDto.getCstSpec());
+	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTypeView = new TableTypeView(this, this, titeleList, mSize,tCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY,
+						STYPE_TIMELY_FOUR_DETAILS);
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onMidTypeEvent(SocketLeftDownBean.TCstInventoryVosBean  event) {
+   public void onMidTypeEvent(TCstInventoryVo event) {
 	mStockDetailsTopBean = event;
 
    }
@@ -211,50 +295,22 @@ public TCstInventoryDto                            mTCstInventoryDto;
 //	}
 
 	if (my_id == ACT_TYPE_TIMELY_LOSS) {
-	   mBaseTabTvTitle.setText("盘亏耗材详情");
-	   String str = "3";
-	   mTimelyNumber.setText(
-		   Html.fromHtml("盘亏数：<font color='#262626'><big>" + str + "</big></font>"));
-	   String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY);
-	} else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
-	   mBaseTabTvTitle.setText("盘盈耗材详情");
-	   String str = "3";
-	   mTimelyNumber.setText(
-		   Html.fromHtml("盘亏数：<font color='#262626'><big>" + str + "</big></font>"));
-	   String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY);
-	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
-	   loadStockDetails();
+	   loadTimelyLossesDate();
 
+	} else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
+
+	   loadTimelyProfitDate();
+	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
+
+	   loadStockDetails();
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
 	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   setOutBoxDate();
 
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   mBaseTabTvTitle.setText("耗材领用");
-	   mTimelyStartBtn.setVisibility(View.GONE);
-	   mLyBingBtn.setVisibility(View.GONE);
-	   mTimelyNumber.setVisibility(View.GONE);
-	   mTimelyNumberLeft.setVisibility(View.VISIBLE);
-	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyStartBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
-							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
-	   String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData7(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
+	   setAfterBing();
+
 	} else if (my_id == ACT_TYPE_FORM_CONFIRM) {
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
@@ -268,19 +324,8 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData6(), mLinearLayout,
 						   mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_FORM_CONF);
 	} else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
-	   mBaseTabTvTitle.setText("耗材详情");
-	   String str = "35";
-	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + 12 +
-							   "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
-							   7 + "</big></font>"));
-	   mTimelyName.setVisibility(View.VISIBLE);
-	   mTimelyName.setText("耗材名称：微创路入系统" + "    型号规格：101");
-	   String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, genData41(), mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY,
-						   STYPE_TIMELY_FOUR_DETAILS);
+	   loadTimelyDetailsDate();
+
 	}else if (my_id ==ACT_TYPE_MEAL_BING){//套餐绑定患者的耗材识别
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyStartBtn.setVisibility(View.GONE);
@@ -313,6 +358,36 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	 */
 	//	new TableTypeView(this, this, titeleList, mSize, genData(), mLinearLayout, mRecyclerview,
 	//				mRefreshLayout, ACTIVITY);
+   }
+
+   /**
+    * 先绑定患者
+    */
+   private void setAfterBing() {
+	mBaseTabTvTitle.setText("耗材领用");
+	mTimelyStartBtn.setVisibility(View.GONE);
+	mLyBingBtn.setVisibility(View.GONE);
+	mTimelyNumber.setVisibility(View.GONE);
+	mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mLyBingBtnRight.setVisibility(View.VISIBLE);
+//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+	mTimelyLeft.setEnabled(false);
+	mTimelyRight.setEnabled(false);
+	ArrayList<String> strings = new ArrayList<>();
+	for (TCstInventoryVo vosBean:mTCstInventoryVos){
+	   strings.add(vosBean.getCstCode());
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+
+	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							    mTCstInventoryVos.size()  + "</big></font>"));
+	String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
    }
 
    /**
@@ -435,15 +510,15 @@ public TCstInventoryDto                            mTCstInventoryDto;
 	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	NetRequest.getInstance().getStockDetailDate(deviceCode,cstCode,mContext,new BaseResult(){
+	NetRequest.getInstance().getStockDetailDate(deviceCode, cstCode, mContext, new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
-		StockDetailsBean detailsBean = mGson.fromJson(result, StockDetailsBean.class);
-		mStockDetailsDownList = detailsBean.getTCstInventoryVos();
+		TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
 		mTimelyNumber.setText(
-			Html.fromHtml("耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getSize() + "</big></font>"));
+			Html.fromHtml("耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() + "</big></font>"));
 		mTimelyName.setVisibility(View.VISIBLE);
-		mTimelyName.setText("耗材名称：" +mStockDetailsTopBean.getName()+ "    型号规格："+mStockDetailsTopBean.getType());
+		mTimelyName.setText("耗材名称：" +mStockDetailsTopBean.getCstName()+ "    型号规格："+mStockDetailsTopBean.getCstSpec());
 		mTypeView = new TableTypeView(mContext, mContext, titeleList, mSize, mStockDetailsDownList, mLinearLayout,
 							mRecyclerview, mRefreshLayout, ACTIVITY);
 	   }
