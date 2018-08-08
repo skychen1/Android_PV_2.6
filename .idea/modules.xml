@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android_PV_2.6.iml" filepath="$PROJECT_DIR$/Android_PV_2.6.iml" />
       <module fileurl="file://$PROJECT_DIR$/devices/devices.iml" filepath="$PROJECT_DIR$/devices/devices.iml" />
       <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pv_2.6.iml" filepath="$PROJECT_DIR$/pv_2.6.iml" />
     </modules>
   </component>
 </project>
