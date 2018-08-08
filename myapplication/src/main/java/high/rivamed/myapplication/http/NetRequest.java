@@ -132,7 +132,6 @@ public class NetRequest {
     */
    public void loadBoxSize(Object tag,
 				   NetResult netResult) {
-LogUtils.i("cc",NetApi.URL_HOME_BOXSIZE);
 	OkGo.<String>get(NetApi.URL_HOME_BOXSIZE).tag(tag)
 		.params("thingCode", sThingCode)
 		.execute(new MyCallBack(tag,netResult,true));

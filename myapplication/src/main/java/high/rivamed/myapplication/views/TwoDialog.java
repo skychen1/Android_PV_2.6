@@ -52,6 +52,7 @@ public class TwoDialog extends Dialog {
 	private TextView mDialogMsg;
 	private TextView mDialogRed;
 	private ImageView mDialogCloss;
+	private ImageView mDialogIcon;
 
 	public Builder(Context context,int mType) {
 	   this.mContext = context;
@@ -99,9 +100,10 @@ public class TwoDialog extends Dialog {
 	   dialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_two_layout, null);
 	   dialog.addContentView(layout,
-					 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+					 new ViewGroup.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.x850),
 									    ViewGroup.LayoutParams.WRAP_CONTENT));
 
+	   mDialogIcon = (ImageView) layout.findViewById(R.id.dialog_icon);
 	   mDialogMsg = (TextView) layout.findViewById(R.id.dialog_msg);
 	   mDialogRed = (TextView) layout.findViewById(R.id.dialog_red);
 	   mDialogCloss = (ImageView) layout.findViewById(R.id.dialog_closs);

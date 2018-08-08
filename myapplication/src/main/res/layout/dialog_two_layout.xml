@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-				android:layout_width="@dimen/x850"
-				android:layout_height="@dimen/x360"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
 				android:layout_gravity="center_horizontal"
 				android:background="@drawable/dialog_bg"
 				android:orientation="vertical"
@@ -14,46 +14,67 @@
 		android:layout_alignParentRight="true"
 		android:paddingBottom="@dimen/x10"
 		android:paddingLeft="@dimen/x30"
-		android:paddingRight="@dimen/x30"
+		android:paddingRight="@dimen/x50"
 		android:paddingTop="@dimen/x30"
 		android:src="@mipmap/hccz_ic_tc_gb"
 		/>
 
-	<TextView
-		android:id="@+id/dialog_msg"
+	<LinearLayout
+		android:id="@+id/ll"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/dialog_closs"
 		android:layout_marginLeft="@dimen/x50"
-		android:drawableLeft="@mipmap/hccz_ic_tk_gth"
-		android:drawablePadding="@dimen/x25"
-		android:gravity="center_vertical"
-		android:text="您还有未绑定患者的耗材，确认领用吗？"
-		android:textColor="@color/text_color_3"
-		android:textSize="@dimen/textsize_19"/>
+		android:layout_marginRight="@dimen/x50"
+		android:orientation="horizontal">
 
-	<TextView
-		android:id="@+id/dialog_red"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/dialog_msg"
-		android:layout_marginLeft="@dimen/x130"
-		android:layout_marginTop="@dimen/x15"
-		android:text="耗材未绑定患者"
-		android:textColor="@color/color_red"
-		android:textSize="@dimen/textsize_17"/>
+		<ImageView
+			android:id="@+id/dialog_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@mipmap/hccz_ic_tk_gth"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_marginLeft="@dimen/x25">
+
+			<TextView
+				android:id="@+id/dialog_msg"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:text="您还有未绑定患者的耗材，确认领用吗？"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_19"/>
+
+			<TextView
+				android:id="@+id/dialog_red"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/dialog_msg"
+				android:layout_marginTop="@dimen/x15"
+				android:text="耗材未绑定患者"
+				android:textColor="@color/color_red"
+				android:textSize="@dimen/textsize_17"/>
+
+		</LinearLayout>
+
+
+	</LinearLayout>
 
 
 	<TextView
 		android:id="@+id/dialog_right"
 		android:layout_width="wrap_content"
 		android:layout_height="@dimen/x68"
-		android:layout_marginTop="@dimen/x80"
 		android:layout_alignParentRight="true"
+		android:layout_below="@+id/ll"
 		android:layout_marginBottom="@dimen/x40"
 		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		android:layout_below="@+id/dialog_red"
+		android:layout_marginRight="@dimen/x50"
+		android:layout_marginTop="@dimen/x80"
 		android:background="@drawable/bg_btn_line_pre"
 		android:clickable="false"
 		android:gravity="center"
@@ -70,9 +91,9 @@
 		android:id="@+id/dialog_left"
 		android:layout_width="wrap_content"
 		android:layout_height="@dimen/x68"
-		android:layout_below="@+id/dialog_red"
-		android:layout_marginTop="@dimen/x80"
+		android:layout_below="@+id/ll"
 		android:layout_marginBottom="@dimen/x40"
+		android:layout_marginTop="@dimen/x80"
 		android:layout_toLeftOf="@+id/dialog_right"
 		android:background="@drawable/bg_btn_line_nor"
 		android:gravity="center"

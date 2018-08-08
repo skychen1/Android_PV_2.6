@@ -13,9 +13,13 @@ import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -69,6 +73,7 @@ public class HomeActivity extends SimpleActivity {
     */
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 	//	EventBusUtils.register(this);
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();

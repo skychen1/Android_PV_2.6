@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
@@ -19,11 +21,14 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.InBoxDtoBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -32,11 +37,14 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
+import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -57,10 +65,28 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    int mType;
    private InBoxDtoBean          mInBoxDtoBean;
    private boolean               mSuccess;
-   private TCstInventoryDto      mTCstInventoryDtos;
+   private TCstInventoryDto      mTCstInventoryTwoDto;
    private LoadingDialog.Builder mShowLoading;
    private String                uhfDeviceId;
+   private TCstInventoryDto mDtoLy = new TCstInventoryDto();
+   /**
+    * dialog操作数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEvent(Event.outBoxEvent event) {
+	event.dialog.dismiss();
+	if (event.type.equals("1")) {//移出
+	   putYcDates(event);
+	} else if (event.type.equals("2")) {//退货
+	   putThDates(event);
+	} else {//调拨
+	   putDbDates(event);
+	}
+	LogUtils.i(TAG, "TAG    " + event.context);
 
+   }
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_IN;
@@ -136,7 +162,16 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	   case R.id.timely_left:
 		if (mTCstInventoryVos != null) {
-		   setDate();
+		   if (mTCstInventoryDto.getOperation()==9){//移出
+			setYcDate();
+		   }else if (mTCstInventoryDto.getOperation()==11){//调拨
+			setDbDate();
+		   }else if (mTCstInventoryDto.getOperation()==8){//退货
+			setThDate();
+		   }else {//其他操作
+			setDate();
+		   }
+
 		} else {
 		   ToastUtils.showShort("数据异常");
 		}
@@ -147,7 +182,56 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	}
 
    }
+   /**
+    * 退货
+    */
+   private void setThDate() {
+	mType = 2;//1.7退货
+	DialogUtils.showStoreDialog(mContext, 2, mType, null);
+   }
 
+   /**
+    * 调拨
+    */
+   private void setDbDate() {
+	mType = 3;//1.8调拨
+
+	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
+	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
+	LogUtils.i(TAG, "8调拨branchCode   " + branchCode);
+	LogUtils.i(TAG, "8调拨deptCode  " + deptCode);
+	NetRequest.getInstance()
+		.getOperateDbDialog(deptCode, branchCode, this, null, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "8调拨   " + result);
+			HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
+			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+			//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
+
+		   }
+		});
+
+   }
+
+   /**
+    * 移出
+    */
+   private void setYcDate() {
+	mType = 1;//1.6移出
+	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
+	NetRequest.getInstance().getOperateYcDeptYes(deptCode, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "库房   " + result);
+		LogUtils.i(TAG, "库房   " + deptCode);
+		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
+		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+
+	   }
+	});
+
+   }
    /**
     * 设置提交值
     */
@@ -296,13 +380,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
-		mTCstInventoryDtos = mGson.fromJson(result, TCstInventoryDto.class);
-		if (mTCstInventoryDtos.gettCstInventoryVos() == null) {
+		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
+		if (mTCstInventoryTwoDto.gettCstInventoryVos() == null) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		} else {
-		   EventBusUtils.postSticky(mTCstInventoryDtos);
+		   EventBusUtils.postSticky(mTCstInventoryTwoDto);
 		   EventBusUtils.postSticky(mActivityType);
 		}
 
@@ -310,6 +394,133 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   }
 
 	});
+   }
+   /**
+    * 提交移出的所有数据
+    *
+    * @param event
+    */
+   private void putYcDates(Event.outBoxEvent event) {
+
+	String mTCstInventoryDtoJsons;
+	mDtoLy.setOperation(9);
+	mDtoLy.setStorehouseRemark(event.context);
+	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	if (mTCstInventoryTwoDto == null) {
+	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	} else {
+	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	}
+	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
+	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
+	NetRequest.getInstance()
+		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result移出   " + result);
+			ToastUtils.showShort("操作成功");
+			finish();
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			ToastUtils.showShort("操作失败，请重试！");
+		   }
+		});
+   }
+   /**
+    * 提交退货的所有数据
+    *
+    * @param event
+    */
+   private void putThDates(Event.outBoxEvent event) {
+	String mTCstInventoryDtoJsons;
+	mDtoLy.setOperation(11);
+	mDtoLy.setRemake(event.context);
+	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	if (mTCstInventoryTwoDto == null) {
+	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	} else {
+	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	}
+	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
+
+	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
+	NetRequest.getInstance()
+		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result退货   " + result);
+			ToastUtils.showShort("操作成功");
+			finish();
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			ToastUtils.showShort("操作失败，请重试！");
+		   }
+		});
+   }
+   /**
+    * 提交所有调拨的数据
+    *
+    * @param event
+    */
+   private void putDbDates(Event.outBoxEvent event) {
+
+	String mTCstInventoryDtoJsons;
+	mDtoLy.setOperation(11);
+	mDtoLy.setStorehouseCode(event.context);
+	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	if (mTCstInventoryTwoDto == null) {
+	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	} else {
+	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
+		if (mTypeView.mCheckStates.get(i)) {
+		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		}
+	   }
+	}
+	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
+
+	LogUtils.i(TAG, "调拨   " + mTCstInventoryDtoJsons);
+	NetRequest.getInstance()
+		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result调拨   " + result);
+			ToastUtils.showShort("操作成功");
+			finish();
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			ToastUtils.showShort("操作失败，请重试！");
+		   }
+		});
    }
 
 }

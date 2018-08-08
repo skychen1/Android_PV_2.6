@@ -47,9 +47,9 @@ public class Constants {
 
 
     //sp存入的key
-    public static final String SAVE_SEVER_IP = "SAVE_SEVER_IP";//存入服务器IP
+    public static final String SAVE_SEVER_IP = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
     public static final String SAVE_SEVER_IP_TEXT = "SAVE_SEVER_IP_TEXT";//存入服务器IP
-    public static final String SAVE_SEVER_CODE = "SAVE_SEVER_CODE";//存入服务器IP
+    public static final String SAVE_SEVER_CODE = "SAVE_SEVER_CODE";//存入服务器端口
     public static final String READER_TYPE = "2";//reader的type
     public static final String SN_NUMBER = "sn_number";
     public static final String THING_CODE = "thing_code";

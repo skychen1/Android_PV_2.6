@@ -360,7 +360,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private void setYcDate() {
 	mType = 1;//1.6移出
-
 	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
 	NetRequest.getInstance().getOperateYcDeptYes(deptCode, this, null, new BaseResult() {
 	   @Override

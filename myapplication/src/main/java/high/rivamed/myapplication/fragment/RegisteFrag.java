@@ -39,8 +39,6 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.initServer;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -116,7 +114,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   LogUtils.i(TAG, "激活的   " + s);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 
 //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
@@ -130,10 +127,13 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    public void onRecoverEvent(RegisteReturnBean event) {
 	mSnRecoverBean = event;
 	String s = mGson.toJson(event);
+	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, mSnRecoverBean.getTbaseThing().getDeptName());
+	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, mSnRecoverBean.getTbaseThing().getDeptCode());
+	SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, mSnRecoverBean.getTbaseThing().getBranchCode());
 	setRegiestDate(s);
 	setSaveRegister(s, true);
 
@@ -212,6 +212,14 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    }
    private void initData() {
 	initListener();
+	if (SPUtils.getString(UIUtils.getContext(),THING_CODE)!=null){
+	   NetRequest.getInstance().findThingConfigDate(mContext,null,new BaseResult(){
+		@Override
+		public void onSucceed(String result) {
+		   LogUtils.i(TAG,"findThingConfigDate   "+result);
+		}
+	   });
+	}
 //
 //
 //	if (WifiUtils.isWifi(mContext) == 2) {
@@ -270,6 +278,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
    //已有数据的时候   给激活之前添加界面数据
    private void setRegiestDate(String string) {
+
 	RegisteReturnBean returnBean = mGson.fromJson(string, RegisteReturnBean.class);
 	List<RegisteReturnBean.TBaseDeviceVosBean> tBaseDeviceVos = returnBean.getTBaseDeviceVos();
 	RegisteReturnBean.TbaseThingBean tbaseThing = returnBean.getTbaseThing();
@@ -494,18 +503,17 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
 				    mFragRegistePortEdit.getText().toString().trim() + "/cst";
 		   Log.i(TAG, "url   " + url);
-
+		   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,"");
+		   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,url);
+		   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP_TEXT, mFragRegisteSeveripEdit.getText().toString().trim());
+		   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_CODE, mFragRegistePortEdit.getText().toString().trim());
+		   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
 		   NetRequest.getInstance()
-			   .getDeviceInfosDate(url, strings, _mActivity, new BaseResult() {
+			   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP), strings, _mActivity, new BaseResult() {
 				@Override
 				public void onSucceed(String result) {
-				   SPUtils.putString(mContext,SAVE_SEVER_IP,url);
-				   SPUtils.putString(mContext,SAVE_SEVER_IP_TEXT, mFragRegisteSeveripEdit.getText().toString().trim());
-				   SPUtils.putString(mContext,SAVE_SEVER_CODE, mFragRegistePortEdit.getText().toString().trim());
-//				   App.initServer();//给设备设置IP
-				   initServer();
-//				   MAIN_URL=SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
-				   Log.i(TAG, "App.MAIN_URL   " + MAIN_URL);
+
+//				   Log.i(TAG, "App.MAIN_URL   " + MAIN_URL);
 				   LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext,SAVE_SEVER_IP));
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();

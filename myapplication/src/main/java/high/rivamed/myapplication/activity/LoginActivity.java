@@ -53,7 +53,6 @@ import cn.rivamed.callback.DeviceCallBack;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -62,7 +61,6 @@ import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyValueFormatter;
@@ -73,7 +71,6 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -122,13 +119,7 @@ public class LoginActivity extends SimpleActivity {
     public void initDataAndEvent(Bundle savedInstanceState) {
         //清空accountID
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
-
-        if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null) {
-            App.MAIN_URL = NetApi.BETA_URL;
-        } else {
-            App.MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-        }
-
+        mDownText.setText("智能耗材管理柜："+ UIUtils.getVersionName(mContext));
         //-----检测分辨率---------------------------------------
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();

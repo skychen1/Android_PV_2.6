@@ -73,20 +73,29 @@ public class RegisteReturnBean implements Serializable{
 
 	private String thingCode;
 	private int    appScene;
-	private Object deptCode;
+	private String deptCode;
 	private String deptName;
 	private String localIp;
 	private String serverIp;
-	private Object macAddress;
-	private Object operationRoomNo;
-	private Object remark;
+	private String macAddress;
+	private String operationRoomNo;
+	private String remark;
 	private String sn;
 	private int    stopFlag;
-	private Object storehouseCode;
+	private String storehouseCode;
 	private String thingName;
 	private String thingType;
 	private int    status;
 	private String portNumber;
+	private String branchCode;
+	public String getBranchCode() {
+	   return branchCode;
+	}
+
+	public void setBranchCode(String branchCode) {
+	   this.branchCode = branchCode;
+	}
+
 
 	public String getDeptName() {
 	   return deptName;
@@ -104,9 +113,9 @@ public class RegisteReturnBean implements Serializable{
 
 	public void setAppScene(int appScene) { this.appScene = appScene;}
 
-	public Object getDeptCode() { return deptCode;}
+	public String getDeptCode() { return deptCode;}
 
-	public void setDeptCode(Object deptCode) { this.deptCode = deptCode;}
+	public void setDeptCode(String deptCode) { this.deptCode = deptCode;}
 
 	public String getLocalIp() { return localIp;}
 
@@ -116,18 +125,18 @@ public class RegisteReturnBean implements Serializable{
 
 	public void setServerIp(String serverIp) { this.serverIp = serverIp;}
 
-	public Object getMacAddress() { return macAddress;}
+	public String getMacAddress() { return macAddress;}
 
-	public void setMacAddress(Object macAddress) { this.macAddress = macAddress;}
+	public void setMacAddress(String macAddress) { this.macAddress = macAddress;}
 
-	public Object getOperationRoomNo() { return operationRoomNo;}
+	public String getOperationRoomNo() { return operationRoomNo;}
 
 	public void setOperationRoomNo(
-		Object operationRoomNo) { this.operationRoomNo = operationRoomNo;}
+		String operationRoomNo) { this.operationRoomNo = operationRoomNo;}
 
-	public Object getRemark() { return remark;}
+	public String getRemark() { return remark;}
 
-	public void setRemark(Object remark) { this.remark = remark;}
+	public void setRemark(String remark) { this.remark = remark;}
 
 	public String getSn() { return sn;}
 
@@ -137,9 +146,9 @@ public class RegisteReturnBean implements Serializable{
 
 	public void setStopFlag(int stopFlag) { this.stopFlag = stopFlag;}
 
-	public Object getStorehouseCode() { return storehouseCode;}
+	public String getStorehouseCode() { return storehouseCode;}
 
-	public void setStorehouseCode(Object storehouseCode) { this.storehouseCode = storehouseCode;}
+	public void setStorehouseCode(String storehouseCode) { this.storehouseCode = storehouseCode;}
 
 	public String getThingName() { return thingName;}
 

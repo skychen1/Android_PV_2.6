@@ -1,6 +1,8 @@
 package high.rivamed.myapplication.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -167,4 +169,23 @@ public class UIUtils {
 		textView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(max), filter});
 
 	}
+   /**
+    * 获得版本信息
+    *
+    * @param context
+    * @return
+    */
+   public static String getVersionName(Context context) {
+	// 获得包管理器
+	PackageManager pm = context.getPackageManager();
+	try {
+	   // 清单文件的对象
+	   PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);
+	   return packageInfo.versionName;
+
+	} catch (PackageManager.NameNotFoundException e) {
+	   e.printStackTrace();
+	   return "未知版本";
+	}
+   }
 }

@@ -31,8 +31,8 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
 import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -53,7 +53,7 @@ public class App extends Application {
     */
    private static ACache  mAppCache;
 
-   public static String MAIN_URL = null;
+//   public static String MAIN_URL = null;
 
    public static Handler getHandler() {
 	return mHandler;
@@ -124,11 +124,14 @@ public class App extends Application {
     * 选择服务器
     */
    public static void initServer() {
-	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null) {
-	   MAIN_URL = NetApi.BETA_URL;
-	} else {
-	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	}
+	LogUtils.i("RegisteFrag","1   "+(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null));
+//	LogUtils.i("RegisteFrag","2   "+MAIN_URL);
+//	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null) {
+//	   MAIN_URL = NetApi.BETA_URL;
+//	} else {
+//	MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+//	}
+//	LogUtils.i("RegisteFrag","3   "+MAIN_URL);
    }
 
    /**
