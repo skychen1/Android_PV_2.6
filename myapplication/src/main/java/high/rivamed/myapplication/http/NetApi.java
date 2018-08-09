@@ -61,7 +61,8 @@ public interface NetApi {
     String URL_USER_REGISTER_FINGER = MAIN_URL + "/rmApi/userManage/userFeature/registerFinger";//绑定指纹
     String URL_USER_VALIDATELOGIN_FINGER = MAIN_URL + "/rmApi/login/accountLogin/validateLoginFinger";//指纹登录
     String URL_USER_RESET_PASSWORD = MAIN_URL + "/rmApi/userManage/account/resetPassword";//重置密码
-    String URL_USER_VALIDATELOGINWRIST = MAIN_URL + "/rmApi/restLogin/validateLoginWrist";//IdCard登录
+    String URL_USER_VALIDATELOGINWRIST = MAIN_URL + "/rmApi/restLogin/validateLoginWrist";//腕带登录
+    String URL_USER_REGISTERWAIDAI = MAIN_URL + "/rmApi/userManage/userFeature/registerWaidai";//腕带绑定
 
     //   实时盘点
     String URL_TIMELY_ONE = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点

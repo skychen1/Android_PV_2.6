@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.RegisterFingerBean;
 import high.rivamed.myapplication.dto.RegisterFingerDto;
+import high.rivamed.myapplication.dto.RegisterWandaiDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -90,10 +90,18 @@ public class LoginInfoActivity extends BaseSimpleActivity {
             } else {
                 //已绑定
                 mSettingFingerprintEdit.setText("已绑定");
+                mSettingFingerprintBind.setText("绑定");
             }
 
-            mSettingIcCardEdit.setText("未绑定");
-            mSettingIcCardBind.setText("绑定");
+            if (appAccountInfoVo.getIsWaidai() == 0) {
+                //指纹未绑定
+                mSettingIcCardEdit.setText("未绑定");
+                mSettingIcCardBind.setText("绑定");
+            } else {
+                //已绑定
+                mSettingIcCardEdit.setText("已绑定");
+                mSettingIcCardBind.setText("绑定");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,6 +174,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                         }
                     }
                 });
+                break;
             case R.id.setting_ic_card_bind:
                 DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
                     @Override
@@ -181,27 +190,18 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         }
     }
 
-    private void bindIdCrad(String idCard) {
-        ToastUtils.showShort("idCard:" + idCard);
-    }
-
     /*
-     * 绑定指纹
-     * */
-    private void bindFingerPrint(List<String> list) {
+    * 腕带绑定
+    * */
+    private void bindIdCrad(String idCard) {
         mBuilder = DialogUtils.showLoading(mContext);
-
-        RegisterFingerDto dto = new RegisterFingerDto();
-        List<RegisterFingerDto.UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            RegisterFingerDto.UserFeatureInfosBean bean = new RegisterFingerDto.UserFeatureInfosBean();
-            bean.setUserId(mUserId);
-            bean.setData(list.get(i));
-            userFeatureInfos.add(bean);
-        }
-        dto.setUserFeatureInfos(userFeatureInfos);
-        Log.e("fff", "###############" + mGson.toJson(dto));
-        NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
+        RegisterWandaiDto dto = new RegisterWandaiDto();
+        RegisterWandaiDto.UserFeatureInfoBean bean = new RegisterWandaiDto.UserFeatureInfoBean();
+        bean.setUserId(mUserId);
+        bean.setData(idCard);
+        bean.setType("2");
+        dto.setUserFeatureInfo(bean);
+        NetRequest.getInstance().registerIdCard(mGson.toJson(dto), this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 try {
@@ -209,8 +209,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                     if (data.isOperateSuccess()) {
                         ToastUtils.showShort("绑定成功");
                         //指纹未绑定
-                        mSettingFingerprintEdit.setText("已绑定");
-                        mSettingFingerprintBind.setText("");
+                        mSettingIcCardEdit.setText("已绑定");
+                        mSettingIcCardBind.setText("绑定");
 
                         String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
                         LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
@@ -219,12 +219,12 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
 
                     } else {
-                        ToastUtils.showShort("绑定失败1");
+                        ToastUtils.showShort("绑定失败");
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ToastUtils.showShort("绑定失败2");
+                    ToastUtils.showShort("绑定失败");
                 }
 
                 mBuilder.mDialog.dismiss();
@@ -234,7 +234,61 @@ public class LoginInfoActivity extends BaseSimpleActivity {
             public void onError(String result) {
                 super.onError(result);
                 mBuilder.mDialog.dismiss();
-                ToastUtils.showShort("绑定失败3");
+                ToastUtils.showShort("绑定失败");
+            }
+        });
+
+    }
+
+    /*
+     * 绑定指纹
+     * */
+    private void bindFingerPrint(List<String> list) {
+        mBuilder = DialogUtils.showLoading(mContext);
+        RegisterFingerDto dto = new RegisterFingerDto();
+        List<RegisterFingerDto.UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            RegisterFingerDto.UserFeatureInfosBean bean = new RegisterFingerDto.UserFeatureInfosBean();
+            bean.setUserId(mUserId);
+            bean.setType("1");
+            bean.setData(list.get(i));
+            userFeatureInfos.add(bean);
+        }
+        dto.setUserFeatureInfos(userFeatureInfos);
+        NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                try {
+                    RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
+                    if (data.isOperateSuccess()) {
+                        ToastUtils.showShort("绑定成功");
+                        //指纹未绑定
+                        mSettingFingerprintEdit.setText("已绑定");
+                        mSettingFingerprintBind.setText("绑定");
+
+                        String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
+                        LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
+                        data2.getAppAccountInfoVo().setIsFinger(1);
+                        SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
+
+
+                    } else {
+                        ToastUtils.showShort("绑定失败");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtils.showShort("绑定失败");
+                }
+
+                mBuilder.mDialog.dismiss();
+            }
+
+            @Override
+            public void onError(String result) {
+                super.onError(result);
+                mBuilder.mDialog.dismiss();
+                ToastUtils.showShort("绑定失败");
             }
         });
     }

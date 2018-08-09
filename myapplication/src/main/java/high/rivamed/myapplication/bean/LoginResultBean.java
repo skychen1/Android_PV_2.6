@@ -58,6 +58,16 @@ public class LoginResultBean implements Serializable {
         private String accountId;
         private String userId;
         private int isFinger;
+        private int isWaidai;
+
+        public int getIsWaidai() {
+            return isWaidai;
+        }
+
+        public void setIsWaidai(int isWaidai) {
+            this.isWaidai = isWaidai;
+        }
+
         private List<String> roleNames;
 
         public String getAccountName() {

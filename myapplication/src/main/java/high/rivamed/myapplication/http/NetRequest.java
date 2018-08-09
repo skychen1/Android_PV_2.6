@@ -98,6 +98,15 @@ public class NetRequest {
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
 
+   /**
+     * 绑定腕带
+     */
+    public void registerIdCard(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_REGISTERWAIDAI).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
+
     /**
      * 指纹登录
      */

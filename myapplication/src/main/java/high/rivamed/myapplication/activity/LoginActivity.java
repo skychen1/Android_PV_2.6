@@ -291,7 +291,7 @@ public class LoginActivity extends SimpleActivity {
             @Override
             public void onError(String result) {
                 super.onError(result);
-                ToastUtils.showShort("登录失败" + result);
+                ToastUtils.showShort("登录失败" );
             }
         });
 
@@ -323,7 +323,7 @@ public class LoginActivity extends SimpleActivity {
             @Override
             public void onError(String result) {
                 super.onError(result);
-                ToastUtils.showShort("登录失败" + result);
+                ToastUtils.showShort("登录失败");
             }
         });
 
