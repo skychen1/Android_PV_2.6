@@ -95,6 +95,40 @@
                     android:textColor="@color/color_green"
                     android:textSize="@dimen/textsize_18" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x300"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/x50">
+
+                <TextView
+                    android:id="@+id/setting_ic_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="腕带："
+                    android:textColor="@color/color_drak_green"
+                    android:textSize="@dimen/textsize_18" />
+
+                <TextView
+                    android:id="@+id/setting_ic_card_edit"
+                    android:layout_width="@dimen/x600"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    tools:text="未绑定"
+                    android:textColor="@color/text_color_6"
+                    android:textSize="@dimen/textsize_18" />
+
+                <TextView
+                    android:id="@+id/setting_ic_card_bind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/x24"
+                    android:paddingRight="@dimen/x24"
+                    tools:text="绑定"
+                    android:textColor="@color/color_green"
+                    android:textSize="@dimen/textsize_18" />
+            </LinearLayout>
 
 
         </LinearLayout>

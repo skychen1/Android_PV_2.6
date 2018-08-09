@@ -3,6 +3,7 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,6 +57,12 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     TextView mSettingFingerprintEdit;
     @BindView(R.id.setting_fingerprint_bind)
     TextView mSettingFingerprintBind;
+    @BindView(R.id.setting_ic_card)
+    TextView mSettingIcCard;
+    @BindView(R.id.setting_ic_card_edit)
+    TextView mSettingIcCardEdit;
+    @BindView(R.id.setting_ic_card_bind)
+    TextView mSettingIcCardBind;
     private LoadingDialog.Builder mBuilder;
     private String mUserId = "";
 
@@ -84,6 +91,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                 //已绑定
                 mSettingFingerprintEdit.setText("已绑定");
             }
+
+            mSettingIcCardEdit.setText("未绑定");
+            mSettingIcCardBind.setText("绑定");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,8 +105,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         return R.layout.setting_logininfo_layout;
     }
 
-
-    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+    @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
             R.id.base_tab_back, R.id.setting_revise_password, R.id.setting_fingerprint_bind})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -113,7 +123,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                             case 1:
                                 mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
                                 break;
-                            case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+                            case 2:
+                                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
                                 builder.setTwoMsg("您确认要退出登录吗?");
                                 builder.setMsg("温馨提示");
                                 builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -155,8 +166,23 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                         }
                     }
                 });
+            case R.id.setting_ic_card_bind:
+                DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
+                    @Override
+                    public void OnBindIdCard(String idCard) {
+                        if (!TextUtils.isEmpty(idCard)) {
+                            bindIdCrad(idCard);
+                        } else {
+                            ToastUtils.showShort("采集失败,请重试");
+                        }
+                    }
+                });
                 break;
         }
+    }
+
+    private void bindIdCrad(String idCard) {
+        ToastUtils.showShort("idCard:" + idCard);
     }
 
     /*
@@ -216,6 +242,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     //提供接口
     public interface OnfingerprintBackListener {
         void OnfingerprintBack(List<String> list);
+    }
+
+    public interface OnBindIdCardListener {
+        void OnBindIdCard(String idCard);
     }
 
 }

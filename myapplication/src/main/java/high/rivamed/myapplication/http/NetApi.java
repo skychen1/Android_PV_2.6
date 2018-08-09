@@ -21,59 +21,60 @@ public interface NetApi {
     //正式
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
-//    String BETA_URL     = "http://192.168.2.32:8015/cst";
-//    String BETA_URL     = "";
-//    String BETA_URL     = "http://192.168.11.60:8016/cst";
-    String BETA_URL2     = "http://192.168.2.41:8015/cst";
-    String  MAIN_URL =SPUtils.getString(UIUtils.getContext(),SAVE_SEVER_IP);
+    //    String BETA_URL     = "http://192.168.2.32:8015/cst";
+    //    String BETA_URL     = "";
+    //    String BETA_URL     = "http://192.168.11.60:8016/cst";
+    String BETA_URL2 = "http://192.168.2.41:8015/cst";
+    String MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
     //工程模式
-   String URL_TEST_SNQUERY  = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
-   String URL_TEST_REGISTE  = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册  设备激活
-   String URL_TEST_FINDDEVICE  = "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
-   String URL_TEST_FIND_HOSPHOME  = MAIN_URL + "/rmApi/dept/tBaseHospital/findByHospName";//输入医院查询医院信息
-   String URL_TEST_FIND_BRANCH  = MAIN_URL + "/rmApi/dept/tBaseDept/findBranch";//根据医院id查询院区信息
-   String URL_TEST_FIND_DEPT  = MAIN_URL + "/rmApi/dept/tBaseDept/findDept";//根据院区编码查询科室信息
-   String URL_TEST_FIND_BYDEPT  = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况
-   String URL_TEST_FIND_OPERROOMS  = MAIN_URL + "/rmApi/dept/tBaseOperationRoom/findOperRoomsByDept";//根据科室查询手术室信息
+    String URL_TEST_SNQUERY = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
+    String URL_TEST_REGISTE = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册  设备激活
+    String URL_TEST_FINDDEVICE = "/rmApi/dict/tBaseDeviceDict/findDevice";//根据部件类型查名字
+    String URL_TEST_FIND_HOSPHOME = MAIN_URL + "/rmApi/dept/tBaseHospital/findByHospName";//输入医院查询医院信息
+    String URL_TEST_FIND_BRANCH = MAIN_URL + "/rmApi/dept/tBaseDept/findBranch";//根据医院id查询院区信息
+    String URL_TEST_FIND_DEPT = MAIN_URL + "/rmApi/dept/tBaseDept/findDept";//根据院区编码查询科室信息
+    String URL_TEST_FIND_BYDEPT = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况
+    String URL_TEST_FIND_OPERROOMS = MAIN_URL + "/rmApi/dept/tBaseOperationRoom/findOperRoomsByDept";//根据科室查询手术室信息
 
 
-   //耗材流水
-   String URL_HOME_RUNWATE  = MAIN_URL + "/rmApi/consumables/tCstInventoryJournal/findTCstInventoryJournal";//查询耗材流水
-   String URL_HOME_BOXSIZE  = MAIN_URL + "/rmApi/device/tBaseDevice/getCabinetCount";//查询耗材流水
+    //耗材流水
+    String URL_HOME_RUNWATE = MAIN_URL + "/rmApi/consumables/tCstInventoryJournal/findTCstInventoryJournal";//查询耗材流水
+    String URL_HOME_BOXSIZE = MAIN_URL + "/rmApi/device/tBaseDevice/getCabinetCount";//查询耗材流水
 
-   //库存状态
-   String URL_STOCKSTATUS_TOP  = MAIN_URL + "/rmApi/consumables/tCstInventory/expireStatistics";//库存监控 耗材效期监控
-   String URL_STOCKSTATUS_DETAILS  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryStatusAndDetails";//库存详情和耗材库存预警
-   String URL_STOCKUNCON_RIGHT  = MAIN_URL + "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
-   String URL_STOCK_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/detail";//查询单个耗材
+    //库存状态
+    String URL_STOCKSTATUS_TOP = MAIN_URL + "/rmApi/consumables/tCstInventory/expireStatistics";//库存监控 耗材效期监控
+    String URL_STOCKSTATUS_DETAILS = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryStatusAndDetails";//库存详情和耗材库存预警
+    String URL_STOCKUNCON_RIGHT = MAIN_URL + "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
+    String URL_STOCK_DETAIL = MAIN_URL + "/rmApi/consumables/tCstInventory/detail";//查询单个耗材
 
-   //耗材操作
+    //耗材操作
 
-   String URL_OPERATE_QUERY        = MAIN_URL + "/rmApi/consumables/tCstInventory/findTCstInventory";//查询扫描出来的耗材和数据库耗材情况
-   String URL_OPERATE_INOUTBOX_YES = MAIN_URL + "/rmApi/consumables/tCstInventory/operateTCstInventory";//查询后入柜出柜的确认操作
-   String URL_OPERATE_YC_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
-   String URL_OPERATE_DB_YES       = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
+    String URL_OPERATE_QUERY = MAIN_URL + "/rmApi/consumables/tCstInventory/findTCstInventory";//查询扫描出来的耗材和数据库耗材情况
+    String URL_OPERATE_INOUTBOX_YES = MAIN_URL + "/rmApi/consumables/tCstInventory/operateTCstInventory";//查询后入柜出柜的确认操作
+    String URL_OPERATE_YC_YES = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
+    String URL_OPERATE_DB_YES = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
 
-   //用户
-   String URL_USER_LOGIN  = BETA_URL2 + "/rmApi/restLogin/validateLoginPassword";//登录
-    String URL_USER_GET_INFO  = BETA_URL2 + "/rmApi/userManage/account/findAppAccountInfo";//获取用户信息
-    String URL_USER_REGISTER_FINGER  = BETA_URL2 + "/rmApi/userManage/userFeature/registerFinger";//绑定指纹
-    String URL_USER_VALIDATELOGIN_FINGER  = BETA_URL2 + "/rmApi/login/accountLogin/validateLoginFinger";//指纹登录
-    String URL_USER_RESET_PASSWORD  = BETA_URL2 + "/rmApi/userManage/account/resetPassword";//重置密码
+    //用户
+    String URL_USER_LOGIN = MAIN_URL + "/rmApi/restLogin/validateLoginPassword";//登录
+    String URL_USER_GET_INFO = MAIN_URL + "/rmApi/userManage/account/findAppAccountInfo";//获取用户信息
+    String URL_USER_REGISTER_FINGER = MAIN_URL + "/rmApi/userManage/userFeature/registerFinger";//绑定指纹
+    String URL_USER_VALIDATELOGIN_FINGER = MAIN_URL + "/rmApi/login/accountLogin/validateLoginFinger";//指纹登录
+    String URL_USER_RESET_PASSWORD = MAIN_URL + "/rmApi/userManage/account/resetPassword";//重置密码
+    String URL_USER_VALIDATELOGINWRIST = MAIN_URL + "/rmApi/restLogin/validateLoginWrist";//IdCard登录
 
     //   实时盘点
-   String URL_TIMELY_ONE  = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
-   String URL_TIMELY_PROFIT  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
-   String URL_TIMELY_LOSSES  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况
-   String URL_TIMELY_DETAIL  = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
+    String URL_TIMELY_ONE = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点
+    String URL_TIMELY_PROFIT = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
+    String URL_TIMELY_LOSSES = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况
+    String URL_TIMELY_DETAIL = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
 
-   //患者绑定
-   String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatients";//患者查询
-   String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/saveGetPatientCst";//患者绑定
+    //患者绑定
+    String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatients";//患者查询
+    String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/saveGetPatientCst";//患者绑定
 
-   //查询配置项
-   String URL_THING_CONFIG_FIND = MAIN_URL + "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项
+    //查询配置项
+    String URL_THING_CONFIG_FIND = MAIN_URL + "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项
 
 
 }

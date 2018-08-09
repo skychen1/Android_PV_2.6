@@ -1,9 +1,9 @@
 package high.rivamed.myapplication.devices;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -217,6 +217,7 @@ public class TestDevicesActivity extends SimpleActivity {
                     offset=0;
                 }
                 scroll_log.scrollTo(0,offset);
+                Log.i("fff", msg);
             }
         });
     }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/x800"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/dialog_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/finger_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/x39"
+        android:paddingTop="@dimen/x39"
+        android:text="绑定腕带"
+        android:textColor="@color/color_drak_green"
+        android:textSize="@dimen/textsize_18" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/finger_title"
+        android:layout_marginTop="@dimen/x25"
+        android:paddingLeft="@dimen/x39"
+        android:text="将腕带放在扫描区域，请误离开"
+        android:textColor="@color/color_red"
+        android:textSize="@dimen/textsize_15" />
+
+    <ImageView
+        android:id="@+id/dialog_closs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/x39"
+        android:src="@mipmap/hccz_ic_tc_gb" />
+
+    <RelativeLayout
+        android:id="@+id/rl_finger_icon"
+        android:layout_width="150dp"
+        android:layout_height="170dp"
+        android:layout_below="@+id/dialog_closs"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/x60">
+
+        <RelativeLayout
+            android:id="@+id/rl_bind_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+            <include layout="@layout/dialog_loading_layout" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bind_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_finger_success"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/hccz_ic_tx" />
+
+            <TextView
+                android:id="@+id/tv_id_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textColor="@color/text_color_3"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/dialog_right"
+        android:layout_width="@dimen/x400"
+        android:layout_height="@dimen/x68"
+        android:layout_below="@+id/rl_finger_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/x70"
+        android:layout_marginTop="@dimen/x20"
+        android:background="@drawable/bg_btn_line_pre"
+        android:gravity="center"
+        android:text="确认"
+        android:textColor="@color/bg_f"
+        android:textSize="@dimen/textsize_17" />
+
+</RelativeLayout>

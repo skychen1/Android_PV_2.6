@@ -58,6 +58,7 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.dto.FingerLoginDto;
+import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
@@ -195,12 +196,16 @@ public class LoginActivity extends SimpleActivity {
 
             @Override
             public void OnIDCard(String deviceId, String idCard) {
-
+                Log.e("fff", idCard);
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    validateLoginIdCard(idCard);
+                }
             }
 
             @Override
             public void OnFingerFea(String deviceId, String fingerFea) {
-                Log.e("fff", fingerFea);
                 if (UIUtils.isFastDoubleClick()) {
                     return;
                 } else {
@@ -261,19 +266,47 @@ public class LoginActivity extends SimpleActivity {
 
     }
 
+    private void validateLoginIdCard(String idCard) {
+        IdCardLoginDto data = new IdCardLoginDto();
+        IdCardLoginDto.UserFeatureInfoBean bean = new IdCardLoginDto.UserFeatureInfoBean();
+        bean.setData(idCard);
+        bean.setType("2");
+        data.setUserFeatureInfo(bean);
+        NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                try {
+                    LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
+                    if (loginResultBean.isOperateSuccess()) {
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+                        Intent intent = new Intent(mContext, HomeActivity.class);
+                        mContext.startActivity(intent);
+                        mContext.finish();
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(String result) {
+                super.onError(result);
+                ToastUtils.showShort("登录失败" + result);
+            }
+        });
+
+    }
+
     private void validateLoginFinger(String fingerFea) {
-        Log.e("fff", "validateLoginFinger........");
         String thingCode = SPUtils.getString(mContext, THING_CODE);
         FingerLoginDto data = new FingerLoginDto();
         FingerLoginDto.UserFeatureInfoBean bean = new FingerLoginDto.UserFeatureInfoBean();
         bean.setData(fingerFea);
         data.setUserFeatureInfo(bean);
         data.setThingCode(thingCode);
-        Log.e("fff", "#############################" + mGson.toJson(data));
         NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                Log.e("fff", "#############################result:" + result);
                 try {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
                     if (loginResultBean.isOperateSuccess()) {
