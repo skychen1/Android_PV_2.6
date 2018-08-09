@@ -42,7 +42,6 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-
 public class LoginInfoActivity extends BaseSimpleActivity {
 
     @BindView(R.id.setting_password)
@@ -102,7 +101,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                 mSettingIcCardEdit.setText("已绑定");
                 mSettingIcCardBind.setText("绑定");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

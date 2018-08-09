@@ -123,6 +123,7 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnFingerFea(String deviceId, String fingerFea) {
                 AppendLog("接收到指纹采集信息：" + deviceId + ":::FingerData=" + fingerFea);
+                Log.e("fff", fingerFea);
             }
 
             @Override

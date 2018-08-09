@@ -209,7 +209,7 @@ public class LoginActivity extends SimpleActivity {
                 if (UIUtils.isFastDoubleClick()) {
                     return;
                 } else {
-                    validateLoginFinger(fingerFea);
+                    validateLoginFinger(fingerFea.trim().replaceAll("\n",""));
                 }
             }
 

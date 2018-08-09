@@ -259,14 +259,15 @@ public class DialogUtils {
             @Override
             public void OnFingerFea(String deviceId, String fingerFea) {
                 times[0]++;
+                String myfingerFea = fingerFea.trim().replaceAll("\n", "");
                 if (times[0] == 1) {
-                    fingerList.add(fingerFea);
+                    fingerList.add(myfingerFea);
                     //					ToastUtils.showShort("请再次按下");
                 } else if (times[0] == 2) {
-                    fingerList.add(fingerFea);
+                    fingerList.add(myfingerFea);
                     //					ToastUtils.showShort("请第三次按下");
                 } else if (times[0] == 3) {
-                    fingerList.add(fingerFea);
+                    fingerList.add(myfingerFea);
                     //					ToastUtils.showShort("采集成功!请按确定键!");
                     UIUtils.runInUIThread(new Runnable() {
                         @Override
@@ -363,7 +364,7 @@ public class DialogUtils {
                 UIUtils.runInUIThread(new Runnable() {
                     @Override
                     public void run() {
-                        builder.setSuccess("卡号: "+idCard);
+                        builder.setSuccess("卡号: " + idCard);
                     }
                 });
             }

@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.lzy.okgo.OkGo;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mContext = this;
-		mGson = new Gson();
+		mGson = new GsonBuilder().disableHtmlEscaping().create();
 	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		if (getLayoutId() > 0) {
