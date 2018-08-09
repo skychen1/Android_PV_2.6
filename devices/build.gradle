@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '27.0.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -49,8 +49,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'io.netty:netty-all:4.1.25.Final'
     //普通权限运行Colulibs下的 mvn安装.bat成功后，方可有效
-//    implementation 'com.clu.uhf.G3Lib:ClouReaderAPI:1.0'
-//    implementation 'com.ferly:Jxl:1.0'
+    //    implementation 'com.clu.uhf.G3Lib:ClouReaderAPI:1.0'
+    //    implementation 'com.ferly:Jxl:1.0'
 }
 
 

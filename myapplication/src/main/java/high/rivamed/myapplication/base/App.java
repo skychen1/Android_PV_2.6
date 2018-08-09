@@ -93,7 +93,7 @@ public class App extends Application {
    }
 
    private void InitDeviceService() {
-	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
+	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
 	DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
    }
 
