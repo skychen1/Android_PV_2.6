@@ -267,6 +267,7 @@ public class DeviceManager {
                     break;
                 case  UHF_READER_COLU_NETTY:
                     uhfService=new ColuNettyService(this.uhf_Port);
+                    break;
                 case UHF_READER_COLU:
                     uhfService = new ColuReaderService(this.uhf_Port);
                     break;
