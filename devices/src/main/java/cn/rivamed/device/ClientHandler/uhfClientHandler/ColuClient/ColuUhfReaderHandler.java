@@ -331,7 +331,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     }
 
     @Override
-    public int SetPower(int power) {
+    public int SetPower(byte power) {
         if (power < 0 || power > 33) {
             return FunctionCode.PARAM_ERROR;
         }
@@ -340,7 +340,7 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         Thread thread = new Thread(() -> {
             HashMap<Integer, Integer> everyAntPower = new HashMap<>();
             for (int i = 0; i < ants.length; i++) {
-                everyAntPower.put((int) ants[i], power);
+                everyAntPower.put((int) ants[i], (int) power);
             }
 
 

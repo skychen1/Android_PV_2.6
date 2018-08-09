@@ -547,7 +547,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     }
 
     @Override
-    public int SetPower(int power) {
+    public int SetPower(byte power) {
         return 0;
     }
 

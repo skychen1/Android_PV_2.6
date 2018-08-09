@@ -7,7 +7,7 @@ public interface UhfHandler {
 
     public int StopScan();
 
-    public int SetPower(int power);
+    public int SetPower(byte power);
 
     public int QueryPower();
 

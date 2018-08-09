@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import cn.rivamed.DeviceManager;
+import cn.rivamed.Utils.RivamedLengthFieldBasedFrameDecoder;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
-import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient.ColuNettyClientHandle;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
@@ -64,10 +65,10 @@ public class ColuNettyService extends BaseService implements UhfService {
                         .childHandler(new ChannelInitializer() {
                             protected void initChannel(Channel channel) throws Exception {
                                 channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
-                                RodinbellReaderHandler channelHandler = new RodinbellReaderHandler();
+                                ColuNettyClientHandle channelHandler = new ColuNettyClientHandle();
                                 Log.i(log_tag, "接收到新的链接请求" + channel.remoteAddress());
-                                channelHandler.RegisterMessageListener(new ColuNettyService.RodinBellMessageListener());
-                                channel.pipeline().addLast(new IdleStateHandler(5, 0, 0));
+                                channelHandler.RegisterMessageListener(new ColuNettyService.ColuNettyMessageListener());
+                              //  channel.pipeline().addLast(new IdleStateHandler(10, 0, 0));
                                 /**
                                  *
                                  * maxFrameLength 为信息最大长度，超过这个长度回报异常，
@@ -77,7 +78,7 @@ public class ColuNettyService extends BaseService implements UhfService {
                                  * initialBytesToStrip 为跳过的字节数，从长度属性结束的位置往前数，
                                  *
                                  * */
-                                channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(10000, 3, 2, -3, 0));
+                                channel.pipeline().addLast(new RivamedLengthFieldBasedFrameDecoder(10000, 3, 2, 0, 0,2,false    ));
                                 channel.pipeline().addLast(channelHandler);
                             }
                         });
@@ -116,9 +117,9 @@ public class ColuNettyService extends BaseService implements UhfService {
     }
 
     /**
-     * 处理罗丹贝尔阅读器相关回调事件
+     * 处理阅读器相关回调事件
      */
-    class RodinBellMessageListener implements UhfClientMessage {
+    class ColuNettyMessageListener implements UhfClientMessage {
 
         DeviceHandler deviceHandler;
 
