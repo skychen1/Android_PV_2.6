@@ -132,6 +132,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="指纹注册" />
+                <Button
+                    android:id="@+id/bt_fingerCompare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="指纹比对" />
 
                 <Button
                     android:id="@+id/bt_queryConnDev"

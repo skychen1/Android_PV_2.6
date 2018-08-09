@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.devices;
 
 import android.content.Context;
+import android.fingeralg.FingerAlg;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -39,6 +40,7 @@ public class TestDevicesActivity extends SimpleActivity {
     private Button bt_setpower;
     private Button bt_uhf_reset;
     private Button bt_clear;
+    private Button bt_fingerCompare;
 
     private EditText txt_power;
     private Button bt_queryConnDev;
@@ -46,6 +48,9 @@ public class TestDevicesActivity extends SimpleActivity {
     private ScrollView scroll_log;
     String uhfDeviceId = "";
     String eth002DeviceId = "";
+
+    String fingerData;
+    String fingerTemplate;
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
 
@@ -72,7 +77,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_back=(Button) findViewById(R.id.bt_back);
         bt_clear=(Button)findViewById(R.id.bt_clear);
         scroll_log=(ScrollView)findViewById(R.id.scroll_log);
-
+        bt_fingerCompare=(Button)findViewById(R.id.bt_fingerCompare);
 
         initListener();
         initCallBack();
@@ -124,6 +129,7 @@ public class TestDevicesActivity extends SimpleActivity {
             public void OnFingerFea(String deviceId, String fingerFea) {
                 AppendLog("接收到指纹采集信息：" + deviceId + ":::FingerData=" + fingerFea);
                 Log.e("fff", fingerFea);
+                fingerData=fingerFea;
             }
 
             @Override
@@ -134,6 +140,9 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
                 AppendLog("接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
+            if(success){
+                fingerTemplate=fingerData;
+            }
             }
 
             @Override
@@ -224,7 +233,14 @@ public class TestDevicesActivity extends SimpleActivity {
     }
 
     private void initListener() {
-
+        bt_fingerCompare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FingerAlg fingerAlg=new FingerAlg();
+                int score=fingerAlg.AlgMatch(fingerTemplate,fingerData,3);
+                AppendLog("质问对比结果 Score="+score);
+            }
+        });
         bt_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
