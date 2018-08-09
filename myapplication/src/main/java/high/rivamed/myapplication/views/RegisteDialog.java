@@ -26,6 +26,7 @@ import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -55,7 +56,11 @@ public class RegisteDialog extends Dialog {
 
 	layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
 	layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-	getWindow().getDecorView().setPadding(530, 200, 0, 0);
+	int left = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x530);
+	int top = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x200);
+	int right = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x530);
+	int bottom = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x200);
+	getWindow().getDecorView().setPadding(left, top, right, bottom);
 	getWindow().setAttributes(layoutParams);
    }
 
@@ -146,7 +151,7 @@ public class RegisteDialog extends Dialog {
 	   dialog.setCancelable(false);
 	   final View layout = inflater.inflate(R.layout.dialog_registe_layout, null);
 
-	   dialog.addContentView(layout, new ViewGroup.LayoutParams(860,
+	   dialog.addContentView(layout, new ViewGroup.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.x860),
 											ViewGroup.LayoutParams.WRAP_CONTENT));
 
 	   mDialogCloss = (ImageView) layout.findViewById(R.id.dialog_closs);

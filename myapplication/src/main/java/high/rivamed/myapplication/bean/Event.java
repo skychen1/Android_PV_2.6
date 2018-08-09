@@ -149,4 +149,18 @@ public class Event {
 	   this.mBoolean = booleans;
 	}
    }
+   public static class EventToast {
+	public String mString;
+
+	public EventToast(String text) {
+	   this.mString = text;
+	}
+   }
+   public static class EventRg {
+	public String mString;
+
+	public EventRg(String text) {
+	   this.mString = text;
+	}
+   }
 }

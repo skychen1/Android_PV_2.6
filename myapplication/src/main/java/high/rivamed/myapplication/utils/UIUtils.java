@@ -12,9 +12,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
+
+import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
+import high.rivamed.myapplication.bean.ConfigBean;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -187,5 +193,27 @@ public class UIUtils {
 	   e.printStackTrace();
 	   return "未知版本";
 	}
+   }
+
+   /**
+    * 获取配置项
+    * @param context
+    * @param code
+    * @return
+    */
+   public static boolean getConfigType(Context context,String code) {
+	Gson gson = new Gson();
+	String string = SPUtils.getString(context, SAVE_CONFIG_STRING);
+	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
+	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
+	if (configBean!=null){
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+	   for (ConfigBean.TCstConfigVosBean configType :tCstConfigVos) {
+		if (code.equals(configType.getCode())){
+		   return true;
+		}
+	   }
+	}
+	return false;
    }
 }

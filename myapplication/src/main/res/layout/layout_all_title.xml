@@ -118,7 +118,7 @@
 					android:clickable="true"
 					android:gravity="center"
 					android:paddingRight="@dimen/x15"
-					android:text="我是名字"
+
 					android:textColor="@color/text_color_58"
 					android:textSize="@dimen/textsize_16"
 					/>

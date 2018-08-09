@@ -31,6 +31,7 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
 import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
@@ -152,7 +153,7 @@ public class App extends Application {
 	//超时时间设置，默认60秒
 	builder.readTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
 	builder.writeTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
-	builder.connectTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
+	builder.connectTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
 
 	//自动管理cookie（或者叫session的保持），以下几种任选其一就行
 	//builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));            //使用sp保持cookie，如果cookie不过期，则一直有效

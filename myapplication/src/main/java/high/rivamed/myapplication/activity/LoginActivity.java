@@ -36,9 +36,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.gson.JsonSyntaxException;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 
 import org.litepal.LitePal;
 
@@ -132,25 +129,25 @@ public class LoginActivity extends SimpleActivity {
         Log.d("fbl", size.x + " , " + size.y + " , ");
 
         //---------------------------------------------------
-
-        OkGo.<String>post("https://192.168.10.231:8443/cas/v1/tickets").tag(this).
-                params("username", "adminUM").
-                params("password", "000000")
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        Log.i("fff", "response.body()    " + response.body());
-                        Log.i("fff", "response.code()    " + response.code());
-                        Log.i("fff", "response.message()    " + response.message());
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        Log.i("fff", "response.body()    " + response.body());
-                        Log.i("fff", "response.code()    " + response.code());
-                        Log.i("fff", "response.message()    " + response.message());
-                    }
-                });
+//
+//        OkGo.<String>post("https://192.168.10.231:8443/cas/v1/tickets").tag(this).
+//                params("username", "adminUM").
+//                params("password", "000000")
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onSuccess(Response<String> response) {
+//                        Log.i("fff", "response.body()    " + response.body());
+//                        Log.i("fff", "response.code()    " + response.code());
+//                        Log.i("fff", "response.message()    " + response.message());
+//                    }
+//
+//                    @Override
+//                    public void onError(Response<String> response) {
+//                        Log.i("fff", "response.body()    " + response.body());
+//                        Log.i("fff", "response.code()    " + response.code());
+//                        Log.i("fff", "response.message()    " + response.message());
+//                    }
+//                });
 
 
         //创建数据库表
@@ -162,7 +159,7 @@ public class LoginActivity extends SimpleActivity {
         }
         mFragments.add(new LoginPassWordFragment());
         mFragments.add(new LoginPassFragment());
-//        initConfig();
+        initConfig();
         initData();
         initlistener();
         initCall();
@@ -173,6 +170,7 @@ public class LoginActivity extends SimpleActivity {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG,"result   "+  result );
+
             }
         });
     }
