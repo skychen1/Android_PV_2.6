@@ -5,6 +5,8 @@ import java.util.List;
 public interface UhfHandler {
     public int StartScan();
 
+    public int StartScan(int repeat);
+
     public int StopScan();
 
     public int SetPower(byte power);

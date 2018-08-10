@@ -45,7 +45,10 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
     boolean scanMode = false;
 
     byte[] ants;
-
+    /**
+     * 默认扫描次数
+     * */
+    int repeat=1;
 
     String identification;
 
@@ -259,6 +262,12 @@ public class ColuUhfReaderHandler extends NettyDeviceClientHandler implements Uh
         return antNo;
     }
 
+    @Override
+    public int StartScan(int repeat){
+        if(repeat<=0)repeat=1;
+       this.repeat=repeat;
+        return StartScan();
+    }
     /**
      * 开始扫描
      */

@@ -32,7 +32,7 @@ public class Eth002V26Handler extends NettyDeviceClientHandler implements Eth002
     @Override
     public String getRemoteIP() {
         String address = this.getCtx() == null ? "" : this.getCtx().pipeline().channel().remoteAddress().toString();
-        if (StringUtil.isNullOrEmpty(address)) {
+        if (!StringUtil.isNullOrEmpty(address)) {
             address = address.replace("/", "");
             address = address.substring(0, address.indexOf(":"));
         }

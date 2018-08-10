@@ -411,7 +411,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     @Override
     public String getRemoteIP() {
         String address = this.getCtx() == null ? "" : this.getCtx().pipeline().channel().remoteAddress().toString();
-        if (StringUtil.isNullOrEmpty(address)) {
+        if (!StringUtil.isNullOrEmpty(address)) {
             address = address.replace("/", "");
             address = address.substring(0, address.indexOf(":"));
         }
@@ -541,8 +541,15 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     }
 
     @Override
+    public int StartScan(int repeat) {
+        if (repeat <= 0) repeat = 1;
+        this.repeatCount = repeat;
+        return StartScan();
+    }
+
+    @Override
     public int StopScan() {
-        scanModel=false;
+        scanModel = false;
         return 0;
     }
 

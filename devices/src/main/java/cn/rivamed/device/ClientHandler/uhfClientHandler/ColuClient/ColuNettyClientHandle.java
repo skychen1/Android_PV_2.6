@@ -33,9 +33,11 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     private long queryConnIndex = 0l;
 
-    boolean scanMode=false;
+    boolean scanMode = false;
 
     int antByte = 0x0;  //用数位标识天线，从低位开始 第一位为1 标识天线 1存在，0 则不存在，以此类推
+
+    int repeat = 1;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -138,7 +140,6 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
 
-
     /**
      * 处理阅读器配置和管理信息 心跳
      *
@@ -192,7 +193,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         if (data.length != 1) return;
         if (data[0] == 0x00) {
             Log.i(LOG_TAG, "RFID扫描结束");
-            scanMode=false;
+            scanMode = false;
             if (this.messageListener != null) {   //发送回调
                 Log.d(LOG_TAG, "触发扫描完成回调");
                 this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
@@ -236,11 +237,11 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                         System.arraycopy(data, 2, bEpc, 0, epcLen);
                         epc = Transfer.Byte2String(bEpc);
                         Log.i(LOG_TAG, "获取到EPC信息:EPC=" + epc + ";rssi=" + rssi + ";ant=" + antIndex + ";pc=" + pc);
-                        TagInfo tagInfo=new TagInfo();
+                        TagInfo tagInfo = new TagInfo();
                         tagInfo.setAnt(antIndex);
                         tagInfo.setPc(pc);
-                        tagInfo.setRssi(0-rssi);
-                        AppendNewTag(epc,tagInfo);
+                        tagInfo.setRssi(0 - rssi);
+                        AppendNewTag(epc, tagInfo);
                     } else if (data[-1] == 0x02) {
                         getRet = true;
                         ret = data[i];
@@ -253,6 +254,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             }
         }
     }
+
     /**
      * 内部方法，用于和 Colu Service 互动；
      */
@@ -268,6 +270,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             this.epcs.put(epc, tagInfos);
         }
     }
+
     private void ProccessRfidInfo(byte[] buf) {
         byte[] data = getData(buf);
         if (data == null) return;
@@ -345,7 +348,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         new Thread(() -> {
             sendQueryMac = 0;
             while (StringUtil.isNullOrEmpty(getIdentification())) {
-                if (sendQueryMac >5) {
+                if (sendQueryMac > 5) {
                     Close();
                     return;
                 }
@@ -385,7 +388,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public String getRemoteIP() {
         String address = this.getCtx() == null ? "" : this.getCtx().pipeline().channel().remoteAddress().toString();
-        if (StringUtil.isNullOrEmpty(address)) {
+        if (!StringUtil.isNullOrEmpty(address)) {
             address = address.replace("/", "");
             address = address.substring(0, address.indexOf(":"));
         }
@@ -394,16 +397,23 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int StartScan() {
-        if(scanMode)return FunctionCode.DEVICE_BUSY;
+        if (scanMode) return FunctionCode.DEVICE_BUSY;
         epcs.clear();
-        scanMode=true;
+        scanMode = true;
         return SendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
+    public int StartScan(int repeat) {
+        if (repeat <= 0) repeat = 1;
+        this.repeat = repeat;
+        return StartScan();
+    }
+
+    @Override
     public int StopScan() {
-        scanMode=false;
-       return SendStop()?FunctionCode.SUCCESS:FunctionCode.OPERATION_FAIL;
+        scanMode = false;
+        return SendStop() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
