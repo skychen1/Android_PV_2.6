@@ -173,7 +173,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRefreshLayout.setEnableAutoLoadMore(true);
+	mRefreshLayout.setEnableAutoLoadMore(false);
 	mLayout = R.layout.item_form_seven_layout;
 	mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
 							    (ViewGroup) mLinearLayout.getParent(), false);

@@ -48,12 +48,20 @@ public class BingFindSchedulesBean implements Serializable{
 	 * operationSurgeonName :
 	 * operatingRoomNoName :
 	 */
-
+	private boolean isSelected;
 	private String patientName;
 	private String patientId;
 	private String requestDateTime;
 	private String operationSurgeonName;
 	private String operatingRoomNoName;
+
+	public boolean isSelected() {
+	   return isSelected;
+	}
+
+	public void setSelected(boolean selected) {
+	   isSelected = selected;
+	}
 
 	public String getPatientName() { return patientName;}
 

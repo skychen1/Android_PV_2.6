@@ -20,7 +20,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
  * 创建时间:    2018/7/19 13:30
- * 描述:        TODO:
+ * 描述:        工程模式的login
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$
@@ -75,11 +75,11 @@ public class TestLoginActivity extends SimpleActivity {
 		   return;
 		} else {
 
-//		   if (isvalidate()&&contrast()) {
+		   if (isvalidate()&&contrast()) {
 			loadLogin();
-//		   } else {
-//			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-//		   }
+		   } else {
+			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+		   }
 		}
 
 		break;

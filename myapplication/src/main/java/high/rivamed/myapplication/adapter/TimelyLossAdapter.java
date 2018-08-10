@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,7 +25,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class TimelyLossAdapter
-	extends BaseQuickAdapter<TCstInventoryDto.InventorysBean, BaseViewHolder> {
+	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
    private TextView mSeven_one;
    private TextView mSeven_two;
    private TextView mSeven_three;
@@ -34,13 +34,13 @@ public class TimelyLossAdapter
    private TextView mSeven_six;
    private TextView mSeven_seven;
    public TimelyLossAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryDto.InventorysBean> data) {
+	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryDto.InventorysBean item) {
+	   BaseViewHolder helper, TCstInventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -54,21 +54,21 @@ public class TimelyLossAdapter
 
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-	String six =item.getCountActual();
-	String seven =item.getCountStock();
+	int six =item.getCountActual();
+	int seven =item.getCountStock();
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
 	mSeven_three.setText(item.getCstSpec());
 	mSeven_four.setText(item.getExpiration());
 	mSeven_five.setText(item.getDeviceName());
-	mSeven_six.setText(six);
-	mSeven_seven.setText(seven);
-	if (!six.equals(seven)) {
+	mSeven_six.setText(six+"");
+	mSeven_seven.setText(seven+"");
+	if (six!=seven) {
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	} else {
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-	int StopFlag = Integer.parseInt(item.getStopFlag());
+	int StopFlag = item.getStopFlag();
 	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_four);
    }
 }

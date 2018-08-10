@@ -43,10 +43,10 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.USE_ID;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -242,7 +242,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	dto.settCstInventoryVos(mTCstInventoryVos);
 	dto.setOperation(mTCstInventoryDto.getOperation());
-	dto.setAccountId(USE_ID);
+	dto.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
 	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 
 //	if (mTCstInventoryDto)
@@ -426,7 +426,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	mDtoLy.setAccountId(USE_ID);
+	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
@@ -467,7 +467,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
-	mDtoLy.setAccountId(USE_ID);
+	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
@@ -510,7 +510,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
-	mDtoLy.setAccountId(USE_ID);
+	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 

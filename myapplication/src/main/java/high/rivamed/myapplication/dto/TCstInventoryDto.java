@@ -55,6 +55,15 @@ public class TCstInventoryDto {
    private String                          patientId;
    private String                          patientName;
    private String                          accountId;
+   private String                          bindType;
+
+   public String getBindType() {
+	return bindType;
+   }
+
+   public void setBindType(String bindType) {
+	this.bindType = bindType;
+   }
 
    public String getAccountId() {
 	return accountId;

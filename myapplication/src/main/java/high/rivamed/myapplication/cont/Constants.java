@@ -53,10 +53,6 @@ public class Constants {
    public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
    public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
 
-   //写死的固定某个人的id  用于确定是某个人操作
-   public static final String USE_ID = "8a80cb8164d9b3940164da1bff760002";//写死的固定某个人的id
-
-
 
    //sp存入的key
    public static final String SAVE_SEVER_IP           = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
@@ -73,5 +69,7 @@ public class Constants {
    public static final String SAVE_DEPT_CODE          = "deptCode";//科室存入code
    public static final String SAVE_DEPT_NAME          = "deptName";//科室存入code
    public static final String KEY_ACCOUNT_DATA        = "key_account_data";//用户资料
+   public static final String KEY_ACCOUNT_NAME        = "key_account_name";//用户名字
+   public static final String KEY_ACCOUNT_ID        = "key_account_id";//用户ID
 
 }

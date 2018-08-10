@@ -161,24 +161,7 @@ public class RvDialog extends Dialog {
 	   sTableTypeView = new TableTypeView(mContext, mActivity,patientInfos, titeleList, mSize,
 							   mLinearLayout, mRecyclerview,
 							  mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-	   //	   mLayout = R.layout.item_dialog_six_layout;
-//	   mHeadView = mActivity.getLayoutInflater().inflate(R.layout.item_dialog_six_title_layout,
-//								 (ViewGroup) mLinearLayout.getParent(), false);
-//	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-//	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-//	   mType=STYPE_DIALOG;
-//	   mPublicAdapter = new TimelyPublicAdapter(mLayout, genData5(), mSize,mType);
-//	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-//	   mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//		@Override
-//		public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//
-//		}
-//	   });
+
 	   mSearchEt.addTextChangedListener(new TextWatcher() {
 		@Override
 		public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

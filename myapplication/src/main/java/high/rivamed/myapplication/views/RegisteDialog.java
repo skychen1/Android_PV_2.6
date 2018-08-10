@@ -192,36 +192,51 @@ public class RegisteDialog extends Dialog {
 	   mAddressTwo.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (mAddressOne.getText().toString().trim().length() > 0 ) {
-			String trim = mGoneOneType.getText().toString().trim();
-			LogUtils.i(TAG,"mGoneOneType   "+trim);
-			getHospBranch(trim, mAddressTwo, mGoneTwoType, 2);
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			if (mAddressOne.getText().toString().trim().length() > 0 ) {
+			   String trim = mGoneOneType.getText().toString().trim();
+			   LogUtils.i(TAG,"mGoneOneType   "+trim);
+			   getHospBranch(trim, mAddressTwo, mGoneTwoType, 2);
+			}
 		   }
-
 		}
 	   });
 	   mAddressThree.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   String trim = mGoneTwoType.getText().toString().trim();
-		   LogUtils.i(TAG,"mGoneTwoType   "+trim);
-		   getHospDept(trim, mAddressThree, mGoneThreeType, 3);
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			String trim = mGoneTwoType.getText().toString().trim();
+			LogUtils.i(TAG, "mGoneTwoType   " + trim);
+			getHospDept(trim, mAddressThree, mGoneThreeType, 3);
+		   }
 		}
 	   });
 	   mAddressFour.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   String trim = mGoneThreeType.getText().toString().trim();
-		   LogUtils.i(TAG,"mGoneThreeType   "+trim);
-		   getHospBydept(trim, mAddressFour, mGoneFourType, 4);
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			String trim = mGoneThreeType.getText().toString().trim();
+			LogUtils.i(TAG, "mGoneThreeType   " + trim);
+			getHospBydept(trim, mAddressFour, mGoneFourType, 4);
+		   }
 		}
 	   });
 	   mAddressFive.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   String trim = mGoneThreeType.getText().toString().trim();
-		   LogUtils.i(TAG,"mGoneFourType   "+trim);
-		   getHospRooms(trim, mAddressFive, mGoneFiveType, 5);
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			String trim = mGoneThreeType.getText().toString().trim();
+			LogUtils.i(TAG, "mGoneFourType   " + trim);
+			getHospRooms(trim, mAddressFive, mGoneFiveType, 5);
+		   }
 		}
 	   });
 
@@ -240,14 +255,19 @@ public class RegisteDialog extends Dialog {
 	   mDialogRight.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (myListener!=null){
-			String deptCode = mGoneThreeType.getText().toString().trim();
-			String storehouseCode = mGoneFourType.getText().toString().trim();
-			String operationRoomNo = mGoneFiveType.getText().toString().trim();
-			String branchCode = mGoneTwoType.getText().toString().trim();
-			String deptName = mAddressThree.getText().toString().trim();
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   } else {
+			if (myListener != null) {
+			   String deptCode = mGoneThreeType.getText().toString().trim();
+			   String storehouseCode = mGoneFourType.getText().toString().trim();
+			   String operationRoomNo = mGoneFiveType.getText().toString().trim();
+			   String branchCode = mGoneTwoType.getText().toString().trim();
+			   String deptName = mAddressThree.getText().toString().trim();
 
-			myListener.getDialogDate(deptName,branchCode,deptCode,storehouseCode,operationRoomNo,dialog);
+			   myListener.getDialogDate(deptName, branchCode, deptCode, storehouseCode,
+							    operationRoomNo, dialog);
+			}
 		   }
 		}
 	   });
@@ -294,6 +314,7 @@ public class RegisteDialog extends Dialog {
 		adapterOnClick(mMhospWindow,textview, goneview, type);
 	   } else {
 		mMhospWindow.dismiss();
+		mAddressOne.clearFocus();
 	   }
 	}
 

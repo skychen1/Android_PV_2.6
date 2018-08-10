@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -33,16 +34,27 @@ public class BingDialogOutAdapter
    private TextView mSeven_four;
    private TextView mSeven_five;
    private TextView mSeven_six;
+   private int mSelectedPos = 0;
+   private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
    public BingDialogOutAdapter(
-	   int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos,
-	   SparseBooleanArray checkStates) {
+	   int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
       super(layout, patientInfos);
-	this.mCheckStates =	checkStates;
+      this.patientInfos=patientInfos;
    }
-
+   public int getCheckedPosition() {
+	return mSelectedPos;
+   }
    @Override
    protected void convert(
 	   BaseViewHolder helper, BingFindSchedulesBean.PatientInfosBean item) {
+      if (mSelectedPos==0){
+	   patientInfos.get(mSelectedPos).setSelected(true);
+	}
+	for (int i = 0; i < patientInfos.size(); i++) {
+	   if (patientInfos.get(i).isSelected()) {
+		mSelectedPos = i;
+	   }
+	}
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -61,11 +73,27 @@ public class BingDialogOutAdapter
 	mSeven_five.setText(item.getOperationSurgeonName());
 	mSeven_six.setText(item.getOperatingRoomNoName());
 	mCheckBox.setOnCheckedChangeListener(null);
-	mCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+	int position = helper.getAdapterPosition();
+	mCheckBox.setChecked(item.isSelected());
+	helper.itemView.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View view) {
+		patientInfos.get(mSelectedPos).setSelected(false);
+		//设置新的Item勾选状态
+		mSelectedPos = position;
+		patientInfos.get(mSelectedPos).setSelected(true);
+		notifyDataSetChanged();
+	   }
+	});
+
 	mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-		mCheckStates.put(helper.getAdapterPosition(), b);
+		patientInfos.get(mSelectedPos).setSelected(false);
+		//设置新的Item勾选状态
+		mSelectedPos = position;
+		patientInfos.get(mSelectedPos).setSelected(true);
+		notifyDataSetChanged();
 	   }
 	});
    }

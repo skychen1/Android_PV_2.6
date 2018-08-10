@@ -68,6 +68,8 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -117,6 +119,8 @@ public class LoginActivity extends SimpleActivity {
     public void initDataAndEvent(Bundle savedInstanceState) {
         //清空accountID
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
+        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
+        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
         mDownText.setText("智能耗材管理柜："+ UIUtils.getVersionName(mContext));
         //-----检测分辨率---------------------------------------
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -129,26 +133,6 @@ public class LoginActivity extends SimpleActivity {
         Log.d("fbl", size.x + " , " + size.y + " , ");
 
         //---------------------------------------------------
-//
-//        OkGo.<String>post("https://192.168.10.231:8443/cas/v1/tickets").tag(this).
-//                params("username", "adminUM").
-//                params("password", "000000")
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(Response<String> response) {
-//                        Log.i("fff", "response.body()    " + response.body());
-//                        Log.i("fff", "response.code()    " + response.code());
-//                        Log.i("fff", "response.message()    " + response.message());
-//                    }
-//
-//                    @Override
-//                    public void onError(Response<String> response) {
-//                        Log.i("fff", "response.body()    " + response.body());
-//                        Log.i("fff", "response.code()    " + response.code());
-//                        Log.i("fff", "response.message()    " + response.message());
-//                    }
-//                });
-
 
         //创建数据库表
         mDb = LitePal.getDatabase();
@@ -170,7 +154,6 @@ public class LoginActivity extends SimpleActivity {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG,"result   "+  result );
-
             }
         });
     }
@@ -277,6 +260,8 @@ public class LoginActivity extends SimpleActivity {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
                     if (loginResultBean.isOperateSuccess()) {
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, loginResultBean.getAppAccountInfoVo().getAccountName());
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();
@@ -309,6 +294,8 @@ public class LoginActivity extends SimpleActivity {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
                     if (loginResultBean.isOperateSuccess()) {
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, loginResultBean.getAppAccountInfoVo().getAccountName());
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();

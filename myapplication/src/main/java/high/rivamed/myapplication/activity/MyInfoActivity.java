@@ -72,19 +72,10 @@ public class MyInfoActivity extends BaseSimpleActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
     protected int getContentLayoutId() {
         return R.layout.setting_myinfo_layout;
     }
-    //
-    //    @Override
-    //    protected void onCreate(Bundle savedInstanceState) {
-    //        super.onCreate(savedInstanceState);
-    //        // TODO: add setContentView(...) invocation
-    //        ButterKnife.bind(this);
-    //    }
 }

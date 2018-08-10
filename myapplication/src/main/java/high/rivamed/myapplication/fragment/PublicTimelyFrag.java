@@ -313,7 +313,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mHeadView.setBackgroundResource(R.color.bg_green);
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(true);
+		mRefreshLayout.setEnableAutoLoadMore(false);
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 	   }
@@ -372,7 +372,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mHeadView.setBackgroundResource(R.color.bg_green);
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(true);
+		mRefreshLayout.setEnableAutoLoadMore(false);
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 	   }
@@ -488,7 +488,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mHeadView.setBackgroundResource(R.color.bg_green);
 		   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
-		   mRefreshLayout.setEnableAutoLoadMore(true);
+		   mRefreshLayout.setEnableAutoLoadMore(false);
 		   mRecyclerview.setAdapter(mPublicAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}
@@ -619,7 +619,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 				mRecyclerview.addItemDecoration(
 					new DividerItemDecoration(mContext, VERTICAL));
 				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-				mRefreshLayout.setEnableAutoLoadMore(true);
+				mRefreshLayout.setEnableAutoLoadMore(false);
 				mRecyclerview.setAdapter(mDownAdapter);
 				mLinearLayout.addView(mHeadView);
 				ArrayList<String> strings = new ArrayList<>();
@@ -682,7 +682,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mHeadView.setBackgroundResource(R.color.bg_green);
 		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(true);
+		   mRefreshLayout.setEnableAutoLoadMore(false);
 		   mRecyclerview.setAdapter(mRightAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}

@@ -203,6 +203,7 @@ public class NetRequest {
     * 数据恢复
     */
    public void getRecoverDate(String sn, Object tag, NetResult netResult) {
+      LogUtils.i("fff","sn  "+sn  +"   url   "+NetApi.URL_TEST_SNQUERY);
 	OkGo.<String>get(NetApi.URL_TEST_SNQUERY).tag(tag)
 		.params("sn", sn)
 		.execute(new MyCallBack(tag,netResult, true));
@@ -374,7 +375,8 @@ public class NetRequest {
 	public void onError(Response<String> response) {
 	   if (netResult != null) {
 		LogUtils.i(TAG, "网络接口联网失败");
-		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
+//		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
+		netResult.onError(response.code()+"");
 	   }
 	   ToastUtils.showShort("请求失败  ("+response.code()+")");
 

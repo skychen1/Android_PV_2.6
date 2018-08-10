@@ -18,14 +18,13 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
-import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -69,26 +68,22 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     private ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
 
+    @Override
+    public void getTitleName() {
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME));
+        super.getTitleName();
+
+    }
 
     @Override
     public int getLayoutId() {
-        UIUtils.runInUIThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String accountData = SPUtils.getString(getActivity(), KEY_ACCOUNT_DATA, "");
-
-                    LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-
-                    LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
-                    mBaseTabTvName.setText(appAccountInfoVo.getAccountName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 500);
         return R.layout.fragment_base_title;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -96,6 +91,12 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
         mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
+//        String accountData = SPUtils.getString(getActivity(), KEY_ACCOUNT_DATA);
+//
+//        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
+//
+//        LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
+
     }
 
     protected abstract int getContentLayoutId();
@@ -103,6 +104,16 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
 
+//        UIUtils.runInUIThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, 500);
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg})

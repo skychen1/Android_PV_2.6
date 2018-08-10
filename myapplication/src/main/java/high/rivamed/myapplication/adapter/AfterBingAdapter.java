@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
 import android.util.SparseBooleanArray;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -53,7 +52,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 
-	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+//	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
 	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
@@ -62,7 +61,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
 
-	mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
+//	mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
 
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
@@ -72,7 +71,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	if (item.getPatientName()==null||item.getPatientName().length()<1){
 	   mSeven_seven.setText("");
 	}else {
-	   mSeven_seven.setText(item.getPatientName()+"/"+item.getPatientId());
+	   mSeven_seven.setText(item.getPatientName()+" / "+item.getPatientId());
 	}
 
 	UIUtils.initTermOfValidity(mContext,helper, item.getStopFlag(), mSeven_five);

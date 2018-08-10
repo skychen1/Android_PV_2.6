@@ -131,6 +131,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public  TCstInventoryDto      mTCstInventoryDto;
 
    private TCstInventoryDto mDto;
+   private String mBindFirstType;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
@@ -162,7 +163,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    private void loadTimelyLossesDate() {
 	mBaseTabTvTitle.setText("盘亏耗材详情");
-	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
+	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
 	mTimelyNumber.setText(
 		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
@@ -170,7 +171,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 
-	mTypeView = new TableTypeView(this, this, titeleList, inventorys, mSize, mLinearLayout,
+	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY);
 
    }
@@ -181,14 +182,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private void loadTimelyProfitDate() {
 
 	mBaseTabTvTitle.setText("盘盈耗材详情");
-	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
-
+//	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
+	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 	mTimelyNumber.setText(
 		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
 	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, inventorys, mSize, mLinearLayout,
+	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY);
    }
 
@@ -371,14 +372,22 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyNumber.setVisibility(View.GONE);
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mLyBingBtnRight.setVisibility(View.VISIBLE);
+	if (mTCstInventoryDto.getBindType()==null){
+	   mLyBingBtnRight.setVisibility(View.VISIBLE);
+	   mTimelyLeft.setEnabled(false);
+	   mTimelyRight.setEnabled(false);
+	}else {
+	   mLyBingBtnRight.setVisibility(View.GONE);
+	   mTimelyLeft.setEnabled(true);
+	   mTimelyRight.setEnabled(true);
+	}
 	//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
-	mTimelyLeft.setEnabled(false);
-	mTimelyRight.setEnabled(false);
+
 	ArrayList<String> strings = new ArrayList<>();
 	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
 	   strings.add(vosBean.getCstCode());
 	}
+
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 
 	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
@@ -456,7 +465,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		    (operation == 2 && status.contains("入库")) ||
 		    (operation == 9 && status.contains("移出")) ||
 		    (operation == 11 && status.contains("调拨")) ||
-		    (operation == 10 && status.contains("移入")) ||
+		    (operation == 10 && (status.contains("移入")&&!status.equals("禁止移入"))) ||
 		    (operation == 7 && status.contains("退回")) ||
 		    (operation == 8 && status.contains("退货"))) {
 		   LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);

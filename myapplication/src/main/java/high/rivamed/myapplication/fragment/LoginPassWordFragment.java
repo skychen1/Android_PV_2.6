@@ -19,6 +19,7 @@ import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -27,6 +28,8 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -114,7 +117,10 @@ public class LoginPassWordFragment extends SimpleFragment {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 
                     if (loginResultBean.isOperateSuccess()) {
+                        LogUtils.i("BaseSimpleFragment","result  "+result);
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, loginResultBean.getAppAccountInfoVo().getAccountName());
+                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();

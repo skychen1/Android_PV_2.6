@@ -20,11 +20,14 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -43,6 +46,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private static final String TAG = "OutBoxBingActivity";
    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
    private String mRvEventString;
+
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
 	String patient= event.mString;
@@ -123,12 +128,20 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.timely_start_btn_right:
 		break;
 	   case R.id.timely_left:
-		ToastUtils.showShort("timely_left");
-		int mType = 1;//1.8.3未绑定
-		DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		if (mTCstInventoryDto.getBindType()!=null){//先绑定患者
+			loadBingFistDate();
+		}else {//后绑定的未绑定
+		   int mType = 1;//1.8.3未绑定
+		   DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		}
 		break;
 	   case R.id.timely_right:
-		ToastUtils.showShort("timely_right");
+		if (mTCstInventoryDto.getBindType()!=null){//先绑定患者
+
+		}else {//后绑定的未绑定
+		   int mType = 1;//1.8.3未绑定
+		   DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		}
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
@@ -136,6 +149,19 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		break;
 	}
    }
+
+   private void loadBingFistDate() {
+	mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(),KEY_ACCOUNT_ID));
+	String toJson = mGson.toJson(mTCstInventoryDto);
+	LogUtils.i(TAG,"toJson  "+toJson);
+	NetRequest.getInstance().bingPatientsDate(toJson,this,null,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG,"result   "+result);
+	   }
+	});
+   }
+
 
    /**
     * 获取需要绑定的患者

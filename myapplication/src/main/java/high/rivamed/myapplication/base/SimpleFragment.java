@@ -49,26 +49,30 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    public    List<String> mReaderDeviceId;
    public    List<String> eth002DeviceIdList;
 	private Unbinder     unbinder;
-	
-	@Nullable
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		layoutInflater = inflater;
-	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
-	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-		if (rootView == null && getLayoutId() > 0) {
-			rootView = inflater.inflate(getLayoutId(), null);
-		   onBindViewBefore(rootView);
-		   bindUI(rootView);
-		} else {
-			ViewGroup viewGroup = (ViewGroup) rootView.getParent();
-			if (viewGroup != null) {
-				viewGroup.removeView(rootView);
-			}
-		}
-		mGson = new Gson();
-		return rootView;
+   private Object mTitleName;
+
+   @Nullable
+   @Override
+   public View onCreateView(
+	   LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	layoutInflater = inflater;
+	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+	if (rootView == null && getLayoutId() > 0) {
+	   rootView = inflater.inflate(getLayoutId(), null);
+
+	   onBindViewBefore(rootView);
+	   bindUI(rootView);
+	   getTitleName();
+	} else {
+	   ViewGroup viewGroup = (ViewGroup) rootView.getParent();
+	   if (viewGroup != null) {
+		viewGroup.removeView(rootView);
+	   }
 	}
+	mGson = new Gson();
+	return rootView;
+   }
 
 
 	@Override
@@ -167,5 +171,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	
 	}
 
+   public void getTitleName() {
+   }
 }
 

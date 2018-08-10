@@ -106,7 +106,7 @@ public class PublicConRunWateFrag extends SimpleFragment {
 	mPublicAdapter = new TimelyPublicAdapter(mLayout, genData8(), mSize);
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRefreshLayout.setEnableAutoLoadMore(true);
+	mRefreshLayout.setEnableAutoLoadMore(false);
 	mRecyclerview.setAdapter(mPublicAdapter);
 	mLinearLayout.addView(mHeadView);
    }

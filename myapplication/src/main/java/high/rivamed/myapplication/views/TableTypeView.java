@@ -127,7 +127,7 @@ public class TableTypeView extends LinearLayout {
    }
 
    public TableTypeView(
-	   Context context, Activity activity, List<String> titeleList,List<TCstInventoryDto.InventorysBean> inventorys, int size,
+	   Context context, Activity activity, List<String> titeleList,List<TCstInventoryVo> inventorys, int size,
 	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
 	   int type) {
 
@@ -136,7 +136,7 @@ public class TableTypeView extends LinearLayout {
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mInventorys = inventorys;
+	this.mTCstInventoryVos = inventorys;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
@@ -262,7 +262,7 @@ public class TableTypeView extends LinearLayout {
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mTimeDetailsAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -280,7 +280,7 @@ public class TableTypeView extends LinearLayout {
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(detailsAdapter);
 			mLinearLayout.addView(mHeadView);
 			//----------------------
@@ -300,7 +300,7 @@ public class TableTypeView extends LinearLayout {
 
 		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(true);
+		   mRefreshLayout.setEnableAutoLoadMore(false);
 		   mRecyclerview.setAdapter(mPublicAdapter);
 		   mLinearLayout.addView(mHeadView);
 		} else if (mSize == SIX) {
@@ -323,41 +323,13 @@ public class TableTypeView extends LinearLayout {
 			}
 			mRecyclerview.setLayoutParams(lp);
 
-			mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos,
-										 mCheckStates);
-//			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_DIALOG,
-//									     mCheckStates);
-			for (int i = 0; i < mCheckStates.size(); i++) {
-			   mCheckStates.put(i, false);
-			}
-			mBingOutAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			   @Override
-			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-				CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
-				if (checkBox.isChecked()) {
-				   checkBox.setChecked(false);
-				   mCheckStates.put(position, false);
-				} else {
-				   mCheckStates.put(position, true);
-				   checkBox.setChecked(true);
-				}
-				for (int i = 0; i < mCheckStates.size(); i++) {
-				   if (i==position){
-					mCheckStates.put(i, true);
-					checkBox.setChecked(true);
-				   }else {
-					mCheckStates.put(i, false);
-					checkBox.setChecked(false);
-				   }
-				}
-				mBingOutAdapter.notifyDataSetChanged();
-			   }
-			});
+			mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos);
+
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mBingOutAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
@@ -445,7 +417,7 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.removeView(mHeadView);
 			mLinearLayout.addView(mHeadView);
@@ -458,7 +430,7 @@ public class TableTypeView extends LinearLayout {
 				.inflate(R.layout.item_outbing_seven_title_layout,
 					   (ViewGroup) mLinearLayout.getParent(), false);
 			findId();
-			mSeven_one.setText(titeleList.get(0));
+//			mSeven_one.setText(titeleList.get(0));
 			mSeven_two.setText(titeleList.get(1));
 			mSeven_three.setText(titeleList.get(2));
 			mSeven_four.setText(titeleList.get(3));
@@ -492,7 +464,7 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mAfterBingAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -509,7 +481,7 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout, mInventorys);
+			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout, mTCstInventoryVos);
 
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
@@ -558,7 +530,7 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -580,7 +552,7 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }
@@ -643,7 +615,7 @@ public class TableTypeView extends LinearLayout {
 
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(true);
+		mRefreshLayout.setEnableAutoLoadMore(false);
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 		break;
