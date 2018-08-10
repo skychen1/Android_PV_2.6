@@ -162,20 +162,26 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	@Override
 	public CharSequence getPageTitle(int position) {
 	   String deviceName = null;
-	   if (position == 0) {
-		deviceName = "全部";
-	   } else {
-		deviceName = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceName();
-	   }
 
+	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
+		if (position == 0) {
+		   deviceName = "全部";
+		} else {
+		   deviceName = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceName();
+		}
+	   }else {
+		deviceName = mLeftTopBean.getCstExpirationVos().get(position).getDeviceName();
+	   }
 	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   return
-		   mLeftTopBean.getCstExpirationVos() == null ? 0 :
-			   mLeftTopBean.getCstExpirationVos().size() + 1;
+	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
+		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size()+1 ;
+	   }else {
+		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size() ;
+	   }
 	}
    }
 

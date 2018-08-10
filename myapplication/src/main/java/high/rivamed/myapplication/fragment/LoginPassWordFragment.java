@@ -59,7 +59,8 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-
+        mLoginName.setText("adminUM");
+        mLoginPassword.setText("000000");
     }
 
     @Override
@@ -111,6 +112,7 @@ public class LoginPassWordFragment extends SimpleFragment {
             public void onSucceed(String result) {
                 try {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
+
                     if (loginResultBean.isOperateSuccess()) {
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
                         Intent intent = new Intent(mContext, HomeActivity.class);

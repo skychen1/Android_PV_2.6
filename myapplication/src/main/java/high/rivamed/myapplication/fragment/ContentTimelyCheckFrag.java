@@ -9,16 +9,17 @@ import android.view.View;
 
 import com.flyco.tablayout.SlidingTabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
@@ -75,31 +76,25 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("实时盘点");
 	mBuilder = DialogUtils.showLoading(mContext);
-	loadTopBoxSize();mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
+	loadTopBoxSize();
+	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext,null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
-		   BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
-		   devicesBean1.setDeviceName("全部");
-		   devicesBean1.setDeviceCode("");
-		   mTbaseDevices.add(0, devicesBean1);
-		   mBuilder.mDialog.dismiss();
-		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (int i=0;i<mTbaseDevices.size();i++){
-			fragments.add(new TimelyAllFrag(mTbaseDevices,i));
-		   }
-		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
-		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
-		   mCttimecheckViewpager.setCurrentItem(0);
-		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
 
-		   //		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
+		   mBuilder.mDialog.dismiss();
+
+		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager());
+		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
+		   mCttimecheckViewpager.setCurrentItem(0);
 		}
 	   }
 
@@ -112,60 +107,107 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
    private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
 
-	private List<Fragment> mFragments;
-
-	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
+	public CttimeCheckPagerAdapter(FragmentManager fm) {
 	   super(fm);
-	   this.mFragments = Fragments;
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-
-	   return mFragments.get(position);
+	   String deviceCode = null;
+	   if (mTbaseDevices.size()>1){
+		if (position == 0) {
+		   deviceCode = null;
+		} else {
+		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+		}
+	   }else {
+		deviceCode = mTbaseDevices.get(position).getDeviceCode();
+	   }
+	   mBuilder.mDialog.dismiss();
+	   return TimelyAllFrag.newInstance(deviceCode);
 
 	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   return mTbaseDevices.get(position).getDeviceName();
+	   String deviceName = null;
+	   if (mTbaseDevices.size()>1) {
+		if (position == 0) {
+		   deviceName = "全部";
+		} else {
+		   deviceName = mTbaseDevices.get(position - 1).getDeviceName();
+		}
+	   }else {
+		deviceName = mTbaseDevices.get(position).getDeviceName();
+
+	   }
+	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   return mFragments.size();
+	   if (mTbaseDevices.size()>1) {
+		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
+	   }else {
+		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
+	   }
 	}
    }
+
+   private class PageChangeListener implements ViewPager.OnPageChangeListener {
+
+	@Override
+	public void onPageScrolled(
+		int position, float offsetPerc, int offsetPixel) {
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+	   String deviceCode = null;
+	   if (position == 0) {
+		deviceCode = "";
+	   } else {
+		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+	   }
+	   EventBusUtils.postSticky(new Event.EventString(deviceCode));
+	}
+   }
+
+
+
+   //
+   //
+   //   private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
+   //
+   //	private List<Fragment> mFragments;
+   //
+   //	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
+   //	   super(fm);
+   //	   this.mFragments = Fragments;
+   //	}
+   //
+   //	@Override
+   //	public Fragment getItem(int position) {
+   //
+   //	   return mFragments.get(position);
+   //
+   //	}
+   //
+   //	@Override
+   //	public CharSequence getPageTitle(int position) {
+   //	   return mTbaseDevices.get(position).getDeviceName();
+   //	}
+   //
+   //	@Override
+   //	public int getCount() {
+   //	   return mFragments.size();
+   //	}
+   //   }
 }
 
-//   private class PageChangeListener implements ViewPager.OnPageChangeListener {
-//
-//	@Override
-//	public void onPageScrolled(
-//		int position, float offsetPerc, int offsetPixel) {
-//	}
-//
-//	@Override
-//	public void onPageScrollStateChanged(int state) {
-//	}
-//
-//	@Override
-//	public void onPageSelected(int position) {
-//	   int size = mList.size();
-//	   if (position == size - 1 && TOTAL_SIZE > size) {
-//		//实际项目中是网络请求下一页的列表数据
-//		getMoreDetailList();
-//	   }
-//
-//	}
-//   }
-//
-//   private void getMoreDetailList() {
-//	for (int i = mCount; i < TOTAL_SIZE; i++) {
-//	   mCount++;
-//	   mList.add(mCount);
-//	}
-//	mPagerAdapter.notifyDataSetChanged();
-//   }
 
 

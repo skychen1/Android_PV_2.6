@@ -63,7 +63,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
    }
 
    public void getRightDate() {
-      NetRequest.getInstance().loadBoxSize( mContext, new BaseResult() {
+      NetRequest.getInstance().loadBoxSize( mContext, null,new BaseResult() {
          @Override
          public void onSucceed(String result) {
 //            mBuilder.mDialog.dismiss();
@@ -115,20 +115,27 @@ public class StockRightUnconfFrag extends SimpleFragment {
       @Override
       public CharSequence getPageTitle(int position) {
          String deviceName = null;
-         if (position == 0) {
-            deviceName = "全部";
-         } else {
-            deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-         }
+         if (mTbaseDevices.size()>1) {
+            if (position == 0) {
+               deviceName = "全部";
+            } else {
+               deviceName = mTbaseDevices.get(position - 1).getDeviceName();
+            }
+         }else {
+            deviceName = mTbaseDevices.get(position).getDeviceName();
 
+         }
          return deviceName;
       }
 
       @Override
       public int getCount() {
-         return
-               mTbaseDevices == null ? 0 :
-                     mTbaseDevices.size() + 1;
+         if (mTbaseDevices.size()>1) {
+            return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
+         }else {
+            return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
+         }
+
       }
    }
 }

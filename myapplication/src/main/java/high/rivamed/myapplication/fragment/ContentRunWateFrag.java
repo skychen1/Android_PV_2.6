@@ -135,16 +135,19 @@ public class ContentRunWateFrag extends BaseSimpleFragment
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize( mContext, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize( mContext,mBuilder, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
-		   BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
-		   devicesBean1.setDeviceName("全部");
-		   devicesBean1.setDeviceCode("");
-		   mTbaseDevices.add(0,devicesBean1);
+		   if (mTbaseDevices.size()>1){
+			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+			devicesBean1.setDeviceName("全部");
+			devicesBean1.setDeviceCode("");
+			mTbaseDevices.add(0,devicesBean1);
+		   }
+
 		   mBuilder.mDialog.dismiss();
 		   ArrayList<Fragment> fragments = new ArrayList<>();
 		   for (BoxSizeBean.TbaseDevicesBean devicesBean :mTbaseDevices){

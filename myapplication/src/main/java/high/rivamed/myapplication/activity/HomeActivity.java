@@ -75,6 +75,7 @@ public class HomeActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 	//	EventBusUtils.register(this);
+
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();
 	if (extras != null) {

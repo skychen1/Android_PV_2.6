@@ -37,6 +37,15 @@ public class TCstInventoryVo implements Serializable {
    private int    size;
    private String name;
    private String type;
+   private String operationStatus;
+
+   public String getOperationStatus() {
+	return operationStatus;
+   }
+
+   public void setOperationStatus(String operationStatus) {
+	this.operationStatus = operationStatus;
+   }
 
    public String getPatientName() {
 	return patientName;

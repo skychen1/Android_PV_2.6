@@ -90,7 +90,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 //   }
 
    public void getMiddleDate() {
-	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, mBuilder,new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		mBuilder.mDialog.dismiss();
@@ -130,11 +130,16 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	@Override
 	public Fragment getItem(int position) {
 	   String deviceCode = null;
-	   if (position == 0) {
-		deviceCode = null;
-	   } else {
-		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+	   if (mTbaseDevices.size()>1){
+		if (position == 0) {
+		   deviceCode = null;
+		} else {
+		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+		}
+	   }else {
+		deviceCode = mTbaseDevices.get(position).getDeviceCode();
 	   }
+
 	   mStockLeftAlltop.setVisibility(View.GONE);
 	   mBuilder.mDialog.dismiss();
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE,deviceCode);
@@ -144,20 +149,26 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	@Override
 	public CharSequence getPageTitle(int position) {
 	   String deviceName = null;
-	   if (position == 0) {
-		deviceName = "全部";
-	   } else {
-		deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-	   }
+	   if (mTbaseDevices.size()>1) {
+		if (position == 0) {
+		   deviceName = "全部";
+		} else {
+		   deviceName = mTbaseDevices.get(position - 1).getDeviceName();
+		}
+	   }else {
+		deviceName = mTbaseDevices.get(position).getDeviceName();
 
+	   }
 	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   return
-		   mTbaseDevices == null ? 0 :
-			   mTbaseDevices.size() + 1;
+	   if (mTbaseDevices.size()>1) {
+		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
+	   }else {
+		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
+	   }
 	}
    }
 }

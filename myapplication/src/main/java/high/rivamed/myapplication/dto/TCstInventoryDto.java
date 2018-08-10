@@ -54,6 +54,15 @@ public class TCstInventoryDto {
    private String                          epcName;
    private String                          patientId;
    private String                          patientName;
+   private String                          accountId;
+
+   public String getAccountId() {
+	return accountId;
+   }
+
+   public void setAccountId(String accountId) {
+	this.accountId = accountId;
+   }
 
    public String getPatientId() {
 	return patientId;

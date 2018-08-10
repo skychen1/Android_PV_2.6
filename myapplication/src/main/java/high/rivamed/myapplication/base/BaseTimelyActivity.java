@@ -466,11 +466,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   mTimelyRight.setEnabled(false);
 		   return;
 		}
-
 	   }
-
 	}
-
    }
 
    /**
@@ -550,113 +547,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	});
    }
 
-   /**
-    * 假数据
-    *
-    * @return
-    */
-   private List<Movie> genData() {
 
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 15; i++) {
-	   String one;
-	   String two;
-	   if (i == 2) {
-		one = "微创系统微创系统微创系统微创系统" + i;
-		two = "*15151223333dddddssssssssssssss3" + i;
-	   } else {
-		one = "微创系统" + i;
-		two = "*15151223333ddd3" + i;
-	   }
-
-	   String three = "RFID01" + i;
-	   String four = "2019-10-22";
-	   String five = "1" + i;
-	   String six = "0" + i;
-	   String seven = "1" + i;
-	   String eight = "XXX" + i;
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, eight);
-	   list.add(movie);
-	}
-	return list;
-   }
-
-   private List<Movie> genData4() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 15; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   if (i == 1) {
-		one = "*15170116220035c2dddddsssssssssss3" + i;
-		two = "2018-09-22 22:30";
-		three = "入库" + i;
-		four = "已过期";
-	   } else if (i == 2) {
-		one = "*15170116220035c2" + i;
-		two = "2018-12-22 22:30";
-		three = "退回" + i;
-		four = "≤100天";
-	   } else if (i == 3) {
-		one = "*15170116220035c2" + i;
-		three = "移入" + i;
-		two = "2018-09-22 22:30";
-		four = "≤70天";
-	   } else if (i == 4) {
-		one = "*15170116220035c2" + i;
-		three = "退货" + i;
-		two = "2018-09-22 22:30";
-		four = "≤28天";
-	   } else {
-		three = "领用" + i;
-		one = "*15170116220035sssssss3" + i;
-		two = "2018-09-22 22:30";
-		four = "2019-10-22";
-	   }
-
-	   Movie movie = new Movie(one, two, three, four, null, null, null, null);
-	   list.add(movie);
-	}
-	return list;
-   }
-
-   private List<Movie> genData41() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 15; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = i + "";
-	   if (i == 1) {
-		one = "*15170116220035c2dddddsssssssssss3" + i;
-		two = "已过期";
-		three = 1 + "";
-	   } else if (i == 2) {
-		one = "*15170116220035c2" + i;
-		two = "≤100天";
-		three = 2 + "";
-	   } else if (i == 3) {
-		one = "*15170116220035c2" + i;
-		two = "≤70天";
-		three = 3 + "";
-	   } else if (i == 4) {
-		one = "*15170116220035c2" + i;
-		two = "≤28天";
-		three = 2 + "";
-	   } else {
-		one = "*15170116220035sssssss3" + i;
-		two = "2019-10-22";
-		three = i + "";
-	   }
-
-	   Movie movie = new Movie(one, two, three, four, null, null, null, null);
-	   list.add(movie);
-	}
-	return list;
-   }
 
    private List<Movie> genData6() {
 
@@ -717,54 +608,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	return list;
    }
 
-   private List<Movie> genData7() {
 
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 25; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   String five = null;
-	   String seven = "1";
-	   String six = "张三/dddddddd";
-	   if (i == 1) {
-		two = "*15170116220035c2dddddsssssssssss3" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		five = i + "号柜";
-		four = "已过期";
-	   } else if (i == 2) {
-		two = "*15170116220035c2" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		four = "≤100天";
-		five = i + "号柜";
-	   } else if (i == 3) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤70天";
-		five = i + "号柜";
-	   } else if (i == 4) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤28天";
-		five = i + "号柜";
-	   } else {
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		two = "*15170116220035sssssss3" + i;
-		five = i + "号柜";
-		four = "2019-10-22";
-	   }
-
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
 
    private List<Movie> genData8() {
 
