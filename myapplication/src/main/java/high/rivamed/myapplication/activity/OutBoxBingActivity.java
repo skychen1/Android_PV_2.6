@@ -132,27 +132,39 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.timely_start_btn_right:
 		break;
 	   case R.id.timely_left:
-		if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
-		   mIntentType = 1;//确认
-		   loadBingFistDate(mIntentType);
-		} else {//后绑定的未绑定
-		   int mType = 1;//1.8.3未绑定
-		   DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
+			mIntentType = 1;//确认
+			loadBingFistDate(mIntentType);
+		   } else {//后绑定的未绑定
+			int mType = 1;//1.8.3未绑定
+			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		   }
 		}
 		break;
 	   case R.id.timely_right:
-		if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
-		   mIntentType = 2;//2确认并退出
-		   loadBingFistDate(mIntentType);
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
+			mIntentType = 2;//2确认并退出
+			loadBingFistDate(mIntentType);
 
-		} else {//后绑定的未绑定
-		   int mType = 1;//1.8.3未绑定
-		   DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		   } else {//后绑定的未绑定
+			int mType = 1;//1.8.3未绑定
+			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		   }
 		}
 		break;
 	   case R.id.ly_bing_btn_right:
-		ToastUtils.showShort("绑定");
-		loadBingDate("");
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   ToastUtils.showShort("绑定");
+		   loadBingDate("");
+		}
 		break;
 	}
    }

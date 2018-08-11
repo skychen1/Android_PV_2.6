@@ -380,7 +380,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 					   registeReturnBean.getTbaseThing().getSn());
 		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
 					   registeReturnBean.getTbaseThing().getThingCode());
-		   LitePal.deleteAll(BoxIdBean.class);
 		   putDbDate(registeReturnBean);
 		   initData();
 		}

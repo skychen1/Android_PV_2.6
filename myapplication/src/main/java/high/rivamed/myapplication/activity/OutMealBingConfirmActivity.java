@@ -9,6 +9,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -82,10 +83,18 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 	   case R.id.timely_start_btn_right:
 		break;
 	   case R.id.timely_left:
-		ToastUtils.showShort("timely_left");
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   ToastUtils.showShort("timely_left");
+		}
 		break;
 	   case R.id.timely_right:
-		ToastUtils.showShort("timely_right");
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   ToastUtils.showShort("timely_right");
+		}
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");

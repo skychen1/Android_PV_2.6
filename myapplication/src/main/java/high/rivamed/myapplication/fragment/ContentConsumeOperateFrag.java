@@ -303,7 +303,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				public void run() {
 				   setReaderList();
 				   if (mReaderIdList.size() == 0) {
-
+					LogUtils.i(TAG,"走了");
 					mShowLoading.mDialog.dismiss();
 					EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
 				   } else {

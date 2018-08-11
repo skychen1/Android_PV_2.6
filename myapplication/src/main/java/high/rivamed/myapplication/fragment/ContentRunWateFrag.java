@@ -44,62 +44,60 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
  * 更新描述：   ${TODO}
  */
 
-public class ContentRunWateFrag extends BaseSimpleFragment
-	 {
+public class ContentRunWateFrag extends BaseSimpleFragment {
 
    @BindView(R.id.home_runwate_viewpager)
    ViewPager        mHomeRunWateViewpager;
    @BindView(R.id.home_runwate_rg)
    SlidingTabLayout mHomeRunwateRg;
 
-   public static  EditText         mSearchEt;
+   public static EditText mSearchEt;
    @BindView(R.id.search_iv_delete)
-   ImageView        mSearchIvDelete;
+   ImageView   mSearchIvDelete;
    @BindView(R.id.search_time_all)
-   RadioButton      mSearchTimeAll;
+   RadioButton mSearchTimeAll;
    @BindView(R.id.search_time_day)
-   RadioButton      mSearchTimeDay;
+   RadioButton mSearchTimeDay;
    @BindView(R.id.search_time_week)
-   RadioButton      mSearchTimeWeek;
+   RadioButton mSearchTimeWeek;
    @BindView(R.id.search_time_moon)
-   RadioButton      mSearchTimeMoon;
+   RadioButton mSearchTimeMoon;
    @BindView(R.id.search_time_rg)
-   RadioGroup       mSearchTimeRg;
-   public static  TextView         mSearchTimeStart;
-   public static TextView         mSearchTimeEnd;
+   RadioGroup  mSearchTimeRg;
+   public static TextView mSearchTimeStart;
+   public static TextView mSearchTimeEnd;
    @BindView(R.id.search_type_all)
-   RadioButton      mSearchTypeAll;
+   RadioButton mSearchTypeAll;
    @BindView(R.id.search_type_hous)
-   RadioButton      mSearchTypeHous;
+   RadioButton mSearchTypeHous;
    @BindView(R.id.search_type_use)
-   RadioButton      mSearchTypeUse;
+   RadioButton mSearchTypeUse;
    @BindView(R.id.search_type_info)
-   RadioButton      mSearchTypeInfo;
+   RadioButton mSearchTypeInfo;
    @BindView(R.id.search_type_out)
-   RadioButton      mSearchTypeOut;
+   RadioButton mSearchTypeOut;
    @BindView(R.id.search_type_return)
-   RadioButton      mSearchTypeReturn;
+   RadioButton mSearchTypeReturn;
    @BindView(R.id.search_type_return_goods)
-   RadioButton      mSearchTypeReturnGoods;
+   RadioButton mSearchTypeReturnGoods;
 
-  public static RadioGroup mSearchTypeRg;
+   public static RadioGroup mSearchTypeRg;
    @BindView(R.id.search_type_db)
-   RadioButton      mSearchTypeDb;
+   RadioButton mSearchTypeDb;
    @BindView(R.id.search_type_thzc)
-   RadioButton      mSearchTypeThzc;
-
+   RadioButton mSearchTypeThzc;
 
    public RunWatePagerAdapter mPagerAdapter;
    private       int TOTAL_SIZE = 26;
    private final int PAGE_SIZE  = 20;
    private       int mCount     = 0;
-   private LoadingDialog.Builder mBuilder;
-   private String mStatus;
-   private String mTrim;
-   private String mStartTime;
-   private String mEndTime;
-   private List<RunWateBean.RowsBean> mWateBeanRows;
-   private String mDeviceCode;
+   private LoadingDialog.Builder              mBuilder;
+   private String                             mStatus;
+   private String                             mTrim;
+   private String                             mStartTime;
+   private String                             mEndTime;
+   private List<RunWateBean.RowsBean>         mWateBeanRows;
+   private String                             mDeviceCode;
    public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
    public static ContentRunWateFrag newInstance() {
@@ -121,6 +119,12 @@ public class ContentRunWateFrag extends BaseSimpleFragment
 
    }
 
+   @Override
+   public void onStart() {
+	super.onStart();
+	initData();
+   }
+
    private void initData() {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
@@ -135,27 +139,27 @@ public class ContentRunWateFrag extends BaseSimpleFragment
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize( mContext,mBuilder, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, mBuilder, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
-		   if (mTbaseDevices.size()>1){
+		   if (mTbaseDevices.size() > 1) {
 			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
 			devicesBean1.setDeviceName("全部");
 			devicesBean1.setDeviceCode("");
-			mTbaseDevices.add(0,devicesBean1);
+			mTbaseDevices.add(0, devicesBean1);
 		   }
 
 		   mBuilder.mDialog.dismiss();
 		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (BoxSizeBean.TbaseDevicesBean devicesBean :mTbaseDevices){
+		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
 
-//			fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
+			//			fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
 			fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
 		   }
-		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(),fragments);
+		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
 		   mHomeRunWateViewpager.setAdapter(mPagerAdapter);
 		   mHomeRunWateViewpager.setCurrentItem(0);
 		   mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
@@ -169,8 +173,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment
 	   }
 	});
    }
-
-
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
 	   R.id.search_iv_delete, R.id.search_time_start, R.id.search_time_end})
@@ -197,11 +199,13 @@ public class ContentRunWateFrag extends BaseSimpleFragment
 
    private class RunWatePagerAdapter extends FragmentStatePagerAdapter {
 
-      private List<Fragment> mFragments;
-	public RunWatePagerAdapter(FragmentManager fm,List<Fragment> Fragments) {
+	private List<Fragment> mFragments;
+
+	public RunWatePagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
 	   super(fm);
-	   this.mFragments= Fragments;
+	   this.mFragments = Fragments;
 	}
+
 	@Override
 	public Fragment getItem(int position) {
 
@@ -229,7 +233,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment
 
 	@Override
 	public void onPageSelected(int position) {
-//	   mSearchTimeRg.check(R.id.search_time_all);
+	   //	   mSearchTimeRg.check(R.id.search_time_all);
 	   mSearchTypeRg.check(R.id.search_type_all);
 	}
 

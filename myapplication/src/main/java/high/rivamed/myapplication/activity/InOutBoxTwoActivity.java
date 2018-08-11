@@ -168,40 +168,48 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		break;
 
 	   case R.id.timely_left:
-		//确认
-		mIntentType = 1;
-		if (mTCstInventoryVos != null) {
-		   if (mTCstInventoryDto.getOperation() == 9) {//移出
-			setYcDate(mIntentType);
-		   } else if (mTCstInventoryDto.getOperation() == 11) {//调拨
-			setDbDate(mIntentType);
-		   } else if (mTCstInventoryDto.getOperation() == 8) {//退货
-			setThDate(mIntentType);
-		   } else {//其他操作
-			setDate(mIntentType);
-		   }
-
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
 		} else {
-		   ToastUtils.showShort("数据异常");
+		   //确认
+		   mIntentType = 1;
+		   if (mTCstInventoryVos != null) {
+			if (mTCstInventoryDto.getOperation() == 9) {//移出
+			   setYcDate(mIntentType);
+			} else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+			   setDbDate(mIntentType);
+			} else if (mTCstInventoryDto.getOperation() == 8) {//退货
+			   setThDate(mIntentType);
+			} else {//其他操作
+			   setDate(mIntentType);
+			}
+
+		   } else {
+			ToastUtils.showShort("数据异常");
+		   }
 		}
+
 		break;
 	   case R.id.timely_right:
-		mIntentType = 2;
-		if (mTCstInventoryVos != null) {
-		   if (mTCstInventoryDto.getOperation() == 9) {//移出
-			setYcDate(mIntentType);
-		   } else if (mTCstInventoryDto.getOperation() == 11) {//调拨
-			setDbDate(mIntentType);
-		   } else if (mTCstInventoryDto.getOperation() == 8) {//退货
-			setThDate(mIntentType);
-		   } else {//其他操作
-			setDate(mIntentType);
-		   }
-
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
 		} else {
-		   ToastUtils.showShort("数据异常");
-		}
+		   mIntentType = 2;
+		   if (mTCstInventoryVos != null) {
+			if (mTCstInventoryDto.getOperation() == 9) {//移出
+			   setYcDate(mIntentType);
+			} else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+			   setDbDate(mIntentType);
+			} else if (mTCstInventoryDto.getOperation() == 8) {//退货
+			   setThDate(mIntentType);
+			} else {//其他操作
+			   setDate(mIntentType);
+			}
 
+		   } else {
+			ToastUtils.showShort("数据异常");
+		   }
+		}
 		break;
 	}
 
@@ -212,7 +220,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
     */
    private void setThDate(int mIntentType) {
 	mType = 2;//1.7退货
-	DialogUtils.showStoreDialog(mContext, 2, mType, null,mIntentType);
+	DialogUtils.showStoreDialog(mContext, 2, mType, null, mIntentType);
    }
 
    /**
@@ -231,7 +239,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "8调拨   " + result);
 			HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
+			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
 			//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
 
 		   }
@@ -279,7 +287,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
 		ToastUtils.showShort("操作成功");
-		if (mIntentType==2){
+		if (mIntentType == 2) {
 		   mContext.startActivity(new Intent(mContext, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
@@ -419,7 +427,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
 		String string = null;
-		if (mTCstInventoryTwoDto.getErrorEpcs()!=null&&mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
+		if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
+		    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
 		   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
 		   ToastUtils.showLong(string);
 		}
@@ -472,8 +481,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
 			ToastUtils.showShort("操作成功");
-			if (event.mIntentType==2){
-			   startActivity(new Intent(InOutBoxTwoActivity.this,LoginActivity.class));
+			if (event.mIntentType == 2) {
+			   startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
 			}
 			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
