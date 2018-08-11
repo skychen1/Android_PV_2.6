@@ -521,6 +521,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().getStockDetailDate(deviceCode, cstCode, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+
+	      LogUtils.i(TAG,"result  "+result);
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
 		mTimelyNumber.setText(Html.fromHtml(

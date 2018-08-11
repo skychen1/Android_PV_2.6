@@ -119,7 +119,7 @@ public class TCstInventory implements Serializable {
 	
 	private Date lastUpdateDate;
 	
-	private String remake;
+	private String remark;
 	
 	private String patientId;
 
@@ -295,12 +295,12 @@ public class TCstInventory implements Serializable {
 	this.lastUpdateDate = lastUpdateDate;
    }
 
-   public String getRemake() {
-	return remake;
+   public String getRemark() {
+	return remark;
    }
 
-   public void setRemake(String remake) {
-	this.remake = remake;
+   public void setRemark(String remark) {
+	this.remark = remark;
    }
 
    public String getPatientId() {

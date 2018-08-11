@@ -263,6 +263,8 @@ public class TableTypeView extends LinearLayout {
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mTimeDetailsAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -280,7 +282,8 @@ public class TableTypeView extends LinearLayout {
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(detailsAdapter);
 			mLinearLayout.addView(mHeadView);
 			//----------------------
@@ -300,7 +303,8 @@ public class TableTypeView extends LinearLayout {
 
 		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(false);
+		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		   mRecyclerview.setAdapter(mPublicAdapter);
 		   mLinearLayout.addView(mHeadView);
 		} else if (mSize == SIX) {
@@ -329,7 +333,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mBingOutAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
@@ -351,7 +356,8 @@ public class TableTypeView extends LinearLayout {
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			   mRecyclerview.setAdapter(mInBoxAllAdapter);
 			   mLinearLayout.addView(mHeadView);
 			}
@@ -381,7 +387,8 @@ public class TableTypeView extends LinearLayout {
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRefreshLayout.setEnableAutoLoadMore(false);
+			   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			   mRecyclerview.setAdapter(mOutBoxAllAdapter);
 			   mLinearLayout.addView(mHeadView);
 			}
@@ -417,7 +424,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.removeView(mHeadView);
 			mLinearLayout.addView(mHeadView);
@@ -464,7 +472,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mAfterBingAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -487,7 +496,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(timelyLossAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }
@@ -530,7 +540,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
 		   } else {
@@ -552,7 +563,8 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(mPublicAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }
@@ -615,7 +627,8 @@ public class TableTypeView extends LinearLayout {
 
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(false);
+		mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 		break;

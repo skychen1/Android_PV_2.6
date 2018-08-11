@@ -67,9 +67,10 @@ public class Constants {
    public static final String SAVE_ACTIVATION_REGISTE = "activationRegiste";//激活的状态存入
    public static final String SAVE_BRANCH_CODE        = "branchCode";//院区存入code
    public static final String SAVE_DEPT_CODE          = "deptCode";//科室存入code
-   public static final String SAVE_DEPT_NAME          = "deptName";//科室存入code
+   public static final String SAVE_DEPT_NAME          = "deptName";//科室存入name
+   public static final String SAVE_STOREHOUSE_CODE          = "storehouse_Code";//库房code
    public static final String KEY_ACCOUNT_DATA        = "key_account_data";//用户资料
    public static final String KEY_ACCOUNT_NAME        = "key_account_name";//用户名字
-   public static final String KEY_ACCOUNT_ID        = "key_account_id";//用户ID
+   public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
 
 }

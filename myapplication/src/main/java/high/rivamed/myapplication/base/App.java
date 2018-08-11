@@ -33,13 +33,10 @@ import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
-
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 public class App extends Application {
 
@@ -82,7 +79,7 @@ public class App extends Application {
 	mHandler = new Handler();
 	mAppCache = ACache.get(UIUtils.getContext());
 	Logger.addLogAdapter(new AndroidLogAdapter());
-	initServer();
+
 
 	initBugly();
 
@@ -95,6 +92,7 @@ public class App extends Application {
 
    private void InitDeviceService() {
 	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
+//	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
 	DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
    }
 
@@ -121,19 +119,7 @@ public class App extends Application {
 	return mAppCache;
    }
 
-   /**
-    * 选择服务器
-    */
-   public static void initServer() {
-	LogUtils.i("RegisteFrag","1   "+(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null));
-//	LogUtils.i("RegisteFrag","2   "+MAIN_URL);
-//	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) == null) {
-//	   MAIN_URL = NetApi.BETA_URL;
-//	} else {
-//	MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-//	}
-//	LogUtils.i("RegisteFrag","3   "+MAIN_URL);
-   }
+
 
    /**
     * 加载网络框架

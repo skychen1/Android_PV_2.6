@@ -43,7 +43,7 @@ public class TCstInventoryDto {
    private int add;	// 库存情况
    private int reduce;	// 扫描出来的库存
    private String  cstCode;
-   private String  remake;	//退货备注
+   private String  remark;	//退货备注
    private String  storehouseRemark;	//移出备注
    private String  storehouseCode;		//调拨库房
    private int     stopFlag;		//效期情况 0过期 1-3近效期 4正常
@@ -56,6 +56,21 @@ public class TCstInventoryDto {
    private String                          patientName;
    private String                          accountId;
    private String                          bindType;
+   private List<String> errorEpcs; //扫描到的系统里没有数据的epc
+   public List<String> getErrorEpcs() {
+	return errorEpcs;
+   }
+
+   public void setErrorEpcs(List<String> errorEpcs) {
+	this.errorEpcs = errorEpcs;
+   }
+   public String getRemark() {
+	return remark;
+   }
+
+   public void setRemark(String remark) {
+	this.remark = remark;
+   }
 
    public String getBindType() {
 	return bindType;
@@ -158,13 +173,7 @@ public class TCstInventoryDto {
 	this.countTempopary = countTempopary;
    }
 
-   public String getRemake() {
-	return remake;
-   }
 
-   public void setRemake(String remake) {
-	this.remake = remake;
-   }
 
    public String getStorehouseRemark() {
 	return storehouseRemark;

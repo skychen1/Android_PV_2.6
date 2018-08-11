@@ -21,6 +21,9 @@ import android.widget.TextView;
 
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +60,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 
    private static final String TYPE_SIZE  = "TYPE_SIZE";
    private static final String DEVICECODE = "DEVICECODE";
-
+   private static final int loadTime      = 200;
+   private static final String TAG        = "RunWatePagerFrag";
    List<String> titeleList = null;
    @BindView(R.id.timely_ll)
    LinearLayout       mLinearLayout;
@@ -108,9 +112,10 @@ public class RunWatePagerFrag extends SimpleFragment {
    @BindView(R.id.public_ll)
    LinearLayout       mPublicLl;
    Unbinder unbinder;
-   private View   mHeadView;
-   private int    mLayout;
-   private int    mType_size;
+   private View mHeadView;
+   private int  mLayout;
+   private int PAGE = 1;
+   private int SIZE = 10;
    private String mDeviceCode;
    private String mTerm = null;
    private String mEndTime;
@@ -120,7 +125,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    private RunWatePageAdapter         mWatePageAdapter;
    private LoadingDialog.Builder      mBuilder;
    private RunWateBean                mRunWateBean;
-   private String mStartTimes;
+   private String                     mStartTimes;
 
    @SuppressLint("ValidFragment")
    public RunWatePagerFrag(String deviceCode) {
@@ -139,7 +144,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mSearchEt.setHint("请输入耗材名称、型号规格、操作人");
 	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode, mStartTime, mEndTime);
-
+	initlistener();
 	mBuilder = DialogUtils.showLoading(mContext);
 	String[] array = mContext.getResources().getStringArray(R.array.eight_runwate_arrays);
 	titeleList = Arrays.asList(array);
@@ -178,6 +183,39 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void afterTextChanged(Editable s) {
 
+	   }
+	});
+   }
+
+   private void initlistener() {
+	/**
+	 * 下拉刷新
+	 */
+	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	   @Override
+	   public void onRefresh(RefreshLayout refreshLayout) {
+		Log.i(TAG,"mDeviceCode "+mDeviceCode);
+		Log.i(TAG,"mTerm "+mTerm);
+		Log.i(TAG,"mStartTime "+mStartTime);
+		Log.i(TAG,"mEndTime "+mEndTime);
+		Log.i(TAG,"mStatus "+mStatus);
+		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		finishRefresh();
+	   }
+	});
+	/**
+	 * 加载更多
+	 */
+	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	   @Override
+	   public void onLoadMore(RefreshLayout refreshLayout) {
+		Log.i(TAG,"mDeviceCode "+mDeviceCode);
+		Log.i(TAG,"mTerm "+mTerm);
+		Log.i(TAG,"mStartTime "+mStartTime);
+		Log.i(TAG,"mEndTime "+mEndTime);
+		Log.i(TAG,"mStatus "+mStatus);
+		loadMoreRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		finishLoadMore();
 	   }
 	});
    }
@@ -244,7 +282,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-		   String mTerm = mSearchEt.getText().toString().trim();
+		   mTerm = mSearchEt.getText().toString().trim();
 		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
 		   Log.i("ccc", "mTerm  " + mTerm);
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
@@ -258,63 +296,93 @@ public class RunWatePagerFrag extends SimpleFragment {
    private void loadRunWateDate(
 	   String deviceCode, String term, String startTime, String endTime, String status) {
 	NetRequest.getInstance()
-		.loadRunWate(deviceCode, term, startTime, endTime, status, mContext,
-				 new BaseResult() {
-				    @Override
-				    public void onSucceed(String result) {
-					 Log.i("ccc", "deviceCodedfdfdfd  :" + deviceCode);
-					 if (mWateBeanRows != null) {
-					    mWateBeanRows.clear();
-					    mRunWateBean = mGson.fromJson(result, RunWateBean.class);
-					    List<RunWateBean.RowsBean> rows = mRunWateBean.getRows();
-					    mWateBeanRows.addAll(rows);
-					    mWatePageAdapter.notifyDataSetChanged();
+		.loadRunWate("1", String.valueOf(SIZE),deviceCode, term, startTime, endTime, status, mContext, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			Log.i("ccc", "deviceCodedfdfdfd  :" + deviceCode);
 
-					 } else {
-					    mRunWateBean = mGson.fromJson(result, RunWateBean.class);
-					    mWateBeanRows = mRunWateBean.getRows();
-					    mLayout = R.layout.item_runwate_eight_layout;
-					    mHeadView = getLayoutInflater().inflate(
-						    R.layout.item_runwate_eight_title_layout,
-						    (ViewGroup) mLinearLayout.getParent(), false);
-					    ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(
-						    titeleList.get(0));
-					    ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(
-						    titeleList.get(1));
-					    ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-						    titeleList.get(2));
-					    ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-						    titeleList.get(3));
-					    ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-						    titeleList.get(4));
-					    ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(
-						    titeleList.get(5));
-					    ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
-						    titeleList.get(6));
-					    ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(
-						    titeleList.get(7));
+			if (mWateBeanRows != null) {
+			   mWateBeanRows.clear();
+			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
+			   List<RunWateBean.RowsBean> rows = mRunWateBean.getRows();
+			   mWateBeanRows.addAll(rows);
+			   mWatePageAdapter.notifyDataSetChanged();
 
-					    mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
+			} else {
+			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
+			   mWateBeanRows = mRunWateBean.getRows();
+			   mLayout = R.layout.item_runwate_eight_layout;
+			   mHeadView = getLayoutInflater().inflate(
+				   R.layout.item_runwate_eight_title_layout,
+				   (ViewGroup) mLinearLayout.getParent(), false);
+			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
+				   titeleList.get(2));
+			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
+				   titeleList.get(3));
+			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
+				   titeleList.get(4));
+			   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
+				   titeleList.get(6));
+			   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(
+				   titeleList.get(7));
 
-					    mHeadView.setBackgroundResource(R.color.bg_green);
-					    mRecyclerview.addItemDecoration(
-						    new DividerItemDecoration(mContext, VERTICAL));
-					    mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-					    mRefreshLayout.setEnableAutoLoadMore(true);
-					    mRecyclerview.setAdapter(mWatePageAdapter);
-					    mLinearLayout.addView(mHeadView);
-					    mWatePageAdapter.notifyDataSetChanged();
-					 }
-					 mBuilder.mDialog.dismiss();
-					 Log.i("ccc", "deviceCode:" + deviceCode + "   " + result);
-				    }
+			   mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
 
-				    @Override
-				    public void onError(String result) {
-					 Log.i("ccc", "result:" + deviceCode + "   " + result);
-					 mBuilder.mDialog.dismiss();
-				    }
-				 });
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(true);
+			   mRecyclerview.setAdapter(mWatePageAdapter);
+			   mLinearLayout.addView(mHeadView);
+			   mWatePageAdapter.notifyDataSetChanged();
+			}
+			mBuilder.mDialog.dismiss();
+			Log.i("ccc", "deviceCode:" + deviceCode + "   " + result);
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			Log.i("ccc", "result:" + deviceCode + "   " + result);
+			mBuilder.mDialog.dismiss();
+		   }
+		});
+   }
+
+   /**
+    * 加载更多
+    *
+    * @param deviceCode
+    * @param term
+    * @param startTime
+    * @param endTime
+    * @param status
+    */
+   private void loadMoreRunWateDate(
+	   String deviceCode, String term, String startTime, String endTime, String status) {
+	PAGE++;
+	NetRequest.getInstance()
+		.loadRunWate(String.valueOf(PAGE), String.valueOf(SIZE),deviceCode, term, startTime, endTime, status, mContext, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+
+			Log.i(TAG, "deviceCodedfdfdfd  :" + PAGE+ "     "  +SIZE);
+			RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
+			List<RunWateBean.RowsBean> rows = runWateBean.getRows();
+			if (rows.size()<SIZE){
+			   finishLoadMoreWithNoMoreData();//将不会再次触发加载更多事件
+			}else {
+			   mWateBeanRows.addAll(rows);
+			   mWatePageAdapter.notifyDataSetChanged();
+			}
+
+
+//			mBuilder.mDialog.dismiss();
+			Log.i(TAG, "deviceCode:" + deviceCode + "   " + result);
+		   }
+		});
    }
 
    @Override
@@ -337,5 +405,23 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 		break;
 	}
+   }
+   /**
+    * 上拉加载成功
+    */
+   public void finishLoadMore() {
+	mRefreshLayout.finishLoadMore(loadTime);
+   }
+
+   /**
+    * 下拉加载成功
+    */
+   public void finishRefresh() {
+	mRefreshLayout.finishRefresh(loadTime);
+   }
+   public void finishLoadMoreWithNoMoreData(){
+	//不用这个的原因是会去加载一遍才说没有数据
+	//mRefreshLayout.finishLoadMoreWithNoMoreData();
+	mRefreshLayout.setNoMoreData(true);
    }
 }

@@ -117,11 +117,13 @@ public class Event {
 	public Dialog dialog;
 	public String type;
 	public String context;
-	public outBoxEvent( String type,String text, Dialog dialog){
+	public int mIntentType;
+	public outBoxEvent( String type,String text, Dialog dialog,int mIntentType){
 
 	   this.dialog = dialog;
 	   this.type = type;
 	   this.context = text;
+	   this.mIntentType = mIntentType;
 
 	}
    }

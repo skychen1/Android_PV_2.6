@@ -36,6 +36,7 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -46,6 +47,7 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -70,6 +72,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private LoadingDialog.Builder mShowLoading;
    private String                uhfDeviceId;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
+   private int mIntentType;
+
    /**
     * dialog操作数据
     *
@@ -88,6 +92,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG, "TAG    " + event.context);
 
    }
+
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_IN;
@@ -113,24 +118,25 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				   builder.setTwoMsg("您确认要退出登录吗?");
-				   builder.setMsg("温馨提示");
-				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.setRight("确认", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-						   App.getInstance().removeALLActivity_();
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.create().show();
+			   case 2:
+				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+				builder.setTwoMsg("您确认要退出登录吗?");
+				builder.setMsg("温馨提示");
+				builder.setLeft("取消", new DialogInterface.OnClickListener() {
+				   @Override
+				   public void onClick(DialogInterface dialog, int i) {
+					dialog.dismiss();
+				   }
+				});
+				builder.setRight("确认", new DialogInterface.OnClickListener() {
+				   @Override
+				   public void onClick(DialogInterface dialog, int i) {
+					mContext.startActivity(new Intent(mContext, LoginActivity.class));
+					App.getInstance().removeALLActivity_();
+					dialog.dismiss();
+				   }
+				});
+				builder.create().show();
 				break;
 			}
 		   }
@@ -162,15 +168,17 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		break;
 
 	   case R.id.timely_left:
+		//确认
+		mIntentType = 1;
 		if (mTCstInventoryVos != null) {
-		   if (mTCstInventoryDto.getOperation()==9){//移出
-			setYcDate();
-		   }else if (mTCstInventoryDto.getOperation()==11){//调拨
-			setDbDate();
-		   }else if (mTCstInventoryDto.getOperation()==8){//退货
-			setThDate();
-		   }else {//其他操作
-			setDate();
+		   if (mTCstInventoryDto.getOperation() == 9) {//移出
+			setYcDate(mIntentType);
+		   } else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+			setDbDate(mIntentType);
+		   } else if (mTCstInventoryDto.getOperation() == 8) {//退货
+			setThDate(mIntentType);
+		   } else {//其他操作
+			setDate(mIntentType);
 		   }
 
 		} else {
@@ -178,23 +186,39 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		}
 		break;
 	   case R.id.timely_right:
-		ToastUtils.showShort("timely_right");
+		mIntentType = 2;
+		if (mTCstInventoryVos != null) {
+		   if (mTCstInventoryDto.getOperation() == 9) {//移出
+			setYcDate(mIntentType);
+		   } else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+			setDbDate(mIntentType);
+		   } else if (mTCstInventoryDto.getOperation() == 8) {//退货
+			setThDate(mIntentType);
+		   } else {//其他操作
+			setDate(mIntentType);
+		   }
+
+		} else {
+		   ToastUtils.showShort("数据异常");
+		}
+
 		break;
 	}
 
    }
+
    /**
     * 退货
     */
-   private void setThDate() {
+   private void setThDate(int mIntentType) {
 	mType = 2;//1.7退货
-	DialogUtils.showStoreDialog(mContext, 2, mType, null);
+	DialogUtils.showStoreDialog(mContext, 2, mType, null,mIntentType);
    }
 
    /**
     * 调拨
     */
-   private void setDbDate() {
+   private void setDbDate(int mIntentType) {
 	mType = 3;//1.8调拨
 
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
@@ -207,7 +231,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "8调拨   " + result);
 			HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
 			//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
 
 		   }
@@ -218,35 +242,36 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    /**
     * 移出
     */
-   private void setYcDate() {
+   private void setYcDate(int mIntentType) {
 	mType = 1;//1.6移出
 	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
 	NetRequest.getInstance().getOperateYcDeptYes(deptCode, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "库房   " + result);
-		LogUtils.i(TAG, "库房   " + deptCode);
+
 		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
 
 	   }
 	});
 
    }
+
    /**
     * 设置提交值
     */
-   private void setDate() {
+   private void setDate(int mIntentType) {
 
 	TCstInventoryDto dto = new TCstInventoryDto();
-
+	dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	dto.settCstInventoryVos(mTCstInventoryVos);
 	dto.setOperation(mTCstInventoryDto.getOperation());
-	dto.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
+	dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-
-//	if (mTCstInventoryDto)
-//	dto.setOperation(-1);//多个操作
+	dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+	//	if (mTCstInventoryDto)
+	//	dto.setOperation(-1);//多个操作
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
 	NetRequest.getInstance().putOperateYes(s, this, mShowLoading, new BaseResult() {
@@ -254,7 +279,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
 		ToastUtils.showShort("操作成功");
-		if (mShowLoading!=null){
+		if (mIntentType==2){
+		   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+		   App.getInstance().removeALLActivity_();
+		}
+		if (mShowLoading != null) {
 		   mShowLoading.mDialog.dismiss();
 		}
 		finish();
@@ -389,6 +418,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
+		String string = null;
+		if (mTCstInventoryTwoDto.getErrorEpcs()!=null&&mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
+		   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
+		   ToastUtils.showLong(string);
+		}
+
 		if (mTCstInventoryTwoDto.gettCstInventoryVos() == null) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
@@ -404,6 +439,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	});
    }
+
    /**
     * 提交移出的所有数据
     *
@@ -413,20 +449,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(9);
+	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setStorehouseRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
 	} else {
 	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
+	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
@@ -435,7 +472,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
 			ToastUtils.showShort("操作成功");
-			if (mShowLoading!=null){
+			if (event.mIntentType==2){
+			   startActivity(new Intent(InOutBoxTwoActivity.this,LoginActivity.class));
+			}
+			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
 			finish();
@@ -447,6 +487,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		});
    }
+
    /**
     * 提交退货的所有数据
     *
@@ -454,20 +495,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
     */
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
+	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(11);
-	mDtoLy.setRemake(event.context);
+	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
 	} else {
 	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
-	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
+	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
@@ -477,7 +519,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result退货   " + result);
 			ToastUtils.showShort("操作成功");
-			if (mShowLoading!=null){
+			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
 			finish();
@@ -489,6 +531,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		});
    }
+
    /**
     * 提交所有调拨的数据
     *
@@ -497,20 +540,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private void putDbDates(Event.outBoxEvent event) {
 
 	String mTCstInventoryDtoJsons;
+	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(11);
 	mDtoLy.setStorehouseCode(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
 	} else {
 	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		   tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
-	mDtoLy.setAccountId(SPUtils.getString(mContext,KEY_ACCOUNT_ID));
+	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 
@@ -521,7 +565,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result调拨   " + result);
 			ToastUtils.showShort("操作成功");
-			if (mShowLoading!=null){
+			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
 			finish();

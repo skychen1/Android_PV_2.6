@@ -133,12 +133,14 @@ public class NetRequest {
    /**
     * 获取耗材流水
     */
-   public void loadRunWate(
+   public void loadRunWate(String page,String size,
 	   String deviceCode, String term, String startTime, String endTime, String status, Object tag,
 	   NetResult netResult) {
 
 	OkGo.<String>get(NetApi.URL_HOME_RUNWATE).tag(tag)
 		.params("thingCode", sThingCode)
+		.params("pageNo", page)
+		.params("pageSize", size)
 		.params("startTime", startTime)
 		.params("endTime", endTime)
 		.params("status", status)
@@ -171,7 +173,11 @@ public class NetRequest {
     * 库存详情和耗材库存预警
     */
    public void getStockDown( String nameOrSpecQueryCon, String deviceCode,int mStopFlag,Object tag, NetResult netResult) {
-	OkGo.<String>get(NetApi.URL_STOCKSTATUS_DETAILS).tag(tag)
+	Log.i("OkGo","nameOrSpecQueryCon   "+nameOrSpecQueryCon);
+	Log.i("OkGo","deviceCode   "+deviceCode);
+	Log.i("OkGo","mStopFlag   "+mStopFlag);
+	Log.i("OkGo","sThingCode   "+sThingCode);
+      OkGo.<String>get(NetApi.URL_STOCKSTATUS_DETAILS).tag(tag)
 		.params("thingCode", sThingCode)
 		.params("nameOrSpecQueryCon", nameOrSpecQueryCon)
 		.params("deviceCode", deviceCode)
@@ -196,6 +202,7 @@ public class NetRequest {
 	OkGo.<String>get(NetApi.URL_STOCK_DETAIL).tag(tag)
 		.params("cstCode", cstCode)
 		.params("deviceCode", deviceCode)
+		.params("thingCode", sThingCode)
 		.execute(new MyCallBack(tag,netResult, true));
    }
 

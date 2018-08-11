@@ -22,7 +22,7 @@ public class TCstInventoryVo implements Serializable {
    private String cstCode;
    private String operation;
    private String storehouseRemark;
-   private String remake;
+   private String remark;
    private int countStock ; // 库存情况  账面
    private int countActual ; // 扫描出来的库存
 
@@ -273,12 +273,12 @@ public class TCstInventoryVo implements Serializable {
 	this.storehouseRemark = storehouseRemark;
    }
 
-   public String getRemake() {
-	return remake;
+   public String getRemark() {
+	return remark;
    }
 
-   public void setRemake(String remake) {
-	this.remake = remake;
+   public void setRemark(String remark) {
+	this.remark = remark;
    }
 
    public int getCountStock() {

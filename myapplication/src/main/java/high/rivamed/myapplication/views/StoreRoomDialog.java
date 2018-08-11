@@ -65,15 +65,17 @@ public class StoreRoomDialog extends Dialog {
 	private ImageView       mLeft;
 	private int mLeftTextColor = -1;
 	private int          mRightTextColor;
+	private int          mIntentType;
 	private HospNameBean mHospNameBean;
 	private String mName;
 	private String mCode;
 
-	public Builder(Context context, int NumColumn, int mType, HospNameBean hospNameBean) {
+	public Builder(Context context, int NumColumn, int mType, HospNameBean hospNameBean,int mIntentType) {
 	   this.mContext = context;
 	   this.mNumColumn = NumColumn;
 	   this.mType = mType;
 	   this.mHospNameBean = hospNameBean;
+	   this.mIntentType = mIntentType;
 	}
 
 	public Builder setList(List title) {
@@ -224,11 +226,11 @@ public class StoreRoomDialog extends Dialog {
 		@Override
 		public void onClick(View view) {
 		   if (mType==1){
-			EventBusUtils.postSticky(new Event.outBoxEvent("1",mCode,dialog));
+			EventBusUtils.postSticky(new Event.outBoxEvent("1",mCode,dialog,mIntentType));
 		   }else if (mType==2){
-			EventBusUtils.postSticky(new Event.outBoxEvent("2",mName,dialog));
+			EventBusUtils.postSticky(new Event.outBoxEvent("2",mName,dialog,mIntentType));
 		   }else {
-			EventBusUtils.postSticky(new Event.outBoxEvent("3",mCode,dialog));
+			EventBusUtils.postSticky(new Event.outBoxEvent("3",mCode,dialog,mIntentType));
 		   }
 		}
 	   });

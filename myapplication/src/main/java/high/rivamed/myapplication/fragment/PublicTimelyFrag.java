@@ -50,6 +50,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -313,7 +314,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mHeadView.setBackgroundResource(R.color.bg_green);
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(false);
+		mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 	   }
@@ -372,7 +374,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mHeadView.setBackgroundResource(R.color.bg_green);
 		mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 		mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		mRefreshLayout.setEnableAutoLoadMore(false);
+		mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		mRecyclerview.setAdapter(mPublicAdapter);
 		mLinearLayout.addView(mHeadView);
 	   }
@@ -488,7 +491,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mHeadView.setBackgroundResource(R.color.bg_green);
 		   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
-		   mRefreshLayout.setEnableAutoLoadMore(false);
+		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		   mRecyclerview.setAdapter(mPublicAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}
@@ -514,7 +518,6 @@ public class PublicTimelyFrag extends SimpleFragment {
 	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 		   mTrim = mSearchEt.getText().toString().trim();
-		   Toast.makeText(mContext, mTrim, Toast.LENGTH_SHORT).show();
 		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
 		   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 		   return true;
@@ -619,7 +622,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 				mRecyclerview.addItemDecoration(
 					new DividerItemDecoration(mContext, VERTICAL));
 				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-				mRefreshLayout.setEnableAutoLoadMore(false);
+				mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+				mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 				mRecyclerview.setAdapter(mDownAdapter);
 				mLinearLayout.addView(mHeadView);
 				ArrayList<String> strings = new ArrayList<>();
@@ -680,9 +684,11 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mRightAdapter = new StockRightAdapter(mLayout, mTCstStockRightList);
 
 		   mHeadView.setBackgroundResource(R.color.bg_green);
-		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(false);
+		   LogUtils.i("CC","mRecyclerview   "+(mRecyclerview==null));
+		   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
+		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
+		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		   mRecyclerview.setAdapter(mRightAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}

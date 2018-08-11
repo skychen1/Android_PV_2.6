@@ -83,6 +83,8 @@ public class RvDialog extends Dialog {
 	private TextView mDialogRed;
 	private Activity mActivity;
 	private	List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
+	public RvDialog mDialog;
+
 	public Builder(Activity mActivity,Context context,List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
 	   this.mContext = context;
 	   this.mActivity = mActivity;
@@ -129,11 +131,11 @@ public class RvDialog extends Dialog {
 	public RvDialog create() {
 	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
-	   final RvDialog dialog = new RvDialog(mContext, R.style.Dialog);
-	   dialog.setCancelable(false);
+	   mDialog = new RvDialog(mContext, R.style.Dialog);
+	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_rv_layout, null);
-	   dialog.addContentView(layout,
-					 new ViewGroup.LayoutParams(1536,
+	   mDialog.addContentView(layout,
+					  new ViewGroup.LayoutParams(1536,
 									    ViewGroup.LayoutParams.WRAP_CONTENT));
 
 	   mSearchEt = (EditText) layout.findViewById(R.id.search_et);
@@ -188,17 +190,17 @@ public class RvDialog extends Dialog {
 	   mDialogLeft.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   mLeftBtn.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+		   mLeftBtn.onClick(mDialog, DialogInterface.BUTTON_NEGATIVE);
 		}
 	   });
 	   mDialogRight.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
 
-		   mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+		   mRightBtn.onClick(mDialog, DialogInterface.BUTTON_POSITIVE);
 		}
 	   });
-	   return dialog;
+	   return mDialog;
 	}
    }
 }

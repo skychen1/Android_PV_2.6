@@ -202,6 +202,9 @@ public class TimelyAllFrag extends SimpleFragment {
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRefreshLayout.setEnableAutoLoadMore(false);
+
+	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 	mLinearLayout.addView(mHeadView);
 	mRecyclerview.setAdapter(mTimelyAllAdapter);
 	View inflate = getLayoutInflater().inflate(R.layout.recy_null, null);
@@ -256,25 +259,24 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
 			LogUtils.i(TAG, "盘盈 s   " + mToJson);
-			if (mCstInventoryDto.getAdd() != 0) {
-			   NetRequest.getInstance().getProfitDate(mToJson, this, null, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-				   LogUtils.i(TAG, "盘盈 result   " + result);
-				   TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
-													TCstInventoryDto.class);
-				   if (tCstInventoryDto.gettCstInventoryVos()!=null&&tCstInventoryDto.gettCstInventoryVos().size() > 0) {
-					mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
-					tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
-					EventBusUtils.postSticky(new Event.timelyDate("盘盈", tCstInventoryDto));
-				   } else {
-					ToastUtils.showShort("暂无详情数据");
-				   }
+
+			NetRequest.getInstance().getProfitDate(mToJson, this, null, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i(TAG, "盘盈 result   " + result);
+				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
+												   TCstInventoryDto.class);
+				if (tCstInventoryDto.gettCstInventoryVos() != null &&
+				    tCstInventoryDto.gettCstInventoryVos().size() > 0) {
+				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
+				   tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
+				   EventBusUtils.postSticky(new Event.timelyDate("盘盈", tCstInventoryDto));
+				} else {
+				   ToastUtils.showShort("暂无详情数据");
 				}
-			   });
-			}else {
-			   ToastUtils.showShort("暂无详情数据");
-			}
+			   }
+			});
+
 		   }
 		}
 		break;
@@ -286,27 +288,22 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
 			LogUtils.i(TAG, "盘亏 s   " + mToJson);
-			if (mCstInventoryDto.getReduce() != 0) {
-			   NetRequest.getInstance().getLossesDate(mToJson, this, null, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-				   LogUtils.i(TAG, "盘亏 result   " + result);
-				   TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
-													TCstInventoryDto.class);
-				   tCstInventoryDto.setReduce(mCstInventoryDto.getReduce());
-				   if (tCstInventoryDto.gettCstInventoryVos().size() > 0) {
-					mContext.startActivity(
-						new Intent(mContext, TimelyLossActivity.class));
-					EventBusUtils.postSticky(
-						new Event.timelyDate("盘亏", tCstInventoryDto));
-				   } else {
-					ToastUtils.showShort("暂无详情数据");
-				   }
+			NetRequest.getInstance().getLossesDate(mToJson, this, null, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i(TAG, "盘亏 result   " + result);
+				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
+												   TCstInventoryDto.class);
+				tCstInventoryDto.setReduce(mCstInventoryDto.getReduce());
+				if (tCstInventoryDto.gettCstInventoryVos().size() > 0) {
+				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
+				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", tCstInventoryDto));
+				} else {
+				   ToastUtils.showShort("暂无详情数据");
 				}
-			   });
-			} else {
-			   ToastUtils.showShort("暂无详情数据");
-			}
+			   }
+			});
+
 		   }
 		}
 		break;
@@ -323,14 +320,15 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		String box_id = boxIdBean.getBox_id();
-		mReaderMap.put(device_id, box_id);
+	      if (box_id!=null){
+		   mReaderMap.put(device_id, box_id);
+		}
 		if (mReaderDeviceId.size() == 0) {
 		   ToastUtils.showShort("请重新扫描");
 		}
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
-
 			int ret = DeviceManager.getInstance().StartUhfScan(device_id);
 			if (ret == 100) {
 			   LogUtils.i(TAG, "扫描失败    ");
@@ -482,7 +480,9 @@ public class TimelyAllFrag extends SimpleFragment {
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
-	   deviceInventoryVo.setDeviceCode(box_id);
+	   if (box_id!=null){
+		deviceInventoryVo.setDeviceCode(box_id);
+	   }
 	}
 	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);

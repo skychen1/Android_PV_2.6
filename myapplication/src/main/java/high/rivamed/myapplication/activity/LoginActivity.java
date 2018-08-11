@@ -118,9 +118,6 @@ public class LoginActivity extends SimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         //清空accountID
-        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
-        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
-        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
         mDownText.setText("智能耗材管理柜："+ UIUtils.getVersionName(mContext));
         //-----检测分辨率---------------------------------------
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -143,10 +140,18 @@ public class LoginActivity extends SimpleActivity {
         }
         mFragments.add(new LoginPassWordFragment());
         mFragments.add(new LoginPassFragment());
-        initConfig();
+//        initConfig();
         initData();
         initlistener();
         initCall();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
+        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
+        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
     }
 
     private void initConfig() {

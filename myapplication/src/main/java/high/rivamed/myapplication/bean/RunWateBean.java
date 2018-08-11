@@ -22,6 +22,8 @@ public class RunWateBean implements Serializable{
  private String endTime;
  private String status;
 
+   private String userName;
+
    public String getDeviceCode() {
 	return deviceCode;
    }

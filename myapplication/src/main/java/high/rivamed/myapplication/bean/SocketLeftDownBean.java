@@ -107,7 +107,7 @@ public class SocketLeftDownBean implements Serializable{
 	private String cstCode;
 	private Object operation;
 	private Object storehouseRemark;
-	private Object remake;
+	private Object remark;
 	private int    countStock;
 	private int    countActual;
 	private int    count;
@@ -168,9 +168,9 @@ public class SocketLeftDownBean implements Serializable{
 	public void setStorehouseRemark(
 		Object storehouseRemark) { this.storehouseRemark = storehouseRemark;}
 
-	public Object getRemake() { return remake;}
+	public Object getRemark() { return remark;}
 
-	public void setRemake(Object remake) { this.remake = remake;}
+	public void setRemark(Object remark) { this.remark = remark;}
 
 	public int getCountStock() { return countStock;}
 

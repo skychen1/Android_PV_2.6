@@ -185,7 +185,7 @@ public class InBoxDtoBean implements Serializable{
 	   private Object accountId;
 	   private Object userName;
 	   private Object lastUpdateDate;
-	   private Object remake;
+	   private Object remark;
 	   private Object patientId;
 	   private Object storehouseRemark;
 
@@ -253,9 +253,9 @@ public class InBoxDtoBean implements Serializable{
 	   public void setLastUpdateDate(
 		   Object lastUpdateDate) { this.lastUpdateDate = lastUpdateDate;}
 
-	   public Object getRemake() { return remake;}
+	   public Object getRemark() { return remark;}
 
-	   public void setRemake(Object remake) { this.remake = remake;}
+	   public void setRemark(Object remark) { this.remark = remark;}
 
 	   public Object getPatientId() { return patientId;}
 
@@ -306,7 +306,7 @@ public class InBoxDtoBean implements Serializable{
 	private String cstCode;
 	private String operation;
 	private String storehouseRemark;
-	private String remake;
+	private String remark;
 	private int    countStock;
 	private int    countActual;
 	private int    count;
@@ -367,9 +367,9 @@ public class InBoxDtoBean implements Serializable{
 	public void setStorehouseRemark(
 		String storehouseRemark) { this.storehouseRemark = storehouseRemark;}
 
-	public String getRemake() { return remake;}
+	public String getRemark() { return remark;}
 
-	public void setRemake(String remake) { this.remake = remake;}
+	public void setRemark(String remark) { this.remark = remark;}
 
 	public int getCountStock() { return countStock;}
 

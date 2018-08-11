@@ -57,7 +57,7 @@ public class DialogUtils {
 
    private static String sTimes;
 
-   public static void showRvDialog(
+   public static RvDialog.Builder showRvDialog(
 	   Activity activity, final Context context,
 	   List<BingFindSchedulesBean.PatientInfosBean> patientInfos, String type, int position,
 	   List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
@@ -98,6 +98,7 @@ public class DialogUtils {
 	   }
 	});
 	builder.create().show();
+	return builder;
    }
 
    public static void showOneDialog(Context context, String title) {
@@ -163,9 +164,9 @@ public class DialogUtils {
    }
 
    public static void showStoreDialog(
-	   Context context, int mNumColumn, int mType, HospNameBean hospNameBean) {
+	   Context context, int mNumColumn, int mType, HospNameBean hospNameBean,int mIntentType) {
 	StoreRoomDialog.Builder builder = new StoreRoomDialog.Builder(context, mNumColumn, mType,
-											  hospNameBean);
+											  hospNameBean,mIntentType);
 	if (mType == 2) {
 	   builder.setTitle("请选择退货原因");
 	} else if (mType == 1) {

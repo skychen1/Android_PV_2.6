@@ -53,10 +53,12 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
+import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
@@ -135,7 +137,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       String                                       mPatientName;
    private       String                                       mPatientId;
    private       String                                       mFirstBind;
-   private String mDeviceCode;
+   private       String                                       mDeviceCode;
+   private       RvDialog.Builder                             mShowRvDialog;
+   private       Handler                                      mHandler;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -169,7 +173,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRvEvent(Event.EventString event) {
 	mRvEventString = event.mString;
-	LogUtils.i(TAG,"mRvEventString   "+mRvEventString);
+	LogUtils.i(TAG, "mRvEventString   " + mRvEventString);
 	loadBingDate(mRvEventString, -2, null);
    }
 
@@ -216,6 +220,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mHandler = new Handler();
 	EventBusUtils.register(this);
 	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
@@ -291,23 +296,22 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 		   LogUtils.i(TAG, "开始扫描了状态    " + mReaderIdList.size());
 		   if (mReaderIdList.size() == 0) {
-		      for (int i=0;i<3;i++){
-			   Handler handler = new Handler();
-			   handler.postDelayed(new Runnable() {
+			for (int i = 0; i < 3; i++) {
+
+			   mHandler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
 				   setReaderList();
-				   if (mReaderIdList.size() == 0){
+				   if (mReaderIdList.size() == 0) {
 
 					mShowLoading.mDialog.dismiss();
 					EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
-				   }else {
+				   } else {
 					startScan();
 				   }
 				}
 			   }, 3000);
 			}
-
 
 		   } else {
 			startScan();
@@ -391,7 +395,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
-	   deviceInventoryVo.setDeviceCode(box_id);
+	   if (box_id!=null){
+		deviceInventoryVo.setDeviceCode(box_id);
+	   }
 	}
 	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);
@@ -405,7 +411,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	} else {
 	   tCstInventoryDto.setOperation(mRbKey);
 	}
-	if (mFirstBind != null && mFirstBind.equals("firstBind")) {
+	if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
 	   tCstInventoryDto.setPatientName(mPatientName);
 	   tCstInventoryDto.setPatientId(mPatientId);
 	}
@@ -417,9 +423,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		String string = null;
+		if (cstInventoryDto.getErrorEpcs() != null &&
+		    cstInventoryDto.getErrorEpcs().size() > 0) {
+		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+		   ToastUtils.showLong(string);
+		}
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
 		//先绑定患者
-		if (mFirstBind != null && mFirstBind.equals("firstBind")) {
+		if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
 		   for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
 			tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
 			tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
@@ -604,14 +616,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			case R.id.content_rb_ly:
 			   mRbKey = 3;
 			   ToastUtils.showShort("领用！");//拿出
-			   //			   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-			   //				 UIUtils.getConfigType(mContext, CONFIG_010)) {
-			   //先绑定患者再开柜
-			   loadBingDate("", position, mTbaseDevices);
-			   //			   } else {
-			   //			   不绑定患者
-			   //				openDoor(position, mTbaseDevices);
-			   //			   }
+			   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+				 UIUtils.getConfigType(mContext, CONFIG_010)) {
+				//先绑定患者再开柜
+				loadBingDate("", position, mTbaseDevices);
+			   } else {
+				//不绑定患者
+				openDoor(position, mTbaseDevices);
+			   }
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
@@ -721,8 +733,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
 
    private void setReaderList() {
-	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode, READER_TYPE)
-		.find(BoxIdBean.class);
+	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+								 READER_TYPE).find(BoxIdBean.class);
 
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String device_id = boxIdBean.getDevice_id();
@@ -795,11 +807,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   mPatientInfos.clear();
 		   List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
 		   mPatientInfos.addAll(patientInfos);
-		   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-		}else {
+		   if (mShowRvDialog.mDialog.isShowing()) {
+			sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+		   } else {
+			mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
+									     "firstBind", position, mTbaseDevices);
+		   }
+
+		} else {
 		   mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-		   DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos, "firstBind", position,
-						    mTbaseDevices);
+		   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
+									  "firstBind", position, mTbaseDevices);
 		}
 	   }
 	});

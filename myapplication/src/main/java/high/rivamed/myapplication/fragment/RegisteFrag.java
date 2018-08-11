@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -116,6 +118,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
 
 	   //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
 	   setSaveRegister(s, true);
@@ -138,6 +141,8 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				mSnRecoverBean.getTbaseThing().getDeptCode());
 	SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
 				mSnRecoverBean.getTbaseThing().getBranchCode());
+	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE,
+				mSnRecoverBean.getTbaseThing().getStorehouseCode());
 	setRegiestDate(s);
 	setSaveRegister(s, true);
 
@@ -375,7 +380,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 					   registeReturnBean.getTbaseThing().getSn());
 		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
 					   registeReturnBean.getTbaseThing().getThingCode());
-
+		   LitePal.deleteAll(BoxIdBean.class);
 		   putDbDate(registeReturnBean);
 		   initData();
 		}

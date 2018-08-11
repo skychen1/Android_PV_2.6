@@ -35,6 +35,7 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -44,6 +45,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -67,6 +69,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private String                uhfDeviceId;
    private TCstInventoryDto      mDtoLyFour;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
+   private int mIntentType;
    ;
 
    /**
@@ -152,7 +155,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(11);
-	mDtoLy.setRemake(event.context);
+	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryDtoFour == null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
@@ -311,16 +314,24 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		}
 		break;
 	   case R.id.btn_four_ly://领用 3
-		setLyDate();
+		//确认
+		mIntentType = 1;
+		setLyDate(mIntentType);
 		break;
 	   case R.id.btn_four_yc://移出
-		setYcDate();
+		//确认
+		mIntentType = 1;
+		setYcDate(mIntentType);
 		break;
 	   case R.id.btn_four_tb://调拨
-		setDbDate();
+		//确认
+		mIntentType = 1;
+		setDbDate(mIntentType);
 		break;
 	   case R.id.btn_four_th://退货
-		setThDate();
+		//确认
+		mIntentType = 1;
+		setThDate(mIntentType);
 		break;
 	}
    }
@@ -328,15 +339,15 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    /**
     * 退货
     */
-   private void setThDate() {
+   private void setThDate(int mIntentType) {
 	mType = 2;//1.7退货
-	DialogUtils.showStoreDialog(mContext, 2, mType, null);
+	DialogUtils.showStoreDialog(mContext, 2, mType, null,mIntentType);
    }
 
    /**
     * 调拨
     */
-   private void setDbDate() {
+   private void setDbDate(int mIntentType) {
 	mType = 3;//1.8调拨
 
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
@@ -347,7 +358,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "8调拨   " + result);
 			HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
 			//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
 
 		   }
@@ -358,7 +369,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    /**
     * 移出
     */
-   private void setYcDate() {
+   private void setYcDate(int mIntentType) {
 	mType = 1;//1.6移出
 	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
 	NetRequest.getInstance().getOperateYcDeptYes(deptCode, this, null, new BaseResult() {
@@ -366,7 +377,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "库房   " + result);
 		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean);
+		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
 
 	   }
 	});
@@ -376,11 +387,13 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    /**
     * 耗材领用区分 0 绑定患者；1直接领用
     */
-   private void setLyDate() {
+   private void setLyDate(int mIntentType) {
 	String mTCstInventoryDtoJson = null;
 	if (mTCstInventoryDtoFour == null) {
+	   mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDto);
 	} else {
+	   mTCstInventoryDtoFour.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 	}
 	if (mTCstInventoryDto.getConfigPatientCollar().equals("0") ||
@@ -427,6 +440,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private String setNewDate(TCstInventoryDto tCstInventoryDto) {
 	mDtoLy.setThingCode(tCstInventoryDto.getThingCode());
+	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(3);
 	mDtoLy.setType(tCstInventoryDto.getType());
 	mDtoLy.setConfigPatientCollar(tCstInventoryDto.getConfigPatientCollar());
@@ -552,7 +566,9 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
-	   deviceInventoryVo.setDeviceCode(box_id);
+	   if (box_id!=null){
+		deviceInventoryVo.setDeviceCode(box_id);
+	   }
 	}
 	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);
@@ -567,6 +583,12 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryDtoFour = mGson.fromJson(result, TCstInventoryDto.class);
+		String string = null;
+		if (mTCstInventoryDtoFour.getErrorEpcs()!=null&&mTCstInventoryDtoFour.getErrorEpcs().size()>0){
+		   string = StringUtils.listToString(mTCstInventoryDtoFour.getErrorEpcs());
+		   ToastUtils.showLong(string);
+		}
+
 		if (mTCstInventoryDtoFour.gettCstInventoryVos() == null) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
