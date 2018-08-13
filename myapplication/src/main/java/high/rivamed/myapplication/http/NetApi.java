@@ -1,9 +1,6 @@
 package high.rivamed.myapplication.http;
 
-import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.UIUtils;
-
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -21,11 +18,7 @@ public interface NetApi {
     //正式
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
-    //    String BETA_URL     = "http://192.168.2.32:8015/cst";
-    //    String BETA_URL     = "";
-    //    String BETA_URL     = "http://192.168.11.60:8016/cst";
-    String BETA_URL2 = "http://192.168.2.41:8015/cst";
-    String MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+
     //工程模式
     String URL_TEST_SNQUERY = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
     String URL_TEST_REGISTE = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册  设备激活

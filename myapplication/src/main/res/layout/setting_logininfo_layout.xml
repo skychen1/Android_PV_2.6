@@ -142,6 +142,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/x50"
         android:elevation="1dp"
-        android:src="@mipmap/text_nor" />
+        android:src="@mipmap/hccz_sztx_nan" />
 
 </RelativeLayout>

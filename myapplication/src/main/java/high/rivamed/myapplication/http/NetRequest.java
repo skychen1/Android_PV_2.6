@@ -67,8 +67,8 @@ public class NetRequest {
     */
    public void setSaveRegisteDate(String TBaseThing, Object tag, NetResult netResult) {
 
-	OkGo.<String>get(NetApi.URL_TEST_REGISTE).tag(tag)
-		.params("tBaseThingDto", TBaseThing)
+	OkGo.<String>post(NetApi.URL_TEST_REGISTE).tag(tag)
+		.upJson(TBaseThing)
 		.execute(new MyCallBack(tag,netResult,true));
    }
 

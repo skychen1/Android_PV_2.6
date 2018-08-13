@@ -91,7 +91,7 @@
 			android:layout_height="@dimen/x150"
 			android:layout_gravity="center_horizontal"
 			android:layout_marginTop="@dimen/x50"
-			android:src="@mipmap/text_nor"
+			android:src="@mipmap/hccz_sztx_nan"
 			/>
 		<TextView
 			android:id="@+id/setting_account_name"

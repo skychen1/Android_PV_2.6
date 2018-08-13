@@ -25,6 +25,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,10 +37,12 @@ import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RunWatePageAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -115,7 +120,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    private View mHeadView;
    private int  mLayout;
    private int PAGE = 1;
-   private int SIZE = 10;
+   private int SIZE = 5;
    private String mDeviceCode;
    private String mTerm = null;
    private String mEndTime;
@@ -132,7 +137,17 @@ public class RunWatePagerFrag extends SimpleFragment {
 	this.mDeviceCode = deviceCode;
 
    }
-
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START2")) {
+	   initDate();
+	}
+   }
    @Override
    public int getLayoutId() {
 	return R.layout.runwate_layout;
@@ -140,15 +155,54 @@ public class RunWatePagerFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	EventBusUtils.register(this);
+	mBuilder = DialogUtils.showLoading(mContext);
+	initDate();
+
+	initlistener();
+   }
+
+   private void initDate() {
 
 	mSearchEt.setHint("请输入耗材名称、型号规格、操作人");
 	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode, mStartTime, mEndTime);
-	initlistener();
-	mBuilder = DialogUtils.showLoading(mContext);
+
 	String[] array = mContext.getResources().getStringArray(R.array.eight_runwate_arrays);
 	titeleList = Arrays.asList(array);
+   }
 
+   private void initlistener() {
+	/**
+	 * 下拉刷新
+	 */
+	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	   @Override
+	   public void onRefresh(RefreshLayout refreshLayout) {
+		Log.i(TAG,"mDeviceCode "+mDeviceCode);
+		Log.i(TAG,"mTerm "+mTerm);
+		Log.i(TAG,"mStartTime "+mStartTime);
+		Log.i(TAG,"mEndTime "+mEndTime);
+		Log.i(TAG,"mStatus "+mStatus);
+		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		finishRefresh();
+	   }
+	});
+	/**
+	 * 加载更多
+	 */
+	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	   @Override
+	   public void onLoadMore(RefreshLayout refreshLayout) {
+		Log.i(TAG,"mDeviceCode "+mDeviceCode);
+		Log.i(TAG,"mTerm "+mTerm);
+		Log.i(TAG,"mStartTime "+mStartTime);
+		Log.i(TAG,"mEndTime "+mEndTime);
+		Log.i(TAG,"mStatus "+mStatus);
+		loadMoreRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		finishLoadMore();
+	   }
+	});
 	mSearchTimeStart.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -183,39 +237,6 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void afterTextChanged(Editable s) {
 
-	   }
-	});
-   }
-
-   private void initlistener() {
-	/**
-	 * 下拉刷新
-	 */
-	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-	   @Override
-	   public void onRefresh(RefreshLayout refreshLayout) {
-		Log.i(TAG,"mDeviceCode "+mDeviceCode);
-		Log.i(TAG,"mTerm "+mTerm);
-		Log.i(TAG,"mStartTime "+mStartTime);
-		Log.i(TAG,"mEndTime "+mEndTime);
-		Log.i(TAG,"mStatus "+mStatus);
-		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		finishRefresh();
-	   }
-	});
-	/**
-	 * 加载更多
-	 */
-	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-	   @Override
-	   public void onLoadMore(RefreshLayout refreshLayout) {
-		Log.i(TAG,"mDeviceCode "+mDeviceCode);
-		Log.i(TAG,"mTerm "+mTerm);
-		Log.i(TAG,"mStartTime "+mStartTime);
-		Log.i(TAG,"mEndTime "+mEndTime);
-		Log.i(TAG,"mStatus "+mStatus);
-		loadMoreRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		finishLoadMore();
 	   }
 	});
    }
@@ -334,7 +355,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRefreshLayout.setEnableAutoLoadMore(true);
+//			   mRefreshLayout.setEnableAutoLoadMore(true);
 			   mRecyclerview.setAdapter(mWatePageAdapter);
 			   mLinearLayout.addView(mHeadView);
 			   mWatePageAdapter.notifyDataSetChanged();

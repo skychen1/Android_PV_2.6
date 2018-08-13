@@ -248,7 +248,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	   }else if (my_id == ACT_TYPE_HCCZ_IN){
 		LogUtils.i(TAG,"event  "+ "ACT_TYPE_HCCZ_IN");
-		setInBoxTitles();
+		if (mActivityType.equals("all")){
+		   setInBoxTitles();
+		}else {
+		   setInBoxDate();
+		}
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   }
 
@@ -456,9 +460,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 							   mTCstInventoryVos.size() + "</big></font>"));
 
 	   int operation = mTCstInventoryDto.getOperation();
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
-						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						   STYPE_IN, operation);
+	   LogUtils.i(TAG,"operation  "+operation);
+	   if (mTypeView==null){
+		mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
+							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+							STYPE_IN, operation);
+	   }
+
 	   for (TCstInventoryVo b : mTCstInventoryVos) {
 		String status = b.getStatus();
 		if ((operation == 3 && status.contains("领用")) ||

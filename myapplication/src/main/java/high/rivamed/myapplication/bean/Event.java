@@ -20,6 +20,13 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
+   public static class EventFrag {
+	public String type;
+
+	public EventFrag(String type) {
+	   this.type = type;
+	}
+   }
    public static class EventAct {
 	public String mString;
 
@@ -146,9 +153,11 @@ public class Event {
    }
    public static class EventBoolean {
 	public boolean mBoolean;
+	public String mId;
 
-	public EventBoolean(boolean booleans) {
+	public EventBoolean(boolean booleans,String id) {
 	   this.mBoolean = booleans;
+	   this.mId = id;
 	}
    }
    public static class EventToast {
@@ -158,10 +167,23 @@ public class Event {
 	   this.mString = text;
 	}
    }
+
+
    public static class EventRg {
 	public String mString;
 
 	public EventRg(String text) {
+	   this.mString = text;
+	}
+   }
+
+   /**
+    * 发送是否开门
+    */
+   public static class EventOppenDoor {
+	public String mString;
+
+	public EventOppenDoor(String text) {
 	   this.mString = text;
 	}
    }

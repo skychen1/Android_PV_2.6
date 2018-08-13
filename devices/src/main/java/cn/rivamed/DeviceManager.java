@@ -1,18 +1,11 @@
 package cn.rivamed;
 
 
-import android.content.Context;
-import android.graphics.Point;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +15,6 @@ import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002ClientHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfHandler;
 import cn.rivamed.device.ConnetedDevices;
-
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.device.Service.Eth002Service.Eth002Service;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
@@ -101,7 +93,12 @@ public class DeviceManager {
      * @param deviceCallBack
      */
     public void RegisterDeviceCallBack(DeviceCallBack deviceCallBack) {
+        this.deviceCallBack=null;
         this.deviceCallBack = deviceCallBack;
+    }
+
+    public void UnRegisterDeviceCallBack(){
+        this.deviceCallBack=null    ;
     }
 
     public DeviceCallBack getDeviceCallBack() {

@@ -164,7 +164,7 @@ public class TBaseThingDto implements Serializable {
    public static class TBaseDeviceVo {//柜体信息
 	private String            deviceName;     //柜子名称
 	private String            deviceCode;      //柜子编码
-	private List<TBaseDevice> taBaseDevices;//柜子内部设备
+	private List<TBaseDevice> tBaseDevices;//柜子内部设备
 
 	public String getDeviceName() {
 	   return deviceName;
@@ -182,13 +182,13 @@ public class TBaseThingDto implements Serializable {
 	   this.deviceCode = deviceCode;
 	}
 
-	public List<TBaseDevice> getTaBaseDevices() {
-	   return taBaseDevices;
+	public List<TBaseDevice> gettBaseDevices() {
+	   return tBaseDevices;
 	}
 
-	public void setTaBaseDevices(
-		List<TBaseDevice> taBaseDevices) {
-	   this.taBaseDevices = taBaseDevices;
+	public void settBaseDevices(
+		List<TBaseDevice> tBaseDevices) {
+	   this.tBaseDevices = tBaseDevices;
 	}
 
 	public static class TBaseDevice {//柜子内部设备信息

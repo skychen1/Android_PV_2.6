@@ -130,7 +130,7 @@
 					android:layout_centerVertical="true"
 					android:paddingRight="@dimen/x20"
 					android:layout_toLeftOf="@+id/base_tab_tv_name"
-					android:src="@mipmap/ic_launcher_round"
+					android:src="@mipmap/hccz_mrtx_nan"
 					/>
 
 				<ImageView

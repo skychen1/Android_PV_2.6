@@ -28,6 +28,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +45,7 @@ import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
 import high.rivamed.myapplication.adapter.StockRightAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -153,7 +157,17 @@ public class PublicTimelyFrag extends SimpleFragment {
    private List<TCstInventoryVo>      mTCstStockRightList;
    private StockRightAdapter          mRightAdapter;
    private List<RunWateBean.RowsBean> mWateBeanRows;
-
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START3")) {
+	   initData();
+	}
+   }
    /**
     * @param param 表格的列数  用来判断数据长度  表格的列表
     * @param type  表格类别

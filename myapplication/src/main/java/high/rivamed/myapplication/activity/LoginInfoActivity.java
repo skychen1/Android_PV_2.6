@@ -14,7 +14,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.RegisterFingerBean;
@@ -143,7 +142,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
                                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                                        App.getInstance().removeALLActivity_();
+//                                        App.getInstance().removeALLActivity_();
                                         dialog.dismiss();
                                     }
                                 });

@@ -38,6 +38,8 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+
 public class App extends Application {
 
    private List<Activity> oList;//用于存放所有启动的Activity的集合
@@ -51,7 +53,7 @@ public class App extends Application {
     */
    private static ACache  mAppCache;
 
-//   public static String MAIN_URL = null;
+   public static String MAIN_URL=null;
 
    public static Handler getHandler() {
 	return mHandler;
@@ -86,13 +88,15 @@ public class App extends Application {
 	initOkGo();
 
 	InitDeviceService();
-
+	MAIN_URL=SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	LogcatHelper.getInstance(this).start();
    }
 
-   private void InitDeviceService() {
-	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
-//	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
+   public static void InitDeviceService() {
+	boolean b = DeviceManager.getInstance()
+		.StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
+//	LogUtils.i("ContentConsumeOperateFrag","InitDeviceService     "+b);
+//		DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
 	DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
    }
 
@@ -137,8 +141,8 @@ public class App extends Application {
 	//builder.addInterceptor(new ChuckInterceptor(this));
 
 	//超时时间设置，默认60秒
-	builder.readTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
-	builder.writeTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
+	builder.readTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
+	builder.writeTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
 	builder.connectTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
 
 	//自动管理cookie（或者叫session的保持），以下几种任选其一就行

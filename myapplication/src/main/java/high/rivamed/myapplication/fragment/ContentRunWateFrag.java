@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -118,11 +122,16 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 	initData();
 
    }
-
-   @Override
-   public void onStart() {
-	super.onStart();
-	initData();
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START2")) {
+	   initData();
+	}
    }
 
    private void initData() {

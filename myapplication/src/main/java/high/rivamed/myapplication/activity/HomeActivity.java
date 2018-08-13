@@ -9,10 +9,12 @@ import android.widget.RadioGroup;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -129,18 +131,22 @@ public class HomeActivity extends SimpleActivity {
 		switch (checkedId) {
 		   case R.id.content_consume_operate://耗材操作
 			showHideFragment(mFragments[0], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			LastId = 0;
 			break;
 		   case R.id.content_running_wate://耗材流水
 			showHideFragment(mFragments[1], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START2"));
 			LastId = 1;
 			break;
 		   case R.id.content_stock_status://库存状态
 			showHideFragment(mFragments[2], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START3"));
 			LastId = 2;
 			break;
 		   case R.id.content_timely_check://实时盘点
 			showHideFragment(mFragments[3], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START4"));
 			LastId = 3;
 			break;
 		}

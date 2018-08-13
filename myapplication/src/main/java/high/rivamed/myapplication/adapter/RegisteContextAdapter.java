@@ -18,7 +18,6 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MacPopupWindow;
 import high.rivamed.myapplication.views.TypePopupWindow;
@@ -122,7 +121,6 @@ public           RecyclerView                    recyclerView;
 	   @Override
 	   public void onClick(View v) {
 		int pos = helper.getAdapterPosition();
-		ToastUtils.showShort("" + mData.size()+"    "+pos);
 
 		data.remove(pos-1);
 
@@ -146,7 +144,6 @@ public           RecyclerView                    recyclerView;
 		int pos = helper.getAdapterPosition();
 		mMFootDelete.setVisibility(View.VISIBLE);
 		mMFootAdd.setVisibility(View.GONE);
-		ToastUtils.showShort("" + mData.size()+"    "+pos);
 
 		TBaseDevices.tBaseDevices tBaseDevice = new TBaseDevices.tBaseDevices();
 		tBaseDevice.setPartsmac(mPartsmac);

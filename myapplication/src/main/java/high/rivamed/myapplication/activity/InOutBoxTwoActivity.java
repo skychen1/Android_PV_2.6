@@ -148,23 +148,27 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		finish();
 		break;
 	   case R.id.timely_start_btn:
-		mShowLoading = DialogUtils.showLoading(mContext);
-		initCallBack();
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
-		for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
-		   LogUtils.i(TAG, "readerid    " + readerid);
-		   int ret = DeviceManager.getInstance().StartUhfScan(readerid);
-		   LogUtils.i(TAG, "readerid    " + ret);
-		   if (ret == 100) {
-			ToastUtils.showShort("扫描失败，请重试！");
-			mShowLoading.mDialog.dismiss();
-		   } else {
-			DeviceManager.getInstance().StartUhfScan(readerid);
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+
+		   mShowLoading = DialogUtils.showLoading(mContext);
+		   initCallBack();
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
+			LogUtils.i(TAG, "readerid    " + readerid);
+			int ret = DeviceManager.getInstance().StartUhfScan(readerid);
+			LogUtils.i(TAG, "readerid    " + ret);
+			if (ret == 100) {
+			   ToastUtils.showShort("扫描失败，请重试！");
+			   mShowLoading.mDialog.dismiss();
+			} else {
+			   DeviceManager.getInstance().StartUhfScan(readerid);
+			}
+
 		   }
-
 		}
-
 		break;
 
 	   case R.id.timely_left:
@@ -277,7 +281,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	dto.setOperation(mTCstInventoryDto.getOperation());
 	dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	//	if (mTCstInventoryDto)
 	//	dto.setOperation(-1);//多个操作
 	String s = mGson.toJson(dto);
@@ -438,9 +441,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		} else {
-		   EventBusUtils.postSticky(new Event.EventAct("inout"));
+		   LogUtils.i(TAG,"mActivityType   "+mActivityType);
+		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		   EventBusUtils.postSticky(mTCstInventoryTwoDto);
-		   EventBusUtils.postSticky(mActivityType);
 		}
 
 		mShowLoading.mDialog.dismiss();
@@ -505,7 +508,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	mDtoLy.setOperation(11);
+	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {

@@ -16,14 +16,10 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
-import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
 import high.rivamed.myapplication.fragment.RegisteSelfCheckFrag;
 import high.rivamed.myapplication.fragment.RegisteTestFrag;
-import high.rivamed.myapplication.utils.SPUtils;
-
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -74,17 +70,7 @@ public class RegisteActivity extends SimpleActivity {
 	mRegisteViewpager.setAdapter(mPagerAdapter);
 	mRegisteViewpager.setCurrentItem(0);
 	mRegisteTl.setViewPager(mRegisteViewpager, mKeys);
-	   try {
-		   String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
 
-		   LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-
-		   LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
-		   mBaseTabTvName.setText(appAccountInfoVo.getAccountName());
-	   } catch (Exception e) {
-		   e.printStackTrace();
-	   }
    }
 
    @Override

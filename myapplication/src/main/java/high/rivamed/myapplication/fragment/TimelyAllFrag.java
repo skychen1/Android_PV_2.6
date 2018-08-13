@@ -78,7 +78,17 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 更新描述：   ${TODO}
  */
 public class TimelyAllFrag extends SimpleFragment {
-
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START4")) {
+	   initCallBack();
+	}
+   }
    private static final String TAG = "TimelyAllFrag";
    private String mDeviceCode;
    @BindView(R.id.timely_loss)

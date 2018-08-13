@@ -21,6 +21,7 @@ import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
@@ -114,13 +115,14 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 
    @Override
 	public void onResume() {
+	LogUtils.i("ContentConsumeOperateFrag","onResume");
 		super.onResume();
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
-
+	   LogUtils.i("ContentConsumeOperateFrag","onPause");
 	}
 	
 	@Override

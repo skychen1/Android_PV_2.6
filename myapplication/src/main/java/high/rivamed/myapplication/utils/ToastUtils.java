@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -477,4 +478,13 @@ public class ToastUtils {
 	   sToast = null;
 	}
    }
+   public static void showUiToast(Activity activity,String msg) {
+	activity.runOnUiThread(new Runnable() {
+	   @Override
+	   public void run() {
+		ToastUtils.showShort(msg);
+	   }
+	});
+   }
+
 }

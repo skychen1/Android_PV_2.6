@@ -179,13 +179,13 @@ public class RegisteReturnBean implements Serializable{
 	 * taBaseDevices : [{"baudrate":null,"com":null,"deviceCode":"0A0A000000000AEF","deviceName":"串口服务器","deviceType":0,"identification":0,"ip":"192.168.2.9","parent":"402882a064d9b19f0164d9b1f7cc0001","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"},{"baudrate":null,"com":null,"deviceCode":"6C-EC-A1-FE-99-2E","deviceName":"Reader-红陆","deviceType":0,"identification":0,"ip":"192.168.2.22","parent":"402882a064d9b19f0164d9b1f7cc0001","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"}]
 	 */
 
-	private String deviceName;
-	private String                  deviceCode;
-	private int                     deviceType;
-	private Object                  ip;
-	private Object                  parent;
-	private Object                  tBaseDevice;
-	private List<TaBaseDevicesBean> taBaseDevices;
+	private String                 deviceName;
+	private String                 deviceCode;
+	private int                    deviceType;
+	private Object                 ip;
+	private Object                 parent;
+	private Object                 tBaseDevice;
+	private List<TBaseDevicesBean> tBaseDevices;
 
 	public String getDeviceName() { return deviceName;}
 
@@ -211,12 +211,12 @@ public class RegisteReturnBean implements Serializable{
 
 	public void setTBaseDevice(Object tBaseDevice) { this.tBaseDevice = tBaseDevice;}
 
-	public List<TaBaseDevicesBean> getTaBaseDevices() { return taBaseDevices;}
+	public List<TBaseDevicesBean> getTBaseDevices() { return tBaseDevices;}
 
 	public void setTaBaseDevices(
-		List<TaBaseDevicesBean> taBaseDevices) { this.taBaseDevices = taBaseDevices;}
+		List<TBaseDevicesBean> tBaseDevices) { this.tBaseDevices = tBaseDevices;}
 
-	public static class TaBaseDevicesBean {
+	public static class TBaseDevicesBean {
 
 	   /**
 	    * baudrate : null
