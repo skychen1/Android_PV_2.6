@@ -428,16 +428,16 @@ public class LoginActivity extends SimpleActivity {
 	//Y轴过期
 	List<Float> yAxisValue1 = new ArrayList<>();
 	for (int i = 0; i < cstExpirationVos.size(); i++) {
+	   LogUtils.i(TAG,"(float) cstExpirationVos.get(i).getExpireCount()   "+(float) cstExpirationVos.get(i).getExpireCount());
 	   yAxisValue1.add((float) cstExpirationVos.get(i).getExpireCount());
-	}
 
+	}
 	//Y轴近效期
 	List<Float> yAxisValue2 = new ArrayList<>();
 	for (int i = 0; i < cstExpirationVos.size(); i++) {
+	   LogUtils.i(TAG,"(float) cstExpirationVos.get(i).getNearExpireCount()   "+(float) cstExpirationVos.get(i).getNearExpireCount());
 	   yAxisValue2.add((float) cstExpirationVos.get(i).getNearExpireCount());
-	   if (cstExpirationVos.get(i).getNearExpireCount()<6){
-		yAxisValue2.add(6+0f);
-	   }
+
 	}
 
 	setTwoBarChart(mChart, xAxisValue, yAxisValue1, yAxisValue2, "", "");

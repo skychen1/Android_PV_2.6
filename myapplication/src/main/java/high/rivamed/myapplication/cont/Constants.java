@@ -52,6 +52,7 @@ public class Constants {
    public static final String CONFIG_008 = "008";//是否允许耗材同入同出
    public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
    public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
+   public static final String CONFIG_0011 = "0011";//是否允许快速开柜
 
 
    //sp存入的key

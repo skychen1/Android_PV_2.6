@@ -62,6 +62,7 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
+import static high.rivamed.myapplication.cont.Constants.CONFIG_0011;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -279,7 +280,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void OnDeviceDisConnected(
 		   DeviceType deviceType, String deviceIndentify) {
 		LogUtils.i(TAG, "设备已断开：" + deviceType + ":::ID=" + deviceIndentify);
-		ToastUtils.showUiToast(_mActivity, "设备已断开：" + deviceType + ":::ID=" + deviceIndentify);
 	   }
 
 	   @Override
@@ -521,12 +521,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
 
    private void initData() {
-	if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-	    UIUtils.getConfigType(mContext, CONFIG_010)) {
+	if (UIUtils.getConfigType(mContext, CONFIG_0011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
-
 	}
 	loadDate();
 
@@ -834,7 +832,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    private void loadBingDate(
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+	LogUtils.i(TAG,"optienNameOrId   "+optienNameOrId);
+      NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);

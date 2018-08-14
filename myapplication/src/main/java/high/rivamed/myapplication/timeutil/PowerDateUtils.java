@@ -578,6 +578,18 @@ public class PowerDateUtils {
 
 	}
 
+   /**
+    * 获取前一天当前时间
+    */
+   public static String getTime(){
+	Calendar  calendar =Calendar. getInstance();
+	calendar.add( Calendar. DATE, -1); //向前走一天
+	Date date= calendar.getTime();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String format = sdf.format(date);
+	return format;
+   }
+
 	public static String toTime2(long time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("kk:00");
 		return sdf.format(time).toString();

@@ -198,10 +198,10 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 	   case R.id.search_iv_delete:
 		break;
 	   case R.id.search_time_start:
-		mStartTime = DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
+//		mStartTime = DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
 		break;
 	   case R.id.search_time_end:
-		mEndTime = DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
+//		mEndTime = DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
 		break;
 	}
    }

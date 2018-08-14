@@ -20,6 +20,16 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
+   public static class EventTime {
+	public String time;
+
+	public EventTime(String time) {
+	   this.time = time;
+	}
+   }
+   /**
+    * Frag的跳转
+    */
    public static class EventFrag {
 	public String type;
 

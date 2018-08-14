@@ -114,7 +114,11 @@
 					android:text="时间段:"
 					android:textColor="@color/text_color_3"
 					android:textSize="@dimen/textsize_16"/>
-
+				<TextView
+					android:id="@+id/search_time_start_gone"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					/>
 				<TextView
 					android:id="@+id/search_time_start"
 					style="@style/runwate_textview_style"
@@ -127,7 +131,11 @@
 					android:layout_marginLeft="@dimen/x20"
 					android:text="～"
 					android:textStyle="bold"/>
-
+				<TextView
+					android:id="@+id/search_time_end_gone"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					/>
 				<TextView
 					android:id="@+id/search_time_end"
 					style="@style/runwate_textview_style"

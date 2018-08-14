@@ -119,11 +119,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 		super.onResume();
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-	   LogUtils.i("ContentConsumeOperateFrag","onPause");
-	}
+
 	
 	@Override
 	public void onAttach(Context context) {

@@ -47,6 +47,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    private List<TBaseDevices.tBaseDevices> mList;
    public  EditText                        mLeftName;
    public  TextView                        mLeftCode;
+   public ImageView mRightDelete;
    //   public RecyclerView mRecyclerView2;
 
    public RegisteSmallAdapter(
@@ -60,26 +61,26 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
 
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
-	ImageView rightDelete = (ImageView) holder.getView(R.id.right_delete);
+	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   mLeftName.setText(item.getBoxname());
 	   mLeftCode.setText(item.getBoxCode());
 	   if (holder.getAdapterPosition() == 0) {
-		rightDelete.setVisibility(View.GONE);
+		mRightDelete.setVisibility(View.GONE);
 	   } else {
-		rightDelete.setVisibility(View.VISIBLE);
+		mRightDelete.setVisibility(View.VISIBLE);
 	   }
 
 	} else {
 
 	   if (holder.getAdapterPosition() == 0) {
 		mLeftName.setText("1号柜");
-		rightDelete.setVisibility(View.GONE);
+		mRightDelete.setVisibility(View.GONE);
 	   } else if (item.boxname.equals("")) {
 		mLeftName.setText("");
-		rightDelete.setVisibility(View.VISIBLE);
+		mRightDelete.setVisibility(View.VISIBLE);
 	   }
    }
 
@@ -102,7 +103,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 		}
 	   }
 	});
-	rightDelete.setOnClickListener(new View.OnClickListener() {
+	mRightDelete.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
 		mData.remove(holder.getAdapterPosition());

@@ -136,7 +136,7 @@ public class NetRequest {
    public void loadRunWate(String page,String size,
 	   String deviceCode, String term, String startTime, String endTime, String status, Object tag,
 	   NetResult netResult) {
-
+	LogUtils.i(TAG,"startTime  "+startTime+"     endTime   "+endTime);
 	OkGo.<String>get(NetApi.URL_HOME_RUNWATE).tag(tag)
 		.params("thingCode", sThingCode)
 		.params("pageNo", page)

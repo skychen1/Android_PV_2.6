@@ -226,7 +226,7 @@ public class StoreRoomDialog extends Dialog {
 		@Override
 		public void onClick(View view) {
 		   if (mType==1){
-			EventBusUtils.postSticky(new Event.outBoxEvent("1",mCode,dialog,mIntentType));
+			EventBusUtils.postSticky(new Event.outBoxEvent("x",mCode,dialog,mIntentType));
 		   }else if (mType==2){
 			EventBusUtils.postSticky(new Event.outBoxEvent("2",mName,dialog,mIntentType));
 		   }else {

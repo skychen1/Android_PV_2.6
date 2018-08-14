@@ -55,7 +55,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 public class DialogUtils {
 
-   private static String sTimes;
+   public static String sTimes;
 
    public static RvDialog.Builder showRvDialog(
 	   Activity activity, final Context context,
@@ -443,7 +443,7 @@ public class DialogUtils {
 
    }
 
-   public static String showTimeDialog(final Context context, final TextView textView) {
+   public static void showTimeDialog(final Context context, final TextView textView,final TextView textViewGone,String type) {
 	Date date = new Date();
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -468,6 +468,11 @@ public class DialogUtils {
 		textView.setText(time);
 		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
 		sTimes = times + "";
+		textViewGone.setText(sTimes);
+		if (type.equals("end")){
+		   EventBusUtils.postSticky(new Event.EventTime(sTimes));
+
+		}
 	   }
 
 	   @Override
@@ -475,7 +480,7 @@ public class DialogUtils {
 	   }
 	});
 	dialog.show();
-	return sTimes;
+
    }
 
    public static void showRegisteDialog(final Context context, Activity activity) {

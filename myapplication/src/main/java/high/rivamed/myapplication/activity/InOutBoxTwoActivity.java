@@ -82,7 +82,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.outBoxEvent event) {
 	event.dialog.dismiss();
-	if (event.type.equals("1")) {//移出
+	if (event.type.equals("x")) {//移出
 	   putYcDates(event);
 	} else if (event.type.equals("2")) {//退货
 	   putThDates(event);

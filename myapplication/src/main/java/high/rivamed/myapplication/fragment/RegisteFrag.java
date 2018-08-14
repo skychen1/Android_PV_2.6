@@ -90,7 +90,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    public static RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
-   private RegisteSmallAdapter             mSmallAdapter;
+   public RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
    int i = generateData().size();
@@ -120,6 +120,10 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
+	   mFragRegisteRight.setEnabled(false);
+	   if (mSmallAdapter.mRightDelete!=null){
+		mSmallAdapter.mRightDelete.setVisibility(View.GONE);
+	   }
 	   LitePal.deleteAll(BoxIdBean.class);
 	   //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
 	   setSaveRegister(s, true);
@@ -144,6 +148,10 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				mSnRecoverBean.getTbaseThing().getBranchCode());
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE,
 				mSnRecoverBean.getTbaseThing().getStorehouseCode());
+	mFragRegisteRight.setEnabled(false);
+	if (mSmallAdapter.mRightDelete!=null){
+	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
+	}
 	LitePal.deleteAll(BoxIdBean.class);
 	RegisteReturnBean returnBean = mGson.fromJson(s, RegisteReturnBean.class);
 	setRegiestDate(s);
@@ -243,7 +251,10 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		String string = SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE);
 		LogUtils.i(TAG, "原有的   " + string);
 		setRegiestDate(string);
-
+		mFragRegisteRight.setEnabled(false);
+		if (mSmallAdapter.mRightDelete!=null){
+		   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
+		}
 		mFragmentBtnOne.setText("已激活");
 		mFragmentBtnOne.setEnabled(false);
 	   } else {
