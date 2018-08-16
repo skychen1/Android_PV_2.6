@@ -20,6 +20,16 @@ public  class Movie implements Serializable {
    public  String         one;
    public  String         two;
 
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
+    }
+
+    public  boolean         isDelete;
+
    public String getOne() {
 	return one;
    }

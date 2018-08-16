@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class BingFindSchedulesBean implements Serializable{
 
    private int id;
    private String thingCode;
-   private List<PatientInfosBean> patientInfos;
+   private List<PatientInfosBean> patientInfos = new ArrayList<>();
 
    public int getId() { return id;}
 

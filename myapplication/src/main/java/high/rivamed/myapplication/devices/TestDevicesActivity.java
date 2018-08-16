@@ -140,9 +140,9 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
                 AppendLog("接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
-            if(success){
-                fingerTemplate=fingerData;
-            }
+                if(success){
+                    fingerTemplate=fingerData;
+                }
             }
 
             @Override

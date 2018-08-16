@@ -18,7 +18,7 @@ public class SnRecoverBean implements Serializable{
 
    /**
     * id : 0
-    * tBaseDeviceVos : [{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":"ip","deviceCode":"11111","deviceName":"1号柜","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":"ip","deviceCode":"22222","deviceName":"2号柜","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"33333","deviceName":"3号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"44444","deviceName":"4号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"55555","deviceName":"5号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"66666","deviceName":"6号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"taBaseDevices":[]}]
+    * tBaseDeviceVos : [{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":"ip","deviceCode":"11111","deviceName":"1号柜","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":"ip","deviceCode":"22222","deviceName":"2号柜","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"33333","deviceName":"3号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"44444","deviceName":"4号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"55555","deviceName":"5号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]},{"deviceName":null,"deviceCode":null,"deviceType":0,"ip":null,"parent":null,"tBaseDevice":{"baudrate":null,"com":null,"deviceCode":"66666","deviceName":"6号柜","deviceType":9,"identification":1,"ip":null,"parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"},"tBaseDevices":[]}]
     * sn : 124332431321
     */
 
@@ -48,7 +48,7 @@ public class SnRecoverBean implements Serializable{
 	 * ip : null
 	 * parent : null
 	 * tBaseDevice : {"baudrate":null,"com":"ip","deviceCode":"11111","deviceName":"1号柜","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":null,"remark":null,"stopFlag":0,"thingCode":"23233"}
-	 * taBaseDevices : []
+	 * tBaseDevices : []
 	 */
 
 	private String deviceName;
@@ -57,7 +57,7 @@ public class SnRecoverBean implements Serializable{
 	private String          ip;
 	private String          parent;
 	private TBaseDeviceBean tBaseDevice;
-	private List<?>         taBaseDevices;
+	private List<?>         tBaseDevices;
 
 	public String getDeviceName() { return deviceName;}
 
@@ -83,9 +83,9 @@ public class SnRecoverBean implements Serializable{
 
 	public void setTBaseDevice(TBaseDeviceBean tBaseDevice) { this.tBaseDevice = tBaseDevice;}
 
-	public List<?> getTaBaseDevices() { return taBaseDevices;}
+	public List<?> gettBaseDevices() { return tBaseDevices;}
 
-	public void setTaBaseDevices(List<?> taBaseDevices) { this.taBaseDevices = taBaseDevices;}
+	public void settBaseDevices(List<?> tBaseDevices) { this.tBaseDevices = tBaseDevices;}
 
 	public static class TBaseDeviceBean {
 

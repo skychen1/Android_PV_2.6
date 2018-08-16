@@ -59,6 +59,14 @@
 		<item>柜号</item>
 		<item>请领单包含</item>
 	</string-array>
+	<string-array name="six_confirm_receive_arrays">
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>患者</item>
+	</string-array>
 	<string-array name="seven_order_arrays">
 		<item>名称</item>
 		<item>规格型号</item>

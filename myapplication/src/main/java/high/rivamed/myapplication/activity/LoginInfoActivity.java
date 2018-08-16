@@ -142,7 +142,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
                                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-//                                        App.getInstance().removeALLActivity_();
+                                        //                                        App.getInstance().removeALLActivity_();
                                         dialog.dismiss();
                                     }
                                 });
@@ -188,8 +188,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     }
 
     /*
-    * 腕带绑定
-    * */
+     * 腕带绑定
+     * */
     private void bindIdCrad(String idCard) {
         mBuilder = DialogUtils.showLoading(mContext);
         RegisterWandaiDto dto = new RegisterWandaiDto();

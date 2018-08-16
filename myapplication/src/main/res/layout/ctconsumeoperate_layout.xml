@@ -105,6 +105,7 @@
 				android:layout_height="@dimen/x110"
 				app:cardCornerRadius="@dimen/x10"
 				app:cardElevation="@dimen/x5"
+				android:layout_marginRight="@dimen/x35"
 				app:cardPreventCornerOverlap="true"
 				app:cardUseCompatPadding="true">
 
@@ -124,6 +125,32 @@
 					android:textSize="@dimen/textsize_15"/>
 
 			</android.support.v7.widget.CardView>
+			<android.support.v7.widget.CardView
+				android:id="@+id/function_cardview_guanlian"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/x110"
+				app:cardCornerRadius="@dimen/x10"
+				app:cardElevation="@dimen/x5"
+				app:cardPreventCornerOverlap="true"
+				app:cardUseCompatPadding="true">
+
+				<TextView
+					android:id="@+id/fastopen_title_guanlian"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_gravity="center"
+					android:background="@drawable/bg_fastopen_sel"
+					android:clickable="true"
+					android:drawableLeft="@drawable/bg_connect_icon_sel"
+					android:drawablePadding="@dimen/x10"
+					android:gravity="center"
+					android:padding="@dimen/x20"
+					android:text="关联患者"
+					android:textColor="@color/selector_fastopen_text"
+					android:textSize="@dimen/textsize_15"/>
+
+			</android.support.v7.widget.CardView>
+
 		</LinearLayout>
 	</LinearLayout>
 

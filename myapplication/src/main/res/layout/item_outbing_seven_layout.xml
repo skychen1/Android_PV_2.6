@@ -5,22 +5,22 @@
 			  android:layout_height="wrap_content"
 			  android:gravity="center_vertical"
 			  android:orientation="horizontal">
-	<!--<View-->
-		<!--style="@style/view_line_style"/>-->
-	<!--<LinearLayout-->
-		<!--android:layout_width="0dp"-->
-		<!--android:layout_weight="1"-->
-		<!--android:layout_height="match_parent"-->
-		<!--android:gravity="center">-->
-		<!--<CheckBox-->
-			<!--android:id="@+id/seven_one"-->
-			<!--android:layout_height="@dimen/x35"-->
-			<!--android:gravity="center_horizontal"-->
-			<!--android:button="@drawable/checkbox_dialog_sel"-->
-			<!--android:layout_width="@dimen/x35"-->
-			<!--/>-->
+	<View
+		style="@style/view_line_style"/>
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_height="match_parent"
+		android:gravity="center">
+		<CheckBox
+			android:id="@+id/seven_one"
+			android:layout_height="@dimen/x35"
+			android:gravity="center_horizontal"
+			android:button="@drawable/checkbox_dialog_sel"
+			android:layout_width="@dimen/x35"
+			/>
 
-	<!--</LinearLayout>-->
+	</LinearLayout>
 
 	<View
 		style="@style/view_line_style"/>

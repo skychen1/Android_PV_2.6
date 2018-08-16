@@ -9,19 +9,15 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.android.example.USB_PERMISSION"></uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_LOGS"
+    <uses-permission android:name="com.android.example.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-permission android:name="android.permission.FLASHLIGHT" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.VIBRATE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
-    </uses-permission>
-
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".base.App"
@@ -32,15 +28,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-
         <meta-data
             android:name="design_width"
-            android:value="1920">
-        </meta-data>
+            android:value="1920" />
         <meta-data
             android:name="design_height"
-            android:value="1200">
-        </meta-data>
+            android:value="1200" />
 
         <activity
             android:name=".activity.LoginActivity"
@@ -48,14 +41,13 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:screenOrientation="sensorLandscape"
-            />
-
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.MyInfoActivity"
             android:launchMode="singleInstance"
@@ -97,12 +89,10 @@
         <activity
             android:name=".activity.RegisteActivity"
             android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan"/>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.OutMealBingConfirmActivity"
             android:screenOrientation="sensorLandscape" />
-
         <activity
             android:name=".activity.TestLoginActivity"
             android:screenOrientation="sensorLandscape" />
@@ -110,13 +100,20 @@
             android:name=".devices.TestDevicesActivity"
             android:screenOrientation="sensorLandscape" />
 
-        <!--<receiver android:name=".utils.NetWorkReceiver" android:enabled="true" android:exported="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.net.wifi.STATE_CHANGE"/>-->
-                <!--<action android:name="android.Net.wifi.WIFI_STATE_CHANGED"/>-->
-                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver android:name=".utils.NetWorkReceiver" android:enabled="true" android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.net.wifi.STATE_CHANGE"/> -->
+        <!-- <action android:name="android.Net.wifi.WIFI_STATE_CHANGED"/> -->
+        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <activity
+            android:name=".activity.LingyongActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name=".activity.RecognizeActivity" />
+        <activity
+            android:name=".activity.PatientConnActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
     </application>
 
 </manifest>
