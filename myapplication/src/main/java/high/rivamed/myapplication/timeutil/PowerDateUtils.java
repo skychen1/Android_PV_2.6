@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.timeutil;
 
+import android.annotation.SuppressLint;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -628,4 +629,12 @@ public class PowerDateUtils {
 //		return false;
 		
 	}
+   /**
+    * 传入一个String转化为long
+    */
+   @SuppressLint("SimpleDateFormat")
+   public static long stringParserLong(String param) throws ParseException {
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	return format.parse(param).getTime();
+   }
 }

@@ -68,7 +68,7 @@ public class MyInfoActivity extends BaseSimpleActivity {
             mSettingAccountName.setText(appAccountInfoVo.getAccountName());
             mSettingName.setText("用户名：" + appAccountInfoVo.getUserName());
             mSettingPosition.setText("角色：" + roleName);
-            mBaseTabTvName.setText(appAccountInfoVo.getAccountName());
+            mBaseTabTvName.setText(appAccountInfoVo.getUserName());
         } catch (Exception e) {
             e.printStackTrace();
         }

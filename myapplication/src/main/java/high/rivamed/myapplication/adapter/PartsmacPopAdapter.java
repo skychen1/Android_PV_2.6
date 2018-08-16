@@ -7,8 +7,8 @@ import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;
 
+import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.TBaseDevices;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -22,18 +22,18 @@ import high.rivamed.myapplication.bean.TBaseDevices;
  * 更新描述：   ${TODO}
  */
 
-public class PartsmacPopAdapter extends BaseQuickAdapter<TBaseDevices.tBaseDevices.partsmacBean, BaseViewHolder> {
+public class PartsmacPopAdapter extends BaseQuickAdapter<DeviceManager.DeviceInfo, BaseViewHolder> {
 
    TextView mMeal;
 
-   public PartsmacPopAdapter(int layout, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
+   public PartsmacPopAdapter(int layout, List<DeviceManager.DeviceInfo> data) {
       super(layout, data);
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, TBaseDevices.tBaseDevices.partsmacBean item) {
+   protected void convert(BaseViewHolder helper, DeviceManager.DeviceInfo item) {
       findId(helper);
-      mMeal.setText(item.getPartsmacnumber());
+      mMeal.setText(item.getIdentifition());
    }
 
    private void findId(BaseViewHolder helper) {

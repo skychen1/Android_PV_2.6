@@ -43,7 +43,6 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
@@ -90,21 +89,21 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    public static RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
-   public RegisteSmallAdapter             mSmallAdapter;
+   public  RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
    int i = generateData().size();
-   private String                                      mFootNameStr;
-   private String                                      mFootIpStr;
-   private String                                      mFootMacStr;
-   private String                                      mHeadName;
-   private List<DeviceManager.DeviceInfo>              mDeviceInfos;
-   private List<TBaseDevices>                          mBaseDevices;
-   private int                                         dateType;
-   private DeviceNameBean                              mNameBean;
-   private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
-   private RegisteReturnBean                           mSnRecoverBean;
-   private NetWorkReceiver                             mNetWorkReceiver;
+   private       String                                      mFootNameStr;
+   private       String                                      mFootIpStr;
+   private       String                                      mFootMacStr;
+   private       String                                      mHeadName;
+   public static List<DeviceManager.DeviceInfo>              mDeviceInfos;
+   private       List<TBaseDevices>                          mBaseDevices;
+   private       int                                         dateType;
+   private       DeviceNameBean                              mNameBean;
+   private       List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
+   private       RegisteReturnBean                           mSnRecoverBean;
+   private       NetWorkReceiver                             mNetWorkReceiver;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -121,15 +120,54 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
 	   mFragRegisteRight.setEnabled(false);
-	   if (mSmallAdapter.mRightDelete!=null){
+	   if (mSmallAdapter.mRightDelete != null) {
 		mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 	   }
 	   LitePal.deleteAll(BoxIdBean.class);
 	   //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
-	   setSaveRegister(s, true);
-
+	   //	   setSaveRegister(s, true);
+	   setSaveActive(s);
 	}
 
+   }
+
+   /**
+    * 激活
+    */
+   private void setSaveActive(String fromDate) {
+
+	NetRequest.getInstance().setSaveActiveDate(fromDate, _mActivity, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		RegisteReturnBean registeReturnBean = mGson.fromJson(result, RegisteReturnBean.class);
+		if (registeReturnBean.isOperateSuccess()) {
+
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
+
+		   ToastUtils.showShort("设备已激活！");
+		   mFragmentBtnOne.setText("已激活");
+		   mFragmentBtnOne.setEnabled(false);
+
+		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
+		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER,
+					   registeReturnBean.getTbaseThing().getSn());
+		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
+					   registeReturnBean.getTbaseThing().getThingCode());
+		   putDbDate(registeReturnBean);
+		   initData();
+		} else {
+		   ToastUtils.showShort(registeReturnBean.getMsg());
+		}
+		LogUtils.i(TAG, "result   " + result);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		ToastUtils.showShort("操作失败 (" + result + ")");
+		mFragmentBtnOne.setEnabled(true);
+	   }
+	});
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -149,15 +187,15 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE,
 				mSnRecoverBean.getTbaseThing().getStorehouseCode());
 	mFragRegisteRight.setEnabled(false);
-	if (mSmallAdapter.mRightDelete!=null){
+	if (mSmallAdapter.mRightDelete != null) {
 	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 	}
 	LitePal.deleteAll(BoxIdBean.class);
 	RegisteReturnBean returnBean = mGson.fromJson(s, RegisteReturnBean.class);
 	setRegiestDate(s);
-	setSaveRegister(s, true);
+//	setSaveRegister(s, true);
+	setSaveActive(s);
 
-	//	setSaveRegister(s, true);
    }
 
    public static RegisteFrag newInstance() {
@@ -188,7 +226,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	mFragRegisteNameEdit.setText("2.6柜子");
 	mFragRegisteModelEdit.setText("rivamed26");
 	mFragRegisteNumberEdit.setText("1");
-	mFragRegisteSeveripEdit.setText("192.168.10.26");
+	mFragRegisteSeveripEdit.setText("192.168.10.25");
 	mFragRegistePortEdit.setText("8016");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
@@ -235,16 +273,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
    private void initData() {
 	initListener();
-	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   NetRequest.getInstance().findThingConfigDate(mContext, null, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   LogUtils.i(TAG, "findThingConfigDate   " + result);
-		   SPUtils.putString(mContext, SAVE_CONFIG_STRING, result);
-		}
-	   });
-	}
-
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
@@ -252,7 +280,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		LogUtils.i(TAG, "原有的   " + string);
 		setRegiestDate(string);
 		mFragRegisteRight.setEnabled(false);
-		if (mSmallAdapter.mRightDelete!=null){
+		if (mSmallAdapter.mRightDelete != null) {
 		   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 		}
 		mFragmentBtnOne.setText("已激活");
@@ -275,9 +303,10 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		});
 	   }
 	} else {
-	   mFragmentBtnOne.setText("预注册");
 
+	   mFragmentBtnOne.setText("预注册");
 	   mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mBaseDevices);
+
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	   mRecyclerview.setAdapter(mSmallAdapter);
 	   mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
@@ -289,7 +318,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 			mFragmentBtnOne.setEnabled(false);
 			String fromDate = mGson.toJson(addFromDate(null, null, null, null, null));
 			LogUtils.i(TAG, "fromDate   " + fromDate);
-			setSaveRegister(fromDate, false);//注册
+			setSaveRegister(fromDate);//注册
 		   }
 		}
 	   });
@@ -337,9 +366,10 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   registeAddBean1.setBoxname(tBaseDeviceVosBean.getDeviceName());
 	   registeAddBean1.setBoxCode(tBaseDeviceVosBean.getDeviceCode());
 	   registeAddBean1.setList(mTBaseDevicesSmall);
-	   if (tBaseDeviceVosBean.getTBaseDevices()!=null){
+	   if (tBaseDeviceVosBean.getTBaseDevices() != null) {
 		for (int x = 0; x < tBaseDeviceVosBean.getTBaseDevices().size(); x++) {//第二层柜体内条目的数据
-		   RegisteReturnBean.TBaseDeviceVosBean.TBaseDevicesBean devicesBean = tBaseDeviceVosBean.getTBaseDevices()
+		   RegisteReturnBean.TBaseDeviceVosBean.TBaseDevicesBean devicesBean = tBaseDeviceVosBean
+			   .getTBaseDevices()
 			   .get(x);
 		   TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
 		   registeBean1.setPartsmacName(deviceTypes);
@@ -359,31 +389,25 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	}
 
 	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mTBaseDevicesAll);
+
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.setAdapter(mSmallAdapter);
    }
 
    //提交预注册的数据
-   private void setSaveRegister(String fromDate, boolean type) {
+   private void setSaveRegister(String fromDate) {
 
 	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-
 		RegisteReturnBean registeReturnBean = mGson.fromJson(result, RegisteReturnBean.class);
 		if (registeReturnBean.isOperateSuccess()) {
-		   if (type) {
-			SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 
-			ToastUtils.showShort("设备已激活！");
-			mFragmentBtnOne.setText("已激活");
-			mFragmentBtnOne.setEnabled(false);
-		   } else {
 			ToastUtils.showShort("注册成功！");
 			mFragmentBtnOne.setEnabled(true);
 			SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 			mFragmentBtnOne.setText("激 活");
-		   }
+
 
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER,
@@ -392,6 +416,8 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 					   registeReturnBean.getTbaseThing().getThingCode());
 		   putDbDate(registeReturnBean);
 		   initData();
+		} else {
+		   ToastUtils.showShort(registeReturnBean.getMsg());
 		}
 		LogUtils.i(TAG, "result   " + result);
 	   }
@@ -514,58 +540,73 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
-		mSmallAdapter.addData(generateData());
-		mSmallAdapter.notifyItemChanged(i);
-		i++;
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   mSmallAdapter.addData(generateData());
+		   mSmallAdapter.notifyItemChanged(i);
+		   i++;
+		}
 		break;
 	   case R.id.frag_registe_left:
-		mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
-		List<String> strings = new ArrayList<>();
-		for (int i = 0; i < mDeviceInfos.size(); i++) {
-		   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
-		}
-		if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
-		    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
-		   ToastUtils.showShort("请先填写服务器IP和端口");
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
 		} else {
-		   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
-				    mFragRegistePortEdit.getText().toString().trim() + "/cst";
-		   Log.i(TAG, "url   " + url);
-		   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP, "");
-		   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP, url);
-
-		   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT,
-					   mFragRegisteSeveripEdit.getText().toString().trim());
-		   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_CODE,
-					   mFragRegistePortEdit.getText().toString().trim());
-		   MAIN_URL=SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-		   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
-		   NetRequest.getInstance()
-			   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP),
-						     strings, _mActivity, new BaseResult() {
-					@Override
-					public void onSucceed(String result) {
-					   ToastUtils.showShort("服务器已连接成功！");
-					   //				   Log.i(TAG, "App.MAIN_URL   " + MAIN_URL);
-					   LogUtils.i(TAG, "SPUtils   " +
-								 SPUtils.getString(mContext, SAVE_SEVER_IP));
-					   LogUtils.i(TAG, "SPUtils   " +
-								 SPUtils.getString(mContext, SAVE_SEVER_IP));
-					   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
-					   mNameList = mNameBean.getTBaseDeviceDictVos();
-					   mBaseDevices = generateData();
-					   initData();
-					}
-
-					@Override
-					public void onError(String result) {
-					   ToastUtils.showShort("服务器异常，请检查网络！");
-					}
-				   });
+		   getDeviceName();
 		}
 
 		break;
 
+	}
+   }
+
+   /**
+    * 填写服务器后进行绑定服务器，获取设备名称
+    */
+   private void getDeviceName() {
+	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+	List<String> strings = new ArrayList<>();
+	for (int i = 0; i < mDeviceInfos.size(); i++) {
+	   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
+	}
+	if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
+	    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
+	   ToastUtils.showShort("请先填写服务器IP和端口");
+	} else {
+	   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
+			    mFragRegistePortEdit.getText().toString().trim() + "/cst";
+	   Log.i(TAG, "url   " + url);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP, "");
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP, url);
+
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT,
+				   mFragRegisteSeveripEdit.getText().toString().trim());
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_CODE,
+				   mFragRegistePortEdit.getText().toString().trim());
+	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
+	   NetRequest.getInstance()
+		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP), strings,
+					     _mActivity, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+				   LogUtils.i(TAG, "result   " + result);
+				   ToastUtils.showShort("服务器已连接成功！");
+				   LogUtils.i(TAG,
+						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+				   LogUtils.i(TAG,
+						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
+				   mNameList = mNameBean.getTBaseDeviceDictVos();
+				   mBaseDevices = generateData();
+				   initData();
+				}
+
+				@Override
+				public void onError(String result) {
+				   ToastUtils.showShort("服务器异常，请检查网络！");
+				}
+			   });
 	}
    }
 

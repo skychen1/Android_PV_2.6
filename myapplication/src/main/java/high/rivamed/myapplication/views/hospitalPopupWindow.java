@@ -23,6 +23,7 @@ import high.rivamed.myapplication.adapter.HospPopFourAdapter;
 import high.rivamed.myapplication.adapter.HospPopThreeAdapter;
 import high.rivamed.myapplication.adapter.HospPopTwoAdapter;
 import high.rivamed.myapplication.bean.HospNameBean;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -132,8 +133,10 @@ public class hospitalPopupWindow extends PopupWindow {
 	this.setAnimationStyle(R.style.social_pop_anim);
 
 	if (!this.isShowing()) {
-
-	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0] - 5, mLocation[1] + 20);
+	   int dimensionPixelSize = UIUtils.getContext()
+		   .getResources()
+		   .getDimensionPixelSize(R.dimen.y62);
+	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0] - 5, mLocation[1]+dimensionPixelSize );
 	   //	   	   showAtLocation(parent, Gravity.NO_GRAVITY, 190,
 	   //					485);
 	} else {

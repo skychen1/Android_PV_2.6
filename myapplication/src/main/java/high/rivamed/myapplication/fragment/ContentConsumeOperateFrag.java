@@ -68,6 +68,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -167,8 +168,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onBooleanEvent(Event.EventBoolean event) {
 
 	if (event.mBoolean){
-	   Handler handler = new Handler();
-	   handler.postDelayed(new Runnable() {
+	   new Thread(new Runnable() {
 		@Override
 		public void run() {
 		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
@@ -180,7 +180,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			mOppenDoor=null;
 		   }
 		}
-	   }, 5000);
+	   }).start();
+
 	}
    }
    /**
@@ -539,17 +540,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		//		mBoxSizeBean2 = mGson.fromJson(result, BoxSizeBean.class);
 		//		mTbaseDevices2 = mBoxSizeBean2.getTbaseDevices();//顶部数据
-
+		LogUtils.i(TAG, "result  "+result);
 		mTbaseDevices = mBoxSizeBean.getTbaseDevices();
 		if (mTbaseDevices.size() > 1) {
 		   BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
 		   tbaseDevicesBean.setDeviceName("全部开柜");
 		   mTbaseDevices.add(0, tbaseDevicesBean);
 		}
-
 		onSucceedDate();
 	   }
-
 	});
    }
 
@@ -710,6 +709,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	super.onDestroy();
    }
 
+   /**
+    * 开柜
+    * @param position
+    * @param mTbaseDevices
+    */
    private void openDoor(
 	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	mShowLoading = DialogUtils.showLoading(mContext);
@@ -737,6 +741,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    }
 
+   /**
+    * 开单个柜子获得reader的标识
+    * @param position
+    * @param mTbaseDevices
+    */
    private void oneOpenBox(
 	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
@@ -752,13 +761,20 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 	   if (mTbaseDevices.size() > 1) {//第一个为全部开柜
 		if ((position - 1) == i) {
-		   LogUtils.i(TAG,
-				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		}
 	   } else {
 		LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
-		DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+		List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+									 UHF_TYPE).find(BoxIdBean.class);
+		for (BoxIdBean boxIdBean : boxIdBeans) {
+		   String device_id = boxIdBean.getDevice_id();
+		   if (device_id.equals(eth002DeviceIdList.get(i))){
+			DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+		   }
+		}
+
 
 	   }
 	   EventBusUtils.post(new Event.EventBoolean(true,(String) eth002DeviceIdList.get(i)));

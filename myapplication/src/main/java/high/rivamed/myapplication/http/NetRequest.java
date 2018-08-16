@@ -71,6 +71,15 @@ public class NetRequest {
 		.upJson(TBaseThing)
 		.execute(new MyCallBack(tag,netResult,true));
    }
+   /**
+    * 激活
+    */
+   public void setSaveActiveDate(String TBaseThing, Object tag, NetResult netResult) {
+
+	OkGo.<String>post(NetApi.URL_TEST_ACTIVE).tag(tag)
+		.upJson(TBaseThing)
+		.execute(new MyCallBack(tag,netResult,true));
+   }
 
    /**
     * 用户登录
@@ -351,6 +360,7 @@ public class NetRequest {
 		.params("thingCode", sThingCode)
 		.execute(new MyCallBack(tag,dialog,netResult, false));
    }
+
 
    private class MyCallBack extends StringCallback {
 

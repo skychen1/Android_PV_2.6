@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -217,7 +218,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 	mLinearLayout.addView(mHeadView);
 	mRecyclerview.setAdapter(mTimelyAllAdapter);
-	View inflate = getLayoutInflater().inflate(R.layout.recy_null, null);
+	View inflate = LayoutInflater.from(_mActivity)
+		.inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
 	mTimelyAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override

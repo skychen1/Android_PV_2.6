@@ -42,12 +42,9 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 public class RegisteDialog extends Dialog {
 
-
-
    public RegisteDialog(Context context, int theme) {
 	super(context, theme);
    }
-
 
    @Override
    public void show() {
@@ -99,7 +96,7 @@ public class RegisteDialog extends Dialog {
 	private TextView                              mGoneFourType;
 	private TextView                              mGoneThreeType;
 	private TextView                              mGoneTwoType;
-
+	private String                                mTrim;
 
 	public Builder(Context context, Activity activity) {
 	   this.mContext = context;
@@ -151,8 +148,9 @@ public class RegisteDialog extends Dialog {
 	   dialog.setCancelable(false);
 	   final View layout = inflater.inflate(R.layout.dialog_registe_layout, null);
 
-	   dialog.addContentView(layout, new ViewGroup.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.x860),
-											ViewGroup.LayoutParams.WRAP_CONTENT));
+	   dialog.addContentView(layout, new ViewGroup.LayoutParams(
+		   mContext.getResources().getDimensionPixelSize(R.dimen.x860),
+		   ViewGroup.LayoutParams.WRAP_CONTENT));
 
 	   mDialogCloss = (ImageView) layout.findViewById(R.id.dialog_closs);
 	   mGoneOneType = (TextView) layout.findViewById(R.id.gone_one_type);
@@ -177,15 +175,20 @@ public class RegisteDialog extends Dialog {
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-		   String trim = mAddressOne.getText().toString().trim();
-		   if (mGoneOneType.getText().toString().length()==0){
-			getHospDate(trim, mAddressOne, mGoneOneType, 1);
-		   }
+
 		}
 
 		@Override
 		public void afterTextChanged(Editable s) {
-
+		   String trim = mAddressOne.getText().toString().trim();
+		   if (mMhospWindow != null) {
+			mMhospWindow.dismiss();
+		   }
+		   if (!trim.equals(mTrim)) {
+			getHospDate(trim, mAddressOne, mGoneOneType, 1);
+		   }
+		   mAddressOne.removeTextChangedListener(this);
+		   mAddressOne.addTextChangedListener(this);
 		}
 	   });
 	   //所属院区
@@ -195,9 +198,9 @@ public class RegisteDialog extends Dialog {
 		   if (UIUtils.isFastDoubleClick()) {
 			return;
 		   } else {
-			if (mAddressOne.getText().toString().trim().length() > 0 ) {
+			if (mAddressOne.getText().toString().trim().length() > 0) {
 			   String trim = mGoneOneType.getText().toString().trim();
-			   LogUtils.i(TAG,"mGoneOneType   "+trim);
+			   LogUtils.i(TAG, "mGoneOneType   " + trim);
 			   getHospBranch(trim, mAddressTwo, mGoneTwoType, 2);
 			}
 		   }
@@ -275,14 +278,19 @@ public class RegisteDialog extends Dialog {
 	   return dialog;
 	}
 
-
 	private SettingListener myListener = null;
+
 	public interface SettingListener {
-	   public void getDialogDate(String deptName,String branchCode,String deptCode,String storehouseCode,String operationRoomNo,Dialog dialog);
+
+	   public void getDialogDate(
+		   String deptName, String branchCode, String deptCode, String storehouseCode,
+		   String operationRoomNo, Dialog dialog);
 	}
+
 	public void setOnSettingListener(SettingListener listener) {
 	   myListener = listener;
 	}
+
 	/**
 	 * 获取医院名字
 	 */
@@ -293,7 +301,11 @@ public class RegisteDialog extends Dialog {
 		   Gson gson = new Gson();
 		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
 		   LogUtils.i(TAG, "result   " + result);
-		   setAdapterDate(hospNameBean, textview, goneview, type);
+
+		   if (hospNameBean.getTbaseHospitals().size() == 1 &&
+			 !hospNameBean.getTbaseHospitals().get(0).getHospName().equals("")) {
+			setAdapterDate(hospNameBean, textview, goneview, type);
+		   }
 
 		}
 	   });
@@ -311,7 +323,7 @@ public class RegisteDialog extends Dialog {
 	   if (hospNameBean != null) {
 		mMhospWindow = new hospitalPopupWindow(mContext, hospNameBean, type);
 		mMhospWindow.showPopupWindow(textview);
-		adapterOnClick(mMhospWindow,textview, goneview, type);
+		adapterOnClick(mMhospWindow, textview, goneview, type);
 	   } else {
 		mMhospWindow.dismiss();
 		mAddressOne.clearFocus();
@@ -325,7 +337,8 @@ public class RegisteDialog extends Dialog {
 	 * @param goneview
 	 * @param type
 	 */
-	private void adapterOnClick(hospitalPopupWindow mMhospWindow,TextView textview, TextView goneview, int type) {
+	private void adapterOnClick(
+		hospitalPopupWindow mMhospWindow, TextView textview, TextView goneview, int type) {
 	   if (type == 1) {
 		mMhospWindow.mHospPopAdar.setOnItemClickListener(
 			new BaseQuickAdapter.OnItemClickListener() {
@@ -334,9 +347,9 @@ public class RegisteDialog extends Dialog {
 				   BaseQuickAdapter adapter, View view, int position) {
 				TextView textView = (TextView) view.findViewById(R.id.item_meal);
 				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
-				String trim = textView.getText().toString().trim();
+				mTrim = textView.getText().toString().trim();
 				String mGoneText = mGoneMeal.getText().toString().trim();
-				mAddressOne.setText(trim);
+				mAddressOne.setText(mTrim);
 				mAddressOne.clearFocus();
 				goneview.setText(mGoneText);
 				mMhospWindow.dismiss();

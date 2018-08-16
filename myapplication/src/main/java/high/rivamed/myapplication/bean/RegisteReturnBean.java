@@ -27,8 +27,17 @@ public class RegisteReturnBean implements Serializable{
    private boolean operateSuccess;
    private int                      id;
    private String                   tBaseThingDto;
+   private String                   msg;
    private TbaseThingBean           tbaseThing;
    private List<TBaseDeviceVosBean> tBaseDeviceVos;
+
+   public String getMsg() {
+	return msg;
+   }
+
+   public void setMsg(String msg) {
+	this.msg = msg;
+   }
 
    public boolean isOperateSuccess() { return operateSuccess;}
 

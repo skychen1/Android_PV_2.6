@@ -71,6 +71,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public int mSize;
    @BindView(R.id.timely_start_btn)
    TextView mTimelyStartBtn;
+   @BindView(R.id.timely_open_door)
+   TextView mTimelyOpenDoor;
    @BindView(R.id.ly_bing_btn)
    TextView mLyBingBtn;
    @BindView(R.id.timely_left)
@@ -247,7 +249,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		setOutBoxTitles();
 		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	   }else if (my_id == ACT_TYPE_HCCZ_IN){
-		LogUtils.i(TAG,"event  "+ "ACT_TYPE_HCCZ_IN");
 		if (mActivityType.equals("all")){
 		   setInBoxTitles();
 		}else {
@@ -440,6 +441,10 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mBaseTabTvTitle.setText("识别耗材");
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mTimelyOpenDoor.setVisibility(View.VISIBLE);
+	mBaseTabBack.setVisibility(View.GONE);
+	mBaseTabIconRight.setEnabled(false);
+	mBaseTabTvName.setEnabled(false);
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -469,13 +474,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	   for (TCstInventoryVo b : mTCstInventoryVos) {
 		String status = b.getStatus();
-		if ((operation == 3 && status.contains("领用")) ||
-		    (operation == 2 && status.contains("入库")) ||
-		    (operation == 9 && status.contains("移出")) ||
-		    (operation == 11 && status.contains("调拨")) ||
-		    (operation == 10 && (status.contains("移入")&&!status.equals("禁止移入"))) ||
-		    (operation == 7 && status.contains("退回")) ||
-		    (operation == 8 && status.contains("退货"))) {
+		if ((operation == 3 && status.contains("领用")&&b.getStopFlag()!=0) ||
+		    (operation == 2 && status.contains("入库")&&b.getStopFlag()!=0) ||
+		    (operation == 9 && status.contains("移出")&&b.getStopFlag()!=0) ||
+		    (operation == 11 && status.contains("调拨")&&b.getStopFlag()!=0) ||
+		    (operation == 10 && (status.contains("移入")&&!status.equals("禁止移入")&&b.getStopFlag()!=0)) ||
+		    (operation == 7 && status.contains("退回")&&b.getStopFlag()!=0) ||
+		    (operation == 8 && status.contains("退货")&&b.getStopFlag()!=0)) {
 		   LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
 		} else {
 		   LogUtils.i(TAG, "我走了false");

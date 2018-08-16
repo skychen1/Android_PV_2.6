@@ -102,11 +102,16 @@ public class StockRightUnconfFrag extends SimpleFragment {
       @Override
       public Fragment getItem(int position) {
          String deviceCode = null;
-         if (position == 0) {
-            deviceCode = null;
-         } else {
-            deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+         if (mTbaseDevices.size()>1) {
+            if (position == 0) {
+               deviceCode = null;
+            } else {
+               deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+            }
+         }else {
+            deviceCode = mTbaseDevices.get(position).getDeviceCode();
          }
+
          mStockLeftAlltop.setVisibility(View.GONE);
          return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_RIGHT,deviceCode);
 

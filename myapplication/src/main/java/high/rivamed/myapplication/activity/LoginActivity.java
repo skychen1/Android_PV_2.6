@@ -70,7 +70,8 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -119,7 +120,7 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	//清空accountID
-	mDownText.setText("智能耗材管理柜：" + UIUtils.getVersionName(mContext));
+	mDownText.setText("Rivamed  智能耗材管理柜:   V " + UIUtils.getVersionName(mContext));
 	//-----检测分辨率---------------------------------------
 	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 	DisplayMetrics dm = new DisplayMetrics();
@@ -147,6 +148,9 @@ public class LoginActivity extends SimpleActivity {
 	initData();
 	initlistener();
 	initCall();
+	if (MAIN_URL != null&&SPUtils.getString(UIUtils.getContext(), THING_CODE)!=null) {
+	   getLeftDate();
+	}
    }
 
    @Override
@@ -154,20 +158,24 @@ public class LoginActivity extends SimpleActivity {
 	super.onStart();
 	LogUtils.i(TAG, "MAIN_URL     " + MAIN_URL);
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
+	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
-	if (MAIN_URL != null&&SPUtils.getString(UIUtils.getContext(), THING_CODE)!=null) {
-	   getLeftDate();
-	}
+	getConfigDate();
    }
 
-   private void initConfig() {
-	NetRequest.getInstance().findThingConfigDate(this, null, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result   " + result);
-	   }
-	});
+   /**
+    * 获取配置项
+    */
+   private void getConfigDate() {
+	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   LogUtils.i(TAG, "findThingConfigDate   " + result);
+		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+		}
+	   });
+	}
    }
 
    private void initCall() {
@@ -273,8 +281,8 @@ public class LoginActivity extends SimpleActivity {
 		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 		   if (loginResultBean.isOperateSuccess()) {
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME,
-						loginResultBean.getAppAccountInfoVo().getAccountName());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
+						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
 			Intent intent = new Intent(mContext, HomeActivity.class);
@@ -307,12 +315,13 @@ public class LoginActivity extends SimpleActivity {
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
 		try {
 		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 		   if (loginResultBean.isOperateSuccess()) {
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME,
-						loginResultBean.getAppAccountInfoVo().getAccountName());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
+						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
 			Intent intent = new Intent(mContext, HomeActivity.class);
@@ -383,6 +392,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initData() {
+
 	if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_password) {
 	   mLoginViewpager.setCurrentItem(0);
 	} else {
@@ -571,10 +581,11 @@ public class LoginActivity extends SimpleActivity {
 
 	ArrayList<BarEntry> entries1 = new ArrayList<>();
 	ArrayList<BarEntry> entries2 = new ArrayList<>();
-
-	for (int i = 0, n = yAxisValue1.size(); i < n; ++i) {
+	for (int i = 0; i < yAxisValue1.size(); ++i) {
 	   entries1.add(new BarEntry(i, yAxisValue1.get(i)));
-	   entries2.add(new BarEntry(i, yAxisValue2.get(i)));
+	}
+	for (int x = 0;x < yAxisValue2.size(); ++x){
+	   entries2.add(new BarEntry(x, yAxisValue2.get(x)));
 	}
 
 	BarDataSet dataset1, dataset2;
@@ -594,10 +605,12 @@ public class LoginActivity extends SimpleActivity {
 	   dataset1.setColor(Color.rgb(244, 110, 86));
 
 	   ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+	   dataSets.clear();
 	   dataSets.add(dataset1);
 	   dataSets.add(dataset2);
 
 	   BarData data = new BarData(dataSets);
+
 	   data.setValueTextSize(16f);
 	   data.setValueTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	   data.setBarWidth(0.9f);
@@ -606,7 +619,12 @@ public class LoginActivity extends SimpleActivity {
 		public String getFormattedValue(
 			float value, Entry entry, int i, ViewPortHandler viewPortHandler) {
 		   int value1 = (int) value;
-		   String s = String.valueOf(value1);
+		   String s;
+		   if (i%2==0){
+			s = "过期\n"+String.valueOf(value1);
+		   }else {
+			s = "近期\n"+String.valueOf(value1);
+		   }
 		   return s;
 		}
 	   });

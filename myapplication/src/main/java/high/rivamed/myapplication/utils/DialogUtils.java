@@ -443,7 +443,7 @@ public class DialogUtils {
 
    }
 
-   public static void showTimeDialog(final Context context, final TextView textView,final TextView textViewGone,String type) {
+   public static void showTimeDialog(final Context context, final TextView textView) {
 	Date date = new Date();
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -467,12 +467,6 @@ public class DialogUtils {
 		   long times) {
 		textView.setText(time);
 		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
-		sTimes = times + "";
-		textViewGone.setText(sTimes);
-		if (type.equals("end")){
-		   EventBusUtils.postSticky(new Event.EventTime(sTimes));
-
-		}
 	   }
 
 	   @Override

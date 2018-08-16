@@ -22,6 +22,7 @@ import high.rivamed.myapplication.dto.RegisterWandaiDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -43,6 +44,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
  */
 public class LoginInfoActivity extends BaseSimpleActivity {
 
+    private static final String TAG = "LoginInfoActivity";
     @BindView(R.id.setting_password)
     TextView mSettingPassword;
     @BindView(R.id.setting_password_edit)
@@ -75,7 +77,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     private void initData() {
         try {
             String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-
+            LogUtils.i(TAG,"accountData    "+accountData);
             LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 
             LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
