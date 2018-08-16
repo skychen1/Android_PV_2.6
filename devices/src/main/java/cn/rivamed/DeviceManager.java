@@ -1,6 +1,8 @@
 package cn.rivamed;
 
 
+import android.util.Log;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -26,6 +28,8 @@ import cn.rivamed.device.Service.UhfService.UhfService;
 
 
 public class DeviceManager {
+
+    private static final String LOG_TAG="DEV_MNGER";
 
     int uhf_Port = -1;
     int eth002_port = -1;
@@ -319,6 +323,8 @@ public class DeviceManager {
      * @param deviceId 设备ID
      */
     public int StartUhfScan(String deviceId) {
+
+        Log.i(LOG_TAG,"开始UHF扫描；DEVICEID="+deviceId);
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -428,6 +434,7 @@ public class DeviceManager {
      * @return 返回结果仅表示命令已发送，具体执行结果参照回调函数
      */
     public int OpenDoor(String deviceId) {
+        Log.i(LOG_TAG,"接收开门指令；DEVICEID="+deviceId);
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
