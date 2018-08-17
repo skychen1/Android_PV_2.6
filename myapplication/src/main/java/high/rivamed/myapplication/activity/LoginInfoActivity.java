@@ -25,11 +25,13 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -71,7 +73,14 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("登录信息");
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         initData();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     private void initData() {
@@ -144,7 +153,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
                                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-//                                        App.getInstance().removeALLActivity_();
+                                        finish();
                                         dialog.dismiss();
                                     }
                                 });

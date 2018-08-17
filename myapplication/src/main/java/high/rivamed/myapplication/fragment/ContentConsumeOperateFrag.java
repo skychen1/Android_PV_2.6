@@ -166,16 +166,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onBooleanEvent(Event.EventBoolean event) {
-
+//
 	if (event.mBoolean){
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
 		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
-		   if (mOppenDoor==null){
+		   if (mOppenDoor==null&&eth002DeviceId!=null){
 			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			initCallBack();
-			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
+			DeviceManager.getInstance().OpenDoor(event.mId);
+//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
 		   }else {
 			mOppenDoor=null;
 		   }
@@ -377,7 +378,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
-		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
 	   }
 
 	   @Override
@@ -772,12 +773,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   String device_id = boxIdBean.getDevice_id();
 		   if (device_id.equals(eth002DeviceIdList.get(i))){
 			DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+			EventBusUtils.post(new Event.EventBoolean(true,(String) eth002DeviceIdList.get(i)));
 		   }
 		}
 
 
 	   }
-	   EventBusUtils.post(new Event.EventBoolean(true,(String) eth002DeviceIdList.get(i)));
+
 	}
    }
 

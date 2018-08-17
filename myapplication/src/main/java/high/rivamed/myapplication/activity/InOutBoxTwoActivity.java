@@ -377,9 +377,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		runOnUiThread(new Runnable() {
 		   @Override
 		   public void run() {
-			mShowLoading = DialogUtils.showLoading(mContext);
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
+		      if (mShowLoading!=null){
+			   mShowLoading = DialogUtils.showLoading(InOutBoxTwoActivity.this);
+			}
+			if (mTimelyLeft!=null&&mTimelyRight!=null){
+			   mTimelyLeft.setEnabled(true);
+			   mTimelyRight.setEnabled(true);
+			}
 		   }
 		});
 		startScan();
@@ -465,9 +469,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
 		   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
 		   ToastUtils.showLong(string);
-		}
-
-		if (mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1) {
+		}else if (mTCstInventoryTwoDto.getErrorEpcs() == null&&(mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1)) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);

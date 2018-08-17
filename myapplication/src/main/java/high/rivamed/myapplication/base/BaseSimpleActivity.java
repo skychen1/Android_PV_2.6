@@ -20,13 +20,8 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
-import high.rivamed.myapplication.bean.LoginResultBean;
-import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
-
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -75,22 +70,22 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
     @Override
     public int getLayoutId() {
-        UIUtils.runInUIThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-
-                    LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-
-                    LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
-                    mBaseTabTvName.setText(appAccountInfoVo.getUserName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 300);
+//        UIUtils.runInUIThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
+//
+//                    LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
+//
+//                    LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
+//
+//                    mBaseTabTvName.setText(appAccountInfoVo.getUserName());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, 300);
         return R.layout.fragment_base_title;
     }
 
@@ -104,6 +99,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
         mStub = (ViewStub) findViewById(R.id.viewstub_layout);
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
+
     }
 
     protected abstract int getContentLayoutId();
@@ -138,7 +134,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
                                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                                        App.getInstance().removeALLActivity_();
+                                        finish();
                                         dialog.dismiss();
                                     }
                                 });

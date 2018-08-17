@@ -26,6 +26,7 @@ import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -261,15 +262,25 @@ public class RegisteDialog extends Dialog {
 		   if (UIUtils.isFastDoubleClick()) {
 			return;
 		   } else {
-			if (myListener != null) {
-			   String deptCode = mGoneThreeType.getText().toString().trim();
-			   String storehouseCode = mGoneFourType.getText().toString().trim();
-			   String operationRoomNo = mGoneFiveType.getText().toString().trim();
-			   String branchCode = mGoneTwoType.getText().toString().trim();
-			   String deptName = mAddressThree.getText().toString().trim();
+			String mAddressOnes = mAddressOne.getText().toString().trim();
+			String mAddressTwos = mAddressTwo.getText().toString().trim();
+			String mAddressThrees = mAddressThree.getText().toString().trim();
+			String mAddressFours = mAddressFour.getText().toString().trim();
+			if (mAddressOnes.length()>1&& mAddressTwos.length()>1 && mAddressThrees.length()>1 &&
+			    mAddressFours.length()>1) {
 
-			   myListener.getDialogDate(deptName, branchCode, deptCode, storehouseCode,
-							    operationRoomNo, dialog);
+			   if (myListener != null) {
+				String deptCode = mGoneThreeType.getText().toString().trim();
+				String storehouseCode = mGoneFourType.getText().toString().trim();
+				String operationRoomNo = mGoneFiveType.getText().toString().trim();
+				String branchCode = mGoneTwoType.getText().toString().trim();
+				String deptName = mAddressThree.getText().toString().trim();
+
+				myListener.getDialogDate(deptName, branchCode, deptCode, storehouseCode,
+								 operationRoomNo, dialog);
+			   }
+			}else {
+			   ToastUtils.showShort("请先填写完整信息！");
 			}
 		   }
 		}

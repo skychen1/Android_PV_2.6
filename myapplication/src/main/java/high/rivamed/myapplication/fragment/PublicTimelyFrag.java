@@ -158,6 +158,9 @@ public class PublicTimelyFrag extends SimpleFragment {
    private List<TCstInventoryVo>      mTCstStockRightList;
    private StockRightAdapter          mRightAdapter;
    private List<RunWateBean.RowsBean> mWateBeanRows;
+   private StockLeftDownAdapter mStockLeftAdapter;
+   private List<TCstInventoryVo> mInventoryVos;
+
    /**
     * 重新加载数据
     *
@@ -478,40 +481,52 @@ public class PublicTimelyFrag extends SimpleFragment {
 	NetRequest.getInstance().getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		mLeftDownBean = mGson.fromJson(result, TCstInventoryDto.class);
-		List<TCstInventoryVo> inventoryVos = mLeftDownBean.gettCstInventoryVos();
-		if (inventoryVos != null) {
 
-		   mLayout = R.layout.item_stockmid_five_layout;
-		   mHeadView = LayoutInflater.from(_mActivity)
-			   .inflate(R.layout.item_stockmid_five_title_layout,
-					(ViewGroup) mLinearLayout.getParent(), false);
-		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-		   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-		   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-		   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-		   StockLeftDownAdapter mPublicAdapter = new StockLeftDownAdapter(mLayout, inventoryVos,
-													mSize);
-		   mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(
-				BaseQuickAdapter adapter, View view, int position) {
-			   mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
-			   TCstInventoryVo vosBean = inventoryVos.get(position);
-			   EventBusUtils.postSticky(vosBean);
-			}
-		   });
-		   mHeadView.setBackgroundResource(R.color.bg_green);
-		   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
-		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
-		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-		   View inflate = LayoutInflater.from(_mActivity)
-			   .inflate(R.layout.recy_null, null);
-		   mPublicAdapter.setEmptyView(inflate);
-		   mRecyclerview.setAdapter(mPublicAdapter);
-		   mLinearLayout.addView(mHeadView);
+
+		if (mInventoryVos != null) {
+		   mInventoryVos.clear();
+		   mLeftDownBean = mGson.fromJson(result, TCstInventoryDto.class);
+		   List<TCstInventoryVo> inventoryVos = mLeftDownBean.gettCstInventoryVos();
+		   mInventoryVos.addAll(inventoryVos);
+		   mStockLeftAdapter.notifyDataSetChanged();
+		}else {
+		   mLeftDownBean = mGson.fromJson(result, TCstInventoryDto.class);
+		   mInventoryVos = mLeftDownBean.gettCstInventoryVos();
+		   if (mInventoryVos != null) {
+			mLayout = R.layout.item_stockmid_five_layout;
+			mHeadView = LayoutInflater.from(_mActivity)
+				.inflate(R.layout.item_stockmid_five_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+
+			mStockLeftAdapter = new StockLeftDownAdapter(mLayout, mInventoryVos,
+										   mSize);
+			mHeadView.setBackgroundResource(R.color.bg_green);
+			mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
+			mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
+			mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			View inflate = LayoutInflater.from(_mActivity)
+				.inflate(R.layout.recy_null, null);
+			mStockLeftAdapter.setEmptyView(inflate);
+			mRecyclerview.setAdapter(mStockLeftAdapter);
+			mLinearLayout.addView(mHeadView);
+
+			mStockLeftAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(
+				   BaseQuickAdapter adapter, View view, int position) {
+				mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
+				TCstInventoryVo vosBean = mInventoryVos.get(position);
+				EventBusUtils.postSticky(vosBean);
+			   }
+			});
+
+		   }
 		}
 	   }
 	});
