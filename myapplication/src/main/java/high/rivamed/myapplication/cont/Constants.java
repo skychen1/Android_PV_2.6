@@ -59,23 +59,25 @@ public class Constants {
     public static final String CONFIG_0011 = "0011";//是否允许快速开柜
 
 
-    //sp存入的key
-    public static final String SAVE_SEVER_IP           = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
-    public static final String SAVE_SEVER_IP_TEXT      = "SAVE_SEVER_IP_TEXT";//存入服务器IP
-    public static final String SAVE_SEVER_CODE         = "SAVE_SEVER_CODE";//存入服务器端口
-    public static final String SAVE_CONFIG_STRING      = "SAVE_CONFIG_STRING";//配置项存入
-    public static final String READER_TYPE             = "2";//reader的type
-    public static final String SN_NUMBER               = "sn_number";
-    public static final String THING_CODE              = "thing_code";
-    public static final String SAVE_REGISTE_DATE       = "registe_date";//预注册保存到本地的数据
-    public static final String SAVE_ONE_REGISTE        = "oneRegiste";//第一次预注册的状态存入
-    public static final String SAVE_ACTIVATION_REGISTE = "activationRegiste";//激活的状态存入
-    public static final String SAVE_BRANCH_CODE        = "branchCode";//院区存入code
-    public static final String SAVE_DEPT_CODE          = "deptCode";//科室存入code
-    public static final String SAVE_DEPT_NAME          = "deptName";//科室存入name
-    public static final String SAVE_STOREHOUSE_CODE          = "storehouse_Code";//库房code
-    public static final String KEY_ACCOUNT_DATA        = "key_account_data";//用户资料
-    public static final String KEY_ACCOUNT_NAME        = "key_account_name";//用户名字
-    public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
+   //sp存入的key
+   public static final String SAVE_SEVER_IP           = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
+   public static final String SAVE_SEVER_IP_TEXT      = "SAVE_SEVER_IP_TEXT";//存入服务器IP
+   public static final String SAVE_SEVER_CODE         = "SAVE_SEVER_CODE";//存入服务器端口
+   public static final String SAVE_CONFIG_STRING      = "SAVE_CONFIG_STRING";//配置项存入
+   public static final String READER_TYPE             = "2";//reader的type
+   public static final String UHF_TYPE             = "1";//串口服务器的type
+   public static final String SN_NUMBER               = "sn_number";
+   public static final String THING_CODE              = "thing_code";
+   public static final String SAVE_REGISTE_DATE       = "registe_date";//预注册保存到本地的数据
+   public static final String SAVE_ONE_REGISTE        = "oneRegiste";//第一次预注册的状态存入
+   public static final String SAVE_ACTIVATION_REGISTE = "activationRegiste";//激活的状态存入
+   public static final String SAVE_BRANCH_CODE        = "branchCode";//院区存入code
+   public static final String SAVE_DEPT_CODE          = "deptCode";//科室存入code
+   public static final String SAVE_DEPT_NAME          = "deptName";//科室存入name
+   public static final String SAVE_STOREHOUSE_CODE    = "storehouse_Code";//库房code
+   public static final String KEY_ACCOUNT_DATA        = "key_account_data";//用户资料
+   public static final String KEY_USER_NAME           = "key_user_name";//用户名字
+   public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
+
 
 }

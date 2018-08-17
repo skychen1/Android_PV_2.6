@@ -17,6 +17,8 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.TBaseDevices;
+import high.rivamed.myapplication.fragment.RegisteFrag;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MacPopupWindow;
@@ -57,6 +59,7 @@ public           RecyclerView                    recyclerView;
    private TextView mGone_dictid;
    private TextView mGone_devicetype;
    private TextView mGone_deviceCode;
+   ;
 
    public RegisteContextAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices.tBaseDevices> data, RecyclerView recyclerView,int mTopPos) {
@@ -82,13 +85,10 @@ public           RecyclerView                    recyclerView;
 	mGone_deviceCode =(TextView) helper.getView(R.id.gone_device_code);
 	final LinearLayout mLinearLayout = (LinearLayout) helper.getView(R.id.foot_ll);
 
-//	if (mTBaseList.size()>0){
-//	   mFootIp.setText(mTBaseList.get(helper.getAdapterPosition()-2).getPartip());
-//	}else {
-//	   mFootIp.setText("");
-//	}
+	mPartsmac = item.getPartsmac();
+	mPartsmacName = item.getPartsmacName();
+
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
-//	   List<TBaseDevices.tBaseDevices.partsmacBean> partsmac = item.getPartsmac();
 
 	   mMFootName.setText(item.getPartsname());
 	   mMFootMac.setText(item.getPartmac());
@@ -97,6 +97,9 @@ public           RecyclerView                    recyclerView;
 	   mGone_devicetype.setText(item.getDeviceType());
 	   mGone_deviceCode.setText(item.getDeviceCodes());
 	}
+
+
+
 
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
@@ -121,9 +124,10 @@ public           RecyclerView                    recyclerView;
 	   @Override
 	   public void onClick(View v) {
 		int pos = helper.getAdapterPosition();
+		LogUtils.i("RegisteFrag","pos   "+pos);
+
 
 		data.remove(pos-1);
-
 		RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 		if (mData.size()==1){
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_delete).setVisibility(View.GONE);
@@ -132,12 +136,21 @@ public           RecyclerView                    recyclerView;
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_delete).setVisibility(View.VISIBLE);
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_add).setVisibility(View.VISIBLE);
 		}
+		mMacPopupWindow.mMealPopAdapter.notifyDataSetChanged();
+
+		//		if (mMacPopupWindow!=null&&mMacPopupWindow.mRecyclerView!=null){
+//		   String toString = ((TextView) mMacPopupWindow.mRecyclerView.getChildAt(pos - 1)
+//			   .findViewById(R.id.item_meal)).getText().toString();
+//		   for (int i=0;i<mPartsmac.size();i++){
+//			mPartsmac.add()
+//		   }
+//		}
+
 
 	   }
 	});
 
-	mPartsmac = item.getPartsmac();
-	mPartsmacName = item.getPartsmacName();
+
 	mMFootAdd.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
@@ -146,7 +159,11 @@ public           RecyclerView                    recyclerView;
 		mMFootAdd.setVisibility(View.GONE);
 
 		TBaseDevices.tBaseDevices tBaseDevice = new TBaseDevices.tBaseDevices();
-		tBaseDevice.setPartsmac(mPartsmac);
+		if (mMacPopupWindow!=null&&mMacPopupWindow.mMacDates!=null){
+		   tBaseDevice.setPartsmac(mMacPopupWindow.mMacDates);
+		}else {
+		   tBaseDevice.setPartsmac(mPartsmac);
+		}
 		tBaseDevice.setPartsmacName(mPartsmacName);
 		data.add(pos, tBaseDevice);
 		notifyItemInserted(pos+1);
@@ -162,7 +179,8 @@ public           RecyclerView                    recyclerView;
 		Log.i("xxa",helper.getAdapterPosition()+"   条");
 		Log.i("xxa","mPartsmac   "+(data.get(pos-1).getPartsmac()));
 		Log.i("xxa","mPartsmac   "+(data.get(pos-1).getPartsmac().size()));
-		mMacPopupWindow = new MacPopupWindow(mContext, data.get(pos-1).getPartsmac());
+//		mMacPopupWindow = new MacPopupWindow(mContext, data.get(pos-1).getPartsmac());
+		mMacPopupWindow = new MacPopupWindow(mContext, RegisteFrag.mDeviceInfos);
 		mMacPopupWindow.showPopupWindow(helper.getView(R.id.foot_mac),helper.getView(R.id.foot_ip),pos);
 	   }
 	});

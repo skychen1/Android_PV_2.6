@@ -29,7 +29,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -119,7 +119,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                     if (loginResultBean.isOperateSuccess()) {
                         LogUtils.i("BaseSimpleFragment","result  "+result);
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, loginResultBean.getAppAccountInfoVo().getAccountName());
+                        SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);

@@ -114,6 +114,9 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	mList = item.getList();
 	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList,
 							     mRecyclerView2, holder.getAdapterPosition());
+
+
+
 	mRecyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerView2.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerView2.setAdapter(mHeadAdapter);

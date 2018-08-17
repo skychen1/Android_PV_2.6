@@ -49,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -96,11 +97,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_IN;
+	initCallBack();
 	return my_id;
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_left, R.id.timely_right,
+	   R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left, R.id.timely_right,
 	   R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
@@ -151,23 +153,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-
 		   mShowLoading = DialogUtils.showLoading(mContext);
-		   initCallBack();
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
-		   for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
-			LogUtils.i(TAG, "readerid    " + readerid);
-			int ret = DeviceManager.getInstance().StartUhfScan(readerid);
-			LogUtils.i(TAG, "readerid    " + ret);
-			if (ret == 100) {
-			   ToastUtils.showShort("扫描失败，请重试！");
-			   mShowLoading.mDialog.dismiss();
-			} else {
-			   DeviceManager.getInstance().StartUhfScan(readerid);
-			}
-
-		   }
+		   startScan();
 		}
 		break;
 
@@ -215,8 +204,41 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		}
 		break;
+	   case R.id.timely_open_door:
+
+		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+		for (DeviceInventoryVo deviceInventoryVo:deviceInventoryVos){
+		   String deviceCode = deviceInventoryVo.getDeviceCode();
+		   LogUtils.i(TAG,"deviceCode    "+deviceCode);
+		   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode, UHF_TYPE).find(BoxIdBean.class);
+		   for (BoxIdBean boxIdBean : boxIdBeans) {
+			String device_id = boxIdBean.getDevice_id();
+			LogUtils.i(TAG,"device_id    "+device_id);
+
+			int i = DeviceManager.getInstance().OpenDoor(device_id);
+			LogUtils.i(TAG,"i    "+i);
+		   }
+		}
+
+		break;
 	}
 
+   }
+
+   private void startScan() {
+
+	for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
+	   LogUtils.i (TAG, "readerid    " + readerid);
+	   int ret = DeviceManager.getInstance().StartUhfScan(readerid);
+	   LogUtils.i(TAG, "readerid    " + ret);
+	   if (ret == 100) {
+		ToastUtils.showShort("扫描失败，请重试！");
+		mShowLoading.mDialog.dismiss();
+	   } else {
+		DeviceManager.getInstance().StartUhfScan(readerid);
+	   }
+
+	}
    }
 
    /**
@@ -346,12 +368,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	   @Override
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-
+		LogUtils.i(TAG, "OnDoorOpened  " + success);
 	   }
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-
+		LogUtils.i(TAG, "OnDoorClosed  " + success);
+		runOnUiThread(new Runnable() {
+		   @Override
+		   public void run() {
+			mShowLoading = DialogUtils.showLoading(mContext);
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
+		   }
+		});
+		startScan();
 	   }
 
 	   @Override
@@ -436,7 +467,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   ToastUtils.showLong(string);
 		}
 
-		if (mTCstInventoryTwoDto.gettCstInventoryVos() == null) {
+		if (mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1) {
 		   ToastUtils.showShort("未扫描到操作的耗材");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
@@ -445,8 +476,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		   EventBusUtils.postSticky(mTCstInventoryTwoDto);
 		}
+		if (mShowLoading!=null){
+		   mShowLoading.mDialog.dismiss();
 
-		mShowLoading.mDialog.dismiss();
+		}
 	   }
 
 	});

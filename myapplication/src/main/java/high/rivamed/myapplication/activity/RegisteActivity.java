@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -89,7 +90,8 @@ public class RegisteActivity extends SimpleActivity {
 	switch (view.getId()) {
 	   case R.id.base_tab_tv_name:
 	   case R.id.base_tab_icon_right:
-	      finish();
+	      startActivity(new Intent(this, LoginActivity.class));
+		finish();
 		break;
 	}
    }

@@ -24,7 +24,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -70,7 +70,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 
     @Override
     public void getTitleName() {
-        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME));
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         super.getTitleName();
 
     }

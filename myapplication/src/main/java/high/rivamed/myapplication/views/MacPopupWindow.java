@@ -15,8 +15,10 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.PartsmacPopAdapter;
 import high.rivamed.myapplication.bean.TBaseDevices;
@@ -39,22 +41,26 @@ public class MacPopupWindow extends PopupWindow {
    // 坐标的位置（x、y）
    private final int[] mLocation = new int[2];
 
-   private final RecyclerView mRecyclerView;
+   public final RecyclerView mRecyclerView;
    private final View         mView;
+   public List<TBaseDevices.tBaseDevices.partsmacBean> mMacDates  = new ArrayList<>();
 
    private String TAG = "SettingPopupWindow";
    private       OnClickListener mItemClickListener;
-   private       PartsmacPopAdapter  mMealPopAdapter;
+   public        PartsmacPopAdapter  mMealPopAdapter;
 
    private       TextView            mTextView;
    private       TextView            mTextViewIp;
-   private final List<TBaseDevices.tBaseDevices.partsmacBean> mDate;
+//   private final List<TBaseDevices.tBaseDevices.partsmacBean> mDate;
+   private final List<DeviceManager.DeviceInfo> mDate;
 
-   public MacPopupWindow(Context context, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
+//   public MacPopupWindow(Context context, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
+   public MacPopupWindow(Context context, List<DeviceManager.DeviceInfo>  data) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
-	mDate = data;
-	mMealPopAdapter = new PartsmacPopAdapter(R.layout.item_mac_single, data);
+//	mDate = data;
+	mDate =data;
+	mMealPopAdapter = new PartsmacPopAdapter(R.layout.item_mac_single, mDate);
 	mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 	mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));
 	mRecyclerView.setAdapter(mMealPopAdapter);
@@ -65,9 +71,19 @@ public class MacPopupWindow extends PopupWindow {
 		TextView textView = (TextView) view.findViewById(R.id.item_meal);
 		String trim = textView.getText().toString().trim();
 		mTextView.setText(trim);
-		String partsIp = mDate.get(position).getPartsIp();
+		String partsIp = mDate.get(position).getRemoteIP();
+		mDate.remove(position);
 //		partsIp=partsIp.replace("/","");
 		mTextViewIp.setText(partsIp);
+
+//		mMacDates.clear();
+//		mMacDates.addAll(mDate);
+//		for (int i=0;i<mDate.size();i++){
+//		   if (mDate.get(i).getPartsmacnumber().equals(trim)){
+//			mMacDates.remove(i);
+//		   }
+//		}
+		mMealPopAdapter.notifyDataSetChanged();
 		dismiss();
 	   }
 	});

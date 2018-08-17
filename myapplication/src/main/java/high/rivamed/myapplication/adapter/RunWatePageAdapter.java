@@ -62,10 +62,10 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
 
 	UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);
 
-	if (!one.equals("入库") || !one.equals("移入") || !one.equals("退回")||!one.equals("退货暂存") ) {
-	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red_type));
-	} else {
+	if (one.contains("入库") || one.equals("移入") || one.equals("退回") ) {
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
+	} else {
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red_type));
 	}
    }
 

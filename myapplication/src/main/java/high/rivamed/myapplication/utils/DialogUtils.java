@@ -421,166 +421,110 @@ public class DialogUtils {
 
             }
 
-            @Override
-            public void OnUhfScanComplete(boolean success, String deviceId) {
+	   @Override
+	   public void OnUhfScanComplete(boolean success, String deviceId) {
 
-            }
+	   }
 
-            @Override
-            public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+	   @Override
+	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
 
-            }
+	   }
 
-            @Override
-            public void OnUhfSetPowerRet(String deviceId, boolean success) {
+	   @Override
+	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
 
-            }
+	   }
 
-            @Override
-            public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+	   @Override
+	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
 
-            }
-        });
+	   }
+	});
 
-    }
+   }
 
-    public static void showTimeDialog(final Context context, final TextView textView,final TextView textViewGone,String type) {
-        Date date = new Date();
+   public static void showTimeDialog(final Context context, final TextView textView) {
+	Date date = new Date();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String format = sdf.format(date);
-        Log.i("cc", "    " + format);
-        TimeSelectorDialog dialog = new TimeSelectorDialog(context);
-        //设置标题
-        dialog.setTimeTitle("选择时间:  ");
-        //显示类型
-        dialog.setIsShowtype(TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE);
-        //默认时间
-        dialog.setCurrentDate(format);
-        //隐藏清除按钮
-        dialog.setEmptyIsShow(false);
-        //设置起始时间
-        dialog.setStartYear(2000);
-        dialog.setDateListener(new DateListener() {
-            @Override
-            public void onReturnDate(
-                    String time, int year, int month, int day, int hour, int minute, int isShowType,
-                    long times) {
-                textView.setText(time);
-                textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
-                sTimes = times + "";
-                textViewGone.setText(sTimes);
-                if (type.equals("end")){
-                    EventBusUtils.postSticky(new Event.EventTime(sTimes));
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String format = sdf.format(date);
+	Log.i("cc", "    " + format);
+	TimeSelectorDialog dialog = new TimeSelectorDialog(context);
+	//设置标题
+	dialog.setTimeTitle("选择时间:  ");
+	//显示类型
+	dialog.setIsShowtype(TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE);
+	//默认时间
+	dialog.setCurrentDate(format);
+	//隐藏清除按钮
+	dialog.setEmptyIsShow(false);
+	//设置起始时间
+	dialog.setStartYear(2000);
+	dialog.setDateListener(new DateListener() {
+	   @Override
+	   public void onReturnDate(
+		   String time, int year, int month, int day, int hour, int minute, int isShowType,
+		   long times) {
+		textView.setText(time);
+		textView.setTextColor(context.getResources().getColor(R.color.text_color_3));
+	   }
 
-                }
-            }
+	   @Override
+	   public void onReturnDate(String empty) {
+	   }
+	});
+	dialog.show();
 
-            @Override
-            public void onReturnDate(String empty) {
-            }
-        });
-        dialog.show();
+   }
 
-    }
+   public static void showRegisteDialog(final Context context, Activity activity) {
 
-    public static void showRegisteDialog(final Context context, Activity activity) {
+	RegisteDialog.Builder builder = new RegisteDialog.Builder(context, activity);
+	builder.setLeft("取消", new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		dialog.dismiss();
+	   }
+	});
 
-        RegisteDialog.Builder builder = new RegisteDialog.Builder(context, activity);
-        builder.setLeft("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
+	builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
+	   @Override
+	   public void getDialogDate(
+		   String deptName, String branchCode, String deptCode, String storehouseCode,
+		   String operationRoomNo, Dialog dialog) {
+		EventBusUtils.postSticky(
+			new Event.dialogEvent(deptName, branchCode, deptCode, storehouseCode,
+						    operationRoomNo, dialog));
+	   }
+	});
 
-        builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
-            @Override
-            public void getDialogDate(
-                    String deptName, String branchCode, String deptCode, String storehouseCode,
-                    String operationRoomNo, Dialog dialog) {
-                EventBusUtils.postSticky(
-                        new Event.dialogEvent(deptName, branchCode, deptCode, storehouseCode,
-                                operationRoomNo, dialog));
-            }
-        });
+	builder.create().show();
+   }
 
-        builder.create().show();
-    }
+   /**
+    * 设置功率
+    *
+    * @param context
+    */
+   public static void showWifiDialog(final Context context) {
+	WifiDialog.Builder builder = new WifiDialog.Builder(context);
+	builder.create().show();
+   }
 
-    /*
-     * 显示创建临时患者弹窗
-     * */
-    public static void showCreatTempPatientDialog(final Context context, Activity activity) {
+   /**
+    * 设置功率
+    *
+    * @param context
+    */
+   public static void showEpcDialog(final Context context) {
+	EpcTestDialog.Builder builder = new EpcTestDialog.Builder(context);
+	builder.create().show();
+   }
 
-        TempPatientDialog.Builder builder = new TempPatientDialog.Builder(context, activity);
-        builder.setLeft("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setOnSettingListener(new TempPatientDialog.Builder.SettingListener() {
-            @Override
-            public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {
-                EventBusUtils.postSticky(new Event.tempPatientEvent(userName, roomNum, userSex, idCard, time, dialog));
-            }
-        });
-        builder.create().show();
-    }
-    /**
-     * 选择关联患者弹窗
-     * @param activity
-     * @param context
-     * @param patientInfos
-     */
-    public static void showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
-        RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
-        builder.setLeft("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
-        builder.setRight("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                for (int x = 0; x <patientInfos.size(); x++) {
-                    if (patientInfos.get(x).isSelected()) {
-                        RvDialog.patientInfosBean = patientInfos.get(x);
-                        DialogUtils.showNoDialog(context, "关联患者成功!", 2, "form", null);
-                        dialog.dismiss();
-                    }
-                }
-            }
-        });
-        builder.create().show();
-    }
-
-    /**
-     * 设置功率
-     *
-     * @param context
-     */
-    public static void showWifiDialog(final Context context) {
-        WifiDialog.Builder builder = new WifiDialog.Builder(context);
-        builder.create().show();
-    }
-
-    /**
-     * 设置功率
-     *
-     * @param context
-     */
-    public static void showEpcDialog(final Context context) {
-        EpcTestDialog.Builder builder = new EpcTestDialog.Builder(context);
-        builder.create().show();
-    }
-
-    public static LoadingDialog.Builder showLoading(final Context context) {
-        LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
-        builder.create().show();
-        return builder;
-    }
+   public static LoadingDialog.Builder showLoading(final Context context) {
+	LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
+	builder.create().show();
+	return builder;
+   }
 }

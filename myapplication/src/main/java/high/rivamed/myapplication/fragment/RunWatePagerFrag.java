@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -28,6 +29,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -147,18 +149,6 @@ public class RunWatePagerFrag extends SimpleFragment {
    }
 
    /**
-    * 获取耗材流水的时间段
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onTimeEvent(Event.EventTime event) {
-
-	mEndTime = event.time;
-	LogUtils.i(TAG,"mStartTime   "+mStartTime +"   mEndTime  "+mEndTime);
-	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-   }
-
-   /**
     * 重新加载数据
     *
     * @param event
@@ -208,9 +198,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
-
-		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		PAGE=1;
 		mRefreshLayout.setNoMoreData(false);
+		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		finishRefresh();
 	   }
 	});
@@ -239,39 +229,50 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 		mStartTimes = s.toString().trim();
-		LogUtils.i(TAG, "mStartTimes     "+   mStartTimes);
+		LogUtils.i(TAG, "mStartTimes     "+   mStartTimes+":00");
+		try {
+		   long aLong = PowerDateUtils.stringParserLong(mStartTimes+":00");
+		   mStartTime= String.valueOf(aLong);
+		   LogUtils.i(TAG, "aLong     "+   mStartTime);
+		} catch (ParseException e) {
+		   LogUtils.i(TAG, "aLong e    "+   e);
+		}
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
+		if (mEndTime!=null){
+		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		}
+	   }
+	});
+	mSearchTimeEnd.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		String mTimeEnds = s.toString().trim();
+		try {
+		   long aLong = PowerDateUtils.stringParserLong(mTimeEnds+":00");
+		   mEndTime= String.valueOf(aLong);
+		   LogUtils.i(TAG, "aLong     "+   mEndTime);
+		} catch (ParseException e) {
+		   LogUtils.i(TAG, "aLong e    "+   e);
+		}
 
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
+		if (mStartTime!=null){
+		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		}
 
 	   }
 	});
-//	mSearchTimeEnd.addTextChangedListener(new TextWatcher() {
-//	   @Override
-//	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//	   }
-//
-//	   @Override
-//	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//		LogUtils.i(TAG, "mStartTime     "+   mStartTime);
-//
-//	   }
-//
-//	   @Override
-//	   public void afterTextChanged(Editable s) {
-//		if (s.length() != 0 ) {
-//		   mEndTime =sTimes;
-//		   LogUtils.i(TAG, "mEndTime     "+   mEndTime);
-//
-//
-//		}
-//
-//	   }
-//	});
    }
 
    private void loadDate(String mDeviceCode) {
@@ -401,6 +402,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			   mRefreshLayout.setEnableAutoLoadMore(true);
 			   mRecyclerview.setAdapter(mWatePageAdapter);
+			   View inflate = LayoutInflater.from(_mActivity)
+				   .inflate(R.layout.recy_null, null);
+			   mWatePageAdapter.setEmptyView(inflate);
 			   mLinearLayout.addView(mHeadView);
 			   mWatePageAdapter.notifyDataSetChanged();
 			}
@@ -437,7 +441,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 			RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
 			List<RunWateBean.RowsBean> rows = runWateBean.getRows();
 			if (rows.size()<SIZE){
+			   mWateBeanRows.addAll(rows);
 			   finishLoadMoreWithNoMoreData();//将不会再次触发加载更多事件
+			   mWatePageAdapter.notifyDataSetChanged();
 			}else {
 			   mWateBeanRows.addAll(rows);
 			   mWatePageAdapter.notifyDataSetChanged();
@@ -460,15 +466,13 @@ public class RunWatePagerFrag extends SimpleFragment {
 	switch (view.getId()) {
 	   case R.id.search_time_start:
 
-	      DialogUtils.showTimeDialog(mContext, mSearchTimeStart,mSearchTimeStartGone,"start");
+	      DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
 		break;
 	   case R.id.search_time_end:
 		if (mStartTimes == null) {
 		   ToastUtils.showShort("请先选择开始时间");
 		} else {
-		   mStartTime=mSearchTimeStartGone.getText().toString();
-		  DialogUtils.showTimeDialog(mContext, mSearchTimeEnd,mSearchTimeEndGone,"end");
-
+		  DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
 		}
 		break;
 	}
@@ -488,7 +492,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    }
    public void finishLoadMoreWithNoMoreData(){
 	//不用这个的原因是会去加载一遍才说没有数据
-	//mRefreshLayout.finishLoadMoreWithNoMoreData();
-	mRefreshLayout.setNoMoreData(true);
+	mRefreshLayout.finishLoadMoreWithNoMoreData();
+//	mRefreshLayout.setNoMoreData(true);
    }
 }

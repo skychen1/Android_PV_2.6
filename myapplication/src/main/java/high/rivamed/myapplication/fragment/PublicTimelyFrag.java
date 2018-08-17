@@ -89,6 +89,7 @@ public class PublicTimelyFrag extends SimpleFragment {
    private static final int    SIX        = 6;
    private static final int    SEVEN      = 7;
    private static final int    EIGHT      = 8;
+   private static final String TAG        = "PublicTimelyFrag";
    @BindView(R.id.timely_start_btn)
    TextView mTimelyStartBtn;
    @BindView(R.id.timely_book)
@@ -202,15 +203,14 @@ public class PublicTimelyFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+      EventBusUtils.register(this);
 	Bundle arguments = getArguments();
 	mType_size = arguments.getInt(TYPE_SIZE);//假数据   用来判断数据长度  表格的列表
 	mType_page = arguments.getString(TYPE_PAGE);
 	mDeviceCode = arguments.getString(DEVICECODE);
 
 	initData();
-	//	final List<Movie> movies = new Gson().fromJson(JSON_MOVIES,
-	//								     new TypeToken<ArrayList<Movie>>() {}.getType());
-	//	mPublicAdapter.replaceData(movies);
+
 	initlistener();
    }
 
@@ -507,6 +507,9 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
 		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+		   View inflate = LayoutInflater.from(_mActivity)
+			   .inflate(R.layout.recy_null, null);
+		   mPublicAdapter.setEmptyView(inflate);
 		   mRecyclerview.setAdapter(mPublicAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}
@@ -638,6 +641,9 @@ public class PublicTimelyFrag extends SimpleFragment {
 				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 				mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 				mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+				View inflate = LayoutInflater.from(_mActivity)
+					.inflate(R.layout.recy_null, null);
+				mDownAdapter.setEmptyView(inflate);
 				mRecyclerview.setAdapter(mDownAdapter);
 				mLinearLayout.addView(mHeadView);
 				ArrayList<String> strings = new ArrayList<>();
@@ -668,6 +674,8 @@ public class PublicTimelyFrag extends SimpleFragment {
     * @param deviceCode
     */
    private void loadStockRightDate(String deviceCode, String mTrim) {
+      LogUtils.i(TAG,"deviceCode   "+deviceCode);
+      LogUtils.i(TAG,"mTrim   "+mTrim);
 	NetRequest.getInstance().getRightUnconfDate(deviceCode, mTrim, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -703,6 +711,9 @@ public class PublicTimelyFrag extends SimpleFragment {
 		   mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
 		   mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+		   View inflate = LayoutInflater.from(_mActivity)
+			   .inflate(R.layout.recy_null, null);
+		   mRightAdapter.setEmptyView(inflate);
 		   mRecyclerview.setAdapter(mRightAdapter);
 		   mLinearLayout.addView(mHeadView);
 		}

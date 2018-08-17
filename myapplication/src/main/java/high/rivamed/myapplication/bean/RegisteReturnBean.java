@@ -24,13 +24,24 @@ public class RegisteReturnBean implements Serializable{
      * tbaseThing : {"thingCode":"402882a064d9b19f0164d9b1f78a0000","appScene":0,"deptCode":null,"localIp":"192.168.2.5","serverIp":"192.168.2.32","macAddress":null,"operationRoomNo":null,"remark":null,"sn":"123456789","stopFlag":0,"storehouseCode":null,"thingName":"2.6柜子","thingType":"rivamed26","status":0,"portNumber":"8015"}
      */
 
-    private boolean operateSuccess;
-    private int                      id;
-    private String                   tBaseThingDto;
-    private TbaseThingBean           tbaseThing;
-    private List<TBaseDeviceVosBean> tBaseDeviceVos;
 
-    public boolean isOperateSuccess() { return operateSuccess;}
+   private boolean operateSuccess;
+   private int                      id;
+   private String                   tBaseThingDto;
+   private String                   msg;
+   private TbaseThingBean           tbaseThing;
+   private List<TBaseDeviceVosBean> tBaseDeviceVos;
+
+   public String getMsg() {
+	return msg;
+   }
+
+   public void setMsg(String msg) {
+	this.msg = msg;
+   }
+
+   public boolean isOperateSuccess() { return operateSuccess;}
+
 
     public void setOperateSuccess(boolean operateSuccess) { this.operateSuccess = operateSuccess;}
 

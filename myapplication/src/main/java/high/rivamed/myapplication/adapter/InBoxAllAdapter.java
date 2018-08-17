@@ -65,39 +65,42 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	mSeven_four.setText(item.getExpiration());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(status);
-	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
-	Log.i("InOutBoxTwoActivity", "status   " + status);
-	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
-	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   if (helper.getAdapterPosition() % 2 == 0) {
-		mSeven_four.setBackgroundResource(R.color.bg_color);
-	   } else {
-		mSeven_four.setBackgroundResource(R.color.bg_f);
-	   }
-	} else if ((mOperation == 3 && !status.contains("领用")) ||
-		     (mOperation == 2 && !status.contains("入库")) ||
-		     (mOperation == 9 && !status.contains("移出")) ||
-		     (mOperation == 11 && !status.contains("调拨")) ||
-		     (mOperation == 10 && !status.contains("移入")) ||
-		     (mOperation == 7 && !status.contains("退回")) ||
-		     (mOperation == 8 && !status.contains("退货"))) {
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
-	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   if (helper.getAdapterPosition() % 2 == 0) {
-		mSeven_four.setBackgroundResource(R.color.bg_color);
-	   } else {
-		mSeven_four.setBackgroundResource(R.color.bg_f);
-	   }
-	}
 
+	Log.i("InOutBoxTwoActivity", "status   " + status);
+	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
+	    item.getStopFlag() == 0 || (mOperation == 3 && !status.contains("领用")) ||
+	    (mOperation == 2 && !status.contains("入库")) ||
+	    (mOperation == 9 && !status.contains("移出")) ||
+	    (mOperation == 11 && !status.contains("调拨")) ||
+	    (mOperation == 10 && !status.contains("移入")) ||
+	    (mOperation == 7 && !status.contains("退回")) ||
+	    (mOperation == 8 && !status.contains("退货"))) {
+	   LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
+
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+//	   if (helper.getAdapterPosition() % 2 == 0) {
+//		mSeven_four.setBackgroundResource(R.color.bg_color);
+//	   } else {
+//		mSeven_four.setBackgroundResource(R.color.bg_f);
+//	   }
+	}else {
+	   if (helper.getAdapterPosition() % 2 == 0) {
+		((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+	   } else {
+		((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+	   }
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	}
+	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
    }
 }

@@ -136,7 +136,7 @@ public class DeviceManager {
 
 
 
-    public class DeviceInfo {
+    public static class DeviceInfo {
 
         String identifition;
         DeviceType deviceType;
@@ -199,7 +199,11 @@ public class DeviceManager {
             this.deviceType = deviceType;
             this.remoteIP = remoteIP;
         }
+        public DeviceInfo(String identifition,String remoteIP) {
+            this.identifition = identifition;
 
+            this.remoteIP = remoteIP;
+        }
         public DeviceInfo(String identifition,DeviceType deviceType,String remoteIP,String product,String version)
         {
             this(identifition,deviceType,remoteIP);

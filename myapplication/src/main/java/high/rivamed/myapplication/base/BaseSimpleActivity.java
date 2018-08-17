@@ -68,8 +68,8 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     @BindView(R.id.base_tab_rlayout)
     public RelativeLayout mBaseTabRlayout;
 
-    private List<String> mReaderDeviceId;
-    private List<String> eth002DeviceIdList;
+    public List<String> mReaderDeviceId;
+    public List<String> eth002DeviceIdList;
     public ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
 
@@ -85,7 +85,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
                     LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-                    mBaseTabTvName.setText(appAccountInfoVo.getAccountName());
+                    mBaseTabTvName.setText(appAccountInfoVo.getUserName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
