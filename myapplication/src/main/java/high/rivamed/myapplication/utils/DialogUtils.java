@@ -501,7 +501,55 @@ public class DialogUtils {
 
 	builder.create().show();
    }
+    /*
+     * 显示创建临时患者弹窗
+     * */
+    public static void showCreatTempPatientDialog(final Context context, Activity activity) {
 
+        TempPatientDialog.Builder builder = new TempPatientDialog.Builder(context, activity);
+        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setOnSettingListener(new TempPatientDialog.Builder.SettingListener() {
+            @Override
+            public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {
+                EventBusUtils.postSticky(new Event.tempPatientEvent(userName, roomNum, userSex, idCard, time, dialog));
+            }
+        });
+        builder.create().show();
+    }
+    /**
+     * 选择关联患者弹窗
+     * @param activity
+     * @param context
+     * @param patientInfos
+     */
+    public static void showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+        RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
+        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.setRight("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                for (int x = 0; x <patientInfos.size(); x++) {
+                    if (patientInfos.get(x).isSelected()) {
+                        RvDialog.patientInfosBean = patientInfos.get(x);
+                        DialogUtils.showNoDialog(context, "关联患者成功!", 2, "form", null);
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+        builder.create().show();
+    }
    /**
     * 设置功率
     *

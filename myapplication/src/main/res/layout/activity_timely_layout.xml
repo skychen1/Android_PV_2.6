@@ -65,7 +65,13 @@
                     android:layout_marginLeft="0dp"
                     android:text="重新扫描"
                     android:visibility="gone" />
-
+				<TextView
+					android:id="@+id/timely_open_door"
+					style="@style/btn_style_sel"
+					android:text="重新开柜"
+					android:layout_marginLeft="@dimen/x25"
+					android:visibility="gone"
+					/>
                 <TextView
                     android:id="@+id/ly_bing_btn"
                     style="@style/btn_style_sel"
