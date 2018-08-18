@@ -48,7 +48,11 @@ public class MyInfoActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setText("个人信息");
         initData();
     }
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
     private void initData() {
         try {
             String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");

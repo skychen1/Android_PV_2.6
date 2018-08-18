@@ -523,7 +523,7 @@ public class LoginActivity extends SimpleActivity {
 	xAxis.setCenterAxisLabels(true);//设置标签居中
 	xAxis.setDrawAxisLine(true);
 	xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisValue));
-	xAxis.setTextSize(18);
+	xAxis.setTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
 	xAxis.setAxisMaximum(1);
 	xAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	xAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
@@ -537,7 +537,7 @@ public class LoginActivity extends SimpleActivity {
 	leftAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	leftAxis.setValueFormatter(new MyValueFormatter());
 	leftAxis.setGranularity(1f); // interval 1
-	leftAxis.setTextSize(18);
+	leftAxis.setTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
 	leftAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	// start at zero
 
@@ -610,8 +610,7 @@ public class LoginActivity extends SimpleActivity {
 	   dataSets.add(dataset2);
 
 	   BarData data = new BarData(dataSets);
-
-	   data.setValueTextSize(16f);
+	   data.setValueTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_12));
 	   data.setValueTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	   data.setBarWidth(0.9f);
 	   data.setValueFormatter(new IValueFormatter() {
