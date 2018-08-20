@@ -21,7 +21,7 @@
     </uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
     </uses-permission>
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".base.App"
@@ -49,6 +49,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
         <activity
@@ -117,6 +118,14 @@
                 <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
             <!--</intent-filter>-->
         <!--</receiver>-->
+        <receiver android:name=".http.ContentReceiver"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -319,6 +320,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		if (mShowLoading != null) {
 		   mShowLoading.mDialog.dismiss();
 		}
+		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		finish();
 	   }
 	});
@@ -377,9 +379,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		runOnUiThread(new Runnable() {
 		   @Override
 		   public void run() {
-		      if (mShowLoading!=null){
-			   mShowLoading = DialogUtils.showLoading(InOutBoxTwoActivity.this);
-			}
+//		      if (mShowLoading!=null){
+//			   mShowLoading = DialogUtils.showLoading(mContext);
+//			}
+			ToastUtils.showUiToast(InOutBoxTwoActivity.this,"请稍后");
 			if (mTimelyLeft!=null&&mTimelyRight!=null){
 			   mTimelyLeft.setEnabled(true);
 			   mTimelyRight.setEnabled(true);
@@ -464,27 +467,47 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
-		String string = null;
-		if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
-		    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		}else if (mTCstInventoryTwoDto.getErrorEpcs() == null&&(mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1)) {
-		   ToastUtils.showShort("未扫描到操作的耗材");
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		} else {
-		   LogUtils.i(TAG,"mActivityType   "+mActivityType);
-		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-		   EventBusUtils.postSticky(mTCstInventoryTwoDto);
-		}
-		if (mShowLoading!=null){
-		   mShowLoading.mDialog.dismiss();
-
-		}
+		setDateEpc();
 	   }
 
 	});
+   }
+
+   /**
+    * 扫描EPC返回后进行赋值
+    */
+   private void setDateEpc() {
+	String string = null;
+	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
+	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
+	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
+	   ToastUtils.showLong(string);
+	}else if (mTCstInventoryTwoDto.getErrorEpcs() == null&&(mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1)) {
+	   mTCstInventoryTwoDto.gettCstInventoryVos().clear();
+	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+	   ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
+
+	   if(mShowLoading!=null){
+		mShowLoading.mDialog.dismiss();
+	   }
+	   if (mTimelyLeft!=null&&mTimelyRight!=null){
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+	   }
+	   new Handler().postDelayed(new Runnable(){
+		public void run() {
+		  finish();
+		}
+	   }, 3000);
+	} else {
+	   LogUtils.i(TAG, "mActivityType   " + mActivityType);
+	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
+	}
+	if (mShowLoading!=null){
+	   mShowLoading.mDialog.dismiss();
+
+	}
    }
 
    /**
@@ -525,6 +548,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
 
@@ -569,6 +593,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
 
@@ -615,6 +640,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
 

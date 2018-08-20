@@ -24,6 +24,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -124,8 +125,9 @@ public class StoreRoomDialog extends Dialog {
 	   mRigtht = (TextView) layout.findViewById(R.id.dialog_sure);
 	   mTitle = (TextView) layout.findViewById(R.id.storeroom_title);
 	   dialog.addContentView(layout,
-					 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-									    ViewGroup.LayoutParams.WRAP_CONTENT));
+					 new ViewGroup.LayoutParams(
+						 UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x680),
+						 ViewGroup.LayoutParams.WRAP_CONTENT));
 	   sGridView = (GridView) layout.findViewById(R.id.storeroom_view);
 	   sGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 	   List<DialogBean> list = new ArrayList<>();

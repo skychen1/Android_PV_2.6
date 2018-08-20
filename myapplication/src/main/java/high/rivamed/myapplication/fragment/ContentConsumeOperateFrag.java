@@ -67,6 +67,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
@@ -178,6 +179,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			DeviceManager.getInstance().OpenDoor(event.mId);
 //			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
 		   }else {
+//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//			initCallBack();
+			if (mShowLoading!=null){
+			   mShowLoading.mDialog.dismiss();
+			}
 			mOppenDoor=null;
 		   }
 		}
@@ -351,6 +357,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			}
 
 		   } else {
+			mShowLoading.mDialog.dismiss();
 			startScan();
 		   }
 
@@ -440,6 +447,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
+	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	LogUtils.i(TAG, "mRbKey    " + mRbKey);
 	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
 	    mRbKey == 7 || mRbKey == 8) {
