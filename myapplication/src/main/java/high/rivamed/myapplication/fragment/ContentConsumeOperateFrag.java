@@ -36,7 +36,6 @@ import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
-import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
@@ -167,35 +166,37 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	}
    }
-
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOppenDoorEvent(Event.EventOppenDoor event) {
 	mOppenDoor = event.mString;
 
    }
-
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onBooleanEvent(Event.EventBoolean event) {
-	//
-	if (event.mBoolean) {
+//
+	if (event.mBoolean){
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
-		   LogUtils.i(TAG, "EventBoolean   " + mOppenDoor + "    event.mId   " + event.mId);
-		   if (mOppenDoor == null && eth002DeviceId != null) {
+		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
+		   if (mOppenDoor==null&&eth002DeviceId!=null){
 			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			initCallBack();
 			DeviceManager.getInstance().OpenDoor(event.mId);
-			//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
-		   } else {
-			mOppenDoor = null;
+//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
+		   }else {
+//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//			initCallBack();
+			if (mShowLoading!=null){
+			   mShowLoading.mDialog.dismiss();
+			}
+			mOppenDoor=null;
 		   }
 		}
 	   }).start();
 
 	}
    }
-
    /**
     * 重新加载数据
     *
@@ -206,8 +207,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (event.type.equals("START1")) {
 	   initCallBack();
 	   initData();
-	} else {
-	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
+	}else {
+	   LogUtils.i(TAG,"UnRegisterDeviceCallBack");
 	   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 	}
    }
@@ -263,7 +264,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mHandler = new Handler();
 	EventBusUtils.register(this);
-	//	mShowLoading = DialogUtils.showLoading(mContext);
+//	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
 	initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
@@ -271,8 +272,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    }
 
+
    private void initCallBack() {
-	LogUtils.i(TAG, "initCallBack 进入  " + (DeviceManager.getInstance() == null));
+	LogUtils.i(TAG, "initCallBack 进入  "+(DeviceManager.getInstance()==null ));
 
 	App.InitDeviceService();
 	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
@@ -331,6 +333,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   //		   if (mShowLoading != null) {
 		   //			mShowLoading.mDialog.dismiss();
 		   //		   }
+		   //		   ToastUtils.showShort("开门异常，请重试！");
 		}
 		deviceIndentifys.add(deviceIndentify);//将开门后的锁加入list用于判定是否关门
 	   }
@@ -361,7 +364,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		if (!success) {
 		   ToastUtils.showUiToast(_mActivity, "扫描失败，请重试！");
 		}
-
 		getDeviceDate(deviceId, epcs);
 
 	   }
@@ -430,7 +432,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
 	}
-
    }
 
    /**
@@ -463,6 +464,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	mTCstInventoryDtoAll.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	mTCstInventoryDtoAll.setDeviceInventoryVos(deviceList);
+	mTCstInventoryDtoAll.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	LogUtils.i(TAG, "mRbKey    " + mRbKey);
 	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
 	    mRbKey == 7 || mRbKey == 8) {
@@ -474,14 +476,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mTCstInventoryDtoAll.setPatientName(mPatientName);
 	   mTCstInventoryDtoAll.setPatientId(mPatientId);
 	}
-
-	//TODO:进行加入所有的设备数据
-
-//	for (String device : mEthDeviceId) {
-//	   if (!opened && deviceIndentify.equals(deviceId)) {
-//		clossDoorStartScan(deviceIndentify);
-//	   }
-//	}
 	String toJson = mGson.toJson(mTCstInventoryDtoAll);
 	LogUtils.i(TAG, "toJson    " + toJson);
 
@@ -580,7 +574,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		//		mBoxSizeBean2 = mGson.fromJson(result, BoxSizeBean.class);
 		//		mTbaseDevices2 = mBoxSizeBean2.getTbaseDevices();//顶部数据
-		LogUtils.i(TAG, "result  " + result);
+		LogUtils.i(TAG, "result  "+result);
 		mTbaseDevices = mBoxSizeBean.getTbaseDevices();
 		if (mTbaseDevices.size() > 1) {
 		   BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
@@ -749,13 +743,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mShowLoading != null) {
 	   mShowLoading.mDialog.dismiss();
 	}
-	LogUtils.i(TAG, "onDestroy");
+	LogUtils.i(TAG,"onDestroy");
 	super.onDestroy();
    }
 
    /**
     * 开柜
-    *
     * @param position
     * @param mTbaseDevices
     */
@@ -788,7 +781,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 开单个柜子获得reader的标识
-    *
     * @param position
     * @param mTbaseDevices
     */
@@ -860,7 +852,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void onPause() {
-	LogUtils.i(TAG, "onPause");
+      LogUtils.i(TAG,"onPause");
 	super.onPause();
 
    }
@@ -909,8 +901,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    private void loadBingDate(
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
-	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+	LogUtils.i(TAG,"optienNameOrId   "+optienNameOrId);
+      NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
