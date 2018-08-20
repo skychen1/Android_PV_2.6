@@ -11,7 +11,6 @@ import cn.rivamed.device.ClientHandler.eth002Handler.Eth002Message;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002V26Handler;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002V2Handler;
 import cn.rivamed.device.Service.BaseService;
-import cn.rivamed.device.Service.UhfService.RodinBellUhf.RodinBellService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -186,7 +185,7 @@ public class Eth002Service extends BaseService {
         public void DoorState(boolean opened) {
             if (Eth002Service.this.getDeviceManager() != null) {
                 if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
-                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(), opened);
+                    Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorCheckedState(clientHandler.getIdentification(), opened);
                 }
             }
         }

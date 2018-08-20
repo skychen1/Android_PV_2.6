@@ -108,7 +108,7 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
         <activity
-            android:name=".activity.LingyongActivity"
+            android:name=".activity.TemPatientBindActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".activity.RecognizeActivity" />
         <activity

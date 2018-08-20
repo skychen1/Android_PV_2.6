@@ -29,7 +29,6 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -45,6 +44,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -156,7 +156,17 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mShowLoading = DialogUtils.showLoading(mContext);
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
-		   startScan();
+
+		   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+		   for (DeviceInventoryVo deviceInventoryVo:deviceInventoryVos){
+			String deviceCode = deviceInventoryVo.getDeviceCode();
+			List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode, UHF_TYPE).find(BoxIdBean.class);
+			for (BoxIdBean boxIdBean : boxIdBeans) {
+			   String device_id = boxIdBean.getDevice_id();
+			   LogUtils.i(TAG,"device_id    "+device_id);
+			   startScan(device_id);
+			}
+		   }
 		}
 		break;
 
@@ -225,19 +235,22 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    }
 
-   private void startScan() {
-
-	for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
-	   LogUtils.i (TAG, "readerid    " + readerid);
-	   int ret = DeviceManager.getInstance().StartUhfScan(readerid);
-	   LogUtils.i(TAG, "readerid    " + ret);
-	   if (ret == 100) {
-		ToastUtils.showShort("扫描失败，请重试！");
-		mShowLoading.mDialog.dismiss();
-	   } else {
-		DeviceManager.getInstance().StartUhfScan(readerid);
+   private void startScan(String deviceIndentify) {
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+								 UHF_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String box_id = boxIdBean.getBox_id();
+	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id,
+								    READER_TYPE).find(BoxIdBean.class);
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+		if (i == 100) {
+		   ToastUtils.showShort("扫描失败，请重试！");
+		   mShowLoading.mDialog.dismiss();
+		}
+		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
-
 	}
    }
 
@@ -386,7 +399,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			}
 		   }
 		});
-		startScan();
+		startScan(deviceIndentify);
 	   }
 
 	   @Override

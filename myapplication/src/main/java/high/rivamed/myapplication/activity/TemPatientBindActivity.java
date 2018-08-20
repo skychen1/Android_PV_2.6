@@ -35,7 +35,7 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
 /*
  * 患者列表页面,可以创建临时患者
  * */
-public class LingyongActivity extends BaseTimelyActivity {
+public class TemPatientBindActivity extends BaseTimelyActivity {
 
     private static final String TAG = "OutBoxBingActivity";
     private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
@@ -69,7 +69,7 @@ public class LingyongActivity extends BaseTimelyActivity {
                     }
                 }
                 if (position != -1) {
-                    LingyongActivity.this.startActivity(new Intent(LingyongActivity.this, RecognizeActivity.class));
+                    TemPatientBindActivity.this.startActivity(new Intent(TemPatientBindActivity.this, RecognizeActivity.class));
                 } else {
                     ToastUtils.showShort("请先选择患者");
                 }
@@ -127,7 +127,7 @@ public class LingyongActivity extends BaseTimelyActivity {
             case R.id.search_et://搜索
                 break;
             case R.id.ly_creat_temporary_btn://创建临时患者
-                DialogUtils.showCreatTempPatientDialog(mContext, LingyongActivity.this);
+                DialogUtils.showCreatTempPatientDialog(mContext, TemPatientBindActivity.this);
                 break;
             case R.id.dialog_left://取消
                 finish();
@@ -165,7 +165,7 @@ public class LingyongActivity extends BaseTimelyActivity {
                 BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
                         BingFindSchedulesBean.class);
                 mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-                DialogUtils.showRvDialog(LingyongActivity.this, mContext, mPatientInfos, "afterBind", -1, null);
+                DialogUtils.showRvDialog(TemPatientBindActivity.this, mContext, mPatientInfos, "afterBind", -1, null);
                 LogUtils.i(TAG, "result   " + result);
             }
         });

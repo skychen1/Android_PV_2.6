@@ -36,7 +36,7 @@ public class RecognizeActivity extends BaseTimelyActivity {
         super.initDataAndEvent(savedInstanceState);
         DialogUtils.showNoDialog(mContext, "柜门已开!", 2, "form", null);
         mStart = new TimeCount(15000, 1000, mTimelyRight);
-        mStart.start();
+//        mStart.start();
     }
 
     /* 定义一个倒计时的内部类 */
