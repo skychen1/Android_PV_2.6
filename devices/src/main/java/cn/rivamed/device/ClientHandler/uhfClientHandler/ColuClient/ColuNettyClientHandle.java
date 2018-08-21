@@ -1,7 +1,5 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient;
 
-import android.net.wifi.aware.PublishConfig;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledHeapByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.SucceededFuture;
 import io.netty.util.internal.StringUtil;
 
 public class ColuNettyClientHandle extends NettyDeviceClientHandler implements UhfHandler, DeviceHandler {
@@ -149,11 +146,11 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         byte[] data = getData(buf);
         if (data == null) return;
         if (data.length <= 0) {
-            //       Log.d(LOG_TAG, "接收到心跳回复确认消息");
+                   Log.d(LOG_TAG, "接收到心跳回复确认消息");
             return;
         } else {
             if (SendConnQuery(data)) {
-                //           Log.d(LOG_TAG, "发送心跳回复成功");
+                           Log.d(LOG_TAG, "发送心跳回复成功");
             }
         }
     }
@@ -343,12 +340,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         super.channelActive(ctx);
+        Log.d(LOG_TAG,"设备已连接"+ctx.channel().remoteAddress());
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+
+        }
 
         //发送获取MAC
         new Thread(() -> {
             sendQueryMac = 0;
             while (StringUtil.isNullOrEmpty(getIdentification())) {
                 if (sendQueryMac > 5) {
+                    Log.e(LOG_TAG,"超时未获取到MAC地址，将强制断开");
                     Close();
                     return;
                 }
@@ -357,7 +362,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                 sendQueryMac++;
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
 
                 }
@@ -376,7 +381,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        Log.w(LOG_TAG, "Reader已断开");
+        Log.w(LOG_TAG, "通道已关闭，Reader已断开");
         Close();
     }
 
@@ -579,7 +584,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             ByteBuf byteBuf = new UnpooledHeapByteBuf(ByteBufAllocator.DEFAULT, buf.length, buf.length);
             byteBuf.writeBytes(buf);
             getCtx().writeAndFlush(byteBuf);
-            Log.d(LOG_TAG, "向客户端发送信息:" + Transfer.Byte2String(buf));
+            Log.d(LOG_TAG, "向客户端发送信息成功:" + Transfer.Byte2String(buf));
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
@@ -587,6 +592,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             }
             return true;
         }
+        Log.e(LOG_TAG, "向客户端发送信息失败:" + Transfer.Byte2String(buf));
         return false;
     }
 
@@ -603,8 +609,9 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public int Close() {
         try {
-            getCtx().close();
             Log.e(LOG_TAG, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
+            getCtx().close();
+
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage());
         } finally {

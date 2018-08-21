@@ -2,7 +2,6 @@ package high.rivamed.myapplication.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -143,8 +142,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       String                                       mFirstBind;
    private       String                                       mDeviceCode;
    private       RvDialog.Builder                             mShowRvDialog;
-   private       Handler                                      mHandler;
-   private String mOppenDoor=null;
+   private String mOppenDoor = null;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -160,37 +158,42 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOppenDoorEvent(Event.EventOppenDoor event) {
 	mOppenDoor = event.mString;
 
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onBooleanEvent(Event.EventBoolean event) {
-//
-	if (event.mBoolean){
+	//
+	if (event.mBoolean) {
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
-		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
-		   if (mOppenDoor==null&&eth002DeviceId!=null){
+		   LogUtils.i(TAG, "EventBoolean   " + mOppenDoor);
+		   if (mOppenDoor == null && eth002DeviceId != null) {
 			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			initCallBack();
+			LogUtils.i(TAG, "EventBoolean  进来");
 			DeviceManager.getInstance().OpenDoor(event.mId);
-//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
-		   }else {
-//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
-//			initCallBack();
-			if (mShowLoading!=null){
+			//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
+		   } else {
+			LogUtils.i(TAG, "EventBoolean  进来2");
+			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+			initCallBack();
+			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
-			mOppenDoor=null;
+			mOppenDoor = null;
 		   }
 		}
 	   }).start();
 
 	}
    }
+
    /**
     * 重新加载数据
     *
@@ -201,8 +204,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (event.type.equals("START1")) {
 	   initCallBack();
 	   initData();
-	}else {
-	   LogUtils.i(TAG,"UnRegisterDeviceCallBack");
+	} else {
+	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
 	   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 	}
    }
@@ -216,8 +219,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-	ToastUtils.showShort(event.mString);
-	mShowLoading.mDialog.dismiss();
+	ToastUtils.showUiToast(mContext, event.mString);
+	if (mShowLoading != null) {
+	   mShowLoading.mDialog.dismiss();
+	}
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -256,7 +261,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mHandler = new Handler();
+
 	EventBusUtils.register(this);
 	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
@@ -266,9 +271,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    }
 
-
    private void initCallBack() {
-	LogUtils.i(TAG, "initCallBack 进入  "+(DeviceManager.getInstance()==null ));
+	LogUtils.i(TAG, "initCallBack 进入  " + (DeviceManager.getInstance() == null));
 
 	App.InitDeviceService();
 	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
@@ -339,30 +343,45 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 		   LogUtils.i(TAG, "开始扫描了状态    " + mReaderIdList.size());
 		   if (mReaderIdList.size() == 0) {
-			for (int i = 0; i < 3; i++) {
 
-			   mHandler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-				   setReaderList();
-				   if (mReaderIdList.size() == 0) {
-					LogUtils.i(TAG, "走了");
-					mShowLoading.mDialog.dismiss();
-					EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
-				   } else {
-					startScan();
+			new Thread(new Runnable() {
+			   @Override
+			   public void run() {
+
+				   try {
+					Thread.currentThread().sleep(4000);
+					setReaderList();
+					if (mReaderIdList.size() == 0) {
+					   LogUtils.i(TAG, "走了");
+					   if (mShowLoading != null) {
+						mShowLoading.mDialog.dismiss();
+					   }
+					   if (mBuilder != null) {
+						mBuilder.mDialog.dismiss();
+					   }
+					   EventBusUtils.postSticky(
+						   new Event.EventToast("reader未启动，请重新开关柜门"));
+					} else {
+					   startScan();
+					}
+				   } catch (InterruptedException e) {
+					e.printStackTrace();
 				   }
 				}
-			   }, 3000);
-			}
+
+			}).start();
 
 		   } else {
-			mShowLoading.mDialog.dismiss();
+			if (mShowLoading != null) {
+			   mShowLoading.mDialog.dismiss();
+			}
 			startScan();
 		   }
 
 		} else {
-		   mShowLoading.mDialog.dismiss();
+		   if (mShowLoading != null) {
+			mShowLoading.mDialog.dismiss();
+		   }
 		}
 	   }
 
@@ -385,7 +404,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
+		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
 	   }
 
 	   @Override
@@ -409,7 +428,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (String readerid : mReaderIdList) {
 	   int ret = DeviceManager.getInstance().StartUhfScan(readerid);
 	   if (mReaderIdList == null || ret == 100) {
-		mShowLoading.mDialog.dismiss();
+		if (mShowLoading != null) {
+		   mShowLoading.mDialog.dismiss();
+		}
 	   }
 	   LogUtils.i(TAG, "开始扫描了状态    " + ret);
 
@@ -533,8 +554,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void initData() {
 	if (UIUtils.getConfigType(mContext, CONFIG_0011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
+	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
+	   mConsumeOpenallMiddle.setVisibility(View.GONE);
 	}
 	loadDate();
 
@@ -549,7 +572,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		//		mBoxSizeBean2 = mGson.fromJson(result, BoxSizeBean.class);
 		//		mTbaseDevices2 = mBoxSizeBean2.getTbaseDevices();//顶部数据
-		LogUtils.i(TAG, "result  "+result);
+		LogUtils.i(TAG, "result  " + result);
 		mTbaseDevices = mBoxSizeBean.getTbaseDevices();
 		if (mTbaseDevices.size() > 1) {
 		   BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
@@ -714,12 +737,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mShowLoading != null) {
 	   mShowLoading.mDialog.dismiss();
 	}
-	LogUtils.i(TAG,"onDestroy");
+	LogUtils.i(TAG, "onDestroy");
 	super.onDestroy();
    }
 
    /**
     * 开柜
+    *
     * @param position
     * @param mTbaseDevices
     */
@@ -752,6 +776,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 开单个柜子获得reader的标识
+    *
     * @param position
     * @param mTbaseDevices
     */
@@ -770,7 +795,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 	   if (mTbaseDevices.size() > 1) {//第一个为全部开柜
 		if ((position - 1) == i) {
-		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG,
+				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		}
 	   } else {
@@ -779,12 +805,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 									 UHF_TYPE).find(BoxIdBean.class);
 		for (BoxIdBean boxIdBean : boxIdBeans) {
 		   String device_id = boxIdBean.getDevice_id();
-		   if (device_id.equals(eth002DeviceIdList.get(i))){
+		   if (device_id.equals(eth002DeviceIdList.get(i))) {
 			DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
-			EventBusUtils.post(new Event.EventBoolean(true,(String) eth002DeviceIdList.get(i)));
+			EventBusUtils.post(
+				new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		   }
 		}
-
 
 	   }
 
@@ -811,7 +837,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void onPause() {
-      LogUtils.i(TAG,"onPause");
+	LogUtils.i(TAG, "onPause");
 	super.onPause();
 
    }
@@ -852,14 +878,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
    }
 
-
    /**
     * 获取需要绑定的患者
     */
    private void loadBingDate(
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	LogUtils.i(TAG,"optienNameOrId   "+optienNameOrId);
-      NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
+	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);

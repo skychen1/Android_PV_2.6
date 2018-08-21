@@ -127,7 +127,7 @@ public class Event {
 	   this.storehouseCode = storehouseCode;
 	   this.dialog = dialog;
 	   this.operationRoomNo = operationRoomNo;
-	   this.operationRoomNo = branchCode;
+	   this.branchCode = branchCode;
 	}
    }
    public static class outBoxEvent{
