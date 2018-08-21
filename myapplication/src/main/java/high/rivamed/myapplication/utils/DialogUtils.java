@@ -493,6 +493,11 @@ public class DialogUtils {
 	   public void getDialogDate(
 		   String deptName, String branchCode, String deptCode, String storehouseCode,
 		   String operationRoomNo, Dialog dialog) {
+	      LogUtils.i("RegisteDialog","deptName  "+deptName);
+	      LogUtils.i("RegisteDialog","branchCode  "+branchCode);
+	      LogUtils.i("RegisteDialog","deptCode  "+deptCode);
+	      LogUtils.i("RegisteDialog","storehouseCode  "+storehouseCode);
+	      LogUtils.i("RegisteDialog","operationRoomNo  "+operationRoomNo);
 		EventBusUtils.postSticky(
 			new Event.dialogEvent(deptName, branchCode, deptCode, storehouseCode,
 						    operationRoomNo, dialog));

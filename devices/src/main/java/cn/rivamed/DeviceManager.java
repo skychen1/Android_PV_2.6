@@ -29,7 +29,7 @@ import cn.rivamed.device.Service.UhfService.UhfService;
 
 public class DeviceManager {
 
-    private static final String LOG_TAG="DEV_MNGER";
+    private static final String LOG_TAG = "DEV_MNGER";
 
     int uhf_Port = -1;
     int eth002_port = -1;
@@ -97,12 +97,12 @@ public class DeviceManager {
      * @param deviceCallBack
      */
     public void RegisterDeviceCallBack(DeviceCallBack deviceCallBack) {
-        this.deviceCallBack=null;
+        this.deviceCallBack = null;
         this.deviceCallBack = deviceCallBack;
     }
 
-    public void UnRegisterDeviceCallBack(){
-        this.deviceCallBack=null    ;
+    public void UnRegisterDeviceCallBack() {
+        this.deviceCallBack = null;
     }
 
     public DeviceCallBack getDeviceCallBack() {
@@ -135,7 +135,6 @@ public class DeviceManager {
     }
 
 
-
     public static class DeviceInfo {
 
         String identifition;
@@ -145,11 +144,11 @@ public class DeviceManager {
 
         /**
          * 生产厂家
-         * */
+         */
         String Product;
         /**
          * 版本
-         * */
+         */
         String Version;
 
 
@@ -199,16 +198,17 @@ public class DeviceManager {
             this.deviceType = deviceType;
             this.remoteIP = remoteIP;
         }
-        public DeviceInfo(String identifition,String remoteIP) {
+
+        public DeviceInfo(String identifition, String remoteIP) {
             this.identifition = identifition;
 
             this.remoteIP = remoteIP;
         }
-        public DeviceInfo(String identifition,DeviceType deviceType,String remoteIP,String product,String version)
-        {
-            this(identifition,deviceType,remoteIP);
-            this.Product=product;
-            this.Version=version;
+
+        public DeviceInfo(String identifition, DeviceType deviceType, String remoteIP, String product, String version) {
+            this(identifition, deviceType, remoteIP);
+            this.Product = product;
+            this.Version = version;
         }
     }
 
@@ -216,7 +216,7 @@ public class DeviceManager {
         List<DeviceInfo> deviceInfos = new ArrayList<>();
         for (Map.Entry<String, DeviceHandler> d : this.getConnetedDevices().entrySet()) {
             if (d.getValue() != null)
-                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getDeviceType(), d.getValue().getRemoteIP(),d.getValue().getProducer(),d.getValue().getVersion()));
+                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getDeviceType(), d.getValue().getRemoteIP(), d.getValue().getProducer(), d.getValue().getVersion()));
         }
         return deviceInfos;
     }
@@ -229,7 +229,8 @@ public class DeviceManager {
      */
     public void AppendConnectedDevice(String identification, DeviceHandler handler) {
         if (this.connetedDevices.containsKey(identification)) {
-            this.connetedDevices.get(identification).Close();
+            if (!this.connetedDevices.get(identification).equals(handler))
+                this.connetedDevices.get(identification).Close();
         }
         this.connetedDevices.put(identification, handler);
     }
@@ -270,8 +271,8 @@ public class DeviceManager {
                 case UHF_READER_RODINBELL:
                     uhfService = new RodinBellService(this.uhf_Port);
                     break;
-                case  UHF_READER_COLU_NETTY:
-                    uhfService=new ColuNettyService(this.uhf_Port);
+                case UHF_READER_COLU_NETTY:
+                    uhfService = new ColuNettyService(this.uhf_Port);
                     break;
                 case UHF_READER_COLU:
                     uhfService = new ColuReaderService(this.uhf_Port);
@@ -328,7 +329,7 @@ public class DeviceManager {
      */
     public int StartUhfScan(String deviceId) {
 
-        Log.i(LOG_TAG,"开始UHF扫描；DEVICEID="+deviceId);
+        Log.i(LOG_TAG, "开始UHF扫描；DEVICEID=" + deviceId);
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -345,7 +346,7 @@ public class DeviceManager {
      * @return
      */
     public int StopUhfScan(String deviceId) {
-        Thread thread=new Thread(()->{
+        Thread thread = new Thread(() -> {
 
 
         });
@@ -408,7 +409,7 @@ public class DeviceManager {
 
             }
             if (this.deviceCallBack != null) {
-                this.deviceCallBack.OnGetAnts(deviceId,true, ants);
+                this.deviceCallBack.OnGetAnts(deviceId, true, ants);
             }
         }).start();
         return FunctionCode.SUCCESS;
@@ -438,7 +439,7 @@ public class DeviceManager {
      * @return 返回结果仅表示命令已发送，具体执行结果参照回调函数
      */
     public int OpenDoor(String deviceId) {
-        Log.i(LOG_TAG,"接收开门指令；DEVICEID="+deviceId);
+        Log.i(LOG_TAG, "接收开门指令；DEVICEID=" + deviceId);
         if (!this.getConnetedDevices().containsKey(deviceId)) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -515,22 +516,19 @@ public class DeviceManager {
         }
     }
 
-    public static String getIP(){
+    public static String getIP() {
 
         try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
-                {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address))
-                    {
+                    if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address)) {
                         return inetAddress.getHostAddress().toString();
                     }
                 }
             }
-        }
-        catch (SocketException ex){
+        } catch (SocketException ex) {
             ex.printStackTrace();
         }
         return null;

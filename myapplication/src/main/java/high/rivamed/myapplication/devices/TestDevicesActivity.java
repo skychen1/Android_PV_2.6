@@ -24,6 +24,7 @@ import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 
 
@@ -107,6 +108,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 } else if (deviceType == DeviceType.Eth002) {
                     eth002DeviceId = deviceIndentify;
                 }
+                LogUtils.i("FFS","设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
                 AppendLog("设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
             }
 

@@ -98,8 +98,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_HCCZ_IN;
-	initCallBack();
 	return my_id;
+   }
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	initCallBack();
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
@@ -395,7 +400,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 //		      if (mShowLoading!=null){
 //			   mShowLoading = DialogUtils.showLoading(mContext);
 //			}
-			ToastUtils.showUiToast(InOutBoxTwoActivity.this,"请稍后");
+//			ToastUtils.showUiToast(InOutBoxTwoActivity.this,"请稍后");
 			if (mTimelyLeft!=null&&mTimelyRight!=null){
 			   mTimelyLeft.setEnabled(true);
 			   mTimelyRight.setEnabled(true);
@@ -496,10 +501,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
 	   ToastUtils.showLong(string);
 	}else if (mTCstInventoryTwoDto.getErrorEpcs() == null&&(mTCstInventoryTwoDto.gettCstInventoryVos() == null||mTCstInventoryTwoDto.gettCstInventoryVos().size()<1)) {
-	   mTCstInventoryTwoDto.gettCstInventoryVos().clear();
-	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
 	   ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
-
 	   if(mShowLoading!=null){
 		mShowLoading.mDialog.dismiss();
 	   }
@@ -509,7 +513,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   }
 	   new Handler().postDelayed(new Runnable(){
 		public void run() {
-		  finish();
+		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   finish();
 		}
 	   }, 3000);
 	} else {
@@ -570,6 +575,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			ToastUtils.showShort("操作失败，请重试！");
 		   }
 		});
+   }
+
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	DeviceManager.getInstance().UnRegisterDeviceCallBack();
    }
 
    /**

@@ -67,6 +67,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
@@ -120,14 +121,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    RecyclerView mConsumeDownRv;
    @BindView(R.id.consume_down)
    LinearLayout mConsumeDown;
-   @BindView(R.id.fastopen_title_guanlian)
-   TextView     mFastopenTitleGuanlian;
-   @BindView(R.id.function_cardview_guanlian)
-   CardView     mFunctionCardviewGuanlian;
    private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
-   private List<String> deviceIndentifys = new ArrayList<>();
 
    private String                             eth002DeviceId;
    private String                             uhfDeviceId;
@@ -183,11 +179,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			initCallBack();
 			DeviceManager.getInstance().OpenDoor(event.mId);
-//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
-		   }else {
-//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
-//			initCallBack();
-			if (mShowLoading!=null){
+			//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
+		   } else {
+			LogUtils.i(TAG, "EventBoolean  进来2");
+			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+			initCallBack();
+			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
 			}
 			mOppenDoor=null;
@@ -222,8 +219,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-	ToastUtils.showShort(event.mString);
-	mShowLoading.mDialog.dismiss();
+	ToastUtils.showUiToast(mContext, event.mString);
+	if (mShowLoading != null) {
+	   mShowLoading.mDialog.dismiss();
+	}
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -262,7 +261,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mHandler = new Handler();
+
 	EventBusUtils.register(this);
 //	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
@@ -335,7 +334,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   //		   }
 		   //		   ToastUtils.showShort("开门异常，请重试！");
 		}
-		deviceIndentifys.add(deviceIndentify);//将开门后的锁加入list用于判定是否关门
 	   }
 
 	   @Override
@@ -346,11 +344,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   DeviceManager.getInstance().CheckDoorState(deviceId);
 		}
 		LogUtils.i(TAG, "门锁已关闭：    " + success);
+
 	   }
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-		for (String deviceId : mEthDeviceId) {
+
+
+	      for (String deviceId : mEthDeviceId) {
 		   if (!opened && deviceIndentify.equals(deviceId)) {
 			clossDoorStartScan(deviceIndentify);
 		   }
@@ -396,20 +397,38 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    private void clossDoorStartScan(String deviceIndentify) {
 	if (mReaderIdList.size() == 0) {
-	   for (int i = 0; i < 3; i++) {
-		mHandler.postDelayed(new Runnable() {
-		   @Override
-		   public void run() {
+
+	   new Thread(new Runnable() {
+		@Override
+		public void run() {
+
+		   try {
+			Thread.currentThread().sleep(4000);
 			setReaderList();
 			if (mReaderIdList.size() == 0) {
-			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
+			   LogUtils.i(TAG, "走了");
+			   if (mShowLoading != null) {
+				mShowLoading.mDialog.dismiss();
+			   }
+			   if (mBuilder != null) {
+				mBuilder.mDialog.dismiss();
+			   }
+			   EventBusUtils.postSticky(
+				   new Event.EventToast("reader未启动，请重新开关柜门"));
 			} else {
 			   startScan(deviceIndentify);
 			}
+		   } catch (InterruptedException e) {
+			e.printStackTrace();
 		   }
-		}, 3000);
-	   }
+		}
+
+	   }).start();
+
 	} else {
+	   if (mShowLoading != null) {
+		mShowLoading.mDialog.dismiss();
+	   }
 	   startScan(deviceIndentify);
 	}
    }
@@ -462,31 +481,23 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);
 
-	mTCstInventoryDtoAll.setThingCode(SPUtils.getString(mContext, THING_CODE));
-	mTCstInventoryDtoAll.setDeviceInventoryVos(deviceList);
-	mTCstInventoryDtoAll.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	tCstInventoryDto.setDeviceInventoryVos(deviceList);
+	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	LogUtils.i(TAG, "mRbKey    " + mRbKey);
 	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
 	    mRbKey == 7 || mRbKey == 8) {
-	   mTCstInventoryDtoAll.setOperation(mRbKey);
+	   tCstInventoryDto.setOperation(mRbKey);
 	} else {
-	   mTCstInventoryDtoAll.setOperation(mRbKey);
+	   tCstInventoryDto.setOperation(mRbKey);
 	}
 	if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
-	   mTCstInventoryDtoAll.setPatientName(mPatientName);
-	   mTCstInventoryDtoAll.setPatientId(mPatientId);
+	   tCstInventoryDto.setPatientName(mPatientName);
+	   tCstInventoryDto.setPatientId(mPatientId);
 	}
-	String toJson = mGson.toJson(mTCstInventoryDtoAll);
+	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 
-	putAllEpc(toJson);
-   }
-
-   /**
-    * 发送所有EPC给后台进行查询EPC信息
-    * @param toJson
-    */
-   private void putAllEpc(String toJson) {
 	NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -511,7 +522,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   EventBusUtils.postSticky(cstInventoryDto);
 
 		} else {//正常的领用或者其他正常操作
-		   //		   mShowLoading.mDialog.dismiss();
+		   mShowLoading.mDialog.dismiss();
 		   if (cstInventoryDto.gettCstInventoryVos() == null ||
 			 cstInventoryDto.gettCstInventoryVos().size() < 1) {
 			if (mBuilder != null) {
@@ -589,7 +600,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    //赋值
    private void onSucceedDate() {
 	LogUtils.i(TAG, "onSucceedDate");
-	//	mShowLoading.mDialog.dismiss();
+	mShowLoading.mDialog.dismiss();
 	//	mConsumeOpenallMiddle.setVisibility(View.GONE);//此处部分医院不需要可以隐藏  根据接口来
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
@@ -691,10 +702,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				openDoor(position, mTbaseDevices);
 			   }
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
-
-			   //绑定临时患者 todo
-			   //                      mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class));
-
 			   break;
 			case R.id.content_rb_rk:
 			   mRbKey = 2;
@@ -754,7 +761,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    private void openDoor(
 	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	//	mShowLoading = DialogUtils.showLoading(mContext);
+	mShowLoading = DialogUtils.showLoading(mContext);
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (mTbaseDevices.size() > 1) {//第一个为全部开柜
@@ -828,6 +835,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		}
+
 	   }
 	}
    }
@@ -857,8 +865,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    }
 
-   @OnClick({R.id.fastopen_title_guanlian, R.id.base_tab_tv_name, R.id.base_tab_icon_right,
-	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+	   R.id.function_title_meal, R.id.fastopen_title_form})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -896,13 +904,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
    }
 
+
    /**
     * 获取需要绑定的患者
     */
    private void loadBingDate(
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	LogUtils.i(TAG,"optienNameOrId   "+optienNameOrId);
-      NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
+	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
@@ -927,4 +936,5 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	});
    }
+
 }

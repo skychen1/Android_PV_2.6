@@ -20,137 +20,137 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
-    public static class EventTime {
-        public String time;
+   public static class EventTime {
+	public String time;
 
-        public EventTime(String time) {
-            this.time = time;
-        }
-    }
-    /**
-     * Frag的跳转
-     */
-    public static class EventFrag {
-        public String type;
+	public EventTime(String time) {
+	   this.time = time;
+	}
+   }
+   /**
+    * Frag的跳转
+    */
+   public static class EventFrag {
+	public String type;
 
-        public EventFrag(String type) {
-            this.type = type;
-        }
-    }
-    public static class EventAct {
-        public String mString;
+	public EventFrag(String type) {
+	   this.type = type;
+	}
+   }
+   public static class EventAct {
+	public String mString;
 
-        public EventAct(String trim) {
-            this.mString = trim;
-        }
-    }
-    public static class EventCheckbox {
-        public String mString;
-        public String id;
-        public String type;
-        public int position;
-        public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+	public EventAct(String trim) {
+	   this.mString = trim;
+	}
+   }
+   public static class EventCheckbox {
+	public String mString;
+	public String id;
+	public String type;
+	public int position;
+	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
-        public EventCheckbox(String trim) {
-            this.mString = trim;
-        }
-        public EventCheckbox(String trim,String id) {
-            this.mString = trim;
-            this.id = id;
-        }
-        public EventCheckbox(String trim,String id,String type) {
-            this.mString = trim;
-            this.id = id;
-            this.type = type;
-        }
-        public EventCheckbox(String name,String id,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-            this.mString = name;
-            this.id = id;
-            this.type = type;
-            this.position = position;
-            this.mTbaseDevices = mTbaseDevices;
-        }
-    }
-    public static class SettingEvent {
+	public EventCheckbox(String trim) {
+	   this.mString = trim;
+	}
+	public EventCheckbox(String trim,String id) {
+	   this.mString = trim;
+	   this.id = id;
+	}
+	public EventCheckbox(String trim,String id,String type) {
+	   this.mString = trim;
+	   this.id = id;
+	   this.type = type;
+	}
+	public EventCheckbox(String name,String id,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   this.mString = name;
+	   this.id = id;
+	   this.type = type;
+	   this.position = position;
+	   this.mTbaseDevices = mTbaseDevices;
+	}
+   }
+   public static class SettingEvent {
 
-        public static final int SETTING_INFO      = 1;
-        public static final int SETTING_LOGIN     = 2;
-        public static final int SETTING_LOGIN_OUT = 3;
-        /**
-         * setting点击的动作
-         **/
-        public int RvAction;
-        public String RvActionS;
+	public static final int SETTING_INFO      = 1;
+	public static final int SETTING_LOGIN     = 2;
+	public static final int SETTING_LOGIN_OUT = 3;
+	/**
+	 * setting点击的动作
+	 **/
+	public int RvAction;
+	public String RvActionS;
 
-        public SettingEvent(int rvAction,String k) {
-            RvAction = rvAction;
-            RvActionS = k;
-        }
-    }
+	public SettingEvent(int rvAction,String k) {
+	   RvAction = rvAction;
+	   RvActionS = k;
+	}
+   }
 
-    public static class PopupEvent {
+   public static class PopupEvent {
 
-        public boolean isMute;
-        public String mString;
-        public int mPos;
+	public boolean isMute;
+	public String mString;
+	public int mPos;
 
-        public PopupEvent(boolean isMute,String trim) {
-            this.isMute = isMute;
-            this.mString = trim;
-        }
-        public PopupEvent(boolean isMute,String trim,int pos) {
-            this.isMute = isMute;
-            this.mString = trim;
-            this.mPos = pos;
-        }
-    }
+	public PopupEvent(boolean isMute,String trim) {
+	   this.isMute = isMute;
+	   this.mString = trim;
+	}
+	public PopupEvent(boolean isMute,String trim,int pos) {
+	   this.isMute = isMute;
+	   this.mString = trim;
+	   this.mPos = pos;
+	}
+   }
 
-    public static class activationEvent{
-        public boolean isActivation;
-        public DialogInterface dialog;
-        public activationEvent(boolean isActivation, DialogInterface dialog){
-            this.isActivation = isActivation;
-            this.dialog = dialog;
-        }
-    }
-    public static class dialogEvent{
-        public Dialog dialog;
-        public String deptCode;
-        public String storehouseCode;
-        public String operationRoomNo;
-        public String branchCode;
-        public String deptName;
-        public dialogEvent(String deptName, String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+   public static class activationEvent{
+	public boolean isActivation;
+	public DialogInterface dialog;
+      public activationEvent(boolean isActivation, DialogInterface dialog){
+	   this.isActivation = isActivation;
+	   this.dialog = dialog;
+	}
+   }
+   public static class dialogEvent{
+	public Dialog dialog;
+	public String deptCode;
+	public String storehouseCode;
+	public String operationRoomNo;
+	public String branchCode;
+	public String deptName;
+	public dialogEvent(String deptName, String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
 
-            this.deptCode = deptCode;
-            this.deptName = deptName;
-            this.storehouseCode = storehouseCode;
-            this.dialog = dialog;
-            this.operationRoomNo = operationRoomNo;
-            this.operationRoomNo = branchCode;
-        }
-    }
-    public static class outBoxEvent{
-        public Dialog dialog;
-        public String type;
-        public String context;
-        public int mIntentType;
-        public outBoxEvent( String type,String text, Dialog dialog,int mIntentType){
+	   this.deptCode = deptCode;
+	   this.deptName = deptName;
+	   this.storehouseCode = storehouseCode;
+	   this.dialog = dialog;
+	   this.operationRoomNo = operationRoomNo;
+	   this.branchCode = branchCode;
+	}
+   }
+   public static class outBoxEvent{
+	public Dialog dialog;
+	public String type;
+	public String context;
+	public int mIntentType;
+	public outBoxEvent( String type,String text, Dialog dialog,int mIntentType){
 
-            this.dialog = dialog;
-            this.type = type;
-            this.context = text;
-            this.mIntentType = mIntentType;
+	   this.dialog = dialog;
+	   this.type = type;
+	   this.context = text;
+	   this.mIntentType = mIntentType;
 
-        }
-    }
-    public static class timelyDate{
-        public String type;
-        public TCstInventoryDto tCstInventoryDto;
-        public timelyDate( String type,TCstInventoryDto tCstInventoryDto){
+	}
+   }
+   public static class timelyDate{
+	public String type;
+	public TCstInventoryDto tCstInventoryDto;
+	public timelyDate( String type,TCstInventoryDto tCstInventoryDto){
 
-            this.type = type;
-            this.tCstInventoryDto = tCstInventoryDto;
+	   this.type = type;
+	   this.tCstInventoryDto = tCstInventoryDto;
 
         }
     }
@@ -177,44 +177,44 @@ public class Event {
     public static class EventString {
         public String mString;
 
-        public EventString(String text) {
-            this.mString = text;
-        }
-    }
-    public static class EventBoolean {
-        public boolean mBoolean;
-        public String mId;
+	public EventString(String text) {
+	   this.mString = text;
+	}
+   }
+   public static class EventBoolean {
+	public boolean mBoolean;
+	public String mId;
 
-        public EventBoolean(boolean booleans,String id) {
-            this.mBoolean = booleans;
-            this.mId = id;
-        }
-    }
-    public static class EventToast {
-        public String mString;
+	public EventBoolean(boolean booleans,String id) {
+	   this.mBoolean = booleans;
+	   this.mId = id;
+	}
+   }
+   public static class EventToast {
+	public String mString;
 
-        public EventToast(String text) {
-            this.mString = text;
-        }
-    }
+	public EventToast(String text) {
+	   this.mString = text;
+	}
+   }
 
 
-    public static class EventRg {
-        public String mString;
+   public static class EventRg {
+	public String mString;
 
-        public EventRg(String text) {
-            this.mString = text;
-        }
-    }
+	public EventRg(String text) {
+	   this.mString = text;
+	}
+   }
 
-    /**
-     * 发送是否开门
-     */
-    public static class EventOppenDoor {
-        public String mString;
+   /**
+    * 发送是否开门
+    */
+   public static class EventOppenDoor {
+	public String mString;
 
-        public EventOppenDoor(String text) {
-            this.mString = text;
-        }
-    }
+	public EventOppenDoor(String text) {
+	   this.mString = text;
+	}
+   }
 }
