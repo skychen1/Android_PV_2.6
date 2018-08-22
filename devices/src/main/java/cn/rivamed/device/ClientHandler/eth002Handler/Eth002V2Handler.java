@@ -270,7 +270,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
                 }
             }
         }
-     //   SendCheckLockState();
+        SendCheckLockState();
     }
 
     private void ProcessDoorState(byte[] buf) {
