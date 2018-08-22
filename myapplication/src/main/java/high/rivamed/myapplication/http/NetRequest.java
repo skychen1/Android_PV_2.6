@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.http;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
@@ -395,7 +395,8 @@ public class NetRequest {
 //		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
 		netResult.onError(response.code()+"");
 	   }
-	   ToastUtils.showShort("请求失败  ("+response.code()+")");
+	   Toast.makeText(UIUtils.getContext(),"请求失败  ("+response.code()+")",Toast.LENGTH_SHORT).show();
+//	   ToastUtils.showShort("请求失败  ("+response.code()+")");
 
 	   if (dialog!=null){
 		dialog.mDialog.dismiss();

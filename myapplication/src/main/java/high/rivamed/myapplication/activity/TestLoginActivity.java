@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -38,6 +39,8 @@ public class TestLoginActivity extends SimpleActivity {
    TextView       mDialogLeft;
    @BindView(R.id.dialog_right)
    TextView       mDialogRight;
+   @BindView(R.id.intent_right)
+   TextView       mIntentRight;
    @BindView(R.id.login_all)
    RelativeLayout mLoginAll;
    private String mUserPhone;
@@ -49,7 +52,15 @@ public class TestLoginActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-
+      /*
+      跳转到小鹏的测试界面
+       */
+	mIntentRight.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View view) {
+		startActivity(new Intent(TestLoginActivity.this, TestDevicesActivity.class));
+	   }
+	});
    }
 
    @Override

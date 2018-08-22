@@ -54,7 +54,6 @@ import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
@@ -372,12 +371,12 @@ public class LoginActivity extends SimpleActivity {
 		continuousClick(COUNTS, DURATION);
 	   }
 	});
-	mDownText.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-		startActivity(new Intent(LoginActivity.this, TestDevicesActivity.class));
-	   }
-	});
+//	mDownText.setOnClickListener(new View.OnClickListener() {
+//	   @Override
+//	   public void onClick(View v) {
+//		startActivity(new Intent(LoginActivity.this, TestDevicesActivity.class));
+//	   }
+//	});
    }
 
    private void continuousClick(int count, long time) {

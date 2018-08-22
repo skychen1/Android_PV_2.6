@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "2.6.0.0.12"
+        versionName "2.6.0.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 //        ndk {
@@ -42,7 +42,8 @@ android {
         debug {
             buildConfigField "boolean", "API_ENV", "true"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+//            debuggable true
+            debuggable false
             minifyEnabled false
             signingConfig signingConfigs.debug_config
         }
