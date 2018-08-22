@@ -93,66 +93,70 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        continueIdleCount = 0;
-        ByteBuf in = (ByteBuf) msg;
-        if (in.getByte(0) != BEGIN_FLAG) {
-            in.readByte();
-            return;
-        }
+        try {
+            continueIdleCount = 0;
+            ByteBuf in = (ByteBuf) msg;
+            if (in.getByte(0) != BEGIN_FLAG) {
+                in.readByte();
+                return;
+            }
 
-        if (in.readableBytes() <= 4) {
-            return;
-        }
+            if (in.readableBytes() <= 4) {
+                return;
+            }
 
 
-        int bufLen = in.getByte(1) * 256 + in.getByte(2);
-        int needBufLen = bufLen + 3;
+            int bufLen = in.getByte(1) * 256 + in.getByte(2);
+            int needBufLen = bufLen + 3;
 
-        if ((bufLen + 3) < in.readableBytes()) {
-            return;
-        }
+            if ((bufLen + 3) < in.readableBytes()) {
+                return;
+            }
 
-        byte[] buf = new byte[needBufLen];
+            byte[] buf = new byte[needBufLen];
 
-        in.readBytes(buf);
-        String s = Transfer.Byte2String(buf);
-        Log.d(LOG_TAG, "接收到客户端" + getIdentification() + "发送的消息,总长度为" + needBufLen + "消息内容为" + s);
-        if (buf[0] != BEGIN_FLAG || (buf[buf.length - 1] & 0xff) != DataProtocol.CheckSum(buf, 0, buf.length - 1)) {
-            Log.w(LOG_TAG, "对客户端" + getIdentification() + "的消息校验不通过，消息体=" + s + "\r 将强制断开设备");
-            Close();
-            return;
-        }
+            in.readBytes(buf);
+            String s = Transfer.Byte2String(buf);
+            Log.d(LOG_TAG, "接收到客户端" + getIdentification() + "发送的消息,总长度为" + needBufLen + "消息内容为" + s);
+            if (buf[0] != BEGIN_FLAG || (buf[buf.length - 1] & 0xff) != DataProtocol.CheckSum(buf, 0, buf.length - 1)) {
+                Log.w(LOG_TAG, "对客户端" + getIdentification() + "的消息校验不通过，消息体=" + s + "\r 将强制断开设备");
+                Close();
+                return;
+            }
 
-        switch (buf[3]) {  //对应  tar / src  位，协议中第4位 （头和len（2位）之后第一位
-            case 0x00: //来自模块本身
-                ProcessModelMessage(buf);
-                break;
-            case 0x01://IO
-                ProcessIOData(buf);
-                break;
-            case 0x02://串口1
-                ProcessIdCard(buf);
-                break;
-            case 0x03: //串口2
-                ProcessFingerData(buf);
-                break;
-        }
+            switch (buf[3]) {  //对应  tar / src  位，协议中第4位 （头和len（2位）之后第一位
+                case 0x00: //来自模块本身
+                    ProcessModelMessage(buf);
+                    break;
+                case 0x01://IO
+                    ProcessIOData(buf);
+                    break;
+                case 0x02://串口1
+                    ProcessIdCard(buf);
+                    break;
+                case 0x03: //串口2
+                    ProcessFingerData(buf);
+                    break;
+            }
 
-        //计算时间差
-        {
-            long intenval = ((new Date()).getTime() - lastFingerData.getTime()) / 1000;
+            //计算时间差
+            {
+                long intenval = ((new Date()).getTime() - lastFingerData.getTime()) / 1000;
 
-            if (intenval > 5 * 60) {
-                if (messageListener != null) {
-                    messageListener.FingerDeviceError(true);
-                }
-                fingerData.clear();
-                if (waitFingerReg) {
-                    SendFingerRegister();
-                } else {
-                    SendFingerGetImage();
+                if (intenval > 5 * 60) {
+                    if (messageListener != null) {
+                        messageListener.FingerDeviceError(true);
+                    }
+                    fingerData.clear();
+                    if (waitFingerReg) {
+                        SendFingerRegister();
+                    } else {
+                        SendFingerGetImage();
+                    }
                 }
             }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.getMessage());
         }
     }
 
@@ -253,7 +257,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
                 }
             }
         }
-        SendCheckLockState();
+     //   SendCheckLockState();
     }
 
     private void ProcessDoorClosed(byte[] buf) {
@@ -266,7 +270,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
                 }
             }
         }
-        SendCheckLockState();
+     //   SendCheckLockState();
     }
 
     private void ProcessDoorState(byte[] buf) {
@@ -577,7 +581,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
             return FunctionCode.DEVICE_BUSY;
         }
         try {
-            waitFingerReg=true;
+            waitFingerReg = true;
             return FunctionCode.SUCCESS;
         } catch (Exception ex) {
             Log.e(LOG_TAG, "发送关门消息发生错误,message=", ex);
