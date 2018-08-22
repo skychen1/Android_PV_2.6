@@ -44,7 +44,8 @@ android {
         debug {
             buildConfigField "boolean", "API_ENV", "true"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+//            debuggable true
+            debuggable false
             minifyEnabled false
             signingConfig signingConfigs.debug_config
         }
@@ -96,6 +97,8 @@ dependencies {
     implementation 'org.litepal.android:core:2.0.0'
     //    implementation project( ':devices')
     implementation project(path: ':devices')
+    //侧滑
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

@@ -53,7 +53,7 @@ public class App extends Application {
     */
    private static ACache  mAppCache;
 
-   public static String MAIN_URL=null;
+   public static String MAIN_URL = null;
 
    public static Handler getHandler() {
 	return mHandler;
@@ -82,21 +82,18 @@ public class App extends Application {
 	mAppCache = ACache.get(UIUtils.getContext());
 	Logger.addLogAdapter(new AndroidLogAdapter());
 
-
 	initBugly();
 
 	initOkGo();
 
 	InitDeviceService();
-	MAIN_URL=SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	LogcatHelper.getInstance(this).start();
    }
 
    public static void InitDeviceService() {
-	boolean b = DeviceManager.getInstance()
-		.StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
-//	LogUtils.i("ContentConsumeOperateFrag","InitDeviceService     "+b);
-//		DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU, 8010);
+	DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
+
 	DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
    }
 
@@ -122,8 +119,6 @@ public class App extends Application {
    public ACache getAppCache() {
 	return mAppCache;
    }
-
-
 
    /**
     * 加载网络框架

@@ -167,7 +167,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	mBuilder = DialogUtils.showLoading(mContext);
+//	mBuilder = DialogUtils.showLoading(mContext);
 	mSearchTypeDb.setVisibility(View.GONE);
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -282,51 +282,51 @@ public class RunWatePagerFrag extends SimpleFragment {
 		switch (checkedId) {
 		   case R.id.search_type_all://全部
 			mStatus = null;
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_hous://入库
 			mStatus = "2";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_use://领用
 			mStatus = "3";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_info://移入
 			mStatus = "10";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_out://移出
 			mStatus = "9";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_return://退回
 			mStatus = "7";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_return_goods://退货
 			mStatus = "8";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_db://调拨
 			mStatus = "11";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_thzc://退货暂存
 			mStatus = "12";
-			mBuilder.create().show();
+//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		}
@@ -408,14 +408,14 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mLinearLayout.addView(mHeadView);
 			   mWatePageAdapter.notifyDataSetChanged();
 			}
-			mBuilder.mDialog.dismiss();
+//			mBuilder.mDialog.dismiss();
 			LogUtils.i(TAG, "deviceCode:" + deviceCode + "   " + result);
 		   }
 
 		   @Override
 		   public void onError(String result) {
 			LogUtils.i(TAG, "result:" + deviceCode + "   " + result);
-			mBuilder.mDialog.dismiss();
+//			mBuilder.mDialog.dismiss();
 		   }
 		});
    }

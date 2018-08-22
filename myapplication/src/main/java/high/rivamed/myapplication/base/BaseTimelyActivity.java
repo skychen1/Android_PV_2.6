@@ -611,7 +611,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mTimelyOpenDoor.setVisibility(View.VISIBLE);
-	mBaseTabBack.setVisibility(View.GONE);
+	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);

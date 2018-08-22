@@ -63,7 +63,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
@@ -290,7 +289,7 @@ public class LoginActivity extends SimpleActivity {
 			mContext.startActivity(intent);
 			mContext.finish();
 		   }else {
-			ToastUtils.showShort("登录验证失败");
+			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -300,7 +299,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
-		ToastUtils.showShort("登录失败");
+		Toast.makeText(mContext, "登录失败", Toast.LENGTH_LONG).show();
 	   }
 	});
 
@@ -329,7 +328,7 @@ public class LoginActivity extends SimpleActivity {
 			mContext.startActivity(intent);
 			mContext.finish();
 		   }else {
-			ToastUtils.showShort("登录验证失败");
+			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -339,7 +338,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
-		ToastUtils.showShort("登录失败");
+		Toast.makeText(mContext, "登录失败", Toast.LENGTH_LONG).show();
 	   }
 	});
 

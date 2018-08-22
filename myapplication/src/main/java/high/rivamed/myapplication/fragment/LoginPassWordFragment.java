@@ -18,11 +18,9 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -104,7 +102,7 @@ public class LoginPassWordFragment extends SimpleFragment {
      * 获取登录
      */
     private void loadLogin() {
-        mBuilder = DialogUtils.showLoading(mContext);
+//        mBuilder = DialogUtils.showLoading(mContext);
         UserLoginDto userLoginDto = new UserLoginDto();
         UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
         accountBean.setAccountName(mUserPhone);
@@ -125,19 +123,19 @@ public class LoginPassWordFragment extends SimpleFragment {
                         mContext.startActivity(intent);
                         mContext.finish();
                     }else {
-                        ToastUtils.showShort("登录失败");
+                        Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-                mBuilder.mDialog.dismiss();
+//                mBuilder.mDialog.dismiss();
             }
 
             @Override
             public void onError(String result) {
-                super.onError(result);
-                ToastUtils.showShort("登录失败" + result);
-                mBuilder.mDialog.dismiss();
+                LogUtils.i("BaseSimpleFragment","登录失败  "+result);
+                Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
+//                mBuilder.mDialog.dismiss();
             }
         });
     }

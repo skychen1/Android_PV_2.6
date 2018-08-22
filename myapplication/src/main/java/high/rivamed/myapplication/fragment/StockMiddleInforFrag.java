@@ -22,7 +22,6 @@ import high.rivamed.myapplication.bean.SocketLeftDownBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_MIDDLE;
@@ -71,7 +70,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mBuilder = DialogUtils.showLoading(mContext);
+//	mBuilder = DialogUtils.showLoading(mContext);
 	getMiddleDate();
 
    }
@@ -93,7 +92,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	NetRequest.getInstance().loadBoxSize(mContext, mBuilder,new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		mBuilder.mDialog.dismiss();
+//		mBuilder.mDialog.dismiss();
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
@@ -102,13 +101,13 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	   }
 	   @Override
 	   public void onError(String result) {
-		mBuilder.mDialog.dismiss();
+//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }
 
    private void onSucceedDate() {
-	mBuilder.mDialog.dismiss();
+//	mBuilder.mDialog.dismiss();
 
 	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
 	mCttimecheckViewpager.setAdapter(mPagerAdapter);
@@ -141,7 +140,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	   }
 
 	   mStockLeftAlltop.setVisibility(View.GONE);
-	   mBuilder.mDialog.dismiss();
+//	   mBuilder.mDialog.dismiss();
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE,deviceCode);
 
 	}

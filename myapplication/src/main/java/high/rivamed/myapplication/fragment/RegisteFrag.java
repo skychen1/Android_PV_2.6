@@ -604,6 +604,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
 				@Override
 				public void onError(String result) {
+				   LogUtils.i(TAG, "服务器异常   " + result);
 				   ToastUtils.showShort("服务器异常，请检查网络！");
 				}
 			   });

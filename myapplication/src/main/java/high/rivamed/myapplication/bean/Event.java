@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 import java.util.List;
+import java.util.Map;
 
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 /**
@@ -215,6 +217,19 @@ public class Event {
 
 	public EventOppenDoor(String text) {
 	   this.mString = text;
+	}
+   }
+
+   /**
+    * 硬件
+    */
+   public static class EventDeviceCallBack {
+	public String deviceId;
+	public Map<String, List<TagInfo>> epcs;
+
+	public EventDeviceCallBack(String deviceId, Map<String, List<TagInfo>> epcs) {
+	   this.deviceId = deviceId;
+	   this.epcs = epcs;
 	}
    }
 }

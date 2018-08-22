@@ -11,8 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
@@ -75,6 +77,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private String                uhfDeviceId;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
    private int mIntentType;
+   private List<String> mEthDeviceId;
 
    /**
     * dialog操作数据
@@ -103,8 +106,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    public void onStart() {
-	super.onStart();
 	initCallBack();
+	super.onStart();
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
@@ -159,10 +162,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   mShowLoading = DialogUtils.showLoading(mContext);
+//		   mShowLoading = DialogUtils.showLoading(mContext);
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 
+		   LogUtils.i(TAG,"mGson.toJson(mTCstInventoryDto)    "+mGson.toJson(mTCstInventoryDto));
 		   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 		   for (DeviceInventoryVo deviceInventoryVo:deviceInventoryVos){
 			String deviceCode = deviceInventoryVo.getDeviceCode();
@@ -251,10 +255,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = DeviceManager.getInstance().StartUhfScan(device_id);
-		if (i == 100) {
-		   ToastUtils.showShort("扫描失败，请重试！");
-		   mShowLoading.mDialog.dismiss();
-		}
+
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
 	}
@@ -393,14 +394,17 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-		LogUtils.i(TAG, "OnDoorClosed  " + success);
+		LogUtils.i(TAG, "OnDoorClosed  " + success+"    deviceIndentify   "+deviceIndentify);
+//		mEthDeviceId = DevicesUtils.getEthDeviceId();
+//		//遍历已连接的设备，查看是否都是关闭状态
+//		for (String deviceId : mEthDeviceId) {
+//		   DeviceManager.getInstance().CheckDoorState(deviceId);
+//		}
+
 		runOnUiThread(new Runnable() {
 		   @Override
 		   public void run() {
-//		      if (mShowLoading!=null){
-//			   mShowLoading = DialogUtils.showLoading(mContext);
-//			}
-//			ToastUtils.showUiToast(InOutBoxTwoActivity.this,"请稍后");
+
 			if (mTimelyLeft!=null&&mTimelyRight!=null){
 			   mTimelyLeft.setEnabled(true);
 			   mTimelyRight.setEnabled(true);
@@ -412,6 +416,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+
+//		for (String deviceId : mEthDeviceId) {
+//		   if (!opened && deviceIndentify.equals(deviceId)) {
+//			LogUtils.i(TAG, "    deviceIndentify   "+deviceIndentify);
+//			startScan(deviceIndentify);
+//		   }
+//		}
 	   }
 
 	   @Override
@@ -425,7 +436,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
 		if (!success) {
-		   ToastUtils.showShort("扫描失败，请重试！");
+//		   ToastUtils.showShort("扫描失败，请重试！");
 		}
 
 		LogUtils.i(TAG, "再次扫描OnUhfScanComplete  " + success);
@@ -477,7 +488,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
-
+	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
@@ -518,7 +529,27 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		}
 	   }, 3000);
 	} else {
+	   LogUtils.i(TAG, "mTsfsfsfss   " + mGson.toJson(mTCstInventoryTwoDto));
 	   LogUtils.i(TAG, "mActivityType   " + mActivityType);
+	   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+	   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
+
+	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
+	   set.addAll(deviceInventoryVos);
+	   set.addAll(deviceInventoryVos1);
+	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   tCstInventoryVos1.removeAll(tCstInventoryVos);
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
+	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+
+	   LogUtils.i(TAG, "mTCstInventoryDtosssss   " + mGson.toJson(mTCstInventoryDto));
+
+	   LogUtils.i(TAG, "mTCstInventoryTwoDtosssss   " + mGson.toJson(mTCstInventoryTwoDto));
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
 	}

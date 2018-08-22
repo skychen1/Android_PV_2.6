@@ -23,7 +23,6 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
@@ -70,7 +69,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mBuilder = DialogUtils.showLoading(mContext);
+//	mBuilder = DialogUtils.showLoading(mContext);
 	getLeftDate();
 
    }
@@ -99,13 +98,13 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	   }
 	   @Override
 	   public void onError(String result) {
-		mBuilder.mDialog.dismiss();
+//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }
 
    private void onSucceedDate() {
-	mBuilder.mDialog.dismiss();
+//	mBuilder.mDialog.dismiss();
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = mLeftTopBean.getCstExpirationVos();
@@ -153,7 +152,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		deviceCode = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceCode();
 	   }
 	   mStockLeftAlltop.setVisibility(View.VISIBLE);
-	   mBuilder.mDialog.dismiss();
+//	   mBuilder.mDialog.dismiss();
 
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, deviceCode);
 

@@ -29,7 +29,6 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -118,7 +117,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mBuilder = DialogUtils.showLoading(mContext);
+//	mBuilder = DialogUtils.showLoading(mContext);
 	initData();
 
    }
@@ -161,7 +160,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 			mTbaseDevices.add(0, devicesBean1);
 		   }
 
-		   mBuilder.mDialog.dismiss();
+//		   mBuilder.mDialog.dismiss();
 		   ArrayList<Fragment> fragments = new ArrayList<>();
 		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
 
@@ -178,7 +177,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void onError(String result) {
-		mBuilder.mDialog.dismiss();
+//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }

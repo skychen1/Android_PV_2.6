@@ -27,8 +27,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
@@ -36,20 +34,20 @@ import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
+import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -65,11 +63,9 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_0011;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
-import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -163,6 +159,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
    }
    @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onCallBackEvent(Event.EventDeviceCallBack event) {
+	getDeviceDate(event.deviceId, event.epcs);
+   }
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOppenDoorEvent(Event.EventOppenDoor event) {
 	mOppenDoor = event.mString;
 
@@ -176,17 +177,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		public void run() {
 		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
 		   if (mOppenDoor==null&&eth002DeviceId!=null){
-			DeviceManager.getInstance().UnRegisterDeviceCallBack();
-			initCallBack();
+//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//			initCallBack();
 			DeviceManager.getInstance().OpenDoor(event.mId);
 			//			EventBusUtils.post(new Event.EventBoolean(true,event.mId));
 		   } else {
 			LogUtils.i(TAG, "EventBoolean  进来2");
-			DeviceManager.getInstance().UnRegisterDeviceCallBack();
-			initCallBack();
-			if (mShowLoading != null) {
-			   mShowLoading.mDialog.dismiss();
-			}
+//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//			initCallBack();
+//			if (mShowLoading != null) {
+//			   mShowLoading.mDialog.dismiss();
+//			}
 			mOppenDoor=null;
 		   }
 		}
@@ -202,11 +203,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
-	   initCallBack();
+	   AllDeviceCallBack.getInstance().initCallBack();
 	   initData();
 	}else {
 	   LogUtils.i(TAG,"UnRegisterDeviceCallBack");
-	   DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//	   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 	}
    }
 
@@ -219,10 +220,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-	ToastUtils.showUiToast(mContext, event.mString);
-	if (mShowLoading != null) {
-	   mShowLoading.mDialog.dismiss();
-	}
+	ToastUtils.showShort(event.mString);
+//	if (mShowLoading != null) {
+//	   mShowLoading.mDialog.dismiss();
+//	}
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -233,7 +234,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mPatientId = event.id;
 	   LogUtils.i(TAG, "mPatientName   " + mPatientName);
 	   LogUtils.i(TAG, "mPatientId   " + mPatientId);
-	   openDoor(event.position, event.mTbaseDevices);
+	   AllDeviceCallBack.getInstance().openDoor(event.position, event.mTbaseDevices);
 	} else {
 	   String type = event.type;
 	   String mString = event.mString;
@@ -265,200 +266,199 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	EventBusUtils.register(this);
 //	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
-	initCallBack();
+//	initCallBack();
+	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	initData();
 
    }
 
+//
+//   private void initCallBack() {
+//	LogUtils.i(TAG, "initCallBack 进入  "+(DeviceManager.getInstance()==null ));
+//
+//	App.InitDeviceService();
+//	DeviceManager.getInstance().RegisterDeviceCallBack(new AllDeviceCallBack() {
+//	   @Override
+//	   public void OnDeviceConnected(
+//		   DeviceType deviceType, String deviceIndentify) {
+//		LogUtils.i(TAG, "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
+//		if (deviceType == DeviceType.UHFREADER) {
+//		   uhfDeviceId = deviceIndentify;
+//		   LogUtils.i(TAG, "uhfDevice   " + uhfDeviceId);
+//		} else if (deviceType == DeviceType.Eth002) {
+//		   eth002DeviceId = deviceIndentify;
+//		}
+//	   }
+//
+//	   @Override
+//	   public void OnDeviceDisConnected(
+//		   DeviceType deviceType, String deviceIndentify) {
+//		LogUtils.i(TAG, "设备已断开：" + deviceType + ":::ID=" + deviceIndentify);
+//	   }
+//
+//	   @Override
+//	   public void OnCheckState(
+//		   DeviceType deviceType, String deviceId, Integer code) {
+//		LogUtils.i(TAG, "检查门锁开关：" + deviceType + ":::ID=" + deviceId + ":::RET=" + code);
+//	   }
+//
+//	   @Override
+//	   public void OnIDCard(String deviceId, String idCard) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnFingerFea(String deviceId, String fingerFea) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnFingerRegExcuted(String deviceId, boolean success) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnDoorOpened(String deviceIndentify, boolean success) {
+//		//目前设备监控开门success有可能出现错误   都设置成true
+//		EventBusUtils.post(new Event.EventOppenDoor("true"));
+//		LogUtils.i(TAG, "开门结果  开门     " + success);
+//		if (success) {
+//		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开"));
+//		} else {
+//		   //		   if (mShowLoading != null) {
+//		   //			mShowLoading.mDialog.dismiss();
+//		   //		   }
+//		   //		   ToastUtils.showShort("开门异常，请重试！");
+//		}
+//	   }
+//
+//	   @Override
+//	   public void OnDoorClosed(String deviceIndentify, boolean success) {
+//		mEthDeviceId = DevicesUtils.getEthDeviceId();
+//		//遍历已连接的设备，查看是否都是关闭状态
+//		for (String deviceId : mEthDeviceId) {
+//		   DeviceManager.getInstance().CheckDoorState(deviceId);
+//		}
+//		LogUtils.i(TAG, "门锁已关闭：    " + success);
+//
+//	   }
+//
+//	   @Override
+//	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+//		mEthDeviceId = DevicesUtils.getEthDeviceId();
+//	      for (String deviceId : mEthDeviceId) {
+//		   LogUtils.i(TAG, "deviceIndentify：    " +deviceIndentify+"    opened    "+ opened);
+//		   LogUtils.i(TAG, "deviceId：    " +deviceId);
+//		   if (!opened && deviceIndentify.equals(deviceId)) {
+//			LogUtils.i(TAG, "!opened：    " +!opened+   "     "+deviceIndentify.equals(deviceId));
+//			clossDoorStartScan(deviceIndentify);
+//		   }else {
+//			LogUtils.i(TAG, "没关门：    " +deviceId);
+//		   }
+//		}
+//	   }
+//
+//	   @Override
+//	   public void OnUhfScanRet(
+//		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
+//		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
+//		if (!success) {
+//		   ToastUtils.showUiToast(_mActivity, "扫描失败，请重试！");
+//		}
+//		getDeviceDate(deviceId, epcs);
+//
+//	   }
+//
+//	   @Override
+//	   public void OnUhfScanComplete(boolean success, String deviceId) {
+//		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
+//	   }
+//
+//	   @Override
+//	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
+//
+//	   }
+//
+//	   @Override
+//	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+//
+//	   }
+//	});
+//   }
 
-   private void initCallBack() {
-	LogUtils.i(TAG, "initCallBack 进入  "+(DeviceManager.getInstance()==null ));
+//   /**
+//    * 柜门检测关闭后进行扫描
+//    * @param deviceIndentify
+//    */
+//   private void clossDoorStartScan(String deviceIndentify) {
+//	if (mReaderIdList.size() == 0) {
+//	   new Thread(new Runnable() {
+//		@Override
+//		public void run() {
+//		   try {
+//			Thread.currentThread().sleep(4000);
+//			setReaderList();
+//			if (mReaderIdList.size() == 0) {
+//			   LogUtils.i(TAG, "走了");
+//
+//			   if (mBuilder != null) {
+//				mBuilder.mDialog.dismiss();
+//			   }
+//			   EventBusUtils.postSticky(
+//				   new Event.EventToast("reader未启动，请重新开关柜门"));
+//
+//			} else {
+//			   startScan(deviceIndentify);
+//			}
+//		   } catch (InterruptedException e) {
+//			e.printStackTrace();
+//		   }
+//		}
+//
+//	   }).start();
+//
+//	} else {
+//	   startScan(deviceIndentify);
+//	}
+//   }
 
-	App.InitDeviceService();
-	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
-	   @Override
-	   public void OnDeviceConnected(
-		   DeviceType deviceType, String deviceIndentify) {
-		LogUtils.i(TAG, "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
-		if (deviceType == DeviceType.UHFREADER) {
-		   uhfDeviceId = deviceIndentify;
-		   LogUtils.i(TAG, "uhfDevice   " + uhfDeviceId);
-		} else if (deviceType == DeviceType.Eth002) {
-		   eth002DeviceId = deviceIndentify;
-		}
-	   }
-
-	   @Override
-	   public void OnDeviceDisConnected(
-		   DeviceType deviceType, String deviceIndentify) {
-		LogUtils.i(TAG, "设备已断开：" + deviceType + ":::ID=" + deviceIndentify);
-	   }
-
-	   @Override
-	   public void OnCheckState(
-		   DeviceType deviceType, String deviceId, Integer code) {
-		LogUtils.i(TAG, "检查门锁开关：" + deviceType + ":::ID=" + deviceId + ":::RET=" + code);
-	   }
-
-	   @Override
-	   public void OnIDCard(String deviceId, String idCard) {
-
-	   }
-
-	   @Override
-	   public void OnFingerFea(String deviceId, String fingerFea) {
-
-	   }
-
-	   @Override
-	   public void OnFingerRegExcuted(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-	   }
-
-	   @Override
-	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-		//目前设备监控开门success有可能出现错误   都设置成true
-		EventBusUtils.post(new Event.EventOppenDoor("true"));
-		LogUtils.i(TAG, "开门结果  开门     " + success);
-		if (success) {
-		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开"));
-		} else {
-		   //		   if (mShowLoading != null) {
-		   //			mShowLoading.mDialog.dismiss();
-		   //		   }
-		   //		   ToastUtils.showShort("开门异常，请重试！");
-		}
-	   }
-
-	   @Override
-	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-		mEthDeviceId = DevicesUtils.getEthDeviceId();
-		//遍历已连接的设备，查看是否都是关闭状态
-		for (String deviceId : mEthDeviceId) {
-		   DeviceManager.getInstance().CheckDoorState(deviceId);
-		}
-		LogUtils.i(TAG, "门锁已关闭：    " + success);
-
-	   }
-
-	   @Override
-	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-
-
-	      for (String deviceId : mEthDeviceId) {
-		   if (!opened && deviceIndentify.equals(deviceId)) {
-			clossDoorStartScan(deviceIndentify);
-		   }
-		}
-	   }
-
-	   @Override
-	   public void OnUhfScanRet(
-		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
-		if (!success) {
-		   ToastUtils.showUiToast(_mActivity, "扫描失败，请重试！");
-		}
-		getDeviceDate(deviceId, epcs);
-
-	   }
-
-	   @Override
-	   public void OnUhfScanComplete(boolean success, String deviceId) {
-		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
-	   }
-
-	   @Override
-	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-	   }
-
-	   @Override
-	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-
-	   }
-	});
-   }
-
-   /**
-    * 柜门检测关闭后进行扫描
-    * @param deviceIndentify
-    */
-   private void clossDoorStartScan(String deviceIndentify) {
-	if (mReaderIdList.size() == 0) {
-
-	   new Thread(new Runnable() {
-		@Override
-		public void run() {
-
-		   try {
-			Thread.currentThread().sleep(4000);
-			setReaderList();
-			if (mReaderIdList.size() == 0) {
-			   LogUtils.i(TAG, "走了");
-			   if (mShowLoading != null) {
-				mShowLoading.mDialog.dismiss();
-			   }
-			   if (mBuilder != null) {
-				mBuilder.mDialog.dismiss();
-			   }
-			   EventBusUtils.postSticky(
-				   new Event.EventToast("reader未启动，请重新开关柜门"));
-			} else {
-			   startScan(deviceIndentify);
-			}
-		   } catch (InterruptedException e) {
-			e.printStackTrace();
-		   }
-		}
-
-	   }).start();
-
-	} else {
-	   if (mShowLoading != null) {
-		mShowLoading.mDialog.dismiss();
-	   }
-	   startScan(deviceIndentify);
-	}
-   }
-
-   /**
-    * 正式开始扫描
-    * @param deviceIndentify
-    */
-   private void startScan(String deviceIndentify) {
-
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 UHF_TYPE).find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id);
-		LogUtils.i(TAG, "开始扫描了状态    " + i);
-	   }
-	}
-   }
+//   /**
+//    * 正式开始扫描
+//    * @param deviceIndentify
+//    */
+//   private void startScan(String deviceIndentify) {
+//
+//	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+//								 UHF_TYPE).find(BoxIdBean.class);
+//	for (BoxIdBean boxIdBean : boxIdBeans) {
+//	   String box_id = boxIdBean.getBox_id();
+//	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+//		   .find(BoxIdBean.class);
+//	   for (BoxIdBean deviceid : deviceBean) {
+//		String device_id = deviceid.getDevice_id();
+//		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+//		LogUtils.i(TAG, "开始扫描了状态    " + i);
+//	   }
+//	}
+//   }
 
    /**
     * 扫描后传值
     */
 
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
-
+	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
 	List<TCstInventory> epcList = new ArrayList<>();
 
 	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
@@ -522,7 +522,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   EventBusUtils.postSticky(cstInventoryDto);
 
 		} else {//正常的领用或者其他正常操作
-		   mShowLoading.mDialog.dismiss();
+//		   mShowLoading.mDialog.dismiss();
 		   if (cstInventoryDto.gettCstInventoryVos() == null ||
 			 cstInventoryDto.gettCstInventoryVos().size() < 1) {
 			if (mBuilder != null) {
@@ -569,8 +569,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void initData() {
 	if (UIUtils.getConfigType(mContext, CONFIG_0011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
+//	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
+
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
+//	   mConsumeOpenallMiddle.setVisibility(View.GONE);
 	}
 	loadDate();
 
@@ -600,7 +603,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    //赋值
    private void onSucceedDate() {
 	LogUtils.i(TAG, "onSucceedDate");
-	mShowLoading.mDialog.dismiss();
 	//	mConsumeOpenallMiddle.setVisibility(View.GONE);//此处部分医院不需要可以隐藏  根据接口来
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
@@ -628,7 +630,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		//		if (mTbaseDevices2.size() <= 1) {
 		//		   openDoor(position, "top", mTbaseDevices2);
 		//		} else {
-		openDoor(position, mTbaseDevices);
+		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 		//		}
 
 		//		DeviceManager.getInstance().OpenDoor("xxx");
@@ -699,44 +701,44 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				loadBingDate("", position, mTbaseDevices);
 			   } else {
 				//不绑定患者
-				openDoor(position, mTbaseDevices);
+				AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   }
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_rk:
 			   mRbKey = 2;
 			   ToastUtils.showShort("入库！");//拿入
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yc:
 			   mRbKey = 9;
 			   ToastUtils.showShort("移出！");//拿出
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tb:
 			   mRbKey = 11;
 			   ToastUtils.showShort("调拨！");//拿出
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_yr:
 			   mRbKey = 10;
 			   ToastUtils.showShort("移入！");//拿入
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihui:
 			   mRbKey = 7;
 			   ToastUtils.showShort("退回！");//拿入
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 			case R.id.content_rb_tuihuo:
 			   mRbKey = 8;
 			   ToastUtils.showShort("退货！");//拿出
-			   openDoor(position, mTbaseDevices);
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   break;
 		   }
@@ -747,120 +749,127 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void onDestroy() {
-	if (mShowLoading != null) {
-	   mShowLoading.mDialog.dismiss();
-	}
+//	if (mShowLoading != null) {
+//	   mShowLoading.mDialog.dismiss();
+//	}
 	LogUtils.i(TAG,"onDestroy");
 	super.onDestroy();
    }
 
-   /**
-    * 开柜
-    * @param position
-    * @param mTbaseDevices
-    */
-   private void openDoor(
-	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	mShowLoading = DialogUtils.showLoading(mContext);
-	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
-	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-	if (mTbaseDevices.size() > 1) {//第一个为全部开柜
-	   if (position == 0) {
-		List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE)
-			.find(BoxIdBean.class);
-		mReaderMap = new HashMap<>();
-		for (BoxIdBean boxIdBean : boxIdBeans) {
-		   String device_id = boxIdBean.getDevice_id();
-		   String box_id = boxIdBean.getBox_id();
-		   mReaderMap.put(device_id, box_id);
-		}
-		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
-		}
-	   } else {
-		oneOpenBox(position, mTbaseDevices);
-	   }
-	} else {//只有一个柜子
-	   oneOpenBox(position, mTbaseDevices);
-	}
+//   /**
+//    * 开柜
+//    * @param position
+//    * @param mTbaseDevices
+//    */
+//   private void openDoor(
+//	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+////	mShowLoading = DialogUtils.showLoading(mContext);
+//	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+//	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+////	if (mTbaseDevices.size() > 1) {//第一个为全部开柜
+////	   if (position == 0) {
+////
+////		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+////		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+////		}
+////	   } else {
+////		oneOpenBox(position, mTbaseDevices);
+////	   }
+////	} else {//只有一个柜子
+//	   oneOpenBox(position, mTbaseDevices);
+////	}
+//
+//   }
 
-   }
+//   /**
+//    * 开单个柜子获得reader的标识
+//    * @param position
+//    * @param mTbaseDevices
+//    */
+//   private void oneOpenBox(
+//	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+//	BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
+//
+//
+//	if (mReaderIdList != null) {
+//	   mReaderIdList.clear();
+//	} else {
+//	   mReaderIdList = new ArrayList<>();
+//	}
+//	LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
+//	LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+//
+//	if (mTbaseDevices.size() > 1 && eth002DeviceIdList.size() > 1) {
+//	   if (position == 0) {//第一个为全部开柜
+//		LogUtils.i(TAG, " position   " + position);
+////		initCallBack();
+//		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+//		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+//		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+//		}
+//		setReaderList();
+//	   } else {
+//
+//		mDeviceCode = devicesBean.getDeviceCode();
+//		LogUtils.i(TAG, " DDD  mDeviceCode 1   " + mDeviceCode);
+//		queryDoorId();
+//	   }
+//	} else {
+//	   mDeviceCode = devicesBean.getDeviceCode();
+//	   LogUtils.i(TAG, " DDD  mDeviceCode 2   " + mDeviceCode);
+//	   queryDoorId();
+//	}
+//   }
 
-   /**
-    * 开单个柜子获得reader的标识
-    * @param position
-    * @param mTbaseDevices
-    */
-   private void oneOpenBox(
-	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
-	mDeviceCode = devicesBean.getDeviceCode();
-	if (mReaderIdList != null) {
-	   mReaderIdList.clear();
-	} else {
-	   mReaderIdList = new ArrayList<>();
-	}
-	LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
-	setReaderList();
-	LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+//   /**
+//    * 获取设备门锁ID，并开柜
+//    */
+//   private void queryDoorId() {
+//	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+//	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+//								    UHF_TYPE).find(BoxIdBean.class);
+//	   for (BoxIdBean boxIdBean : boxIdBeans) {
+//		String device_id = boxIdBean.getDevice_id();
+//		if (device_id.equals(eth002DeviceIdList.get(i))) {
+//		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+//		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
+//		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
+//		}
+//
+//	   }
+//	}
+//   }
 
-	if (mTbaseDevices.size() > 1 && eth002DeviceIdList.size() > 1) {
-	   if (position == 0) {//第一个为全部开柜
-		LogUtils.i(TAG, " position   " + position);
-		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-		   LogUtils.i(TAG,
-				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
-		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
-		}
-	   } else {
-		queryDoorId();
-	   }
-	} else {
-	   queryDoorId();
-	}
-   }
-
-   /**
-    * 获取设备门锁ID，并开柜
-    */
-   private void queryDoorId() {
-	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
-								    UHF_TYPE).find(BoxIdBean.class);
-	   for (BoxIdBean boxIdBean : boxIdBeans) {
-		String device_id = boxIdBean.getDevice_id();
-		if (device_id.equals(eth002DeviceIdList.get(i))) {
-		   LogUtils.i(TAG,
-				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
-		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
-		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
-		}
-
-	   }
-	}
-   }
-
-   private void setReaderList() {
-	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
-								 READER_TYPE).find(BoxIdBean.class);
-
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String device_id = boxIdBean.getDevice_id();
-	   LogUtils.i(TAG, "device_id   " + device_id);
-	   LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
-	   for (int i = 0; i < mReaderDeviceId.size(); i++) {
-		LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
-		if (mReaderDeviceId.get(i).equals(device_id)) {
-		   mReaderIdList.add(device_id);
-		   LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
-		}
-	   }
-	}
-   }
+//   private void setReaderList() {
+//      if (mDeviceCode==null){
+//	   for (int i = 0; i < mReaderDeviceId.size(); i++) {
+//		String DeviceId =(String)mReaderDeviceId.get(i);
+//		mReaderIdList.add(DeviceId);
+//	   }
+//	}else {
+//	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+//								    READER_TYPE).find(BoxIdBean.class);
+//
+//	   for (BoxIdBean boxIdBean : boxIdBeans) {
+//		String device_id = boxIdBean.getDevice_id();
+//		LogUtils.i(TAG, "device_id   " + device_id);
+//		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
+//		for (int i = 0; i < mReaderDeviceId.size(); i++) {
+//		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
+//		   if (mReaderDeviceId.get(i).equals(device_id)) {
+//			mReaderIdList.add(device_id);
+//			LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+//		   }
+//		}
+//	   }
+//	}
+//
+//   }
 
    @Override
    public void onPause() {
-      LogUtils.i(TAG,"onPause");
+      LogUtils.i(TAG,"onPauseSSSSS");
+//	DeviceManager.getInstance().UnRegisterDeviceCallBack();
 	super.onPause();
 
    }
@@ -915,8 +924,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
-		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												 BingFindSchedulesBean.class);
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result, BingFindSchedulesBean.class);
 		if (mPatientInfos != null) {
 		   mPatientInfos.clear();
 		   List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
