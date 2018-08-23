@@ -19,6 +19,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -204,5 +205,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "result   " + result);
 	   }
 	});
+   }
+
+   @Override
+   protected void onDestroy() {
+	EventBusUtils.postSticky(new Event.EventFrag("START1"));
+	super.onDestroy();
    }
 }

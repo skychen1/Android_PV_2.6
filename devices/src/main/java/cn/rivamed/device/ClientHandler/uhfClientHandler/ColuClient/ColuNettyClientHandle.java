@@ -39,43 +39,46 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // super.channelRead(ctx, msg);
+        try {
+            ByteBuf in = (ByteBuf) msg;
+            byte[] buf = new byte[in.readableBytes()];
+            in.readBytes(buf);
+            Log.d(LOG_TAG, "接收到消息" + Transfer.Byte2String(buf));
 
-        ByteBuf in = (ByteBuf) msg;
-        byte[] buf = new byte[in.readableBytes()];
-        in.readBytes(buf);
-        Log.d(LOG_TAG, "接收到消息" + Transfer.Byte2String(buf));
+            //计算校验码  判断校验码
+            byte[] crcCheckBuf = new byte[buf.length - 3];
+            System.arraycopy(buf, 1, crcCheckBuf, 0, crcCheckBuf.length);
+            byte[] crc = DataProtocol.CalcCRC16(crcCheckBuf, crcCheckBuf.length);
+            if (crc[0] != buf[buf.length - 2] || crc[1] != buf[buf.length - 1]) {
+                Log.w(LOG_TAG, "接收到的信息有误，校验码未通过  origin=" + Transfer.Byte2String(buf) + "||ji算的校验码=" + Transfer.Byte2String(crc));
+                return;
+            }
+            if (buf.length < 7) {
+                Log.e(LOG_TAG, "根据数据协议,消息长度最少为7,当前数据长度有误;origindata=" + Transfer.Byte2String(buf));
+                return;
+            }
+            switch (buf[1] & 0xf)  //  8-11位为消息类型
+            {
+                case DataProtocol.MSG_TYPE_READER_ERROR:
+                    break;
+                case DataProtocol.MSG_TYPE_READER_OPTION:
+                    ProcessReaderOption(buf);
+                    break;
+                case DataProtocol.MSG_TYPE_RFID_OPERATION:
+                    ProcessRfidOperation(buf);
+                    break;
+                case DataProtocol.MSG_TYPE_READER_LOG:
+                    break;
+                case DataProtocol.MSG_TYPE_READER_UPDATE:
+                    break;
+                case DataProtocol.MSG_TYPE_READER_TEST:
+                    break;
+                default:
+                    break;
 
-        //计算校验码  判断校验码
-        byte[] crcCheckBuf = new byte[buf.length - 3];
-        System.arraycopy(buf, 1, crcCheckBuf, 0, crcCheckBuf.length);
-        byte[] crc = DataProtocol.CalcCRC16(crcCheckBuf, crcCheckBuf.length);
-        if (crc[0] != buf[buf.length - 2] || crc[1] != buf[buf.length - 1]) {
-            Log.w(LOG_TAG, "接收到的信息有误，校验码未通过  origin=" + Transfer.Byte2String(buf) + "||ji算的校验码=" + Transfer.Byte2String(crc));
-            return;
-        }
-        if (buf.length < 7) {
-            Log.e(LOG_TAG, "根据数据协议,消息长度最少为7,当前数据长度有误;origindata=" + Transfer.Byte2String(buf));
-            return;
-        }
-        switch (buf[1] & 0xf)  //  8-11位为消息类型
-        {
-            case DataProtocol.MSG_TYPE_READER_ERROR:
-                break;
-            case DataProtocol.MSG_TYPE_READER_OPTION:
-                ProcessReaderOption(buf);
-                break;
-            case DataProtocol.MSG_TYPE_RFID_OPERATION:
-                ProcessRfidOperation(buf);
-                break;
-            case DataProtocol.MSG_TYPE_READER_LOG:
-                break;
-            case DataProtocol.MSG_TYPE_READER_UPDATE:
-                break;
-            case DataProtocol.MSG_TYPE_READER_TEST:
-                break;
-            default:
-                break;
-
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG,e.getMessage());
         }
     }
 
@@ -146,11 +149,11 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         byte[] data = getData(buf);
         if (data == null) return;
         if (data.length <= 0) {
-                   Log.d(LOG_TAG, "接收到心跳回复确认消息");
+            Log.d(LOG_TAG, "接收到心跳回复确认消息");
             return;
         } else {
             if (SendConnQuery(data)) {
-                           Log.d(LOG_TAG, "发送心跳回复成功");
+                Log.d(LOG_TAG, "发送心跳回复成功");
             }
         }
     }
@@ -340,7 +343,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         super.channelActive(ctx);
-        Log.d(LOG_TAG,"设备已连接"+ctx.channel().remoteAddress());
+        Log.d(LOG_TAG, "设备已连接" + ctx.channel().remoteAddress());
 
         try {
             Thread.sleep(500);
@@ -353,7 +356,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             sendQueryMac = 0;
             while (StringUtil.isNullOrEmpty(getIdentification())) {
                 if (sendQueryMac > 5) {
-                    Log.e(LOG_TAG,"超时未获取到MAC地址，将强制断开");
+                    Log.e(LOG_TAG, "超时未获取到MAC地址，将强制断开");
                     Close();
                     return;
                 }

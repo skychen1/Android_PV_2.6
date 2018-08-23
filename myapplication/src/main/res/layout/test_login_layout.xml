@@ -21,9 +21,6 @@
 		<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@drawable/selector_login_line_text"
-			android:button="@null"
-			android:checked="true"
 			android:gravity="center_horizontal"
 			android:paddingTop="@dimen/x70"
 			android:text="用户登录"
@@ -92,5 +89,9 @@
 				/>
 		</LinearLayout>
 	</LinearLayout>
-
+	<TextView
+		android:id="@+id/intent_right"
+		android:layout_width="@dimen/x100"
+		android:layout_height="@dimen/x100"
+		android:layout_alignParentRight="true"/>
 </RelativeLayout>
