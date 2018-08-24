@@ -2,13 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
-
-import com.alibaba.fastjson.JSON;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +12,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
-import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.vo.TempPatientVo;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -113,21 +105,6 @@ public class PatientConnActivity extends BaseTimelyActivity {
                     ToastUtils.showShort("请先选择患者");
                 }
                 break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onActivationEvent(Event.tempPatientEvent event) {
-
-        if (event.dialog != null) {
-            event.dialog.dismiss();
-            event.dialog = null;
-            Log.e("aaa", "JSON.toJSON(event):" + JSON.toJSON(event));
-
-            TempPatientVo tempPatientVo = new TempPatientVo();
-            tempPatientVo.setCstName(event.userName);
-            mTempPatientVoVos.add(0, tempPatientVo);
-            mTypeView.mTempPatientAdapter.notifyDataSetChanged();
         }
     }
 

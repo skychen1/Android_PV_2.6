@@ -40,9 +40,17 @@ public class Event {
 	}
    }
    public static class EventAct {
-	public String mString;
+	public String mString = "";
 
 	public EventAct(String trim) {
+	   this.mString = trim;
+	}
+   }
+
+   public static class EventClickBack {
+	public String mString;
+
+	public EventClickBack(String trim) {
 	   this.mString = trim;
 	}
    }

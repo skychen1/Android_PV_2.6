@@ -66,7 +66,7 @@ public interface NetApi {
     String URL_TIMELY_DETAIL = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
 
     //患者绑定
-    String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatients";//患者查询
+    String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findAllOperationSchedulePatients";//患者查询
     String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/saveGetPatientCst";//患者绑定
 
     //查询配置项

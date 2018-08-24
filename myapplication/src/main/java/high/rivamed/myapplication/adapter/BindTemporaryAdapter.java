@@ -11,12 +11,12 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TempPatientVo;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 
 /**
  * 创建临时患者
  */
-public class BindTemporaryAdapter extends BaseQuickAdapter<TempPatientVo, BaseViewHolder> {
+public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfosBean, BaseViewHolder> {
     SparseBooleanArray checkStates1;
     private TextView mSeven_two;
     private TextView mSeven_three;
@@ -24,21 +24,22 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<TempPatientVo, BaseVi
     private TextView mSeven_five;
     private TextView mSeven_six;
     private TextView mSeven_seven;
+    public int mCheckPosition;
 
     public BindTemporaryAdapter(
-            int layoutResId, List<TempPatientVo> data) {
+            int layoutResId, List<BingFindSchedulesBean.PatientInfosBean> data) {
         super(layoutResId, data);
     }
 
     public BindTemporaryAdapter(
-            int layout, List<TempPatientVo> tCstInventoryVos, SparseBooleanArray checkStates1) {
+            int layout, List<BingFindSchedulesBean.PatientInfosBean> tCstInventoryVos, SparseBooleanArray checkStates1) {
         super(layout, tCstInventoryVos);
         this.checkStates1 = checkStates1;
     }
 
     @Override
     protected void convert(
-            BaseViewHolder helper, TempPatientVo item) {
+            BaseViewHolder helper, BingFindSchedulesBean.PatientInfosBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
@@ -53,17 +54,21 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<TempPatientVo, BaseVi
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-        mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
-
-        mSeven_two.setText(item.getCstName());
-        mSeven_three.setText(item.getEpc());
-        mSeven_four.setText(item.getCstSpec());
-        mSeven_five.setText(item.getExpiration());
-        mSeven_six.setText(item.getDeviceName());
-        if (item.getPatientName() == null || item.getPatientName().length() < 1) {
-            mSeven_seven.setText("");
-        } else {
-            mSeven_seven.setText(item.getPatientName() + "/" + item.getPatientId());
+        boolean checked = checkStates1.get(helper.getAdapterPosition());
+        mCheckBox.setChecked(checked);
+        if (checked) {
+            mCheckPosition = helper.getAdapterPosition();
         }
+        mSeven_two.setText(item.getPatientName());
+        mSeven_three.setText(item.getPatientId());
+        mSeven_four.setText(item.getRequestDateTime());
+        mSeven_five.setText(item.getOperationSurgeonName());
+        mSeven_six.setText(item.getOperatingRoomNoName());
+        if ("virtual".equals(item.getPatientId())) {
+            mSeven_seven.setText("是");
+        } else {
+            mSeven_seven.setText("否");
+        }
+
     }
 }

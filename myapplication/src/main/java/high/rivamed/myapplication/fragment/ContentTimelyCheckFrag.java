@@ -199,7 +199,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    //
    //	@Override
    //	public CharSequence getPageTitle(int position) {
-   //	   return mTbaseDevices.get(position).getDeviceName();
+   //	   return mTemPTbaseDevices.get(position).getDeviceName();
    //	}
    //
    //	@Override

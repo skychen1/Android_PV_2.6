@@ -39,6 +39,16 @@ public class TCstInventoryVo implements Serializable {
     private String type;
     private String operationStatus;
 
+    private boolean isDelete;
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
+    }
+
     public String getOperationStatus() {
         return operationStatus;
     }

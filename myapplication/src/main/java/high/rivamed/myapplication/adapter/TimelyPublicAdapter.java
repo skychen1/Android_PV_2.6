@@ -20,7 +20,6 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Movie;
 
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
@@ -253,37 +252,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
                 mSeven_five.setText(item.five);
                 initTermOfValidity(helper, item.four, mSeven_four);
 
-            } else if (mType != null && mType.equals(ACT_TYPE_CONFIRM_HAOCAI)) {
-                mSeven_one = ((TextView) helper.getView(R.id.seven_one));
-                mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-                mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-                mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-                mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-                mSeven_six = (TextView) helper.getView(R.id.seven_six);
-                SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
-                swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
-                LinearLayout  delete = (LinearLayout) helper.getView(R.id.ll_delete);
-                mSeven_six.setVisibility(View.VISIBLE);
-                mSeven_one.setText(item.one);
-                mSeven_two.setText(item.two);
-                mSeven_three.setText(item.three);
-                mSeven_four.setText(item.four);
-                mSeven_five.setText(item.five);
-                mSeven_six.setText(item.six);
-                setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(),swipe);
-                delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Movie movie = mData.get(helper.getAdapterPosition());
-                        movie.setDelete(true);
-                        mData.remove(helper.getAdapterPosition());
-                        mData.add(movie);
-                        notifyDataSetChanged();
-                    }
-                });
-                //                initTermOfValidity(helper, item.four, mSeven_four);
-
-            } else if (mType != null && mType.equals(STYPE_MEAL_NOBING)) {
+            }  else if (mType != null && mType.equals(STYPE_MEAL_NOBING)) {
 
                 findId(helper, mSize);
                 mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));

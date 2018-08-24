@@ -133,7 +133,8 @@
                     android:paddingLeft="@dimen/x30"
                     android:paddingRight="@dimen/x30"
                     android:text="请选择患者绑定"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <TextView

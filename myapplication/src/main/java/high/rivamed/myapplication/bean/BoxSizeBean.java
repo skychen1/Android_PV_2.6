@@ -39,7 +39,7 @@ public class BoxSizeBean implements Serializable {
    public void setTbaseDevices(
 	   List<TbaseDevicesBean> tbaseDevices) { this.tbaseDevices = tbaseDevices;}
 
-   public static class TbaseDevicesBean {
+   public static class TbaseDevicesBean implements Serializable{
 
 	/**
 	 * baudrate : null

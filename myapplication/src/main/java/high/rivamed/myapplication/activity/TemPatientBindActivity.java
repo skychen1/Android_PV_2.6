@@ -3,8 +3,11 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -12,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,11 +24,12 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.vo.TempPatientVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -38,7 +43,6 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
 public class TemPatientBindActivity extends BaseTimelyActivity {
 
     private static final String TAG = "OutBoxBingActivity";
-    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
     private String mRvEventString;
 
     //    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -48,6 +52,9 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     //    }
     @BindView(R.id.dialog_right)
     TextView mDialogRight;
+    @BindView(R.id.search_et)
+    EditText mSearchEt;
+    public static List<BoxSizeBean.TbaseDevicesBean> mTemPTbaseDevices = new ArrayList<>();
 
     @Override
     public int getCompanyType() {
@@ -58,21 +65,45 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         super.initDataAndEvent(savedInstanceState);
+        mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
         mDialogRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = -1;
-                boolean isHaveChecked = false;
                 for (int i = 0; i < mTypeView.mCheckStates1.size(); i++) {
                     if (mTypeView.mCheckStates1.get(i)) {
                         position = i;
                     }
                 }
                 if (position != -1) {
-                    TemPatientBindActivity.this.startActivity(new Intent(TemPatientBindActivity.this, RecognizeActivity.class));
+//                    TemPatientBindActivity.this.startActivity(new Intent(TemPatientBindActivity.this, RecognizeActivity.class));
+                    String name = ((TextView)mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mCheckPosition).findViewById(R.id.seven_two)).getText().toString();
+                    String id = ((TextView)mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mCheckPosition).findViewById(R.id.seven_three)).getText().toString();
+                    EventBusUtils.postSticky(
+                            new Event.EventCheckbox(name, id, "firstBind", position, mTemPTbaseDevices));
                 } else {
                     ToastUtils.showShort("请先选择患者");
                 }
+            }
+        });
+
+        loadBingDate("");
+
+        mSearchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String trim = charSequence.toString().trim();
+                loadBingDate(trim);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -143,13 +174,13 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
             event.dialog = null;
             Log.e("aaa", "JSON.toJSON(event):" + JSON.toJSON(event));
 
-            TempPatientVo tempPatientVo = new TempPatientVo();
+            BingFindSchedulesBean.PatientInfosBean tempPatientVo = new BingFindSchedulesBean.PatientInfosBean();
 
-            tempPatientVo.setCstName(event.userName);
-            tempPatientVo.setEpc(event.idCard);
-            tempPatientVo.setCstSpec(event.time);
-            tempPatientVo.setDeviceName(event.roomNum);
-            mTempPatientVoVos.add(0, tempPatientVo);
+            tempPatientVo.setPatientName(event.userName);
+            tempPatientVo.setPatientId("virtual");
+            tempPatientVo.setRequestDateTime(event.time);
+            tempPatientVo.setOperatingRoomNoName(event.roomNum);
+            patientInfos.add(0, tempPatientVo);
             mTypeView.mTempPatientAdapter.notifyDataSetChanged();
         }
     }
@@ -164,10 +195,15 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
             public void onSucceed(String result) {
                 BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
                         BingFindSchedulesBean.class);
-                mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-                DialogUtils.showRvDialog(TemPatientBindActivity.this, mContext, mPatientInfos, "afterBind", -1, null);
-                LogUtils.i(TAG, "result   " + result);
+                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+                    patientInfos.clear();
+                    patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+                    mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+                }
+
+                LogUtils.i("TemPatientBindActivity", "result   " + result);
             }
         });
     }
+
 }

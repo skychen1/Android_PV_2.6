@@ -4,19 +4,36 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 
 /*
  识别耗材页面
@@ -24,6 +41,10 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE
 public class RecognizeActivity extends BaseTimelyActivity {
 
     private CountDownTimer mStart;
+    private int                                          mIntentType;
+    private static final String TAG = "RecognizeActivity";
+    private String mRvEventString;
+    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
 
     @Override
     public int getCompanyType() {
@@ -39,6 +60,30 @@ public class RecognizeActivity extends BaseTimelyActivity {
 //        mStart.start();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventBing(Event.EventCheckbox event) {
+        String patient = event.mString;
+        Log.i("ff", "mMovie  " + patient);
+        if (event.type != null && event.type.equals("firstBind")) {
+
+        } else {
+            if (patient != null) {
+                for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+                    mTCstInventoryVos.get(i).setPatientName(patient);
+                    mTCstInventoryVos.get(i).setPatientId(event.id);
+                }
+                mTimelyLeft.setEnabled(true);
+                mTimelyRight.setEnabled(true);
+                mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+            }
+        }
+
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRvEvent(Event.EventString event) {
+        mRvEventString = event.mString;
+        loadBingDate(mRvEventString);
+    }
     /* 定义一个倒计时的内部类 */
     private class TimeCount extends CountDownTimer {
 
@@ -52,9 +97,14 @@ public class RecognizeActivity extends BaseTimelyActivity {
 
         @Override
         public void onFinish() {// 计时完毕时触发
-            mContext.startActivity(new Intent(mContext, LoginActivity.class));
-            App.getInstance().removeALLActivity_();
-            ToastUtils.showShort("耗材领用成功");
+            if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
+                mIntentType = 2;//2确认并退出
+                loadBingFistDate(mIntentType);
+
+            } else {//后绑定的未绑定
+                int mType = 1;//1.8.3未绑定
+                DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+            }
         }
 
         @Override
@@ -111,20 +161,80 @@ public class RecognizeActivity extends BaseTimelyActivity {
                 mStart.cancel();
                 finish();
                 break;
-            case R.id.timely_start_btn:
+            case R.id.timely_start_btn://重新扫描
+                Log.d(TAG, "重新扫描");
+                EventBusUtils.postSticky(
+                        new Event.EventClickBack("RecognizeActivity"));
                 break;
             case R.id.timely_left:
                 //                DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", "");
-                finish();
-                ToastUtils.showShort("耗材领用成功");
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
+                        mIntentType = 1;//确认
+                        loadBingFistDate(mIntentType);
+                    } else {//后绑定的未绑定
+                        int mType = 1;//1.8.3未绑定
+                        DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+                    }
+                }
+
                 break;
             case R.id.timely_right:
                 mStart.cancel();
-                mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                App.getInstance().removeALLActivity_();
-                ToastUtils.showShort("耗材领用成功");
+
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
+                        mIntentType = 2;//2确认并退出
+                        loadBingFistDate(mIntentType);
+
+                    } else {//后绑定的未绑定
+                        int mType = 1;//1.8.3未绑定
+                        DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+                    }
+                }
                 break;
 
         }
     }
+
+    private void loadBingFistDate(int mIntentType) {
+        mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+        mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+        String toJson = mGson.toJson(mTCstInventoryDto);
+        LogUtils.i(TAG, "toJson  " + toJson);
+        NetRequest.getInstance().bingPatientsDate(toJson, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogUtils.i(TAG, "result   " + result);
+                ToastUtils.showShort("操作成功");
+                if (mIntentType==2){
+                    startActivity(new Intent(RecognizeActivity.this, LoginActivity.class));
+                    App.getInstance().removeALLActivity_();
+                }
+                finish();
+            }
+        });
+    }
+    /**
+     * 获取需要绑定的患者
+     */
+    private void loadBingDate(String optienNameOrId) {
+
+        NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+                        BingFindSchedulesBean.class);
+                mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+                DialogUtils.showRvDialog(RecognizeActivity.this, mContext, mPatientInfos, "afterBind",
+                        -1, null);
+                LogUtils.i(TAG, "result   " + result);
+            }
+        });
+    }
+
 }

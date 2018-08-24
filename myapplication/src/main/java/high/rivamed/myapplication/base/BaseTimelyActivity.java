@@ -27,11 +27,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
-import high.rivamed.myapplication.dto.vo.TempPatientVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -79,13 +79,13 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAIL
 
 public class BaseTimelyActivity extends BaseSimpleActivity {
 
-   private static final String TAG = "BaseTimelyActivity";
-   public int my_id;
-   public int mSize;
-   @BindView(R.id.timely_start_btn)
-   TextView mTimelyStartBtn;
-   @BindView(R.id.timely_open_door)
-   TextView mTimelyOpenDoor;
+    private static final String TAG = "BaseTimelyActivity";
+    public int my_id;
+    public int mSize;
+    @BindView(R.id.timely_start_btn)
+    TextView mTimelyStartBtn;
+    @BindView(R.id.timely_open_door)
+    TextView mTimelyOpenDoor;
     @BindView(R.id.ly_bing_btn)
     TextView mLyBingBtn;
     @BindView(R.id.timely_left)
@@ -119,41 +119,41 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.timely_rl_title)
-    RelativeLayout     mRelativeLayout;
+    RelativeLayout mRelativeLayout;
     @BindView(R.id.timely_ll_gone)
-    LinearLayout   mTimelyLlGone;
+    LinearLayout mTimelyLlGone;
     @BindView(R.id.timely_number_left)
-    TextView       mTimelyNumberLeft;
+    TextView mTimelyNumberLeft;
     @BindView(R.id.timely_start_btn_right)
-    TextView       mTimelyStartBtnRight;
+    TextView mTimelyStartBtnRight;
     @BindView(R.id.ly_bing_btn_right)
-    TextView       mLyBingBtnRight;
+    TextView mLyBingBtnRight;
     @BindView(R.id.timely_ll_gone_right)
-    LinearLayout   mTimelyLlGoneRight;
+    LinearLayout mTimelyLlGoneRight;
     @BindView(R.id.search_et)
-    EditText       mSearchEt;
+    EditText mSearchEt;
     @BindView(R.id.search_iv_delete)
-    ImageView      mSearchIvDelete;
+    ImageView mSearchIvDelete;
     @BindView(R.id.stock_search)
-    FrameLayout    mStockSearch;
+    FrameLayout mStockSearch;
     @BindView(R.id.ly_creat_temporary_btn)
-    TextView       mLyCreatTemporaryBtn;
+    TextView mLyCreatTemporaryBtn;
     @BindView(R.id.dialog_left)
-    TextView       mDialogLeft;
+    TextView mDialogLeft;
     @BindView(R.id.dialog_right)
-    TextView       mDialogRight;
+    TextView mDialogRight;
     @BindView(R.id.activity_down_btn_seven_ll)
-    LinearLayout   mActivityDownBtnSevenLl;
+    LinearLayout mActivityDownBtnSevenLl;
     @BindView(R.id.timely_rl)
-    LinearLayout   mTimelyRl;
+    LinearLayout mTimelyRl;
     @BindView(R.id.header)
     MaterialHeader mHeader;
     @BindView(R.id.public_ll)
-    LinearLayout   mPublicLl;
+    LinearLayout mPublicLl;
     @BindView(R.id.tv_patient_conn)
-    TextView       mTvPatientConn;
+    TextView mTvPatientConn;
     @BindView(R.id.activity_down_patient_conn)
-    LinearLayout   mActivityDownPatientConn;
+    LinearLayout mActivityDownPatientConn;
 
     private int mLayout;
     private View mHeadView;
@@ -165,198 +165,199 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
     private TCstInventoryVo mStockDetailsTopBean;
     private List<TCstInventoryVo> mStockDetailsDownList;
-    public List<TCstInventoryVo> mTCstInventoryVos; //入柜扫描到的epc信息
-    public List<TempPatientVo> mTempPatientVoVos = new ArrayList<>(); //入柜扫描到的epc信息
+    public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+    //    public List<TempPatientVo> mTempPatientVoVos = new ArrayList<>(); //入柜扫描到的epc信息
 
     //   public  List<InBoxDtoBean.TCstInventoryVosBean>     mTCstInventoryVos; //入柜扫描到的epc信息
     public TCstInventoryDto mTCstInventoryDto;
+    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
-   private TCstInventoryDto mDto;
-   private String mBindFirstType;
+    private TCstInventoryDto mDto;
+    private String mBindFirstType;
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEvent(Event.EventAct event) {
-	mActivityType = event.mString;
-	LogUtils.i(TAG, "  mActivityType    " + mActivityType);
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEvent(Event.EventAct event) {
+        mActivityType = event.mString;
+        LogUtils.i(TAG, "  mActivityType    " + mActivityType);
 
-   }
+    }
 
-   /**
-    * 盘点详情、盘亏、盘盈
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onTimelyEvent(Event.timelyDate event) {
-	String s = event.type;
-	mDto = event.tCstInventoryDto;
-	//	if (s.equals("详情")){
-	//	   loadTimelyDetailsDate();
-	//	}else if (s.equals("盘盈")){
-	//	   loadTimelyProfitDate(event.tCstInventoryDto);
-	//	}else if (s.equals("盘亏")){
-	//	   loadTimelyLossesDate(event.tCstInventoryDto);
-	//	}
-   }
+    /**
+     * 盘点详情、盘亏、盘盈
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onTimelyEvent(Event.timelyDate event) {
+        String s = event.type;
+        mDto = event.tCstInventoryDto;
+        //	if (s.equals("详情")){
+        //	   loadTimelyDetailsDate();
+        //	}else if (s.equals("盘盈")){
+        //	   loadTimelyProfitDate(event.tCstInventoryDto);
+        //	}else if (s.equals("盘亏")){
+        //	   loadTimelyLossesDate(event.tCstInventoryDto);
+        //	}
+    }
 
-   /**
-    * 获取盘亏数据
-    */
-   private void loadTimelyLossesDate() {
-	mBaseTabTvTitle.setText("盘亏耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+    /**
+     * 获取盘亏数据
+     */
+    private void loadTimelyLossesDate() {
+        mBaseTabTvTitle.setText("盘亏耗材详情");
+        List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
-	mTimelyNumber.setText(
-		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
+        mTimelyNumber.setText(
+                Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
+        String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
 
-	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY);
+        mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
+                mRecyclerview, mRefreshLayout, ACTIVITY);
 
-   }
+    }
 
-   /**
-    * 获取盘盈数据
-    */
-   private void loadTimelyProfitDate() {
+    /**
+     * 获取盘盈数据
+     */
+    private void loadTimelyProfitDate() {
 
-	mBaseTabTvTitle.setText("盘盈耗材详情");
-//	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
-	mTimelyNumber.setText(
-		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY);
-   }
+        mBaseTabTvTitle.setText("盘盈耗材详情");
+        //	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
+        List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+        mTimelyNumber.setText(
+                Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
+        String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
+        mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
+                mRecyclerview, mRefreshLayout, ACTIVITY);
+    }
 
-   /**
-    * 获取耗材盘点详情
-    */
-   private void loadTimelyDetailsDate() {
-	mBaseTabTvTitle.setText("耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
-	int number = 0;
-	int Actual = 0;
-	for (TCstInventoryVo TCstInventoryVo : tCstInventoryVos) {
-	   number += TCstInventoryVo.getCountStock();
-	   Actual += TCstInventoryVo.getCountActual();
-	   Log.i(TAG, " TCstInventoryVo.getCountStock()   " + TCstInventoryVo.getCountStock());
-	   Log.i(TAG, " TCstInventoryVo.getCountActual()   " + TCstInventoryVo.getCountActual());
-	}
+    /**
+     * 获取耗材盘点详情
+     */
+    private void loadTimelyDetailsDate() {
+        mBaseTabTvTitle.setText("耗材详情");
+        List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+        int number = 0;
+        int Actual = 0;
+        for (TCstInventoryVo TCstInventoryVo : tCstInventoryVos) {
+            number += TCstInventoryVo.getCountStock();
+            Actual += TCstInventoryVo.getCountActual();
+            Log.i(TAG, " TCstInventoryVo.getCountStock()   " + TCstInventoryVo.getCountStock());
+            Log.i(TAG, " TCstInventoryVo.getCountActual()   " + TCstInventoryVo.getCountActual());
+        }
 
-	mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
-							"</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
-							number + "</big></font>"));
-	mTimelyName.setVisibility(View.VISIBLE);
-	mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    型号规格：" + mDto.getCstSpec());
-	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY,
-						STYPE_TIMELY_FOUR_DETAILS);
-   }
+        mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
+                "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
+                number + "</big></font>"));
+        mTimelyName.setVisibility(View.VISIBLE);
+        mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    型号规格：" + mDto.getCstSpec());
+        String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
+        mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos, mLinearLayout,
+                mRecyclerview, mRefreshLayout, ACTIVITY,
+                STYPE_TIMELY_FOUR_DETAILS);
+    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onMidTypeEvent(TCstInventoryVo event) {
-	mStockDetailsTopBean = event;
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMidTypeEvent(TCstInventoryVo event) {
+        mStockDetailsTopBean = event;
 
-   }
+    }
 
-   /**
-    * 接收入库的数据
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onInBoxEvent(TCstInventoryDto event) {
+    /**
+     * 接收入库的数据
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onInBoxEvent(TCstInventoryDto event) {
 
-	LogUtils.i(TAG,"event  "+(event==null));
-	if (mTCstInventoryDto != null && mTCstInventoryVos != null){
-	   mTCstInventoryDto = event;
-	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
-	   mTCstInventoryVos.clear();
-	   mTCstInventoryVos.addAll(tCstInventoryVos);
+        LogUtils.i(TAG, "event  " + (event == null));
+        if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
+            mTCstInventoryDto = event;
+            List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
+            mTCstInventoryVos.clear();
+            mTCstInventoryVos.addAll(tCstInventoryVos);
 
-	   if (my_id==ACT_TYPE_HCCZ_OUT){
-		LogUtils.i(TAG,"event  "+ "ACT_TYPE_HCCZ_OUT");
-		setOutBoxTitles();
-		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
-	   }else if (my_id == ACT_TYPE_HCCZ_IN){
-		if (mActivityType.equals("all")){
-		   setInBoxTitles();
-		}else {
-		   setInBoxDate();
-		}
-		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
-	   }
+            if (my_id == ACT_TYPE_HCCZ_OUT) {
+                LogUtils.i(TAG, "event  " + "ACT_TYPE_HCCZ_OUT");
+                setOutBoxTitles();
+                mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+            } else if (my_id == ACT_TYPE_HCCZ_IN) {
+                if (mActivityType.equals("all")) {
+                    setInBoxTitles();
+                } else {
+                    setInBoxDate();
+                }
+                mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+            }
 
-	}else {
-	   mTCstInventoryDto = event;
-	   mTCstInventoryVos = event.gettCstInventoryVos();
-	}
+        } else {
+            mTCstInventoryDto = event;
+            mTCstInventoryVos = event.gettCstInventoryVos();
+        }
 
-   }
+    }
 
-   @Override
-   protected int getContentLayoutId() {
-	return R.layout.activity_timely_layout;
-   }
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_timely_layout;
+    }
 
-   @Override
-   public void initDataAndEvent(Bundle savedInstanceState) {
-	EventBusUtils.register(this);
-	mBaseTabBack.setVisibility(View.VISIBLE);
-	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	getCompanyType();
+    @Override
+    public void initDataAndEvent(Bundle savedInstanceState) {
+        EventBusUtils.register(this);
+        mBaseTabBack.setVisibility(View.VISIBLE);
+        mBaseTabTvTitle.setVisibility(View.VISIBLE);
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        getCompanyType();
 
-	initData();
-	initlistener();
-   }
+        initData();
+        initlistener();
+    }
 
-   public int getCompanyType() {
-	return my_id;
-   }
+    public int getCompanyType() {
+        return my_id;
+    }
 
-   public String getData() {
-	return mData;
-   }
+    public String getData() {
+        return mData;
+    }
 
-   /**
-    * 数据加载
-    */
-   private void initData() {
-	//
-	//	getData();
-	//	if (getData() != null && getData().equals("我有过期的")) {
-	//	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
-	//	   mTimelyLeft.setClickable(true);
-	//	   mTimelyRight.setClickable(false);
-	//	   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
-	//	}
+    /**
+     * 数据加载
+     */
+    private void initData() {
+        //
+        //	getData();
+        //	if (getData() != null && getData().equals("我有过期的")) {
+        //	   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+        //	   mTimelyLeft.setClickable(true);
+        //	   mTimelyRight.setClickable(false);
+        //	   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
+        //	}
 
-	if (my_id == ACT_TYPE_TIMELY_LOSS) {
-	   loadTimelyLossesDate();
+        if (my_id == ACT_TYPE_TIMELY_LOSS) {
+            loadTimelyLossesDate();
 
-	} else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
+        } else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
 
-	   loadTimelyProfitDate();
-	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
+            loadTimelyProfitDate();
+        } else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
 
-	   loadStockDetails();
-	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
-	   setInBoxDate();
-	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   setOutBoxDate();
+            loadStockDetails();
+        } else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
+            setInBoxDate();
+        } else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
+            setOutBoxDate();
 
-	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   setAfterBing();
+        } else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
+            setAfterBing();
 
         } else if (my_id == ACT_TYPE_FORM_CONFIRM) {
             mBaseTabTvTitle.setText("识别耗材");
@@ -372,15 +373,22 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
                     mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_FORM_CONF);
         } else if (my_id == ACT_TYPE_CONFIRM_RECEIVE) {//确认领用耗材
             mBaseTabTvTitle.setText("识别耗材");
-            mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+            ArrayList<String> strings = new ArrayList<>();
+            for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+                strings.add(vosBean.getCstCode());
+            }
+            ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+
+            mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
                     "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-                    7 + "</big></font>"));
+                    mTCstInventoryVos.size() + "</big></font>"));
+
             mTimelyStartBtn.setVisibility(View.VISIBLE);
             mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
             String[] array = mContext.getResources().getStringArray(R.array.six_confirm_receive_arrays);
             titeleList = Arrays.asList(array);
             mSize = array.length;
-            mTypeView = new TableTypeView(this, this, titeleList, mSize, genData9(), mLinearLayout,
+            mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
                     mRecyclerview, mRefreshLayout, ACTIVITY, ACT_TYPE_CONFIRM_HAOCAI);
         } else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
             loadTimelyDetailsDate();
@@ -422,43 +430,43 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         //				mRefreshLayout, ACTIVITY);
     }
 
-   /**
-    * 先绑定患者
-    */
-   private void setAfterBing() {
-	mBaseTabTvTitle.setText("耗材领用");
-	mTimelyStartBtn.setVisibility(View.GONE);
-	mLyBingBtn.setVisibility(View.GONE);
-	mTimelyNumber.setVisibility(View.GONE);
-	mTimelyNumberLeft.setVisibility(View.VISIBLE);
-	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	if (mTCstInventoryDto.getBindType()==null){
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyLeft.setEnabled(false);
-	   mTimelyRight.setEnabled(false);
-	}else {
-	   mLyBingBtnRight.setVisibility(View.GONE);
-	   mTimelyLeft.setEnabled(true);
-	   mTimelyRight.setEnabled(true);
-	}
-	//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
+    /**
+     * 先绑定患者
+     */
+    private void setAfterBing() {
+        mBaseTabTvTitle.setText("耗材领用");
+        mTimelyStartBtn.setVisibility(View.GONE);
+        mLyBingBtn.setVisibility(View.GONE);
+        mTimelyNumber.setVisibility(View.GONE);
+        mTimelyNumberLeft.setVisibility(View.VISIBLE);
+        mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+        if (mTCstInventoryDto.getBindType() == null) {
+            mLyBingBtnRight.setVisibility(View.VISIBLE);
+            mTimelyLeft.setEnabled(false);
+            mTimelyRight.setEnabled(false);
+        } else {
+            mLyBingBtnRight.setVisibility(View.GONE);
+            mTimelyLeft.setEnabled(true);
+            mTimelyRight.setEnabled(true);
+        }
+        //	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
 
-	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-	   strings.add(vosBean.getCstCode());
-	}
+        ArrayList<String> strings = new ArrayList<>();
+        for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+            strings.add(vosBean.getCstCode());
+        }
 
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+        ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 
-	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							    mTCstInventoryVos.size() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
-   }
+        mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+                mTCstInventoryVos.size() + "</big></font>"));
+        String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
+        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
+    }
 
     /**
      * 患者列表
@@ -497,26 +505,20 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         //	   titeleList = Arrays.asList(array);
         mSize = titeleList.size();
 
-        for (int i = 0; i < 20; i++) {
-            TempPatientVo data = new TempPatientVo();
-            data.setCstName("asdsad");
-            data.setEpc("asdsadsads");
-            data.setCstSpec("asdsaasd");
-            data.setExpiration("asdsadasd");
-            data.setDeviceName("asdsadasd");
-            data.setPatientName("asdsasd");
-            mTempPatientVoVos.add(data);
-        }
+        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
+                mLinearLayout, mRecyclerview,
+                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 
         //        List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
         //        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
         //                mLinearLayout, mRecyclerview,
         //                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 
-        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTempPatientVoVos, mLinearLayout,
-                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG, 0, 0);
+        //        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTempPatientVoVos, mLinearLayout,
+        //                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG, 0, 0);
 
     }
+
     /**
      * 选择临时患者
      */
@@ -553,24 +555,16 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         //	   titeleList = Arrays.asList(array);
         mSize = titeleList.size();
 
-        for (int i = 0; i < 20; i++) {
-            TempPatientVo data = new TempPatientVo();
-            data.setCstName("asdsad");
-            data.setEpc("asdsadsads");
-            data.setCstSpec("asdsaasd");
-            data.setExpiration("asdsadasd");
-            data.setDeviceName("asdsadasd");
-            data.setPatientName("asdsasd");
-            mTempPatientVoVos.add(data);
-        }
+
+        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
+                mLinearLayout, mRecyclerview,
+                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 
         //        List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
         //        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
         //                mLinearLayout, mRecyclerview,
         //                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 
-        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTempPatientVoVos, mLinearLayout,
-                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG, 0, 0);
 
     }
 
@@ -589,378 +583,377 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
                 mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
     }
 
-   /**
-    * 取出耗材 重新扫描后增减的数据  title显示
-    */
-   private void setOutBoxTitles() {
-	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-	   strings.add(vosBean.getCstCode());
-	}
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							mTCstInventoryVos.size() + "</big></font>"));
-   }
+    /**
+     * 取出耗材 重新扫描后增减的数据  title显示
+     */
+    private void setOutBoxTitles() {
+        ArrayList<String> strings = new ArrayList<>();
+        for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+            strings.add(vosBean.getCstCode());
+        }
+        ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+        mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+                mTCstInventoryVos.size() + "</big></font>"));
+    }
 
-   /**
-    * 快速开柜入柜后赋值界面
-    */
-   private void setInBoxDate() {
-	mBaseTabTvTitle.setText("识别耗材");
-	mTimelyStartBtn.setVisibility(View.VISIBLE);
-	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mTimelyOpenDoor.setVisibility(View.VISIBLE);
-	mBaseTabBack.setVisibility(View.VISIBLE);
-	mBaseTabIconRight.setEnabled(false);
-	mBaseTabTvName.setEnabled(false);
-	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
+    /**
+     * 快速开柜入柜后赋值界面
+     */
+    private void setInBoxDate() {
+        mBaseTabTvTitle.setText("识别耗材");
+        mTimelyStartBtn.setVisibility(View.VISIBLE);
+        mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+        mTimelyOpenDoor.setVisibility(View.VISIBLE);
+        mBaseTabBack.setVisibility(View.VISIBLE);
+        mBaseTabIconRight.setEnabled(false);
+        mBaseTabTvName.setEnabled(false);
+        String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
 
-	if (mActivityType.equals("all")) {
-	   setInBoxTitles();
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
-						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						   STYPE_IN);
-	} else {
-	   ArrayList<String> strings = new ArrayList<>();
-	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-		strings.add(vosBean.getCstCode());
-	   }
-	   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   mTCstInventoryVos.size() + "</big></font>"));
+        if (mActivityType.equals("all")) {
+            setInBoxTitles();
+            mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
+                    mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+                    STYPE_IN);
+        } else {
+            ArrayList<String> strings = new ArrayList<>();
+            for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+                strings.add(vosBean.getCstCode());
+            }
+            ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+            mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+                    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+                    mTCstInventoryVos.size() + "</big></font>"));
 
-	   int operation = mTCstInventoryDto.getOperation();
-	   LogUtils.i(TAG,"operation  "+operation);
-	   if (mTypeView==null){
-		mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
-							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-							STYPE_IN, operation);
-	   }
+            int operation = mTCstInventoryDto.getOperation();
+            LogUtils.i(TAG, "operation  " + operation);
+            if (mTypeView == null) {
+                mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
+                        mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+                        STYPE_IN, operation);
+            }
 
-	   for (TCstInventoryVo b : mTCstInventoryVos) {
-		String status = b.getStatus();
-		if ((operation == 3 && status.contains("领用")&&b.getStopFlag()!=0) ||
-		    (operation == 2 && status.contains("入库")&&b.getStopFlag()!=0) ||
-		    (operation == 9 && status.contains("移出")&&b.getStopFlag()!=0) ||
-		    (operation == 11 && status.contains("调拨")&&b.getStopFlag()!=0) ||
-		    (operation == 10 && (status.contains("移入")&&!status.equals("禁止移入")&&b.getStopFlag()!=0)) ||
-		    (operation == 7 && status.contains("退回")&&b.getStopFlag()!=0) ||
-		    (operation == 8 && status.contains("退货")&&b.getStopFlag()!=0)) {
-		   LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
-		} else {
-		   LogUtils.i(TAG, "我走了false");
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		   return;
-		}
-	   }
-	}
-   }
+            for (TCstInventoryVo b : mTCstInventoryVos) {
+                String status = b.getStatus();
+                if ((operation == 3 && status.contains("领用") && b.getStopFlag() != 0) ||
+                        (operation == 2 && status.contains("入库") && b.getStopFlag() != 0) ||
+                        (operation == 9 && status.contains("移出") && b.getStopFlag() != 0) ||
+                        (operation == 11 && status.contains("调拨") && b.getStopFlag() != 0) ||
+                        (operation == 10 && (status.contains("移入") && !status.equals("禁止移入") && b.getStopFlag() != 0)) ||
+                        (operation == 7 && status.contains("退回") && b.getStopFlag() != 0) ||
+                        (operation == 8 && status.contains("退货") && b.getStopFlag() != 0)) {
+                    LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
+                } else {
+                    LogUtils.i(TAG, "我走了false");
+                    mTimelyLeft.setEnabled(false);
+                    mTimelyRight.setEnabled(false);
+                    return;
+                }
+            }
+        }
+    }
 
-   /**
-    * 给入柜的顶部设置数据和调整底部按钮选择状态
-    */
-   private void setInBoxTitles() {
-	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-	   strings.add(vosBean.getCstCode());
-	}
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumber.setText(Html.fromHtml(
-		"入库：<font color='#262626'><big>" + mTCstInventoryDto.getCountTwoin() +
-		"</big>&emsp</font>移入：<font color='#262626'><big>" +
-		mTCstInventoryDto.getCountMoveIn() +
-		"</big>&emsp</font>退回：<font color='#262626'><big>" + mTCstInventoryDto.getCountBack() +
-		"</big>&emsp</font>耗材种类：<font color='#262626'><big>" + list.size() +
-		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
-		"</big></font>"));
+    /**
+     * 给入柜的顶部设置数据和调整底部按钮选择状态
+     */
+    private void setInBoxTitles() {
+        ArrayList<String> strings = new ArrayList<>();
+        for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+            strings.add(vosBean.getCstCode());
+        }
+        ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+        mTimelyNumber.setText(Html.fromHtml(
+                "入库：<font color='#262626'><big>" + mTCstInventoryDto.getCountTwoin() +
+                        "</big>&emsp</font>移入：<font color='#262626'><big>" +
+                        mTCstInventoryDto.getCountMoveIn() +
+                        "</big>&emsp</font>退回：<font color='#262626'><big>" + mTCstInventoryDto.getCountBack() +
+                        "</big>&emsp</font>耗材种类：<font color='#262626'><big>" + list.size() +
+                        "</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
+                        "</big></font>"));
 
-	for (TCstInventoryVo b : mTCstInventoryVos) {
-	   String status = b.getStatus();
-	   if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
-		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		return;
-	   }
-	}
-   }
+        for (TCstInventoryVo b : mTCstInventoryVos) {
+            String status = b.getStatus();
+            if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
+                DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+                mTimelyLeft.setEnabled(false);
+                mTimelyRight.setEnabled(false);
+                return;
+            }
+        }
+    }
 
-   /**
-    * 耗材详情
-    */
-   private void loadStockDetails() {
-	mBaseTabTvTitle.setText("耗材详情");
-	String deviceCode = mStockDetailsTopBean.getDeviceCode();
-	String cstCode = mStockDetailsTopBean.getCstCode();
-	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	NetRequest.getInstance().getStockDetailDate(deviceCode, cstCode, mContext, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
+    /**
+     * 耗材详情
+     */
+    private void loadStockDetails() {
+        mBaseTabTvTitle.setText("耗材详情");
+        String deviceCode = mStockDetailsTopBean.getDeviceCode();
+        String cstCode = mStockDetailsTopBean.getCstCode();
+        String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
+        NetRequest.getInstance().getStockDetailDate(deviceCode, cstCode, mContext, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
 
-	      LogUtils.i(TAG,"result  "+result);
-		TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
-		mTimelyNumber.setText(Html.fromHtml(
-			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
-			"</big></font>"));
-		mTimelyName.setVisibility(View.VISIBLE);
-		mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    型号规格：" +
-					  mStockDetailsTopBean.getCstSpec());
-		mTypeView = new TableTypeView(mContext, mContext, titeleList, mSize,
-							mStockDetailsDownList, mLinearLayout, mRecyclerview,
-							mRefreshLayout, ACTIVITY);
-	   }
-	});
+                LogUtils.i(TAG, "result  " + result);
+                TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+                mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
+                mTimelyNumber.setText(Html.fromHtml(
+                        "耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
+                                "</big></font>"));
+                mTimelyName.setVisibility(View.VISIBLE);
+                mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    型号规格：" +
+                        mStockDetailsTopBean.getCstSpec());
+                mTypeView = new TableTypeView(mContext, mContext, titeleList, mSize,
+                        mStockDetailsDownList, mLinearLayout, mRecyclerview,
+                        mRefreshLayout, ACTIVITY);
+            }
+        });
 
-   }
+    }
 
-   /**
-    * 上拉下拉刷新
-    */
-   private void initlistener() {
-	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-	   @Override
-	   public void onRefresh(RefreshLayout refreshLayout) {
-		mRefreshLayout.setNoMoreData(false);
-		refreshLayout.finishRefresh();
-	   }
-	});
-	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-	   @Override
-	   public void onLoadMore(RefreshLayout refreshLayout) {
-		refreshLayout.finishLoadMoreWithNoMoreData();
-	   }
-	});
-   }
-
-
-
-   private List<Movie> genData6() {
-
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 25; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   String five = null;
-	   String six = null;
-	   String seven = null;
-	   if (i == 1) {
-		two = "*15170116220035c2dddddsssssssssss3" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		five = i + "号柜";
-		four = "已过期";
-		six = "禁止操作";
-		seven = "0";
-	   } else if (i == 2) {
-		two = "*15170116220035c2" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		four = "≤100天";
-		five = i + "号柜";
-		six = "禁止操作";
-		seven = "1";
-	   } else if (i == 3) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤70天";
-		five = i + "号柜";
-		six = "入库";
-		seven = "0";
-	   } else if (i == 4) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤28天";
-		five = i + "号柜";
-		six = "退回";
-		seven = "1";
-	   } else {
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		two = "*15170116220035sssssss3" + i;
-		five = i + "号柜";
-		four = "2019-10-22";
-		six = "移入";
-		seven = "0";
-	   }
-
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
+    /**
+     * 上拉下拉刷新
+     */
+    private void initlistener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshLayout) {
+                mRefreshLayout.setNoMoreData(false);
+                refreshLayout.finishRefresh();
+            }
+        });
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMoreWithNoMoreData();
+            }
+        });
+    }
 
 
+    private List<Movie> genData6() {
 
-   private List<Movie> genData8() {
+        ArrayList<Movie> list = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            String one = null;
+            String two = null;
+            String three = null;
+            String four = null;
+            String five = null;
+            String six = null;
+            String seven = null;
+            if (i == 1) {
+                two = "*15170116220035c2dddddsssssssssss3" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                five = i + "号柜";
+                four = "已过期";
+                six = "禁止操作";
+                seven = "0";
+            } else if (i == 2) {
+                two = "*15170116220035c2" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                four = "≤100天";
+                five = i + "号柜";
+                six = "禁止操作";
+                seven = "1";
+            } else if (i == 3) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤70天";
+                five = i + "号柜";
+                six = "入库";
+                seven = "0";
+            } else if (i == 4) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤28天";
+                five = i + "号柜";
+                six = "退回";
+                seven = "1";
+            } else {
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                two = "*15170116220035sssssss3" + i;
+                five = i + "号柜";
+                four = "2019-10-22";
+                six = "移入";
+                seven = "0";
+            }
 
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 25; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   String five = null;
-	   String six = "";
-	   String seven = "";
-	   if (i == 1) {
-		two = "*15170116220035c2dddddsssssssssss3" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		five = i + "号柜";
-		four = "已过期";
-		seven = "1";
-	   } else if (i == 2) {
-		two = "*15170116220035c2" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		four = "≤100天";
-		five = i + "号柜";
-		seven = "0";
-	   } else if (i == 3) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤70天";
-		five = i + "号柜";
-		seven = "1";
-	   } else if (i == 4) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤28天";
-		five = i + "号柜";
-		seven = "1";
-	   } else {
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		two = "*15170116220035sssssss3" + i;
-		five = i + "号柜";
-		four = "2019-10-22";
-		seven = "0";
-	   }
+            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
+            list.add(movie);
+        }
+        return list;
+    }
 
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
-   private List<Movie> genData9() {
 
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 25; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   String five = null;
-	   String six = null;
-	   String seven = null;
-	   if (i == 1) {
-		two = "*15170116220035c2dddddsssssssssss3" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		five = i + "号柜";
-		four = "已过期";
-		six = "Daniel"+i;
-		seven = "0";
-	   } else if (i == 2) {
-		two = "*15170116220035c2" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		four = "≤100天";
-		five = i + "号柜";
-		six = "Daniel"+i;
-		seven = "1";
-	   } else if (i == 3) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤70天";
-		five = i + "号柜";
-		six = "Daniel"+i;
-		seven = "0";
-	   } else if (i == 4) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤28天";
-		five = i + "号柜";
-		six = "Daniel"+i;
-		seven = "1";
-	   } else {
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		two = "*15170116220035sssssss3" + i;
-		five = i + "号柜";
-		four = "2019-10-22";
-		six = "Daniel"+i;
-		seven = "0";
-	   }
+    private List<Movie> genData8() {
 
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
+        ArrayList<Movie> list = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            String one = null;
+            String two = null;
+            String three = null;
+            String four = null;
+            String five = null;
+            String six = "";
+            String seven = "";
+            if (i == 1) {
+                two = "*15170116220035c2dddddsssssssssss3" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                five = i + "号柜";
+                four = "已过期";
+                seven = "1";
+            } else if (i == 2) {
+                two = "*15170116220035c2" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                four = "≤100天";
+                five = i + "号柜";
+                seven = "0";
+            } else if (i == 3) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤70天";
+                five = i + "号柜";
+                seven = "1";
+            } else if (i == 4) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤28天";
+                five = i + "号柜";
+                seven = "1";
+            } else {
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                two = "*15170116220035sssssss3" + i;
+                five = i + "号柜";
+                four = "2019-10-22";
+                seven = "0";
+            }
 
-   private List<Movie> genData7() {
+            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
+            list.add(movie);
+        }
+        return list;
+    }
 
-	ArrayList<Movie> list = new ArrayList<>();
-	for (int i = 0; i < 25; i++) {
-	   String one = null;
-	   String two = null;
-	   String three = null;
-	   String four = null;
-	   String five = null;
-	   String seven = "1";
-	   String six = "张三/dddddddd";
-	   if (i == 1) {
-		two = "*15170116220035c2dddddsssssssssss3" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		five = i + "号柜";
-		four = "已过期";
-	   } else if (i == 2) {
-		two = "*15170116220035c2" + i;
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		four = "≤100天";
-		five = i + "号柜";
-	   } else if (i == 3) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤70天";
-		five = i + "号柜";
-	   } else if (i == 4) {
-		one = "微创路入系统";
-		two = "*15170116220035c2" + i;
-		three = "FLR01" + i;
-		four = "≤28天";
-		five = i + "号柜";
-	   } else {
-		one = "微创路入系统";
-		three = "FLR01" + i;
-		two = "*15170116220035sssssss3" + i;
-		five = i + "号柜";
-		four = "2019-10-22";
-	   }
+    private List<Movie> genData9() {
 
-	   Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-	   list.add(movie);
-	}
-	return list;
-   }
+        ArrayList<Movie> list = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            String one = null;
+            String two = null;
+            String three = null;
+            String four = null;
+            String five = null;
+            String six = null;
+            String seven = null;
+            if (i == 1) {
+                two = "*15170116220035c2dddddsssssssssss3" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                five = i + "号柜";
+                four = "已过期";
+                six = "Daniel" + i;
+                seven = "0";
+            } else if (i == 2) {
+                two = "*15170116220035c2" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                four = "≤100天";
+                five = i + "号柜";
+                six = "Daniel" + i;
+                seven = "1";
+            } else if (i == 3) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤70天";
+                five = i + "号柜";
+                six = "Daniel" + i;
+                seven = "0";
+            } else if (i == 4) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤28天";
+                five = i + "号柜";
+                six = "Daniel" + i;
+                seven = "1";
+            } else {
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                two = "*15170116220035sssssss3" + i;
+                five = i + "号柜";
+                four = "2019-10-22";
+                six = "Daniel" + i;
+                seven = "0";
+            }
+
+            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
+            list.add(movie);
+        }
+        return list;
+    }
+
+    private List<Movie> genData7() {
+
+        ArrayList<Movie> list = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            String one = null;
+            String two = null;
+            String three = null;
+            String four = null;
+            String five = null;
+            String seven = "1";
+            String six = "张三/dddddddd";
+            if (i == 1) {
+                two = "*15170116220035c2dddddsssssssssss3" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                five = i + "号柜";
+                four = "已过期";
+            } else if (i == 2) {
+                two = "*15170116220035c2" + i;
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                four = "≤100天";
+                five = i + "号柜";
+            } else if (i == 3) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤70天";
+                five = i + "号柜";
+            } else if (i == 4) {
+                one = "微创路入系统";
+                two = "*15170116220035c2" + i;
+                three = "FLR01" + i;
+                four = "≤28天";
+                five = i + "号柜";
+            } else {
+                one = "微创路入系统";
+                three = "FLR01" + i;
+                two = "*15170116220035sssssss3" + i;
+                five = i + "号柜";
+                four = "2019-10-22";
+            }
+
+            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
+            list.add(movie);
+        }
+        return list;
+    }
 }
