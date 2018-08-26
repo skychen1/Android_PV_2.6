@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,15 +73,21 @@ public class DialogUtils {
 	builder.setRight("确认", new DialogInterface.OnClickListener() {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
+
 		if (type.equals("firstBind")) {//先绑定患者
-		   String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-			   sTableTypeView.mBingOutAdapter.getCheckedPosition())
-			   .findViewById(R.id.seven_two)).getText().toString();
-		   String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-			   sTableTypeView.mBingOutAdapter.getCheckedPosition())
-			   .findViewById(R.id.seven_three)).getText().toString();
-		   EventBusUtils.postSticky(
-			   new Event.EventCheckbox(name, id, "firstBind", position, mTbaseDevices));
+		   if ((sTableTypeView.mRecyclerview.getChildAt(
+			   sTableTypeView.mBingOutAdapter.getCheckedPosition()))==null){
+			Toast.makeText(UIUtils.getContext(),"无患者信息，操作无效！",Toast.LENGTH_SHORT).show();
+		   }else {
+			String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+				.findViewById(R.id.seven_two)).getText().toString();
+			String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+				.findViewById(R.id.seven_three)).getText().toString();
+			EventBusUtils.postSticky(
+				new Event.EventCheckbox(name, id, "firstBind", position, mTbaseDevices));
+		   }
 		   dialog.dismiss();
 		} else {//后绑定
 		   for (int x = 0; x <= patientInfos.size(); x++) {

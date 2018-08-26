@@ -417,6 +417,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   putDbDate(registeReturnBean);
 		   initData();
 		} else {
+		   mFragmentBtnOne.setEnabled(true);
 		   ToastUtils.showShort(registeReturnBean.getMsg());
 		}
 		LogUtils.i(TAG, "result   " + result);

@@ -379,8 +379,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.GONE);
 	mLyBingBtn.setVisibility(View.GONE);
 	mTimelyNumber.setVisibility(View.GONE);
+	mBaseTabBack.setVisibility(View.GONE);
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mBaseTabIconRight.setEnabled(false);
+	mBaseTabTvName.setEnabled(false);
 	if (mTCstInventoryDto.getBindType()==null){
 	   mLyBingBtnRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);

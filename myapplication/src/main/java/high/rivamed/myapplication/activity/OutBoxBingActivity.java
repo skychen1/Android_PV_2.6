@@ -180,6 +180,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
+		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		if (mIntentType==2){
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();

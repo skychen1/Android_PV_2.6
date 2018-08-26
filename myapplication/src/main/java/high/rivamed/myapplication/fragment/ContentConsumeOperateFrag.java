@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
@@ -350,7 +351,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 				   try {
 					Thread.currentThread().sleep(4000);
-					setReaderList();
+					setReaderList(null);
 					if (mReaderIdList.size() == 0) {
 					   LogUtils.i(TAG, "走了");
 					   if (mShowLoading != null) {
@@ -434,7 +435,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	   LogUtils.i(TAG, "开始扫描了状态    " + ret);
 
-	   DeviceManager.getInstance().StartUhfScan(readerid);
 	}
    }
 
@@ -498,14 +498,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
 		//先绑定患者
 		if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
-		   for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
-			tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
-			tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+		   if (cstInventoryDto.gettCstInventoryVos()!=null&&cstInventoryDto.gettCstInventoryVos().size()!=0){
+			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
+			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+			}
+			cstInventoryDto.setBindType("firstBind");
+			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+			EventBusUtils.postSticky(cstInventoryDto);
+		   }else {
+			Toast.makeText(mContext,"未扫描到操作耗材,请重新操作",Toast.LENGTH_SHORT).show();
 		   }
-		   cstInventoryDto.setBindType("firstBind");
-		   mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-		   EventBusUtils.postSticky(cstInventoryDto);
-
 		} else {//正常的领用或者其他正常操作
 		   mShowLoading.mDialog.dismiss();
 		   if (cstInventoryDto.gettCstInventoryVos() == null ||
@@ -790,7 +793,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mReaderIdList = new ArrayList<>();
 	}
 	LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
-	setReaderList();
+	setReaderList(mDeviceCode);
 	LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 	   if (mTbaseDevices.size() > 1) {//第一个为全部开柜
@@ -817,19 +820,27 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
    }
 
-   private void setReaderList() {
-	List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
-								 READER_TYPE).find(BoxIdBean.class);
-
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String device_id = boxIdBean.getDevice_id();
-	   LogUtils.i(TAG, "device_id   " + device_id);
-	   LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
+   private void setReaderList(String mDeviceCode) {
+	if (mDeviceCode == null) {
+	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	   for (int i = 0; i < mReaderDeviceId.size(); i++) {
-		LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
-		if (mReaderDeviceId.get(i).equals(device_id)) {
-		   mReaderIdList.add(device_id);
-		   LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+		String DeviceId = (String) mReaderDeviceId.get(i);
+		mReaderIdList.add(DeviceId);
+	   }
+	} else {
+	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+								    READER_TYPE).find(BoxIdBean.class);
+
+	   for (BoxIdBean boxIdBean : boxIdBeans) {
+		String device_id = boxIdBean.getDevice_id();
+		LogUtils.i(TAG, "device_id   " + device_id);
+		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
+		for (int i = 0; i < mReaderDeviceId.size(); i++) {
+		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
+		   if (mReaderDeviceId.get(i).equals(device_id)) {
+			mReaderIdList.add(device_id);
+			LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+		   }
 		}
 	   }
 	}

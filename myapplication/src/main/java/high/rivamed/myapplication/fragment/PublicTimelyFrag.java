@@ -597,7 +597,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-
+			LogUtils.i(TAG,"LoadMiddleRgDate   "+result);
 			if (mTCstInventoryVos != null) {
 			   mTCstInventoryVos.clear();
 			   //			   mTCstInventoryDto = mGson.fromJson(result, SocketLeftDownBean.class);
