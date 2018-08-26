@@ -38,9 +38,6 @@ public class TCstInventoryVo implements Serializable {
     private String name;
     private String type;
     private String operationStatus;
-
-    private boolean isDelete;
-
     public boolean isDelete() {
         return isDelete;
     }
@@ -49,6 +46,7 @@ public class TCstInventoryVo implements Serializable {
         isDelete = delete;
     }
 
+    public  boolean         isDelete;
     public String getOperationStatus() {
         return operationStatus;
     }

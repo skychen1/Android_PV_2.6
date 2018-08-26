@@ -18,7 +18,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -36,8 +35,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.TimelyDetailsActivity;
@@ -48,6 +45,7 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
@@ -55,7 +53,6 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -87,7 +84,7 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START4")) {
-	   initCallBack();
+	   AllDeviceCallBack.getInstance().initCallBack();
 	}
    }
    private static final String TAG = "TimelyAllFrag";
@@ -156,11 +153,24 @@ public class TimelyAllFrag extends SimpleFragment {
    private       TimelyAllAdapter      mTimelyAllAdapter;
    private       String                mToJson;
    private       LoadingDialog.Builder mBuilder;
-
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEvent(Event.EventString event) {
-	mDeviceCode = event.mString;
+   /**
+    * 扫描后EPC准备传值
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onCallBackEvent(Event.EventDeviceCallBack event) {
+	AllDeviceCallBack.getInstance().initCallBack();
+	getDeviceDate(event.deviceId, event.epcs);
    }
+   /*
+   发送deviceCode
+    */
+//   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//   public void onEvent(Event.EventTimelyCode event) {
+//	mDeviceCode = event.mCode;
+//	LogUtils.i(TAG,"mDeviceCode    "+mDeviceCode);
+//   }
 
    public static TimelyAllFrag newInstance(String deviceCode) {
 	Bundle args = new Bundle();
@@ -178,11 +188,11 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	//	Bundle arguments = getArguments();
-	//	mDeviceCode = arguments.getString(DEVICECODE);
+	Bundle arguments = getArguments();
+	mDeviceCode = arguments.getString(DEVICECODE);
 	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
 	initDate(0, 0, 0, 0);
-	initCallBack();
+	AllDeviceCallBack.getInstance().initCallBack();
 
    }
 
@@ -256,11 +266,12 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   mBuilder = DialogUtils.showLoading(_mActivity);
-		   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
-		   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-			DeviceManager.getInstance().CheckDoorState((String) eth002DeviceIdList.get(i));
-		   }
+////		   mBuilder = DialogUtils.showLoading(_mActivity);
+//		   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+//		   for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+//			DeviceManager.getInstance().CheckDoorState((String) eth002DeviceIdList.get(i));
+//		   }
+		   openDoor();
 		}
 		break;
 	   case R.id.timely_profit://盘盈
@@ -323,37 +334,22 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void openDoor() {
-
-	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-	LogUtils.i(TAG, "mDeviceCode    " + mDeviceCode);
+	List<String> mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+	LogUtils.i(TAG, "mDeviceCode    " + mDeviceCode+"     mReaderDeviceId    "+mReaderDeviceId.size()  );
 	if (mDeviceCode == null || mDeviceCode.equals("")) {
-	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE).find(BoxIdBean.class);
-	   mReaderMap = new HashMap<>();
-	   for (BoxIdBean boxIdBean : boxIdBeans) {
-		String device_id = boxIdBean.getDevice_id();
-		String box_id = boxIdBean.getBox_id();
-	      if (box_id!=null){
-		   mReaderMap.put(device_id, box_id);
-		}
-		if (mReaderDeviceId.size() == 0) {
-		   ToastUtils.showShort("请重新扫描");
-		}
-		for (int i = 0; i < mReaderDeviceId.size(); i++) {
-		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
-		   if (mReaderDeviceId.get(i).equals(device_id)) {
-			int ret = DeviceManager.getInstance().StartUhfScan(device_id);
-			if (ret == 100) {
-			   LogUtils.i(TAG, "扫描失败    ");
-			} else {
-			   LogUtils.i(TAG, "开始扫描了状态0    " + ret);
-			   DeviceManager.getInstance().StartUhfScan(device_id);
-			}
-		   }
-		}
+	   if (mReaderDeviceId.size() == 0) {
+		ToastUtils.showShort("请重新扫描");
 	   }
-
+	   for (String readerCode:mReaderDeviceId){
+		DeviceManager.getInstance().StartUhfScan(readerCode);
+	   }
+//	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE).find(BoxIdBean.class);
+//	   for (BoxIdBean boxIdBean : boxIdBeans) {
+//		String device_id = boxIdBean.getDevice_id();
+//
+//		DeviceManager.getInstance().StartUhfScan(device_id);
+//	   }
 	} else {
-
 	   LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
 								    READER_TYPE).find(BoxIdBean.class);
@@ -367,110 +363,13 @@ public class TimelyAllFrag extends SimpleFragment {
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
-
-			int ret = DeviceManager.getInstance().StartUhfScan(device_id);
-			if (ret == 100) {
-
-			} else {
-			   LogUtils.i(TAG, "开始扫描了状态1    " + ret);
-
-			   DeviceManager.getInstance().StartUhfScan(device_id);
-			}
+			DeviceManager.getInstance().StartUhfScan(device_id);
 		   }
 		}
 	   }
 	}
    }
 
-   private void initCallBack() {
-	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
-	   @Override
-	   public void OnDeviceConnected(
-		   DeviceType deviceType, String deviceIndentify) {
-
-	   }
-
-	   @Override
-	   public void OnDeviceDisConnected(
-		   DeviceType deviceType, String deviceIndentify) {
-
-	   }
-
-	   @Override
-	   public void OnCheckState(
-		   DeviceType deviceType, String deviceId, Integer code) {
-
-	   }
-
-	   @Override
-	   public void OnIDCard(String deviceId, String idCard) {
-
-	   }
-
-	   @Override
-	   public void OnFingerFea(String deviceId, String fingerFea) {
-
-	   }
-
-	   @Override
-	   public void OnFingerRegExcuted(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-	   }
-
-	   @Override
-	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-		if (success) {//未关闭柜门
-		   Toast.makeText(mContext, "请关闭柜门", Toast.LENGTH_SHORT).show();
-		} else {
-		   openDoor();
-		}
-	   }
-
-	   @Override
-	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-	   }
-
-	   @Override
-	   public void OnUhfScanRet(
-		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-		if (!success) {
-		   //		   mBuilder.mDialog.dismiss();
-		}
-
-		getDeviceDate(deviceId, epcs);
-	   }
-
-	   @Override
-	   public void OnUhfScanComplete(boolean success, String deviceId) {
-
-	   }
-
-	   @Override
-	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-	   }
-
-	   @Override
-	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-
-	   }
-	});
-   }
 
    /**
     * 扫描后传值
@@ -512,12 +411,46 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (mBuilder != null) {
 		   mBuilder.mDialog.dismiss();
 		}
+//		mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+//		mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+//
+//		if (mDeviceCode==null||mDeviceCode.equals("")){
+//		   List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+//		   List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
+//		   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
+//		   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
+//
+//		   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
+//		   set.addAll(deviceInventoryVos);
+//		   set.addAll(deviceInventoryVos1);
+//		   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+//
+//		   tCstInventoryVos1.addAll(tCstInventoryVos);
+//		   tCstInventoryVos1.removeAll(tCstInventoryVos);
+//		   tCstInventoryVos1.addAll(tCstInventoryVos);
+//		   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
+//		   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+//
+//		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+//		   EventBusUtils.postSticky(mTCstInventoryTwoDto);
+//		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 		if (mTCstInventoryVos == null) {//第一次盘点的数据
 		   mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		   mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
-		   //		   if(mReaderMap!=null){
-		   //			mReaderMap
-		   //		   }
+
 		   int number = 0;
 		   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 			number += TCstInventoryVo.getCountStock();

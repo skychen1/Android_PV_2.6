@@ -92,9 +92,9 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
 		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager());
 		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+		   mCttimecheckViewpager.setCurrentItem(0);
 		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
 		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
-		   mCttimecheckViewpager.setCurrentItem(0);
 		}
 	   }
 
@@ -173,7 +173,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	   } else {
 		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
 	   }
-	   EventBusUtils.postSticky(new Event.EventString(deviceCode));
+	   EventBusUtils.postSticky(new Event.EventTimelyCode(deviceCode));
 	}
    }
 

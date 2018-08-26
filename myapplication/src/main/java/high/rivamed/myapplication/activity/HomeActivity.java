@@ -2,9 +2,13 @@ package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
@@ -43,18 +47,19 @@ public class HomeActivity extends SimpleActivity {
    public static final long   WAIT_TIME  = 2000L;
    public static final String JUMP_ID    = "jump_id";
    @BindView(R.id.home_logo)
-   ImageView   mHomeLogo;
+   ImageView    mHomeLogo;
    @BindView(R.id.content_consume_operate)
-   RadioButton mContentConsumeOperate;
+   RadioButton  mContentConsumeOperate;
    @BindView(R.id.content_running_wate)
-   RadioButton mContentRunningWate;
+   RadioButton  mContentRunningWate;
    @BindView(R.id.content_stock_status)
-   RadioButton mContentStockStatus;
+   RadioButton  mContentStockStatus;
    @BindView(R.id.content_timely_check)
-   RadioButton mContentTimelyCheck;
+   RadioButton  mContentTimelyCheck;
    @BindView(R.id.home_rg)
-   RadioGroup  mHomeRg;
-
+   RadioGroup   mHomeRg;
+   @BindView(R.id.rg_gone)
+   View mHomeRgGone;
    private SupportFragment[] mFragments = new SupportFragment[4];
 
    public static final int CONSUME = 0;
@@ -62,6 +67,38 @@ public class HomeActivity extends SimpleActivity {
    public static final int STOCK   = 2;
    public static final int CHECK   = 3;
    private int LastId;
+   private boolean mIsClick;
+
+   /**
+    * 开锁后禁止点击左侧菜单栏按钮
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onHomeNoClick(Event.HomeNoClickEvent event) {
+      LogUtils.i(TAG,"event   "+event.isClick);
+	mIsClick = event.isClick;
+	if (event.isClick){
+	   mHomeRgGone.setVisibility(View.VISIBLE);
+	   disableRadioGroup(mHomeRg);
+	}else {
+	   mHomeRgGone.setVisibility(View.GONE);
+	   enableRadioGroup(mHomeRg);
+	}
+   }
+
+
+   public void disableRadioGroup(RadioGroup testRadioGroup) {
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(false);
+	}
+   }
+
+   public void enableRadioGroup(RadioGroup testRadioGroup) {
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(true);
+	}
+   }
+
 
    @Override
    public int getLayoutId() {
@@ -75,6 +112,7 @@ public class HomeActivity extends SimpleActivity {
     */
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+      EventBusUtils.register(this);
 	LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 	//	EventBusUtils.register(this);
 
@@ -124,6 +162,12 @@ public class HomeActivity extends SimpleActivity {
    }
 
    public void initListener() {
+	   mHomeRgGone.setOnClickListener(new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+		   ToastUtils.showShort("请关闭柜门再进行操作");
+		}
+	   });
 	mHomeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {

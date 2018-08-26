@@ -346,6 +346,7 @@ public class TableTypeView extends LinearLayout {
 
                             patientInfos.get(i).setSelected(false);
                         }
+
                         patientInfos.get(0).setSelected(true);
 
                         mRecyclerview.setLayoutParams(lp);

@@ -118,7 +118,7 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	//清空accountID
-	mDownText.setText("2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
 //	mDownText.setText("Rivamed  智能耗材管理柜:   V " + UIUtils.getVersionName(mContext));
 	//-----检测分辨率---------------------------------------
 	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);

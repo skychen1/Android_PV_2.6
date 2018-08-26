@@ -22,11 +22,15 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
-   public static class EventTime {
-	public String time;
 
-	public EventTime(String time) {
-	   this.time = time;
+   /**
+    * 关门 后给按钮设置为可以点击，InoutBoxTwoActivity
+    */
+   public static class EventGoneBtn {
+	public String mGoneBtn;
+
+	public EventGoneBtn(String mGoneBtn) {
+	   this.mGoneBtn = mGoneBtn;
 	}
    }
    /**
@@ -81,20 +85,15 @@ public class Event {
 	   this.mTbaseDevices = mTbaseDevices;
 	}
    }
-   public static class SettingEvent {
 
-	public static final int SETTING_INFO      = 1;
-	public static final int SETTING_LOGIN     = 2;
-	public static final int SETTING_LOGIN_OUT = 3;
-	/**
-	 * setting点击的动作
-	 **/
-	public int RvAction;
-	public String RvActionS;
+   /**
+    * 禁止首页的左侧菜单栏
+    */
+   public static class HomeNoClickEvent {
+	public boolean isClick;
 
-	public SettingEvent(int rvAction,String k) {
-	   RvAction = rvAction;
-	   RvActionS = k;
+	public HomeNoClickEvent(boolean isClick) {
+	   this.isClick = isClick;
 	}
    }
 
@@ -116,7 +115,7 @@ public class Event {
    }
 
    public static class activationEvent{
-	public boolean isActivation;
+	public boolean         isActivation;
 	public DialogInterface dialog;
       public activationEvent(boolean isActivation, DialogInterface dialog){
 	   this.isActivation = isActivation;
@@ -155,7 +154,7 @@ public class Event {
 	}
    }
    public static class timelyDate{
-	public String type;
+	public String           type;
 	public TCstInventoryDto tCstInventoryDto;
 	public timelyDate( String type,TCstInventoryDto tCstInventoryDto){
 
@@ -191,6 +190,15 @@ public class Event {
 	   this.mString = text;
 	}
    }
+
+   public static class EventTimelyCode {
+	public String mCode;
+
+	public EventTimelyCode(String mCode) {
+	   this.mCode = mCode;
+	}
+   }
+
    public static class EventBoolean {
 	public boolean mBoolean;
 	public String mId;

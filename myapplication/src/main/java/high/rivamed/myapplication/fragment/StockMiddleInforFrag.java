@@ -70,23 +70,11 @@ public class StockMiddleInforFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	mBuilder = DialogUtils.showLoading(mContext);
+
 	getMiddleDate();
 
    }
 
-//   private void getLeftDownDate() {
-//	NetRequest.getInstance().getStockDown("23233", null, null, mContext, new BaseResult() {
-//	   @Override
-//	   public void onSucceed(String result) {
-//
-//		mMiddleDateBean = mGson.fromJson(result, SocketLeftDownBean.class);
-//		if (mMiddleDateBean != null) {
-//		   onSucceedDate();
-//		}
-//	   }
-//	});
-//   }
 
    public void getMiddleDate() {
 	NetRequest.getInstance().loadBoxSize(mContext, mBuilder,new BaseResult() {

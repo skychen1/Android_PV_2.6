@@ -67,7 +67,7 @@ public interface NetApi {
 
     //患者绑定
     String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findAllOperationSchedulePatients";//患者查询
-    String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/saveGetPatientCst";//患者绑定
+    String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/tCstInventoryBingdingPatient";//患者绑定
 
     //查询配置项
     String URL_THING_CONFIG_FIND = MAIN_URL + "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项

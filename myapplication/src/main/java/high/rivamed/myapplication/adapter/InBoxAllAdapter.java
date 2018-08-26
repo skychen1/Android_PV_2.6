@@ -1,11 +1,14 @@
 package high.rivamed.myapplication.adapter;
 
+import android.graphics.Color;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.daimajia.swipe.SwipeLayout;
 
 import java.util.List;
 
@@ -28,8 +31,14 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
 
-   int mOperation;
-
+   int      mOperation;
+   TextView mSeven_one;
+   TextView mSeven_two;
+   TextView mSeven_three;
+   TextView mSeven_four;
+   TextView mSeven_five;
+   TextView mSeven_six;
+   LinearLayout mLl;
    public InBoxAllAdapter(
 	   int layoutResId, List<TCstInventoryVo> data) {
 	super(layoutResId, data);
@@ -44,19 +53,24 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
    @Override
    protected void convert(
 	   BaseViewHolder helper, TCstInventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+
 	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getCstName());
 	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getDeviceName());
-	TextView mSeven_one = ((TextView) helper.getView(R.id.seven_one));
-	TextView mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-	TextView mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-	TextView mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-	TextView mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-	TextView mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+	 mLl=((LinearLayout) helper.getView(R.id.seven_ll));
+	if (helper.getAdapterPosition() % 2 == 0) {
+	   mLl.setBackgroundResource(R.color.bg_color);
+	} else {
+	   mLl.setBackgroundResource(R.color.bg_f);
+	}
+	 mSeven_one = ((TextView) helper.getView(R.id.seven_one));
+	 mSeven_two = ((TextView) helper.getView(R.id.seven_two));
+	 mSeven_three = ((TextView) helper.getView(R.id.seven_three));
+	 mSeven_four = ((TextView) helper.getView(R.id.seven_four));
+	 mSeven_five = ((TextView) helper.getView(R.id.seven_five));
+	 mSeven_six = ((TextView) helper.getView(R.id.seven_six));
+	SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
+	swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
+	LinearLayout delete = (LinearLayout) helper.getView(R.id.ll_delete);
 
 	String status = item.getStatus();
 	mSeven_one.setText(item.getCstName());
@@ -65,7 +79,16 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	mSeven_four.setText(item.getExpiration());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(status);
-
+	delete.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View view) {
+		TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
+		inventoryVo.setDelete(true);
+		mData.remove(helper.getAdapterPosition());
+		mData.add(inventoryVo);
+		notifyDataSetChanged();
+	   }
+	});
 	Log.i("InOutBoxTwoActivity", "status   " + status);
 	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
 	    item.getStopFlag() == 0 || (mOperation == 3 && !status.contains("领用")) ||
@@ -83,16 +106,16 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-//	   if (helper.getAdapterPosition() % 2 == 0) {
-//		mSeven_four.setBackgroundResource(R.color.bg_color);
-//	   } else {
-//		mSeven_four.setBackgroundResource(R.color.bg_f);
-//	   }
-	}else {
+	   //	   if (helper.getAdapterPosition() % 2 == 0) {
+	   //		mSeven_four.setBackgroundResource(R.color.bg_color);
+	   //	   } else {
+	   //		mSeven_four.setBackgroundResource(R.color.bg_f);
+	   //	   }
+	} else {
 	   if (helper.getAdapterPosition() % 2 == 0) {
-		((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+		mLl.setBackgroundResource(R.color.bg_color);
 	   } else {
-		((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+		mLl.setBackgroundResource(R.color.bg_f);
 	   }
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
@@ -102,5 +125,30 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
+	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
+
+
+
+   }
+
+   public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {
+	if (isDeleteView) {
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_four.setBackgroundResource(R.color.bg_color);
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mLl.setBackgroundResource(R.color.bg_color);
+	   swipe.setSwipeEnabled(false);
+	} else {
+	   mSeven_one.setTextColor(Color.parseColor("#333333"));
+	   mSeven_two.setTextColor(Color.parseColor("#333333"));
+	   mSeven_three.setTextColor(Color.parseColor("#333333"));
+	   mSeven_five.setTextColor(Color.parseColor("#333333"));
+	   mSeven_six.setTextColor(Color.parseColor("#333333"));
+	   swipe.setSwipeEnabled(true);
+	}
    }
 }

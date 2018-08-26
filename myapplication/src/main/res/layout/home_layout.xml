@@ -16,7 +16,10 @@
 		android:layout_height="match_parent"
 		android:layout_marginLeft="@dimen/x260"
 		android:background="@color/login_line"/>
+
+
 	<LinearLayout
+		android:id="@+id/rg_ll"
 		android:layout_width="@dimen/x280"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
@@ -68,6 +71,11 @@
 		</RadioGroup>
 
 	</LinearLayout>
-
+	<View
+		android:id="@+id/rg_gone"
+		android:visibility="gone"
+		android:layout_width="@dimen/x280"
+		android:layout_height="match_parent">
+	</View>
 
 </RelativeLayout>

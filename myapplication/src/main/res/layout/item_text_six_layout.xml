@@ -7,21 +7,21 @@
 
     <LinearLayout
         android:id="@+id/ll_delete"
-        android:layout_width="140dp"
-        android:layout_height="@dimen/x88"
+        android:layout_width="@dimen/x140"
+        android:layout_height="wrap_content"
         android:background="@color/bg_delete"
         android:gravity="center"
         android:orientation="horizontal">
         <ImageView
             android:id="@+id/iv_delete"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/x40"
+            android:layout_height="wrap_content"
             android:src="@mipmap/ic_slid_delete"
             android:layout_marginRight="10dp"/>
         <TextView
             android:layout_toRightOf="@id/iv_delete"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/x88"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="移除"
             android:textColor="@color/white"
