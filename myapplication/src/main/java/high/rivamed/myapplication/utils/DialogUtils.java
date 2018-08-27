@@ -37,6 +37,7 @@ import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
+import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 import high.rivamed.myapplication.views.WifiDialog;
 

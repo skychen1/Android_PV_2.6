@@ -5,10 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -23,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -114,41 +119,41 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.timely_rl_title)
-    RelativeLayout mRelativeLayout;
+    RelativeLayout     mRelativeLayout;
     @BindView(R.id.timely_ll_gone)
-    LinearLayout mTimelyLlGone;
+    LinearLayout   mTimelyLlGone;
     @BindView(R.id.timely_number_left)
-    TextView mTimelyNumberLeft;
+    TextView       mTimelyNumberLeft;
     @BindView(R.id.timely_start_btn_right)
-    TextView mTimelyStartBtnRight;
+    TextView       mTimelyStartBtnRight;
     @BindView(R.id.ly_bing_btn_right)
-    TextView mLyBingBtnRight;
+    TextView       mLyBingBtnRight;
     @BindView(R.id.timely_ll_gone_right)
-    LinearLayout mTimelyLlGoneRight;
+    LinearLayout   mTimelyLlGoneRight;
     @BindView(R.id.search_et)
-    EditText mSearchEt;
+    EditText       mSearchEt;
     @BindView(R.id.search_iv_delete)
-    ImageView mSearchIvDelete;
+    ImageView      mSearchIvDelete;
     @BindView(R.id.stock_search)
-    FrameLayout mStockSearch;
+    FrameLayout    mStockSearch;
     @BindView(R.id.ly_creat_temporary_btn)
-    TextView mLyCreatTemporaryBtn;
+    TextView       mLyCreatTemporaryBtn;
     @BindView(R.id.dialog_left)
-    TextView mDialogLeft;
+    TextView       mDialogLeft;
     @BindView(R.id.dialog_right)
-    TextView mDialogRight;
+    TextView       mDialogRight;
     @BindView(R.id.activity_down_btn_seven_ll)
-    LinearLayout mActivityDownBtnSevenLl;
+    LinearLayout   mActivityDownBtnSevenLl;
     @BindView(R.id.timely_rl)
-    LinearLayout mTimelyRl;
+    LinearLayout   mTimelyRl;
     @BindView(R.id.header)
     MaterialHeader mHeader;
     @BindView(R.id.public_ll)
-    LinearLayout mPublicLl;
+    LinearLayout   mPublicLl;
     @BindView(R.id.tv_patient_conn)
-    TextView mTvPatientConn;
+    TextView       mTvPatientConn;
     @BindView(R.id.activity_down_patient_conn)
-    LinearLayout mActivityDownPatientConn;
+    LinearLayout   mActivityDownPatientConn;
 
    private int           mLayout;
    private View          mHeadView;
