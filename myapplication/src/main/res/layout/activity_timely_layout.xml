@@ -57,20 +57,21 @@
                 android:id="@+id/timely_ll_gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/timely_start_btn"
                     style="@style/btn_style_sel"
                     android:layout_marginLeft="0dp"
                     android:text="重新扫描"
-                    android:visibility="gone" />
+                     />
 				<TextView
 					android:id="@+id/timely_open_door"
 					style="@style/btn_style_sel"
 					android:text="重新开柜"
 					android:layout_marginLeft="@dimen/x25"
-					android:visibility="gone"
+
 					/>
                 <TextView
                     android:id="@+id/ly_bing_btn"
@@ -80,7 +81,7 @@
                     android:paddingLeft="@dimen/x30"
                     android:paddingRight="@dimen/x30"
                     android:text="请选择患者绑定"
-                    android:visibility="gone" />
+                     />
             </LinearLayout>
 
             <TextView
@@ -116,15 +117,20 @@
                 android:id="@+id/timely_ll_gone_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/timely_start_btn_right"
                     style="@style/btn_style_sel"
                     android:layout_marginLeft="0dp"
                     android:text="重新扫描"
-                    android:visibility="gone" />
-
+                     />
+                <TextView
+                    android:id="@+id/timely_open_door_right"
+                    style="@style/btn_style_sel"
+                    android:text="重新开柜"
+                    android:layout_marginLeft="@dimen/x25"/>
                 <TextView
                     android:id="@+id/ly_bing_btn_right"
                     style="@style/btn_style_sel"
@@ -133,7 +139,6 @@
                     android:paddingLeft="@dimen/x30"
                     android:paddingRight="@dimen/x30"
                     android:text="请选择患者绑定"
-                    android:visibility="gone"
                     />
             </LinearLayout>
 

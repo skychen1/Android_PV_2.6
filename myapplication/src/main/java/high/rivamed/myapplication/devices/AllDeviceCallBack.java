@@ -322,6 +322,10 @@ public class AllDeviceCallBack {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+		if (i==2){
+		   DeviceManager.getInstance().StopUhfScan(device_id);
+		   DeviceManager.getInstance().StartUhfScan(device_id);
+		}
 		LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
 	   }
 	}

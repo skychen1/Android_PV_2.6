@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.util.SparseBooleanArray;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,23 +26,20 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+
    SparseBooleanArray checkStates1;
    private TextView mSeven_two;
    private TextView mSeven_three;
    private TextView mSeven_four;
    private TextView mSeven_five;
    private TextView mSeven_six;
-   private TextView mSeven_seven;
+   public TextView mSeven_seven;
+
    public AfterBingAdapter(
 	   int layoutResId, List<TCstInventoryVo> data) {
 	super(layoutResId, data);
    }
 
-   public AfterBingAdapter(
-	   int layout, List<TCstInventoryVo> tCstInventoryVos, SparseBooleanArray checkStates1) {
-	super(layout, tCstInventoryVos);
-	this.checkStates1 = checkStates1;
-   }
 
    @Override
    protected void convert(
@@ -52,7 +50,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 
-//	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
 	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
@@ -60,20 +58,22 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-
-//	mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
+	//	mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
 
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
 	mSeven_five.setText(item.getExpiration());
 	mSeven_six.setText(item.getDeviceName());
-	if (item.getPatientName()==null||item.getPatientName().length()<1){
+
+	if (item.getPatientName() == null || item.getPatientName().length() < 1) {
 	   mSeven_seven.setText("");
-	}else {
-	   mSeven_seven.setText(item.getPatientName()+" / "+item.getPatientId());
+	} else {
+	   if (mCheckBox.isChecked()&&mSeven_seven.getText().toString().trim().equals("")) {
+		mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
+	   }
 	}
 
-	UIUtils.initTermOfValidity(mContext,helper, item.getStopFlag(), mSeven_five);
+	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_five);
    }
 }

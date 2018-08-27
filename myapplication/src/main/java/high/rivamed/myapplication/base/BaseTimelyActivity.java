@@ -431,7 +431,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     }
 
    /**
-    * 先绑定患者
+    * 后绑定患者
     */
    private void setAfterBing() {
 	mBaseTabTvTitle.setText("耗材领用");
@@ -440,18 +440,19 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyNumber.setVisibility(View.GONE);
 	mBaseTabBack.setVisibility(View.GONE);
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
-	if (mTCstInventoryDto.getBindType()==null){
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
+//	if (mTCstInventoryDto.getBindType()==null){
+//	   mLyBingBtnRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
-	}else {
-	   mLyBingBtnRight.setVisibility(View.GONE);
-	   mTimelyLeft.setEnabled(true);
-	   mTimelyRight.setEnabled(true);
-	}
+//	}else {
+//	   mLyBingBtnRight.setVisibility(View.GONE);
+//	   mTimelyLeft.setEnabled(true);
+//	   mTimelyRight.setEnabled(true);
+//	}
 	//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
 
 	ArrayList<String> strings = new ArrayList<>();

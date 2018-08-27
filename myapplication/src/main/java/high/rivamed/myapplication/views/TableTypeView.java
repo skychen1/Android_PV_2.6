@@ -500,37 +500,33 @@ public class TableTypeView extends LinearLayout {
                         mSeven_six.setText(titeleList.get(5));
                         mSeven_seven.setText(titeleList.get(6));
 
-                        for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-                            mCheckStates1.put(i, true);
+                        if (mAfterBingAdapter==null){
+                            mAfterBingAdapter = new AfterBingAdapter(mLayout, mTCstInventoryVos);
+                            mHeadView.setBackgroundResource(R.color.bg_green);
+                            mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                            mRefreshLayout.setEnableAutoLoadMore(false);
+                            mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+                            mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                            mRecyclerview.setAdapter(mAfterBingAdapter);
+                            mLinearLayout.addView(mHeadView);
+                        }else {
+                            mAfterBingAdapter.notifyDataSetChanged();
                         }
-                        mAfterBingAdapter = new AfterBingAdapter(mLayout,
-                                mTCstInventoryVos,
-                                mCheckStates1);
-                        //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
-                        //									     mCheckStates1);
                         mAfterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                                 CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
                                 if (checkBox.isChecked()) {
                                     checkBox.setChecked(false);
-                                    mCheckStates1.put(position, false);
                                 } else {
-                                    mCheckStates1.put(position, true);
+                                    mSeven_seven.setText("");
                                     checkBox.setChecked(true);
                                 }
-                                mAfterBingAdapter.notifyDataSetChanged();
+                                mAfterBingAdapter.notifyItemChanged(position);
                             }
                         });
-                        mHeadView.setBackgroundResource(R.color.bg_green);
 
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(false);
-                        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-                        mRecyclerview.setAdapter(mAfterBingAdapter);
-                        mLinearLayout.addView(mHeadView);
                     } else if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
                         mLayout = R.layout.item_outbing_seven_layout;
                         mHeadView = mActivity.getLayoutInflater()
