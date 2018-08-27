@@ -56,9 +56,18 @@ public class TCstInventoryDto {
    private String                          patientName;
    private String                          accountId;
    private String                          bindType;
+   private String                          configType;
    private List<String> errorEpcs; //扫描到的系统里没有数据的epc
    public List<String> getErrorEpcs() {
 	return errorEpcs;
+   }
+
+   public String getConfigType() {
+	return configType;
+   }
+
+   public void setConfigType(String configType) {
+	this.configType = configType;
    }
 
    public void setErrorEpcs(List<String> errorEpcs) {

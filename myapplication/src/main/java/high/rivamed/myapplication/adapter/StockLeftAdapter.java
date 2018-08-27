@@ -42,8 +42,8 @@ public class StockLeftAdapter extends BaseQuickAdapter<SocketLeftTopBean.CstExpi
 	int number3 = item.getNearExpireCount();
 
 	mStock_card_number.setText(number1);
-      mStock_card_outofdate.setText("过期耗材：" + number2 +"种");
-      mStock_card_unexpired.setText("近效期耗材：" + number3+"种");
+      mStock_card_outofdate.setText("过期耗材：" + number2 +"个");
+      mStock_card_unexpired.setText("近效期耗材：" + number3+"个");
 
       if (number2>0){
 	   mStock_card_outofdate.setTextColor(mContext.getResources().getColor(R.color.card_stock_text));

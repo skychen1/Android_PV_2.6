@@ -367,15 +367,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
 		//先绑定患者
 		if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
-		   for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
-			tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
-			tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+		   if (cstInventoryDto.gettCstInventoryVos()!=null&&cstInventoryDto.gettCstInventoryVos().size()!=0){
+			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
+			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+			}
+			cstInventoryDto.setBindType("firstBind");
+			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+			EventBusUtils.postSticky(cstInventoryDto);
+		   }else {
+			Toast.makeText(mContext,"未扫描到操作耗材,请重新操作",Toast.LENGTH_SHORT).show();
 		   }
-		   cstInventoryDto.setBindType("firstBind");
-
-		   mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-		   EventBusUtils.postSticky(cstInventoryDto);
-
 		} else {//正常的领用或者其他正常操作
 //		   mShowLoading.mDialog.dismiss();
 		   if (cstInventoryDto.gettCstInventoryVos() == null ||
@@ -385,7 +387,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			}
 			Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
 		   } else {
-			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType()+"   "+mRbKey);
+			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
 			EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 			if (cstInventoryDto.getType() == 0) {//放入
 			   if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
@@ -424,10 +426,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void initData() {
 	if (UIUtils.getConfigType(mContext, CONFIG_0011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
-//	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
+	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
-//	   mConsumeOpenallMiddle.setVisibility(View.GONE);
+	   mConsumeOpenallMiddle.setVisibility(View.GONE);
 	}
 	loadDate();
 
@@ -638,35 +640,36 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
 
 
-    /**
-     * 获取需要绑定的患者
-     */
-    private void loadBingDate(
-            String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-        LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
-        NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG, "result   " + result);
-                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result, BingFindSchedulesBean.class);
-                if (mPatientInfos != null) {
-                    mPatientInfos.clear();
-                    List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
-                    mPatientInfos.addAll(patientInfos);
-                    if (mShowRvDialog.mDialog.isShowing()) {
-                        sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-                    } else {
-                        mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
-                                "firstBind", position, mTbaseDevices);
-                    }
+   /**
+    * 获取需要绑定的患者
+    */
+   private void loadBingDate(
+	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
+	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+												 BingFindSchedulesBean.class);
+		if (mPatientInfos != null) {
+		   mPatientInfos.clear();
+		   List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
+		   mPatientInfos.addAll(patientInfos);
+		   if (mShowRvDialog.mDialog.isShowing()) {
+			sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+		   } else {
+			mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
+									     "firstBind", position, mTbaseDevices);
+		   }
 
-                } else {
-                    mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-                    mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
-                            "firstBind", position, mTbaseDevices);
-                }
-            }
-        });
-    }
+		} else {
+		   mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+		   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
+									  "firstBind", position, mTbaseDevices);
+		}
+	   }
+	});
+   }
 
 }
