@@ -36,7 +36,7 @@ public class TimeSelectorDialog extends Dialog {
     /**
      * 3个按钮
      */
-    private Button btn1,btn2,btn3;
+    private Button btn1, btn2, btn3;
 
     /**
      * 时间显示样式
@@ -54,30 +54,41 @@ public class TimeSelectorDialog extends Dialog {
             .parseInt(PowerDateUtils.timeMillis2String1(System
                     .currentTimeMillis() + TimeConfig.tenYears));
 
-    private        DateListener dateListener;
-    static         int          year;
-    static         int          month;
-    static         int          day;
-    static         int          hour;
-    static         int          minute;
-    private static String       selectTime;
-   private static long mToTimestamp;
+    private DateListener dateListener;
+    static int year;
+    static int month;
+    static int day;
+    static int hour;
+    static int minute;
+    private static String selectTime;
+    private static long mToTimestamp;
 
-   public TimeSelectorDialog(Context context) {
-        super(context, R.style.Dialog);
-        this.context=context;
-        setContentView(R.layout.time_select_layout);
-        textview_title= (TextView) findViewById(R.id.textview_time_title);
-        btn2 = (Button)findViewById(R.id.btn_time_select_empty);
-        btn3 = (Button)findViewById(R.id.btn_time_select_cancel);
-        btn1 = (Button)findViewById(R.id.btn_time_select_submit);
+    public void setIsconfirmCancelable(boolean isconfirmCancelable) {
+        this.isconfirmCancelable = isconfirmCancelable;
+        if (isconfirmCancelable) {
+            dismiss();
+        }
     }
+
+    private boolean isconfirmCancelable = true;
+
+    public TimeSelectorDialog(Context context) {
+        super(context, R.style.Dialog);
+        this.context = context;
+        setContentView(R.layout.time_select_layout);
+        textview_title = (TextView) findViewById(R.id.textview_time_title);
+        btn2 = (Button) findViewById(R.id.btn_time_select_empty);
+        btn3 = (Button) findViewById(R.id.btn_time_select_cancel);
+        btn1 = (Button) findViewById(R.id.btn_time_select_submit);
+    }
+
     public TimeSelectorDialog(Context context, int theme) {
-        super(context,theme);
+        super(context, theme);
     }
 
     /**
      * 初始化时间   yyyy-MM-dd kk:mm
+     *
      * @param dateString
      */
     public void setCurrentDate(String dateString) {
@@ -130,6 +141,7 @@ public class TimeSelectorDialog extends Dialog {
 
     /**
      * 时间返回格式
+     *
      * @param isShowtype
      * @return
      */
@@ -137,24 +149,24 @@ public class TimeSelectorDialog extends Dialog {
         switch (isShowtype) {
             case TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour,
-									 minute);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
-		   break;
+                        minute);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
+                break;
             case TimeConfig.YEAR_MONTH_DAY_HOUR:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
                 break;
             case TimeConfig.YEAR_MONTH_DAY:
                 selectTime = PowerDateUtils.getDateStr(year, month, day);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
                 break;
             case TimeConfig.HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 break;
             case TimeConfig.YEAR_MONTH:
                 selectTime = PowerDateUtils.getDateStr(year, month);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month);
                 break;
         }
         return selectTime;
@@ -168,12 +180,12 @@ public class TimeSelectorDialog extends Dialog {
         String[] months_little = {"4", "6", "9", "11"};
         final List<String> list_big = Arrays.asList(months_big);
         final List<String> list_little = Arrays.asList(months_little);
-        time_select_date = (TextView)findViewById(R.id.time_select_date);
+        time_select_date = (TextView) findViewById(R.id.time_select_date);
         selectTime = showTime(isShowtype);
         time_select_date.setText(selectTime);
 
         // 年
-        final WheelView wv_year = (WheelView)findViewById(R.id.year);
+        final WheelView wv_year = (WheelView) findViewById(R.id.year);
         wv_year.setAdapter(new NumericWheelAdapter(START_YEAR, END_YEAR));// 设置"年"的显示数据
         wv_year.setCyclic(true);// 可循环滚动
         wv_year.setLabel("年");// 添加文字
@@ -181,13 +193,13 @@ public class TimeSelectorDialog extends Dialog {
         // wv_year.setCurrentItem(year);// 初始化时显示的数据
 
         // 月
-        final WheelView wv_month = (WheelView)findViewById(R.id.month);
+        final WheelView wv_month = (WheelView) findViewById(R.id.month);
         wv_month.setAdapter(new NumericWheelAdapter(1, 12));
         wv_month.setCyclic(true);
         wv_month.setLabel("月");
         wv_month.setCurrentItem(month);
         // 时
-        final WheelView wv_hour = (WheelView)findViewById(R.id.hour);
+        final WheelView wv_hour = (WheelView) findViewById(R.id.hour);
         wv_hour.setAdapter(new NumericWheelAdapter(0, 23));
         wv_hour.setCyclic(true);
         wv_hour.setLabel("时");
@@ -195,7 +207,7 @@ public class TimeSelectorDialog extends Dialog {
 
         // 分
 
-        final WheelView wv_minute = (WheelView)findViewById(R.id.minute);
+        final WheelView wv_minute = (WheelView) findViewById(R.id.minute);
         wv_minute.setVisibility(View.VISIBLE);
         wv_minute.setAdapter(new NumericWheelAdapter(0, 60));//new NumericWheelAdapter(0, 50, "minute", 10)
         wv_minute.setCyclic(true);
@@ -205,7 +217,7 @@ public class TimeSelectorDialog extends Dialog {
         OnWheelChangedListener wheelListener_minute = new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue,
-					    int newValue) {
+                                  int newValue) {
                 minute = newValue;
                 selectTime = showTime(isShowtype);
                 time_select_date.setText(selectTime);
@@ -213,7 +225,7 @@ public class TimeSelectorDialog extends Dialog {
         };
         wv_minute.addChangingListener(wheelListener_minute);
         // 日
-        final WheelView wv_day = (WheelView)findViewById(R.id.day);
+        final WheelView wv_day = (WheelView) findViewById(R.id.day);
         wv_day.setCyclic(true);
         // 判断大小月及是否闰年,用来确定"日"的数据
         if (list_big.contains(String.valueOf(month + 1))) {
@@ -300,7 +312,7 @@ public class TimeSelectorDialog extends Dialog {
         // 根据屏幕密度来指定选择器字体的大小
         int textSize = 0;
         textSize = context.getResources().getDimensionPixelSize(
-		 R.dimen.textsize_18);
+                R.dimen.textsize_18);
         wv_day.TEXT_SIZE = textSize;
         wv_month.TEXT_SIZE = textSize;
         wv_year.TEXT_SIZE = textSize;
@@ -309,7 +321,7 @@ public class TimeSelectorDialog extends Dialog {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isShowing()){
+                if (isShowing()) {
                     dismiss();
                 }
                 dateListener.onReturnDate("");
@@ -328,96 +340,106 @@ public class TimeSelectorDialog extends Dialog {
             public void onClick(View v) {
                 if (isShowing()) {
                     selectTime = showTime(isShowtype);
-                    dateListener.onReturnDate(selectTime,year, month, day, hour,
-                            minute, isShowtype,mToTimestamp);
-                    dismiss();
+                    dateListener.onReturnDate(selectTime, year, month, day, hour,
+                            minute, isShowtype, mToTimestamp);
+                    if (isconfirmCancelable) {
+                        dismiss();
+                    }
+
                 }
             }
         });
         switch (isShowtype) {
             case TimeConfig.YEAR_MONTH_DAY_HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour,
-									 minute);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
+                        minute);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour, minute);
                 break;
             case TimeConfig.YEAR_MONTH_DAY_HOUR:
                 selectTime = PowerDateUtils.getDateStr(year, month, day, hour);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day, hour);
                 wv_minute.setVisibility(View.GONE);
                 break;
             case TimeConfig.YEAR_MONTH_DAY:
                 selectTime = PowerDateUtils.getDateStr(year, month, day);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(year, month, day);
                 wv_minute.setVisibility(View.GONE);
                 wv_hour.setVisibility(View.GONE);
                 break;
             case TimeConfig.HOUR_MINUTE:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 wv_year.setVisibility(View.GONE);
                 wv_month.setVisibility(View.GONE);
                 wv_day.setVisibility(View.GONE);
                 break;
             case TimeConfig.YEAR_MONTH:
                 selectTime = PowerDateUtils.getDateStr(hour, minute);
-		   mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
+                mToTimestamp = PowerDateUtils.componentTimeToTimestamp(hour, minute);
                 wv_day.setVisibility(View.GONE);
                 wv_minute.setVisibility(View.GONE);
                 wv_hour.setVisibility(View.GONE);
                 break;
         }
     }
-    public void setDateListener(DateListener dateListener){
-        this.dateListener=dateListener;
+
+    public void setDateListener(DateListener dateListener) {
+        this.dateListener = dateListener;
     }
-    public void setTimeTitle(String title){
+
+    public void setTimeTitle(String title) {
         textview_title.setText(title);
     }
-    public void setIsShowtype(int isShowtype){
-        this.isShowtype=isShowtype;
+
+    public void setIsShowtype(int isShowtype) {
+        this.isShowtype = isShowtype;
     }
+
     /**
      * 取消按钮是否显示
+     *
      * @param isShow
      */
-    public void setCancleIsShow(boolean isShow){
-        if(isShow){
+    public void setCancleIsShow(boolean isShow) {
+        if (isShow) {
             btn3.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             btn3.setVisibility(View.GONE);
         }
     }
+
     /**
      * 清除按钮是否显示
+     *
      * @param isShow
      */
-    public void setEmptyIsShow(boolean isShow){
-        if(isShow){
+    public void setEmptyIsShow(boolean isShow) {
+        if (isShow) {
             btn2.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             btn2.setVisibility(View.GONE);
         }
     }
 
     /**
      * 确定按钮是否显示
+     *
      * @param isShow
      */
-    public void setSubmitIsShow(boolean isShow){
-        if(isShow){
+    public void setSubmitIsShow(boolean isShow) {
+        if (isShow) {
             btn1.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             btn1.setVisibility(View.GONE);
         }
     }
+
     /**
      * 设置初始年份
+     *
      * @param
      */
-    public void setStartYear(int year){
-        START_YEAR=year;
+    public void setStartYear(int year) {
+        START_YEAR = year;
     }
 }

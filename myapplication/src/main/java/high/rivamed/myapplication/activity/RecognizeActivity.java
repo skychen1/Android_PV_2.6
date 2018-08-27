@@ -10,22 +10,33 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.OnClick;
+import cn.rivamed.DeviceManager;
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -33,7 +44,11 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 
 /*
  识别耗材页面
@@ -45,6 +60,10 @@ public class RecognizeActivity extends BaseTimelyActivity {
     private static final String TAG = "RecognizeActivity";
     private String mRvEventString;
     private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
+    private boolean mPause = true;
+    private int mRbKey = 3;
+    private String mPatientName;
+    private String mPatientId;
 
     @Override
     public int getCompanyType() {
@@ -55,35 +74,39 @@ public class RecognizeActivity extends BaseTimelyActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         super.initDataAndEvent(savedInstanceState);
+        Intent intent = getIntent();
+        mPatientName = intent.getStringExtra("patientName");
+        mPatientId = intent.getStringExtra("patientId");
+//        AllDeviceCallBack.getInstance().initCallBack();
         DialogUtils.showNoDialog(mContext, "柜门已开!", 2, "form", null);
         mStart = new TimeCount(15000, 1000, mTimelyRight);
 //        mStart.start();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEventBing(Event.EventCheckbox event) {
-        String patient = event.mString;
-        Log.i("ff", "mMovie  " + patient);
-        if (event.type != null && event.type.equals("firstBind")) {
-
-        } else {
-            if (patient != null) {
-                for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-                    mTCstInventoryVos.get(i).setPatientName(patient);
-                    mTCstInventoryVos.get(i).setPatientId(event.id);
-                }
-                mTimelyLeft.setEnabled(true);
-                mTimelyRight.setEnabled(true);
-                mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-            }
-        }
-
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRvEvent(Event.EventString event) {
-        mRvEventString = event.mString;
-        loadBingDate(mRvEventString);
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//    public void onEventBing(Event.EventCheckbox event) {
+//        String patient = event.mString;
+//        Log.i("ff", "mMovie  " + patient);
+//        if (event.type != null && event.type.equals("firstBind")) {
+//
+//        } else {
+//            if (patient != null) {
+//                for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+//                    mTCstInventoryVos.get(i).setPatientName(patient);
+//                    mTCstInventoryVos.get(i).setPatientId(event.id);
+//                }
+//                mTimelyLeft.setEnabled(true);
+//                mTimelyRight.setEnabled(true);
+//                mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+//            }
+//        }
+//
+//    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onRvEvent(Event.EventString event) {
+//        mRvEventString = event.mString;
+//        loadBingDate(mRvEventString);
+//    }
     /* 定义一个倒计时的内部类 */
     private class TimeCount extends CountDownTimer {
 
@@ -163,8 +186,24 @@ public class RecognizeActivity extends BaseTimelyActivity {
                 break;
             case R.id.timely_start_btn://重新扫描
                 Log.d(TAG, "重新扫描");
-                EventBusUtils.postSticky(
-                        new Event.EventClickBack("RecognizeActivity"));
+                mPause = false;
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    //		   mShowLoading = DialogUtils.showLoading(mContext);
+                    mTimelyLeft.setEnabled(true);
+                    mTimelyRight.setEnabled(true);
+
+                    List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+                    mTCstInventoryDto.gettCstInventoryVos().clear();
+                    deviceInventoryVos.clear();
+
+                    for (String deviceInventoryVo : mEthDeviceIdBack) {
+                        String deviceCode = deviceInventoryVo;
+                        LogUtils.i(TAG, "deviceCode    " + deviceCode);
+                        startScan(deviceCode);
+                    }
+                }
                 break;
             case R.id.timely_left:
                 //                DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", "");
@@ -200,6 +239,124 @@ public class RecognizeActivity extends BaseTimelyActivity {
 
         }
     }
+    private void startScan(String deviceIndentify) {
+        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+                UHF_TYPE).find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeans) {
+            String box_id = boxIdBean.getBox_id();
+            List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+                    .find(BoxIdBean.class);
+            for (BoxIdBean deviceid : deviceBean) {
+                String device_id = deviceid.getDevice_id();
+                int i = DeviceManager.getInstance().StartUhfScan(device_id);
+
+                LogUtils.i(TAG, "开始扫描了状态    " + i);
+            }
+        }
+    }
+    /**
+     * 扫描后EPC准备传值
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCallBackEvent(Event.EventDeviceCallBack event) {
+        LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
+        AllDeviceCallBack.getInstance().initCallBack();
+        if (!mPause) {
+            getDeviceDate(event.deviceId, event.epcs);
+        }
+        //	EventBus.getDefault().cancelEventDelivery(event);
+    }
+    @Override
+    public void onPause() {
+        mPause = true;
+        super.onPause();
+
+    }
+
+
+    /**
+     * 扫描后传值
+     */
+    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+        TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
+        List<TCstInventory> epcList = new ArrayList<>();
+
+        for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+            TCstInventory tCstInventory = new TCstInventory();
+            tCstInventory.setEpc(v.getKey());
+            epcList.add(tCstInventory);
+        }
+
+        DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
+        List<DeviceInventoryVo> deviceList = new ArrayList<>();
+
+        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId).find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeans) {
+            String box_id = boxIdBean.getBox_id();
+            Log.i(TAG, "device_id   " + box_id);
+            if (box_id != null) {
+                deviceInventoryVo.setDeviceCode(box_id);
+            }
+        }
+        deviceInventoryVo.settCstInventories(epcList);
+        deviceList.add(deviceInventoryVo);
+
+        tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+        tCstInventoryDto.setDeviceInventoryVos(deviceList);
+        tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+        LogUtils.i(TAG, "mRbKey    " + mRbKey);
+        if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
+                mRbKey == 7 || mRbKey == 8) {
+            tCstInventoryDto.setOperation(mRbKey);
+        } else {
+            tCstInventoryDto.setOperation(mRbKey);
+        }
+        if (mRbKey == 3) {
+            tCstInventoryDto.setPatientName(mPatientName);
+            tCstInventoryDto.setPatientId(mPatientId);
+        }
+        String toJson = mGson.toJson(tCstInventoryDto);
+        LogUtils.i(TAG, "toJson    " + toJson);
+
+        NetRequest.getInstance().putEPCDate(toJson, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                Log.i(TAG, "result    " + result);
+                TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+                String string = null;
+                if (cstInventoryDto.getErrorEpcs() != null &&
+                        cstInventoryDto.getErrorEpcs().size() > 0) {
+                    string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+                    ToastUtils.showLong(string);
+                    return;
+                }
+                LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
+                //先绑定患者
+                if (mRbKey == 3) {
+                    for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+                        tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
+                        tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+                    }
+                    cstInventoryDto.setBindType("firstBind");
+                    EventBusUtils.postSticky(cstInventoryDto);
+                    //                    if (App.getInstance().ifActivityRun(RecognizeActivity.class.getName())) {
+                    //                        //已在后台运行
+                    //                        return;
+                    //                    } else {
+                    //                    }
+                    //                    mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+//                    mContext.startActivity(new Intent(mContext, RecognizeActivity.class));
+                    //
+
+                }
+
+            }
+        });
+    }
+
+
 
     private void loadBingFistDate(int mIntentType) {
         mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));

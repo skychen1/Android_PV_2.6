@@ -1,13 +1,16 @@
 package high.rivamed.myapplication.adapter;
 
 import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
@@ -17,14 +20,14 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
  * 创建临时患者
  */
 public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfosBean, BaseViewHolder> {
-    SparseBooleanArray checkStates1;
     private TextView mSeven_two;
     private TextView mSeven_three;
     private TextView mSeven_four;
     private TextView mSeven_five;
     private TextView mSeven_six;
     private TextView mSeven_seven;
-    public int mCheckPosition;
+    public int mSelectedPos;
+    private List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
     public BindTemporaryAdapter(
             int layoutResId, List<BingFindSchedulesBean.PatientInfosBean> data) {
@@ -32,9 +35,9 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     }
 
     public BindTemporaryAdapter(
-            int layout, List<BingFindSchedulesBean.PatientInfosBean> tCstInventoryVos, SparseBooleanArray checkStates1) {
-        super(layout, tCstInventoryVos);
-        this.checkStates1 = checkStates1;
+            int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, SparseBooleanArray checkStates1) {
+        super(layout, patientInfos);
+        this.patientInfos = patientInfos;
     }
 
     @Override
@@ -45,6 +48,14 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         }
+        if (mSelectedPos == 0 && patientInfos.size() > 0) {
+            patientInfos.get(mSelectedPos).setSelected(true);
+        }
+        for (int i = 0; i < patientInfos.size(); i++) {
+            if (patientInfos.get(i).isSelected()) {
+                mSelectedPos = i;
+            }
+        }
 
         CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
         mSeven_two = ((TextView) helper.getView(R.id.seven_two));
@@ -54,11 +65,6 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-        boolean checked = checkStates1.get(helper.getAdapterPosition());
-        mCheckBox.setChecked(checked);
-        if (checked) {
-            mCheckPosition = helper.getAdapterPosition();
-        }
         mSeven_two.setText(item.getPatientName());
         mSeven_three.setText(item.getPatientId());
         mSeven_four.setText(item.getRequestDateTime());
@@ -69,6 +75,31 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         } else {
             mSeven_seven.setText("否");
         }
+        mCheckBox.setOnCheckedChangeListener(null);
+        int position = helper.getAdapterPosition();
+        mCheckBox.setChecked(item.isSelected());
+
+        helper.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                patientInfos.get(mSelectedPos).setSelected(false);
+                //设置新的Item勾选状态
+                mSelectedPos = position;
+                patientInfos.get(mSelectedPos).setSelected(true);
+                notifyDataSetChanged();
+            }
+        });
+
+        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                patientInfos.get(mSelectedPos).setSelected(false);
+                //设置新的Item勾选状态
+                mSelectedPos = position;
+                patientInfos.get(mSelectedPos).setSelected(true);
+                notifyDataSetChanged();
+            }
+        });
 
     }
 }

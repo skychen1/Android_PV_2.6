@@ -2,6 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -98,7 +99,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    }
 
-   /**
+	@Override
+	public void initDataAndEvent(Bundle savedInstanceState) {
+		super.initDataAndEvent(savedInstanceState);
+		Log.e("aaa", "InOutBoxTwoActivity");
+	}
+
+	/**
     * 看关门后是否需要设置按钮为可以点击
     *
     * @param event

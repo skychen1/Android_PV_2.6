@@ -154,7 +154,6 @@ public class TableTypeView extends LinearLayout {
     }
 
 
-
     public TableTypeView(
             Context context, Activity activity, List<String> titeleList, int size, Object movies,
             LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout,
@@ -457,7 +456,7 @@ public class TableTypeView extends LinearLayout {
                         mRecyclerview.setAdapter(mPublicAdapter);
                         mLinearLayout.removeView(mHeadView);
                         mLinearLayout.addView(mHeadView);
-                    }else if (mDialog != null && mDialog.equals(ACT_TYPE_CONFIRM_HAOCAI)) {//耗材领用
+                    } else if (mDialog != null && mDialog.equals(ACT_TYPE_CONFIRM_HAOCAI)) {//耗材领用
                         mLayout = R.layout.item_text_six_layout;
                         mHeadView = mActivity.getLayoutInflater()
                                 .inflate(R.layout.item_text_six_title_layout,
@@ -468,17 +467,21 @@ public class TableTypeView extends LinearLayout {
                         ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
                         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
                         ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-                        mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mTCstInventoryVos);
-                        mHeadView.setBackgroundResource(R.color.bg_green);
 
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(false);
-                        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-                        mRecyclerview.setAdapter(mRecogHaocaiAdapter);
-                        mLinearLayout.removeView(mHeadView);
-                        mLinearLayout.addView(mHeadView);
+                        if (mRecogHaocaiAdapter != null) {
+                            mRecogHaocaiAdapter.notifyDataSetChanged();
+                        }else {
+                            mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mTCstInventoryVos);
+                            mHeadView.setBackgroundResource(R.color.bg_green);
+                            mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                            mRefreshLayout.setEnableAutoLoadMore(false);
+                            mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+                            mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                            mRecyclerview.setAdapter(mRecogHaocaiAdapter);
+                            mLinearLayout.removeView(mHeadView);
+                            mLinearLayout.addView(mHeadView);
+                        }
                     }
 
 
@@ -545,34 +548,45 @@ public class TableTypeView extends LinearLayout {
                         //                        for (int i = 0; i < mTempPatientVoVos.size(); i++) {
                         //                            mCheckStates1.put(i, true);
                         //                        }
-//                        mCheckStates1.put(0,true);
-                        mTempPatientAdapter = new BindTemporaryAdapter(mLayout,
-                                patientInfos,
-                                mCheckStates1);
-                        //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
-                        //									     mCheckStates1);
-                        mTempPatientAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
+                        //                        mCheckStates1.put(0,true);
+                        for (int i = 0; i < patientInfos.size(); i++) {
+
+                            patientInfos.get(i).setSelected(false);
+                        }
+//                        patientInfos.get(0).setSelected(true);
+                        if (mTempPatientAdapter != null) {
+                            mTempPatientAdapter.notifyDataSetChanged();
+                        }else {
+
+
+                            mTempPatientAdapter = new BindTemporaryAdapter(mLayout,
+                                    patientInfos,
+                                    mCheckStates1);
+                            //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
+                            //									     mCheckStates1);
+                            mTempPatientAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
                                     for (int i = 0; i < patientInfos.size(); i++) {
                                         mCheckStates1.put(i, false);
                                     }
                                     mCheckStates1.put(position, true);
                                     //                                    checkBox.setChecked(true);
-//                                    mTempPatientAdapter.notifyDataSetChanged();
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                        mHeadView.setBackgroundResource(R.color.bg_green);
+                                    //                                    mTempPatientAdapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                            mHeadView.setBackgroundResource(R.color.bg_green);
 
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(false);
-                        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-                        mRecyclerview.setAdapter(mTempPatientAdapter);
-                        mLinearLayout.addView(mHeadView);
+                            mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                            mRefreshLayout.setEnableAutoLoadMore(false);
+                            mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+                            mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                            mRecyclerview.setAdapter(mTempPatientAdapter);
+                            mLinearLayout.addView(mHeadView);
+                        }
                     } else {
                         //盘亏盘盈
                         mLayout = R.layout.item_realtime_seven_layout;
