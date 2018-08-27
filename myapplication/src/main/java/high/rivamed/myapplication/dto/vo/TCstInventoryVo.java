@@ -38,6 +38,16 @@ public class TCstInventoryVo implements Serializable {
     private String name;
     private String type;
     private String operationStatus;
+    private int deletetatus;//0不移除    1移除
+
+    public int getDeletetatus() {
+        return deletetatus;
+    }
+
+    public void setDeletetatus(int deletetatus) {
+        this.deletetatus = deletetatus;
+    }
+
     public boolean isDelete() {
         return isDelete;
     }

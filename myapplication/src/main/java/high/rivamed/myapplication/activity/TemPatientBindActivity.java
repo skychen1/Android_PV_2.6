@@ -26,10 +26,10 @@ import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -79,8 +79,9 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 //                    TemPatientBindActivity.this.startActivity(new Intent(TemPatientBindActivity.this, RecognizeActivity.class));
                     String name = ((TextView)mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mCheckPosition).findViewById(R.id.seven_two)).getText().toString();
                     String id = ((TextView)mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mCheckPosition).findViewById(R.id.seven_three)).getText().toString();
-                    EventBusUtils.postSticky(
-                            new Event.EventCheckbox(name, id, "firstBind", position, mTemPTbaseDevices));
+//                    EventBusUtils.postSticky(
+//                            new Event.EventCheckbox(name, id, "firstBind", 1, mTemPTbaseDevices));
+                    AllDeviceCallBack.getInstance().openDoor(1, mTemPTbaseDevices);
                 } else {
                     ToastUtils.showShort("请先选择患者");
                 }

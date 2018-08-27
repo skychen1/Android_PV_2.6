@@ -65,7 +65,9 @@ import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
 import static high.rivamed.myapplication.cont.Constants.CONFIG_0011;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_0012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -86,49 +88,49 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
-    String TAG = "ContentConsumeOperateFrag";
-    @BindView(R.id.consume_openall_rv)
-    RecyclerView mConsumeOpenallRv;
-    @BindView(R.id.consume_openall_top)
-    LinearLayout mConsumeOpenallTop;
-    @BindView(R.id.function_title_meal)
-    TextView mFunctionTitleMeal;
-    @BindView(R.id.function_cardview_meal)
-    CardView mFunctionCardviewMeal;
-    @BindView(R.id.fastopen_title_form)
-    TextView mFastopenTitleForm;
-    @BindView(R.id.function_cardview_form)
-    CardView mFunctionCardviewForm;
-    @BindView(R.id.consume_openall_middle)
-    LinearLayout mConsumeOpenallMiddle;
-    @BindView(R.id.content_rb_ly)
-    RadioButton mContentRbLy;
-    @BindView(R.id.content_rb_rk)
-    RadioButton mContentRbRk;
-    @BindView(R.id.content_rb_yc)
-    RadioButton mContentRbYc;
-    @BindView(R.id.content_rb_tb)
-    RadioButton mContentRbTb;
-    @BindView(R.id.content_rb_yr)
-    RadioButton mContentRbYr;
-    @BindView(R.id.content_rb_tuihui)
-    RadioButton mContentRbTuihui;
-    @BindView(R.id.content_rb_tuihuo)
-    RadioButton mContentRbTuihuo;
-    @BindView(R.id.content_rg)
-    RadioGroup mContentRg;
-    @BindView(R.id.consume_down_rv)
-    RecyclerView mConsumeDownRv;
-    @BindView(R.id.consume_down)
-    LinearLayout mConsumeDown;
-    @BindView(R.id.fastopen_title_guanlian)
-    TextView mFastopenTitleGuanlian;
-    @BindView(R.id.function_cardview_guanlian)
-    CardView mFunctionCardviewGuanlian;
-    Unbinder unbinder;
-    private LoadingDialog.Builder mShowLoading;
-    private HomeFastOpenAdapter mHomeFastOpenTopAdapter;
-    private HomeFastOpenAdapter mHomeFastOpenDownAdapter;
+   String TAG = "ContentConsumeOperateFrag";
+   @BindView(R.id.consume_openall_rv)
+   RecyclerView mConsumeOpenallRv;
+   @BindView(R.id.consume_openall_top)
+   LinearLayout mConsumeOpenallTop;
+   @BindView(R.id.function_title_meal)
+   TextView     mFunctionTitleMeal;
+   @BindView(R.id.function_cardview_meal)
+   CardView     mFunctionCardviewMeal;
+   @BindView(R.id.fastopen_title_form)
+   TextView     mFastopenTitleForm;
+   @BindView(R.id.function_cardview_form)
+   CardView     mFunctionCardviewForm;
+   @BindView(R.id.consume_openall_middle)
+   LinearLayout mConsumeOpenallMiddle;
+   @BindView(R.id.content_rb_ly)
+   RadioButton  mContentRbLy;
+   @BindView(R.id.content_rb_rk)
+   RadioButton  mContentRbRk;
+   @BindView(R.id.content_rb_yc)
+   RadioButton  mContentRbYc;
+   @BindView(R.id.content_rb_tb)
+   RadioButton  mContentRbTb;
+   @BindView(R.id.content_rb_yr)
+   RadioButton  mContentRbYr;
+   @BindView(R.id.content_rb_tuihui)
+   RadioButton  mContentRbTuihui;
+   @BindView(R.id.content_rb_tuihuo)
+   RadioButton  mContentRbTuihuo;
+   @BindView(R.id.content_rg)
+   RadioGroup   mContentRg;
+   @BindView(R.id.consume_down_rv)
+   RecyclerView mConsumeDownRv;
+   @BindView(R.id.consume_down)
+   LinearLayout mConsumeDown;
+   @BindView(R.id.fastopen_title_guanlian)
+   TextView     mFastopenTitleGuanlian;
+   @BindView(R.id.function_cardview_guanlian)
+   CardView     mFunctionCardviewGuanlian;
+   Unbinder unbinder;
+   private LoadingDialog.Builder mShowLoading;
+   private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
+   private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
 
    private String                             eth002DeviceId;
    private String                             uhfDeviceId;
@@ -151,11 +153,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       Handler                                      mHandler;
    private String mOppenDoor = null;
    private List<String> mEthDeviceId;
-   private TCstInventoryDto  mTCstInventoryDtoAll = new TCstInventoryDto();;
-   private boolean mPause =false;
-    private int mPosition;
-    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
-
+   private TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
+   ;
+   private boolean mPause = false;
+   private int                                mPosition;
+   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
@@ -174,19 +176,20 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 扫描后EPC准备传值
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-      LogUtils.i(TAG,"EventDeviceCallBack   "+mPause);
-      if (!mPause){
+	LogUtils.i(TAG, "EventDeviceCallBack   " + mPause);
+	if (!mPause) {
 	   getDeviceDate(event.deviceId, event.epcs);
 	}
    }
 
    @Override
    public void onResume() {
-	mPause =false;
+	mPause = false;
 	super.onResume();
    }
 
@@ -195,30 +198,32 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mOppenDoor = event.mString;
 
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onBooleanEvent(Event.EventBoolean event) {
-//
-	if (event.mBoolean){
+	//
+	if (event.mBoolean) {
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
-		   LogUtils.i(TAG,"EventBoolean   "+mOppenDoor);
-		   if (mOppenDoor==null){
+		   LogUtils.i(TAG, "EventBoolean   " + mOppenDoor);
+		   if (mOppenDoor == null) {
 			LogUtils.i(TAG, "EventBoolean  进来1");
 			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			AllDeviceCallBack.getInstance().initCallBack();
-//			DeviceManager.getInstance().OpenDoor(event.mId);
+			//			DeviceManager.getInstance().OpenDoor(event.mId);
 		   } else {
-//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
-//			AllDeviceCallBack.getInstance().initCallBack();
+			//			DeviceManager.getInstance().UnRegisterDeviceCallBack();
+			//			AllDeviceCallBack.getInstance().initCallBack();
 			LogUtils.i(TAG, "EventBoolean  进来2");
-			mOppenDoor=null;
+			mOppenDoor = null;
 		   }
 		}
 	   }).start();
 
 	}
    }
+
    /**
     * 重新加载数据
     *
@@ -227,12 +232,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
-	   mPause=false;
-//	   AllDeviceCallBack.getInstance().initCallBack();
+	   mPause = false;
+	   //	   AllDeviceCallBack.getInstance().initCallBack();
 	   initData();
-	}else {
-	   mPause=true;
-	   LogUtils.i(TAG,"UnRegisterDeviceCallBack");
+	} else {
+	   mPause = true;
+	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
 	}
    }
 
@@ -245,42 +250,42 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-      Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
+	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRvCheckBindEvent(Event.EventCheckbox event) {
-        mFirstBind = event.type;
-        if (event.type.equals("firstBind")) {
-            mPatientName = event.mString;
-            mPatientId = event.id;
-            LogUtils.i(TAG, "mPatientName   " + mPatientName);
-            LogUtils.i(TAG, "mPatientId   " + mPatientId);
-            mPosition = event.position;
-            mTbaseDevicesFromEvent = event.mTbaseDevices;
-            AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
-        } else {
-            String type = event.type;
-            String mString = event.mString;
-            int position = event.position;
-            List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices = event.mTbaseDevices;
-            mRvEventString = event.mString;
-            loadBingDate(mRvEventString, -1, null);
-        }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onRvCheckBindEvent(Event.EventCheckbox event) {
+	mFirstBind = event.type;
+	if (event.type.equals("firstBind")) {
+	   mPatientName = event.mString;
+	   mPatientId = event.id;
+	   LogUtils.i(TAG, "mPatientName   " + mPatientName);
+	   LogUtils.i(TAG, "mPatientId   " + mPatientId);
+	   mPosition = event.position;
+	   mTbaseDevicesFromEvent = event.mTbaseDevices;
+	   AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
+	} else {
+	   String type = event.type;
+	   String mString = event.mString;
+	   int position = event.position;
+	   List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices = event.mTbaseDevices;
+	   mRvEventString = event.mString;
+	   loadBingDate(mRvEventString, -1, null);
+	}
 
    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onActString(Event.EventAct event) {
-        if (event.mString.equals("RecognizeActivity")) {
-            //识别耗材重新扫描回调
-            LogUtils.i(TAG, "RecognizeActivity  重新扫描 ");
-            AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
-        }
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onActString(Event.EventAct event) {
+	if (event.mString.equals("RecognizeActivity")) {
+	   //识别耗材重新扫描回调
+	   LogUtils.i(TAG, "RecognizeActivity  重新扫描 ");
+	   AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
+	}
 
-    }
+   }
 
-    public static ContentConsumeOperateFrag newInstance() {
+   public static ContentConsumeOperateFrag newInstance() {
 
 	Bundle args = new Bundle();
 	ContentConsumeOperateFrag fragment = new ContentConsumeOperateFrag();
@@ -296,11 +301,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mPause=false;
+	mPause = false;
 	EventBusUtils.register(this);
-//	mShowLoading = DialogUtils.showLoading(mContext);
+	//	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
-//	initCallBack();
+	//	initCallBack();
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	initData();
@@ -367,7 +372,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
 		//先绑定患者
 		if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
-		   if (cstInventoryDto.gettCstInventoryVos()!=null&&cstInventoryDto.gettCstInventoryVos().size()!=0){
+		   if (cstInventoryDto.gettCstInventoryVos() != null &&
+			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
 			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
 			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
 			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
@@ -375,11 +381,24 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			cstInventoryDto.setBindType("firstBind");
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			EventBusUtils.postSticky(cstInventoryDto);
-		   }else {
-			Toast.makeText(mContext,"未扫描到操作耗材,请重新操作",Toast.LENGTH_SHORT).show();
+		   } else {
+			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+		   }
+		} else if (UIUtils.getConfigType(mContext, CONFIG_009) && mRbKey == 3) {//后绑定患者
+		   if (cstInventoryDto.gettCstInventoryVos() != null &&
+			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
+			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
+			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+			}
+			cstInventoryDto.setBindType("");
+			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+			EventBusUtils.postSticky(cstInventoryDto);
+		   } else {
+			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 		   }
 		} else {//正常的领用或者其他正常操作
-//		   mShowLoading.mDialog.dismiss();
+		   //		   mShowLoading.mDialog.dismiss();
 		   if (cstInventoryDto.gettCstInventoryVos() == null ||
 			 cstInventoryDto.gettCstInventoryVos().size() < 1) {
 			if (mBuilder != null) {
@@ -442,7 +461,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		LogUtils.i(TAG, "result  "+result);
+		LogUtils.i(TAG, "result  " + result);
 		mTbaseDevices = mBoxSizeBean.getTbaseDevices();
 		if (mTbaseDevices.size() > 1) {
 		   BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
@@ -476,7 +495,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		mRbKey = -1;
 		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-
 
 		// else if (position == 1){
 		//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
@@ -520,78 +538,96 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
 	layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-        mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-                mTbaseDevices);
-        mConsumeDownRv.setLayoutManager(layoutManager2);
-        mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
-        mHomeFastOpenDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                int id = mContentRg.getCheckedRadioButtonId();
-                if (id == -1) {
-                    ToastUtils.showShort("请选择操作方式！");
-                } else {
-                    switch (id) {
-                        case R.id.content_rb_ly:
-                            mRbKey = 3;
-                            ToastUtils.showShort("领用！");//拿出
-                            //			   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-                            //				 UIUtils.getConfigType(mContext, CONFIG_010)) {
-                            //				//先绑定患者再开柜
-                            //				loadBingDate("", position, mTemPTbaseDevices);
-                            //			   } else {
-                            //				//不绑定患者
-                            //				AllDeviceCallBack.getInstance().openDoor(position, mTemPTbaseDevices);
-                            //			   }
-                            //                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            //                            loadBingDate("", position, mTemPTbaseDevices);
+	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
+									   mTbaseDevices);
+	mConsumeDownRv.setLayoutManager(layoutManager2);
+	mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
+	mHomeFastOpenDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		int id = mContentRg.getCheckedRadioButtonId();
+		if (id == -1) {
+		   ToastUtils.showShort("请选择操作方式！");
+		} else {
+		   switch (id) {
+			case R.id.content_rb_ly:
+			   mRbKey = 3;
+			   ToastUtils.showShort("领用！");//拿出
+			   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+				 UIUtils.getConfigType(mContext, CONFIG_010)) {
+				//先绑定患者再开柜，不启动临时患者
+				LogUtils.i(TAG,"先绑定患者再开柜，不启动临时患者");
+				loadBingDate("", position, mTbaseDevices);
+			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+					  UIUtils.getConfigType(mContext, CONFIG_010) &&
+					  UIUtils.getConfigType(mContext, CONFIG_0012)) {
+				//先绑定患者，启动临时患者
+				LogUtils.i(TAG,"先绑定患者，启动临时患者");
+				mContext.startActivity(
+					new Intent(mContext, TemPatientBindActivity.class).putExtra(
+						"mTemPTbaseDevices", (Serializable) mTbaseDevices));
+			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+					  UIUtils.getConfigType(mContext, CONFIG_009)) {
+				//后绑定患者，不启用临时患者
+				LogUtils.i(TAG,"后绑定患者，不启用临时患者");
+				AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 
-                            //绑定临时患者 todo
-                            mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
+			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+					  UIUtils.getConfigType(mContext, CONFIG_009) &&
+					  UIUtils.getConfigType(mContext, CONFIG_0012)) {
+				//后绑定患者，启用临时患者 TODO:
+				LogUtils.i(TAG,"后绑定患者，启用临时患者");
+			   } else {
+				//不绑定患者
+				LogUtils.i(TAG, "不绑定患者");
+				AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   }
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   //			   loadBingDate("", position, mTbaseDevices);
 
-                            break;
-                        case R.id.content_rb_rk:
-                            mRbKey = 2;
-                            ToastUtils.showShort("入库！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_yc:
-                            mRbKey = 9;
-                            ToastUtils.showShort("移出！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tb:
-                            mRbKey = 11;
-                            ToastUtils.showShort("调拨！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_yr:
-                            mRbKey = 10;
-                            ToastUtils.showShort("移入！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tuihui:
-                            mRbKey = 7;
-                            ToastUtils.showShort("退回！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tuihuo:
-                            mRbKey = 8;
-                            ToastUtils.showShort("退货！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                    }
-                }
-            }
-        });
-    }
 
+			   break;
+			case R.id.content_rb_rk:
+			   mRbKey = 2;
+			   ToastUtils.showShort("入库！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_yc:
+			   mRbKey = 9;
+			   ToastUtils.showShort("移出！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tb:
+			   mRbKey = 11;
+			   ToastUtils.showShort("调拨！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_yr:
+			   mRbKey = 10;
+			   ToastUtils.showShort("移入！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tuihui:
+			   mRbKey = 7;
+			   ToastUtils.showShort("退回！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tuihuo:
+			   mRbKey = 8;
+			   ToastUtils.showShort("退货！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+		   }
+		}
+	   }
+	});
+   }
 
    @Override
    public void onPause() {
@@ -638,7 +674,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		break;
 	}
    }
-
 
    /**
     * 获取需要绑定的患者

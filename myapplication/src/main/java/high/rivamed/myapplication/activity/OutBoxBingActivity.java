@@ -35,7 +35,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/28 19:59
- * 描述:       拿出  绑定病人
+ * 描述:       后绑定患者  拿出  绑定病人（快速开柜需要选择框，选择操作不需要选者框）
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$

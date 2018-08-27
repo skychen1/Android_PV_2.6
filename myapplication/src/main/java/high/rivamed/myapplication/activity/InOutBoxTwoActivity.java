@@ -126,9 +126,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-
 	getDeviceDate(event.deviceId, event.epcs);
-	//	EventBus.getDefault().cancelEventDelivery(event);
    }
 
    @Override
@@ -267,20 +265,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
 		   DeviceManager.getInstance().OpenDoor(deviceCode);
 		}
-		//		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-		//		for (DeviceInventoryVo deviceInventoryVo : deviceInventoryVos) {
-		//		   String deviceCode = deviceInventoryVo.getDeviceCode();
-		//		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-		//		   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", deviceCode,
-		//									    UHF_TYPE).find(BoxIdBean.class);
-		//		   for (BoxIdBean boxIdBean : boxIdBeans) {
-		//			String device_id = boxIdBean.getDevice_id();
-		//			LogUtils.i(TAG, "device_id    " + device_id);
-		//
-		//			int i = DeviceManager.getInstance().OpenDoor(device_id);
-		//			LogUtils.i(TAG, "i    " + i);
-		//		   }
-		//		}
 
 		break;
 	}

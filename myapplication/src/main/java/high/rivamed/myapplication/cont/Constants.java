@@ -49,6 +49,8 @@ public class Constants {
     public static final int TYPE_STOCK_MIDDLE = 1;
     public static final int TYPE_STOCK_RIGHT  = 2;
 
+   public static final int DELETE_TATUS1  = 1;//移除
+
     //配置项的code
     public static final String CONFIG_005 = "005";//是否启用患者来源于门诊
     public static final String CONFIG_006 = "006";//是否启用患者来源于手术室
@@ -57,6 +59,7 @@ public class Constants {
     public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
     public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
     public static final String CONFIG_0011 = "0011";//是否允许快速开柜
+    public static final String CONFIG_0012 = "012";//是否启用绑定临时患者领用耗材
 
 
    //sp存入的key

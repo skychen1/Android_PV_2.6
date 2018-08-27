@@ -17,6 +17,8 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.DELETE_TATUS1;
+
 /**
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
@@ -84,6 +86,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   public void onClick(View view) {
 		TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
 		inventoryVo.setDelete(true);
+		inventoryVo.setDeletetatus(DELETE_TATUS1);
 		mData.remove(helper.getAdapterPosition());
 		mData.add(inventoryVo);
 		notifyDataSetChanged();

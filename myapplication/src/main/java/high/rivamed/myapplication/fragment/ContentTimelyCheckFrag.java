@@ -9,17 +9,16 @@ import android.view.View;
 
 import com.flyco.tablayout.SlidingTabLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
-import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
@@ -87,12 +86,23 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
+		   if (mTbaseDevices.size() > 1) {
+			mBuilder.mDialog.dismiss();
+			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+			devicesBean1.setDeviceName("全部");
+			devicesBean1.setDeviceCode("");
+			mTbaseDevices.add(0, devicesBean1);
+		   }
 
-		   mBuilder.mDialog.dismiss();
-
-		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager());
+		   //		   mBuilder.mDialog.dismiss();
+		   ArrayList<Fragment> fragments = new ArrayList<>();
+		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
+			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
+		   }
+		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
 		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
 		   mCttimecheckViewpager.setCurrentItem(0);
+		   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
 		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
 		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
 		}
@@ -106,51 +116,59 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    }
 
    private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
-
-	public CttimeCheckPagerAdapter(FragmentManager fm) {
+	private List<Fragment> mFragments;
+	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
 	   super(fm);
+	   this.mFragments = Fragments;
 	}
-
 	@Override
 	public Fragment getItem(int position) {
-	   String deviceCode = null;
-	   if (mTbaseDevices.size()>1){
-		if (position == 0) {
-		   deviceCode = null;
-		} else {
-		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
-		}
-	   }else {
-		deviceCode = mTbaseDevices.get(position).getDeviceCode();
-	   }
-	   mBuilder.mDialog.dismiss();
-	   return TimelyAllFrag.newInstance(deviceCode);
+
+	   return mFragments.get(position);
 
 	}
+//	@Override
+//	public Fragment getItem(int position) {
+//	   String deviceCode = null;
+//	   if (mTbaseDevices.size()>1){
+//		if (position == 0) {
+//		   deviceCode = null;
+//		} else {
+//		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+//		}
+//	   }else {
+//		deviceCode = mTbaseDevices.get(position).getDeviceCode();
+//	   }
+//	   mBuilder.mDialog.dismiss();
+//	   return TimelyAllFrag.newInstance(deviceCode);
+//
+//	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   String deviceName = null;
-	   if (mTbaseDevices.size()>1) {
-		if (position == 0) {
-		   deviceName = "全部";
-		} else {
-		   deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-		}
-	   }else {
-		deviceName = mTbaseDevices.get(position).getDeviceName();
-
-	   }
-	   return deviceName;
+	   return mTbaseDevices.get(position).getDeviceName();
+//	   String deviceName = null;
+//	   if (mTbaseDevices.size()>1) {
+//		if (position == 0) {
+//		   deviceName = "全部";
+//		} else {
+//		   deviceName = mTbaseDevices.get(position - 1).getDeviceName();
+//		}
+//	   }else {
+//		deviceName = mTbaseDevices.get(position).getDeviceName();
+//
+//	   }
+//	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   if (mTbaseDevices.size()>1) {
-		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
-	   }else {
-		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
-	   }
+	   return mFragments.size();
+	   //	   if (mTbaseDevices.size()>1) {
+	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
+	   //	   }else {
+	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
+	   //	   }
 	}
    }
 
@@ -167,13 +185,13 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
 	@Override
 	public void onPageSelected(int position) {
-	   String deviceCode = null;
-	   if (position == 0) {
-		deviceCode = "";
-	   } else {
-		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
-	   }
-	   EventBusUtils.postSticky(new Event.EventTimelyCode(deviceCode));
+//	   String deviceCode = null;
+//	   if (position == 0) {
+//		deviceCode = "";
+//	   } else {
+//		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+//	   }
+//	   EventBusUtils.postSticky(new Event.EventTimelyCode(deviceCode));
 	}
    }
 
