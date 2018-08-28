@@ -416,7 +416,7 @@ public class PowerDateUtils {
 
 	public static String getNowDateString4() {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+		Date curDate = new Date(System.currentTimeMillis()+300*1000);// 获取当前时间
 		String str = formatter.format(curDate);
 		return str;
 

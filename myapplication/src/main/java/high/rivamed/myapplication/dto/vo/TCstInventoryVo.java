@@ -40,6 +40,16 @@ public class TCstInventoryVo implements Serializable {
     private String operationStatus;
     private int deletetatus;//0不移除    1移除
 
+    public String getOperationScheduleId() {
+        return operationScheduleId;
+    }
+
+    public void setOperationScheduleId(String operationScheduleId) {
+        this.operationScheduleId = operationScheduleId;
+    }
+
+    private String operationScheduleId;
+
     public int getDeletetatus() {
         return deletetatus;
     }

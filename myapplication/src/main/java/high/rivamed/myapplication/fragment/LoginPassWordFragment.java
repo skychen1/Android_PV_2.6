@@ -40,7 +40,6 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-
 public class LoginPassWordFragment extends SimpleFragment {
 
     @BindView(R.id.login_name)

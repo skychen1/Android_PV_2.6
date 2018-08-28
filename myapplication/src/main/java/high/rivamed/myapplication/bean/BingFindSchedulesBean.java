@@ -15,76 +15,118 @@ import java.util.List;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class BingFindSchedulesBean implements Serializable{
+public class BingFindSchedulesBean implements Serializable {
 
-   /**
-    * id : 0
-    * thingCode : 402882a064f9ab850164f9ad0a470000
-    * patientInfos : [{"patientName":"李四","patientId":"3213123","requestDateTime":"","operationSurgeonName":"","operatingRoomNoName":""},{"patientName":"张三","requestDateTime":"2018-08-03 11:54:46","operationSurgeonName":"王医生","operatingRoomNoName":"312312","patientId":"3231232"}]
-    */
+    /**
+     * id : 0
+     * thingCode : 402882a064f9ab850164f9ad0a470000
+     * patientInfos : [{"patientName":"李四","patientId":"3213123","requestDateTime":"","operationSurgeonName":"","operatingRoomNoName":""},{"patientName":"张三","requestDateTime":"2018-08-03 11:54:46","operationSurgeonName":"王医生","operatingRoomNoName":"312312","patientId":"3231232"}]
+     */
 
-   private int id;
-   private String thingCode;
-   private List<PatientInfosBean> patientInfos = new ArrayList<>();
+    private int id;
+    private String thingCode;
+    private List<PatientInfosBean> patientInfos = new ArrayList<>();
 
-   public int getId() { return id;}
+    public int getId() {
+        return id;
+    }
 
-   public void setId(int id) { this.id = id;}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-   public String getThingCode() { return thingCode;}
+    public String getThingCode() {
+        return thingCode;
+    }
 
-   public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+    public void setThingCode(String thingCode) {
+        this.thingCode = thingCode;
+    }
 
-   public List<PatientInfosBean> getPatientInfos() { return patientInfos;}
+    public List<PatientInfosBean> getPatientInfos() {
+        return patientInfos;
+    }
 
-   public void setPatientInfos(
-	   List<PatientInfosBean> patientInfos) { this.patientInfos = patientInfos;}
+    public void setPatientInfos(
+            List<PatientInfosBean> patientInfos) {
+        this.patientInfos = patientInfos;
+    }
 
-   public static class PatientInfosBean {
+    public static class PatientInfosBean {
 
-	/**
-	 * patientName : 李四
-	 * patientId : 3213123
-	 * requestDateTime :
-	 * operationSurgeonName :
-	 * operatingRoomNoName :
-	 */
-	private boolean isSelected;
-	private String patientName;
-	private String patientId;
-	private String requestDateTime;
-	private String operationSurgeonName;
-	private String operatingRoomNoName;
+        /**
+         * patientName : 李四
+         * patientId : 3213123
+         * requestDateTime :
+         * operationSurgeonName :
+         * operatingRoomNoName :
+         */
+        private boolean isSelected;
+        private String patientName;
+        private String patientId;
+        private String requestDateTime;
+        private String operationSurgeonName;
+        private String operatingRoomNoName;
 
-	public boolean isSelected() {
-	   return isSelected;
-	}
+        public String getOperationScheduleId() {
+            return operationScheduleId;
+        }
 
-	public void setSelected(boolean selected) {
-	   isSelected = selected;
-	}
+        public void setOperationScheduleId(String operationScheduleId) {
+            this.operationScheduleId = operationScheduleId;
+        }
 
-	public String getPatientName() { return patientName;}
+        private String operationScheduleId;
 
-	public void setPatientName(String patientName) { this.patientName = patientName;}
+        public boolean isSelected() {
+            return isSelected;
+        }
 
-	public String getPatientId() { return patientId;}
+        public void setSelected(boolean selected) {
+            isSelected = selected;
+        }
 
-	public void setPatientId(String patientId) { this.patientId = patientId;}
+        public String getPatientName() {
+            return patientName;
+        }
 
-	public String getRequestDateTime() { return requestDateTime;}
+        public void setPatientName(String patientName) {
+            this.patientName = patientName;
+        }
 
-	public void setRequestDateTime(
-		String requestDateTime) { this.requestDateTime = requestDateTime;}
+        public String getPatientId() {
+            return patientId;
+        }
 
-	public String getOperationSurgeonName() { return operationSurgeonName;}
+        public void setPatientId(String patientId) {
+            this.patientId = patientId;
+        }
 
-	public void setOperationSurgeonName(
-		String operationSurgeonName) { this.operationSurgeonName = operationSurgeonName;}
+        public String getRequestDateTime() {
+            return requestDateTime;
+        }
 
-	public String getOperatingRoomNoName() { return operatingRoomNoName;}
+        public void setRequestDateTime(
+                String requestDateTime) {
+            this.requestDateTime = requestDateTime;
+        }
 
-	public void setOperatingRoomNoName(
-		String operatingRoomNoName) { this.operatingRoomNoName = operatingRoomNoName;}
-   }
+        public String getOperationSurgeonName() {
+            return operationSurgeonName;
+        }
+
+        public void setOperationSurgeonName(
+                String operationSurgeonName) {
+            this.operationSurgeonName = operationSurgeonName;
+        }
+
+        public String getOperatingRoomNoName() {
+            return operatingRoomNoName;
+        }
+
+        public void setOperatingRoomNoName(
+                String operatingRoomNoName) {
+            this.operatingRoomNoName = operatingRoomNoName;
+        }
+    }
 }

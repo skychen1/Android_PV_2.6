@@ -76,9 +76,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     EditText mSearchEt;
     public List<BoxSizeBean.TbaseDevicesBean> mTemPTbaseDevices = new ArrayList<>();
     private int mPosition;
-    private String mName;
-    private String mId;
+    private String mName = "";
+    private String mId = "";
     private boolean mPause = true;
+    private String mType = "";
+    private String mOperationScheduleId;
 
     @Override
     public int getCompanyType() {
@@ -92,13 +94,23 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         AllDeviceCallBack.getInstance().initCallBack();
         mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
         mPosition = getIntent().getIntExtra("position", -1);
+        mType = getIntent().getStringExtra("type");
         mDialogRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mPause = false;
                 mName = ((TextView) mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mSelectedPos).findViewById(R.id.seven_two)).getText().toString();
                 mId = ((TextView) mTypeView.mRecyclerview.getChildAt(mTypeView.mTempPatientAdapter.mSelectedPos).findViewById(R.id.seven_three)).getText().toString();
-                AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+                mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
+                if (null != mType && mType.equals("afterBindTemp")) {
+                    //后绑定患者
+                    EventBusUtils.postSticky(
+                            new Event.EventCheckbox(mName, mId, mOperationScheduleId,"afterBindTemp", mPosition, mTemPTbaseDevices));
+                    finish();
+                } else {
+                    //先绑定患者
+                    AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+                }
             }
         });
 
@@ -190,6 +202,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         if (mRbKey == 3) {
             tCstInventoryDto.setPatientName(mName);
             tCstInventoryDto.setPatientId(mId);
+            tCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
         }
         String toJson = mGson.toJson(tCstInventoryDto);
         LogUtils.i(TAG, "toJson    " + toJson);
@@ -212,6 +225,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                     for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
                         tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
                         tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+                        tCstInventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
                     }
                     cstInventoryDto.setBindType("firstBind");
                     EventBusUtils.postSticky(cstInventoryDto);
@@ -221,7 +235,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                     //                    } else {
                     //                    }
                     //                    mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-                    mContext.startActivity(new Intent(mContext, RecognizeActivity.class).putExtra("patientName",mName).putExtra("patientId",mId));
+                    mContext.startActivity(new Intent(mContext, RecognizeActivity.class).putExtra("patientName", mName).putExtra("patientId", mId).putExtra("operationScheduleId", mOperationScheduleId));
                     finish();
                     //
 

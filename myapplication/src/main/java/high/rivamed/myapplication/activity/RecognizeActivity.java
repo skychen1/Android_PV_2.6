@@ -64,6 +64,7 @@ public class RecognizeActivity extends BaseTimelyActivity {
     private int mRbKey = 3;
     private String mPatientName;
     private String mPatientId;
+    private String mOperationScheduleId;
 
     @Override
     public int getCompanyType() {
@@ -77,8 +78,9 @@ public class RecognizeActivity extends BaseTimelyActivity {
         Intent intent = getIntent();
         mPatientName = intent.getStringExtra("patientName");
         mPatientId = intent.getStringExtra("patientId");
-//        AllDeviceCallBack.getInstance().initCallBack();
-        DialogUtils.showNoDialog(mContext, "柜门已开!", 2, "form", null);
+        mOperationScheduleId = intent.getStringExtra("operationScheduleId");
+        //        AllDeviceCallBack.getInstance().initCallBack();
+//        DialogUtils.showNoDialog(mContext, "柜门已开!", 2, "form", null);
         mStart = new TimeCount(15000, 1000, mTimelyRight);
 //        mStart.start();
     }
@@ -356,11 +358,9 @@ public class RecognizeActivity extends BaseTimelyActivity {
         });
     }
 
-
-
     private void loadBingFistDate(int mIntentType) {
-        mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
         mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+        mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
         String toJson = mGson.toJson(mTCstInventoryDto);
         LogUtils.i(TAG, "toJson  " + toJson);
         NetRequest.getInstance().bingPatientsDate(toJson, this, null, new BaseResult() {

@@ -12,7 +12,10 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -20,8 +23,8 @@ import high.rivamed.myapplication.views.TwoDialog;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_PATIENT_CONN;
 
 /*
-* 选择临时患者页面
-* */
+ * 选择临时患者页面
+ * */
 public class PatientConnActivity extends BaseTimelyActivity {
 
     private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
@@ -91,21 +94,55 @@ public class PatientConnActivity extends BaseTimelyActivity {
                     }
                 }
                 if (position != -1) {
-                    for (int i = 0; i < 11; i++) {
-                        BingFindSchedulesBean.PatientInfosBean bean = new BingFindSchedulesBean.PatientInfosBean();
-                        bean.setOperatingRoomNoName("aaaaaa");
-                        bean.setOperationSurgeonName("aaaaaa");
-                        bean.setPatientId("aaaaaa");
-                        bean.setPatientName("aaaaaa");
-                        bean.setRequestDateTime("aaaaaa");
-                        mPatientInfos.add(bean);
-                    }
-                    DialogUtils.showRvDialog2(PatientConnActivity.this, mContext, mPatientInfos);
+
+                    loadBingDate("");
+
                 } else {
                     ToastUtils.showShort("请先选择患者");
                 }
                 break;
         }
+    }
+
+    /**
+     * 获取所有未绑定临时患者
+     */
+    private void loadTempBingDate(String optienNameOrId) {
+        //todo
+//        NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
+//            @Override
+//            public void onSucceed(String result) {
+//                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+//                        BingFindSchedulesBean.class);
+//                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+//                    patientInfos.clear();
+//                    patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+//                }
+//
+//                LogUtils.i("TemPatientBindActivity", "result   " + result);
+//            }
+//        });
+    }
+
+    /**
+     * 查询所有在院患者信息
+     */
+    private void loadBingDate(String optienNameOrId) {
+
+        NetRequest.getInstance().findInPatientPage(optienNameOrId, 1,10,this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+                        BingFindSchedulesBean.class);
+                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+                    mPatientInfos.clear();
+                    mPatientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+                    DialogUtils.showRvDialog2(PatientConnActivity.this, mContext, mPatientInfos);
+                }
+
+                LogUtils.i("TemPatientBindActivity", "result   " + result);
+            }
+        });
     }
 
 }

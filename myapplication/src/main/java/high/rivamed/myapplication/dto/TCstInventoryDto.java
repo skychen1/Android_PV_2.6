@@ -10,405 +10,440 @@ import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 
 /**
- *
  * 描述: TODO<br/>
  * 公司: 北京瑞华康源科技有限公司<br/>
  * 版权: rivamed2018<br/>
  *
  * @author 魏小波
- * @date 2018-07-12 12:14:19
  * @version V1.0
+ * @date 2018-07-12 12:14:19
  */
 public class TCstInventoryDto {
 
-   private static final long serialVersionUID = 1L;
-   int id;
-   private TCstInventory           tCstInventory;
-   private List<TCstInventory>     tCstInventorys;
-   private List<DeviceInventoryVo> deviceInventoryVos;
-   private List<TCstInventoryVo>   tCstInventoryVos;
-   private List<InventorysBean>         inventorys;
-   //效期数量监控
-   private List<CstExpirationVo> cstExpirationVos;
-   private String   configPatientCollar;
-   private String  thingCode;
-   private String  deviceCode;
-   private int     operation;
-   private String  requestResult;
-   private int type;	//0 放入 1取出
-   private String  cstSpec;
-   private Account account;
-   //名称及规格查询条件
-   private String  nameOrSpecQueryCon;
-   private int add;	// 库存情况
-   private int reduce;	// 扫描出来的库存
-   private String  cstCode;
-   private String  remark;	//退货备注
-   private String  storehouseRemark;	//移出备注
-   private String  storehouseCode;		//调拨库房
-   private int     stopFlag;		//效期情况 0过期 1-3近效期 4正常
-   private int                          countTwoin;
-   private int                          countMoveIn;
-   private int                          countBack;
-   private int                          countTempopary;
-   private String                          epcName;
-   private String                          patientId;
-   private String                          patientName;
-   private String                          accountId;
-   private String                          bindType;
-   private String                          configType;
-   private List<String> errorEpcs; //扫描到的系统里没有数据的epc
-   public List<String> getErrorEpcs() {
-	return errorEpcs;
-   }
-
-   public String getConfigType() {
-	return configType;
-   }
-
-   public void setConfigType(String configType) {
-	this.configType = configType;
-   }
-
-   public void setErrorEpcs(List<String> errorEpcs) {
-	this.errorEpcs = errorEpcs;
-   }
-   public String getRemark() {
-	return remark;
-   }
-
-   public void setRemark(String remark) {
-	this.remark = remark;
-   }
-
-   public String getBindType() {
-	return bindType;
-   }
-
-   public void setBindType(String bindType) {
-	this.bindType = bindType;
-   }
-
-   public String getAccountId() {
-	return accountId;
-   }
-
-   public void setAccountId(String accountId) {
-	this.accountId = accountId;
-   }
-
-   public String getPatientId() {
-	return patientId;
-   }
-
-   public void setPatientId(String patientId) {
-	this.patientId = patientId;
-   }
-
-   public String getPatientName() {
-	return patientName;
-   }
-
-   public void setPatientName(String patientName) {
-	this.patientName = patientName;
-   }
-
-   public List<InventorysBean> getInventorys() {
-	return inventorys;
-   }
-
-   public void setInventorys(
-	   List<InventorysBean> inventorys) {
-	this.inventorys = inventorys;
-   }
-
-   public String getEpcName() {
-	return epcName;
-   }
+    private static final long serialVersionUID = 1L;
+    int id;
+    private TCstInventory tCstInventory;
+    private List<TCstInventory> tCstInventorys;
+    private List<DeviceInventoryVo> deviceInventoryVos;
+    private List<TCstInventoryVo> tCstInventoryVos;
+    private List<InventorysBean> inventorys;
+    //效期数量监控
+    private List<CstExpirationVo> cstExpirationVos;
+    private String configPatientCollar;
+    private String thingCode;
+    private String deviceCode;
+    private int operation;
+    private String requestResult;
+    private int type;    //0 放入 1取出
+    private String cstSpec;
+    private Account account;
+    //名称及规格查询条件
+    private String nameOrSpecQueryCon;
+    private int add;    // 库存情况
+    private int reduce;    // 扫描出来的库存
+    private String cstCode;
+    private String remark;    //退货备注
+    private String storehouseRemark;    //移出备注
+    private String storehouseCode;        //调拨库房
+    private int stopFlag;        //效期情况 0过期 1-3近效期 4正常
+    private int countTwoin;
+    private int countMoveIn;
+    private int countBack;
+    private int countTempopary;
+    private String epcName;
+    private String patientId;
+    private String patientName;
+    private String accountId;
+    private String operationScheduleId;
+    private String bindType;
+    private String configType;
+    private List<String> errorEpcs; //扫描到的系统里没有数据的epc
+
+    public List<String> getErrorEpcs() {
+        return errorEpcs;
+    }
+
+    public String getOperationScheduleId() {
+        return operationScheduleId;
+    }
+
+    public void setOperationScheduleId(String operationScheduleId) {
+        this.operationScheduleId = operationScheduleId;
+    }
+
+    public String getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(String configType) {
+        this.configType = configType;
+    }
+
+    public void setErrorEpcs(List<String> errorEpcs) {
+        this.errorEpcs = errorEpcs;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getBindType() {
+        return bindType;
+    }
+
+    public void setBindType(String bindType) {
+        this.bindType = bindType;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
 
-   public void setEpcName(String epcName) {
-	this.epcName = epcName;
-   }
+    public List<InventorysBean> getInventorys() {
+        return inventorys;
+    }
 
-   public String getConfigPatientCollar() {
-	return configPatientCollar;
-   }
+    public void setInventorys(
+            List<InventorysBean> inventorys) {
+        this.inventorys = inventorys;
+    }
 
-   public void setConfigPatientCollar(String configPatientCollar) {
-	this.configPatientCollar = configPatientCollar;
-   }
+    public String getEpcName() {
+        return epcName;
+    }
 
-   public static long getSerialVersionUID() {
-	return serialVersionUID;
-   }
+    public void setEpcName(String epcName) {
+        this.epcName = epcName;
+    }
 
-   public int getId() {
-	return id;
-   }
+    public String getConfigPatientCollar() {
+        return configPatientCollar;
+    }
 
-   public void setId(int id) {
-	this.id = id;
-   }
+    public void setConfigPatientCollar(String configPatientCollar) {
+        this.configPatientCollar = configPatientCollar;
+    }
 
-   public int getCountTwoin() {
-	return countTwoin;
-   }
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
-   public void setCountTwoin(int countTwoin) {
-	this.countTwoin = countTwoin;
-   }
+    public int getId() {
+        return id;
+    }
 
-   public int getCountMoveIn() {
-	return countMoveIn;
-   }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-   public void setCountMoveIn(int countMoveIn) {
-	this.countMoveIn = countMoveIn;
-   }
+    public int getCountTwoin() {
+        return countTwoin;
+    }
 
-   public int getCountBack() {
-	return countBack;
-   }
+    public void setCountTwoin(int countTwoin) {
+        this.countTwoin = countTwoin;
+    }
 
-   public void setCountBack(int countBack) {
-	this.countBack = countBack;
-   }
+    public int getCountMoveIn() {
+        return countMoveIn;
+    }
 
-   public int getCountTempopary() {
-	return countTempopary;
-   }
+    public void setCountMoveIn(int countMoveIn) {
+        this.countMoveIn = countMoveIn;
+    }
 
-   public void setCountTempopary(int countTempopary) {
-	this.countTempopary = countTempopary;
-   }
+    public int getCountBack() {
+        return countBack;
+    }
 
+    public void setCountBack(int countBack) {
+        this.countBack = countBack;
+    }
 
+    public int getCountTempopary() {
+        return countTempopary;
+    }
 
-   public String getStorehouseRemark() {
-	return storehouseRemark;
-   }
+    public void setCountTempopary(int countTempopary) {
+        this.countTempopary = countTempopary;
+    }
 
-   public void setStorehouseRemark(String storehouseRemark) {
-	this.storehouseRemark = storehouseRemark;
-   }
 
-   public String getStorehouseCode() {
-	return storehouseCode;
-   }
+    public String getStorehouseRemark() {
+        return storehouseRemark;
+    }
 
-   public void setStorehouseCode(String storehouseCode) {
-	this.storehouseCode = storehouseCode;
-   }
+    public void setStorehouseRemark(String storehouseRemark) {
+        this.storehouseRemark = storehouseRemark;
+    }
 
-   public int getOperation() {
-	return operation;
-   }
+    public String getStorehouseCode() {
+        return storehouseCode;
+    }
 
-   public void setOperation(int operation) {
-	this.operation = operation;
-   }
+    public void setStorehouseCode(String storehouseCode) {
+        this.storehouseCode = storehouseCode;
+    }
 
-   public TCstInventory getTCstInventory() {
-	return tCstInventory;
-   }
+    public int getOperation() {
+        return operation;
+    }
 
-   public void setTCstInventory(TCstInventory tCstInventory) {
-	this.tCstInventory = tCstInventory;
-   }
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
 
-   public List<TCstInventory> getTCstInventorys() {
-	return tCstInventorys;
-   }
+    public TCstInventory getTCstInventory() {
+        return tCstInventory;
+    }
 
-   public void setTCstInventorys(List<TCstInventory> tCstInventorys) {
-	this.tCstInventorys = tCstInventorys;
-   }
+    public void setTCstInventory(TCstInventory tCstInventory) {
+        this.tCstInventory = tCstInventory;
+    }
 
-   public String getThingCode() {
-	return this.thingCode;
-   }
+    public List<TCstInventory> getTCstInventorys() {
+        return tCstInventorys;
+    }
 
-   public void setThingCode(String thingCode) {
-	this.thingCode = thingCode;
-   }
+    public void setTCstInventorys(List<TCstInventory> tCstInventorys) {
+        this.tCstInventorys = tCstInventorys;
+    }
 
-   public List<TCstInventoryVo> gettCstInventoryVos() {
-	return tCstInventoryVos;
-   }
+    public String getThingCode() {
+        return this.thingCode;
+    }
 
-   public void settCstInventoryVos(List<TCstInventoryVo> tCstInventoryVos) {
-	this.tCstInventoryVos = tCstInventoryVos;
-   }
+    public void setThingCode(String thingCode) {
+        this.thingCode = thingCode;
+    }
 
-   public String getRequestResult() {
-	return requestResult;
-   }
+    public List<TCstInventoryVo> gettCstInventoryVos() {
+        return tCstInventoryVos;
+    }
 
-   public void setRequestResult(String requestResult) {
-	this.requestResult = requestResult;
-   }
+    public void settCstInventoryVos(List<TCstInventoryVo> tCstInventoryVos) {
+        this.tCstInventoryVos = tCstInventoryVos;
+    }
 
-   public int getType() {
-	return type;
-   }
+    public String getRequestResult() {
+        return requestResult;
+    }
 
-   public void setType(int type) {
-	this.type = type;
-   }
+    public void setRequestResult(String requestResult) {
+        this.requestResult = requestResult;
+    }
 
-   public TCstInventory gettCstInventory() {
-	return tCstInventory;
-   }
+    public int getType() {
+        return type;
+    }
 
-   public void settCstInventory(TCstInventory tCstInventory) {
-	this.tCstInventory = tCstInventory;
-   }
+    public void setType(int type) {
+        this.type = type;
+    }
 
+    public TCstInventory gettCstInventory() {
+        return tCstInventory;
+    }
 
-   public String getNameOrSpecQueryCon() {
-	return nameOrSpecQueryCon;
-   }
-
-   public List<CstExpirationVo> getCstExpirationVos() {
-	return cstExpirationVos;
-   }
-
-   public void setCstExpirationVos(List<CstExpirationVo> cstExpirationVos) {
-	this.cstExpirationVos = cstExpirationVos;
-   }
-   public void setNameOrSpecQueryCon(String nameOrSpecQueryCon) {
-	this.nameOrSpecQueryCon = nameOrSpecQueryCon;
-   }
-
-   public String getCstSpec() {
-	return cstSpec;
-   }
-
-   public void setCstSpec(String cstSpec) {
-	this.cstSpec = cstSpec;
-   }
-
-   public int getAdd() {
-	return add;
-   }
+    public void settCstInventory(TCstInventory tCstInventory) {
+        this.tCstInventory = tCstInventory;
+    }
 
-   public void setAdd(int add) {
-	this.add = add;
-   }
 
-   public int getReduce() {
-	return reduce;
-   }
-
-   public void setReduce(int reduce) {
-	this.reduce = reduce;
-   }
-
-   public List<DeviceInventoryVo> getDeviceInventoryVos() {
-	return deviceInventoryVos;
-   }
-
-   public void setDeviceInventoryVos(List<DeviceInventoryVo> deviceInventoryVos) {
-	this.deviceInventoryVos = deviceInventoryVos;
-   }
-   public List<TCstInventory> gettCstInventorys() {
-	return tCstInventorys;
-   }
-
-   public void settCstInventorys(List<TCstInventory> tCstInventorys) {
-	this.tCstInventorys = tCstInventorys;
-   }
-
-   public Account getAccount() {
-	return account;
-   }
-
-   public void setAccount(Account account) {
-	this.account = account;
-   }
-
-   public String getDeviceCode() {
-	return deviceCode;
-   }
-
-   public void setDeviceCode(String deviceCode) {
-	this.deviceCode = deviceCode;
-   }
-
-   public String getCstCode() {
-	return cstCode;
-   }
-
-   public void setCstCode(String cstCode) {
-	this.cstCode = cstCode;
-   }
-
-   public int getStopFlag() {
-	return stopFlag;
-   }
-
-   public void setStopFlag(int stopFlag) {
-	this.stopFlag = stopFlag;
-   }
-
-   public static class InventorysBean {
-
-	/**
-	 * epc : 00020820180613000014
-	 * cstName : 弯型和直型腔内吻合器
-	 * cstSpec : 支
-	 * expiration : 已过期
-	 * deviceName : 1号柜
-	 * stopFlag : 0
-	 */
-
-	private String epc;
-	private String cstName;
-	private String cstSpec;
-	private String expiration;
-	private String deviceName;
-	private String stopFlag;
-	private String countStock;
-	private String countActual;
-
-	public String getCountStock() {
-	   return countStock;
-	}
-
-	public void setCountStock(String countStock) {
-	   this.countStock = countStock;
-	}
-
-	public String getCountActual() {
-	   return countActual;
-	}
-
-	public void setCountActual(String countActual) {
-	   this.countActual = countActual;
-	}
-
-	public String getEpc() { return epc;}
-
-	public void setEpc(String epc) { this.epc = epc;}
-
-	public String getCstName() { return cstName;}
-
-	public void setCstName(String cstName) { this.cstName = cstName;}
-
-	public String getCstSpec() { return cstSpec;}
-
-	public void setCstSpec(String cstSpec) { this.cstSpec = cstSpec;}
-
-	public String getExpiration() { return expiration;}
-
-	public void setExpiration(String expiration) { this.expiration = expiration;}
-
-	public String getDeviceName() { return deviceName;}
-
-	public void setDeviceName(String deviceName) { this.deviceName = deviceName;}
-
-	public String getStopFlag() { return stopFlag;}
-
-	public void setStopFlag(String stopFlag) { this.stopFlag = stopFlag;}
-   }
+    public String getNameOrSpecQueryCon() {
+        return nameOrSpecQueryCon;
+    }
+
+    public List<CstExpirationVo> getCstExpirationVos() {
+        return cstExpirationVos;
+    }
+
+    public void setCstExpirationVos(List<CstExpirationVo> cstExpirationVos) {
+        this.cstExpirationVos = cstExpirationVos;
+    }
+
+    public void setNameOrSpecQueryCon(String nameOrSpecQueryCon) {
+        this.nameOrSpecQueryCon = nameOrSpecQueryCon;
+    }
+
+    public String getCstSpec() {
+        return cstSpec;
+    }
+
+    public void setCstSpec(String cstSpec) {
+        this.cstSpec = cstSpec;
+    }
+
+    public int getAdd() {
+        return add;
+    }
+
+    public void setAdd(int add) {
+        this.add = add;
+    }
+
+    public int getReduce() {
+        return reduce;
+    }
+
+    public void setReduce(int reduce) {
+        this.reduce = reduce;
+    }
+
+    public List<DeviceInventoryVo> getDeviceInventoryVos() {
+        return deviceInventoryVos;
+    }
+
+    public void setDeviceInventoryVos(List<DeviceInventoryVo> deviceInventoryVos) {
+        this.deviceInventoryVos = deviceInventoryVos;
+    }
+
+    public List<TCstInventory> gettCstInventorys() {
+        return tCstInventorys;
+    }
+
+    public void settCstInventorys(List<TCstInventory> tCstInventorys) {
+        this.tCstInventorys = tCstInventorys;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public String getDeviceCode() {
+        return deviceCode;
+    }
+
+    public void setDeviceCode(String deviceCode) {
+        this.deviceCode = deviceCode;
+    }
+
+    public String getCstCode() {
+        return cstCode;
+    }
+
+    public void setCstCode(String cstCode) {
+        this.cstCode = cstCode;
+    }
+
+    public int getStopFlag() {
+        return stopFlag;
+    }
+
+    public void setStopFlag(int stopFlag) {
+        this.stopFlag = stopFlag;
+    }
+
+    public static class InventorysBean {
+
+        /**
+         * epc : 00020820180613000014
+         * cstName : 弯型和直型腔内吻合器
+         * cstSpec : 支
+         * expiration : 已过期
+         * deviceName : 1号柜
+         * stopFlag : 0
+         */
+
+        private String epc;
+        private String cstName;
+        private String cstSpec;
+        private String expiration;
+        private String deviceName;
+        private String stopFlag;
+        private String countStock;
+        private String countActual;
+
+        public String getCountStock() {
+            return countStock;
+        }
+
+        public void setCountStock(String countStock) {
+            this.countStock = countStock;
+        }
+
+        public String getCountActual() {
+            return countActual;
+        }
+
+        public void setCountActual(String countActual) {
+            this.countActual = countActual;
+        }
+
+        public String getEpc() {
+            return epc;
+        }
+
+        public void setEpc(String epc) {
+            this.epc = epc;
+        }
+
+        public String getCstName() {
+            return cstName;
+        }
+
+        public void setCstName(String cstName) {
+            this.cstName = cstName;
+        }
+
+        public String getCstSpec() {
+            return cstSpec;
+        }
+
+        public void setCstSpec(String cstSpec) {
+            this.cstSpec = cstSpec;
+        }
+
+        public String getExpiration() {
+            return expiration;
+        }
+
+        public void setExpiration(String expiration) {
+            this.expiration = expiration;
+        }
+
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
+        }
+
+        public String getStopFlag() {
+            return stopFlag;
+        }
+
+        public void setStopFlag(String stopFlag) {
+            this.stopFlag = stopFlag;
+        }
+    }
 }

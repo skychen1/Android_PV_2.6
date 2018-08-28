@@ -62,6 +62,7 @@ public class Event {
 	public String mString;
 	public String id;
 	public String type;
+	public String operationScheduleId;
 	public int position;
 	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
@@ -83,6 +84,14 @@ public class Event {
 	   this.type = type;
 	   this.position = position;
 	   this.mTbaseDevices = mTbaseDevices;
+	}
+	public EventCheckbox(String name,String id,String operationScheduleId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   this.mString = name;
+	   this.id = id;
+	   this.type = type;
+	   this.position = position;
+	   this.mTbaseDevices = mTbaseDevices;
+	   this.operationScheduleId = operationScheduleId;
 	}
    }
 

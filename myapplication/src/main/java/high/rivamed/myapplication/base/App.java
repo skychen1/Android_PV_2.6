@@ -195,6 +195,7 @@ public class App extends Application {
         // 判断当前集合中不存在该Activity
         if (!oList.contains(activity)) {
             oList.add(activity);//把当前Activity添加到集合中
+            Log.e(TAG, "Activity-------------->"+activity.getClass().getName());
         }
     }
 

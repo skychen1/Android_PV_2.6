@@ -75,40 +75,39 @@ public class DialogUtils {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
 
-		if (type.equals("firstBind")) {//先绑定患者
+		   int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
+		   if (type.equals("firstBind")) {//先绑定患者
 		   LogUtils.i("OutBoxBingActivity","先绑定患者");
 		   if ((sTableTypeView.mRecyclerview.getChildAt(
-			   sTableTypeView.mBingOutAdapter.getCheckedPosition()))==null){
+				   checkedPosition))==null){
 			Toast.makeText(UIUtils.getContext(),"无患者信息，操作无效！",Toast.LENGTH_SHORT).show();
 		   }else {
 			String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+					checkedPosition)
 				.findViewById(R.id.seven_two)).getText().toString();
 			String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+					checkedPosition)
 				.findViewById(R.id.seven_three)).getText().toString();
 			EventBusUtils.postSticky(
-				new Event.EventCheckbox(name, id, "firstBind", position, mTbaseDevices));
+				new Event.EventCheckbox(name, id, patientInfos.get(checkedPosition).getOperationScheduleId(),"firstBind", position, mTbaseDevices));
 		   }
 		   dialog.dismiss();
 		} else {//后绑定
 		   if ((sTableTypeView.mRecyclerview.getChildAt(
-			   sTableTypeView.mBingOutAdapter.getCheckedPosition()))==null){
+				   checkedPosition))==null){
 			Toast.makeText(UIUtils.getContext(),"无患者信息，操作无效！",Toast.LENGTH_SHORT).show();
 		   }else {
 			String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+					checkedPosition)
 				.findViewById(R.id.seven_two)).getText().toString();
 			String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-				sTableTypeView.mBingOutAdapter.getCheckedPosition())
+					checkedPosition)
 				.findViewById(R.id.seven_three)).getText().toString();
 			EventBusUtils.postSticky(
-				new Event.EventCheckbox(name, id, "afterBind", position, mTbaseDevices));
-			String title = "患者绑定成功";
-			DialogUtils.showNoDialog(context, title, 2, "nojump", null);
+				new Event.EventCheckbox(name, id,patientInfos.get(checkedPosition).getOperationScheduleId(), type, position, mTbaseDevices));
 			dialog.dismiss();
 		   }
-		   LogUtils.i("OutBoxBingActivity","后绑定   "+patientInfos.size());
+		   LogUtils.i("OutBoxBingActivity","后绑定   "+patientInfos.size()+"type:"+type);
 
 		}
 	   }
@@ -517,7 +516,7 @@ public class DialogUtils {
                     long times) {
                 Date date1 = new Date();
                 Date date2 = new Date(year - 1900, month, day, hour, minute);
-                if ((date2.getTime() - date1.getTime()) <=0|(date2.getTime() - date1.getTime()) >(24* 3600000)) {
+                if ((date2.getTime() - date1.getTime()) <=300*1000|(date2.getTime() - date1.getTime()) >(24* 3600000)) {
                     Toast.makeText(context, "请选择24小时之内的时间", Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.setIsconfirmCancelable(true);

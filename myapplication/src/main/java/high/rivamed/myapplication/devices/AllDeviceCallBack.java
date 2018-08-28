@@ -210,7 +210,7 @@ public class AllDeviceCallBack {
 			} else {
 			   startScan(deviceIndentify);
 			}
-		   } catch (InterruptedException e) {
+		   } catch (Exception e) {
 			e.printStackTrace();
 		   }
 		}
