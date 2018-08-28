@@ -58,18 +58,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                >
 
                 <TextView
                     android:id="@+id/timely_start_btn"
                     style="@style/btn_style_sel"
                     android:layout_marginLeft="0dp"
                     android:text="重新扫描"
+                    android:visibility="gone"
                      />
 				<TextView
 					android:id="@+id/timely_open_door"
 					style="@style/btn_style_sel"
 					android:text="重新开柜"
+                    android:visibility="gone"
 					android:layout_marginLeft="@dimen/x25"
 
 					/>
@@ -80,6 +82,7 @@
                     android:layout_marginLeft="@dimen/x30"
                     android:paddingLeft="@dimen/x30"
                     android:paddingRight="@dimen/x30"
+                    android:visibility="gone"
                     android:text="请选择患者绑定"
                      />
             </LinearLayout>

@@ -80,6 +80,9 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 public class TimelyAllFrag extends SimpleFragment {
 
    private List<BoxSizeBean.TbaseDevicesBean> mBoxList = new ArrayList<>();
+   private List<DeviceInventoryVo> mDeviceInventoryVos;
+   private TCstInventoryDto mInventoryDto	 = new TCstInventoryDto();
+   ;
    ;
 
    /**
@@ -170,7 +173,13 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	AllDeviceCallBack.getInstance().initCallBack();
-	getDeviceDate(event.deviceId, event.epcs);
+	if (mDeviceCode == null || mDeviceCode.equals("")){
+	   getDeviceDate(event.deviceId, event.epcs);
+
+	}else {
+	   getDeviceDate(event.deviceId, event.epcs);
+
+	}
    }
 
    @SuppressLint("ValidFragment")
@@ -275,8 +284,10 @@ public class TimelyAllFrag extends SimpleFragment {
 		   mBoxList.addAll(mTbaseDevices);
 		   if (mTCstInventoryVos != null) {
 			mTCstInventoryVos.clear();
+			mDeviceInventoryVos.clear();
 		   }
 		   mTimelyAllAdapter.notifyDataSetChanged();
+		   ContentConsumeOperateFrag.mPause = true;
 		   openDoor();
 
 		}
@@ -351,12 +362,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (String readerCode : mReaderDeviceId) {
 		DeviceManager.getInstance().StartUhfScan(readerCode);
 	   }
-	   //	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", READER_TYPE).find(BoxIdBean.class);
-	   //	   for (BoxIdBean boxIdBean : boxIdBeans) {
-	   //		String device_id = boxIdBean.getDevice_id();
-	   //
-	   //		DeviceManager.getInstance().StartUhfScan(device_id);
-	   //	   }
+
 	} else {
 	   LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
@@ -384,7 +390,6 @@ public class TimelyAllFrag extends SimpleFragment {
 
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
 
-	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
 	List<TCstInventory> epcList = new ArrayList<>(); //耗材信息
 	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
 	   TCstInventory tCstInventory = new TCstInventory();
@@ -405,11 +410,20 @@ public class TimelyAllFrag extends SimpleFragment {
 	deviceInventoryVo.settCstInventories(epcList);
 	deviceList.add(deviceInventoryVo);
 
-	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
-	tCstInventoryDto.setDeviceInventoryVos(deviceList);
+	mInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	mInventoryDto.setDeviceInventoryVos(deviceList);
 
-	mToJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson deviceId   "+deviceId+"    " + mToJson);
+	if (mDeviceCode == null || mDeviceCode.equals("")){
+	   setTimelyDate(deviceId, epcs);//重新处理 TODO:
+	}else {
+	   setTimelyDate(deviceId, epcs);
+	}
+
+   }
+
+   private void setTimelyDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+	mToJson = mGson.toJson(mInventoryDto);
 	NetRequest.getInstance().startTimelyScan(mToJson, _mActivity, mBuilder, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -429,33 +443,46 @@ public class TimelyAllFrag extends SimpleFragment {
 			   if (mTCstInventoryVos == null) {//第一次盘点的数据
 				mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 				mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+				mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 				int number = 0;
-				for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
+				for (high.rivamed.myapplication.dto.vo.TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 				   number += TCstInventoryVo.getCountStock();
 				}
-				initDate(epcs.size(), mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(),
-					   number);
+				int Reduce = 0;
+				int Add = 0;
+				for (DeviceInventoryVo l:mDeviceInventoryVos){
+				   Reduce += l.getReduce();
+				   Add += l.getAdd();
+				}
+				initDate(epcs.size(), Reduce,Add, number);
 			   } else {//重新刷新的数据
 				mTCstInventoryVos.clear();
+				mDeviceInventoryVos.clear();
 				TCstInventoryDto mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 				List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+				List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 				mTCstInventoryVos.addAll(tCstInventoryVos);
-
+				mDeviceInventoryVos.addAll(deviceInventoryVos);
 				int number = 0;
 				for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 				   number += TCstInventoryVo.getCountStock();
 				}
-
+				int Reduce = 0;
+				int Add = 0;
+				for (DeviceInventoryVo l:mDeviceInventoryVos){
+				   Reduce += l.getReduce();
+				   Add += l.getAdd();
+				}
 				mTimelyReality.setText(Html.fromHtml(
 					"实际扫描数：<font color='#F5222D'><big>" + epcs.size() + "</big>&emsp</font>"));
 				mTimelyBook.setText(Html.fromHtml(
 					"账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
 
 				mTimelyLoss.setText(Html.fromHtml(
-					"盘亏：" + "<font color='#F5222D'>" + mCstInventoryDto.getReduce() +
+					"盘亏：" + "<font color='#F5222D'>" + Reduce +
 					"</font>"));
 				mTimelyProfit.setText(Html.fromHtml(
-					"盘盈：" + "<font color='#F5222D'>" + mCstInventoryDto.getAdd() + "</font>"));
+					"盘盈：" + "<font color='#F5222D'>" + Add + "</font>"));
 				mTimelyAllAdapter.notifyDataSetChanged();
 
 			   }
@@ -465,7 +492,6 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	   }
 	});
-
    }
 
    /**
@@ -478,21 +504,30 @@ public class TimelyAllFrag extends SimpleFragment {
 	if (mTCstInventoryVos == null) {  //第一次扫描
 	   mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 	   mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+	   mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 	   int number = 0;
-	   for (high.rivamed.myapplication.dto.vo.TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
+	   int Reduce = 0;
+	   int Add = 0;
+	   for (DeviceInventoryVo l: mDeviceInventoryVos){
+		Reduce += l.getReduce();
+		Add += l.getAdd();
+	   }
+	   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 		number += TCstInventoryVo.getCountStock();
 	   }
-	   initDate(epcs.size(), mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(),
+	   initDate(epcs.size(), Reduce, Add,
 			number);
 	} else {//扫描后数据更新
 	   TCstInventoryDto mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 	   List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 
 	   if (mTbaseDevices.size() > 1) {
 		int number = 0;
 		int epcNumber = 0;
 		int Reduce = 0;
 		int Add = 0;
+
 		List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId)
 			.find(BoxIdBean.class);
 		for (BoxIdBean boxIdBean : boxIdBeans) {//全部有多少个柜子就加多少次数据
@@ -500,6 +535,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		   for (int i = 0; i < mBoxList.size(); i++) {
 			if (box_id.equals(mBoxList.get(i).getDeviceCode())) {
 			   mTCstInventoryVos.addAll(tCstInventoryVos);
+			   mDeviceInventoryVos.addAll(deviceInventoryVos);
 			   mBoxList.remove(i);
 			}
 		   }
@@ -507,8 +543,11 @@ public class TimelyAllFrag extends SimpleFragment {
 		for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 		   number += TCstInventoryVo.getCountStock();
 		   epcNumber += TCstInventoryVo.getCountActual();
-		   Reduce += mCstInventoryDto.getReduce();
-		   Add += mCstInventoryDto.getAdd();
+
+		}
+		for (DeviceInventoryVo l:mDeviceInventoryVos){
+		   Reduce += l.getReduce();
+		   Add += l.getAdd();
 		}
 		mTimelyReality.setText(Html.fromHtml(
 			"实际扫描数：<font color='#F5222D'><big>" + epcNumber + "</big>&emsp</font>"));
@@ -521,20 +560,29 @@ public class TimelyAllFrag extends SimpleFragment {
 	   } else {
 		int number = 0;
 		int epcNumber = 0;
+		int Reduce = 0;
+		int Add = 0;
 		mTCstInventoryVos.addAll(tCstInventoryVos);
+		mDeviceInventoryVos.addAll(deviceInventoryVos);
+
 		for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 		   number += TCstInventoryVo.getCountStock();
 		   epcNumber += TCstInventoryVo.getCountActual();
+
+		}
+		for (DeviceInventoryVo l:mDeviceInventoryVos){
+		   Reduce += l.getReduce();
+		   Add += l.getAdd();
 		}
 		mTimelyReality.setText(Html.fromHtml(
 			"实际扫描数：<font color='#F5222D'><big>" + epcNumber + "</big>&emsp</font>"));
 		mTimelyBook.setText(Html.fromHtml(
 			"账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
 		mTimelyLoss.setText(Html.fromHtml(
-			"盘亏：" + "<font color='#F5222D'>" + mCstInventoryDto.getReduce() +
+			"盘亏：" + "<font color='#F5222D'>" + Reduce+
 			"</font>"));
 		mTimelyProfit.setText(Html.fromHtml(
-			"盘盈：" + "<font color='#F5222D'>" + mCstInventoryDto.getAdd() +
+			"盘盈：" + "<font color='#F5222D'>" + Add +
 			"</font>"));
 	   }
 	}

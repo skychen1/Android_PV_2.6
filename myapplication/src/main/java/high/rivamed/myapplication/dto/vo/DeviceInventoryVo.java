@@ -13,6 +13,24 @@ public class DeviceInventoryVo {
 	private List<TCstInventory> tCstInventories;
 	
 	private List<TCstInventoryVo>  tCstInventoryVos;
+   private int add;	// 库存情况
+   private int reduce;	// 扫描出来的库存
+
+   public int getAdd() {
+	return add;
+   }
+
+   public void setAdd(int add) {
+	this.add = add;
+   }
+
+   public int getReduce() {
+	return reduce;
+   }
+
+   public void setReduce(int reduce) {
+	this.reduce = reduce;
+   }
 
    public String getCstCode() {
 	return cstCode;

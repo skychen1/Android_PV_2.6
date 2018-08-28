@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
@@ -43,6 +46,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_0012;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -70,6 +74,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private int                                          mIntentType;
    private TCstInventoryDto                             mTCstInventoryTwoDto;
    private LoadingDialog.Builder                        mShowLoading;
+   private String mPatient;
+   private String mPatientId;
+
    /**
     * 扫描后EPC准备传值
     *
@@ -83,14 +90,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
-	String patient = event.mString;
-	Log.i(TAG, "mMovie  " + patient);
+	mPatient = event.mString;
+	mPatientId = event.id;
+	Log.i(TAG, "mMovie  " + mPatient);
 	if (event.type != null && event.type.equals("firstBind")) {
 
 	} else {
-	   if (patient != null) {
+	   Log.i(TAG, "mMovie DDD " + mPatient);
+	   if (mPatient != null) {
 		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-		   mTCstInventoryVos.get(i).setPatientName(patient);
+		   mTCstInventoryVos.get(i).setPatientName(mPatient);
 		   mTCstInventoryVos.get(i).setPatientId(event.id);
 		}
 		mTimelyLeft.setEnabled(true);
@@ -169,7 +178,6 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 		mTCstInventoryDto.gettCstInventoryVos().clear();
 		deviceInventoryVos.clear();
-
 		for (String deviceInventoryVo : mEthDeviceIdBack) {
 		   String deviceCode = deviceInventoryVo;
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -196,7 +204,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			loadBingFistDate(mIntentType);
 		   } else {//后绑定的未绑定
 			int mType = 1;//1.8.3未绑定
-			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+			Toast.makeText(this,"还在开发",Toast.LENGTH_SHORT).show();
+//			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
 		   }
 		}
 		break;
@@ -210,7 +219,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
 		   } else {//后绑定的未绑定
 			int mType = 1;//1.8.3未绑定
-			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+			Toast.makeText(this,"还在开发",Toast.LENGTH_SHORT).show();
+//			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
 		   }
 		}
 		break;
@@ -363,19 +373,28 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	} else {
 	   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
 	   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-//	   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
-//	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
+	   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
 //
-//	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
-//	   set.addAll(deviceInventoryVos);
-//	   set.addAll(deviceInventoryVos1);
-//	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
-//
-//	   tCstInventoryVos1.addAll(tCstInventoryVos);
-//	   tCstInventoryVos1.removeAll(tCstInventoryVos);
-//	   tCstInventoryVos1.addAll(tCstInventoryVos);
-//	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
-//	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
+	   set.addAll(deviceInventoryVos);
+	   set.addAll(deviceInventoryVos1);
+	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   tCstInventoryVos1.removeAll(tCstInventoryVos);
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   for (TCstInventoryVo ff :tCstInventoryVos1){
+		ff.setPatientName(mPatient);
+		ff.setPatientId(mPatientId);
+	   }
+	   if (UIUtils.getConfigType(mContext, CONFIG_009)){
+		mTCstInventoryTwoDto.setBindType(null);
+	   }else {
+		mTCstInventoryTwoDto.setBindType("firstBind");
+	   }
+	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
+	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
 //
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);

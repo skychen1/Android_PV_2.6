@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,13 +34,19 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
    private TextView mSeven_four;
    private TextView mSeven_five;
    private TextView mSeven_six;
-   public TextView mSeven_seven;
+   public  TextView mSeven_seven;
+   public  int      mOperation;
 
    public AfterBingAdapter(
 	   int layoutResId, List<TCstInventoryVo> data) {
 	super(layoutResId, data);
    }
 
+   public AfterBingAdapter(
+	   int layoutResId, List<TCstInventoryVo> data, int operation) {
+	super(layoutResId, data);
+	this.mOperation = operation;
+   }
 
    @Override
    protected void convert(
@@ -51,6 +58,8 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	}
 
 	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
+	LinearLayout mCheckBoxLl = ((LinearLayout) helper.getView(R.id.seven_one_ll));
+
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
 	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
@@ -65,11 +74,20 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_four.setText(item.getCstSpec());
 	mSeven_five.setText(item.getExpiration());
 	mSeven_six.setText(item.getDeviceName());
-
-	if (item.getPatientName() == null || item.getPatientName().length() < 1) {
-	   mSeven_seven.setText("");
+	if (mOperation != 3) {
+	   mCheckBoxLl.setVisibility(View.VISIBLE);
+	   //	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
+	   //		mSeven_seven.setText("");
+	   //	   } else {
+	   //		if (mCheckBox.isChecked()&&mSeven_seven.getText().toString().trim().equals("")) {
+	   //		   mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
+	   //		}
+	   //	   }
 	} else {
-	   if (mCheckBox.isChecked()&&mSeven_seven.getText().toString().trim().equals("")) {
+	   mCheckBoxLl.setVisibility(View.GONE);
+	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
+		mSeven_seven.setText("");
+	   } else {
 		mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
 	   }
 	}

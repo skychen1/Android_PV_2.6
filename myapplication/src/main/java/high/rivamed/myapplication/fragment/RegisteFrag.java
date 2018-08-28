@@ -218,11 +218,11 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	applyNet();
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
-	//	mFragRegisteNameEdit.setHint("2.6柜子");
-	//	mFragRegisteModelEdit.setHint("rivamed");
-	//	mFragRegisteNumberEdit.setHint("123456789");
-	//	mFragRegisteSeveripEdit.setHint("192.168.10.25");
-	//	mFragRegistePortEdit.setHint("8016");
+//		mFragRegisteNameEdit.setHint("2.6.1高值柜");
+//		mFragRegisteModelEdit.setHint("rivamed");
+//		mFragRegisteNumberEdit.setHint("1");
+//		mFragRegisteSeveripEdit.setHint("192.168.1.1");
+//		mFragRegistePortEdit.setHint("8016");
 	mFragRegisteNameEdit.setText("2.6柜子");
 	mFragRegisteModelEdit.setText("rivamed26");
 	mFragRegisteNumberEdit.setText("1");

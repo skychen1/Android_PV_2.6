@@ -492,7 +492,12 @@ public class TableTypeView extends LinearLayout {
                                 .inflate(R.layout.item_outbing_seven_title_layout,
                                         (ViewGroup) mLinearLayout.getParent(), false);
                         findId();
-                        //			mSeven_one.setText(titeleList.get(0));
+//                        mSeven_one.setText(titeleList.get(0));
+                        if (mOperation!=3){
+                            mSeven_one.setVisibility(VISIBLE);
+                        }else {
+                            mSeven_one.setVisibility(GONE);
+                        }
                         mSeven_two.setText(titeleList.get(1));
                         mSeven_three.setText(titeleList.get(2));
                         mSeven_four.setText(titeleList.get(3));
@@ -501,7 +506,7 @@ public class TableTypeView extends LinearLayout {
                         mSeven_seven.setText(titeleList.get(6));
 
                         if (mAfterBingAdapter==null){
-                            mAfterBingAdapter = new AfterBingAdapter(mLayout, mTCstInventoryVos);
+                            mAfterBingAdapter = new AfterBingAdapter(mLayout, mTCstInventoryVos,mOperation);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));

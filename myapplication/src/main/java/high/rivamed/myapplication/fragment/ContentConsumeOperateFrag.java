@@ -155,7 +155,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private List<String> mEthDeviceId;
    private TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
    ;
-   private boolean mPause = false;
+   public static boolean mPause = false;
    private int                                mPosition;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
 
@@ -169,7 +169,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
-
 	   }
 	}
    }
@@ -190,6 +189,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void onResume() {
 	mPause = false;
+	LogUtils.i(TAG, "onResume    ");
 	super.onResume();
    }
 
@@ -309,13 +309,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	initData();
-       mFastopenTitleGuanlian.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               if (UIUtils.isFastDoubleClick()) return;
-               mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
-           }
-       });
+	mFastopenTitleGuanlian.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View view) {
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		}
+		mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+	   }
+	});
    }
 
    /**
@@ -397,7 +399,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
 			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
 			}
-//			cstInventoryDto.setBindType(null);
+			cstInventoryDto.setOperation(mRbKey);
+			cstInventoryDto.setBindType(null);
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
@@ -443,7 +446,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			}
 		   }
 		}
-
 	   }
 	});
    }
@@ -562,27 +564,27 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 				 UIUtils.getConfigType(mContext, CONFIG_010)) {
 				//先绑定患者再开柜，不启动临时患者
-				LogUtils.i(TAG,"先绑定患者再开柜，不启动临时患者");
+				LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
 				loadBingDate("", position, mTbaseDevices);
 			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 					  UIUtils.getConfigType(mContext, CONFIG_010) &&
 					  UIUtils.getConfigType(mContext, CONFIG_0012)) {
 				//先绑定患者，启动临时患者
-				LogUtils.i(TAG,"先绑定患者，启动临时患者");
+				LogUtils.i(TAG, "先绑定患者，启动临时患者");
 				mContext.startActivity(
 					new Intent(mContext, TemPatientBindActivity.class).putExtra(
 						"mTemPTbaseDevices", (Serializable) mTbaseDevices));
 			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 					  UIUtils.getConfigType(mContext, CONFIG_009)) {
 				//后绑定患者，不启用临时患者
-				LogUtils.i(TAG,"后绑定患者，不启用临时患者");
+				LogUtils.i(TAG, "后绑定患者，不启用临时患者");
 				AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 
 			   } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 					  UIUtils.getConfigType(mContext, CONFIG_009) &&
 					  UIUtils.getConfigType(mContext, CONFIG_0012)) {
 				//后绑定患者，启用临时患者 TODO:
-				LogUtils.i(TAG,"后绑定患者，启用临时患者");
+				LogUtils.i(TAG, "后绑定患者，启用临时患者");
 			   } else {
 				//不绑定患者
 				LogUtils.i(TAG, "不绑定患者");
@@ -591,73 +593,78 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   EventBusUtils.postSticky(new Event.EventAct("inout"));
 			   //			   loadBingDate("", position, mTbaseDevices);
 
+			   break;
+			case R.id.content_rb_rk:
+			   mRbKey = 2;
+			   ToastUtils.showShort("入库！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_yc:
+			   mRbKey = 9;
+			   ToastUtils.showShort("移出！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tb:
+			   mRbKey = 11;
+			   ToastUtils.showShort("调拨！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_yr:
+			   mRbKey = 10;
+			   ToastUtils.showShort("移入！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tuihui:
+			   mRbKey = 7;
+			   ToastUtils.showShort("退回！");//拿入
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+			case R.id.content_rb_tuihuo:
+			   mRbKey = 8;
+			   ToastUtils.showShort("退货！");//拿出
+			   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+			   EventBusUtils.postSticky(new Event.EventAct("inout"));
+			   break;
+		   }
+		}
+	   }
+	});
+   }
 
-                            break;
-                        case R.id.content_rb_rk:
-                            mRbKey = 2;
-                            ToastUtils.showShort("入库！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_yc:
-                            mRbKey = 9;
-                            ToastUtils.showShort("移出！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tb:
-                            mRbKey = 11;
-                            ToastUtils.showShort("调拨！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_yr:
-                            mRbKey = 10;
-                            ToastUtils.showShort("移入！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tuihui:
-                            mRbKey = 7;
-                            ToastUtils.showShort("退回！");//拿入
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                        case R.id.content_rb_tuihuo:
-                            mRbKey = 8;
-                            ToastUtils.showShort("退货！");//拿出
-                            AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-                            EventBusUtils.postSticky(new Event.EventAct("inout"));
-                            break;
-                    }
-                }
-            }
-        });
-    }
-    private void goToFirstBindAC(int position) {
-        /**
-         * 获取需要绑定的患者
-         */
-        NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-                        BingFindSchedulesBean.class);
-                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
-                    mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position).putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
-                } else {
-                    ToastUtils.showShort("没有患者数据");
-                }
-            }
-        });
-    }
-
-
-
+   private void goToFirstBindAC(int position) {
+	/**
+	 * 获取需要绑定的患者
+	 */
+	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+												 BingFindSchedulesBean.class);
+		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+		   mContext.startActivity(
+			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+													   position)
+				   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
+		} else {
+		   ToastUtils.showShort("没有患者数据");
+		}
+	   }
+	});
+   }
 
    @Override
    public void onPause() {
 	mPause = true;
+	LogUtils.i(TAG, "onPause    ");
+	if (mBuilder != null) {
+	   mBuilder.mDialog.dismiss();
+	   mBuilder = null;
+	}
 	super.onPause();
 
    }

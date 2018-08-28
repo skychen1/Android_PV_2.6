@@ -86,7 +86,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
 		   if (mTbaseDevices.size() > 1) {
-			mBuilder.mDialog.dismiss();
+//			mBuilder.mDialog.dismiss();
 			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
 			devicesBean1.setDeviceName("全部");
 			devicesBean1.setDeviceCode("");
@@ -109,7 +109,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void onError(String result) {
-		mBuilder.mDialog.dismiss();
+//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }

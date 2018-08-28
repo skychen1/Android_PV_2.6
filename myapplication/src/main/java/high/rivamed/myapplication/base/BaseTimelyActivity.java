@@ -444,15 +444,21 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
-//	if (mTCstInventoryDto.getBindType()==null){
-//	   mLyBingBtnRight.setVisibility(View.VISIBLE);
+	if (mTCstInventoryDto.getBindType()==null){//后绑定
+	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
-//	}else {
+	}else {//先绑定
+	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
+//	   if (UIUtils.getConfigType(mContext, CONFIG_0012)){
+//		mLyBingBtnRight.setVisibility(View.VISIBLE);
+//	   }else {
+		mLyBingBtnRight.setVisibility(View.GONE);
+//	   }
 //	   mLyBingBtnRight.setVisibility(View.GONE);
-//	   mTimelyLeft.setEnabled(true);
-//	   mTimelyRight.setEnabled(true);
-//	}
+	   mTimelyLeft.setEnabled(true);
+	   mTimelyRight.setEnabled(true);
+	}
 	//	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
 
 	ArrayList<String> strings = new ArrayList<>();
@@ -468,8 +474,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
+	int operation = mTCstInventoryDto.getOperation();
 	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING);
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING,operation);
    }
 
     /**
