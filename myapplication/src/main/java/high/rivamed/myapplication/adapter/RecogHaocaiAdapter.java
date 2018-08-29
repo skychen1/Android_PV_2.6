@@ -14,6 +14,9 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.DELETE_TATUS1;
 
 /**
  * 识别耗材页面adapter
@@ -69,15 +72,18 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         }else {
             mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
         }
+        UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
 
         setDeleteView(item.isDelete(),swipe);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TCstInventoryVo movie = mData.get(helper.getAdapterPosition());
-                movie.setDelete(true);
+                TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
+                inventoryVo.setDelete(true);
+                inventoryVo.setDeletetatus(DELETE_TATUS1);
                 mData.remove(helper.getAdapterPosition());
-                mData.add(movie);
+                mData.add(inventoryVo);
+
                 notifyDataSetChanged();
             }
         });

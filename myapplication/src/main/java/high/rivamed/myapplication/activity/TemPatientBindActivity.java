@@ -375,6 +375,12 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                 if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
                     patientInfos.clear();
                     patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+                    if (patientInfos.size() > 0) {
+                        for (int i = 0; i < patientInfos.size(); i++) {
+                            patientInfos.get(i).setSelected(false);
+                        }
+                        patientInfos.get(0).setSelected(true);
+                    }
                     mTypeView.mTempPatientAdapter.notifyDataSetChanged();
                 }
 

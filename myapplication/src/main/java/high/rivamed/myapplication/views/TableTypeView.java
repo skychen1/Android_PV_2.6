@@ -470,7 +470,7 @@ public class TableTypeView extends LinearLayout {
 
                         if (mRecogHaocaiAdapter != null) {
                             mRecogHaocaiAdapter.notifyDataSetChanged();
-                        }else {
+                        } else {
                             mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mTCstInventoryVos);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
@@ -492,10 +492,10 @@ public class TableTypeView extends LinearLayout {
                                 .inflate(R.layout.item_outbing_seven_title_layout,
                                         (ViewGroup) mLinearLayout.getParent(), false);
                         findId();
-//                        mSeven_one.setText(titeleList.get(0));
-                        if (mOperation!=3){
+                        //                        mSeven_one.setText(titeleList.get(0));
+                        if (mOperation != 3) {
                             mSeven_one.setVisibility(VISIBLE);
-                        }else {
+                        } else {
                             mSeven_one.setVisibility(GONE);
                         }
                         mSeven_two.setText(titeleList.get(1));
@@ -505,8 +505,8 @@ public class TableTypeView extends LinearLayout {
                         mSeven_six.setText(titeleList.get(5));
                         mSeven_seven.setText(titeleList.get(6));
 
-                        if (mAfterBingAdapter==null){
-                            mAfterBingAdapter = new AfterBingAdapter(mLayout, mTCstInventoryVos,mOperation);
+                        if (mAfterBingAdapter == null) {
+                            mAfterBingAdapter = new AfterBingAdapter(mLayout, mTCstInventoryVos, mOperation);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -515,7 +515,7 @@ public class TableTypeView extends LinearLayout {
                             mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
                             mRecyclerview.setAdapter(mAfterBingAdapter);
                             mLinearLayout.addView(mHeadView);
-                        }else {
+                        } else {
                             mAfterBingAdapter.notifyDataSetChanged();
                         }
                         mAfterBingAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -533,7 +533,7 @@ public class TableTypeView extends LinearLayout {
                         });
 
                     } else if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
-                        mLayout = R.layout.item_outbing_seven_layout;
+                        mLayout = R.layout.item_temp_seven_layout;
                         mHeadView = mActivity.getLayoutInflater()
                                 .inflate(R.layout.item_outbing_seven_title_layout,
                                         (ViewGroup) mLinearLayout.getParent(), false);
@@ -550,14 +550,14 @@ public class TableTypeView extends LinearLayout {
                         //                            mCheckStates1.put(i, true);
                         //                        }
                         //                        mCheckStates1.put(0,true);
-                        for (int i = 0; i < patientInfos.size(); i++) {
-
-                            patientInfos.get(i).setSelected(false);
-                        }
-//                        patientInfos.get(0).setSelected(true);
+//                        for (int i = 0; i < patientInfos.size(); i++) {
+//
+//                            patientInfos.get(i).setSelected(false);
+//                        }
+                        //                        patientInfos.get(0).setSelected(true);
                         if (mTempPatientAdapter != null) {
                             mTempPatientAdapter.notifyDataSetChanged();
-                        }else {
+                        } else {
 
 
                             mTempPatientAdapter = new BindTemporaryAdapter(mLayout,

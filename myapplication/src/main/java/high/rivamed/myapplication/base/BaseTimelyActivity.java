@@ -57,7 +57,6 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_FOUR_DET
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_LOSS;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_PROFIT;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
-import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
@@ -476,12 +475,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 mTCstInventoryVos.size() + "</big></font>"));
-        String[] array = mContext.getResources().getStringArray(R.array.seven_bing_arrays);
+        String[] array = mContext.getResources().getStringArray(R.array.six_bing_arrays);
         titeleList = Arrays.asList(array);
         mSize = array.length;
         int operation = mTCstInventoryDto.getOperation();
         mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
-                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_BING, operation);
+                mRecyclerview, mRefreshLayout, ACTIVITY, ACT_TYPE_CONFIRM_HAOCAI, operation);
     }
 
     /**

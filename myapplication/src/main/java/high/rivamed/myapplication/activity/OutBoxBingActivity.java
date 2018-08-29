@@ -3,6 +3,7 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -77,6 +78,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     private String mPatient;
     private String mPatientId;
     private String mOperationScheduleId;
+    private boolean mPause = true;
 
     /**
      * 扫描后EPC准备传值
@@ -87,7 +89,21 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     public void onCallBackEvent(Event.EventDeviceCallBack event) {
         LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
         AllDeviceCallBack.getInstance().initCallBack();
-        getDeviceDate(event.deviceId, event.epcs);
+        if (!mPause) {
+            getDeviceDate(event.deviceId, event.epcs);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        mPause = true;
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mPause = false;
+        super.onResume();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -100,19 +116,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
         } else {
             Log.i(TAG, "mMovie DDD " + mPatient);
-            if (mPatient != null) {
+            if (!TextUtils.isEmpty(mPatient)) {
                 for (int i = 0; i < mTCstInventoryVos.size(); i++) {
                     mTCstInventoryVos.get(i).setPatientName(mPatient);
                     mTCstInventoryVos.get(i).setPatientId(event.id);
                 }
                 mTimelyLeft.setEnabled(true);
                 mTimelyRight.setEnabled(true);
-                if (null != mTypeView && null != mTypeView.mAfterBingAdapter) {
-                    mTypeView.mAfterBingAdapter.notifyDataSetChanged();
-                }
+                mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
             }
         }
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
