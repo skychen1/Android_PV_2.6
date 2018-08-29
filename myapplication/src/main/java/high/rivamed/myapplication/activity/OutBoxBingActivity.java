@@ -2,6 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -105,6 +106,21 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
         mPause = false;
         super.onResume();
     }
+    @Override
+    public void initDataAndEvent(Bundle savedInstanceState) {
+        super.initDataAndEvent(savedInstanceState);
+        Intent intent = getIntent();
+        int type = intent.getIntExtra("type", 0);
+        if (type == 100) {
+            mPatient = intent.getStringExtra("patientName");
+            mPatientId = intent.getStringExtra("patientId");
+            mOperationScheduleId = intent.getStringExtra("operationScheduleId");
+
+        }
+        Log.e(TAG, "intent:" + mPatient);
+        Log.e(TAG, "intent:" + mPatientId);
+        Log.e(TAG, "intent:" + mOperationScheduleId);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventBing(Event.EventCheckbox event) {
@@ -190,8 +206,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                 break;
             case R.id.timely_start_btn_right://重新扫描
                 //		   mShowLoading = DialogUtils.showLoading(mContext);
-                mTimelyLeft.setEnabled(true);
-                mTimelyRight.setEnabled(true);
+//                mTimelyLeft.setEnabled(true);
+//                mTimelyRight.setEnabled(true);
 
                 List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
                 mTCstInventoryDto.gettCstInventoryVos().clear();
@@ -411,6 +427,15 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
             }, 3000);
 
         } else {
+            if (TextUtils.isEmpty(mPatient)) {
+                if (mTimelyLeft != null && mTimelyRight != null) {
+                    mTimelyLeft.setEnabled(false);
+                    mTimelyRight.setEnabled(false);
+                }else {
+                    mTimelyLeft.setEnabled(true);
+                    mTimelyRight.setEnabled(true);
+                }
+            }
             List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
             List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
             List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
@@ -427,6 +452,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
             for (TCstInventoryVo ff : tCstInventoryVos1) {
                 ff.setPatientName(mPatient);
                 ff.setPatientId(mPatientId);
+                ff.setOperationScheduleId(mOperationScheduleId);
             }
             if (UIUtils.getConfigType(mContext, CONFIG_009)) {
                 mTCstInventoryTwoDto.setBindType("afterBind");

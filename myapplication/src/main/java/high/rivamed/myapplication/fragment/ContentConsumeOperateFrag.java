@@ -159,6 +159,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     private int mPosition;
     private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
     private RvDialog.Builder mShowRvDialog2;
+    private String mOperationScheduleId;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDialogEvent(Event.PopupEvent event) {
@@ -257,6 +258,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRvCheckBindEvent(Event.EventCheckbox event) {
         mFirstBind = event.type;
+        mOperationScheduleId = event.operationScheduleId;
         if (event.type.equals("firstBind")) {
             mPatientName = event.mString;
             mPatientId = event.id;
@@ -324,7 +326,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     /**
      * 扫描后传值
      */
-
     private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
         TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
         List<TCstInventory> epcList = new ArrayList<>();
@@ -362,6 +363,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
         if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
             tCstInventoryDto.setPatientName(mPatientName);
             tCstInventoryDto.setPatientId(mPatientId);
+            tCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
         }
         String toJson = mGson.toJson(tCstInventoryDto);
         LogUtils.i(TAG, "toJson    " + toJson);
@@ -386,9 +388,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                         for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
                             tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
                             tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+                            tCstInventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
                         }
                         cstInventoryDto.setBindType("firstBind");
-                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+//                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", cstInventoryDto.getPatientName()).putExtra("patientId", cstInventoryDto.getPatientId()).putExtra("operationScheduleId", cstInventoryDto.getOperationScheduleId()));
                         EventBusUtils.postSticky(cstInventoryDto);
                     } else {
                         Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
@@ -399,6 +403,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                         for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
                             tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
                             tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+                            tCstInventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
                         }
                         cstInventoryDto.setOperation(mRbKey);
                         cstInventoryDto.setBindType("afterBind");
