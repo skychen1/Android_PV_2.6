@@ -413,36 +413,38 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	LogUtils.i(TAG,
 		     "mDeviceCode dddd  " + (mDeviceCode == null) + "   " + mDeviceCode.equals(""));
-	for (String s : mBoxIdListss) {
-	   LogUtils.i(TAG, "mBoxIdListss   " + s);
-	   List<BoxIdBean> boxIdBeansF = LitePal.where("device_id = ?", deviceId)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean boxIdBeanF : boxIdBeansF) {
-		String box_id = boxIdBeanF.getBox_id();
-		Log.i(TAG, "device_id   " + box_id);
-		if (box_id != null && box_id.equals(s)) {
-		   DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
-		   mEpcList = new ArrayList<>();
-		   mEpcsNumber += epcs.size();
-		   for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-			TCstInventory tCstInventory = new TCstInventory();
-			tCstInventory.setEpc(v.getKey());
-			mEpcList.add(tCstInventory);
+	if(mBoxIdListss!=null){
+	   for (String s : mBoxIdListss) {
+		LogUtils.i(TAG, "mBoxIdListss   " + s);
+		List<BoxIdBean> boxIdBeansF = LitePal.where("device_id = ?", deviceId)
+			.find(BoxIdBean.class);
+		for (BoxIdBean boxIdBeanF : boxIdBeansF) {
+		   String box_id = boxIdBeanF.getBox_id();
+		   Log.i(TAG, "device_id   " + box_id);
+		   if (box_id != null && box_id.equals(s)) {
+			DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
+			mEpcList = new ArrayList<>();
+			mEpcsNumber += epcs.size();
+			for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+			   TCstInventory tCstInventory = new TCstInventory();
+			   tCstInventory.setEpc(v.getKey());
+			   mEpcList.add(tCstInventory);
+			}
+			deviceInventoryVo.setDeviceCode(box_id);
+			deviceInventoryVo.settCstInventories(mEpcList);
+			mDeviceList.add(deviceInventoryVo);
+			mBoxIdListss.remove(s);
 		   }
-		   deviceInventoryVo.setDeviceCode(box_id);
-		   deviceInventoryVo.settCstInventories(mEpcList);
-		   mDeviceList.add(deviceInventoryVo);
-		   mBoxIdListss.remove(s);
 		}
 	   }
-	}
-	mInventoryDto.setDeviceInventoryVos(mDeviceList);
-	mInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	   mInventoryDto.setDeviceInventoryVos(mDeviceList);
+	   mInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
 
-	if (mBoxIdListss.size() == 0) {
-	   mToJson = mGson.toJson(mInventoryDto);
-	   LogUtils.i(TAG, "toJson deviceId   " + deviceId + "    " + mToJson);
-	   setTimelyDate(mToJson, deviceId, mEpcsNumber);
+	   if (mBoxIdListss.size() == 0) {
+		mToJson = mGson.toJson(mInventoryDto);
+		LogUtils.i(TAG, "toJson deviceId   " + deviceId + "    " + mToJson);
+		setTimelyDate(mToJson, deviceId, mEpcsNumber);
+	   }
 	}
    }
 

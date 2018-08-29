@@ -12,9 +12,9 @@
 		android:id="@+id/login_logo"
 		android:layout_width="@dimen/x250"
 		android:layout_height="@dimen/y70"
-		android:layout_marginBottom="@dimen/y65"
+		android:layout_marginBottom="@dimen/y55"
 		android:layout_marginLeft="@dimen/x79"
-		android:layout_marginTop="@dimen/y65"
+		android:layout_marginTop="@dimen/y55"
 		android:background="@mipmap/bg_login_icon"
 		/>
 
@@ -25,45 +25,165 @@
 		android:background="@mipmap/login_bg"
 		android:orientation="horizontal"
 		>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_centerVertical="true"
+			android:layout_marginLeft="@dimen/x210"
+			android:orientation="vertical"
+			>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/x90"
+				android:layout_marginLeft="@dimen/x30"
+				android:layout_marginTop="@dimen/y80"
+				android:text="耗材效期监控"
+				android:textColor="@color/bg_f"
+				android:textSize="@dimen/x36"/>
+
+			<RelativeLayout
+				android:layout_width="@dimen/x716"
+				android:layout_height="@dimen/y413"
+				android:background="@mipmap/login_left_bg">
+
+				<LinearLayout
+					android:id="@+id/left_top"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/x424"
+					android:layout_marginTop="@dimen/y45"
+					android:orientation="vertical">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="过期耗材"
+						android:textColor="@color/text_color_3"
+						android:textSize="@dimen/x24"/>
+
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/x54"
+						android:layout_marginTop="@dimen/y20"
+						android:orientation="horizontal">
+
+						<ImageView
+							android:layout_width="@dimen/x52"
+							android:layout_height="@dimen/x52"
+							android:src="@mipmap/login_guo"/>
+
+						<TextView
+							android:id="@+id/left_guo_text"
+							android:layout_width="@dimen/x104"
+							android:layout_height="wrap_content"
+							android:gravity="center"
+							android:layout_marginLeft="@dimen/x25"
+							android:text=""
+							android:maxLines="1"
+							android:textStyle="bold"
+							android:textColor="#fe5422"
+							android:includeFontPadding="false"
+							android:textSize="@dimen/x54"
+							/>
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/left_top"
+					android:layout_marginLeft="@dimen/x424"
+					android:layout_marginTop="@dimen/y25"
+					android:orientation="vertical">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="近效期耗材"
+						android:textColor="@color/text_color_3"
+						android:textSize="@dimen/x24"/>
+
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/x54"
+						android:layout_marginTop="@dimen/y20"
+						android:orientation="horizontal">
+
+						<ImageView
+							android:layout_width="@dimen/x52"
+							android:layout_height="@dimen/x52"
+							android:src="@mipmap/login_jin"/>
+
+						<TextView
+							android:id="@+id/left_jin_text"
+							android:layout_width="@dimen/x104"
+							android:layout_height="wrap_content"
+							android:layout_marginLeft="@dimen/x25"
+							android:maxLines="1"
+							android:gravity="center"
+							android:text=""
+							android:textStyle="bold"
+							android:textColor="#94C444"
+							android:includeFontPadding="false"
+							android:textSize="@dimen/x54"
+							/>
+					</LinearLayout>
+
+
+				</LinearLayout>
+			</RelativeLayout>
+
+		</LinearLayout>
+
+
 		<LinearLayout
 			android:layout_width="@dimen/x670"
 			android:layout_height="@dimen/y610"
 			android:layout_centerVertical="true"
 			android:layout_marginLeft="@dimen/x210"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:visibility="gone">
+
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
+				android:layout_marginLeft="@dimen/x30"
 				android:layout_marginTop="@dimen/y20"
-				android:layout_marginLeft="@dimen/x30">
+				android:orientation="horizontal">
+
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:textSize="@dimen/textsize_16"
 					android:text="耗材效期监控："
-					android:textColor="@color/bg_f"/>
+					android:textColor="@color/bg_f"
+					android:textSize="@dimen/textsize_16"/>
+
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical"
 					android:layout_marginLeft="@dimen/x50"
 					android:drawableLeft="@drawable/text_bg_red"
-					android:layout_gravity="center_vertical"
 					android:drawablePadding="@dimen/x15"
 					android:text="过期耗材"
 					android:textColor="@color/bg_f"
 					/>
+
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:drawableLeft="@drawable/text_bg_ye"
-					android:layout_marginLeft="@dimen/x30"
 					android:layout_gravity="center_vertical"
+					android:layout_marginLeft="@dimen/x30"
+					android:drawableLeft="@drawable/text_bg_ye"
 					android:drawablePadding="@dimen/x15"
 					android:text="近效期耗材"
 					android:textColor="@color/bg_f"
 					/>
 			</LinearLayout>
+
 			<com.github.mikephil.charting.charts.BarChart
 				android:id="@+id/chart1"
 				android:layout_width="match_parent"
@@ -71,10 +191,10 @@
 				android:layout_marginTop="@dimen/x10"
 				/>
 		</LinearLayout>
-		
+
 		<android.support.v7.widget.CardView
 			android:layout_width="@dimen/x600"
-			android:layout_height="@dimen/y610"
+			android:layout_height="@dimen/y630"
 			android:layout_alignParentRight="true"
 			android:layout_centerVertical="true"
 			android:layout_marginRight="@dimen/x207"
@@ -160,7 +280,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center"
-		android:paddingBottom="@dimen/y75"
+		android:paddingBottom="@dimen/y65"
 		android:paddingTop="@dimen/y75"
 		android:text="智能耗材管理柜 RM-SM-"
 		android:textSize="@dimen/textsize_16"/>

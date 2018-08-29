@@ -101,6 +101,10 @@ public class LoginActivity extends SimpleActivity {
    BarChart    mChart;
    @BindView(R.id.down_text)
    TextView    mDownText;
+   @BindView(R.id.left_guo_text)
+   TextView    mTextGuo;
+   @BindView(R.id.left_jin_text)
+   TextView    mTextJin;
    private ArrayList<Fragment> mFragments = new ArrayList<>();
 
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
@@ -357,10 +361,27 @@ public class LoginActivity extends SimpleActivity {
 		LogUtils.i(TAG, "getLeftDate   result   " + result);
 		SocketLeftTopBean leftTopBean = mGson.fromJson(result, SocketLeftTopBean.class);
 		if (leftTopBean.getCstExpirationVos()!=null&&leftTopBean.getCstExpirationVos().size()>0){
-		   setOperationDate(leftTopBean);
+		   setLeftDate(leftTopBean);
+//		   setOperationDate(leftTopBean);//柱状图
 		}
 	   }
 	});
+   }
+
+   /**
+    * 左侧界面显示
+    * @param leftTopBean
+    */
+   private void setLeftDate(SocketLeftTopBean leftTopBean) {
+	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = leftTopBean.getCstExpirationVos();
+	int guoNumber =0;
+	int jinNumber =0;
+	for (SocketLeftTopBean.CstExpirationVosBean s:cstExpirationVos){
+	   guoNumber += s.getExpireCount();
+	   jinNumber += s.getNearExpireCount();
+	}
+	mTextGuo.setText(""+guoNumber);
+	mTextJin.setText(""+jinNumber);
    }
 
    private void initlistener() {
@@ -370,12 +391,7 @@ public class LoginActivity extends SimpleActivity {
 		continuousClick(COUNTS, DURATION);
 	   }
 	});
-//	mDownText.setOnClickListener(new View.OnClickListener() {
-//	   @Override
-//	   public void onClick(View v) {
-//		startActivity(new Intent(LoginActivity.this, TestDevicesActivity.class));
-//	   }
-//	});
+
    }
 
    private void continuousClick(int count, long time) {
