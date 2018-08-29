@@ -315,10 +315,25 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
         mFastopenTitleGuanlian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UIUtils.isFastDoubleClick()) {
+                if (UIUtils.isFastDoubleClick())
                     return;
+                goToPatientConn();
+
+            }
+        });
+    }
+
+    private void goToPatientConn() {
+        NetRequest.getInstance().findTempPatients("", this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+                        BingFindSchedulesBean.class);
+                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+                    mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+                } else {
+                    ToastUtils.showShort("没有患者数据");
                 }
-                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
             }
         });
     }
@@ -391,7 +406,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                             tCstInventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
                         }
                         cstInventoryDto.setBindType("firstBind");
-//                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+                        //                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
                         mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", cstInventoryDto.getPatientName()).putExtra("patientId", cstInventoryDto.getPatientId()).putExtra("operationScheduleId", cstInventoryDto.getOperationScheduleId()));
                         EventBusUtils.postSticky(cstInventoryDto);
                     } else {
@@ -464,6 +479,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             mConsumeOpenallTop.setVisibility(View.GONE);
             mConsumeOpenallMiddle.setVisibility(View.GONE);
         }
+        mConsumeOpenallMiddle.setVisibility(View.VISIBLE);//todo 修改
         loadDate();
 
     }
@@ -707,7 +723,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                 break;
             case R.id.fastopen_title_guanlian://患者关联
                 mPause = false;
-                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+                //                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
                 break;
         }
     }

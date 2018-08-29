@@ -43,7 +43,6 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
  */
 public class RvDialog extends Dialog {
 
-   public static BingFindSchedulesBean.PatientInfosBean patientInfosBean;
    public static TableTypeView sTableTypeView;
 
    public RvDialog(Context context) {

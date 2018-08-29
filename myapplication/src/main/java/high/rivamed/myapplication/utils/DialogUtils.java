@@ -20,6 +20,7 @@ import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
+import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
@@ -37,6 +38,7 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
+import high.rivamed.myapplication.views.RvDialog2;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -589,13 +591,13 @@ public class DialogUtils {
 
     /**
      * 选择关联患者弹窗
-     *
      * @param activity
      * @param context
      * @param patientInfos
+     * @param onClickBackListener
      */
-    public static void showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
-        RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
+    public static  RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
+        RvDialog2.Builder builder = new RvDialog2.Builder(activity, context, patientInfos);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
@@ -607,14 +609,13 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 for (int x = 0; x < patientInfos.size(); x++) {
                     if (patientInfos.get(x).isSelected()) {
-                        RvDialog.patientInfosBean = patientInfos.get(x);
-                        DialogUtils.showNoDialog(context, "关联患者成功!", 2, "form", null);
-                        dialog.dismiss();
+                        onClickBackListener.OnClickBack(x,dialog);
                     }
                 }
             }
         });
         builder.create().show();
+        return builder;
     }
 
     /**

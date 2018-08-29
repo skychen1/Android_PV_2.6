@@ -67,6 +67,43 @@ public class BingFindSchedulesBean implements Serializable {
         private String requestDateTime;
         private String operationSurgeonName;
         private String operatingRoomNoName;
+        private String deptName;
+        private String operationBeginDateTime;
+        private String updateTime;
+
+        public String getDeptName() {
+            return deptName;
+        }
+
+        public void setDeptName(String deptName) {
+            this.deptName = deptName;
+        }
+
+        public String getOperationBeginDateTime() {
+            return operationBeginDateTime;
+        }
+
+        public void setOperationBeginDateTime(String operationBeginDateTime) {
+            this.operationBeginDateTime = operationBeginDateTime;
+        }
+
+        public String getUpdateTime() {
+            return updateTime;
+        }
+
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
+
+        public String getLoperPatsId() {
+            return loperPatsId;
+        }
+
+        public void setLoperPatsId(String loperPatsId) {
+            this.loperPatsId = loperPatsId;
+        }
+
+        private String loperPatsId;
 
         public String getOperationScheduleId() {
             return operationScheduleId;

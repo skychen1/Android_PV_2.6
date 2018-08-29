@@ -20,6 +20,7 @@ public class Constants {
     public static final String STYPE_STOCK_MIDDLE        = "stock_middle";
     public static final String STYPE_STOCK_RIGHT         = "stock_right";
     public static final String STYPE_DIALOG              = "dialog";//dialog样式的recyclerview
+    public static final String STYPE_DIALOG2              = "dialog2";//dialog样式的recyclerview
     public static final String STYPE_IN                  = "in";//快速开柜拿入
     public static final String STYPE_OUT                 = "out";//快速开柜拿出
     public static final String STYPE_BING                = "bing";//快速开柜拿出绑定患者的样式

@@ -71,6 +71,8 @@ public interface NetApi {
     String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/tCstInventoryBingdingPatient";//患者绑定
     String URL_SAVE_TEMP_PATIENT = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/saveTempPatient";//创建临时患者信息
     String URL_FIND_IN_PATIENT_PAGE = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatientPage";//查询所有在院患者信息
+    String URL_FIND_TEMP_PATIENTS = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findTempPatients";//查询所有的未绑定临时患者
+    String URL_TEMP_PATIENT_CONN_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/tempPatientLinkInPatient";//临时患者与在院患者进行关联
 
     //查询配置项
     String URL_THING_CONFIG_FIND = MAIN_URL + "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项

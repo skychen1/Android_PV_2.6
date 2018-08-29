@@ -390,6 +390,25 @@ public class NetRequest {
     }
 
     /**
+     * 查询所有的未绑定临时患者
+     */
+    public void findTempPatients(String optienNameOrId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(NetApi.URL_FIND_TEMP_PATIENTS).tag(tag)
+                .params("thingCode", sThingCode)
+                .params("patientNameOrId", optienNameOrId)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+   /**
+     * 临时患者与在院患者进行关联
+     */
+    public void tempPatientConnPatient(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_TEMP_PATIENT_CONN_PATIENT).tag(tag)
+                . upJson(json)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
      * 查询所有在院患者信息
      */
     public void findInPatientPage(String patientNameOrId, int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
