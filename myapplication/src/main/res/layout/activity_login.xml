@@ -12,9 +12,9 @@
 		android:id="@+id/login_logo"
 		android:layout_width="@dimen/x250"
 		android:layout_height="@dimen/y70"
-		android:layout_marginBottom="@dimen/x65"
+		android:layout_marginBottom="@dimen/y65"
 		android:layout_marginLeft="@dimen/x79"
-		android:layout_marginTop="@dimen/x65"
+		android:layout_marginTop="@dimen/y65"
 		android:background="@mipmap/bg_login_icon"
 		/>
 
@@ -27,7 +27,7 @@
 		>
 		<LinearLayout
 			android:layout_width="@dimen/x670"
-			android:layout_height="@dimen/x610"
+			android:layout_height="@dimen/y610"
 			android:layout_centerVertical="true"
 			android:layout_marginLeft="@dimen/x210"
 			android:orientation="vertical">
@@ -35,7 +35,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:layout_marginTop="@dimen/x20"
+				android:layout_marginTop="@dimen/y20"
 				android:layout_marginLeft="@dimen/x30">
 				<TextView
 					android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
 		
 		<android.support.v7.widget.CardView
 			android:layout_width="@dimen/x600"
-			android:layout_height="@dimen/x610"
+			android:layout_height="@dimen/y610"
 			android:layout_alignParentRight="true"
 			android:layout_centerVertical="true"
 			android:layout_marginRight="@dimen/x207"
@@ -101,7 +101,7 @@
 				<RadioGroup
 					android:id="@+id/login_radiogroup"
 					android:layout_width="@dimen/x600"
-					android:layout_height="@dimen/x88"
+					android:layout_height="@dimen/y88"
 					android:layout_alignParentBottom="true"
 					android:layout_alignParentRight="true"
 					android:layout_marginTop="@dimen/x5"
@@ -116,8 +116,8 @@
 						android:button="@null"
 						android:checked="true"
 						android:gravity="center"
-						android:paddingBottom="@dimen/x20"
-						android:paddingTop="@dimen/x20"
+						android:paddingBottom="@dimen/y20"
+						android:paddingTop="@dimen/y20"
 						android:text="@string/login_title"
 						android:textColor="@color/selector_login_tab_text"
 						android:textSize="@dimen/textsize_18"
@@ -125,7 +125,7 @@
 
 					<View
 						android:layout_width="@dimen/x2"
-						android:layout_height="@dimen/x75"
+						android:layout_height="@dimen/y75"
 						android:background="@color/bg_e"/>
 
 					<RadioButton
@@ -136,8 +136,8 @@
 						android:background="@drawable/selector_login_line_text"
 						android:button="@null"
 						android:gravity="center"
-						android:paddingBottom="@dimen/x20"
-						android:paddingTop="@dimen/x20"
+						android:paddingBottom="@dimen/y20"
+						android:paddingTop="@dimen/y20"
 						android:text="紧急登录"
 						android:textColor="@color/selector_login_tab_text"
 						android:textSize="@dimen/textsize_18"
@@ -160,8 +160,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center"
-		android:paddingBottom="@dimen/x75"
-		android:paddingTop="@dimen/x75"
+		android:paddingBottom="@dimen/y75"
+		android:paddingTop="@dimen/y75"
 		android:text="智能耗材管理柜 RM-SM-"
 		android:textSize="@dimen/textsize_16"/>
 

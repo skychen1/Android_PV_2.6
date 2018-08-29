@@ -96,6 +96,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 		   //		   mBuilder.mDialog.dismiss();
 		   ArrayList<Fragment> fragments = new ArrayList<>();
 		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
+//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
 			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
 		   }
 		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
