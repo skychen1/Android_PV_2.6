@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,10 +122,10 @@ public class NoDialog extends Dialog {
 		img.setBounds(0, 0, img.getMinimumWidth(), img.getMinimumHeight());
 		mDialogMsg.setCompoundDrawables(img, null, null, null); //设置左图
 
-//		new Handler().postDelayed(new Runnable() {
-//		   @Override
-//		   public void run() {
-//			mDialog.dismiss();
+		new Handler().postDelayed(new Runnable() {
+		   @Override
+		   public void run() {
+			mDialog.dismiss();
 //			ToastUtils.showShort("mNojump"+mNojump+mBing);
 //			Log.i("FF",mNojump+"   "+mBing);
 //			if(mNojump.equals("out")){
@@ -149,8 +150,8 @@ public class NoDialog extends Dialog {
 //				mContext.startActivity(new Intent(mContext, OutFormConfirmActivity.class));
 //			   }
 //			}
-//		   }
-//		}, 1000);
+		   }
+		}, 3000);
 
 
 	   }

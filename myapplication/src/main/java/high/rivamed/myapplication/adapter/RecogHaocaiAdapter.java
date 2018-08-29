@@ -59,22 +59,6 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
         swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
         LinearLayout  delete = (LinearLayout) helper.getView(R.id.ll_delete);
-        mSeven_six.setVisibility(View.VISIBLE);
-
-        mSeven_one.setText(item.getCstName());
-        mSeven_two.setText(item.getEpc());
-        mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getExpiration());
-        mSeven_five.setText(item.getDeviceName());
-
-        if (item.getPatientName()==null||item.getPatientName().length()<1){
-            mSeven_six.setText("");
-        }else {
-            mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
-        }
-        UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
-
-        setDeleteView(item.isDelete(),swipe);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +71,29 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
                 notifyDataSetChanged();
             }
         });
+        mSeven_six.setVisibility(View.VISIBLE);
+
+        mSeven_one.setText(item.getCstName());
+        mSeven_two.setText(item.getEpc());
+        mSeven_three.setText(item.getCstSpec());
+        mSeven_four.setText(item.getExpiration());
+        mSeven_five.setText(item.getDeviceName());
+
+        mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        if (item.getPatientName()==null||item.getPatientName().length()<1){
+            mSeven_six.setText("");
+        }else {
+            mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
+        }
+        UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
+
+        setDeleteView(item.isDelete(),swipe);
+
     }
 
     public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {
@@ -95,6 +102,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
             mSeven_two.setTextColor(Color.parseColor("#999999"));
             mSeven_three.setTextColor(Color.parseColor("#999999"));
             mSeven_four.setTextColor(Color.parseColor("#999999"));
+            mSeven_four.setBackgroundResource(R.color.bg_color);
             mSeven_five.setTextColor(Color.parseColor("#999999"));
             mSeven_six.setTextColor(Color.parseColor("#999999"));
             swipe.setSwipeEnabled(false);
@@ -102,7 +110,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
             mSeven_one.setTextColor(Color.parseColor("#333333"));
             mSeven_two.setTextColor(Color.parseColor("#333333"));
             mSeven_three.setTextColor(Color.parseColor("#333333"));
-            mSeven_four.setTextColor(Color.parseColor("#333333"));
+//            mSeven_four.setTextColor(Color.parseColor("#333333"));
             mSeven_five.setTextColor(Color.parseColor("#333333"));
             mSeven_six.setTextColor(Color.parseColor("#333333"));
             swipe.setSwipeEnabled(true);

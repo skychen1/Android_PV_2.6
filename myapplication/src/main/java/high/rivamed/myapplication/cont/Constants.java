@@ -59,8 +59,13 @@ public class Constants {
     public static final String CONFIG_008 = "008";//是否允许耗材同入同出
     public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
     public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
-    public static final String CONFIG_0011 = "0011";//是否允许快速开柜
-    public static final String CONFIG_0012 = "012";//是否启用绑定临时患者领用耗材
+    public static final String CONFIG_011 = "011";//是否允许快速开柜
+    public static final String CONFIG_012 = "012";//是否启用绑定临时患者领用耗材
+    public static final String CONFIG_013 = "013";//设备禁用
+    public static final String CONFIG_014 = "014";//是否启用套餐领用
+    public static final String CONFIG_015 = "015";//是否启用请领单领用
+    public static final String CONFIG_016 = "016";//是否启用功能开柜
+    public static final String CONFIG_017 = "017";//是否启用紧急登录
 
 
    //sp存入的key

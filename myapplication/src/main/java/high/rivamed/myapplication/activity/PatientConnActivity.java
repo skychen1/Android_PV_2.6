@@ -32,6 +32,7 @@ import high.rivamed.myapplication.bean.PatientConnResultBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -46,6 +47,8 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
  * 选择临时患者页面
  * */
 public class PatientConnActivity extends BaseTimelyActivity {
+
+    private static final String TAG = "PatientConnActivity";
     @BindView(R.id.search_et)
     EditText mSearchEt;
     private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<BingFindSchedulesBean.PatientInfosBean>();
@@ -57,6 +60,16 @@ public class PatientConnActivity extends BaseTimelyActivity {
     public int getCompanyType() {
         super.my_id = ACT_TYPE_PATIENT_CONN;
         return my_id;
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        LogUtils.i(TAG,"onResume   ");
+        loadTempBingDate("");
+
+        super.onResume();
     }
 
     @Override
@@ -171,7 +184,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
      * 查询所有在院患者信息
      */
     private void loadAllDate(String optienNameOrId) {
-        final int rows = 7;
+        final int rows = 20;
         NetRequest.getInstance().findInPatientPage(optienNameOrId, page, rows, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -255,11 +268,13 @@ public class PatientConnActivity extends BaseTimelyActivity {
         NetRequest.getInstance().tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i(TAG,"result   "+result);
                 try {
                     PatientConnResultBean bean = mGson.fromJson(result,
                             PatientConnResultBean.class);
                     if (bean.isOperateSuccess()) {
                         DialogUtils.showNoDialog(mContext, "关联患者成功", 2, "form", null);
+                        loadTempBingDate("");
                     } else {
                         ToastUtils.showShort("关联患者失败");
                     }

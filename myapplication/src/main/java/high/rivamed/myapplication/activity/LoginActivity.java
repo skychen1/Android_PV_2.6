@@ -51,6 +51,7 @@ import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -62,10 +63,12 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
@@ -105,6 +108,9 @@ public class LoginActivity extends SimpleActivity {
    TextView    mTextGuo;
    @BindView(R.id.left_jin_text)
    TextView    mTextJin;
+   @BindView(R.id.login_gone)
+   View   mLoginGone;
+
    private ArrayList<Fragment> mFragments = new ArrayList<>();
 
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
@@ -122,8 +128,9 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	//清空accountID
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
-//	mDownText.setText("Rivamed  智能耗材管理柜:   V " + UIUtils.getVersionName(mContext));
+	mDownText.setText(
+		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
+	//	mDownText.setText("Rivamed  智能耗材管理柜:   V " + UIUtils.getVersionName(mContext));
 	//-----检测分辨率---------------------------------------
 	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 	DisplayMetrics dm = new DisplayMetrics();
@@ -145,15 +152,16 @@ public class LoginActivity extends SimpleActivity {
 	}
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
-//	mFragments.add(new LoginPassFragment());//紧急登录
+	//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginPass.setVisibility(View.GONE);
 
 	initData();
 	initlistener();
 	initCall();
-	if (MAIN_URL != null&&SPUtils.getString(UIUtils.getContext(), THING_CODE)!=null) {
+	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
 	}
+
    }
 
    @Override
@@ -176,6 +184,20 @@ public class LoginActivity extends SimpleActivity {
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "findThingConfigDate   " + result);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+
+		   for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+			LogUtils.i(TAG, "findThingConfigDate dd  " + s.getCode()  +"   "+CONFIG_013.equals(s.getCode()));
+			LogUtils.i(TAG, "CONFIG_013 dd  " + CONFIG_013);
+
+			if (s.getCode().equals(CONFIG_013)){
+			   //设备是否禁用
+				mLoginGone.setVisibility(View.VISIBLE);
+			   }else {
+				mLoginGone.setVisibility(View.GONE);
+			}
+		   }
 		}
 	   });
 	}
@@ -291,7 +313,7 @@ public class LoginActivity extends SimpleActivity {
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
-		   }else {
+		   } else {
 			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
 		   }
 		} catch (JsonSyntaxException e) {
@@ -330,7 +352,7 @@ public class LoginActivity extends SimpleActivity {
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
-		   }else {
+		   } else {
 			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
 		   }
 		} catch (JsonSyntaxException e) {
@@ -347,7 +369,6 @@ public class LoginActivity extends SimpleActivity {
 
    }
 
-
    @Override
    public void onBindViewBefore() {
 
@@ -360,9 +381,10 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "getLeftDate   result   " + result);
 		SocketLeftTopBean leftTopBean = mGson.fromJson(result, SocketLeftTopBean.class);
-		if (leftTopBean.getCstExpirationVos()!=null&&leftTopBean.getCstExpirationVos().size()>0){
+		if (leftTopBean.getCstExpirationVos() != null &&
+		    leftTopBean.getCstExpirationVos().size() > 0) {
 		   setLeftDate(leftTopBean);
-//		   setOperationDate(leftTopBean);//柱状图
+		   //		   setOperationDate(leftTopBean);//柱状图
 		}
 	   }
 	});
@@ -370,18 +392,19 @@ public class LoginActivity extends SimpleActivity {
 
    /**
     * 左侧界面显示
+    *
     * @param leftTopBean
     */
    private void setLeftDate(SocketLeftTopBean leftTopBean) {
 	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = leftTopBean.getCstExpirationVos();
-	int guoNumber =0;
-	int jinNumber =0;
-	for (SocketLeftTopBean.CstExpirationVosBean s:cstExpirationVos){
+	int guoNumber = 0;
+	int jinNumber = 0;
+	for (SocketLeftTopBean.CstExpirationVosBean s : cstExpirationVos) {
 	   guoNumber += s.getExpireCount();
 	   jinNumber += s.getNearExpireCount();
 	}
-	mTextGuo.setText(""+guoNumber);
-	mTextJin.setText(""+jinNumber);
+	mTextGuo.setText("" + guoNumber);
+	mTextJin.setText("" + jinNumber);
    }
 
    private void initlistener() {
@@ -391,7 +414,13 @@ public class LoginActivity extends SimpleActivity {
 		continuousClick(COUNTS, DURATION);
 	   }
 	});
-
+	mLoginGone.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		ToastUtils.showShort("正在维护，请到管理端启用");
+		getConfigDate();
+	   }
+	});
    }
 
    private void continuousClick(int count, long time) {
@@ -423,9 +452,9 @@ public class LoginActivity extends SimpleActivity {
 		   case R.id.login_password:
 			mLoginViewpager.setCurrentItem(0);
 			break;
-//		   case R.id.login_pass:
-//			mLoginViewpager.setCurrentItem(1);
-//			break;
+		   //		   case R.id.login_pass:
+		   //			mLoginViewpager.setCurrentItem(1);
+		   //			break;
 		}
 	   }
 	});
@@ -435,32 +464,33 @@ public class LoginActivity extends SimpleActivity {
    private void setOperationDate(SocketLeftTopBean leftTopBean) {
 	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = leftTopBean.getCstExpirationVos();
 	List<String> xAxisValue = new ArrayList<>();
-	if (cstExpirationVos.size()<6){
+	if (cstExpirationVos.size() < 6) {
 	   for (int i = 1; i < 6; i++) {
-		if (cstExpirationVos.size()>=i) {
+		if (cstExpirationVos.size() >= i) {
 		   xAxisValue.add(i + "号柜");
 		} else {
 		   xAxisValue.add("");
 		}
 	   }
-	}else {
-	   for (int i = 1; i < cstExpirationVos.size()+1; i++) {
-	      xAxisValue.add(i + "号柜");
+	} else {
+	   for (int i = 1; i < cstExpirationVos.size() + 1; i++) {
+		xAxisValue.add(i + "号柜");
 	   }
 	}
-
 
 	//Y轴过期
 	List<Float> yAxisValue1 = new ArrayList<>();
 	for (int i = 0; i < cstExpirationVos.size(); i++) {
-	   LogUtils.i(TAG,"(float) cstExpirationVos.get(i).getExpireCount()   "+(float) cstExpirationVos.get(i).getExpireCount());
+	   LogUtils.i(TAG, "(float) cstExpirationVos.get(i).getExpireCount()   " +
+				 (float) cstExpirationVos.get(i).getExpireCount());
 	   yAxisValue1.add((float) cstExpirationVos.get(i).getExpireCount());
 
 	}
 	//Y轴近效期
 	List<Float> yAxisValue2 = new ArrayList<>();
 	for (int i = 0; i < cstExpirationVos.size(); i++) {
-	   LogUtils.i(TAG,"(float) cstExpirationVos.get(i).getNearExpireCount()   "+(float) cstExpirationVos.get(i).getNearExpireCount());
+	   LogUtils.i(TAG, "(float) cstExpirationVos.get(i).getNearExpireCount()   " +
+				 (float) cstExpirationVos.get(i).getNearExpireCount());
 	   yAxisValue2.add((float) cstExpirationVos.get(i).getNearExpireCount());
 
 	}
@@ -485,9 +515,9 @@ public class LoginActivity extends SimpleActivity {
 		case 0:
 		   mLoginRadiogroup.check(R.id.login_password);
 		   break;
-//		case 1:
-//		   mLoginRadiogroup.check(R.id.login_pass);
-//		   break;
+		//		case 1:
+		//		   mLoginRadiogroup.check(R.id.login_pass);
+		//		   break;
 	   }
 	}
 
@@ -538,7 +568,8 @@ public class LoginActivity extends SimpleActivity {
 	xAxis.setCenterAxisLabels(true);//设置标签居中
 	xAxis.setDrawAxisLine(true);
 	xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisValue));
-	xAxis.setTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
+	xAxis.setTextSize(
+		UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
 	xAxis.setAxisMaximum(1);
 	xAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	xAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
@@ -552,7 +583,8 @@ public class LoginActivity extends SimpleActivity {
 	leftAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	leftAxis.setValueFormatter(new MyValueFormatter());
 	leftAxis.setGranularity(1f); // interval 1
-	leftAxis.setTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
+	leftAxis.setTextSize(
+		UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
 	leftAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	// start at zero
 
@@ -599,7 +631,7 @@ public class LoginActivity extends SimpleActivity {
 	for (int i = 0; i < yAxisValue1.size(); ++i) {
 	   entries1.add(new BarEntry(i, yAxisValue1.get(i)));
 	}
-	for (int x = 0;x < yAxisValue2.size(); ++x){
+	for (int x = 0; x < yAxisValue2.size(); ++x) {
 	   entries2.add(new BarEntry(x, yAxisValue2.get(x)));
 	}
 
@@ -625,7 +657,8 @@ public class LoginActivity extends SimpleActivity {
 	   dataSets.add(dataset2);
 
 	   BarData data = new BarData(dataSets);
-	   data.setValueTextSize(UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_12));
+	   data.setValueTextSize(
+		   UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_12));
 	   data.setValueTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
 	   data.setBarWidth(0.9f);
 	   data.setValueFormatter(new IValueFormatter() {
@@ -634,10 +667,10 @@ public class LoginActivity extends SimpleActivity {
 			float value, Entry entry, int i, ViewPortHandler viewPortHandler) {
 		   int value1 = (int) value;
 		   String s;
-		   if (i%2==0){
-			s = "过期\n"+String.valueOf(value1);
-		   }else {
-			s = "近期\n"+String.valueOf(value1);
+		   if (i % 2 == 0) {
+			s = "过期\n" + String.valueOf(value1);
+		   } else {
+			s = "近期\n" + String.valueOf(value1);
 		   }
 		   return s;
 		}

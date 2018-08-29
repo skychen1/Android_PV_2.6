@@ -267,6 +267,7 @@ public class AllDeviceCallBack {
 	   mReaderIdList = new ArrayList<>();
 	}
 	LogUtils.i(TAG, " eth002DeviceIdList.size   " + eth002DeviceIdList.size());
+	setReaderList(mDeviceCode);
 
 	if (mTbaseDevices.size() > 1 && eth002DeviceIdList.size() > 1) {
 	   if (position == 0) {//第一个为全部开柜
@@ -276,9 +277,7 @@ public class AllDeviceCallBack {
 		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		}
-		setReaderList(mDeviceCode);
 	   } else {
-
 		LogUtils.i(TAG, " DDD  mDeviceCode 1   " + mDeviceCode);
 		queryDoorId(mDeviceCode);
 	   }

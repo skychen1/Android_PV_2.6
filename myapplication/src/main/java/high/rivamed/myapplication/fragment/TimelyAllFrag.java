@@ -76,6 +76,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
+
 @SuppressLint("ValidFragment")
 public class TimelyAllFrag extends SimpleFragment {
 
@@ -168,7 +169,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private       TimelyAllAdapter      mTimelyAllAdapter;
    private       String                mToJson;
    private       LoadingDialog.Builder mBuilder;
-
+   public static boolean mPause = true;
    /**
     * 扫描后EPC准备传值
     *
@@ -176,10 +177,11 @@ public class TimelyAllFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	AllDeviceCallBack.getInstance().initCallBack();
-
-	getDeviceDate(event.deviceId, event.epcs);
-
+      LogUtils.i(TAG,"onCallBackEvent  mPause    "+mPause);
+	if (!mPause) {
+	   AllDeviceCallBack.getInstance().initCallBack();
+	   getDeviceDate(event.deviceId, event.epcs);
+	}
    }
 
    @SuppressLint("ValidFragment")
@@ -197,13 +199,25 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-
+	mPause = false;
 	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
 	initDateAll();
 	//	initDate(0, 0, 0, 0);
 	AllDeviceCallBack.getInstance().initCallBack();
 	//	openDoor();
 
+   }
+   @Override
+   public void onPause() {
+	mPause = true;
+	super.onPause();
+
+   }
+
+   @Override
+   public void onResume() {
+	mPause =false;
+	super.onResume();
    }
 
    private void initDateAll() {

@@ -64,11 +64,14 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 
-import static high.rivamed.myapplication.cont.Constants.CONFIG_0011;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_0012;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_011;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -410,7 +413,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                         mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", cstInventoryDto.getPatientName()).putExtra("patientId", cstInventoryDto.getPatientId()).putExtra("operationScheduleId", cstInventoryDto.getOperationScheduleId()));
                         EventBusUtils.postSticky(cstInventoryDto);
                     } else {
+
                         Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+                        if (mBuilder != null) {
+                            mBuilder.mDialog.dismiss();
+                            mBuilder = null;
+                        }
                     }
                 } else if (UIUtils.getConfigType(mContext, CONFIG_009) && mRbKey == 3) {//后绑定患者
                     if (cstInventoryDto.gettCstInventoryVos() != null &&
@@ -426,6 +434,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                         EventBusUtils.postSticky(cstInventoryDto);
                     } else {
                         Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+                        if (mBuilder != null) {
+                            mBuilder.mDialog.dismiss();
+                            mBuilder = null;
+                        }
                     }
                 } else {//正常的领用或者其他正常操作
                     //		   mShowLoading.mDialog.dismiss();
@@ -472,11 +484,37 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     }
 
     private void initData() {
-        if (UIUtils.getConfigType(mContext, CONFIG_0011)) {
+        if (UIUtils.getConfigType(mContext, CONFIG_011)) {
             mConsumeOpenallTop.setVisibility(View.VISIBLE);
-            mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
         } else {
             mConsumeOpenallTop.setVisibility(View.GONE);
+        }
+
+        //是否启用功能开柜
+        if (UIUtils.getConfigType(mContext, CONFIG_016)){
+            mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
+
+            //是否启用套餐领用
+            if (UIUtils.getConfigType(mContext, CONFIG_014)){
+                mFunctionCardviewMeal.setVisibility(View.VISIBLE);
+            }else {
+                mFunctionCardviewMeal.setVisibility(View.GONE);
+            }
+
+            //是否启用请领单领用
+            if (UIUtils.getConfigType(mContext, CONFIG_015)){
+                mFunctionCardviewForm.setVisibility(View.VISIBLE);
+            }else {
+                mFunctionCardviewForm.setVisibility(View.GONE);
+            }
+
+            //是否启用关联患者
+            if (UIUtils.getConfigType(mContext, CONFIG_012)){
+                mFunctionCardviewGuanlian.setVisibility(View.VISIBLE);
+            }else {
+                mFunctionCardviewGuanlian.setVisibility(View.GONE);
+            }
+        }else {
             mConsumeOpenallMiddle.setVisibility(View.GONE);
         }
         mConsumeOpenallMiddle.setVisibility(View.VISIBLE);//todo 修改
@@ -585,14 +623,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                             mRbKey = 3;
                             ToastUtils.showShort("领用！");//拿出
                             if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-                                    UIUtils.getConfigType(mContext, CONFIG_010) && !UIUtils.getConfigType(mContext, CONFIG_0012)) {
+                                    UIUtils.getConfigType(mContext, CONFIG_010) && !UIUtils.getConfigType(mContext,
+                                                                                                          CONFIG_012)) {
                                 //先绑定患者再开柜，不启动临时患者
                                 LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
                                 //                                loadBingDate("", position, mTbaseDevices);
                                 loadBingDateNoTemp("", position, mTbaseDevices);
                             } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
                                     UIUtils.getConfigType(mContext, CONFIG_010) &&
-                                    UIUtils.getConfigType(mContext, CONFIG_0012)) {
+                                    UIUtils.getConfigType(mContext, CONFIG_012)) {
                                 //先绑定患者，启动临时患者
                                 LogUtils.i(TAG, "先绑定患者，启动临时患者");
                                 //				mContext.startActivity(
@@ -600,14 +639,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
                                 //						"mTemPTbaseDevices", (Serializable) mTbaseDevices));
                                 goToFirstBindAC(position);
                             } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-                                    UIUtils.getConfigType(mContext, CONFIG_009) && !UIUtils.getConfigType(mContext, CONFIG_0012)) {
+                                    UIUtils.getConfigType(mContext, CONFIG_009) && !UIUtils.getConfigType(mContext,
+                                                                                                          CONFIG_012)) {
                                 //后绑定患者，不启用临时患者
                                 LogUtils.i(TAG, "后绑定患者，不启用临时患者");
                                 AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 
                             } else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
                                     UIUtils.getConfigType(mContext, CONFIG_009) &&
-                                    UIUtils.getConfigType(mContext, CONFIG_0012)) {
+                                    UIUtils.getConfigType(mContext, CONFIG_012)) {
                                 //后绑定患者，启用临时患者
                                 AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
                                 LogUtils.i(TAG, "后绑定患者，启用临时患者");

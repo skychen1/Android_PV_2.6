@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -33,6 +32,7 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.fragment.TimelyAllFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -47,7 +47,8 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_0012;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -70,405 +71,458 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
 
 public class OutBoxBingActivity extends BaseTimelyActivity {
 
-    private static final String TAG = "OutBoxBingActivity";
-    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
-    private String mRvEventString;
-    private int mIntentType;
-    private TCstInventoryDto mTCstInventoryTwoDto;
-    private LoadingDialog.Builder mShowLoading;
-    private String mPatient;
-    private String mPatientId;
-    private String mOperationScheduleId;
-    private boolean mPause = true;
+   private static final String TAG = "OutBoxBingActivity";
+   private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
+   private String                                       mRvEventString;
+   private int                                          mIntentType;
+   private TCstInventoryDto                             mTCstInventoryTwoDto;
+   private LoadingDialog.Builder                        mShowLoading;
+   private String                                       mPatient;
+   private String                                       mPatientId;
+   private String                                       mOperationScheduleId;
+   private boolean mPause = true;
 
-    /**
-     * 扫描后EPC准备传值
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-        LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
-        AllDeviceCallBack.getInstance().initCallBack();
-        if (!mPause) {
-            getDeviceDate(event.deviceId, event.epcs);
-        }
-    }
+   /**
+    * 扫描后EPC准备传值
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onCallBackEvent(Event.EventDeviceCallBack event) {
+	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
+	AllDeviceCallBack.getInstance().initCallBack();
+	if (!mPause) {
+	   getDeviceDate(event.deviceId, event.epcs);
+	}
+   }
 
-    @Override
-    protected void onPause() {
-        mPause = true;
-        super.onPause();
-    }
+   @Override
+   protected void onPause() {
+	mPause = true;
+	super.onPause();
+   }
 
-    @Override
-    public void onResume() {
-        mPause = false;
-        super.onResume();
-    }
-    @Override
-    public void initDataAndEvent(Bundle savedInstanceState) {
-        super.initDataAndEvent(savedInstanceState);
-        Intent intent = getIntent();
-        int type = intent.getIntExtra("type", 0);
-        if (type == 100) {
-            mPatient = intent.getStringExtra("patientName");
-            mPatientId = intent.getStringExtra("patientId");
-            mOperationScheduleId = intent.getStringExtra("operationScheduleId");
+   @Override
+   public void onResume() {
+	mPause = false;
+	super.onResume();
+   }
 
-        }
-        Log.e(TAG, "intent:" + mPatient);
-        Log.e(TAG, "intent:" + mPatientId);
-        Log.e(TAG, "intent:" + mOperationScheduleId);
-    }
+   @Override
+   public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
+	Intent intent = getIntent();
+	int type = intent.getIntExtra("type", 0);
+	if (type == 100) {
+	   mPatient = intent.getStringExtra("patientName");
+	   mPatientId = intent.getStringExtra("patientId");
+	   mOperationScheduleId = intent.getStringExtra("operationScheduleId");
+	}
+	Log.e(TAG, "intent:" + mPatient);
+	Log.e(TAG, "intent:" + mPatientId);
+	Log.e(TAG, "intent:" + mOperationScheduleId);
+   }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEventBing(Event.EventCheckbox event) {
-        mPatient = event.mString;
-        mPatientId = event.id;
-        mOperationScheduleId = event.operationScheduleId;
-        Log.i(TAG, "mMovie  " + mPatient);
-        if (event.type != null && event.type.equals("firstBind")) {
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventBing(Event.EventCheckbox event) {
+	mPatient = event.mString;
+	mPatientId = event.id;
+	mOperationScheduleId = event.operationScheduleId;
+	Log.i(TAG, "mMovie  " + mPatient);
+	if (event.type != null && event.type.equals("firstBind")) {
 
-        } else {
-            Log.i(TAG, "mMovie DDD " + mPatient);
-            if (!TextUtils.isEmpty(mPatient)) {
-                for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-                    mTCstInventoryVos.get(i).setPatientName(mPatient);
-                    mTCstInventoryVos.get(i).setPatientId(event.id);
-                }
-                mTimelyLeft.setEnabled(true);
-                mTimelyRight.setEnabled(true);
-                mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-            }
-        }
-    }
+	} else {
+	   Log.i(TAG, "mMovie DDD " + mPatient);
+	   if (!TextUtils.isEmpty(mPatient)) {
+		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
+		   mTCstInventoryVos.get(i).setPatientName(mPatient);
+		   mTCstInventoryVos.get(i).setPatientId(event.id);
+		}
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRvEvent(Event.EventString event) {
-        mRvEventString = event.mString;
-        loadBingDate(mRvEventString);
-    }
+		mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+	   }
+	}
+   }
 
-    @Override
-    public int getCompanyType() {
-        super.my_id = ACT_TYPE_HCCZ_BING;
-        return my_id;
-    }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onRvEvent(Event.EventString event) {
+	mRvEventString = event.mString;
+	loadBingDate(mRvEventString);
+   }
 
-    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-            R.id.base_tab_back, R.id.timely_left, R.id.timely_right, R.id.timely_start_btn_right, R.id.timely_open_door_right,
-            R.id.ly_bing_btn_right})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.base_tab_icon_right:
-            case R.id.base_tab_tv_name:
-                mPopupWindow = new SettingPopupWindow(mContext);
-                mPopupWindow.showPopupWindow(view);
-                mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        switch (position) {
-                            case 0:
-                                mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-                                break;
-                            case 1:
-                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-                                break;
-                            case 2:
-                                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-                                builder.setTwoMsg("您确认要退出登录吗?");
-                                builder.setMsg("温馨提示");
-                                builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int i) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.setRight("确认", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int i) {
-                                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                                        App.getInstance().removeALLActivity_();
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.create().show();
-                                break;
-                        }
-                    }
-                });
-                break;
-            case R.id.base_tab_btn_msg:
-                break;
-            case R.id.base_tab_back:
-                finish();
-                break;
-            case R.id.timely_start_btn_right://重新扫描
-                //		   mShowLoading = DialogUtils.showLoading(mContext);
-//                mTimelyLeft.setEnabled(true);
-//                mTimelyRight.setEnabled(true);
+   @Override
+   public int getCompanyType() {
+	super.my_id = ACT_TYPE_HCCZ_BING;
+	return my_id;
+   }
 
-                List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-                mTCstInventoryDto.gettCstInventoryVos().clear();
-                deviceInventoryVos.clear();
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+	   R.id.base_tab_back, R.id.timely_left, R.id.timely_right, R.id.timely_start_btn_right,
+	   R.id.timely_open_door_right, R.id.ly_bing_btn_right})
+   public void onViewClicked(View view) {
+	switch (view.getId()) {
+	   case R.id.base_tab_icon_right:
+	   case R.id.base_tab_tv_name:
+		mPopupWindow = new SettingPopupWindow(mContext);
+		mPopupWindow.showPopupWindow(view);
+		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
+		   @Override
+		   public void onItemClick(int position) {
+			switch (position) {
+			   case 0:
+				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+				break;
+			   case 1:
+				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+				break;
+			   case 2:
+				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+				builder.setTwoMsg("您确认要退出登录吗?");
+				builder.setMsg("温馨提示");
+				builder.setLeft("取消", new DialogInterface.OnClickListener() {
+				   @Override
+				   public void onClick(DialogInterface dialog, int i) {
+					dialog.dismiss();
+				   }
+				});
+				builder.setRight("确认", new DialogInterface.OnClickListener() {
+				   @Override
+				   public void onClick(DialogInterface dialog, int i) {
+					mContext.startActivity(new Intent(mContext, LoginActivity.class));
+					App.getInstance().removeALLActivity_();
+					dialog.dismiss();
+				   }
+				});
+				builder.create().show();
+				break;
+			}
+		   }
+		});
+		break;
+	   case R.id.base_tab_btn_msg:
+		break;
+	   case R.id.base_tab_back:
+		finish();
+		break;
+	   case R.id.timely_start_btn_right://重新扫描
+		//		   mShowLoading = DialogUtils.showLoading(mContext);
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
+		mPatient = null;
+		mPatientId = null;
+		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+		mTCstInventoryDto.gettCstInventoryVos().clear();
+		deviceInventoryVos.clear();
+		TimelyAllFrag.mPause = true;
+		for (String deviceInventoryVo : mEthDeviceIdBack) {
+		   String deviceCode = deviceInventoryVo;
+		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+		   startScan(deviceCode);
+		}
 
-                for (String deviceInventoryVo : mEthDeviceIdBack) {
-                    String deviceCode = deviceInventoryVo;
-                    LogUtils.i(TAG, "deviceCode    " + deviceCode);
-                    startScan(deviceCode);
-                }
+		break;
+	   case R.id.timely_open_door_right://重新开门
+		List<DeviceInventoryVo> deviceInventoryVoss = mTCstInventoryDto.getDeviceInventoryVos();
+		mTCstInventoryDto.gettCstInventoryVos().clear();
+		deviceInventoryVoss.clear();
+		TimelyAllFrag.mPause = true;
+		mPatient = null;
+		mPatientId = null;
+		for (String deviceInventoryVo : mEthDeviceIdBack) {
+		   String deviceCode = deviceInventoryVo;
+		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+		   DeviceManager.getInstance().OpenDoor(deviceCode);
+		}
+		break;
+	   case R.id.timely_left:
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   mIntentType = 1;//确认
 
-                break;
-            case R.id.timely_open_door_right://重新开门
-                List<DeviceInventoryVo> deviceInventoryVoss = mTCstInventoryDto.getDeviceInventoryVos();
-                mTCstInventoryDto.gettCstInventoryVos().clear();
-                deviceInventoryVoss.clear();
-                for (String deviceInventoryVo : mEthDeviceIdBack) {
-                    String deviceCode = deviceInventoryVo;
-                    LogUtils.i(TAG, "deviceCode    " + deviceCode);
-                    DeviceManager.getInstance().OpenDoor(deviceCode);
-                }
-                break;
-            case R.id.timely_left:
-                if (UIUtils.isFastDoubleClick()) {
-                    return;
-                } else {
-                    if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
-                        mIntentType = 1;//确认
-                        loadBingFistDate(mIntentType);
-                    } else {//后绑定的未绑定
-                        int mType = 1;//1.8.3未绑定
-                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
-                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
-                    }
-                }
-                break;
-            case R.id.timely_right:
-                if (UIUtils.isFastDoubleClick()) {
-                    return;
-                } else {
-                    if (mTCstInventoryDto.getBindType() != null) {//先绑定患者
-                        mIntentType = 2;//2确认并退出
-                        loadBingFistDate(mIntentType);
+		   //                    if (mTCstInventoryDto.getBindType().equals("firstBind")) {//先绑定患者
+		   loadBingFistDate(mIntentType);
+		   //                    } else {//后绑定的未绑定
+		   //                        int mType = 1;//1.8.3未绑定
+		   //                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
+		   //                        loadBingAfterDate(mIntentType);
+		   //                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		   //                    }
+		}
+		break;
+	   case R.id.timely_right:
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   mIntentType = 2;//2确认并退出
 
-                    } else {//后绑定的未绑定
-                        int mType = 1;//1.8.3未绑定
-                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
-                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
-                    }
-                }
-                break;
-            case R.id.ly_bing_btn_right://选择绑定患者  区分是否有临时患者
-                if (UIUtils.isFastDoubleClick()) {
-                    return;
-                } else {
-                    if (UIUtils.getConfigType(mContext, CONFIG_0012)) {//创建临时患者
-                        goToFirstBindAC(-1);
-                    } else {
-                        //不绑定临时患者，弹框
-                        loadBingDate("");
-                    }
-                }
-                break;
-        }
-    }
+		   //                    if (mTCstInventoryDto.getBindType().equals("firstBind")) {//先绑定患者
+		   loadBingFistDate(mIntentType);
 
-    private void goToFirstBindAC(int position) {
-        //获取需要绑定的患者
-        NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-                        BingFindSchedulesBean.class);
-                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
-                    mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position).putExtra("type", "afterBindTemp"));
-                } else {
-                    ToastUtils.showShort("没有患者数据");
-                }
-            }
-        });
-    }
+		   //                    } else {//后绑定的未绑定
+		   //                        int mType = 1;//1.8.3未绑定
+		   //                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
+		   //                        loadBingAfterDate(mIntentType);
+		   //                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
+		   //                    }
+		}
+		break;
+	   case R.id.ly_bing_btn_right://选择绑定患者  区分是否有临时患者
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {//创建临时患者
+			goToFirstBindAC(-1);
+		   } else {
+			//不绑定临时患者，弹框
+			loadBingDate("");
+		   }
+		}
+		break;
+	}
+   }
 
-    private void loadBingFistDate(int mIntentType) {
-        //	mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-        mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-        mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
-        mTCstInventoryDto.setPatientName(mPatient);
-        mTCstInventoryDto.setPatientId(mPatientId);
-        String toJson = mGson.toJson(mTCstInventoryDto);
-        LogUtils.i(TAG, "toJson  " + toJson);
-        NetRequest.getInstance().bingPatientsDate(toJson, this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG, "result   " + result);
-                ToastUtils.showShort("操作成功");
-                EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-                if (mIntentType == 2) {
-                    startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-                    App.getInstance().removeALLActivity_();
-                }
-                finish();
-            }
-        });
-    }
+   /**
+    * 后绑定患者
+    *
+    * @param mIntentType
+    */
+   private void loadBingAfterDate(int mIntentType) {
+	mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+	mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
+	mTCstInventoryDto.setPatientName(mPatient);
+	mTCstInventoryDto.setPatientId(mPatientId);
+	String toJson = mGson.toJson(mTCstInventoryDto);
+	LogUtils.i(TAG, "toJson  " + toJson);
+	NetRequest.getInstance().bingPatientsDate(toJson, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		ToastUtils.showShort("操作成功");
+		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		if (mIntentType == 2) {
+		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+		   App.getInstance().removeALLActivity_();
+		}
+		finish();
+	   }
+	});
+   }
 
-    /**
-     * 获取需要绑定的患者
-     */
-    private void loadBingDate(String optienNameOrId) {
+   private void goToFirstBindAC(int position) {
+	//获取需要绑定的患者
+	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+												 BingFindSchedulesBean.class);
+		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+		   mContext.startActivity(
+			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+													   position)
+				   .putExtra("type", "afterBindTemp"));
+		} else {
+		   ToastUtils.showShort("没有患者数据");
+		}
+	   }
+	});
+   }
 
-        NetRequest.getInstance().findSchedulesDateNoTemp(optienNameOrId, this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-                        BingFindSchedulesBean.class);
-                mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-                DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos, "afterBind",
-                        -1, null);
-                LogUtils.i(TAG, "result   " + result);
-            }
-        });
-    }
+   /**
+    * 绑定患者用操作耗材接口
+    *
+    * @param mIntentType
+    */
+   private void loadBingFistDate(int mIntentType) {
+	//	mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+	mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
+	mTCstInventoryDto.setPatientName(mPatient);
+	mTCstInventoryDto.setPatientId(mPatientId);
+	String toJson = mGson.toJson(mTCstInventoryDto);
+	LogUtils.i(TAG, "toJson  " + toJson);
+	NetRequest.getInstance().putOperateYes(toJson, this, mShowLoading, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		ToastUtils.showShort("操作成功");
+		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+		if (mIntentType == 2) {
+		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+		   App.getInstance().removeALLActivity_();
+		}
+		finish();
+	   }
+	});
+   }
 
-    @Override
-    protected void onDestroy() {
-        EventBusUtils.postSticky(new Event.EventFrag("START1"));
-        super.onDestroy();
-    }
+   /**
+    * 获取需要绑定的患者
+    */
+   private void loadBingDate(String optienNameOrId) {
 
-    private void startScan(String deviceIndentify) {
-        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-                UHF_TYPE).find(BoxIdBean.class);
-        for (BoxIdBean boxIdBean : boxIdBeans) {
-            String box_id = boxIdBean.getBox_id();
-            List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-                    .find(BoxIdBean.class);
-            for (BoxIdBean deviceid : deviceBean) {
-                String device_id = deviceid.getDevice_id();
-                int i = DeviceManager.getInstance().StartUhfScan(device_id);
+	NetRequest.getInstance()
+		.findSchedulesDateNoTemp(optienNameOrId, this, null, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+													 BingFindSchedulesBean.class);
+			mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+			DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos,
+							 "afterBind", -1, null);
+			LogUtils.i(TAG, "result   " + result);
+		   }
+		});
+   }
 
-                LogUtils.i(TAG, "开始扫描了状态    " + i);
-            }
-        }
-    }
+   @Override
+   protected void onDestroy() {
+	EventBusUtils.postSticky(new Event.EventFrag("START1"));
+	super.onDestroy();
+   }
 
+   private void startScan(String deviceIndentify) {
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+								 UHF_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String box_id = boxIdBean.getBox_id();
+	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+		   .find(BoxIdBean.class);
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id);
 
-    /**
-     * 扫描后传值
-     */
+		LogUtils.i(TAG, "开始扫描了状态    " + i);
+	   }
+	}
+   }
 
-    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+   /**
+    * 扫描后传值
+    */
 
-        TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
-        List<TCstInventory> epcList = new ArrayList<>();
+   private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
 
-        for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-            TCstInventory tCstInventory = new TCstInventory();
-            tCstInventory.setEpc(v.getKey());
-            epcList.add(tCstInventory);
-        }
-        DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
-        List<DeviceInventoryVo> deviceList = new ArrayList<>();
+	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
+	List<TCstInventory> epcList = new ArrayList<>();
 
-        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId).find(BoxIdBean.class);
-        for (BoxIdBean boxIdBean : boxIdBeans) {
-            String box_id = boxIdBean.getBox_id();
-            Log.i(TAG, "device_id   " + box_id);
-            deviceInventoryVo.setDeviceCode(box_id);
-        }
-        deviceInventoryVo.settCstInventories(epcList);
-        deviceList.add(deviceInventoryVo);
+	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+	   TCstInventory tCstInventory = new TCstInventory();
+	   tCstInventory.setEpc(v.getKey());
+	   epcList.add(tCstInventory);
+	}
+	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
+	List<DeviceInventoryVo> deviceList = new ArrayList<>();
 
-        tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
-        tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
-        tCstInventoryDto.setDeviceInventoryVos(deviceList);
-        tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-        String toJson = mGson.toJson(tCstInventoryDto);
-        LogUtils.i(TAG, "toJson    " + toJson);
-        NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                Log.i(TAG, "result    " + result);
-                mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
-                setDateEpc();
-            }
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String box_id = boxIdBean.getBox_id();
+	   Log.i(TAG, "device_id   " + box_id);
+	   deviceInventoryVo.setDeviceCode(box_id);
+	}
+	deviceInventoryVo.settCstInventories(epcList);
+	deviceList.add(deviceInventoryVo);
 
-        });
-    }
+	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
+	tCstInventoryDto.setDeviceInventoryVos(deviceList);
+	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	   tCstInventoryDto.setPatientName(mTCstInventoryDto.getPatientName());
+	   tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
+	String toJson = mGson.toJson(tCstInventoryDto);
+	LogUtils.i(TAG, "toJson    " + toJson);
+	NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result    " + result);
+		if (mTCstInventoryTwoDto != null) {
+		   mTCstInventoryTwoDto = null;
+		}
+		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
 
-    /**
-     * 扫描EPC返回后进行赋值
-     */
-    private void setDateEpc() {
-        String string = null;
-        if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
-                mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
-            string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
-            ToastUtils.showLong(string);
-        } else if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
-                (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-                        mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
-                mEthDeviceIdBack.size() == 1) {
+		setDateEpc();
 
+	   }
 
-            if (mTimelyLeft != null && mTimelyRight != null) {
-                mTimelyLeft.setEnabled(false);
-                mTimelyRight.setEnabled(false);
-            }
-            EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-            EventBusUtils.postSticky(mTCstInventoryTwoDto);
-            ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    EventBusUtils.postSticky(new Event.EventFrag("START1"));
-                    finish();
-                }
-            }, 3000);
+	});
+   }
 
-        } else {
-            if (TextUtils.isEmpty(mPatient)) {
-                if (mTimelyLeft != null && mTimelyRight != null) {
-                    mTimelyLeft.setEnabled(false);
-                    mTimelyRight.setEnabled(false);
-                }else {
-                    mTimelyLeft.setEnabled(true);
-                    mTimelyRight.setEnabled(true);
-                }
-            }
-            List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
-            List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-            List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
-            List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
-            //
-            Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
-            set.addAll(deviceInventoryVos);
-            set.addAll(deviceInventoryVos1);
-            List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+   /**
+    * 扫描EPC返回后进行赋值
+    */
+   private void setDateEpc() {
+	String string = null;
+	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
+	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
+	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
+	   ToastUtils.showLong(string);
+	} else if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
+		     (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
+			mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
+		     mEthDeviceIdBack.size() == 1) {
 
-            tCstInventoryVos1.addAll(tCstInventoryVos);
-            tCstInventoryVos1.removeAll(tCstInventoryVos);
-            tCstInventoryVos1.addAll(tCstInventoryVos);
-            for (TCstInventoryVo ff : tCstInventoryVos1) {
-                ff.setPatientName(mPatient);
-                ff.setPatientId(mPatientId);
-                ff.setOperationScheduleId(mOperationScheduleId);
-            }
-            if (UIUtils.getConfigType(mContext, CONFIG_009)) {
-                mTCstInventoryTwoDto.setBindType("afterBind");
-            } else {
-                mTCstInventoryTwoDto.setBindType("firstBind");
-            }
-            mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
-            mTCstInventoryTwoDto.setDeviceInventoryVos(c);
-            //
-            EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-            EventBusUtils.postSticky(mTCstInventoryTwoDto);
-            //
-            //	}
-            //	if (mShowLoading != null) {
-            //	   mShowLoading.mDialog.dismiss();
-            //
-        }
-    }
+	   if (mTimelyLeft != null && mTimelyRight != null) {
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+	   }
+	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
+	   ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
+	   new Handler().postDelayed(new Runnable() {
+		public void run() {
+		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   finish();
+		}
+	   }, 3000);
+
+	} else {
+
+	   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+	   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
+	   //
+	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
+	   set.addAll(deviceInventoryVos);
+	   set.addAll(deviceInventoryVos1);
+	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+	   if (UIUtils.getConfigType(mContext, CONFIG_009)) {
+		mTCstInventoryTwoDto.setBindType("afterBind");
+	   } else {
+		mTCstInventoryTwoDto.setBindType("firstBind");
+	   }
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   tCstInventoryVos1.removeAll(tCstInventoryVos);
+	   tCstInventoryVos1.addAll(tCstInventoryVos);
+	   for (TCstInventoryVo ff : tCstInventoryVos1) {
+	      LogUtils.i(TAG,"ff   "+ mPatient );
+		if (UIUtils.getConfigType(mContext,CONFIG_010)&&UIUtils.getConfigType(mContext,CONFIG_012) ){
+		   ff.setPatientName( mTCstInventoryDto.getPatientName());
+		   ff.setPatientId( mTCstInventoryDto.getPatientId());
+		   ff.setOperationScheduleId(mTCstInventoryDto.getOperationScheduleId());
+		}else {
+		   ff.setPatientName(mPatient);
+		   ff.setPatientId(mPatientId);
+		   ff.setOperationScheduleId(mOperationScheduleId);
+		}
+	   }
+
+	   if (mTCstInventoryTwoDto.getPatientName() == null) {
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+	   }
+	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
+	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+	   //
+	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
+	   //
+	   //	}
+	   //	if (mShowLoading != null) {
+	   //	   mShowLoading.mDialog.dismiss();
+	   //
+	}
+   }
 }

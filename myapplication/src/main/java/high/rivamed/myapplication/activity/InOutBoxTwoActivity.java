@@ -99,13 +99,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    }
 
-	@Override
-	public void initDataAndEvent(Bundle savedInstanceState) {
-		super.initDataAndEvent(savedInstanceState);
-		Log.e("aaa", "InOutBoxTwoActivity");
-	}
+   @Override
+   public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
+	Log.e("aaa", "InOutBoxTwoActivity");
+   }
 
-	/**
+   /**
     * 看关门后是否需要设置按钮为可以点击
     *
     * @param event
@@ -356,8 +356,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	dto.setOperation(mTCstInventoryDto.getOperation());
 	dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	//	if (mTCstInventoryDto)
-	//	dto.setOperation(-1);//多个操作
+
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
 	NetRequest.getInstance().putOperateYes(s, this, mShowLoading, new BaseResult() {
@@ -469,6 +468,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   tCstInventoryVos1.addAll(tCstInventoryVos);
 	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
 	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+
 
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
