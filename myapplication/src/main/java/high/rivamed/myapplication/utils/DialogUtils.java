@@ -583,6 +583,7 @@ public class DialogUtils {
         builder.setOnSettingListener(new TempPatientDialog.Builder.SettingListener() {
             @Override
             public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {
+                Log.e("DialogUtils", "showCreatTempPatientDialog");
                 EventBusUtils.postSticky(new Event.tempPatientEvent(userName, roomNum, userSex, idCard, time, dialog));
             }
         });

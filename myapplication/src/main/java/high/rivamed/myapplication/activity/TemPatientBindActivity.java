@@ -330,6 +330,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     * 创建临时患者
     * */
    private void creatTemPatient(Event.tempPatientEvent event) {
+	   Log.e(TAG, "creatTemPatient");
 	CreatTempPatientBean data = new CreatTempPatientBean();
 	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
 	bean.setName(event.userName);
