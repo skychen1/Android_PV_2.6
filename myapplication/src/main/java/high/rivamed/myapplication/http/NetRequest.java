@@ -254,8 +254,9 @@ public class NetRequest {
     /**
      * 根据院区编码查询科室信息
      */
-    public void getHospDept(String branchCode, Object tag, NetResult netResult) {
+    public void getHospDept(String deptNamePinYin,String branchCode, Object tag, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_TEST_FIND_DEPT).tag(tag)
+                .params("deptNamePinYin", deptNamePinYin)
                 .params("branchCode", branchCode)
                 .execute(new MyCallBack(tag, netResult, true));
     }

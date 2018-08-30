@@ -123,7 +123,7 @@ public class hospitalPopupWindow extends PopupWindow {
 	this.setContentView(mView);
 	this.setWidth(parent.getWidth());
 	this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
-	this.setFocusable(true);
+	this.setFocusable(false);
 	this.setOutsideTouchable(true);
 	this.update();
 	// 实例化一个ColorDrawable颜色为半透明

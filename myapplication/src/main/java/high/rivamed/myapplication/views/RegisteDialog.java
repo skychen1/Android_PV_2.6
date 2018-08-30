@@ -68,7 +68,7 @@ public class RegisteDialog extends Dialog {
 	ImageView mDialogCloss;
 	EditText  mAddressOne;
 	TextView  mAddressTwo;
-	TextView  mAddressThree;
+	EditText  mAddressThree;
 	TextView  mAddressFour;
 	TextView  mAddressFive;
 	TextView  mDialogLeft;
@@ -98,6 +98,8 @@ public class RegisteDialog extends Dialog {
 	private TextView                              mGoneThreeType;
 	private TextView                              mGoneTwoType;
 	private String                                mTrim;
+	private String                                mTrim1;
+	private HospNameBean                          mHospDept;
 
 	public Builder(Context context, Activity activity) {
 	   this.mContext = context;
@@ -157,7 +159,7 @@ public class RegisteDialog extends Dialog {
 	   mGoneOneType = (TextView) layout.findViewById(R.id.gone_one_type);
 	   mAddressOne = (EditText) layout.findViewById(R.id.address_one);
 	   mAddressTwo = (TextView) layout.findViewById(R.id.address_two);
-	   mAddressThree = (TextView) layout.findViewById(R.id.address_three);
+	   mAddressThree = (EditText) layout.findViewById(R.id.address_three);
 	   mAddressFour = (TextView) layout.findViewById(R.id.address_four);
 	   mAddressFive = (TextView) layout.findViewById(R.id.address_five);
 	   mGoneTwoType = (TextView) layout.findViewById(R.id.gone_two_type);
@@ -204,21 +206,54 @@ public class RegisteDialog extends Dialog {
 			   LogUtils.i(TAG, "mGoneOneType   " + trim);
 			   getHospBranch(trim, mAddressTwo, mGoneTwoType, 2);
 			}
+			UIUtils.hideSoftInput(mContext,mAddressOne);
 		   }
 		}
 	   });
-	   mAddressThree.setOnClickListener(new View.OnClickListener() {
+
+	   mAddressThree.addTextChangedListener(new TextWatcher() {
 		@Override
-		public void onClick(View v) {
-		   if (UIUtils.isFastDoubleClick()) {
-			return;
-		   } else {
-			String trim = mGoneTwoType.getText().toString().trim();
-			LogUtils.i(TAG, "mGoneTwoType   " + trim);
-			getHospDept(trim, mAddressThree, mGoneThreeType, 3);
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		   String trim = mAddressThree.getText().toString().trim();
+		   LogUtils.i(TAG, "mAddressThree   " + trim);
+
+		   if (trim.length() > 0) {
+			String branchCode = mGoneTwoType.getText().toString().trim();
+			//			if (mMhospWindow != null) {
+			//			   mMhospWindow.dismiss();
+			//			}
+			if (!trim.equals(mTrim1)) {
+			   getHospDept(trim, branchCode, mAddressThree, mGoneThreeType, 3);
+			}
+			//			mAddressThree.removeTextChangedListener(this);
+			//			mGoneThreeType.addTextChangedListener(this);
 		   }
 		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+
+		}
 	   });
+
+	   //	   mAddressThree.setOnClickListener(new View.OnClickListener() {
+	   //		@Override
+	   //		public void onClick(View v) {
+	   //		   if (UIUtils.isFastDoubleClick()) {
+	   //			return;
+	   //		   } else {
+	   //			String trim = mGoneTwoType.getText().toString().trim();
+	   //			LogUtils.i(TAG, "mGoneTwoType   " + trim);
+	   //			getHospDept(trim, mAddressThree, mGoneThreeType, 3);
+	   //
+	   //		   }
+	   //		}
+	   //	   });
 	   mAddressFour.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -266,8 +301,8 @@ public class RegisteDialog extends Dialog {
 			String mAddressTwos = mAddressTwo.getText().toString().trim();
 			String mAddressThrees = mAddressThree.getText().toString().trim();
 			String mAddressFours = mAddressFour.getText().toString().trim();
-			if (mAddressOnes.length()>1&& mAddressTwos.length()>1 && mAddressThrees.length()>1 &&
-			    mAddressFours.length()>1) {
+			if (mAddressOnes.length() > 1 && mAddressTwos.length() > 1 &&
+			    mAddressThrees.length() > 1 && mAddressFours.length() > 1) {
 
 			   if (myListener != null) {
 				String deptCode = mGoneThreeType.getText().toString().trim();
@@ -279,7 +314,7 @@ public class RegisteDialog extends Dialog {
 				myListener.getDialogDate(deptName, branchCode, deptCode, storehouseCode,
 								 operationRoomNo, dialog);
 			   }
-			}else {
+			} else {
 			   ToastUtils.showShort("请先填写完整信息！");
 			}
 		   }
@@ -333,6 +368,7 @@ public class RegisteDialog extends Dialog {
 		HospNameBean hospNameBean, TextView textview, TextView goneview, int type) {
 	   if (hospNameBean != null) {
 		mMhospWindow = new hospitalPopupWindow(mContext, hospNameBean, type);
+		mMhospWindow.setFocusable(false);
 		mMhospWindow.showPopupWindow(textview);
 		adapterOnClick(mMhospWindow, textview, goneview, type);
 	   } else {
@@ -362,8 +398,17 @@ public class RegisteDialog extends Dialog {
 				String mGoneText = mGoneMeal.getText().toString().trim();
 				mAddressOne.setText(mTrim);
 				mAddressOne.clearFocus();
+				mAddressTwo.setText("");
+				mGoneTwoType.setText("");
+				mAddressThree.setText("");
+				mGoneThreeType.setText("");
+				mAddressFour.setText("");
+				mGoneFourType.setText("");
+				mAddressFive.setText("");
+				mGoneFiveType.setText("");
 				goneview.setText(mGoneText);
 				mMhospWindow.dismiss();
+				UIUtils.hideSoftInput(mContext,mAddressThree);
 			   }
 			});
 	   } else if (type == 2) {
@@ -378,6 +423,12 @@ public class RegisteDialog extends Dialog {
 				mAddressTwo.setText(trim);
 				String mGoneText = mGoneMeal.getText().toString().trim();
 				goneview.setText(mGoneText);
+				mAddressThree.setText("");
+				mGoneThreeType.setText("");
+				mAddressFour.setText("");
+				mGoneFourType.setText("");
+				mAddressFive.setText("");
+				mGoneFiveType.setText("");
 				mAddressOne.clearFocus();
 				mMhospWindow.dismiss();
 			   }
@@ -390,12 +441,16 @@ public class RegisteDialog extends Dialog {
 				   BaseQuickAdapter adapter, View view, int position) {
 				TextView textView = (TextView) view.findViewById(R.id.item_meal);
 				TextView mGoneMeal = (TextView) view.findViewById(R.id.gone_meal);
-				String trim = textView.getText().toString().trim();
-				mAddressThree.setText(trim);
-
+				mTrim1 = textView.getText().toString().trim();
+				mAddressThree.setText(mTrim1);
 				String mGoneText = mGoneMeal.getText().toString().trim();
 				goneview.setText(mGoneText);
+				mAddressFour.setText("");
+				mGoneFourType.setText("");
+				mAddressFive.setText("");
+				mGoneFiveType.setText("");
 				mMhospWindow.dismiss();
+				mAddressThree.clearFocus();
 
 			   }
 			});
@@ -455,16 +510,31 @@ public class RegisteDialog extends Dialog {
 	/**
 	 * 根据院区编码查询科室信息
 	 */
-	private void getHospDept(String branchCode, TextView textview, TextView goneview, int type) {
-	   NetRequest.getInstance().getHospDept(branchCode, mActivity, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   Gson gson = new Gson();
-		   HospNameBean hospNameBean = gson.fromJson(result, HospNameBean.class);
-		   LogUtils.i(TAG, "result getHospDept   " + result);
-		   setAdapterDate(hospNameBean, textview, goneview, type);
-		}
-	   });
+	private void getHospDept(
+		String deptNamePinYin, String branchCode, TextView textview, TextView goneview,
+		int type) {
+	   NetRequest.getInstance()
+		   .getHospDept(deptNamePinYin, branchCode, mActivity, new BaseResult() {
+			@Override
+			public void onSucceed(String result) {
+			   Gson gson = new Gson();
+
+			   mHospDept = gson.fromJson(result, HospNameBean.class);
+			   setAdapterDate(mHospDept, textview, goneview, type);
+
+			   LogUtils.i(TAG, "result getHospDept   " + result);
+			   if (mHospDept.getTbaseInfo() == null || mHospDept.getTbaseInfo().size() == 0) {
+				return;
+			   }
+
+			   //		   if (type==3)
+			   //		   if (hospNameBean.getTbaseHospitals().size() == 3 &&
+			   //			 !hospNameBean.getTbaseHospitals().get(0).getHospName().equals("")) {
+			   //			setAdapterDate(hospNameBean, textview, goneview, type);
+			   //
+			   //		   }
+			}
+		   });
 	}
 
 	/**
