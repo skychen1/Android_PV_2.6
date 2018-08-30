@@ -362,7 +362,7 @@ public class TableTypeView extends LinearLayout {
                         mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
                         mRecyclerview.setAdapter(mBingOutAdapter);
                         mLinearLayout.addView(mHeadView);
-                    }else if (mDialog != null && mDialog.equals(STYPE_DIALOG2)) {//所有在院患者Dialog
+                    } else if (mDialog != null && mDialog.equals(STYPE_DIALOG2)) {//所有在院患者Dialog
                         mLayout = R.layout.item_dialog_six_layout;
                         mHeadView = mActivity.getLayoutInflater()
                                 .inflate(R.layout.item_dialog_six_title_layout,
@@ -383,8 +383,9 @@ public class TableTypeView extends LinearLayout {
 
                             patientInfos.get(i).setSelected(false);
                         }
-
-                        patientInfos.get(0).setSelected(true);
+                        if (patientInfos.size() > 0) {
+                            patientInfos.get(0).setSelected(true);
+                        }
 
                         mRecyclerview.setLayoutParams(lp);
 
@@ -521,8 +522,6 @@ public class TableTypeView extends LinearLayout {
                             mLinearLayout.addView(mHeadView);
                         }
                     }
-
-
                 } else if (mSize == SEVEN) {
                     if (mDialog != null && mDialog.equals(STYPE_BING)) {//绑定患者
                         mLayout = R.layout.item_outbing_seven_layout;
@@ -588,10 +587,10 @@ public class TableTypeView extends LinearLayout {
                         //                            mCheckStates1.put(i, true);
                         //                        }
                         //                        mCheckStates1.put(0,true);
-//                        for (int i = 0; i < patientInfos.size(); i++) {
-//
-//                            patientInfos.get(i).setSelected(false);
-//                        }
+                        //                        for (int i = 0; i < patientInfos.size(); i++) {
+                        //
+                        //                            patientInfos.get(i).setSelected(false);
+                        //                        }
                         //                        patientInfos.get(0).setSelected(true);
                         if (mTempPatientAdapter != null) {
                             mTempPatientAdapter.notifyDataSetChanged();

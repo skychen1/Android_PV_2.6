@@ -71,6 +71,16 @@ public class BingFindSchedulesBean implements Serializable {
         private String operationBeginDateTime;
         private String updateTime;
 
+        public String getLpatsInId() {
+            return lpatsInId;
+        }
+
+        public void setLpatsInId(String lpatsInId) {
+            this.lpatsInId = lpatsInId;
+        }
+
+        private String lpatsInId;
+
         public String getDeptName() {
             return deptName;
         }

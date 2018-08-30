@@ -76,6 +76,16 @@ public class FindInPatientBean {
         private String loperPatsId = "";
         private boolean isSelected;
 
+        public String getLpatsInId() {
+            return lpatsInId;
+        }
+
+        public void setLpatsInId(String lpatsInId) {
+            this.lpatsInId = lpatsInId;
+        }
+
+        private String lpatsInId = "";
+
         public String getPatientId() {
             return patientId;
         }

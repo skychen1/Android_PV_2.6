@@ -323,7 +323,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             public void onClick(View view) {
                 if (UIUtils.isFastDoubleClick())
                     return;
-                goToPatientConn();
+                goToPatientConn();//患者关联
 
             }
         });
@@ -335,7 +335,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             public void onSucceed(String result) {
                 BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
                         BingFindSchedulesBean.class);
-                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null && bingFindSchedulesBean.getPatientInfos().size() > 0) {
                     mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
                 } else {
                     ToastUtils.showShort("没有患者数据");
@@ -778,7 +778,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             public void onSucceed(String result) {
                 BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
                         BingFindSchedulesBean.class);
-                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+                if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null&& bingFindSchedulesBean.getPatientInfos().size()>0) {
                     mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position).putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
                 } else {
                     ToastUtils.showShort("没有患者数据");

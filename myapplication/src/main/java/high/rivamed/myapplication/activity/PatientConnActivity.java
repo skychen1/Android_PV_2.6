@@ -63,10 +63,9 @@ public class PatientConnActivity extends BaseTimelyActivity {
     }
 
 
-
     @Override
     protected void onResume() {
-        LogUtils.i(TAG,"onResume   ");
+        LogUtils.i(TAG, "onResume   ");
         loadTempBingDate("");
 
         super.onResume();
@@ -143,9 +142,11 @@ public class PatientConnActivity extends BaseTimelyActivity {
                 finish();
                 break;
             case R.id.tv_patient_conn://选择患者关联
-                mPatientInfos.clear();
-                page = 1;
-                loadAllDate("");
+                if (patientInfos.size() > 0) {
+                    mPatientInfos.clear();
+                    page = 1;
+                    loadAllDate("");
+                }
                 break;
         }
     }
@@ -162,6 +163,9 @@ public class PatientConnActivity extends BaseTimelyActivity {
                 if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
                     patientInfos.clear();
                     patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+                    if (patientInfos.size() > 0) {
+                        patientInfos.get(0).setSelected(true);
+                    }
                     mTypeView.mTempPatientAdapter.notifyDataSetChanged();
                 }
             }
@@ -191,6 +195,13 @@ public class PatientConnActivity extends BaseTimelyActivity {
                 FindInPatientBean bean = mGson.fromJson(result,
                         FindInPatientBean.class);
                 if (bean != null && bean.getRows() != null && bean.getRows().size() >= 0) {
+                    boolean isClear;
+                    if (mPatientInfos.size() == 0) {
+                        isClear = true;
+                    }else {
+                        isClear = false;
+                    }
+
                     for (int i = 0; i < bean.getRows().size(); i++) {
                         BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
                         data.setPatientId(bean.getRows().get(i).getPatientId());
@@ -200,9 +211,13 @@ public class PatientConnActivity extends BaseTimelyActivity {
                         data.setOperationBeginDateTime(bean.getRows().get(i).getOperationBeginDateTime());
                         data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
                         data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+                        data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
                         mPatientInfos.add(data);
                     }
 
+                    if (isClear && mPatientInfos.size() > 0) {
+                        mPatientInfos.get(0).setSelected(true);
+                    }
                     //                    if (mBuilder != null && mBuilder.mRefreshLayout != null) {
                     //                        if (bean.getRows().size() > 0) {
                     //                            if (bean.getRows().size() < rows) {
@@ -224,7 +239,11 @@ public class PatientConnActivity extends BaseTimelyActivity {
                                 Log.e("PatientConnActivity", "mTypeView.mTempPatientAdapter position:" + mTypeView.mTempPatientAdapter.mSelectedPos);
                                 Log.e("PatientConnActivity", "showRvDialog2 position:" + position);
                                 //进行患者关联
-                                connPatient(position, dialog);
+                                if (mPatientInfos.size() > 0) {
+                                    connPatient(position, dialog);
+                                }else {
+                                    ToastUtils.showShort("没有患者数据");
+                                }
                             }
                         });
                         mBuilder.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -253,7 +272,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
                         RvDialog2.sTableTypeView2.mBingOutAdapter.notifyDataSetChanged();
                     }
                 } else {
-                    ToastUtils.showShort("没有数据");
+                    ToastUtils.showShort("没有患者数据");
                 }
             }
         });
@@ -262,13 +281,13 @@ public class PatientConnActivity extends BaseTimelyActivity {
     //进行患者关联
     private void connPatient(int position, DialogInterface dialog) {
         PatientConnBean bean = new PatientConnBean();
-        bean.setLPatsInId(mPatientInfos.get(position).getPatientId());
+        bean.setLPatsInId(mPatientInfos.get(position).getLpatsInId());
         bean.setOperationScheduleId(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
         bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
         NetRequest.getInstance().tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i(TAG,"result   "+result);
+                LogUtils.i(TAG, "result   " + result);
                 try {
                     PatientConnResultBean bean = mGson.fromJson(result,
                             PatientConnResultBean.class);
