@@ -570,7 +570,7 @@ public class DialogUtils {
     /*
      * 显示创建临时患者弹窗
      * */
-    public static void showCreatTempPatientDialog(final Context context, Activity activity) {
+    public static void showCreatTempPatientDialog(final Context context, Activity activity,TempPatientDialog.Builder.SettingListener listener) {
 
         TempPatientDialog.Builder builder = new TempPatientDialog.Builder(context, activity);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -580,13 +580,7 @@ public class DialogUtils {
             }
         });
 
-        builder.setOnSettingListener(new TempPatientDialog.Builder.SettingListener() {
-            @Override
-            public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {
-                Log.e("DialogUtils", "showCreatTempPatientDialog");
-                EventBusUtils.postSticky(new Event.tempPatientEvent(userName, roomNum, userSex, idCard, time, dialog));
-            }
-        });
+        builder.setOnSettingListener(listener);
         builder.create().show();
     }
 
