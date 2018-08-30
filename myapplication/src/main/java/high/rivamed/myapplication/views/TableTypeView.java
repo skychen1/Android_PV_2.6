@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -360,7 +361,11 @@ public class TableTypeView extends LinearLayout {
                         mRefreshLayout.setEnableAutoLoadMore(false);
                         mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
                         mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+
                         mRecyclerview.setAdapter(mBingOutAdapter);
+                        View inflate = LayoutInflater.from(mActivity)
+                              .inflate(R.layout.recy_null, null);
+                        mBingOutAdapter.setEmptyView(inflate);
                         mLinearLayout.addView(mHeadView);
                     } else if (mDialog != null && mDialog.equals(STYPE_DIALOG2)) {//所有在院患者Dialog
                         mLayout = R.layout.item_dialog_six_layout;
@@ -383,9 +388,7 @@ public class TableTypeView extends LinearLayout {
 
                             patientInfos.get(i).setSelected(false);
                         }
-                        if (patientInfos.size() > 0) {
-                            patientInfos.get(0).setSelected(true);
-                        }
+
 
                         mRecyclerview.setLayoutParams(lp);
 
@@ -398,7 +401,11 @@ public class TableTypeView extends LinearLayout {
                         mRefreshLayout.setEnableAutoLoadMore(true);
                         mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
                         mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+
                         mRecyclerview.setAdapter(mBingOutAdapter);
+                        View inflate = LayoutInflater.from(mActivity)
+                              .inflate(R.layout.recy_null, null);
+                        mBingOutAdapter.setEmptyView(inflate);
                         mLinearLayout.addView(mHeadView);
                     } else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
 
