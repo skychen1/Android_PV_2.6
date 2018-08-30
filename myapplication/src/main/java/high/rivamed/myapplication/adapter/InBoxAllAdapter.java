@@ -150,7 +150,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_two.setTextColor(Color.parseColor("#333333"));
 	   mSeven_three.setTextColor(Color.parseColor("#333333"));
 	   mSeven_five.setTextColor(Color.parseColor("#333333"));
-	   mSeven_six.setTextColor(Color.parseColor("#333333"));
+//	   mSeven_six.setTextColor(Color.parseColor("#333333"));
 	   swipe.setSwipeEnabled(true);
 	}
    }

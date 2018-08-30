@@ -225,7 +225,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	//	mLoadingView.setVisibility(View.VISIBLE);
 	if (mType_size == FIVE) {
 	   if (mType_page.equals(STYPE_STOCK_MIDDLE)) {
-		mSearchEt.setHint("请输入耗材名称、型号规格查询");
+		mSearchEt.setHint("请输入耗材名称、规格型号查询");
 		mRelativeLayout.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
 		mStockTimelyLl.setVisibility(View.VISIBLE);

@@ -169,20 +169,22 @@ public class RunWatePagerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
 	mSearchTypeDb.setVisibility(View.GONE);
-	Date date = new Date();
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	String format = sdf.format(date);
 
-	mSearchTimeStart.setText(PowerDateUtils.getTime());
-	mSearchTimeEnd.setText(format);
+
 	initDate();
 
 	initlistener();
    }
 
    private void initDate() {
-
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String format = sdf.format(date);
+	mSearchTimeStart.setHint(PowerDateUtils.getTime());
+	mSearchTimeEnd.setHint(format);
 	mSearchEt.setHint("请输入耗材名称、操作人、EPC查询");
+	mStartTime=null;
+	mEndTime=null;
 	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode);
 

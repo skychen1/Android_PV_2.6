@@ -145,6 +145,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public void onStart() {
 	//	AllDeviceCallBack.getInstance().initCallBack();
+
 	super.onStart();
    }
 
@@ -195,7 +196,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.base_tab_back:
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
-
 		finish();
 		break;
 	   case R.id.timely_start_btn:

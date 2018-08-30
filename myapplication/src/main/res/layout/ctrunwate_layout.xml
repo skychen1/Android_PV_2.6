@@ -23,9 +23,9 @@
 		tl:tl_indicator_corner_radius="@dimen/x8"
 		tl:tl_indicator_style="BLOCK"
 		tl:tl_tab_padding="@dimen/x40"
-		tl:tl_textSelectColor="@color/text_color_3"
+		tl:tl_textSelectColor="@color/bg_green"
 		tl:tl_textUnselectColor="@color/text_color_3"
-		tl:tl_textsize="@dimen/textsize_16"
+		tl:tl_textsize="@dimen/textsize_17"
 		tl:tl_underline_gravity="BOTTOM"
 		tl:tl_underline_height="@dimen/x20"/>
 

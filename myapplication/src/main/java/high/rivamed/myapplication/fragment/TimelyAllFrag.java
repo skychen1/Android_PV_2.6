@@ -89,6 +89,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private List<DeviceInventoryVo> mDeviceList = new ArrayList<>();
    private List<TCstInventory> mEpcList;
    private int mEpcsNumber =0;
+   private List<TCstInventoryVo> 		mVoList = new ArrayList<>();
 
    /**
     * 重新加载数据
@@ -225,8 +226,14 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void initDate(int epcSize, int reduce, int add, int count) {
-	mTimelyReality.setText(
-		Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + epcSize + "</big>&emsp</font>"));
+	if (epcSize==count){
+	   mTimelyReality.setText(Html.fromHtml(
+		   "实际扫描数：<font color='#262626'><big>" + epcSize + "</big>&emsp</font>"));
+	}else {
+	   mTimelyReality.setText(Html.fromHtml(
+		   "实际扫描数：<font color='#F5222D'><big>" + epcSize + "</big>&emsp</font>"));
+	}
+
 	mTimelyBook.setText(
 		Html.fromHtml("账面库存数：<font color='#262626'><big>" + count + "</big>&emsp</font>"));
 
@@ -267,9 +274,30 @@ public class TimelyAllFrag extends SimpleFragment {
 		LogUtils.i(TAG, "cstCode  " + cstCode);
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
 		tCstInventoryDto.setCstCode(cstCode);
-		String s = mGson.toJson(tCstInventoryDto);
-		LogUtils.i(TAG, "详情 s   " + s);
-		NetRequest.getInstance().getDetailDate(s, this, null, new BaseResult() {
+		String deviceCode1 = mTCstInventoryVos.get(position).getDeviceCode();
+
+		TCstInventoryDto dto = new TCstInventoryDto();
+		dto.setCstCode(cstCode);
+		String xxx ="";
+		if (mDeviceCode == null || mDeviceCode.equals("")){//全部的柜子详情
+		   dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+		   List<DeviceInventoryVo> deviceInventoryVos = tCstInventoryDto.getDeviceInventoryVos();
+		   List<DeviceInventoryVo> devo =  new ArrayList<>();
+		   for (int i=0;i<deviceInventoryVos.size();i++){
+			String deviceCode = deviceInventoryVos.get(i).getDeviceCode();
+			if (deviceCode.equals(deviceCode1)){
+			   devo.add(deviceInventoryVos.get(i));
+			}
+		   }
+		   dto.setDeviceInventoryVos(devo);
+		   xxx = mGson.toJson(dto);
+		}else {//单柜
+		   dto=tCstInventoryDto;
+		   xxx = mGson.toJson(dto);
+		}
+
+		LogUtils.i(TAG, "详情 xxx   " + xxx);
+		NetRequest.getInstance().getDetailDate(xxx, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "详情 result   " + result);
@@ -285,6 +313,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	});
 
    }
+
 
    @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss})
    public void onViewClicked(View view) {
@@ -515,8 +544,14 @@ public class TimelyAllFrag extends SimpleFragment {
 				   Reduce += l.getReduce();
 				   Add += l.getAdd();
 				}
-				mTimelyReality.setText(Html.fromHtml(
-					"实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+				if (epcs==number){
+				   mTimelyReality.setText(Html.fromHtml(
+					   "实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
+				}else {
+				   mTimelyReality.setText(Html.fromHtml(
+					   "实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+				}
+
 				mTimelyBook.setText(Html.fromHtml(
 					"账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
 
@@ -566,9 +601,14 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 		number += TCstInventoryVo.getCountStock();
 	   }
+	   if (epcs==number){
+		mTimelyReality.setText(Html.fromHtml(
+			"实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
+	   }else {
+		mTimelyReality.setText(Html.fromHtml(
+			"实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+	   }
 
-	   mTimelyReality.setText(
-		   Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
 	   mTimelyBook.setText(
 		   Html.fromHtml("账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
 

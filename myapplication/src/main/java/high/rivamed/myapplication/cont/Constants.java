@@ -13,7 +13,7 @@ package high.rivamed.myapplication.cont;
  */
 
 public class Constants {
-    public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
+    public static final long DEFAULT_MILLISECONDS = 8000;      //默认的超时时间
     public static final String TYPE_TIMELY               = "timely";
     public static final String TYPE_RUNWATE              = "runwate";
     public static final String STYPE_STOCK_LEFT          = "stock_left";
