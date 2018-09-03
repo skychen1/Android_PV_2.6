@@ -19,7 +19,7 @@ public class TCstInventoryVo implements Serializable {
     private Integer stopFlag = 1;
     private String storehouseCode;
     private String deviceCode;
-    private String cstCode;
+    private String cstId;
     private String operation;
     private String storehouseRemark;
     private String remark;
@@ -212,10 +212,10 @@ public class TCstInventoryVo implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         TCstInventoryVo tCstInventoryVo = (TCstInventoryVo) obj;
-        if (cstCode == null) {
-            if (tCstInventoryVo.cstCode != null)
+        if (cstId == null) {
+            if (tCstInventoryVo.cstId != null)
                 return false;
-        } else if (!cstCode.equals(tCstInventoryVo.cstCode))
+        } else if (!cstId.equals(tCstInventoryVo.cstId))
             return false;
         if (cstName == null) {
             if (tCstInventoryVo.cstName != null)
@@ -278,11 +278,11 @@ public class TCstInventoryVo implements Serializable {
     }
 
     public String getCstCode() {
-        return cstCode;
+        return cstId;
     }
 
-    public void setCstCode(String cstCode) {
-        this.cstCode = cstCode;
+    public void setCstCode(String cstId) {
+        this.cstId = cstId;
     }
 
     public String getOperation() {

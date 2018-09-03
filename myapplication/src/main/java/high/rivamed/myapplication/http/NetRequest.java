@@ -66,6 +66,8 @@ public class NetRequest {
      * 预注册
      */
     public void setSaveRegisteDate(String TBaseThing, Object tag, NetResult netResult) {
+        Log.e(TAG, TBaseThing);
+        Log.e(TAG, NetApi.URL_TEST_REGISTE);
 
         OkGo.<String>post(NetApi.URL_TEST_REGISTE).tag(tag)
                 .upJson(TBaseThing)
@@ -215,9 +217,9 @@ public class NetRequest {
     /**
      * 查询单个耗材
      */
-    public void getStockDetailDate(String deviceCode, String cstCode, Object tag, NetResult netResult) {
+    public void getStockDetailDate(String deviceCode, String cstId, Object tag, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_STOCK_DETAIL).tag(tag)
-                .params("cstCode", cstCode)
+                .params("cstId", cstId)
                 .params("deviceCode", deviceCode)
                 .params("thingCode", sThingCode)
                 .execute(new MyCallBack(tag, netResult, true));
@@ -264,18 +266,18 @@ public class NetRequest {
     /**
      * 根据科室查询库房情况
      */
-    public void getHospBydept(String deptCode, Object tag, NetResult netResult) {
+    public void getHospBydept(String deptId, Object tag, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_TEST_FIND_BYDEPT).tag(tag)
-                .params("deptCode", deptCode)
+                .params("deptId", deptId)
                 .execute(new MyCallBack(tag, netResult, true));
     }
 
     /**
      * 根据科室查询手术室信息
      */
-    public void getHospRooms(String deptCode, Object tag, NetResult netResult) {
+    public void getHospRooms(String deptId, Object tag, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_TEST_FIND_OPERROOMS).tag(tag)
-                .params("deptCode", deptCode)
+                .params("deptId", deptId)
                 .execute(new MyCallBack(tag, netResult, true));
     }
 
@@ -300,18 +302,18 @@ public class NetRequest {
     /**
      * 根据科室查询库房情况    移出查
      */
-    public void getOperateYcDeptYes(String deptCode, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void getOperateYcDeptYes(String deptId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_OPERATE_YC_YES).tag(tag)
-                .params("deptCode", deptCode)
+                .params("deptId", deptId)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     /**
      * 查询非本科室的库房    调拨查
      */
-    public void getOperateDbDialog(String deptCode, String branchCode, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void getOperateDbDialog(String deptId, String branchCode, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_OPERATE_DB_YES).tag(tag)
-                .params("deptCode", deptCode)
+                .params("deptId", deptId)
                 .params("branchCode", branchCode)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }

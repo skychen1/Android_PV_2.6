@@ -253,15 +253,20 @@ public class StringUtils {
     * @return
     */
    public static ArrayList<String> removeDuplicteUsers(ArrayList<String> userList) {
-	Set<String> s = new TreeSet<String>(new Comparator<String>() {
+	   try {
+		   Set<String> s = new TreeSet<String>(new Comparator<String>() {
 
-	   @Override
-	   public int compare(String o1, String o2) {
-		return o1.compareTo(o2);
+              @Override
+              public int compare(String o1, String o2) {
+               return o1.compareTo(o2);
+              }
+           });
+		   s.addAll(userList);
+		   return new ArrayList<String>(s);
+	   } catch (Exception e) {
+		   e.printStackTrace();
+		   return new ArrayList<String>();
 	   }
-	});
-	s.addAll(userList);
-	return new ArrayList<String>(s);
    }
 
    /**

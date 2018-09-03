@@ -1,5 +1,8 @@
 package high.rivamed.myapplication.utils;
 
+import android.content.Context;
+import android.view.WindowManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,5 +57,13 @@ public class DevicesUtils {
 	}
 	return identifition;
    }
+	/**
+	 * 获取当前屏幕宽度px(像素)
+	 */
+	public static int getScreenWidth(Context context) {
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		int width = wm.getDefaultDisplay().getWidth();
+		return width;
+	}
 
 }

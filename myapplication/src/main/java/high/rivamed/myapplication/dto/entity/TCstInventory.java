@@ -90,7 +90,7 @@ public class TCstInventory implements Serializable {
 	private String batchNumber;
 
 	//耗材编码
-	private String cstCode;
+	private String cstId;
 
 	//耗材所在设备部件编码
 	private String deviceCode;
@@ -200,11 +200,11 @@ public class TCstInventory implements Serializable {
    }
 
    public String getCstCode() {
-	return cstCode;
+	return cstId;
    }
 
-   public void setCstCode(String cstCode) {
-	this.cstCode = cstCode;
+   public void setCstCode(String cstId) {
+	this.cstId = cstId;
    }
 
    public String getDeviceCode() {

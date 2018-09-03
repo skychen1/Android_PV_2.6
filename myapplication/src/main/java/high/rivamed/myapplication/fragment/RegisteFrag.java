@@ -112,11 +112,11 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   event.dialog.dismiss();
 	   event.dialog = null;
 	   String s = mGson.toJson(
-		   addFromDate(event.deptName, event.branchCode, event.deptCode, event.storehouseCode,
+		   addFromDate(event.deptName, event.branchCode, event.deptId, event.storehouseCode,
 				   event.operationRoomNo));
 	   LogUtils.i(TAG, "激活的   " + s);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptCode);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptId);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
 	   mFragRegisteRight.setEnabled(false);
@@ -461,7 +461,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
     * 预注册存入数据
     */
    private TBaseThingDto addFromDate(
-	   String deptName, String branchCode, String deptCode, String storehouseCode,
+	   String deptName, String branchCode, String deptId, String storehouseCode,
 	   String operationRoomNo) {
 
 	TBaseThingDto TBaseThingDto = new TBaseThingDto();//最外层
@@ -470,7 +470,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
 	TBaseThingDto.HospitalInfoVo hospitalInfoVo = new TBaseThingDto.HospitalInfoVo();
 
-	hospitalInfoVo.setDeptCode(deptCode);
+	hospitalInfoVo.setDeptCode(deptId);
 	hospitalInfoVo.setBranchCode(branchCode);
 	hospitalInfoVo.setStorehouseCode(storehouseCode);
 	hospitalInfoVo.setOperationRoomNo(operationRoomNo);

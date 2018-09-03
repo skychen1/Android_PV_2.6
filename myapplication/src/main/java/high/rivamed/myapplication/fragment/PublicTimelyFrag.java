@@ -668,9 +668,14 @@ public class PublicTimelyFrag extends SimpleFragment {
 				   SIZE += vosBean.getCount();
 
 				}
-				ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+				   ArrayList<String> list = new ArrayList<>();
+				   try {
+					   list = StringUtils.removeDuplicteUsers(strings);
+				   } catch (Exception e) {
+					   e.printStackTrace();
+				   }
 
-				mTimelyReality2.setText(Html.fromHtml(
+				   mTimelyReality2.setText(Html.fromHtml(
 					"耗材种类：<font color='#262626'><big>" + list.size() +
 					"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + SIZE +
 					"</big></font>"));

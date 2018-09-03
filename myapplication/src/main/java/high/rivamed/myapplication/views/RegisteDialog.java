@@ -305,13 +305,13 @@ public class RegisteDialog extends Dialog {
 			    mAddressThrees.length() > 1 && mAddressFours.length() > 1) {
 
 			   if (myListener != null) {
-				String deptCode = mGoneThreeType.getText().toString().trim();
+				String deptId = mGoneThreeType.getText().toString().trim();
 				String storehouseCode = mGoneFourType.getText().toString().trim();
 				String operationRoomNo = mGoneFiveType.getText().toString().trim();
 				String branchCode = mGoneTwoType.getText().toString().trim();
 				String deptName = mAddressThree.getText().toString().trim();
 
-				myListener.getDialogDate(deptName, branchCode, deptCode, storehouseCode,
+				myListener.getDialogDate(deptName, branchCode, deptId, storehouseCode,
 								 operationRoomNo, dialog);
 			   }
 			} else {
@@ -329,7 +329,7 @@ public class RegisteDialog extends Dialog {
 	public interface SettingListener {
 
 	   public void getDialogDate(
-		   String deptName, String branchCode, String deptCode, String storehouseCode,
+		   String deptName, String branchCode, String deptId, String storehouseCode,
 		   String operationRoomNo, Dialog dialog);
 	}
 
@@ -540,8 +540,8 @@ public class RegisteDialog extends Dialog {
 	/**
 	 * 根据科室查询库房情况
 	 */
-	private void getHospBydept(String deptCode, TextView textview, TextView goneview, int type) {
-	   NetRequest.getInstance().getHospBydept(deptCode, mActivity, new BaseResult() {
+	private void getHospBydept(String deptId, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospBydept(deptId, mActivity, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
 		   Gson gson = new Gson();
@@ -555,8 +555,8 @@ public class RegisteDialog extends Dialog {
 	/**
 	 * 根据科室查询手术间
 	 */
-	private void getHospRooms(String deptCode, TextView textview, TextView goneview, int type) {
-	   NetRequest.getInstance().getHospRooms(deptCode, mActivity, new BaseResult() {
+	private void getHospRooms(String deptId, TextView textview, TextView goneview, int type) {
+	   NetRequest.getInstance().getHospRooms(deptId, mActivity, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
 		   Gson gson = new Gson();

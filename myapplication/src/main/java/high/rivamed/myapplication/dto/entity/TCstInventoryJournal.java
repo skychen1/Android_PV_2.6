@@ -23,7 +23,7 @@ public class TCstInventoryJournal implements Serializable {
 
    private Date creatDate;
 
-   private String cstCode;
+   private String cstId;
 
    private String cstName;
 

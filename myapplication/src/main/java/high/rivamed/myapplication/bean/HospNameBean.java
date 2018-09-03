@@ -85,7 +85,7 @@ public class HospNameBean extends Movie implements Serializable {
 
    /**
     * id : 0
-    * tbaseInfo : [{"branchAlias":"骨科院区","branchCode":"22","deptName":null,"deptCode":null},{"branchAlias":"脑科院区","branchCode":"233","deptName":null,"deptCode":null}]
+    * tbaseInfo : [{"branchAlias":"骨科院区","branchCode":"22","deptName":null,"deptId":null},{"branchAlias":"脑科院区","branchCode":"233","deptName":null,"deptId":null}]
     * hospIds : ["1"]
     */
 
@@ -107,13 +107,13 @@ public class HospNameBean extends Movie implements Serializable {
 	 * branchAlias : 骨科院区
 	 * branchCode : 22
 	 * deptName : null
-	 * deptCode : null
+	 * deptId : null
 	 */
 
 	private String branchAlias;
 	private String branchCode;
 	private String deptName;
-	private String deptCode;
+	private String deptId;
 
 	public TbaseInfoBean(String one) {
 	   super(one);
@@ -123,9 +123,9 @@ public class HospNameBean extends Movie implements Serializable {
 
 	public void setDeptName(String deptName) { this.deptName = deptName;}
 
-	public String getDeptCode() { return deptCode;}
+	public String getDeptCode() { return deptId;}
 
-	public void setDeptCode(String deptCode) { this.deptCode = deptCode;}
+	public void setDeptCode(String deptId) { this.deptId = deptId;}
 
 	public String getBranchAlias() { return branchAlias;}
 
@@ -138,28 +138,28 @@ public class HospNameBean extends Movie implements Serializable {
 
    /**
     * id : 0
-    * tbaseInfo : [{"branchAlias":null,"branchCode":null,"deptName":"骨科","deptCode":"22"},{"branchAlias":null,"branchCode":null,"deptName":"谷志科 ","deptCode":"44"},{"branchAlias":null,"branchCode":null,"deptName":"骨外科","deptCode":"55"}]
+    * tbaseInfo : [{"branchAlias":null,"branchCode":null,"deptName":"骨科","deptId":"22"},{"branchAlias":null,"branchCode":null,"deptName":"谷志科 ","deptId":"44"},{"branchAlias":null,"branchCode":null,"deptName":"骨外科","deptId":"55"}]
     * branchCode : 22
     */
 
    private String                        branchCode;
    /**
     * id : 0
-    * deptCode : 22
+    * deptId : 22
     * tbaseOperationRooms : [{"createDateTime":"2018-07-22 11:12:59","roomNo":"1","status":0,"roomNoName":"骨科手术间1","updateDateTime":"2018-07-22 11:13:02","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:20","roomNo":"2","status":0,"roomNoName":"骨科手术间2","updateDateTime":"2018-07-22 11:14:23","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:46","roomNo":"3","status":0,"roomNoName":"脑科","updateDateTime":"2018-07-25 17:25:04","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null}]
     */
 
    private int                           id;
-   private String                        deptCode;
+   private String                        deptId;
    private List<TbaseOperationRoomsBean> tbaseOperationRooms;
 
    public int getId() { return id;}
 
    public void setId(int id) { this.id = id;}
 
-   public String getDeptCode() { return deptCode;}
+   public String getDeptCode() { return deptId;}
 
-   public void setDeptCode(String deptCode) { this.deptCode = deptCode;}
+   public void setDeptCode(String deptId) { this.deptId = deptId;}
 
    public List<TbaseOperationRoomsBean> getTbaseOperationRooms() { return tbaseOperationRooms;}
 
@@ -208,7 +208,7 @@ public class HospNameBean extends Movie implements Serializable {
 
    /**
     * id : 0
-    * deptCode : 22
+    * deptId : 22
     * tcstBaseStorehouses : [{"storehouseCode":"25","deptNamesStr":null,"name":"物资1库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null},{"storehouseCode":"23","deptNamesStr":null,"name":"内科一库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null},{"storehouseCode":"24","deptNamesStr":null,"name":"胸外科库房","stopFlag":1,"storeType":1,"depts":[],"accountName":null,"lastupdateTime":null,"accountId":null}]
     */
 

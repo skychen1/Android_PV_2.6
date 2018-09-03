@@ -270,14 +270,14 @@ public class TimelyAllFrag extends SimpleFragment {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
 		LogUtils.i(TAG, "详情 position   " + position);
-		String cstCode = mTCstInventoryVos.get(position).getCstCode();
-		LogUtils.i(TAG, "cstCode  " + cstCode);
+		String cstId = mTCstInventoryVos.get(position).getCstCode();
+		LogUtils.i(TAG, "cstId  " + cstId);
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
-		tCstInventoryDto.setCstCode(cstCode);
+		tCstInventoryDto.setCstCode(cstId);
 		String deviceCode1 = mTCstInventoryVos.get(position).getDeviceCode();
 
 		TCstInventoryDto dto = new TCstInventoryDto();
-		dto.setCstCode(cstCode);
+		dto.setCstCode(cstId);
 		String xxx ="";
 		if (mDeviceCode == null || mDeviceCode.equals("")){//全部的柜子详情
 		   dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));

@@ -389,7 +389,6 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
      * 获取需要绑定的患者
      */
     private void loadBingDate(String optienNameOrId) {
-
         NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {

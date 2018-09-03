@@ -133,14 +133,14 @@ public class Event {
    }
    public static class dialogEvent{
 	public Dialog dialog;
-	public String deptCode;
+	public String deptId;
 	public String storehouseCode;
 	public String operationRoomNo;
 	public String branchCode;
 	public String deptName;
-	public dialogEvent(String deptName, String branchCode,String deptCode, String storehouseCode, String operationRoomNo, Dialog dialog){
+	public dialogEvent(String deptName, String branchCode,String deptId, String storehouseCode, String operationRoomNo, Dialog dialog){
 
-	   this.deptCode = deptCode;
+	   this.deptId = deptId;
 	   this.deptName = deptName;
 	   this.storehouseCode = storehouseCode;
 	   this.dialog = dialog;

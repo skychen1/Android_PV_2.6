@@ -18,8 +18,8 @@ public class InBoxDtoBean implements Serializable{
 
    /**
     * id : 0
-    * deviceInventoryVos : [{"cstCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","deviceName":null,"tcstInventories":[{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00020820180613000011","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00022120180612000087","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00022120180612000086","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null}],"tcstInventoryVos":null}]
-    * tCstInventoryVos : [{"cstName":"电动腔直线型血管切割吻合器和钉仓","epc":"00020820180613000011","cstSpec":"支","expirationTime":"2018-06-29 14:26:10","expiration":"已过期","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstCode":"33a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null},{"cstName":"腔镜关节头直线型切割吻合器和钉仓","epc":"00022120180612000086","cstSpec":"ECR60B","expirationTime":"2022-11-11 14:26:10","expiration":"2022-11-11","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstCode":"55a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null},{"cstName":"腔镜关节头直线型切割吻合器和钉仓","epc":"00022120180612000087","cstSpec":"ECR60B","expirationTime":"2022-11-11 14:26:10","expiration":"2022-11-11","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstCode":"55a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null}]
+    * deviceInventoryVos : [{"cstId":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","deviceName":null,"tcstInventories":[{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00020820180613000011","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00022120180612000087","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00022120180612000086","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null}],"tcstInventoryVos":null}]
+    * tCstInventoryVos : [{"cstName":"电动腔直线型血管切割吻合器和钉仓","epc":"00020820180613000011","cstSpec":"支","expirationTime":"2018-06-29 14:26:10","expiration":"已过期","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstId":"33a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null},{"cstName":"腔镜关节头直线型切割吻合器和钉仓","epc":"00022120180612000086","cstSpec":"ECR60B","expirationTime":"2022-11-11 14:26:10","expiration":"2022-11-11","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstId":"55a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null},{"cstName":"腔镜关节头直线型切割吻合器和钉仓","epc":"00022120180612000087","cstSpec":"ECR60B","expirationTime":"2022-11-11 14:26:10","expiration":"2022-11-11","deviceName":"1号柜","status":"禁止入库","stopFlag":0,"storehouseCode":null,"deviceCode":"402882a064e4f6e20164e5253f8d0025","cstId":"55a","operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":null,"userName":null,"statusStr":null}]
     * thingCode : 402882a064e4f6e20164e52508ff0024
     * operation : 0
     * type : 0
@@ -112,22 +112,22 @@ public class InBoxDtoBean implements Serializable{
    public static class DeviceInventoryVosBean {
 
 	/**
-	 * cstCode : null
+	 * cstId : null
 	 * deviceCode : 402882a064e4f6e20164e5253f8d0025
 	 * deviceName : null
-	 * tcstInventories : [{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00020820180613000011","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00022120180612000087","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstCode":null,"deviceCode":null,"epc":"00022120180612000086","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null}]
+	 * tcstInventories : [{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00020820180613000011","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00022120180612000087","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null},{"id":null,"barcode":null,"batchNumber":null,"cstId":null,"deviceCode":null,"epc":"00022120180612000086","expirationTime":null,"productionDate":null,"sheetId":null,"status":null,"storehouseCode":null,"createDate":null,"accountId":null,"userName":null,"lastUpdateDate":null,"remake":null,"patientId":null,"storehouseRemark":null}]
 	 * tcstInventoryVos : null
 	 */
 
-	private Object cstCode;
+	private Object cstId;
 	private String                    deviceCode;
 	private Object                    deviceName;
 	private Object                    tcstInventoryVos;
 	private List<TcstInventoriesBean> tcstInventories;
 
-	public Object getCstCode() { return cstCode;}
+	public Object getCstCode() { return cstId;}
 
-	public void setCstCode(Object cstCode) { this.cstCode = cstCode;}
+	public void setCstCode(Object cstId) { this.cstId = cstId;}
 
 	public String getDeviceCode() { return deviceCode;}
 
@@ -153,7 +153,7 @@ public class InBoxDtoBean implements Serializable{
 	    * id : null
 	    * barcode : null
 	    * batchNumber : null
-	    * cstCode : null
+	    * cstId : null
 	    * deviceCode : null
 	    * epc : 00020820180613000011
 	    * expirationTime : null
@@ -173,7 +173,7 @@ public class InBoxDtoBean implements Serializable{
 	   private Object id;
 	   private Object barcode;
 	   private Object batchNumber;
-	   private Object cstCode;
+	   private Object cstId;
 	   private Object deviceCode;
 	   private String epc;
 	   private Object expirationTime;
@@ -201,9 +201,9 @@ public class InBoxDtoBean implements Serializable{
 
 	   public void setBatchNumber(Object batchNumber) { this.batchNumber = batchNumber;}
 
-	   public Object getCstCode() { return cstCode;}
+	   public Object getCstCode() { return cstId;}
 
-	   public void setCstCode(Object cstCode) { this.cstCode = cstCode;}
+	   public void setCstCode(Object cstId) { this.cstId = cstId;}
 
 	   public Object getDeviceCode() { return deviceCode;}
 
@@ -281,7 +281,7 @@ public class InBoxDtoBean implements Serializable{
 	 * stopFlag : 0
 	 * storehouseCode : null
 	 * deviceCode : 402882a064e4f6e20164e5253f8d0025
-	 * cstCode : 33a
+	 * cstId : 33a
 	 * operation : null
 	 * storehouseRemark : null
 	 * remake : null
@@ -303,7 +303,7 @@ public class InBoxDtoBean implements Serializable{
 	private int    stopFlag;
 	private String storehouseCode;
 	private String deviceCode;
-	private String cstCode;
+	private String cstId;
 	private String operation;
 	private String storehouseRemark;
 	private String remark;
@@ -354,9 +354,9 @@ public class InBoxDtoBean implements Serializable{
 
 	public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
 
-	public String getCstCode() { return cstCode;}
+	public String getCstCode() { return cstId;}
 
-	public void setCstCode(String cstCode) { this.cstCode = cstCode;}
+	public void setCstCode(String cstId) { this.cstId = cstId;}
 
 	public String getOperation() { return operation;}
 

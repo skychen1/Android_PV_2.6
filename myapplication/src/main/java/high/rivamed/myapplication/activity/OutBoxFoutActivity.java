@@ -351,9 +351,9 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mType = 3;//1.8调拨
 
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
-	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
+	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
 	NetRequest.getInstance()
-		.getOperateDbDialog(deptCode, branchCode, this, null, new BaseResult() {
+		.getOperateDbDialog(deptId, branchCode, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "8调拨   " + result);
@@ -371,8 +371,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private void setYcDate(int mIntentType) {
 	mType = 1;//1.6移出
-	String deptCode = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
-	NetRequest.getInstance().getOperateYcDeptYes(deptCode, this, null, new BaseResult() {
+	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
+	NetRequest.getInstance().getOperateYcDeptYes(deptId, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "库房   " + result);

@@ -18,9 +18,9 @@ public class StockDetailsBean implements Serializable {
 
    /**
     * id : 0
-    * tCstInventoryVos : [{"cstName":"手术刀","epc":"95564564566457","cstSpec":null,"expirationTime":"2013-12-06 18:15:43","expiration":"已过期","deviceName":null,"status":"0","stopFlag":0,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":null,"statusStr":null},{"cstName":"手术刀","epc":"95564564566457432","cstSpec":null,"expirationTime":"2018-12-04 18:15:43","expiration":"2018-12-04","deviceName":null,"status":"0","stopFlag":4,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":null,"statusStr":null}]
+    * tCstInventoryVos : [{"cstName":"手术刀","epc":"95564564566457","cstSpec":null,"expirationTime":"2013-12-06 18:15:43","expiration":"已过期","deviceName":null,"status":"0","stopFlag":0,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":null,"statusStr":null},{"cstName":"手术刀","epc":"95564564566457432","cstSpec":null,"expirationTime":"2018-12-04 18:15:43","expiration":"2018-12-04","deviceName":null,"status":"0","stopFlag":4,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":null,"statusStr":null}]
     * deviceCode : 33333
-    * cstCode : 44a
+    * cstId : 44a
     * stopFlag : 0
     */
 
@@ -28,7 +28,7 @@ public class StockDetailsBean implements Serializable {
 
    private int                        id;
    private String                     deviceCode;
-   private String                     cstCode;
+   private String                     cstId;
    private int                        stopFlag;
    private List<TCstInventoryVosBean> tCstInventoryVos;
 
@@ -40,9 +40,9 @@ public class StockDetailsBean implements Serializable {
 
    public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
 
-   public String getCstCode() { return cstCode;}
+   public String getCstCode() { return cstId;}
 
-   public void setCstCode(String cstCode) { this.cstCode = cstCode;}
+   public void setCstCode(String cstId) { this.cstId = cstId;}
 
    public int getStopFlag() { return stopFlag;}
 
@@ -66,7 +66,7 @@ public class StockDetailsBean implements Serializable {
 	 * stopFlag : 0
 	 * storehouseCode : null
 	 * deviceCode : null
-	 * cstCode : null
+	 * cstId : null
 	 * operation : null
 	 * storehouseRemark : null
 	 * remake : null
@@ -88,7 +88,7 @@ public class StockDetailsBean implements Serializable {
 	private int    stopFlag;
 	private Object storehouseCode;
 	private Object deviceCode;
-	private Object cstCode;
+	private Object cstId;
 	private Object operation;
 	private Object storehouseRemark;
 	private Object remark;
@@ -139,9 +139,9 @@ public class StockDetailsBean implements Serializable {
 
 	public void setDeviceCode(Object deviceCode) { this.deviceCode = deviceCode;}
 
-	public Object getCstCode() { return cstCode;}
+	public Object getCstCode() { return cstId;}
 
-	public void setCstCode(Object cstCode) { this.cstCode = cstCode;}
+	public void setCstCode(Object cstId) { this.cstId = cstId;}
 
 	public Object getOperation() { return operation;}
 

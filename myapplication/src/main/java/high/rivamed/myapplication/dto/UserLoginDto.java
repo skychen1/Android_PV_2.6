@@ -11,6 +11,16 @@ public class UserLoginDto {
      * account : {"password":"000000","accountName":"adminUM"}
      */
 
+    private String thingCode;
+
+    public String getThingCode() {
+        return thingCode;
+    }
+
+    public void setThingCode(String thingCode) {
+        this.thingCode = thingCode;
+    }
+
     private AccountBean account;
 
     public AccountBean getAccount() {

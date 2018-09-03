@@ -41,7 +41,7 @@ public class TCstInventoryDto {
     private String nameOrSpecQueryCon;
     private int add;    // 库存情况
     private int reduce;    // 扫描出来的库存
-    private String cstCode;
+    private String cstId;
     private String remark;    //退货备注
     private String storehouseRemark;    //移出备注
     private String storehouseCode;        //调拨库房
@@ -347,11 +347,11 @@ public class TCstInventoryDto {
     }
 
     public String getCstCode() {
-        return cstCode;
+        return cstId;
     }
 
-    public void setCstCode(String cstCode) {
-        this.cstCode = cstCode;
+    public void setCstCode(String cstId) {
+        this.cstId = cstId;
     }
 
     public int getStopFlag() {

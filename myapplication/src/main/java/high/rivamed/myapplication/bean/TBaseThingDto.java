@@ -49,7 +49,7 @@ public class TBaseThingDto implements Serializable {
 
    public static class HospitalInfoVo {//激活的时候医院信息
 	private String         storehouseCode;
-	private String         deptCode;
+	private String         deptId;
 	private String         deptName;
 	private String         operationRoomNo;
 	private String         branchCode;
@@ -79,11 +79,11 @@ public class TBaseThingDto implements Serializable {
 	}
 
 	public String getDeptCode() {
-	   return deptCode;
+	   return deptId;
 	}
 
-	public void setDeptCode(String deptCode) {
-	   this.deptCode = deptCode;
+	public void setDeptCode(String deptId) {
+	   this.deptId = deptId;
 	}
 
 	public String getOperationRoomNo() {

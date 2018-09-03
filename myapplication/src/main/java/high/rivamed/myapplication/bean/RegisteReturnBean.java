@@ -21,7 +21,7 @@ public class RegisteReturnBean implements Serializable{
      * id : 0
      * tBaseDeviceVos : [{"deviceName":"1号柜","deviceCode":"402882a064d9b19f0164d9b1f7cc0001","deviceType":0,"ip":null,"parent":null,"tBaseDevice":null,"taBaseDevices":[{"baudrate":null,"com":null,"deviceCode":"0A0A000000000AEF","deviceName":"串口服务器","deviceType":0,"identification":0,"ip":"192.168.2.9","parent":"402882a064d9b19f0164d9b1f7cc0001","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"},{"baudrate":null,"com":null,"deviceCode":"6C-EC-A1-FE-99-2E","deviceName":"Reader-红陆","deviceType":0,"identification":0,"ip":"192.168.2.22","parent":"402882a064d9b19f0164d9b1f7cc0001","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"}]},{"deviceName":"","deviceCode":"402882a064d9b19f0164d9b1f8600004","deviceType":0,"ip":null,"parent":null,"tBaseDevice":null,"taBaseDevices":[{"baudrate":null,"com":null,"deviceCode":"6C-EC-A1-FE-99-2E","deviceName":"Reader-红陆","deviceType":0,"identification":0,"ip":"192.168.2.22","parent":"402882a064d9b19f0164d9b1f8600004","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"},{"baudrate":null,"com":null,"deviceCode":"0A0A000000000AEF","deviceName":"串口服务器","deviceType":0,"identification":0,"ip":"192.168.2.9","parent":"402882a064d9b19f0164d9b1f8600004","remark":null,"stopFlag":0,"thingCode":"402882a064d9b19f0164d9b1f78a0000"}]}]
      * tBaseThingDto : {"tBaseDeviceVos":[{"deviceName":"1号柜","taBaseDevices":[{"deviceCode":"0A0A000000000AEF","deviceName":"串口服务器","ip":"192.168.2.9"},{"deviceCode":"6C-EC-A1-FE-99-2E","deviceName":"Reader-红陆","ip":"192.168.2.22"}]},{"deviceName":"","taBaseDevices":[{"deviceCode":"6C-EC-A1-FE-99-2E","deviceName":"Reader-红陆","ip":"192.168.2.22"},{"deviceCode":"0A0A000000000AEF","deviceName":"串口服务器","ip":"192.168.2.9"}]}],"tBaseThing":{"localIp":"192.168.2.5","portNumber":"8015","serverIp":"192.168.2.32","sn":"123456789","thingName":"2.6柜子","thingType":"rivamed26"}}
-     * tbaseThing : {"thingCode":"402882a064d9b19f0164d9b1f78a0000","appScene":0,"deptCode":null,"localIp":"192.168.2.5","serverIp":"192.168.2.32","macAddress":null,"operationRoomNo":null,"remark":null,"sn":"123456789","stopFlag":0,"storehouseCode":null,"thingName":"2.6柜子","thingType":"rivamed26","status":0,"portNumber":"8015"}
+     * tbaseThing : {"thingCode":"402882a064d9b19f0164d9b1f78a0000","appScene":0,"deptId":null,"localIp":"192.168.2.5","serverIp":"192.168.2.32","macAddress":null,"operationRoomNo":null,"remark":null,"sn":"123456789","stopFlag":0,"storehouseCode":null,"thingName":"2.6柜子","thingType":"rivamed26","status":0,"portNumber":"8015"}
      */
 
 
@@ -67,7 +67,7 @@ public class RegisteReturnBean implements Serializable{
         /**
          * thingCode : 402882a064d9b19f0164d9b1f78a0000
          * appScene : 0
-         * deptCode : null
+         * deptId : null
          * localIp : 192.168.2.5
          * serverIp : 192.168.2.32
          * macAddress : null
@@ -84,7 +84,7 @@ public class RegisteReturnBean implements Serializable{
 
         private String thingCode;
         private int    appScene;
-        private String deptCode;
+        private String deptId;
         private String deptName;
         private String localIp;
         private String serverIp;
@@ -124,9 +124,9 @@ public class RegisteReturnBean implements Serializable{
 
         public void setAppScene(int appScene) { this.appScene = appScene;}
 
-        public String getDeptCode() { return deptCode;}
+        public String getDeptCode() { return deptId;}
 
-        public void setDeptCode(String deptCode) { this.deptCode = deptCode;}
+        public void setDeptCode(String deptId) { this.deptId = deptId;}
 
         public String getLocalIp() { return localIp;}
 

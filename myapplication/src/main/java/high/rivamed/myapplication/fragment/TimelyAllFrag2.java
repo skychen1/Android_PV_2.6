@@ -247,10 +247,10 @@ public class TimelyAllFrag2 extends SimpleFragment {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
 		LogUtils.i(TAG, "详情 position   " + position);
-		String cstCode = mTCstInventoryVos.get(position).getCstCode();
-		LogUtils.i(TAG, "cstCode  " + cstCode);
+		String cstId = mTCstInventoryVos.get(position).getCstCode();
+		LogUtils.i(TAG, "cstId  " + cstId);
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
-		tCstInventoryDto.setCstCode(cstCode);
+		tCstInventoryDto.setCstCode(cstId);
 		String s = mGson.toJson(tCstInventoryDto);
 		LogUtils.i(TAG, "详情 s   " + s);
 		NetRequest.getInstance().getDetailDate(s, this, null, new BaseResult() {

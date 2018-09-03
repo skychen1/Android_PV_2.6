@@ -18,7 +18,7 @@ public class SocketRightBean implements Serializable{
 
    /**
     * id : 0
-    * tCstInventoryVos : [{"cstName":"弯型和直型腔内吻合器","epc":"95564564566456","cstSpec":"支","expirationTime":"2019-11-01 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"电动腔直线型血管切割吻合器和钉仓","epc":"955645645664564234","cstSpec":"支","expirationTime":"2018-12-06 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"弯型和直型腔内吻合器","epc":"955645645632","cstSpec":"支","expirationTime":"2018-10-06 18:15:43","expiration":null,"deviceName":"2号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"手术刀","epc":"9556456456654644234","cstSpec":"把","expirationTime":"2018-06-01 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"弯型和直型腔内吻合器","epc":"9556456456324","cstSpec":"支","expirationTime":"2018-11-01 18:15:43","expiration":null,"deviceName":"2号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstCode":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null}]
+    * tCstInventoryVos : [{"cstName":"弯型和直型腔内吻合器","epc":"95564564566456","cstSpec":"支","expirationTime":"2019-11-01 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"电动腔直线型血管切割吻合器和钉仓","epc":"955645645664564234","cstSpec":"支","expirationTime":"2018-12-06 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"弯型和直型腔内吻合器","epc":"955645645632","cstSpec":"支","expirationTime":"2018-10-06 18:15:43","expiration":null,"deviceName":"2号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"手术刀","epc":"9556456456654644234","cstSpec":"把","expirationTime":"2018-06-01 18:15:43","expiration":null,"deviceName":"1号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null},{"cstName":"弯型和直型腔内吻合器","epc":"9556456456324","cstSpec":"支","expirationTime":"2018-11-01 18:15:43","expiration":null,"deviceName":"2号柜","status":null,"stopFlag":1,"storehouseCode":null,"deviceCode":null,"cstId":null,"operation":null,"storehouseRemark":null,"remake":null,"countStock":0,"countActual":0,"count":0,"lastUpdateDate":"2018-07-18 18:15:56","userName":"超级管理员","statusStr":null}]
     * thingCode : 23233
     * nameOrSpecQueryCon :
     * stopFlag : 0
@@ -65,7 +65,7 @@ public class SocketRightBean implements Serializable{
 	 * stopFlag : 1
 	 * storehouseCode : null
 	 * deviceCode : null
-	 * cstCode : null
+	 * cstId : null
 	 * operation : null
 	 * storehouseRemark : null
 	 * remake : null
@@ -87,7 +87,7 @@ public class SocketRightBean implements Serializable{
 	private int    stopFlag;
 	private Object storehouseCode;
 	private Object deviceCode;
-	private Object cstCode;
+	private Object cstId;
 	private Object operation;
 	private Object storehouseRemark;
 	private Object remark;
@@ -138,9 +138,9 @@ public class SocketRightBean implements Serializable{
 
 	public void setDeviceCode(Object deviceCode) { this.deviceCode = deviceCode;}
 
-	public Object getCstCode() { return cstCode;}
+	public Object getCstCode() { return cstId;}
 
-	public void setCstCode(Object cstCode) { this.cstCode = cstCode;}
+	public void setCstCode(Object cstId) { this.cstId = cstId;}
 
 	public Object getOperation() { return operation;}
 

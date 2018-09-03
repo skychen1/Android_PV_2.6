@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.view.Display;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,7 +119,16 @@ public class DialogUtils {
                 }
             }
         });
-        builder.create().show();
+        Log.e("DialogUtils", " RvDialog rvDialog = builder.create();");
+        RvDialog rvDialog = builder.create();
+        rvDialog.show();
+        WindowManager windowManager = activity.getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        Window window = rvDialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = (int)(display.getWidth()); //设置宽度
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        window.setAttributes(lp);
         return builder;
     }
 
@@ -551,15 +563,15 @@ public class DialogUtils {
         builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
             @Override
             public void getDialogDate(
-                    String deptName, String branchCode, String deptCode, String storehouseCode,
+                    String deptName, String branchCode, String deptId, String storehouseCode,
                     String operationRoomNo, Dialog dialog) {
                 LogUtils.i("RegisteDialog", "deptName  " + deptName);
                 LogUtils.i("RegisteDialog", "branchCode  " + branchCode);
-                LogUtils.i("RegisteDialog", "deptCode  " + deptCode);
+                LogUtils.i("RegisteDialog", "deptId  " + deptId);
                 LogUtils.i("RegisteDialog", "storehouseCode  " + storehouseCode);
                 LogUtils.i("RegisteDialog", "operationRoomNo  " + operationRoomNo);
                 EventBusUtils.postSticky(
-                        new Event.dialogEvent(deptName, branchCode, deptCode, storehouseCode,
+                        new Event.dialogEvent(deptName, branchCode, deptId, storehouseCode,
                                 operationRoomNo, dialog));
             }
         });
@@ -609,7 +621,15 @@ public class DialogUtils {
                 }
             }
         });
-        builder.create().show();
+        RvDialog2 rvDialog = builder.create();
+        rvDialog.show();
+        WindowManager windowManager = activity.getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        Window window = rvDialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = (int)(display.getWidth()); //设置宽度
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        window.setAttributes(lp);
         return builder;
     }
 

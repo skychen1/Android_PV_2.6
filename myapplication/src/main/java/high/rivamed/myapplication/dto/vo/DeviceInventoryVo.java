@@ -6,8 +6,8 @@ import high.rivamed.myapplication.dto.entity.TCstInventory;
 
 public class DeviceInventoryVo {
 
-	//盘点 耗材详情 cstCode
-	private String              cstCode;
+	//盘点 耗材详情 cstId
+	private String              cstId;
 	private String              deviceCode;
 	private String              deviceName;
 	private List<TCstInventory> tCstInventories;
@@ -33,11 +33,11 @@ public class DeviceInventoryVo {
    }
 
    public String getCstCode() {
-	return cstCode;
+	return cstId;
    }
 
-   public void setCstCode(String cstCode) {
-	this.cstCode = cstCode;
+   public void setCstCode(String cstId) {
+	this.cstId = cstId;
    }
 
    public String getDeviceCode() {

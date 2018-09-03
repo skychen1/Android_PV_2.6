@@ -28,6 +28,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -107,6 +108,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         accountBean.setAccountName(mUserPhone);
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
+        userLoginDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {

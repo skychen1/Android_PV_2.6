@@ -25,6 +25,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -83,6 +84,7 @@ public class RvDialog2 extends Dialog {
         private Activity mActivity;
         private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
         public RvDialog2 mDialog;
+        private LinearLayout mLlMain;
 
         public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
             this.mContext = context;
@@ -145,6 +147,10 @@ public class RvDialog2 extends Dialog {
             mRefreshLayout = (SmartRefreshLayout) layout.findViewById(R.id.refreshLayout);
             mDialogLeft = (TextView) layout.findViewById(R.id.dialog_left);
             mDialogRight = (TextView) layout.findViewById(R.id.dialog_right);
+            mLlMain = (LinearLayout) layout.findViewById(R.id.ll_dialog_main);
+            ViewGroup.LayoutParams layoutParams = mLlMain.getLayoutParams();
+            layoutParams.width = DevicesUtils.getScreenWidth(mContext);
+            mLlMain.setLayoutParams(layoutParams);
 
             mSearchEt.setHint("请输入患者姓名、患者ID、手术间查询");
             List<String> titeleList = new ArrayList<String>();
