@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledHeapByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.internal.StringUtil;
+import sun.java2d.pipe.BufferedTextPipe;
 
 public class XinlianClientHandle extends NettyDeviceClientHandler implements UhfHandler, DeviceHandler {
 
@@ -29,6 +30,11 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
     private int MAX_POWER = 30;
 
     private long queryConnIndex = 0l;
+
+    /**
+     * 扫描超时时间，单位  毫秒
+     */
+    private int inventoryTimeOut = 4000;
 
     boolean scanMode = false;
 
@@ -58,55 +64,69 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
                 case DataProtocol.CMD_QUERY_SERIAL_NUM:
                     ProcessQuerySerialNum(buf);
                     break;
+                case DataProtocol.CMD_EPC_INVENTORY:
+                    ProcessInventory(buf);
+                    break;
+                case DataProtocol.CMD_QUERY_INVENTORY_RET:
+                    break;
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
     }
 
+    private void ProcessPullScanRet(byte[] buf){
+        int unUpdateTagCount=buf[];
+
+
+    }
 
     /**
-     * 处理阅读器配置和管理信息  获取MAC  处理返回回来的序列号
-     * EPC是唯一标识
+     * 处理 0x22的执行结果返回信息
+     * */
+    private void ProcessInventory(byte[] buf) {
+        /**
+         *  主机到模块：
+         *   FF	 |    05	|     22   |    00   |   	00  00	 |       00  C8	  |    ? ?
+         * ---------------------------------------------------------------------------------
+         *  SOH  | Length   |  Opcode  | Option  |  Search Flags |     Timeout    |    CRC
+         *
+         *  模块到主机(本处解析)
+         *   FF	 |    04	|    22   |	  00  00 |	  00	  |   00  00	 |    00	  |  ??
+         * ------------------------------------------------------------------------------------------
+         *   SOH |  Length  | Opcode  |  Status  |    Option  | Search Flags | Tag Found  |  CRC
+         **/
+        int status = buf[3] * 256 + buf[4];
+        if (status == 0x0000) { //成功
+            boolean more255 = (buf[7] & 0x10) == 0x10;   //0x0   0001 0000  bit4 ==1 表示标签数量大于255
+            int tagCount = more255 ? (255 + buf[8] & 0xff) : (buf[8] & 0xff);
+            Log.i(LOG_TAG, "扫描完成，共扫描到标签数量为" + tagCount);
+            SendPullScanRet();
+        }
+    }
+
+    /**
+     *  处理返回回来的序列号
      *
      * @param buf
      */
     private void ProcessQuerySerialNum(byte[] buf) {
         byte[] bStatus = new byte[2];
-        int len=buf[1]&0xff;
+        int len = buf[1] & 0xff;
         System.arraycopy(buf, 3, bStatus, 0, bStatus.length);
         int status = (bStatus[0] & 0xff) * 256 + bStatus[1] & 0xff;
         if (status == 0x0000) {
             //成功
-            byte[]  bufSn=new byte[len];
-            System.arraycopy(buf,5,bufSn,0,bufSn.length);
+            byte[] bufSn = new byte[len];
+            System.arraycopy(buf, 5, bufSn, 0, bufSn.length);
             setIdentification(Transfer.Byte2String(bufSn));
-            Log.i(LOG_TAG,"获取到设备ID="+getIdentification());
-            if(messageListener!=null ){
+            Log.i(LOG_TAG, "获取到设备ID=" + getIdentification());
+            if (messageListener != null) {
                 messageListener.OnConnected();
             }
+        } else {
+            Log.e(LOG_TAG, "芯联阅读器获取序列号解析失败 buf=" + Transfer.Byte2String(buf));
         }
-        else{
-            Log.e(LOG_TAG,"芯联阅读器获取序列号解析失败 buf="+Transfer.Byte2String(buf));
-        }
-    }
-
-
-    /**
-     * 处理阅读器配置和管理信息 心跳
-     *
-     * @param buf
-     */
-    private void ProcessConnQuery(byte[] buf) {
-
-    }
-
-    private void ProccessInventoryEnd(byte[] buf) {
-
-    }
-
-    private void ProcessRfidEpc(byte[] buf) {
-
     }
 
     /**
@@ -125,16 +145,8 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
         }
     }
 
-    private void ProccessRfidInfo(byte[] buf) {
 
-    }
-
-    private void ProcessRfidOptionPower(byte[] buf) {
-
-    }
-
-
-    int sendQuerySN = 0;  //累计获取MAC地址，3次未获取到，则主动断开
+    int sendQuerySN = 0;  //累计获取序列号，3次未获取到，则主动断开
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -169,7 +181,6 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
         }).start();
     }
 
-
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
@@ -202,7 +213,7 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
         if (scanMode) return FunctionCode.DEVICE_BUSY;
         epcs.clear();
         scanMode = true;
-        return SendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+        return SendStartInventory() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
@@ -250,27 +261,32 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
         return false;
     }
 
-    /*
-     *  发送盘点
+    /**
+     * 发送 0x29 指令，获取 0x22的扫描结果
      * */
-    private boolean SendStartInventory(byte[] password) {
-//        byte msttype = DataProtocol.MSG_TYPE_RFID_OPERATION;
-//        byte mid = DataProtocol.MID_RFID_INVENTORY_EPC;
-//        byte[] data;
-//        if (password == null || password.length != 4) {
-//            data = new byte[2];
-//            data[0] = (byte) antByte; //天线
-//            data[1] = 0X00;           //连续扫描 1 单次扫描 0
-//        } else {
-//            data = new byte[7];
-//            data[0] = (byte) antByte;
-//            data[1] = 0x00;
-//            data[2] = 0x05; //密码
-//            System.arraycopy(password, 0, data, 3, password.length);
-//        }
-//
-//        return SendBuf(msttype, mid, data);
-        return false;
+    private boolean SendPullScanRet() {
+        byte cmd = DataProtocol.CMD_QUERY_INVENTORY_RET;
+        byte[] data = new byte[3];
+
+        int metaFlag = 0x0000 | 0x0002 | 0x0004;
+        data[0] = (byte) (metaFlag / 256);
+        data[1] = (byte) (metaFlag % 256);
+        data[2] = 0x00; //返回剩余的标签数量
+       return SendBuf(cmd, data);
+    }
+
+    /**
+     * 发送 0x22 盘点指令
+     */
+    private boolean SendStartInventory() {
+        byte cmd = DataProtocol.CMD_EPC_INVENTORY;
+        byte[] data = new byte[5];
+        data[0] = 0x00; // option
+        data[1] = 0x00; // search flag 0
+        data[2] = 0x00; //search flag 1
+        data[3] = (byte) (inventoryTimeOut / 256);
+        data[4] = (byte) (inventoryTimeOut % 256);
+        return SendBuf(cmd, data);
     }
 
 
@@ -385,7 +401,7 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
             for (i = 0; i < 8; i++) {
                 xorFlag = crcReg & 0x8000;
                 crcReg <<= 1;
-                bit =((u8Data & dcdBitMask) == dcdBitMask)?0x01:0x00;
+                bit = ((u8Data & dcdBitMask) == dcdBitMask) ? 0x01 : 0x00;
                 crcReg |= bit;
                 if (xorFlag != 0) {
                     crcReg = crcReg ^ poly;
@@ -394,20 +410,21 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
             }
             return (short) (crcReg & 0xff);
         }
+
         /**
          * 计算校验码主方法
-         * */
+         */
         public static byte[] CalcCRC(byte[] msgbuf, int msglen) {
             int calcCrc = MSG_CRC_INIT;
             int i;
             for (i = 1; i < msglen; ++i)
                 calcCrc = CRC_calcCrc8(calcCrc, MSG_CCITT_CRC_POLY, msgbuf[i]);
 
-            byte[] buf=new byte[2];
+            byte[] buf = new byte[2];
 
             for (i = 1; i >= 0; i--) {
-                buf[i] = (byte)(calcCrc % 256);
-                calcCrc>>= 8;
+                buf[i] = (byte) (calcCrc % 256);
+                calcCrc >>= 8;
             }
             return buf;
         }
