@@ -12,12 +12,23 @@ public class LoginResultBean implements Serializable {
     /**
      * operateSuccess : true
      * id : 0
+     * msg:"
      * appAccountInfoVo : {"accountName":"adminUM","userName":"asdasd","roleNames":["管理员1","管理员2"],"accountId":"8a80cb8164d9b3940164da1bff760002","userId":"8a80cb8164d9b3940164da1bff760003","isFinger":1}
      */
 
     private boolean operateSuccess;
     private int id;
+    private String msg;
+
     private AppAccountInfoVoBean appAccountInfoVo;
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public boolean isOperateSuccess() {
         return operateSuccess;
@@ -51,6 +62,8 @@ public class LoginResultBean implements Serializable {
          * accountId : 8a80cb8164d9b3940164da1bff760002
          * userId : 8a80cb8164d9b3940164da1bff760003
          * isFinger : 1
+         * sex:1
+         * headIcon
          */
 
         private String accountName;
@@ -59,6 +72,24 @@ public class LoginResultBean implements Serializable {
         private String userId;
         private int isFinger;
         private int isWaidai;
+        private String sex;
+        private String headIcon;
+
+        public String getHeadIcon() {
+            return headIcon;
+        }
+
+        public void setHeadIcon(String headIcon) {
+            this.headIcon = headIcon;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
 
         public int getIsWaidai() {
             return isWaidai;

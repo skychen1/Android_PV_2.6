@@ -266,7 +266,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mPublicRl.setVisibility(View.VISIBLE);
 		mStockRightLL.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
-		mSearchEt.setHint("请输入耗材名称、型号规格、操作人查询");
+		mSearchEt.setHint("请输入耗材名称、规格型号、操作人查询");
 		loadStockRightDate(mDeviceCode, "");
 		mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 		   @Override

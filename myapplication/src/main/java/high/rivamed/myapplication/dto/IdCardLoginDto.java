@@ -12,6 +12,15 @@ public class IdCardLoginDto {
      */
 
     private UserFeatureInfoBean userFeatureInfo;
+    private String thingCode;
+
+    public String getThingCode() {
+        return thingCode;
+    }
+
+    public void setThingCode(String thingCode) {
+        this.thingCode = thingCode;
+    }
 
     public UserFeatureInfoBean getUserFeatureInfo() {
         return userFeatureInfo;

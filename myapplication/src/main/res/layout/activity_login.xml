@@ -223,7 +223,7 @@
 				<RadioGroup
 					android:id="@+id/login_radiogroup"
 					android:layout_width="@dimen/x600"
-					android:layout_height="50dp"
+					android:layout_height="@dimen/y88"
 					android:layout_alignParentBottom="true"
 					android:layout_alignParentRight="true"
 					android:layout_marginTop="@dimen/x5"
@@ -240,7 +240,7 @@
 						android:gravity="center"
 						android:text="@string/login_title"
 						android:textColor="@color/selector_login_tab_text"
-						android:textSize="20sp"
+						android:textSize="@dimen/x30"
 						/>
 
 					<View
@@ -260,7 +260,7 @@
 						android:paddingTop="@dimen/y20"
 						android:text="紧急登录"
 						android:textColor="@color/selector_login_tab_text"
-						android:textSize="20sp"
+						android:textSize="@dimen/x30"
 						/>
 				</RadioGroup>
 

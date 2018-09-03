@@ -24,6 +24,7 @@
 			android:layout_centerVertical="true"
 			android:layout_gravity="center_vertical"
 			android:background="@color/bg_green"
+			android:maxLength="5"
 			android:hint="请输入柜体名称"
 			android:maxLines="1"
 			android:paddingLeft="@dimen/x20"

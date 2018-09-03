@@ -141,7 +141,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 	mSearchTypeRg = mContext.findViewById(R.id.search_type_rg);
 	mSearchTimeEnd = mContext.findViewById(R.id.search_time_end);
 	mSearchTimeStart = mContext.findViewById(R.id.search_time_start);
-	mSearchEt.setHint("请输入耗材名称、型号规格、操作人");
 	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
 	loadTopBoxSize();
    }

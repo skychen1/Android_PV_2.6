@@ -294,8 +294,7 @@ public class AllDeviceCallBack {
     */
    private void queryDoorId(String mDeviceCode) {
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
-								    UHF_TYPE).find(BoxIdBean.class);
+	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode, UHF_TYPE).find(BoxIdBean.class);
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(eth002DeviceIdList.get(i))) {

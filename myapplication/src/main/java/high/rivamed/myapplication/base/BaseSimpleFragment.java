@@ -11,6 +11,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -25,6 +27,7 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -71,6 +74,17 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void getTitleName() {
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+	    Glide.with(this)
+		    .load(R.mipmap.hccz_mrtx_nv)
+		    .error(R.mipmap.hccz_mrtx_nv)
+		    .into(mBaseTabIconRight);
+	 }else {
+	    Glide.with(this)
+		    .load(R.mipmap.hccz_mrtx_nan)
+		    .error(R.mipmap.hccz_mrtx_nv)
+		    .into(mBaseTabIconRight);
+	 }
         super.getTitleName();
 
     }

@@ -86,6 +86,8 @@ public class Constants {
    public static final String SAVE_STOREHOUSE_CODE    = "storehouse_Code";//库房code
    public static final String KEY_ACCOUNT_DATA        = "key_account_data";//用户资料
    public static final String KEY_USER_NAME           = "key_user_name";//用户名字
+   public static final String KEY_USER_ICON           = "key_user_icon";//用户头像
+   public static final String KEY_USER_SEX           = "key_user_sex";//用户性别
    public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
 
 

@@ -224,9 +224,9 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		mFragRegisteSeveripEdit.setHint("192.168.1.1");
 		mFragRegistePortEdit.setHint("8016");
 //	mFragRegisteNameEdit.setText("2.6柜子");
-//	mFragRegisteModelEdit.setText("rivamed26");
+//	mFragRegisteModelEdit.setText("rivamed26ddd");
 //	mFragRegisteNumberEdit.setText("1");
-//	mFragRegisteSeveripEdit.setText("192.168.10.25");
+//	mFragRegisteSeveripEdit.setText("192.168.2.25");
 //	mFragRegistePortEdit.setText("8016");
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();

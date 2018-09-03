@@ -28,6 +28,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -60,8 +61,8 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        mLoginName.setText("adminUM");
-        mLoginPassword.setText("000000");
+//        mLoginName.setText("adminUM");
+//        mLoginPassword.setText("000000");
     }
 
     @Override
@@ -109,6 +110,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
         userLoginDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+        LogUtils.i("Login","THING_CODE   "+mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -120,11 +122,14 @@ public class LoginPassWordFragment extends SimpleFragment {
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
+//                        SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+                        SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
+
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();
                     }else {
-                        Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();

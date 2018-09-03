@@ -71,7 +71,9 @@ import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -171,6 +173,9 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
+	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,"");
+	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,"");
+
 	getConfigDate();
    }
 
@@ -299,6 +304,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(idCard);
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
+	data.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -310,11 +316,13 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
+//			SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getSex());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -337,6 +345,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
 	data.setThingCode(thingCode);
+	LogUtils.i("Login","THING_CODE validateLoginFinger  "+mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -349,11 +358,13 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
+//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, "登录验证失败", Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();

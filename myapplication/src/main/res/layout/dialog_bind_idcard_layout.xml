@@ -24,7 +24,7 @@
         android:layout_below="@+id/finger_title"
         android:layout_marginTop="@dimen/x25"
         android:paddingLeft="@dimen/x39"
-        android:text="将腕带放在扫描区域，请误离开"
+        android:text="将腕带放在扫描区域，请勿离开"
         android:textColor="@color/color_red"
         android:textSize="@dimen/textsize_15" />
 

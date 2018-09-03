@@ -85,7 +85,6 @@
 					android:checked="true"
 					android:background="@drawable/title_stock_bg_left_sel"
 					android:text="库存监控"
-					android:textSize="@dimen/textsize_16"
 					/>
 
 				<RadioButton
@@ -93,7 +92,6 @@
 					style="@style/all_title_rb_style"
 					android:background="@drawable/title_stock_bg_middle_sel"
 					android:text="库存详情"
-					android:textSize="@dimen/textsize_16"
 					/>
 
 				<RadioButton
@@ -101,7 +99,6 @@
 					style="@style/all_title_rb_style"
 					android:background="@drawable/title_stock_bg_right_sel"
 					android:text="未确认耗材"
-					android:textSize="@dimen/textsize_16"
 					/>
 
 			</RadioGroup>
@@ -133,7 +130,7 @@
 					android:layout_centerVertical="true"
 					android:paddingRight="@dimen/x20"
 					android:layout_toLeftOf="@+id/base_tab_tv_name"
-					android:src="@mipmap/hccz_mrtx_nan"
+					android:src="@mipmap/hccz_mrtx_nv"
 					/>
 
 				<ImageView

@@ -120,8 +120,8 @@ public class OnePassWordDialog extends Dialog {
             dialog.setCancelable(false);
             View layout = inflater.inflate(R.layout.dialog_one_password_layout, null);
             dialog.addContentView(layout,
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    new ViewGroup.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.x800),
+                            ViewGroup.LayoutParams.MATCH_PARENT));
 
 
             mPasswordOne = (EditText) layout.findViewById(R.id.password_one);

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -65,6 +68,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     TextView mSettingIcCardEdit;
     @BindView(R.id.setting_ic_card_bind)
     TextView mSettingIcCardBind;
+    @BindView(R.id.top_icon)
+    ImageView mTopIcon;
     private LoadingDialog.Builder mBuilder;
     private String mUserId = "";
 
@@ -74,6 +79,18 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("登录信息");
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+	    Glide.with(this)
+		    .load(R.mipmap.hccz_mrtx_nv)
+		    .error(R.mipmap.hccz_mrtx_nv)
+		    .into(mBaseTabIconRight);
+	 }else {
+	    Glide.with(this)
+		    .load(R.mipmap.hccz_mrtx_nan)
+		    .error(R.mipmap.hccz_mrtx_nv)
+		    .into(mBaseTabIconRight);
+	 }
+
         initData();
     }
 
@@ -110,6 +127,17 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                 //已绑定
                 mSettingIcCardEdit.setText("已绑定");
                 mSettingIcCardBind.setText("绑定");
+            }
+            if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+                Glide.with(this)
+                      .load(R.mipmap.hccz_mrtx_nv)
+                      .error(R.mipmap.hccz_mrtx_nv)
+                      .into(mTopIcon);
+            }else {
+                Glide.with(this)
+                      .load(R.mipmap.hccz_mrtx_nan)
+                      .error(R.mipmap.hccz_mrtx_nv)
+                      .into(mTopIcon);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -520,7 +520,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
         } else {
             mConsumeOpenallMiddle.setVisibility(View.GONE);
         }
-        mConsumeOpenallMiddle.setVisibility(View.VISIBLE);//todo 修改
         loadDate();
 
     }
