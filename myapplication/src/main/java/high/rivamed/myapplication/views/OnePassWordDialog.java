@@ -142,7 +142,7 @@ public class OnePassWordDialog extends Dialog {
                 @Override
                 public void onClick(View view) {
                     String passOne = mPasswordOne.getText().toString().trim();
-                    String passTwo = mPasswordOne.getText().toString().trim();
+                    String passTwo = mPasswordTwo.getText().toString().trim();
                     if (TextUtils.isEmpty(passOne)) {
                         ToastUtils.showShort("请输入新密码");
                     } else if (TextUtils.isEmpty(passTwo)) {

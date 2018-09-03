@@ -808,7 +808,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             case R.id.function_title_meal:
                 if (UIUtils.getConfigType(mContext, CONFIG_007) &&
                         UIUtils.getConfigType(mContext, CONFIG_010)) {
-                    mPause = false;
                     mContext.startActivity(new Intent(mContext, OutMealActivity.class));
                     EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
                 } else {
@@ -819,16 +818,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
             case R.id.fastopen_title_form:
                 if (UIUtils.getConfigType(mContext, CONFIG_007) &&
                         UIUtils.getConfigType(mContext, CONFIG_010)) {
-                    mPause = false;
                     mContext.startActivity(new Intent(mContext, OutFormActivity.class));
                 } else {
                     ToastUtils.showShort("此功能暂未开放");
                     //		   DialogUtils.showRegisteDialog(mContext, _mActivity);
                 }
-
                 break;
             case R.id.fastopen_title_guanlian://患者关联
-                mPause = false;
                 //                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
                 break;
         }
