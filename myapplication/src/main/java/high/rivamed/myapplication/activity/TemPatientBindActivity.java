@@ -343,7 +343,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         bean.setRequestDateTime(event.time);
         bean.setOperatingRoomNo(event.roomNum);
         bean.setSex(event.userSex);
-        bean.setOperatingDeptCode(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
+        bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
         data.setTTransOperationSchedule(bean);
         NetRequest.getInstance()
                 .saveTempPatient(mGson.toJson(data), TemPatientBindActivity.this, null,
