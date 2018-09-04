@@ -20,7 +20,6 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledHeapByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.internal.StringUtil;
-import sun.java2d.pipe.BufferedTextPipe;
 
 public class XinlianClientHandle extends NettyDeviceClientHandler implements UhfHandler, DeviceHandler {
 
@@ -76,8 +75,7 @@ public class XinlianClientHandle extends NettyDeviceClientHandler implements Uhf
     }
 
     private void ProcessPullScanRet(byte[] buf){
-        int unUpdateTagCount=buf[];
-
+      //  int unUpdateTagCount=buf[]
 
     }
 
