@@ -542,6 +542,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	mTimelyReality2.setVisibility(View.VISIBLE);
+	mStockLeftZhengchang.setVisibility(View.GONE);
 	mStopFlag = -1;
 
 	LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
@@ -579,11 +580,11 @@ public class PublicTimelyFrag extends SimpleFragment {
 			mTCstInventoryDto = null;
 			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 			break;
-		   case R.id.stock_left_zhengchang:
-			mStopFlag = 4;
-			mTCstInventoryDto = null;
-			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-			break;
+//		   case R.id.stock_left_zhengchang:
+//			mStopFlag = 4;
+//			mTCstInventoryDto = null;
+//			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+//			break;
 		}
 
 	   }

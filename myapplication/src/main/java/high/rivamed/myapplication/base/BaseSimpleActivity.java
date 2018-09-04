@@ -116,10 +116,10 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                     public void onItemClick(int position) {
                         switch (position) {
                             case 0:
-                                mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+                               startActivity(new Intent(BaseSimpleActivity.this, MyInfoActivity.class));
                                 break;
                             case 1:
-                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+                                startActivity(new Intent(BaseSimpleActivity.this, LoginInfoActivity.class));
                                 break;
                             case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
                                 builder.setTwoMsg("您确认要退出登录吗?");
@@ -133,7 +133,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                                 builder.setRight("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
-                                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                                        startActivity(new Intent(BaseSimpleActivity.this, LoginActivity.class));
                                         finish();
                                         dialog.dismiss();
                                     }

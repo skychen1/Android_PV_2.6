@@ -164,10 +164,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                     public void onItemClick(int position) {
                         switch (position) {
                             case 0:
-                                mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+                               startActivity(new Intent(LoginInfoActivity.this, MyInfoActivity.class));
                                 break;
                             case 1:
-                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+                                startActivity(new Intent(LoginInfoActivity.this, LoginInfoActivity.class));
                                 break;
                             case 2:
                                 TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
@@ -182,7 +182,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                                 builder.setRight("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int i) {
-                                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                                       startActivity(new Intent(LoginInfoActivity.this, LoginActivity.class));
                                         finish();
                                         dialog.dismiss();
                                     }
@@ -296,6 +296,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i(TAG,"result   "+result);
                 try {
                     RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
                     if (data.isOperateSuccess()) {
