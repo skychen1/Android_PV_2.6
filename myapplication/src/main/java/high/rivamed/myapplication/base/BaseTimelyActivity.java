@@ -315,15 +315,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
-            Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
-                  .into(mBaseTabIconRight);
-        }else {
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
             Glide.with(this)
                   .load(R.mipmap.hccz_mrtx_nan)
                   .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        }else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
                   .into(mBaseTabIconRight);
         }
         getCompanyType();
@@ -533,15 +533,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         //	   titeleList = Arrays.asList(array);
         mSize = titeleList.size();
 
-        for (int i = 0; i < 20; i++) {
-            BingFindSchedulesBean.PatientInfosBean bean = new BingFindSchedulesBean.PatientInfosBean();
-            bean.setPatientName("sadsadsadasdasd");
-            bean.setPatientId("virtual");
-            bean.setUpdateTime("sadsadsadasdasd");
-            bean.setDeptName("sadsadsadasdasd");
-            bean.setOperationSurgeonName("sadsadsadasdasd");
-            patientInfos.add(bean);
-        }
 
         mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize, mLinearLayout,
                 mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG);

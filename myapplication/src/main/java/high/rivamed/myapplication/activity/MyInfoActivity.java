@@ -54,14 +54,14 @@ public class MyInfoActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("个人信息");
-        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
                   .into(mTopIcon);
         }else {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nan)
+                  .load(R.mipmap.hccz_mrtx_nv)
                   .error(R.mipmap.hccz_mrtx_nv)
                   .into(mTopIcon);
         }

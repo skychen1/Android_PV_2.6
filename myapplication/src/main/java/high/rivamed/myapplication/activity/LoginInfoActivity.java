@@ -79,14 +79,14 @@ public class LoginInfoActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("登录信息");
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
 	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nv)
-		    .error(R.mipmap.hccz_mrtx_nv)
+		    .load(R.mipmap.hccz_mrtx_nan)
+		    .error(R.mipmap.hccz_mrtx_nan)
 		    .into(mBaseTabIconRight);
 	 }else {
 	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nan)
+		    .load(R.mipmap.hccz_mrtx_nv)
 		    .error(R.mipmap.hccz_mrtx_nv)
 		    .into(mBaseTabIconRight);
 	 }
@@ -128,17 +128,19 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                 mSettingIcCardEdit.setText("已绑定");
                 mSettingIcCardBind.setText("绑定");
             }
-            if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
+            if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
+                Glide.with(this)
+                      .load(R.mipmap.hccz_mrtx_nan)
+                      .error(R.mipmap.hccz_mrtx_nan)
+                      .into(mTopIcon);
+            }else {
                 Glide.with(this)
                       .load(R.mipmap.hccz_mrtx_nv)
                       .error(R.mipmap.hccz_mrtx_nv)
                       .into(mTopIcon);
-            }else {
-                Glide.with(this)
-                      .load(R.mipmap.hccz_mrtx_nan)
-                      .error(R.mipmap.hccz_mrtx_nv)
-                      .into(mTopIcon);
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

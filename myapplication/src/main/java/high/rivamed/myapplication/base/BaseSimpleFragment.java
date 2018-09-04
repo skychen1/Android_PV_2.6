@@ -74,17 +74,17 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void getTitleName() {
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("女")){
-	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nv)
-		    .error(R.mipmap.hccz_mrtx_nv)
-		    .into(mBaseTabIconRight);
-	 }else {
-	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nan)
-		    .error(R.mipmap.hccz_mrtx_nv)
-		    .into(mBaseTabIconRight);
-	 }
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        }else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
         super.getTitleName();
 
     }

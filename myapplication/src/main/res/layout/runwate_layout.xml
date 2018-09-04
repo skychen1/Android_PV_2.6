@@ -122,7 +122,6 @@
 				<TextView
 					android:id="@+id/search_time_start"
 					style="@style/runwate_textview_style"
-					android:text="2019-10-02 13:00"
 					/>
 
 				<TextView
@@ -139,7 +138,6 @@
 				<TextView
 					android:id="@+id/search_time_end"
 					style="@style/runwate_textview_style"
-					android:text="2019-10-02 13:00"
 					/>
 			</LinearLayout>
 		</LinearLayout>
