@@ -38,6 +38,10 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     private static final String log_tag = "DEV_RDBL_C";
     /**
+     * 发送实时盘点（0x89）时的参数
+     */
+    private static final byte RTINVENTORY_REPEAT = 0X01;
+    /**
      * 预制天线列表
      */
     byte[] ants = {0x00, 0x01, 0x02, 0x03};
@@ -239,7 +243,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     private boolean processGetPower(byte[] buf) {
         if (buf[3] != DataProtocol.CMD_GET_OUTPUTPOWER) {
             Log.e(log_tag, "处理RodinBell 设置设备ID信息错误，信息内容为 " + Transfer.Byte2String(buf));
-            return true;
+            return false;
         }
 
         if (this.messageListener != null) {
@@ -253,9 +257,9 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
                         allPower = buf[4 + i];
                     }
                 }
-
-                messageListener.OnUhfQueryPowerRet(this.getIdentification(), true, allPower);
             }
+            if (this.messageListener != null)
+                messageListener.OnUhfQueryPowerRet(this.getIdentification(), true, allPower);
             return true;
         }
         return false;
@@ -273,10 +277,10 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         boolean setNextWorkAnt = false;  //是否需要重新发送设置天线命令，该变量能防死锁
         boolean sendScanRet = false;
         synchronized (locker) {
-            if (!scanModel) {
+            if (scanModel) {
                 if (bStopInventory) return true; //已停止
                 if (success) {  //如果设置成功，则发送扫描指令
-                    SendRtInventory((byte) repeatCount);
+                    SendRtInventory();
                     return false;
                 }
                 if (repeatIndex >= repeatCount && currentAntIndex >= ants.length - 1) { //已扫描到最大值
@@ -392,7 +396,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             Log.i(log_tag, "扫描完成,发送扫描结果:EpcCount=" + epcList.size() + ",列表=" + JsonTools.getJsonString("EPCLIST", epcList));
 
             if (this.messageListener != null)
-                messageListener.OnUhfScanComplete(true, this.getIdentification());
+                messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcList);
             scanModel = false;
             repeatIndex = 0;
             repeatCount = 0;
@@ -428,18 +432,24 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         return "V1.0";
     }
 
-    private void SendBuf(byte cmd, byte[] buf) {
+    private boolean SendBuf(byte cmd, byte[] buf) {
         if (super.getCtx() != null) {
-            byte[] bufSend = DataProtocol.PieceCommond(address, cmd, buf);
-            ByteBuf byteBuf = new UnpooledHeapByteBuf(ByteBufAllocator.DEFAULT, bufSend.length, bufSend.length);
-            byteBuf.writeBytes(bufSend);
-            super.getCtx().write(byteBuf);
-            super.getCtx().flush();
-            Log.d(log_tag, "向设备" + getIdentification() + "发送命令" + Transfer.Byte2String(bufSend));
+            try {
+                byte[] bufSend = DataProtocol.PieceCommond(address, cmd, buf);
+                ByteBuf byteBuf = new UnpooledHeapByteBuf(ByteBufAllocator.DEFAULT, bufSend.length, bufSend.length);
+                byteBuf.writeBytes(bufSend);
+                super.getCtx().write(byteBuf);
+                super.getCtx().flush();
+                Log.d(log_tag, "向设备" + getIdentification() + "发送命令" + Transfer.Byte2String(bufSend));
+                return true;
+            } catch (Throwable e) {
+                Log.e(log_tag, "发送数据发生错误" + e.getMessage());
+            }
         }
+        return false;
     }
 
-    private void SendSetDeviceId(byte[] buf) {
+    private boolean SendSetDeviceId(byte[] buf) {
         if (buf.length != 0) {
             byte[] bufOrg = new byte[buf.length];
             System.arraycopy(buf, 0, bufOrg, 0, buf.length);
@@ -449,16 +459,16 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             }
             System.arraycopy(bufOrg, 0, buf, 0, bufOrg.length);
         }
-        SendBuf(DataProtocol.CMD_SETDEVICEID, buf);
+        return SendBuf(DataProtocol.CMD_SETDEVICEID, buf);
     }
 
-    private void SendGetDeviceId() {
-        SendBuf(DataProtocol.CMD_GETDEVICEID, null);
+    private boolean SendGetDeviceId() {
+        return SendBuf(DataProtocol.CMD_GETDEVICEID, null);
     }
 
-    private void SendSetWorkAnt(byte workAnt) {
+    private boolean SendSetWorkAnt(byte workAnt) {
         synchronized (locker) {
-            if (scanModel) return;
+            if (scanModel) return false;
         }
         if (workAnt < 0 || workAnt > 3) {
             workAnt = ants[0];
@@ -467,13 +477,13 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             workAnt = ants[ants.length - 1];
         }
         byte[] data = new byte[]{workAnt};
-        SendBuf(DataProtocol.CMD_SET_WORK_ANT, data);
+        return SendBuf(DataProtocol.CMD_SET_WORK_ANT, data);
     }
 
-    private void SendNextWorkAnt() {
+    private boolean SendNextWorkAnt() {
         synchronized (locker) {
             if (!scanModel) {
-                return;
+                return false;
             }
         }
         synchronized (locker) {
@@ -483,29 +493,28 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
                 }
                 if (currentAntIndex == 0) repeatIndex++;
             }
-            SendBuf(DataProtocol.CMD_SET_WORK_ANT, new byte[]{ants[currentAntIndex]});
+            return SendBuf(DataProtocol.CMD_SET_WORK_ANT, new byte[]{ants[currentAntIndex]});
         }
     }
 
 
-    private void SendGetWorkAnt() {
+    private boolean SendGetWorkAnt() {
         byte[] data = new byte[]{};
-        SendBuf(DataProtocol.CMD_GET_WORK_ANT, data);
+        return SendBuf(DataProtocol.CMD_GET_WORK_ANT, data);
     }
 
     /**
      * 仅发送盘点命令，不做他用。开始盘点请参照 StartInventory
      */
-    private void SendRtInventory(byte repeat) {
-        if (repeat <= 0) repeat = 0x10;
-        byte[] data = new byte[]{repeat};
+    private boolean SendRtInventory() {
+        byte[] data = new byte[]{RTINVENTORY_REPEAT};
         Log.d(log_tag, "发送实时盘点命令，Ant=" + currentAntIndex + " ;RepeatIndex=" + repeatIndex + " ;RepeatCount=" + repeatCount);
-        SendBuf(DataProtocol.CMD_REALTIME_INVENTORY, data);
+        return SendBuf(DataProtocol.CMD_REALTIME_INVENTORY, data);
     }
 
-    private void SendSetPower(byte power) {
+    private boolean SendSetPower(byte power) {
         byte[] data = new byte[]{power};
-        SendBuf(DataProtocol.CMD_SET_OUTPUTPOWER, data);
+        return SendBuf(DataProtocol.CMD_SET_OUTPUTPOWER, data);
     }
 
     /**
@@ -521,23 +530,31 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             repeatCount = repeat;
             repeatIndex = 0;
         }
-        SendNextWorkAnt();
-        return true;
+        return SendNextWorkAnt();
     }
 
     /**
      * 获取功率
      */
-    private void SendGetPower() {
+    private boolean sendreset() {
+        boolean ret = SendBuf(DataProtocol.CMD_RESET, null);
+        Close();
+        return ret;
+    }
+
+    /**
+     * 获取功率
+     */
+    private boolean SendGetPower() {
         byte[] data = new byte[]{};
-        SendBuf(DataProtocol.CMD_GET_OUTPUTPOWER, data);
+        return SendBuf(DataProtocol.CMD_GET_OUTPUTPOWER, data);
     }
 
 
     @Override
     public int StartScan() {
         if (scanModel) return FunctionCode.DEVICE_BUSY;
-        return StartInventory((byte) 3) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+        return StartInventory((byte) 1) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
@@ -555,12 +572,12 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     @Override
     public int SetPower(byte power) {
-        return 0;
+        return SendSetPower(power) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int QueryPower() {
-        return 0;
+        return SendGetPower() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
@@ -570,12 +587,22 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     @Override
     public int Reset() {
-        return 0;
+        return sendreset() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
     public int Close() {
-        return 0;
+        try {
+            Log.e(log_tag, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
+            getCtx().close();
+        } catch (Exception ex) {
+            Log.e(log_tag, ex.getMessage());
+        } finally {
+            if (!StringUtil.isNullOrEmpty(getIdentification()) && this.messageListener != null) {
+                this.messageListener.OnDisconnected();
+            }
+        }
+        return FunctionCode.SUCCESS;
     }
 
     /**
