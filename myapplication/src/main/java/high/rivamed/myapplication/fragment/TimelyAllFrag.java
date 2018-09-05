@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -171,6 +172,8 @@ public class TimelyAllFrag extends SimpleFragment {
    private       String                mToJson;
    private       LoadingDialog.Builder mBuilder;
    public static boolean mPause = true;
+   private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+   int k = 0;
    /**
     * 扫描后EPC准备传值
     *
@@ -179,9 +182,39 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
       LogUtils.i(TAG,"onCallBackEvent  mPause    "+mPause);
-	if (!mPause) {
-	   AllDeviceCallBack.getInstance().initCallBack();
-	   getDeviceDate(event.deviceId, event.epcs);
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+
+	for (BoxIdBean boxIdBean : boxIdBeanss) {
+	   String box_id = boxIdBean.getBox_id();
+	   if (box_id != null) {
+		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE).find(BoxIdBean.class);
+		if (boxIdBeansss.size()>1){
+
+		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			   mEPCDate.putAll(event.epcs);
+			   k++;
+			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			}
+		   }
+		   if (k==boxIdBeansss.size()){
+			k=0;
+			if (!mPause) {
+			   LogUtils.i(TAG, "mEPCDate  zou l  " );
+			   AllDeviceCallBack.getInstance().initCallBack();
+			   getDeviceDate(event.deviceId, mEPCDate);
+			}
+		   }
+
+		}else {
+		   if (!mPause) {
+			LogUtils.i(TAG, "event.epcs直接走   " +event.epcs);
+			AllDeviceCallBack.getInstance().initCallBack();
+			getDeviceDate(event.deviceId, event.epcs);
+		   }
+		}
+	   }
 	}
    }
 
@@ -272,6 +305,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		LogUtils.i(TAG, "详情 position   " + position);
 		String cstId = mTCstInventoryVos.get(position).getCstCode();
 		LogUtils.i(TAG, "cstId  " + cstId);
+		LogUtils.i(TAG, "mToJson  " + mToJson);
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
 		tCstInventoryDto.setCstCode(cstId);
 		String deviceCode1 = mTCstInventoryVos.get(position).getDeviceCode();
@@ -324,7 +358,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		} else {
 		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 		   AllDeviceCallBack.getInstance().initCallBack();
-
+		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
 
@@ -338,7 +372,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			mEpcsNumber =0;
 		   }
 		   mTimelyAllAdapter.notifyDataSetChanged();
-		   ContentConsumeOperateFrag.mPause = true;
+		   ContentConsumeOperateFrag2.mPause = true;
 		   openDoor();
 
 		}
@@ -492,7 +526,7 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void setTimelyDate(String mToJson, String deviceId, int epcs) {
-
+	mEPCDate.clear();
 	NetRequest.getInstance().startTimelyScan(mToJson, _mActivity, mBuilder, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -580,7 +614,7 @@ public class TimelyAllFrag extends SimpleFragment {
     * @param deviceId
     */
    private void moreScanTimely(String result, int epcs, String deviceId) {
-	if (mTCstInventoryVos == null) {  //第一次扫描
+      if (mTCstInventoryVos == null) {  //第一次扫描
 	   mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 	   mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
 	   mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();

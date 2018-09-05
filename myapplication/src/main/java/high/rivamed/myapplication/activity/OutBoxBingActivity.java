@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
@@ -47,9 +48,9 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -81,7 +82,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                                       mPatientId;
    private String                                       mOperationScheduleId;
    private boolean mPause = true;
-
+   private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+   int k = 0;
    /**
     * 扫描后EPC准备传值
     *
@@ -91,8 +93,37 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-	if (!mPause) {
-	   getDeviceDate(event.deviceId, event.epcs);
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+
+	for (BoxIdBean boxIdBean : boxIdBeanss) {
+	   String box_id = boxIdBean.getBox_id();
+	   if (box_id != null) {
+		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE).find(BoxIdBean.class);
+		if (boxIdBeansss.size()>1){
+
+		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			   mEPCDate.putAll(event.epcs);
+			   k++;
+			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			}
+		   }
+		   if (k==boxIdBeansss.size()){
+			k=0;
+			if (!mPause) {
+			   LogUtils.i(TAG, "mEPCDate  zou l  " );
+			   getDeviceDate(event.deviceId, mEPCDate);
+			}
+		   }
+
+		}else {
+		   if (!mPause) {
+			LogUtils.i(TAG, "event.epcs直接走   " +event.epcs);
+			getDeviceDate(event.deviceId, event.epcs);
+		   }
+		}
+	   }
 	}
    }
 
@@ -104,6 +135,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    public void onResume() {
+//	moreStartScan();
 	mPause = false;
 	super.onResume();
    }
@@ -208,19 +240,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.timely_start_btn_right://重新扫描
 		//		   mShowLoading = DialogUtils.showLoading(mContext);
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
-		mPatient = null;
-		mPatientId = null;
-		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-		mTCstInventoryDto.gettCstInventoryVos().clear();
-		deviceInventoryVos.clear();
-		TimelyAllFrag.mPause = true;
-		for (String deviceInventoryVo : mEthDeviceIdBack) {
-		   String deviceCode = deviceInventoryVo;
-		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-		   startScan(deviceCode);
-		}
+		moreStartScan();
 
 		break;
 	   case R.id.timely_open_door_right://重新开门
@@ -281,6 +301,23 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   }
 		}
 		break;
+	}
+   }
+
+   private void moreStartScan() {
+	mEPCDate.clear();
+	mTimelyLeft.setEnabled(true);
+	mTimelyRight.setEnabled(true);
+	mPatient = null;
+	mPatientId = null;
+	List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
+	mTCstInventoryDto.gettCstInventoryVos().clear();
+	deviceInventoryVos.clear();
+	TimelyAllFrag.mPause = true;
+	for (String deviceInventoryVo : mEthDeviceIdBack) {
+	   String deviceCode = deviceInventoryVo;
+	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+	   startScan(deviceCode);
 	}
    }
 
@@ -433,6 +470,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
+	mEPCDate.clear();
 	NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {

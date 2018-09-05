@@ -28,7 +28,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
+import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
@@ -88,7 +88,7 @@ public class DialogUtils {
                             checkedPosition)) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
-                        ContentConsumeOperateFrag.mPause = false;
+                        ContentConsumeOperateFrag2.mPause = false;
                         String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
                                 checkedPosition)
                                 .findViewById(R.id.seven_two)).getText().toString();

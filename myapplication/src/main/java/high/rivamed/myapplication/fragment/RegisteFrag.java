@@ -586,6 +586,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				   mFragRegistePortEdit.getText().toString().trim());
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
+
 	   NetRequest.getInstance()
 		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP), strings,
 					     _mActivity, new BaseResult() {

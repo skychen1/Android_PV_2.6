@@ -9,11 +9,15 @@ import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.HomeActivity;
+import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
@@ -21,14 +25,17 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
+import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -76,11 +83,42 @@ public class LoginPassWordFragment extends SimpleFragment {
             return;
         } else {
             if (isvalidate() && WifiUtils.isWifi(mContext) != 0) {
-                loadLogin();
+                getConfigDate();
             } else {
                 Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    /**
+     * 获取配置项
+     */
+    public void getConfigDate() {
+        if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+            NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
+                @Override
+                public void onSucceed(String result) {
+                    SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+                    ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+                    List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+                    if (getConfigTrue(tCstConfigVos)) {
+                        LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
+                        ToastUtils.showShort("正在维护，请到管理端启用");
+                    }else {
+                        LoginActivity.mLoginGone.setVisibility(View.GONE);
+                        loadLogin();
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+		if (s.getCode().equals(CONFIG_013)){
+                return true;
+		}
+	  }
+        return false;
     }
 
     private boolean isvalidate() {

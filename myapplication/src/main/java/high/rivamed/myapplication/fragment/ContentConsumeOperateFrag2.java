@@ -82,7 +82,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/14 16:22
- * 描述:        耗材操作主界面（未使用）
+ * 描述:        耗材操作主界面（使用中）
  * 包名:        high.rivamed.myapplication.fragment
  * <p>
  * 更新者：     $$Author$$
@@ -90,7 +90,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
  * 更新描述：   ${TODO}
  */
 
-public class ContentConsumeOperateFrag extends BaseSimpleFragment {
+public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    String TAG = "ContentConsumeOperateFrag";
    @BindView(R.id.consume_openall_rv)
@@ -157,7 +157,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private String mOppenDoor = null;
    private List<String> mEthDeviceId;
    private TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
-   ;
    public static boolean mPause = true;
    private int                                mPosition;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
@@ -199,16 +198,18 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 		   for (BoxIdBean BoxIdBean:boxIdBeansss){
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+		      if (BoxIdBean.getDevice_id().equals(event.deviceId)){
 			   mEPCDate.putAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
 		   }
+		   LogUtils.i(TAG, "mEPCDate  k  " +k);
 		   if (k==boxIdBeansss.size()){
+			k=0;
+			LogUtils.i(TAG, "mEPCDate  zou l  " +(k==boxIdBeansss.size()));
 			if (!mPause) {
 			   LogUtils.i(TAG, "mEPCDate  zou l  " );
-			   k=0;
 			   getDeviceDate(event.deviceId, mEPCDate);
 			}
 		   }

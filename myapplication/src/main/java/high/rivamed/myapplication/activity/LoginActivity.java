@@ -110,8 +110,8 @@ public class LoginActivity extends SimpleActivity {
    TextView    mTextGuo;
    @BindView(R.id.left_jin_text)
    TextView    mTextJin;
-   @BindView(R.id.login_gone)
-   View   mLoginGone;
+//   @BindView(R.id.login_gone)
+  public static View mLoginGone;
 
    private ArrayList<Fragment> mFragments = new ArrayList<>();
 
@@ -120,6 +120,7 @@ public class LoginActivity extends SimpleActivity {
    long[] mHits = new long[COUNTS];
    private SQLiteDatabase        mDb;
    private LoadingDialog.Builder mBuilder;
+   private int mConfigType;
 
    @Override
    public int getLayoutId() {
@@ -129,6 +130,7 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mLoginGone = findViewById(R.id.login_gone);
 	//清空accountID
 	mDownText.setText(
 		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
@@ -175,14 +177,21 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,"");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,"");
-
-	getConfigDate();
+	mConfigType = 0;//默认获取
+	getConfigDate(mConfigType,null);
    }
-
+   private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+	for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+	   if (s.getCode().equals(CONFIG_013)){
+		return true;
+	   }
+	}
+	return false;
+   }
    /**
     * 获取配置项
     */
-   private void getConfigDate() {
+   public void getConfigDate(int configType,String loginType) {
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
 		@Override
@@ -192,15 +201,24 @@ public class LoginActivity extends SimpleActivity {
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
 
-		   for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
-			LogUtils.i(TAG, "findThingConfigDate dd  " + s.getCode()  +"   "+CONFIG_013.equals(s.getCode()));
-			LogUtils.i(TAG, "CONFIG_013 dd  " + CONFIG_013);
-
-			if (s.getCode().equals(CONFIG_013)){
+		   if(getConfigTrue(tCstConfigVos)){//禁止
+			if (configType==0) {//正常登录密码登录限制
+			   mLoginGone.setVisibility(View.VISIBLE);
+			}else if (configType==1) {//IC卡登录限制
+			   mLoginGone.setVisibility(View.VISIBLE);
+			   ToastUtils.showShort("正在维护，请到管理端启用");
+			}else if (configType==2){
 			   //设备是否禁用
-				mLoginGone.setVisibility(View.VISIBLE);
-			   }else {
-				mLoginGone.setVisibility(View.GONE);
+			   mLoginGone.setVisibility(View.VISIBLE);
+			   ToastUtils.showShort("正在维护，请到管理端启用");
+			}
+		   }else {
+			if (configType==0) {//正常登录密码登录限制
+			   mLoginGone.setVisibility(View.GONE);
+			}else if (configType==1) {//IC卡登录限制
+			   validateLoginIdCard(loginType);
+			}else if (configType==2){
+			   validateLoginFinger(loginType);
 			}
 		   }
 		}
@@ -231,7 +249,8 @@ public class LoginActivity extends SimpleActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   validateLoginIdCard(idCard);
+		   mConfigType = 1;//IC卡
+		   getConfigDate(mConfigType,idCard);
 		}
 	   }
 
@@ -240,7 +259,8 @@ public class LoginActivity extends SimpleActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   validateLoginFinger(fingerFea.trim().replaceAll("\n", ""));
+		   mConfigType = 2;//指纹登录
+		   getConfigDate(mConfigType,fingerFea.trim().replaceAll("\n", ""));
 		}
 	   }
 
@@ -308,6 +328,7 @@ public class LoginActivity extends SimpleActivity {
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+	      LogUtils.i(TAG,"validateLoginIdCard  result   "+result);
 		try {
 		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 		   if (loginResultBean.isOperateSuccess()) {
@@ -429,7 +450,8 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onClick(View v) {
 		ToastUtils.showShort("正在维护，请到管理端启用");
-		getConfigDate();
+		mConfigType =0;
+		getConfigDate(mConfigType,null);
 	   }
 	});
    }

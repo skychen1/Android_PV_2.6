@@ -1,19 +1,19 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient;
 
-import android.util.JsonToken;
-import android.util.JsonWriter;
 import android.util.Log;
 
-import org.json.JSONObject;
-import org.json.JSONStringer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cn.rivamed.FunctionCode;
 import cn.rivamed.Utils.JsonTools;
+import cn.rivamed.Utils.Transfer;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.NettyDeviceClientHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfHandler;
-import cn.rivamed.Utils.Transfer;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import io.netty.buffer.ByteBuf;
@@ -22,9 +22,6 @@ import io.netty.buffer.UnpooledHeapByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.internal.StringUtil;
-
-
-import java.util.*;
 
 /**
  * @Author 郝小鹏
@@ -401,7 +398,6 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             repeatIndex = 0;
             repeatCount = 0;
             currentAntIndex = 0;
-            epcList.clear();
         }
         return true;
     }

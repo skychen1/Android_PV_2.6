@@ -20,6 +20,7 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +53,7 @@ import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -82,7 +84,8 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     private boolean mPause = true;
     private String mType = "";
     private String mOperationScheduleId;
-
+    private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+    int k = 0;
     @Override
     public int getCompanyType() {
         super.my_id = ACT_TYPE_TEMPORARY_BING;
@@ -157,10 +160,38 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     public void onCallBackEvent(Event.EventDeviceCallBack event) {
         LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
             AllDeviceCallBack.getInstance().initCallBack();
-            if (!mPause) {
-                getDeviceDate(event.deviceId, event.epcs);
+        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+
+        for (BoxIdBean boxIdBean : boxIdBeanss) {
+            String box_id = boxIdBean.getBox_id();
+            if (box_id != null) {
+                List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE).find(BoxIdBean.class);
+                if (boxIdBeansss.size()>1){
+
+                    for (BoxIdBean BoxIdBean:boxIdBeansss){
+                        LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+                        if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+                            mEPCDate.putAll(event.epcs);
+                            k++;
+                            LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+                        }
+                    }
+                    if (k==boxIdBeansss.size()){
+                        if (!mPause) {
+                            LogUtils.i(TAG, "mEPCDate  zou l  " );
+                            k=0;
+                            getDeviceDate(event.deviceId, mEPCDate);
+                        }
+                    }
+
+                }else {
+                    if (!mPause) {
+                        LogUtils.i(TAG, "event.epcs直接走   " +event.epcs);
+                        getDeviceDate(event.deviceId, event.epcs);
+                    }
+                }
             }
-        //	EventBus.getDefault().cancelEventDelivery(event);
+        }
     }
 
     //    @Override
@@ -219,7 +250,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         }
         String toJson = mGson.toJson(tCstInventoryDto);
         LogUtils.i(TAG, "toJson    " + toJson);
-
+        mEPCDate.clear();
         NetRequest.getInstance().putEPCDate(toJson, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {

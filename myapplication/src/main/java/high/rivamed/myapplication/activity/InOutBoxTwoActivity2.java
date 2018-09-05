@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
@@ -60,7 +59,7 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/27 19:36
- * 描述:        放入柜子的界面(在使用)
+ * 描述:        放入柜子的界面（备份）
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$
@@ -68,7 +67,7 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
  * 更新描述：   ${TODO}
  */
 
-public class InOutBoxTwoActivity extends BaseTimelyActivity {
+public class InOutBoxTwoActivity2 extends BaseTimelyActivity {
 
    private static final String TAG = "InOutBoxTwoActivity";
    int mType;
@@ -80,8 +79,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
    private int          mIntentType;
    private List<String> mEthDeviceId;
-   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
-   int k = 0;
+
    /**
     * dialog操作数据
     *
@@ -135,38 +133,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-
-	LogUtils.i(TAG, "epc  "+  event.deviceId+"   "+ event.epcs.size());
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-		.find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeanss) {
-	   String box_id = boxIdBean.getBox_id();
-	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-									   READER_TYPE).find(BoxIdBean.class);
-		if (boxIdBeansss.size() > 1) {
-		   for (BoxIdBean BoxIdBean:boxIdBeansss){
-			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
-			   mEPCDate.putAll(event.epcs);
-			   k++;
-			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
-			}
-		   }
-		   if (k==boxIdBeansss.size()){
-			   LogUtils.i(TAG, "mEPCDate  zou l  " );
-			   k=0;
-			   getDeviceDate(event.deviceId, mEPCDate);
-		   }
-		} else {
-		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-		   getDeviceDate(event.deviceId, event.epcs);
-		}
-
-	   }
-	}
-
-	//	getDeviceDate(event.deviceId, event.epcs);
+	getDeviceDate(event.deviceId, event.epcs);
    }
 
    @Override
@@ -302,7 +269,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private void moreStartScan() {
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
-	mEPCDate.clear();
+
 	List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 	mTCstInventoryDto.gettCstInventoryVos().clear();
 	deviceInventoryVos.clear();
@@ -444,12 +411,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
-	mEPCDate.clear();
 	NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
-
 		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
 		setDateEpc();
 	   }
@@ -550,7 +515,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			LogUtils.i(TAG, "result移出   " + result);
 			ToastUtils.showShort("操作成功");
 			if (event.mIntentType == 2) {
-			   startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
+			   startActivity(new Intent(InOutBoxTwoActivity2.this, LoginActivity.class));
 			}
 			if (mShowLoading != null) {
 			   mShowLoading.mDialog.dismiss();
