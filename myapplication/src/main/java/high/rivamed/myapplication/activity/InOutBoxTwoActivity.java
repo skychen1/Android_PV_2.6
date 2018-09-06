@@ -195,10 +195,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onItemClick(int position) {
 			switch (position) {
 			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+				startActivity(new Intent(InOutBoxTwoActivity.this, MyInfoActivity.class));
 				break;
 			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+				startActivity(new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
 			   case 2:
 				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
@@ -213,7 +213,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				builder.setRight("确认", new DialogInterface.OnClickListener() {
 				   @Override
 				   public void onClick(DialogInterface dialog, int i) {
-					mContext.startActivity(new Intent(mContext, LoginActivity.class));
+					startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
 					App.getInstance().removeALLActivity_();
 					dialog.dismiss();
 				   }
@@ -400,7 +400,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "result  " + result);
 		ToastUtils.showShort("操作成功");
 		if (mIntentType == 2) {
-		   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+		   startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
 		if (mShowLoading != null) {
