@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -103,25 +104,32 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         mDialogRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPause = false;
-                mName = ((TextView) mTypeView.mRecyclerview.getChildAt(
-                        mTypeView.mTempPatientAdapter.mSelectedPos)
-                        .findViewById(R.id.seven_two)).getText().toString();
-                mId = ((TextView) mTypeView.mRecyclerview.getChildAt(
-                        mTypeView.mTempPatientAdapter.mSelectedPos)
-                        .findViewById(R.id.seven_three)).getText().toString();
-                mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                        .getOperationScheduleId();
-                if (null != mType && mType.equals("afterBindTemp")) {
-                    //后绑定患者
-                    EventBusUtils.postSticky(
-                            new Event.EventCheckbox(mName, mId, mOperationScheduleId, "afterBindTemp",
-                                    mPosition, mTemPTbaseDevices));
-                    finish();
-                } else {
-                    //先绑定患者
-                    AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+                if (mTypeView.mRecyclerview.getChildAt(
+                      mTypeView.mTempPatientAdapter.mSelectedPos)!=null){
+                    mPause = false;
+                    mName = ((TextView) mTypeView.mRecyclerview.getChildAt(
+                          mTypeView.mTempPatientAdapter.mSelectedPos)
+                          .findViewById(R.id.seven_two)).getText().toString();
+                    mId = ((TextView) mTypeView.mRecyclerview.getChildAt(
+                          mTypeView.mTempPatientAdapter.mSelectedPos)
+                          .findViewById(R.id.seven_three)).getText().toString();
+                    mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+                          .getOperationScheduleId();
+                    if (null != mType && mType.equals("afterBindTemp")) {
+                        //后绑定患者
+                        EventBusUtils.postSticky(
+                              new Event.EventCheckbox(mName, mId, mOperationScheduleId, "afterBindTemp",
+                                                      mPosition, mTemPTbaseDevices));
+                        finish();
+                    } else {
+                        //先绑定患者
+                        AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+                    }
+                }else {
+                    ToastUtils.showShort("暂无数据，请创建后再试！");
                 }
+
+
             }
         });
 
@@ -276,20 +284,17 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                     cstInventoryDto.setOperationScheduleId(mOperationScheduleId);
                     cstInventoryDto.setBindType("firstBind");
                     EventBusUtils.postSticky(cstInventoryDto);
-                    //                    if (App.getInstance().ifActivityRun(RecognizeActivity.class.getName())) {
-                    //                        //已在后台运行
-                    //                        return;
-                    //                    } else {
-                    //                    }
 
-                    mContext.startActivity(
-                            new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", mName)
+                    if (cstInventoryDto.gettCstInventoryVos() != null &&
+                        cstInventoryDto.gettCstInventoryVos().size() != 0) {
+                        mContext.startActivity(
+                              new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", mName)
                                     .putExtra("patientId", mId)
                                     .putExtra("operationScheduleId", mOperationScheduleId));
-                    //                    mContext.startActivity(new Intent(mContext, RecognizeActivity.class).putExtra("patientName", mName).putExtra("patientId", mId).putExtra("operationScheduleId", mOperationScheduleId));
-                    finish();
-                    //
-
+                        finish();
+                    }else {
+                        Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }

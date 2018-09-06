@@ -249,10 +249,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
             Log.i(TAG, " TCstInventoryVo.getCountStock()   " + TCstInventoryVo.getCountStock());
             Log.i(TAG, " TCstInventoryVo.getCountActual()   " + TCstInventoryVo.getCountActual());
         }
+        if (Actual==number){
+            mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#262626'><big>" + Actual +
+                                                "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
+                                                number + "</big></font>"));
+        }else {
+            mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
+                                                "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
+                                                number + "</big></font>"));
+        }
 
-        mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
-                "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
-                number + "</big></font>"));
+
+
         mTimelyName.setVisibility(View.VISIBLE);
         mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    型号规格：" + mDto.getCstSpec());
         String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
