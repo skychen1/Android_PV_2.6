@@ -462,20 +462,15 @@ public class NetRequest {
         public void onError(Response<String> response) {
             if (netResult != null) {
                 LogUtils.i(TAG, "网络接口联网失败");
-                //		netResult.onError("  body:  "+response.body()+"  code:  "+response.code()+"  message:  "+response.message());
                 netResult.onError(response.code() + "");
             }
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
             Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
-            //            ToastUtils.showShort("请求失败  ("+response.code()+")");
-
             if (dialog != null) {
                 dialog.mDialog.dismiss();
             }
-            //	   ToastUtils.showLong("response.code()= "+response.code()+"\n"+"response.message()="+response.message());
-
         }
 
         @Override
@@ -486,7 +481,6 @@ public class NetRequest {
             if (dialog != null) {
                 dialog.mDialog.dismiss();
             }
-            //	   ToastUtils.showLong("response.code()= "+response.code()+"\n"+"response.message()="+response.message());
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());

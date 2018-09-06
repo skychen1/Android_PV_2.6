@@ -13,7 +13,9 @@ import com.daimajia.swipe.SwipeLayout;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
@@ -87,9 +89,12 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 		TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
 		inventoryVo.setDelete(true);
 		inventoryVo.setDeletetatus(DELETE_TATUS1);
+		inventoryVo.setStatus("移除");
 		mData.remove(helper.getAdapterPosition());
 		mData.add(inventoryVo);
+		EventBusUtils.post(new Event.EventButton(true));
 		notifyDataSetChanged();
+
 	   }
 	});
 	Log.i("InOutBoxTwoActivity", "status   " + status);

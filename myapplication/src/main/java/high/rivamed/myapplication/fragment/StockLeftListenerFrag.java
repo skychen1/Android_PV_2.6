@@ -14,15 +14,20 @@ import android.widget.RadioGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SlidingTabLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.StockLeftAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
@@ -67,8 +72,21 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	return R.layout.cttimecheck_layout;
    }
 
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START3")) {
+
+	   getLeftDate();
+	}
+   }
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
 	getLeftDate();
 

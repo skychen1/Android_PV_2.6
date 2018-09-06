@@ -181,7 +181,24 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         LogUtils.i(TAG, "  mActivityType    " + mActivityType);
 
     }
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventButton(Event.EventButton event) {
+	 if (event.type){
+	    for (TCstInventoryVo b : mTCstInventoryVos) {
+		 String status = b.getStatus();
+		 if ( !status.equals("禁止操作")) {
+		    mTimelyLeft.setEnabled(true);
+		    mTimelyRight.setEnabled(true);
+		 } else {
+		    LogUtils.i(TAG, "我走了falsesss");
+		    mTimelyLeft.setEnabled(false);
+		    mTimelyRight.setEnabled(false);
+		    return;
+		 }
+	    }
+	 }
 
+   }
     /**
      * 盘点详情、盘亏、盘盈
      *
@@ -303,7 +320,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
                     setInBoxDate();
                 }
                 mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
-            }
+            }else if (my_id == ACT_TYPE_HCCZ_BING){
+		   setAfterBing();
+		}
 
         } else {
             mTCstInventoryDto = event;
@@ -320,6 +339,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
+
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
@@ -452,7 +472,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     }
 
     /**
-     * 后绑定患者
+     * 绑定患者
      */
     private void setAfterBing() {
         mBaseTabTvTitle.setText("耗材领用");
@@ -490,7 +510,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         }
 
         ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-
+	LogUtils.i(TAG,"list.size()  "+list.size()+"      "+mTCstInventoryVos.size());
         mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 mTCstInventoryVos.size() + "</big></font>"));
@@ -498,10 +518,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         titeleList = Arrays.asList(array);
         mSize = array.length;
         //	int operation = mTCstInventoryDto.getOperation();
+	if (mTypeView==null){
+	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+						   mRecyclerview, mRefreshLayout, ACTIVITY,
+						   ACT_TYPE_CONFIRM_HAOCAI);
+	}
 
-        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
-                mRecyclerview, mRefreshLayout, ACTIVITY,
-                ACT_TYPE_CONFIRM_HAOCAI);
     }
 
     /**
@@ -669,7 +691,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
             }
 
             for (TCstInventoryVo b : mTCstInventoryVos) {
-                String status = b.getStatus();
+		   String status = b.getStatus();
                 if ((operation == 3 && status.contains("领用") && b.getStopFlag() != 0) ||
                         (operation == 2 && status.contains("入库") && b.getStopFlag() != 0) ||
                         (operation == 9 && status.contains("移出") && b.getStopFlag() != 0) ||
@@ -681,11 +703,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
                     LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
                 } else {
                     LogUtils.i(TAG, "我走了false");
+
                     mTimelyLeft.setEnabled(false);
                     mTimelyRight.setEnabled(false);
                     return;
                 }
             }
+
         }
     }
 

@@ -169,6 +169,7 @@ public class PublicTimelyFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START3")) {
+
 	   initData();
 	}
    }
@@ -482,7 +483,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 
-
+		LogUtils.i(TAG,"result  "+result);
 		if (mInventoryVos != null) {
 		   mInventoryVos.clear();
 		   mLeftDownBean = mGson.fromJson(result, TCstInventoryDto.class);

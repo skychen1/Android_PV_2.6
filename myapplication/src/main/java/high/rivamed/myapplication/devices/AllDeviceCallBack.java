@@ -9,7 +9,6 @@ import java.util.Map;
 import cn.rivamed.DeviceManager;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -60,7 +59,7 @@ public class AllDeviceCallBack {
 
    public void initCallBack() {
 
-	App.InitDeviceService();
+//	App.InitDeviceService();
 	DeviceManager.getInstance().RegisterDeviceCallBack(new cn.rivamed.callback.DeviceCallBack() {
 	   @Override
 	   public void OnDeviceConnected(

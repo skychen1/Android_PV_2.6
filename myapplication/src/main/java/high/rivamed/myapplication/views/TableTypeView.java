@@ -420,8 +420,10 @@ public class TableTypeView extends LinearLayout {
                         ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
                         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
                         ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+
                         if (mInBoxAllAdapter != null) {
                             mInBoxAllAdapter.notifyDataSetChanged();
+
                         } else {
                             mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mTCstInventoryVos, mOperation);
                             mHeadView.setBackgroundResource(R.color.bg_green);

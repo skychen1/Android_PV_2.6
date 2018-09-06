@@ -252,6 +252,17 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
             tCstInventoryDto.setOperation(mRbKey);
         }
         if (mRbKey == 3) {
+            if (mTypeView.mRecyclerview.getChildAt(
+                  mTypeView.mTempPatientAdapter.mSelectedPos)!=null) {
+                mPause = false;
+                mName = ((TextView) mTypeView.mRecyclerview.getChildAt(
+                      mTypeView.mTempPatientAdapter.mSelectedPos)
+                      .findViewById(R.id.seven_two)).getText().toString();
+                mId = ((TextView) mTypeView.mRecyclerview.getChildAt(
+                      mTypeView.mTempPatientAdapter.mSelectedPos)
+                      .findViewById(R.id.seven_three)).getText().toString();
+                mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
+            }
             tCstInventoryDto.setPatientName(mName);
             tCstInventoryDto.setPatientId(mId);
             tCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
@@ -274,6 +285,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                 LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
                 //先绑定患者
                 if (mRbKey == 3) {
+
                     for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
                         tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
                         tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());

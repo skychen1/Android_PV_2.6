@@ -355,8 +355,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	NetRequest.getInstance().findTempPatients("", this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												 BingFindSchedulesBean.class);
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result, BingFindSchedulesBean.class);
 		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null &&
 		    bingFindSchedulesBean.getPatientInfos().size() > 0) {
 		   mContext.startActivity(new Intent(mContext, PatientConnActivity.class));

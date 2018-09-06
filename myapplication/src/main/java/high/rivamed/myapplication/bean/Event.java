@@ -257,4 +257,14 @@ public class Event {
 	   this.epcs = epcs;
 	}
    }
+   /**
+    * 刷新按钮
+    */
+   public static class EventButton {
+	public boolean type;
+
+	public EventButton(boolean type) {
+	   this.type = type;
+	}
+   }
 }

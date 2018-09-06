@@ -325,6 +325,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
 	data.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	LogUtils.i(TAG,"mGson.toJson(data)   "+mGson.toJson(data));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {

@@ -245,7 +245,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                 try {
                     RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
                     if (data.isOperateSuccess()) {
-                        ToastUtils.showShort("绑定成功");
+                        ToastUtils.showShort(data.getMsg());
                         //指纹未绑定
                         mSettingIcCardEdit.setText("已绑定");
                         mSettingIcCardBind.setText("绑定");
@@ -255,9 +255,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
                         data2.getAppAccountInfoVo().setIsFinger(1);
                         SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
 
-
                     } else {
-                        ToastUtils.showShort("绑定失败");
+                        ToastUtils.showShort(data.getMsg());
                     }
 
                 } catch (Exception e) {

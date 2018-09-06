@@ -18,7 +18,6 @@ import cn.rivamed.device.ClientHandler.eth002Handler.Eth002ClientHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfHandler;
 import cn.rivamed.device.ConnetedDevices;
 import cn.rivamed.device.DeviceType;
-import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.Eth002Service.Eth002Service;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
 import cn.rivamed.device.Service.UhfService.ColuUhf.ColuNettyService;
@@ -43,19 +42,16 @@ public class DeviceManager {
     public int getEth002_port() {
         return this.eth002_port;
     }
-//
-//    /**
-//     * UHF 阅读器监听服务
-//     */
-//    UhfService uhfService;
-//    /**
-//     * Eth002 模块控制服务
-//     */
-//    Eth002Service eth002Service;
-//
 
+    /**
+     * UHF 阅读器监听服务
+     */
+    UhfService uhfService;
+    /**
+     * Eth002 模块控制服务
+     */
+    Eth002Service eth002Service;
 
-    List<BaseService> services = new ArrayList<>();
 
     /**
      * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -251,113 +247,80 @@ public class DeviceManager {
         this.connetedDevices.remove(identification);
     }
 
-//
-//    /***
-//     * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-//     * 外部接口   服务管理
-//     *
-//     */
-//
-//    /***
-//     *  启动UHF READER 服务
-//     *  @param port 监听端口
-//     * @return true 启动成功 false 启动失败
-//     * @exception IllegalArgumentException 参数取值不正确
-//     */
-//    public boolean StartUhfReaderService(UhfDeviceType uhfDeviceType, int port) {
-//        if (port < 0 || port > 65536)
-//            throw new IllegalArgumentException("参数Port取值不正确，应该在1-65536之间");
-//        this.uhf_Port = port;
-//        if (uhfService != null && uhfService.isAlive()) {
-//            return true;
-//        } else {
-//            switch (uhfDeviceType) {
-//                case UHF_READER_RODINBELL:
-//                    uhfService = new RodinBellService(this.uhf_Port);
-//                    break;
-//                case UHF_READER_COLU_NETTY:
-//                    uhfService = new ColuNettyService(this.uhf_Port);
-//                    break;
-//                case UHF_READER_COLU:
-//                    uhfService = new ColuReaderService(this.uhf_Port);
-//                    break;
-//            }
-//            if (uhfService == null) return false;
-//            return uhfService.StartService(this);
-//        }
-//    }
-//
-//    /***
-//     *  停止UHF READER 服务
-//     *  @return true 停止成功 false 停止失败
-//     */
-//    public boolean StopUhfReaderService() {
-//        if (uhfService == null) return true;
-//        if (!uhfService.isAlive()) return true;
-//        return uhfService.StopService();
-//    }
-//
-//    /***
-//     *  启动Eth002 模块，该服务进行锁、指纹、读卡器的控制
-//     *  @param port 监听端口
-//     * @return true 启动成功 false 启动失败
-//     * @exception IllegalArgumentException 参数取值不正确
-//     */
-//    public boolean StartEth002Service(Eth002ServiceType serviceType, int port) {
-//        if (port < 0 || port > 65536)
-//            throw new IllegalArgumentException("参数Port取值不正确，应该在1-65536之间");
-//        this.eth002_port = port;
-//        if (eth002Service != null && eth002Service.isAlive()) {
-//            return true;
-//        } else {
-//            eth002Service = new Eth002Service(serviceType, port);
-//            return eth002Service.StartService(this);
-//        }
-//    }
-//
-//    /***
-//     *  停止UHF READER 服务
-//     *  @return true 停止成功 false 停止失败
-//     */
-//    public boolean StopEth002Service() {
-//        if (eth002Service == null) return true;
-//        if (!eth002Service.isAlive()) return true;
-//        return eth002Service.StopService();
-//    }
 
-
-    /**
-     * 添加一个新的服务
+    /***
+     * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     * 外部接口   服务管理
+     *
      */
-    public boolean AppendServices(BaseService service) {
-        if (service == null) return false;
-        boolean ret = service.StartService(this);
-        if (ret) this.services.add(service);
-        return ret;
-    }
 
-    /**
-     * 创建一个 uhf服务
+    /***
+     *  启动UHF READER 服务
+     *  @param port 监听端口
+     * @return true 启动成功 false 启动失败
+     * @exception IllegalArgumentException 参数取值不正确
      */
-    public boolean AppendUhfService(UhfDeviceType uhfDeviceType, int port) {
+    public boolean StartUhfReaderService(UhfDeviceType uhfDeviceType, int port) {
         if (port < 0 || port > 65536)
             throw new IllegalArgumentException("参数Port取值不正确，应该在1-65536之间");
-        switch (uhfDeviceType) {
-            case UHF_READER_RODINBELL:
-                return AppendServices(new RodinBellService(port));
-            case UHF_READER_COLU_NETTY:
-                return AppendServices(new ColuNettyService(port));
-            case UHF_READER_COLU:
-                return AppendServices(new ColuReaderService(port));
+        this.uhf_Port = port;
+        if (uhfService != null && uhfService.isAlive()) {
+            return true;
+        } else {
+            switch (uhfDeviceType) {
+                case UHF_READER_RODINBELL:
+                    uhfService = new RodinBellService(this.uhf_Port);
+                    break;
+                case UHF_READER_COLU_NETTY:
+                    uhfService = new ColuNettyService(this.uhf_Port);
+                    break;
+                case UHF_READER_COLU:
+                    uhfService = new ColuReaderService(this.uhf_Port);
+                    break;
+            }
+            if (uhfService == null) return false;
+            return uhfService.StartService(this);
         }
-        return false;
     }
 
-    public boolean AppendEht002Service(Eth002ServiceType serviceType, int port) {
+    /***
+     *  停止UHF READER 服务
+     *  @return true 停止成功 false 停止失败
+     */
+    public boolean StopUhfReaderService() {
+        if (uhfService == null) return true;
+        if (!uhfService.isAlive()) return true;
+        return uhfService.StopService();
+    }
+
+    /***
+     *  启动Eth002 模块，该服务进行锁、指纹、读卡器的控制
+     *  @param port 监听端口
+     * @return true 启动成功 false 启动失败
+     * @exception IllegalArgumentException 参数取值不正确
+     */
+    public boolean StartEth002Service(Eth002ServiceType serviceType, int port) {
         if (port < 0 || port > 65536)
             throw new IllegalArgumentException("参数Port取值不正确，应该在1-65536之间");
-        return AppendServices(new Eth002Service(serviceType, port));
+        this.eth002_port = port;
+        if (eth002Service != null && eth002Service.isAlive()) {
+            return true;
+        } else {
+            eth002Service = new Eth002Service(serviceType, port);
+            return eth002Service.StartService(this);
+        }
     }
+
+    /***
+     *  停止UHF READER 服务
+     *  @return true 停止成功 false 停止失败
+     */
+    public boolean StopEth002Service() {
+        if (eth002Service == null) return true;
+        if (!eth002Service.isAlive()) return true;
+        return eth002Service.StopService();
+    }
+
 
     /**
      * 启动RFID扫描
@@ -540,9 +503,8 @@ public class DeviceManager {
      * GC
      */
     public void Release() {
-        for (int i = 0; i < services.size(); i++) {
-            services.get(i).StopService();
-        }
+        StopEth002Service();
+        StopUhfReaderService();
 
         for (Map.Entry<String, DeviceHandler> handler : this.getConnetedDevices().entrySet()) {
             if (handler.getValue() != null) {
