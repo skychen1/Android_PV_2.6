@@ -5,7 +5,12 @@ import java.util.List;
 public interface UhfHandler {
     public int StartScan();
 
-    public int StartScan(int repeat);
+    /**
+     *  开始扫描，并持续扫描一定时间后停止；
+     *
+     *  @param timeout
+     * */
+    public int StartScan(int timeout);
 
     public int StopScan();
 
