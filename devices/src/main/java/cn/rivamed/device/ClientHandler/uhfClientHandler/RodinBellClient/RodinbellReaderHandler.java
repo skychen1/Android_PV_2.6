@@ -1,8 +1,11 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient;
 
+import android.os.Environment;
 import android.util.Log;
 
+import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +40,12 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     /**
      * 发送实时盘点（0x89）时的参数
      */
-    private static final byte RTINVENTORY_REPEAT = 0X01;
+    private static final byte RTINVENTORY_REPEAT = (byte) 0XFF;
     /**
      * 预制天线列表
      */
     byte[] ants = {0x00, 0x01, 0x02, 0x03};
 
-    boolean bStopInventory = false;
 
     /**
      * 当前工作的天线序号
@@ -51,15 +53,11 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     byte currentAntIndex = 0;
 
     /**
-     * 用于标记一次扫描过程中当前是第几轮扫描
+     * 持续扫描的时间，默认3秒，实际由 StartScan 方法进行赋值
      */
-    int repeatIndex = 0;
+    int scanTime = 3000;
 
-    /**
-     * 用于记录扫描过程中的扫描重复次数，是repeatIndex所能达到的最大值
-     */
-    int repeatCount = 1;
-
+    long startScanTime = new Date().getTime();
 
     /**
      * 用于记录已扫描到的标签信息
@@ -275,22 +273,22 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         boolean sendScanRet = false;
         synchronized (locker) {
             if (scanModel) {
-                if (bStopInventory) return true; //已停止
-                if (success) {  //如果设置成功，则发送扫描指令
-                    SendRtInventory();
-                    return false;
-                }
-                if (repeatIndex >= repeatCount && currentAntIndex >= ants.length - 1) { //已扫描到最大值
+                if (ScanTimeCompleted()) { //已扫描到最大值
                     sendScanRet = true;
                     setNextWorkAnt = false;
                 } else {
+                    if(success){
+                        SendRtInventory();
+                        setNextWorkAnt = false;
+                    }else{
+                        setNextWorkAnt = true;
+                    }
                     sendScanRet = false;
-                    setNextWorkAnt = true;
                 }
             }
         }
 
-        if (!sendScanRet && setNextWorkAnt && !bStopInventory) {
+        if (scanModel && !sendScanRet && setNextWorkAnt) {
             currentAntIndex++;
             SendNextWorkAnt();
         } else if (sendScanRet)
@@ -316,30 +314,19 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
         }
         //(buf.length    ==6 标识执行错误   ==12 标识一个天线扫描执行结束
         if ((buf.length == 6 || (buf.length == 12 && buf[4] >= 0x00 && buf[4] <= 0x03))) {
-            boolean setNextWorkAnt = false;  //是否继续扫描
             boolean sentScanRet = false; //是否发送结果到MQ
 
             synchronized (locker) {  //判断当前是否为最后一次扫描
-                if (repeatIndex >= repeatCount && currentAntIndex >= ants.length - 1) { //已扫描到最大值
+                if (ScanTimeCompleted()) { //已扫描到最大值
                     sentScanRet = true;
-                    setNextWorkAnt = false;
-                } else if (repeatIndex <= repeatCount) {
-                    setNextWorkAnt = true;
-                    sentScanRet = false;
                 }
             }
-            if (!bStopInventory) {
-                if (!sentScanRet && setNextWorkAnt && !bStopInventory) {
-                    currentAntIndex++;
-                    SendNextWorkAnt();
-                    return false;
-                } else if (sentScanRet)
-                    ProcessScanCompleted();
-            } else {
-                synchronized (locker) {
-                    scanModel = false;
-                }
-            }
+            if (!sentScanRet) {
+                currentAntIndex++;
+                SendNextWorkAnt();
+                return false;
+            } else
+                ProcessScanCompleted();
             return true;
         } else {  //解析标签
             int position = 0;
@@ -395,13 +382,17 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             if (this.messageListener != null)
                 messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcList);
             scanModel = false;
-            repeatIndex = 0;
-            repeatCount = 0;
             currentAntIndex = 0;
         }
         return true;
     }
 
+    /**
+     * 扫描过程中检测已扫描的时间是否超过预定时间
+     */
+    private boolean ScanTimeCompleted() {
+        return new Date().getTime() - startScanTime > scanTime;
+    }
 
     @Override
     public DeviceType getDeviceType() {
@@ -487,7 +478,6 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
                 if (currentAntIndex > ants.length - 1) {
                     currentAntIndex = 0;
                 }
-                if (currentAntIndex == 0) repeatIndex++;
             }
             return SendBuf(DataProtocol.CMD_SET_WORK_ANT, new byte[]{ants[currentAntIndex]});
         }
@@ -504,7 +494,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
      */
     private boolean SendRtInventory() {
         byte[] data = new byte[]{RTINVENTORY_REPEAT};
-        Log.d(log_tag, "发送实时盘点命令，Ant=" + currentAntIndex + " ;RepeatIndex=" + repeatIndex + " ;RepeatCount=" + repeatCount);
+        Log.d(log_tag, "发送实时盘点命令，Ant=" + currentAntIndex);
         return SendBuf(DataProtocol.CMD_REALTIME_INVENTORY, data);
     }
 
@@ -516,15 +506,13 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     /**
      * 正式的盘点开始，调用该方法
      */
-    private boolean StartInventory(byte repeat) {
+    private boolean StartInventory() {
         synchronized (locker) {
             if (scanModel) return false;
             scanModel = true;
-            bStopInventory = false;
             epcList.clear();
             currentAntIndex = 0;
-            repeatCount = repeat;
-            repeatIndex = 0;
+            startScanTime = new Date().getTime();
         }
         return SendNextWorkAnt();
     }
@@ -549,15 +537,17 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
 
     @Override
     public int StartScan() {
-        if (scanModel) return FunctionCode.DEVICE_BUSY;
-        return StartInventory((byte) 1) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+        return StartScan(3000);
     }
 
     @Override
-    public int StartScan(int repeat) {
-        if (repeat <= 0) repeat = 1;
-        this.repeatCount = repeat;
-        return StartScan();
+    public int StartScan(int timeout) {
+        if (scanModel) return FunctionCode.DEVICE_BUSY;
+        if (timeout <= 0)
+            timeout = 3000;
+        this.scanTime = timeout;
+        this.startScanTime = new Date().getTime();
+        return StartInventory() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
