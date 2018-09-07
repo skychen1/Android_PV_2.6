@@ -101,6 +101,7 @@ public class App extends Application {
         DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_COLU_NETTY,8010);
         DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_RODINBELL,8014);
         DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V2,8012);
+        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V26,8016);
     }
 
     private void initBugly() {
