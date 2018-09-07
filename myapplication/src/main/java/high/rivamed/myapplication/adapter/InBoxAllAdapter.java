@@ -92,14 +92,13 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 		inventoryVo.setStatus("移除");
 		mData.remove(helper.getAdapterPosition());
 		mData.add(inventoryVo);
-		EventBusUtils.post(new Event.EventButton(true));
+		EventBusUtils.post(new Event.EventButton(true,false));
 		notifyDataSetChanged();
 
 	   }
 	});
 	Log.i("InOutBoxTwoActivity", "status   " + status);
-	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
-	    item.getStopFlag() == 0 || (mOperation == 3 && !status.contains("领用")) ||
+	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") || (mOperation == 3 && !status.contains("领用")) ||
 	    (mOperation == 2 && !status.contains("入库")) ||
 	    (mOperation == 9 && !status.contains("移出")) ||
 	    (mOperation == 11 && !status.contains("调拨")) ||
@@ -114,11 +113,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   //	   if (helper.getAdapterPosition() % 2 == 0) {
-	   //		mSeven_four.setBackgroundResource(R.color.bg_color);
-	   //	   } else {
-	   //		mSeven_four.setBackgroundResource(R.color.bg_f);
-	   //	   }
+
 	} else {
 	   if (helper.getAdapterPosition() % 2 == 0) {
 		mLl.setBackgroundResource(R.color.bg_color);

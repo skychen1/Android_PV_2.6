@@ -91,7 +91,16 @@
             style="@style/text_title_content_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5.4" />
+            android:layout_weight="5" />
+
+        <View style="@style/view_line_style" />
+
+        <TextView
+            android:id="@+id/seven_seven"
+            style="@style/text_title_content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.2" />
 
         <View style="@style/view_line_style" />
     </LinearLayout>

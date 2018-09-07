@@ -66,14 +66,16 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
         mSeven_two.setText(item.getPatientName());
-        mSeven_three.setText(item.getPatientId());
+
         mSeven_four.setText(item.getRequestDateTime());
         mSeven_five.setText(item.getOperationSurgeonName());
         mSeven_six.setText(item.getOperatingRoomNoName());
-        if ("virtual".equals(item.getPatientId())) {
+        if (item.getPatientId().equals("virtual")) {
+            mSeven_three.setText("");
             mSeven_seven.setText("是");
         } else {
             mSeven_seven.setText("否");
+            mSeven_three.setText(item.getPatientId());
         }
         mCheckBox.setOnCheckedChangeListener(null);
         int position = helper.getAdapterPosition();

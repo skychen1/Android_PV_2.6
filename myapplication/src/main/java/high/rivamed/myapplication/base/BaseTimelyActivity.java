@@ -183,19 +183,46 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
+	LogUtils.i(TAG, "fffffafafafafafa");
 	 if (event.type){
-	    for (TCstInventoryVo b : mTCstInventoryVos) {
-		 String status = b.getStatus();
-		 if ( !status.equals("禁止操作")) {
-		    mTimelyLeft.setEnabled(true);
-		    mTimelyRight.setEnabled(true);
-		 } else {
-		    LogUtils.i(TAG, "我走了falsesss");
-		    mTimelyLeft.setEnabled(false);
-		    mTimelyRight.setEnabled(false);
-		    return;
+	    if (event.bing){
+		 for (TCstInventoryVo b : mTCstInventoryVos) {
+		    ArrayList<String> strings = new ArrayList<>();
+		    strings.add(b.getCstCode());
+		    if ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+			  (b.getPatientName() == null || b.getPatientName().equals(""))) {
+			 mTimelyLeft.setEnabled(false);
+			 mTimelyRight.setEnabled(false);
+			 return;
+		    }
+		    String status = b.getStatus();
+		    if ( !status.equals("禁止操作")) {
+			 mTimelyLeft.setEnabled(true);
+			 mTimelyRight.setEnabled(true);
+		    } else {
+			 LogUtils.i(TAG, "我走了falsesss");
+			 mTimelyLeft.setEnabled(false);
+			 mTimelyRight.setEnabled(false);
+			 return;
+		    }
 		 }
+	    }else {
+		 for (TCstInventoryVo b : mTCstInventoryVos) {
+		    String status = b.getStatus();
+		    if ( !status.equals("禁止操作")) {
+			 mTimelyLeft.setEnabled(true);
+			 mTimelyRight.setEnabled(true);
+		    } else {
+			 LogUtils.i(TAG, "我走了falsesss");
+			 mTimelyLeft.setEnabled(false);
+			 mTimelyRight.setEnabled(false);
+			 return;
+		    }
+		 }
+
 	    }
+
+
 	 }
 
    }
@@ -493,11 +520,20 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         } else {//先绑定
             mTimelyLlGoneRight.setVisibility(View.VISIBLE);
             mLyBingBtnRight.setVisibility(View.GONE);
-            mTimelyLeft.setEnabled(true);
-            mTimelyRight.setEnabled(true);
+	     mTimelyLeft.setEnabled(true);
+	     mTimelyRight.setEnabled(true);
+	     for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+		  if ( !vosBean.getStatus().equals("禁止操作")) {
+		     mTimelyLeft.setEnabled(true);
+		     mTimelyRight.setEnabled(true);
+		  } else {
+		     LogUtils.i(TAG, "我走了falsesss");
+		     mTimelyLeft.setEnabled(false);
+		     mTimelyRight.setEnabled(false);
+		     break;
+		  }
+	     }
         }
-
-        //	mTimelyStartBtnRight.setVisibility(View.VISIBLE);
 
         ArrayList<String> strings = new ArrayList<>();
         for (TCstInventoryVo vosBean : mTCstInventoryVos) {
@@ -514,14 +550,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 mTCstInventoryVos.size() + "</big></font>"));
-        String[] array = mContext.getResources().getStringArray(R.array.six_bing_arrays);
+        String[] array = mContext.getResources().getStringArray(R.array.seven_title_bing_arrays);
         titeleList = Arrays.asList(array);
         mSize = array.length;
-        //	int operation = mTCstInventoryDto.getOperation();
+        	int operation = mTCstInventoryDto.getOperation();
 	if (mTypeView==null){
 	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
 						   mRecyclerview, mRefreshLayout, ACTIVITY,
-						   ACT_TYPE_CONFIRM_HAOCAI);
+						   ACT_TYPE_CONFIRM_HAOCAI,operation);
 	}
 
     }
@@ -699,7 +735,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
                         (operation == 10 &&
                                 (status.contains("移入") && !status.equals("禁止移入") && b.getStopFlag() != 0)) ||
                         (operation == 7 && status.contains("退回") && b.getStopFlag() != 0) ||
-                        (operation == 8 && status.contains("退货") && b.getStopFlag() != 0)) {
+                        (operation == 8 && status.contains("退货") )) {
                     LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
                 } else {
                     LogUtils.i(TAG, "我走了false");

@@ -262,9 +262,11 @@ public class Event {
     */
    public static class EventButton {
 	public boolean type;
+	public boolean bing;
 
-	public EventButton(boolean type) {
+	public EventButton(boolean type,boolean bing) {
 	   this.type = type;
+	   this.bing = bing;
 	}
    }
 }

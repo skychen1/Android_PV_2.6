@@ -27,13 +27,14 @@
 		<item>医生</item>
 		<item>手术间</item>
 	</string-array>
-	<string-array name="six_bing_arrays">
+	<string-array name="seven_title_bing_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>患者</item>
+		<item>操作</item>
 	</string-array>
 	<string-array name="six_outbox_arrays">
 		<item>选择</item>

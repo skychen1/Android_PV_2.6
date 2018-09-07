@@ -149,6 +149,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   mPatient = intent.getStringExtra("patientName");
 	   mPatientId = intent.getStringExtra("patientId");
 	   mOperationScheduleId = intent.getStringExtra("operationScheduleId");
+
 	}
 	Log.e(TAG, "intent:" + mPatient);
 	Log.e(TAG, "intent:" + mPatientId);
@@ -170,10 +171,30 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   mTCstInventoryVos.get(i).setPatientName(mPatient);
 		   mTCstInventoryVos.get(i).setPatientId(event.id);
 		}
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
+		if (mTypeView!=null&&mTypeView.mRecogHaocaiAdapter!=null){
+		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+		}
 
-		mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+		for (TCstInventoryVo b : mTCstInventoryVos) {
+		   ArrayList<String> strings = new ArrayList<>();
+		   strings.add(b.getCstCode());
+		   if ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+			 (b.getPatientName() == null || b.getPatientName().equals(""))) {
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			return;
+		   }
+		   String status = b.getStatus();
+		   if ( !status.equals("禁止操作")) {
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
+		   } else {
+			LogUtils.i(TAG, "我走了falsesss");
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			return;
+		   }
+		}
 	   }
 	}
    }
@@ -548,8 +569,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   }
 
 	   if (mTCstInventoryTwoDto.getPatientName() == null) {
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
 	   }
 	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
 	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);

@@ -123,6 +123,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                         finish();
                     } else {
                         //先绑定患者
+                        EventBusUtils.post(new Event.EventButton(true,true));
                         AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
                     }
                 }else {
@@ -299,6 +300,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
                     if (cstInventoryDto.gettCstInventoryVos() != null &&
                         cstInventoryDto.gettCstInventoryVos().size() != 0) {
+			     EventBusUtils.post(new Event.EventButton(true,true));
                         mContext.startActivity(
                               new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName", mName)
                                     .putExtra("patientId", mId)

@@ -467,7 +467,11 @@ public class NetRequest {
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
-            Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+            if (response.code()==-1){
+                Toast.makeText(UIUtils.getContext(), "网络异常，请检查服务器连接状态", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+            }
             if (dialog != null) {
                 dialog.mDialog.dismiss();
             }
