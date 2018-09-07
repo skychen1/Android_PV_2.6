@@ -3,6 +3,7 @@ package cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     int antByte = 0x0;  //用数位标识天线，从低位开始 第一位为1 标识天线 1存在，0 则不存在，以此类推
 
-    int repeat = 1;
+
+    /**
+     * 持续扫描的时间，默认3秒，实际由 StartScan 方法进行赋值
+     */
+    int scanTime = 3000;
+
+    long startScanTime = new Date().getTime();
+
+    /**
+     * 扫描过程中检测已扫描的时间是否超过预定时间
+     */
+    private boolean ScanTimeCompleted() {
+        return new Date().getTime() - startScanTime > scanTime;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -269,6 +283,15 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             tagInfos.add(tagInfo);
             this.epcs.put(epc, tagInfos);
         }
+        if(ScanTimeCompleted()){
+            StopScan();
+            scanMode = false;
+            if (this.messageListener != null) {   //发送回调
+                Log.d(LOG_TAG, "触发扫描完成回调");
+                this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
+                this.messageListener.OnUhfScanComplete(true, this.getIdentification());
+            }
+        }
     }
 
     private void ProccessRfidInfo(byte[] buf) {
@@ -412,9 +435,9 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
     @Override
-    public int StartScan(int repeat) {
-        if (repeat <= 0) repeat = 1;
-        this.repeat = repeat;
+    public int StartScan(int timeout) {
+        if (timeout <= 0) timeout = 3000;
+        this.scanTime = timeout;
         return StartScan();
     }
 
@@ -462,11 +485,11 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         if (password == null || password.length != 4) {
             data = new byte[2];
             data[0] = (byte) antByte; //天线
-            data[1] = 0X00;              //连续扫描 1 单次扫描 0
+            data[1] = 0X01;              //连续扫描 1 单次扫描 0
         } else {
             data = new byte[7];
             data[0] = (byte) antByte;
-            data[1] = 0x00;
+            data[1] = 0x01;
             data[2] = 0x05; //密码
             System.arraycopy(password, 0, data, 3, password.length);
         }

@@ -360,7 +360,7 @@ public class DeviceManager {
     }
 
     /**
-     * 启动RFID扫描,默认 扫描 3秒 
+     * 启动RFID扫描,默认 扫描 3秒
      *
      * @param deviceId 设备ID
      */
