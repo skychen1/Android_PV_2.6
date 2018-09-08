@@ -365,7 +365,10 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
             case R.id.search_et://搜索
                 break;
             case R.id.ly_creat_temporary_btn://创建临时患者
-                if (!UIUtils.isFastDoubleClick()) {
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+
                     DialogUtils.showCreatTempPatientDialog(mContext, TemPatientBindActivity.this, new TempPatientDialog.Builder.SettingListener() {
                         @Override
                         public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {

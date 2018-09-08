@@ -189,8 +189,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		 for (TCstInventoryVo b : mTCstInventoryVos) {
 		    ArrayList<String> strings = new ArrayList<>();
 		    strings.add(b.getCstCode());
-		    if ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			  (b.getPatientName() == null || b.getPatientName().equals(""))) {
+		    if (UIUtils.getConfigType(mContext, CONFIG_009)&&((b.getPatientId() == null || b.getPatientId().equals("")) ||
+			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			 mTimelyLeft.setEnabled(false);
 			 mTimelyRight.setEnabled(false);
 			 return;
@@ -538,10 +538,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         ArrayList<String> strings = new ArrayList<>();
         for (TCstInventoryVo vosBean : mTCstInventoryVos) {
             strings.add(vosBean.getCstCode());
-            if ((vosBean.getPatientId() == null || vosBean.getPatientId().equals("")) ||
-                    (vosBean.getPatientName() == null || vosBean.getPatientName().equals(""))) {
+            if (UIUtils.getConfigType(mContext, CONFIG_009)&&((vosBean.getPatientId() == null || vosBean.getPatientId().equals("")) ||
+                    (vosBean.getPatientName() == null || vosBean.getPatientName().equals("")))) {
                 mTimelyLeft.setEnabled(false);
                 mTimelyRight.setEnabled(false);
+                break;
             }
         }
 
@@ -703,7 +704,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
         titeleList = Arrays.asList(array);
         mSize = array.length;
 
-        if (mActivityType.equals("all")) {
+        if (mActivityType!=null&&mActivityType.equals("all")) {
             setInBoxTitles();
             mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
                     mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,

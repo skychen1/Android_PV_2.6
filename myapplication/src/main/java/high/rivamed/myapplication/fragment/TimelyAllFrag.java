@@ -368,6 +368,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
+		   ToastUtils.showShort("请稍后！");
 		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 		   AllDeviceCallBack.getInstance().initCallBack();
 		   mEPCDate.clear();

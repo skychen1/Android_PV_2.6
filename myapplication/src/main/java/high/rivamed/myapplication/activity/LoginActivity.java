@@ -350,12 +350,6 @@ public class LoginActivity extends SimpleActivity {
 		   e.printStackTrace();
 		}
 	   }
-
-	   @Override
-	   public void onError(String result) {
-		super.onError(result);
-		Toast.makeText(mContext, "登录失败", Toast.LENGTH_LONG).show();
-	   }
 	});
 
    }
@@ -393,11 +387,6 @@ public class LoginActivity extends SimpleActivity {
 		}
 	   }
 
-	   @Override
-	   public void onError(String result) {
-		super.onError(result);
-		Toast.makeText(mContext, "登录失败", Toast.LENGTH_LONG).show();
-	   }
 	});
 
    }

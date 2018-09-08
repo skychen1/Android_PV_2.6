@@ -98,10 +98,6 @@ public           RecyclerView                    recyclerView;
 	   mGone_deviceCode.setText(item.getDeviceCodes());
 	}
 
-
-
-
-
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
 	   mLinearLayout.setVisibility(View.GONE);
 	}else {
@@ -126,7 +122,7 @@ public           RecyclerView                    recyclerView;
 		int pos = helper.getAdapterPosition();
 		LogUtils.i("RegisteFrag","pos   "+pos);
 
-
+//		RegisteSmallAdapter.tBaseDevice.remove(pos-1);
 		data.remove(pos-1);
 		RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 		if (mData.size()==1){

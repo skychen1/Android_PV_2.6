@@ -19,6 +19,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.TBaseDevices;
+import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.utils.RotateUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -49,6 +50,8 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    public  TextView                        mLeftCode;
    public ImageView mRightDelete;
    //   public RecyclerView mRecyclerView2;
+//   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
+//   public static TBaseThingDto.TBaseDeviceVo mMTBaseThingVoBean;
 
    public RegisteSmallAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices> data) {
@@ -57,6 +60,8 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
    @Override
    protected void convert(final BaseViewHolder holder, TBaseDevices item) {
+//	mMTBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
+
 	mLeftName = (EditText) holder.getView(R.id.head_left_name);
 	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
 
@@ -76,10 +81,8 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	} else {
 
 	   if (holder.getAdapterPosition() == 0) {
-		mLeftName.setText("1号柜");
 		mRightDelete.setVisibility(View.GONE);
 	   } else if (item.boxname.equals("")) {
-		mLeftName.setText("");
 		mRightDelete.setVisibility(View.VISIBLE);
 	   }
    }
@@ -107,11 +110,14 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	   @Override
 	   public void onClick(View v) {
 		mData.remove(holder.getAdapterPosition());
+		RegisteFrag.mDeviceVos.remove(holder.getAdapterPosition());
 		notifyItemRemoved(holder.getAdapterPosition());
 	   }
 	});
 
 	mList = item.getList();
+//	tBaseDevice = new ArrayList<>();//柜子内部数据
+
 	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList,
 							     mRecyclerView2, holder.getAdapterPosition());
 
@@ -134,6 +140,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 		Log.i("xxa", position + "   我是多少条");
 	   }
 	});
+
    }
 
 
