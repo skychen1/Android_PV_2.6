@@ -411,7 +411,6 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                     } catch (InterruptedException e) {
 
                     }
-
                 }
             }
         });
