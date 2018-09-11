@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -176,7 +175,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Override
    public boolean dispatchTouchEvent(MotionEvent ev) {
-	Toast.makeText(UIUtils.getContext(), "重新开始", Toast.LENGTH_SHORT).show();
 	switch (ev.getAction()) {
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_UP:
