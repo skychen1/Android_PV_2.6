@@ -155,7 +155,10 @@ public class RunWatePagerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
+      LogUtils.i(TAG,"START2   "+event.type);
 	if (event.type.equals("START2")) {
+	   mSearchTimeStart.setText("");
+	   mSearchTimeEnd.setText("");
 	   initDate();
 	}
    }
@@ -169,14 +172,13 @@ public class RunWatePagerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
 	mSearchTypeDb.setVisibility(View.GONE);
-
-
 	initDate();
 
 	initlistener();
    }
 
    private void initDate() {
+	mSearchTypeThzc.setVisibility(View.GONE);
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);

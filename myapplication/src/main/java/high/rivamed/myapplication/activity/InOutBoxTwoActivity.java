@@ -583,7 +583,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryTwoDto == null) {
+	if (mTCstInventoryTwoDto == null&&mTCstInventoryDto.gettCstInventoryVos()!=null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
 		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }

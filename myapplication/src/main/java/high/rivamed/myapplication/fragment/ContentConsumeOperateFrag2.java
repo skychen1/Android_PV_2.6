@@ -211,6 +211,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			if (!mPause) {
 			   LogUtils.i(TAG, "mEPCDate  zou l  " );
 			   getDeviceDate(event.deviceId, mEPCDate);
+			}else {
+			   mEPCDate.clear();
 			}
 		   }
 

@@ -158,6 +158,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
+	int operation = mTCstInventoryDto.getOperation();
+
 	mPatient = event.mString;
 	mPatientId = event.id;
 	mOperationScheduleId = event.operationScheduleId;
@@ -185,14 +187,22 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			return;
 		   }
 		   String status = b.getStatus();
-		   if ( !status.equals("禁止操作")) {
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
-		   } else {
-			LogUtils.i(TAG, "我走了falsesss");
+		   if (status.equals("禁止操作")||status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
+			 (operation == 3 && !status.contains("领用")&&!status.equals("移除")) ||
+			 (operation == 2 && !status.contains("入库")&&!status.equals("移除")) ||
+			 (operation == 9 && !status.contains("移出")&&!status.equals("移除")) ||
+			 (operation == 11 && !status.contains("调拨")&&!status.equals("移除")) ||
+			 (operation == 10 && !status.contains("移入")&&!status.equals("移除")) ||
+			 (operation == 7 && !status.contains("退回")&&!status.equals("移除")) ||
+			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			return;
+		   } else {
+			LogUtils.i(TAG, "我走了falsesss");
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
+
 		   }
 		}
 	   }
@@ -282,15 +292,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   return;
 		} else {
 		   mIntentType = 1;//确认
-
-		   //                    if (mTCstInventoryDto.getBindType().equals("firstBind")) {//先绑定患者
 		   loadBingFistDate(mIntentType);
-		   //                    } else {//后绑定的未绑定
-		   //                        int mType = 1;//1.8.3未绑定
-		   //                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
-		   //                        loadBingAfterDate(mIntentType);
-		   //                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
-		   //                    }
 		}
 		break;
 	   case R.id.timely_right:
@@ -298,16 +300,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   return;
 		} else {
 		   mIntentType = 2;//2确认并退出
-
-		   //                    if (mTCstInventoryDto.getBindType().equals("firstBind")) {//先绑定患者
 		   loadBingFistDate(mIntentType);
-
-		   //                    } else {//后绑定的未绑定
-		   //                        int mType = 1;//1.8.3未绑定
-		   //                        Toast.makeText(this, "还在开发", Toast.LENGTH_SHORT).show();
-		   //                        loadBingAfterDate(mIntentType);
-		   //                        //			DialogUtils.showTwoDialog(mContext, mType, "您还有未绑定患者的耗材，确认领用吗？", "耗材未绑定患者");
-		   //                    }
 		}
 		break;
 	   case R.id.ly_bing_btn_right://选择绑定患者  区分是否有临时患者
