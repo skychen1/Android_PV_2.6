@@ -24,6 +24,16 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 public class Event {
 
    /**
+    * 触摸
+    */
+   public static class EventTouch {
+	public boolean touch;
+
+	public EventTouch(boolean touch) {
+	   this.touch = touch;
+	}
+   }
+   /**
     * 关门 后给按钮设置为可以点击，InoutBoxTwoActivity
     */
    public static class EventGoneBtn {

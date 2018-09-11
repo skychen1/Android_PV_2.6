@@ -3,9 +3,12 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -47,6 +50,8 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
+import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -82,6 +87,19 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
+   private CountDownTimer mStart;
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onTouchEvent(Event.EventTouch event) {
+      LogUtils.i(TAG,"event.touch   "+event.touch);
+      if (event.touch){//触摸了
+	   mStart.cancel();
+	   mStart.start();
+	}else {//没触摸
+	   mStart.cancel();
+	}
+   }
+
    /**
     * dialog操作数据
     *
@@ -104,6 +122,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+	mStart.start();
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
 
@@ -135,7 +155,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-
+	mStart.cancel();
+	mStart.start();
 	LogUtils.i(TAG, "epc  "+  event.deviceId+"   "+ event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
@@ -177,7 +198,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    public void onStart() {
-	//	moreStartScan();
+
 	super.onStart();
    }
 
@@ -269,19 +290,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		} else {
 		   mIntentType = 2;
 		   if (mTCstInventoryVos != null) {
-			if (mTCstInventoryDto.getOperation() == 9) {//移出
-			   setYcDate(mIntentType);
-			} else if (mTCstInventoryDto.getOperation() == 11) {//调拨
-			   setDbDate(mIntentType);
-			} else if (mTCstInventoryDto.getOperation() == 8) {//退货
-			   setThDate(mIntentType);
-			} else {//其他操作
-			   setDate(mIntentType);
-			}
-
+			putDateOutLogin(mIntentType);
 		   } else {
 			ToastUtils.showShort("数据异常");
 		   }
+
 		}
 		break;
 	   case R.id.timely_open_door:
@@ -299,7 +312,24 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    }
 
+   /**
+    * 提交并退出登录
+    */
+   private void putDateOutLogin(int mIntentType) {
+
+	   if (mTCstInventoryDto.getOperation() == 9) {//移出
+		setYcDate(mIntentType);
+	   } else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+		setDbDate(mIntentType);
+	   } else if (mTCstInventoryDto.getOperation() == 8) {//退货
+		setThDate(mIntentType);
+	   } else {//其他操作
+		setDate(mIntentType);
+	   }
+   }
+
    private void moreStartScan() {
+
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
 	mEPCDate.clear();
@@ -379,6 +409,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	});
 
    }
+
 
    /**
     * 设置提交值
@@ -663,5 +694,57 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		});
    }
+   /**
+    * 分发触摸事件给所有注册了MyTouchListener的接口
+    */
+   @Override
+   public boolean dispatchTouchEvent(MotionEvent ev) {
+	switch (ev.getAction()) {
+	   //获取触摸动作，如果ACTION_UP，计时开始。
+	   case MotionEvent.ACTION_UP:
+		LogUtils.i(TAG, "   ACTION_UP  ");
+		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
+		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+		   mStart.cancel();
+		   mStart.start();
+		}
+		break;
+	   //否则其他动作计时取消
+	   default:
+		mStart.cancel();
+		LogUtils.i(TAG, "   其他操作  ");
 
+		break;
+	}
+
+	return super.dispatchTouchEvent(ev);
+   }
+
+   /* 定义一个倒计时的内部类 */
+   private class TimeCount extends CountDownTimer {
+
+	TextView textView;
+
+	public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
+
+	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+	   this.textView = textView;
+	}
+
+	@Override
+	public void onFinish() {// 计时完毕时触发
+		mIntentType = 2;//2确认并退出
+		putDateOutLogin(mIntentType);
+	}
+
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
+	   if (millisUntilFinished / 1000<=30){
+		textView.setText("确认并退出登录 "+"( " + millisUntilFinished / 1000 + " s )");
+	   }else {
+		textView.setText("确认并退出登录");
+
+	   }
+	}
+   }
 }

@@ -20,16 +20,13 @@ import high.rivamed.myapplication.base.mvp.IViewFrg;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyTimer;
-import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
-
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -67,7 +64,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	   LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	layoutInflater = inflater;
 	//	init();
-	countTimerView = MyTimer.getInstance(COUNTDOWN_TIME, 1000, UIUtils.getContext());
+//	countTimerView = MyTimer.getInstance(COUNTDOWN_TIME, 1000, UIUtils.getContext());
 
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
@@ -91,15 +88,17 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 		   //获取触摸动作，如果ACTION_UP，计时开始。
 		   case MotionEvent.ACTION_UP:
 			LogUtils.i(TAG, "   ACTION_UP  ");
-			if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-			    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-			   countTimerView.cancel();
-			   countTimerView.start();
-			}
+			EventBusUtils.post(new Event.EventTouch(true));
+//			if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
+//			    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+//			   countTimerView.cancel();
+//			   countTimerView.start();
+//			}
 			break;
 		   //否则其他动作计时取消
 		   default:
-			countTimerView.cancel();
+			EventBusUtils.post(new Event.EventTouch(false));
+//			countTimerView.cancel();
 			LogUtils.i(TAG, "   其他操作  ");
 			break;
 		}
@@ -149,17 +148,17 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 
    @Override
    public void onResume() {
-	if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-	    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-	   countTimerView.cancel();
-	   countTimerView.start();
-	}
+//	if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
+//	    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+//	   countTimerView.cancel();
+//	   countTimerView.start();
+//	}
 	super.onResume();
    }
 
    @Override
    public void onPause() {
-	countTimerView.cancel();
+//	countTimerView.cancel();
 	super.onPause();
    }
 

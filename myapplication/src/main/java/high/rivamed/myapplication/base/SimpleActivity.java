@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -20,14 +19,11 @@ import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyTimer;
-import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -59,7 +55,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onCreate(savedInstanceState);
 
 	mContext = this;
-	init();
+//	init();
 	mGson = new Gson();
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
@@ -113,11 +109,11 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onResume() {
 	getvDelegate().resume();
-	if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-	    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-	   countTimerView.cancel();
-	   countTimerView.start();
-	}
+//	if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
+//	    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+//	   countTimerView.cancel();
+//	   countTimerView.start();
+//	}
 	super.onResume();
 
    }
@@ -125,7 +121,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onPause() {
 	getvDelegate().pause();
-	countTimerView.cancel();
+//	countTimerView.cancel();
 	super.onPause();
 
    }
@@ -170,29 +166,29 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 
    }
 
-   /**
-    * 分发触摸事件给所有注册了MyTouchListener的接口
-    */
-   @Override
-   public boolean dispatchTouchEvent(MotionEvent ev) {
-	switch (ev.getAction()) {
-	   //获取触摸动作，如果ACTION_UP，计时开始。
-	   case MotionEvent.ACTION_UP:
-		LogUtils.i(TAG, "   ACTION_UP  ");
-		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-		   countTimerView.cancel();
-		   countTimerView.start();
-		}
-		break;
-	   //否则其他动作计时取消
-	   default:
-		countTimerView.cancel();
-		LogUtils.i(TAG, "   其他操作  ");
-
-		break;
-	}
-
-	return super.dispatchTouchEvent(ev);
-   }
+//   /**
+//    * 分发触摸事件给所有注册了MyTouchListener的接口
+//    */
+//   @Override
+//   public boolean dispatchTouchEvent(MotionEvent ev) {
+//	switch (ev.getAction()) {
+//	   //获取触摸动作，如果ACTION_UP，计时开始。
+//	   case MotionEvent.ACTION_UP:
+//		LogUtils.i(TAG, "   ACTION_UP  ");
+//		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
+//		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+//		   countTimerView.cancel();
+//		   countTimerView.start();
+//		}
+//		break;
+//	   //否则其他动作计时取消
+//	   default:
+//		countTimerView.cancel();
+//		LogUtils.i(TAG, "   其他操作  ");
+//
+//		break;
+//	}
+//
+//	return super.dispatchTouchEvent(ev);
+//   }
 }
