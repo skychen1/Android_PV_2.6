@@ -197,7 +197,7 @@ public class App extends Application {
      */
     public void addActivity_(Activity activity) {
         // 判断当前集合中不存在该Activity
-        if (!oList.contains(activity)) {
+        if (!oList.contains(activity)&&!activity.getClass().getName().toString().equals("high.rivamed.myapplication.activity.LoginActivity")) {
             oList.add(activity);//把当前Activity添加到集合中
             Log.e(TAG, "Activity-------------->"+activity.getClass().getName());
         }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -663,5 +664,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		});
    }
+   
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	   return true;
+	}
+	return super.onKeyDown(keyCode, event);
 
+   }
 }
