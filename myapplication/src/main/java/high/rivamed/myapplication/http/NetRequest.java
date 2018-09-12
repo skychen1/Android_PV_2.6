@@ -408,7 +408,7 @@ public class NetRequest {
     public void tempPatientConnPatient(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>post(NetApi.URL_TEMP_PATIENT_CONN_PATIENT).tag(tag)
                 . upJson(json)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+		  .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     /**

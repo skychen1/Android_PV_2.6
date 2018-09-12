@@ -42,6 +42,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_PATIENT_CONN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /*
  * 选择临时患者页面
@@ -284,6 +285,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
         bean.setLPatsInId(mPatientInfos.get(position).getLpatsInId());
         bean.setOperationScheduleId(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
         bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+        bean.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
         NetRequest.getInstance().tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
