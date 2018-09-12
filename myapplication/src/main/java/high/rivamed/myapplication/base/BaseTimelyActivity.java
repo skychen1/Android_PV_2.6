@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.base;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -174,6 +175,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
    private TCstInventoryDto mDto;
    private String           mBindFirstType;
+   public  CountDownTimer   mStart;
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onTouchEvent(Event.EventTouch event) {
+	LogUtils.i(TAG,"event.touch   "+event.touch);
+	if (event.touch){//触摸了
+	   mStart.cancel();
+	   mStart.start();
+	}else {//没触摸
+	   mStart.cancel();
+	}
+   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
@@ -196,6 +209,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			mStart.cancel();
 			return;
 		   }
 		   String status = b.getStatus();
@@ -209,12 +223,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			mStart.cancel();
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
-
+			mStart.cancel();
+			mStart.start();
 		   }
 		}
 	   } else {
@@ -230,12 +246,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			mStart.cancel();
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
-
+			mStart.cancel();
+			mStart.start();
 		   }
 		}
 

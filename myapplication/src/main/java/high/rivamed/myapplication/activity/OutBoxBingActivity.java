@@ -198,6 +198,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			mStart.cancel();
+			mStart.start();
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");

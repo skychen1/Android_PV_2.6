@@ -51,6 +51,7 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -86,18 +87,18 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
-   private CountDownTimer mStart;
+//   public  CountDownTimer mStart;
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTouchEvent(Event.EventTouch event) {
-      LogUtils.i(TAG,"event.touch   "+event.touch);
-      if (event.touch){//触摸了
-	   mStart.cancel();
-	   mStart.start();
-	}else {//没触摸
-	   mStart.cancel();
-	}
-   }
+//   @Subscribe(threadMode = ThreadMode.MAIN)
+//   public void onTouchEvent(Event.EventTouch event) {
+//      LogUtils.i(TAG,"event.touch   "+event.touch);
+//      if (event.touch){//触摸了
+//	   mStart.cancel();
+//	   mStart.start();
+//	}else {//没触摸
+//	   mStart.cancel();
+//	}
+//   }
 
    /**
     * dialog操作数据
@@ -121,8 +122,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
-	mStart.start();
+//	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+//	mStart.start();
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
 
