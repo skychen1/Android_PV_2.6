@@ -19,8 +19,8 @@ android {
     signingConfigs {
         debug_config {
 
-          storeFile file('F:/RUI_HUA/ruihua.jks')
-//            storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
+ //         storeFile file('F:/RUI_HUA/ruihua.jks')
+            storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
 //            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias "Rivamed"
             storePassword "ruihua888888"
@@ -28,8 +28,8 @@ android {
             v2SigningEnabled true
         }
         release_config {
-            storeFile file('F:/RUI_HUA/ruihua.jks')
-//          storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
+//            storeFile file('F:/RUI_HUA/ruihua.jks')
+          storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
 //            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias 'Rivamed'
             keyPassword 'ruihua888888'

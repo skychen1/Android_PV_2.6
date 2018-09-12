@@ -359,7 +359,7 @@ public class DeviceManager {
     }
 
     /**
-     * 启动RFID扫描
+     * 启动RFID扫描,默认 扫描 3秒
      *
      * @param deviceId 设备ID
      */
@@ -375,6 +375,23 @@ public class DeviceManager {
         return ((UhfHandler) (this.getConnetedDevices().get(deviceId))).StartScan();
     }
 
+    /**
+     * 启动RFID扫描
+     *
+     * @param deviceId 设备ID
+     * @param timeout 扫描持续时间，单位 毫秒
+     */
+    public int StartUhfScan(String deviceId,int timeout) {
+
+        Log.i(LOG_TAG, "开始UHF扫描；DEVICEID=" + deviceId);
+        if (!this.getConnetedDevices().containsKey(deviceId)) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        if (!(this.getConnetedDevices().get(deviceId) instanceof UhfHandler)) {
+            return FunctionCode.DEVICE_NOT_SUPPORT;
+        }
+        return ((UhfHandler) (this.getConnetedDevices().get(deviceId))).StartScan(timeout);
+    }
     /**
      * 停止RFID扫描，目前针对高值耗材部分支持自动停止。该接口为保留接口
      *
