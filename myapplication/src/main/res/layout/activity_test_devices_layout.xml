@@ -82,7 +82,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
+                <EditText
+                    android:id="@+id/txt_scantime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="输入扫描时间(秒)"
+                    android:inputType="number" />
                 <Button
                     android:id="@+id/bt_startscan"
                     android:layout_width="match_parent"
