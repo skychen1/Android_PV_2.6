@@ -88,18 +88,18 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
-   public CountDownTimer mStart;
-
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTouchEvent(Event.EventTouch event) {
-      LogUtils.i(TAG,"event.touch   "+event.touch);
-      if (event.touch){//触摸了
-	   mStart.cancel();
-	   mStart.start();
-	}else {//没触摸
-	   mStart.cancel();
-	}
-   }
+   public static CountDownTimer mStart;
+//
+//   @Subscribe(threadMode = ThreadMode.MAIN)
+//   public void onTouchEvent(Event.EventTouch event) {
+//      LogUtils.i(TAG,"event.touch   "+event.touch);
+//      if (event.touch){//触摸了
+//	   mStart.cancel();
+//	   mStart.start();
+//	}else {//没触摸
+//	   mStart.cancel();
+//	}
+//   }
 
    /**
     * dialog操作数据
@@ -257,6 +257,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   return;
 		} else {
 		   //		   mShowLoading = DialogUtils.showLoading(mContext);
+		   mStart.cancel();
+
 		   moreStartScan();
 		}
 		break;
@@ -298,6 +300,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		}
 		break;
 	   case R.id.timely_open_door:
+		mStart.cancel();
+
 		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 		mTCstInventoryDto.gettCstInventoryVos().clear();
 		deviceInventoryVos.clear();

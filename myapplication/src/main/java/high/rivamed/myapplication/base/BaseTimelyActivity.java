@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.base;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -30,6 +29,7 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
+import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
@@ -199,6 +199,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			if(OutBoxBingActivity.mStart != null){
+			   OutBoxBingActivity.mStart.cancel();
+			}
 			return;
 		   }
 		   String status = b.getStatus();
@@ -212,11 +215,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			if(OutBoxBingActivity.mStart != null){
+			   OutBoxBingActivity.mStart.cancel();
+			}
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
+			if(OutBoxBingActivity.mStart != null){
+			   OutBoxBingActivity.mStart.cancel();
+			   OutBoxBingActivity.mStart.start();
+			}
 		   }
 		}
 	   } else {
@@ -232,11 +242,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			if(InOutBoxTwoActivity.mStart!=null){
+			   InOutBoxTwoActivity.mStart.cancel();
+			}
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
+			if(InOutBoxTwoActivity.mStart!=null){
+			   InOutBoxTwoActivity.mStart.cancel();
+			   InOutBoxTwoActivity.mStart.start();
+			}
 		   }
 		}
 
