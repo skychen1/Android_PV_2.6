@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -50,8 +51,6 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -198,7 +197,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    public void onStart() {
-
+	//	moreStartScan();
 	super.onStart();
    }
 
@@ -294,7 +293,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   } else {
 			ToastUtils.showShort("数据异常");
 		   }
-
 		}
 		break;
 	   case R.id.timely_open_door:
@@ -329,7 +327,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    }
 
    private void moreStartScan() {
-
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
 	mEPCDate.clear();
@@ -409,7 +406,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	});
 
    }
-
 
    /**
     * 设置提交值
@@ -737,14 +733,20 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		putDateOutLogin(mIntentType);
 	}
 
-	@Override
-	public void onTick(long millisUntilFinished) {// 计时过程显示
-	   if (millisUntilFinished / 1000<=30){
-		textView.setText("确认并退出登录 "+"( " + millisUntilFinished / 1000 + " s )");
-	   }else {
+	@Override public void onTick ( long millisUntilFinished){// 计时过程显示
+	   if (millisUntilFinished / 1000 <= 30) {
+		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
+	   } else {
 		textView.setText("确认并退出登录");
 
 	   }
 	}
+   }
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	   return true;
+	}
+	return super.onKeyDown(keyCode, event);
    }
 }

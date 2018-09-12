@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -576,5 +577,20 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   //	   mShowLoading.mDialog.dismiss();
 	   //
 	}
+   }
+
+   /**
+    * 禁用系统返回键
+    * @param keyCode
+    * @param event
+    * @return
+    */
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	   return true;
+	}
+	return super.onKeyDown(keyCode, event);
+
    }
 }
