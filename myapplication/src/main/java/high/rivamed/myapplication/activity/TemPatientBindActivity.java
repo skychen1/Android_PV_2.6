@@ -123,9 +123,8 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	   @Override
 	   public void onClick(View view) {
 
-		if (patientInfos != null) {
+		if (patientInfos != null&&patientInfos.size()>0) {
 		   mPause = false;
-
 		   mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getPatientName();
 		   mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
