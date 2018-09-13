@@ -569,6 +569,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
+	   if(OutBoxBingActivity.mStart != null){
+		OutBoxBingActivity.mStart.cancel();
+	   }
 	   mLyBingBtnRight.setVisibility(View.VISIBLE);
 	} else {//先绑定
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
@@ -583,6 +586,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "我走了falsesss");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   if(OutBoxBingActivity.mStart != null){
+			OutBoxBingActivity.mStart.cancel();
+		   }
 		   break;
 		}
 	   }
@@ -596,6 +602,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		  (vosBean.getPatientName() == null || vosBean.getPatientName().equals("")))) {
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
+		if(OutBoxBingActivity.mStart != null){
+		   OutBoxBingActivity.mStart.cancel();
+		}
 		break;
 	   }
 	}
@@ -630,6 +639,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
 	mTimelyLeft.setEnabled(false);
 	mTimelyRight.setEnabled(false);
+	if(OutBoxBingActivity.mStart != null){
+	   OutBoxBingActivity.mStart.cancel();
+	}
 	ArrayList<String> strings = new ArrayList<>();
 	if (null != mTCstInventoryVos) {
 	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
@@ -679,6 +691,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownPatientConn.setVisibility(View.VISIBLE);
 	mTimelyLeft.setEnabled(false);
 	mTimelyRight.setEnabled(false);
+	if(OutBoxBingActivity.mStart != null){
+	   OutBoxBingActivity.mStart.cancel();
+	}
 	ArrayList<String> strings = new ArrayList<>();
 	if (null != mTCstInventoryVos) {
 	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
@@ -753,6 +768,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
+	if(InOutBoxTwoActivity.mStart!=null){
+	   InOutBoxTwoActivity.mStart.cancel();
+	}
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -796,6 +814,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   if(InOutBoxTwoActivity.mStart!=null){
+			InOutBoxTwoActivity.mStart.cancel();
+		   }
 		   return;
 		}
 	   }

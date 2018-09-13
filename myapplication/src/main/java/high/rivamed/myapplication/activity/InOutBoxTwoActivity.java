@@ -527,6 +527,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   mStart.cancel();
+
 		}
 		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		EventBusUtils.postSticky(mTCstInventoryTwoDto);
@@ -751,5 +753,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	}
 	return super.onKeyDown(keyCode, event);
 
+   }
+
+   @Override
+   protected void onPause() {
+	mStart.cancel();
+	super.onPause();
    }
 }

@@ -162,6 +162,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    protected void onPause() {
+	mStart.cancel();
+
 	mPause = true;
 	super.onPause();
    }
@@ -684,4 +686,6 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   }
 	}
    }
+
+
 }
