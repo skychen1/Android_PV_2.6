@@ -4,7 +4,7 @@ import cn.rivamed.DeviceManager;
 
 /**
  * @Author 郝小鹏
- * @Description
+ * @Description 未用到，废弃
  * @Date: Created in 2018-07-11 13:35
  * @Modyfied By :
  */

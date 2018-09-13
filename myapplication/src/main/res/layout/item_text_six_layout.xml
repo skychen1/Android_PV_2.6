@@ -32,7 +32,7 @@
     <LinearLayout
         android:id="@+id/seven_ll"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/x88"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

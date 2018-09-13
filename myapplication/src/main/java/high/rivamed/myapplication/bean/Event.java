@@ -23,6 +23,13 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
 
+   public static class EventLoading {
+	public boolean loading;
+
+	public EventLoading(boolean loading) {
+	   this.loading = loading;
+	}
+   }
    /**
     * 触摸
     */

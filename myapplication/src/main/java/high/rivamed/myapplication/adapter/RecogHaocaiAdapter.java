@@ -129,7 +129,11 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         if (item.getPatientName()==null||item.getPatientName().length()<1){
             mSeven_six.setText("");
         }else {
-            mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
+            if (item.getPatientId().equals("virtual")){
+                mSeven_six.setText(item.getPatientName());
+            }else {
+                mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
+            }
         }
         UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
 

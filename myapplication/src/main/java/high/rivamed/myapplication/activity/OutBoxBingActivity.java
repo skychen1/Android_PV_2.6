@@ -87,10 +87,28 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                                       mPatient;
    private String                                       mPatientId;
    private String                                       mOperationScheduleId;
-   private boolean mPause = true;
-   private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+   private boolean                    mPause   = true;
+   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   ;
    int k = 0;
    public static CountDownTimer mStart;
+   private LoadingDialog.Builder mLoading;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   } else {
+		if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	}
+   }
+
    /**
     * 扫描后EPC准备传值
     *
@@ -102,7 +120,13 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	AllDeviceCallBack.getInstance().initCallBack();
 	mStart.cancel();
 	mStart.start();
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		.find(BoxIdBean.class);
 
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
@@ -496,8 +520,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
 	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-	   tCstInventoryDto.setPatientName(mTCstInventoryDto.getPatientName());
-	   tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
+	tCstInventoryDto.setPatientName(mTCstInventoryDto.getPatientName());
+	tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();

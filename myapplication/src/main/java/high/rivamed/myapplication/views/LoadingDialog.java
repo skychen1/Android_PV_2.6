@@ -2,11 +2,12 @@ package high.rivamed.myapplication.views;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
 
@@ -33,24 +34,10 @@ public class LoadingDialog extends Dialog {
 
    public static class Builder {
 
-	private Context         mContext;
-	private String          mMsgTwo;
-	private String          mMsgText;
-	private String          mLeftText;
-	private String          mRightText;
-	private OnClickListener mLeftBtn;
-	private OnClickListener mRightBtn;
-	private TextView        mRigtht;
-	private TextView        mLeft;
-	private ImageView        mCloss;
-	private int        mLeftTextColor=-1;
-	private int           mRightTextColor;
-	private int           mType;
-	private TextView      mDialogMsg;
-	private TextView      mDialogRed;
+	private Context       mContext;
+	private ImageView     mLoading;
 	public  LoadingDialog mDialog;
-	private String        mNojump;
-	private String        mBing;
+	public AnimationDrawable mAnimationDrawable;
 
 	public Builder(Context context) {
 	   this.mContext = context;
@@ -62,13 +49,21 @@ public class LoadingDialog extends Dialog {
 	   mDialog = new LoadingDialog(mContext, R.style.Dialog);
 	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_loading_layout, null);
+	   mLoading = (ImageView) layout.findViewById(R.id.animProgress);
 	   mDialog.addContentView(layout,
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-									    ViewGroup.LayoutParams.MATCH_PARENT));
-
+									     ViewGroup.LayoutParams.MATCH_PARENT));
+	   mAnimationDrawable = (AnimationDrawable) mLoading.getBackground();
+	   mAnimationDrawable.start();
+	   new Handler().postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   mAnimationDrawable.stop();
+		   mDialog.dismiss();
+		}
+	   }, 10000);
 	   return mDialog;
 	}
-
 
    }
 

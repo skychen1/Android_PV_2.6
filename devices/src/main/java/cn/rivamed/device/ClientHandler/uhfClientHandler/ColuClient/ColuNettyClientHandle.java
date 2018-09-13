@@ -3,6 +3,7 @@ package cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,25 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     int antByte = 0x0;  //用数位标识天线，从低位开始 第一位为1 标识天线 1存在，0 则不存在，以此类推
 
-    int repeat = 1;
+    /**
+     * 判断扫描状态的线程
+     */
+    Thread scanCompleteThread;
+    boolean scanCompleteThreadWorking = true;
+
+    /**
+     * 持续扫描的时间，默认3秒，实际由 StartScan 方法进行赋值
+     */
+    int scanTime = 3000;
+
+    long startScanTime = new Date().getTime();
+
+    /**
+     * 扫描过程中检测已扫描的时间是否超过预定时间
+     */
+    private boolean ScanTimeCompleted() {
+        return new Date().getTime() - startScanTime > scanTime;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -78,7 +97,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG,e.getMessage());
+            Log.e(LOG_TAG, e.getMessage());
         }
     }
 
@@ -373,6 +392,29 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             SendQueryAnt();
             SendRfidQueryInfo();
         }).start();
+
+        scanCompleteThread = new Thread(() -> {
+            scanCompleteThreadWorking = true;
+            while (scanCompleteThreadWorking) {
+                if (scanMode && ScanTimeCompleted()) {
+                    StopScan();
+                    scanMode = false;
+                    if (this.messageListener != null) {   //发送回调
+                        Log.d(LOG_TAG, "触发扫描完成回调");
+                        this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
+                        this.messageListener.OnUhfScanComplete(true, this.getIdentification());
+                    }
+                }
+                else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+
+                    }
+                }
+            }
+        });
+        scanCompleteThread.start();
     }
 
 
@@ -405,17 +447,17 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int StartScan() {
-        if (scanMode) return FunctionCode.DEVICE_BUSY;
-        epcs.clear();
-        scanMode = true;
-        return SendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+        return StartScan(3000);
     }
 
     @Override
-    public int StartScan(int repeat) {
-        if (repeat <= 0) repeat = 1;
-        this.repeat = repeat;
-        return StartScan();
+    public int StartScan(int timeout) {
+        if (timeout <= 0) timeout = 3000;
+        this.scanTime = timeout;
+        startScanTime = new Date().getTime();
+        scanMode = true;
+        epcs.clear();
+        return SendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     @Override
@@ -450,7 +492,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
     private boolean SendStop() {
-        byte msgType = DataProtocol.MSG_TYPE_READER_OPTION;
+        byte msgType = DataProtocol.MSG_TYPE_RFID_OPERATION;
         byte mid = DataProtocol.MID_RFID_STOP;
         return SendBuf(msgType, mid, null);
     }
@@ -458,19 +500,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     private boolean SendStartInventory(byte[] password) {
         byte msttype = DataProtocol.MSG_TYPE_RFID_OPERATION;
         byte mid = DataProtocol.MID_RFID_INVENTORY_EPC;
+
+        startScanTime = new Date().getTime();
         byte[] data;
         if (password == null || password.length != 4) {
             data = new byte[2];
             data[0] = (byte) antByte; //天线
-            data[1] = 0X00;              //连续扫描 1 单次扫描 0
+            data[1] = 0X01;              //连续扫描 1 单次扫描 0
         } else {
             data = new byte[7];
             data[0] = (byte) antByte;
-            data[1] = 0x00;
+            data[1] = 0x01;
             data[2] = 0x05; //密码
             System.arraycopy(password, 0, data, 3, password.length);
         }
-
         return SendBuf(msttype, mid, data);
     }
 
@@ -503,7 +546,6 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         byte[] data = new byte[pos];
         System.arraycopy(datatmp, 0, data, 0, pos);
         return SendBuf(msgtype, mid, data);
-
     }
 
     private boolean SendQueryAnt() {
@@ -611,6 +653,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int Close() {
+        scanCompleteThreadWorking=false;
         try {
             Log.e(LOG_TAG, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
             getCtx().close();

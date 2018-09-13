@@ -156,14 +156,33 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private       Handler                                      mHandler;
    private String mOppenDoor = null;
    private List<String> mEthDeviceId;
-   private TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
-   public static boolean mPause = true;
+   private       TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
+   public static boolean          mPause               = true;
    private int                                mPosition;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
    private RvDialog.Builder                   mShowRvDialog2;
    private String                             mOperationScheduleId;
-   private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   ;
    int k = 0;
+   private LoadingDialog.Builder mLoading;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(mContext);
+	   } else {
+		if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	}
+   }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
@@ -174,7 +193,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
-
 	   }
 	}
    }
@@ -187,38 +205,45 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "EventDeviceCallBack   " + mPause);
-	LogUtils.i(TAG, "epc  "+  event.deviceId+"   "+ event.epcs.size());
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		.find(BoxIdBean.class);
 
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
 	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE).find(BoxIdBean.class);
-		if (boxIdBeansss.size()>1){
+		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+									   READER_TYPE).find(BoxIdBean.class);
+		if (boxIdBeansss.size() > 1) {
 
-		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-		      if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
 			   mEPCDate.putAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
 		   }
-		   LogUtils.i(TAG, "mEPCDate  k  " +k);
-		   if (k==boxIdBeansss.size()){
-			k=0;
-			LogUtils.i(TAG, "mEPCDate  zou l  " +(k==boxIdBeansss.size()));
+		   LogUtils.i(TAG, "mEPCDate  k  " + k);
+		   if (k == boxIdBeansss.size()) {
+			k = 0;
+			LogUtils.i(TAG, "mEPCDate  zou l  " + (k == boxIdBeansss.size()));
 			if (!mPause) {
-			   LogUtils.i(TAG, "mEPCDate  zou l  " );
+			   LogUtils.i(TAG, "mEPCDate  zou l  ");
 			   getDeviceDate(event.deviceId, mEPCDate);
-			}else {
+			} else {
 			   mEPCDate.clear();
 			}
 		   }
 
-		}else {
+		} else {
 		   if (!mPause) {
-			LogUtils.i(TAG, "event.epcs直接走   " +event.epcs);
+			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
 			getDeviceDate(event.deviceId, event.epcs);
 		   }
 		}
@@ -314,7 +339,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    public static ContentConsumeOperateFrag2 newInstance() {
-
 	Bundle args = new Bundle();
 	ContentConsumeOperateFrag2 fragment = new ContentConsumeOperateFrag2();
 	fragment.setArguments(args);
@@ -331,6 +355,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
+
 	//	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
 	//	initCallBack();
@@ -818,13 +843,17 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 												 BingFindSchedulesBean.class);
 		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
 		   mContext.startActivity(
-			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position).putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
+			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+													   position)
+				   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
 		} else {
 		   if (bingFindSchedulesBean != null &&
 			 bingFindSchedulesBean.getPatientInfos() != null &&
 			 bingFindSchedulesBean.getPatientInfos().size() > 0) {
 			mContext.startActivity(
-				new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position).putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
+				new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+														position)
+					.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices));
 		   } else {
 			ToastUtils.showShort("没有患者数据");
 		   }

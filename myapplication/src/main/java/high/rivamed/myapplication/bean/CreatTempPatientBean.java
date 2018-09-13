@@ -9,7 +9,7 @@ public class CreatTempPatientBean {
 
 
     /**
-     * tTransOperationSchedule : {"idNo":"133232324444","name":"刘得到","operatingDeptCode":"245","operatingRoomNo":"1号","requestDateTime":"2018-08-26","sex":"男"}
+     * tTransOperationSchedule : {"idNo":"133232324444","name":"刘得到","operatingDeptCode":"245","operatingRoomNo":"1号","scheduleDateTime":"2018-08-26","sex":"男"}
      */
 
     private TTransOperationScheduleBean tTransOperationSchedule;
@@ -28,7 +28,7 @@ public class CreatTempPatientBean {
          * name : 刘得到
          * operatingDeptCode : 245
          * operatingRoomNo : 1号
-         * requestDateTime : 2018-08-26
+         * scheduleDateTime : 2018-08-26
          * sex : 男
          */
 
@@ -45,7 +45,7 @@ public class CreatTempPatientBean {
 
         private String deptId;
         private String operatingRoomNo;
-        private String requestDateTime;
+        private String scheduleDateTime;
         private String sex;
 
         public String getIdNo() {
@@ -73,12 +73,12 @@ public class CreatTempPatientBean {
             this.operatingRoomNo = operatingRoomNo;
         }
 
-        public String getRequestDateTime() {
-            return requestDateTime;
+        public String getScheduleDateTime() {
+            return scheduleDateTime;
         }
 
-        public void setRequestDateTime(String requestDateTime) {
-            this.requestDateTime = requestDateTime;
+        public void setScheduleDateTime(String scheduleDateTime) {
+            this.scheduleDateTime = scheduleDateTime;
         }
 
         public String getSex() {

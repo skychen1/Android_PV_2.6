@@ -132,7 +132,10 @@ public           RecyclerView                    recyclerView;
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_delete).setVisibility(View.VISIBLE);
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_add).setVisibility(View.VISIBLE);
 		}
-		mMacPopupWindow.mMealPopAdapter.notifyDataSetChanged();
+		if (mMacPopupWindow!=null){
+		   mMacPopupWindow.mMealPopAdapter.notifyDataSetChanged();
+
+		}
 
 		//		if (mMacPopupWindow!=null&&mMacPopupWindow.mRecyclerView!=null){
 //		   String toString = ((TextView) mMacPopupWindow.mRecyclerView.getChildAt(pos - 1)

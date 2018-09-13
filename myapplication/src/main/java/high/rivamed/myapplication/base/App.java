@@ -94,14 +94,14 @@ public class App extends Application {
     }
 
     public static void InitDeviceService() {
+//        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_RODINBELL, 8010);
+////        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
+//        DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
 
         DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_COLU_NETTY,8010);
         DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_RODINBELL,8014);
         DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V2,8012);
-
-        //        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_RODINBELL, 8010);
-//                DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
-//        DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
+        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V26,8016);
     }
 
     private void initBugly() {
@@ -197,7 +197,7 @@ public class App extends Application {
      */
     public void addActivity_(Activity activity) {
         // 判断当前集合中不存在该Activity
-        if (!oList.contains(activity)&&!activity.getClass().getName().toString().equals("high.rivamed.myapplication.activity.LoginActivity")) {
+        if (!oList.contains(activity)) {
             oList.add(activity);//把当前Activity添加到集合中
             Log.e(TAG, "Activity-------------->"+activity.getClass().getName());
         }

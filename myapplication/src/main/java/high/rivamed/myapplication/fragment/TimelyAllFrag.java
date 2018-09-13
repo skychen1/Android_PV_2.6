@@ -55,6 +55,7 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -173,8 +174,24 @@ public class TimelyAllFrag extends SimpleFragment {
    private       LoadingDialog.Builder mBuilder;
    public static boolean                    mPause   = true;
    private       Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
-   ;
    int k = 0;
+
+   private LoadingDialog.Builder mLoading;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(mContext);
+	   } else {
+		if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	}
+   }
 
    /**
     * 扫描后EPC准备传值
@@ -184,6 +201,11 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "onCallBackEvent  mPause    " + mPause);
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 
@@ -274,14 +296,14 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	mTimelyBook.setText(
 		Html.fromHtml("账面库存数：<font color='#262626'><big>" + count + "</big>&emsp</font>"));
-	if (reduce==0){
+	if (reduce == 0) {
 	   mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#262626'>" + reduce + "</font>"));
-	}else {
+	} else {
 	   mTimelyLoss.setText(Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + reduce + "</font>"));
 	}
-	if (add==0){
+	if (add == 0) {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#262626'>" + add + "</font>"));
-	}else {
+	} else {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
 	}
 
@@ -368,7 +390,6 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   ToastUtils.showShort("请稍后！");
 		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
 		   AllDeviceCallBack.getInstance().initCallBack();
 		   mEPCDate.clear();
@@ -459,6 +480,7 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void openDoor() {
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<String> mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	LogUtils.i(TAG, "mDeviceCode    " + mDeviceCode + "  " + (mDeviceCode == null) + "    " +
 			    mDeviceCode.equals("") + "     mReaderDeviceId    " + mReaderDeviceId.size());

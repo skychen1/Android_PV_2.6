@@ -88,18 +88,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
+   private LoadingDialog.Builder mLoading;
+
    public static CountDownTimer mStart;
-//
-//   @Subscribe(threadMode = ThreadMode.MAIN)
-//   public void onTouchEvent(Event.EventTouch event) {
-//      LogUtils.i(TAG,"event.touch   "+event.touch);
-//      if (event.touch){//触摸了
-//	   mStart.cancel();
-//	   mStart.start();
-//	}else {//没触摸
-//	   mStart.cancel();
-//	}
-//   }
+
 
    /**
     * dialog操作数据
@@ -128,23 +120,19 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
 
-   /**
-    * 看关门后是否需要设置按钮为可以点击
-    *
-    * @param event
-    */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventClickBtn(Event.EventGoneBtn event) {
-	runOnUiThread(new Runnable() {
-	   @Override
-	   public void run() {
-
-		if (mTimelyLeft != null && mTimelyRight != null) {
-		   mTimelyLeft.setEnabled(true);
-		   mTimelyRight.setEnabled(true);
+   public void onEventLoading(Event.EventLoading event) {
+      if (event.loading){
+         if (mLoading==null){
+		LogUtils.i(TAG,"     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   }else {
+            if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
 		}
 	   }
-	});
+	}
    }
 
    /**
@@ -156,9 +144,14 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading=null;
+	}
+	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	mStart.cancel();
 	mStart.start();
-	LogUtils.i(TAG, "epc  "+  event.deviceId+"   "+ event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -220,7 +213,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				startActivity(new Intent(InOutBoxTwoActivity.this, MyInfoActivity.class));
 				break;
 			   case 1:
-				startActivity(new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
+				startActivity(
+					new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
 			   case 2:
 				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
@@ -348,6 +342,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
+
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -754,5 +750,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   return true;
 	}
 	return super.onKeyDown(keyCode, event);
+
    }
 }

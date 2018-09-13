@@ -42,6 +42,7 @@ public class TestDevicesActivity extends SimpleActivity {
     private Button bt_uhf_reset;
     private Button bt_clear;
     private Button bt_fingerCompare;
+    private EditText txt_scantime;
 
     private EditText txt_power;
     private Button bt_queryConnDev;
@@ -79,6 +80,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_clear=(Button)findViewById(R.id.bt_clear);
         scroll_log=(ScrollView)findViewById(R.id.scroll_log);
         bt_fingerCompare=(Button)findViewById(R.id.bt_fingerCompare);
+        txt_scantime=(EditText)findViewById(R.id.txt_scantime);
 
         initListener();
         initCallBack();
@@ -240,7 +242,7 @@ public class TestDevicesActivity extends SimpleActivity {
             public void onClick(View v) {
                 FingerAlg fingerAlg=new FingerAlg();
                 int score=fingerAlg.AlgMatch(fingerTemplate,fingerData,3);
-                AppendLog("质问对比结果 Score="+score);
+                AppendLog("指纹对比结果 Score="+score);
             }
         });
         bt_back.setOnClickListener(new View.OnClickListener() {
@@ -253,8 +255,12 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId);
-                AppendLog("启动扫描：RET=" + ret);
+                int scanTime= Integer.parseInt(txt_scantime.getText().toString());
+                if (scanTime < 0 || scanTime > 100) {
+                    scanTime=0;
+                }
+                int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId,scanTime*1000);
+                AppendLog("启动持续扫描，扫描时间为"+scanTime+";RET=" + ret);
             }
         });
 

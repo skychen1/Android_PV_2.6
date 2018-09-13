@@ -177,7 +177,23 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private TCstInventoryDto mDto;
    private String           mBindFirstType;
 
-
+   /**
+    * 看关门后是否需要设置按钮为可以点击
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventClickBtn(Event.EventGoneBtn event) {
+	runOnUiThread(new Runnable() {
+	   @Override
+	   public void run() {
+		if (mTimelyLeft != null && mTimelyRight != null) {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		}
+	   }
+	});
+   }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
@@ -232,14 +248,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   } else {
 		for (TCstInventoryVo b : mTCstInventoryVos) {
 		   String status = b.getStatus();
-		   if (status.equals("禁止操作")||status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
-			 (operation == 3 && !status.contains("领用")&&!status.equals("移除")) ||
-			 (operation == 2 && !status.contains("入库")&&!status.equals("移除")) ||
-			 (operation == 9 && !status.contains("移出")&&!status.equals("移除")) ||
-			 (operation == 11 && !status.contains("调拨")&&!status.equals("移除")) ||
-			 (operation == 10 && !status.contains("移入")&&!status.equals("移除")) ||
-			 (operation == 7 && !status.contains("退回")&&!status.equals("移除")) ||
-			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
+		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
+			 status.equals("禁止退回") ||
+			 (operation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+			 (operation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+			 (operation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+			 (operation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+			 (operation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+			 (operation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+			 (operation == 8 && !status.contains("退货") && !status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			if(InOutBoxTwoActivity.mStart!=null){

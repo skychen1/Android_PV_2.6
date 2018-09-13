@@ -42,6 +42,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_PATIENT_CONN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /*
  * 选择临时患者页面
@@ -192,6 +193,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
         NetRequest.getInstance().findInPatientPage(optienNameOrId, page, rows, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i(TAG,"result    "+result);
                 FindInPatientBean bean = mGson.fromJson(result,
                         FindInPatientBean.class);
                 if (bean != null && bean.getRows() != null && bean.getRows().size() >= 0) {
@@ -207,8 +209,9 @@ public class PatientConnActivity extends BaseTimelyActivity {
                         data.setPatientId(bean.getRows().get(i).getPatientId());
                         data.setPatientName(bean.getRows().get(i).getPatientName());
                         data.setDeptName(bean.getRows().get(i).getDeptName());
+                        data.setOperationSurgeonName(bean.getRows().get(i).getOperationSurgeonName());
                         data.setOperatingRoomNoName(bean.getRows().get(i).getOperatingRoomNoName());
-                        data.setOperationBeginDateTime(bean.getRows().get(i).getOperationBeginDateTime());
+                        data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
                         data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
                         data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
                         data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
@@ -284,6 +287,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
         bean.setLPatsInId(mPatientInfos.get(position).getLpatsInId());
         bean.setOperationScheduleId(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
         bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+        bean.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
         NetRequest.getInstance().tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {

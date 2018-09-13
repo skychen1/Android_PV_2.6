@@ -10,7 +10,7 @@ public class CreatTempPatientResultBean {
     /**
      * operateSuccess : true
      * id : 0
-     * ttransOperationSchedule : {"ackIndicator":null,"anesStartTime":null,"anesthesiaDoctorCode":null,"anesthesiaDoctorName":null,"anesthesiaMethod":null,"arriveDateTime":null,"bedNum":null,"patientId":"virtual","commitIndicator":0,"createDateTime":null,"emergercyIndicator":0,"endDataTime":null,"greenchannelIndicator":1,"hisOperationState":null,"operatingDeptCode":"245","operatingDeptName":null,"operatingRoomNo":"1号","operatingRoomNoName":null,"operationBeginDateTime":null,"operationCatchdrugNo":0,"operationName":null,"operationState":0,"operationSurgeonCode":null,"operationSurgeonName":null,"patientName":"刘得到-男-133232324444","patientNamePinyin":"ldd","requestDateTime":"2018-08-26 00:00:00","returnDateTime":null,"roomOperationSequence":null,"scheduleDateTime":null,"scheduleId":null,"updateDateTime":"2018-08-26 13:33:32","visitId":null,"name":"刘得到","idNo":"133232324444","sex":"男","lpatsInId":null,"loperPatsId":null}
+     * ttransOperationSchedule : {"ackIndicator":null,"anesStartTime":null,"anesthesiaDoctorCode":null,"anesthesiaDoctorName":null,"anesthesiaMethod":null,"arriveDateTime":null,"bedNum":null,"patientId":"virtual","commitIndicator":0,"createDateTime":null,"emergercyIndicator":0,"endDataTime":null,"greenchannelIndicator":1,"hisOperationState":null,"operatingDeptCode":"245","operatingDeptName":null,"operatingRoomNo":"1号","operatingRoomNoName":null,"operationBeginDateTime":null,"operationCatchdrugNo":0,"operationName":null,"operationState":0,"operationSurgeonCode":null,"operationSurgeonName":null,"patientName":"刘得到-男-133232324444","patientNamePinyin":"ldd","scheduleDateTime":"2018-08-26 00:00:00","returnDateTime":null,"roomOperationSequence":null,"scheduleDateTime":null,"scheduleId":null,"updateDateTime":"2018-08-26 13:33:32","visitId":null,"name":"刘得到","idNo":"133232324444","sex":"男","lpatsInId":null,"loperPatsId":null}
      */
 
     private boolean operateSuccess;
@@ -69,7 +69,7 @@ public class CreatTempPatientResultBean {
          * operationSurgeonName : null
          * patientName : 刘得到-男-133232324444
          * patientNamePinyin : ldd
-         * requestDateTime : 2018-08-26 00:00:00
+         * scheduleDateTime : 2018-08-26 00:00:00
          * returnDateTime : null
          * roomOperationSequence : null
          * scheduleDateTime : null
@@ -109,10 +109,9 @@ public class CreatTempPatientResultBean {
         private Object operationSurgeonName;
         private String patientName;
         private String patientNamePinyin;
-        private String requestDateTime;
         private Object returnDateTime;
         private Object roomOperationSequence;
-        private Object scheduleDateTime;
+        private String scheduleDateTime;
         private Object scheduleId;
         private String updateDateTime;
         private Object visitId;
@@ -330,12 +329,12 @@ public class CreatTempPatientResultBean {
             this.patientNamePinyin = patientNamePinyin;
         }
 
-        public String getRequestDateTime() {
-            return requestDateTime;
+        public String getScheduleDateTime() {
+            return scheduleDateTime;
         }
 
-        public void setRequestDateTime(String requestDateTime) {
-            this.requestDateTime = requestDateTime;
+        public void setScheduleDateTime(String scheduleDateTime) {
+            this.scheduleDateTime = scheduleDateTime;
         }
 
         public Object getReturnDateTime() {
@@ -354,13 +353,7 @@ public class CreatTempPatientResultBean {
             this.roomOperationSequence = roomOperationSequence;
         }
 
-        public Object getScheduleDateTime() {
-            return scheduleDateTime;
-        }
 
-        public void setScheduleDateTime(Object scheduleDateTime) {
-            this.scheduleDateTime = scheduleDateTime;
-        }
 
         public Object getScheduleId() {
             return scheduleId;
