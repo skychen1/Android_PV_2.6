@@ -82,9 +82,27 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                                       mPatient;
    private String                                       mPatientId;
    private String                                       mOperationScheduleId;
-   private boolean mPause = true;
-   private Map<String, List<TagInfo>> mEPCDate  = new TreeMap<>();;
+   private boolean                    mPause   = true;
+   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   ;
    int k = 0;
+   private LoadingDialog.Builder mLoading;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   } else {
+		if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	}
+   }
+
    /**
     * 扫描后EPC准备传值
     *
@@ -94,33 +112,40 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId).find(BoxIdBean.class);
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		.find(BoxIdBean.class);
 
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
 	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE).find(BoxIdBean.class);
-		if (boxIdBeansss.size()>1){
+		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+									   READER_TYPE).find(BoxIdBean.class);
+		if (boxIdBeansss.size() > 1) {
 
-		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
 			   mEPCDate.putAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
 		   }
-		   if (k==boxIdBeansss.size()){
-			k=0;
+		   if (k == boxIdBeansss.size()) {
+			k = 0;
 			if (!mPause) {
-			   LogUtils.i(TAG, "mEPCDate  zou l  " );
+			   LogUtils.i(TAG, "mEPCDate  zou l  ");
 			   getDeviceDate(event.deviceId, mEPCDate);
 			}
 		   }
 
-		}else {
+		} else {
 		   if (!mPause) {
-			LogUtils.i(TAG, "event.epcs直接走   " +event.epcs);
+			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
 			getDeviceDate(event.deviceId, event.epcs);
 		   }
 		}
@@ -136,7 +161,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    public void onResume() {
-//	moreStartScan();
+	//	moreStartScan();
 	mPause = false;
 	super.onResume();
    }
@@ -144,6 +169,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+
 	Intent intent = getIntent();
 	int type = intent.getIntExtra("type", 0);
 	if (type == 100) {
@@ -174,7 +200,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   mTCstInventoryVos.get(i).setPatientName(mPatient);
 		   mTCstInventoryVos.get(i).setPatientId(event.id);
 		}
-		if (mTypeView!=null&&mTypeView.mRecogHaocaiAdapter!=null){
+		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		}
 
@@ -188,14 +214,15 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			return;
 		   }
 		   String status = b.getStatus();
-		   if (status.equals("禁止操作")||status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
-			 (operation == 3 && !status.contains("领用")&&!status.equals("移除")) ||
-			 (operation == 2 && !status.contains("入库")&&!status.equals("移除")) ||
-			 (operation == 9 && !status.contains("移出")&&!status.equals("移除")) ||
-			 (operation == 11 && !status.contains("调拨")&&!status.equals("移除")) ||
-			 (operation == 10 && !status.contains("移入")&&!status.equals("移除")) ||
-			 (operation == 7 && !status.contains("退回")&&!status.equals("移除")) ||
-			 (operation == 8 && !status.contains("退货")&&!status.equals("移除"))) {
+		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
+			 status.equals("禁止退回") ||
+			 (operation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+			 (operation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+			 (operation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+			 (operation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+			 (operation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+			 (operation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+			 (operation == 8 && !status.contains("退货") && !status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			return;
@@ -320,6 +347,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    }
 
    private void moreStartScan() {
+
 	mEPCDate.clear();
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
@@ -436,6 +464,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -481,8 +510,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
 	tCstInventoryDto.setDeviceInventoryVos(deviceList);
 	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-	   tCstInventoryDto.setPatientName(mTCstInventoryDto.getPatientName());
-	   tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
+	tCstInventoryDto.setPatientName(mTCstInventoryDto.getPatientName());
+	tCstInventoryDto.setPatientId(mTCstInventoryDto.getPatientId());
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
@@ -550,12 +579,13 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   tCstInventoryVos1.removeAll(tCstInventoryVos);
 	   tCstInventoryVos1.addAll(tCstInventoryVos);
 	   for (TCstInventoryVo ff : tCstInventoryVos1) {
-	      LogUtils.i(TAG,"ff   "+ mPatient );
-		if (UIUtils.getConfigType(mContext,CONFIG_010)&&UIUtils.getConfigType(mContext,CONFIG_012) ){
-		   ff.setPatientName( mTCstInventoryDto.getPatientName());
-		   ff.setPatientId( mTCstInventoryDto.getPatientId());
+		LogUtils.i(TAG, "ff   " + mPatient);
+		if (UIUtils.getConfigType(mContext, CONFIG_010) &&
+		    UIUtils.getConfigType(mContext, CONFIG_012)) {
+		   ff.setPatientName(mTCstInventoryDto.getPatientName());
+		   ff.setPatientId(mTCstInventoryDto.getPatientId());
 		   ff.setOperationScheduleId(mTCstInventoryDto.getOperationScheduleId());
-		}else {
+		} else {
 		   ff.setPatientName(mPatient);
 		   ff.setPatientId(mPatientId);
 		   ff.setOperationScheduleId(mOperationScheduleId);
@@ -563,8 +593,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   }
 
 	   if (mTCstInventoryTwoDto.getPatientName() == null) {
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
 	   }
 	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
 	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
@@ -581,6 +611,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    /**
     * 禁用系统返回键
+    *
     * @param keyCode
     * @param event
     * @return

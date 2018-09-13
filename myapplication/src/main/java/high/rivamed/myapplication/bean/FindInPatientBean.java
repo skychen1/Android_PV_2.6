@@ -74,7 +74,16 @@ public class FindInPatientBean {
         private String operationBeginDateTime = "";
         private String updateTime = "";
         private String loperPatsId = "";
+        private String scheduleDateTime = "";
         private boolean isSelected;
+
+        public String getScheduleDateTime() {
+            return scheduleDateTime;
+        }
+
+        public void setScheduleDateTime(String scheduleDateTime) {
+            this.scheduleDateTime = scheduleDateTime;
+        }
 
         public String getLpatsInId() {
             return lpatsInId;

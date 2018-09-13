@@ -39,6 +39,7 @@ public class AllDeviceCallBack {
    // 设置本类为单例模式
    private static AllDeviceCallBack instances;
    public static ArrayList<String>      mEthDeviceIdBack;
+   public static ArrayList<String>      mEthDeviceIdBack2;
    public static  List<String>      mReaderIdList;
    public static  List<String>      mReaderDeviceId;
    public static  List<String>      eth002DeviceIdList;
@@ -51,6 +52,7 @@ public class AllDeviceCallBack {
 		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 		   mEthDeviceIdBack = new ArrayList<>();
+		   mEthDeviceIdBack2 = new ArrayList<>();
 		}
 	   }
 	}
@@ -63,13 +65,7 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void OnDeviceConnected(
 		   DeviceType deviceType, String deviceIndentify) {
-		//		LogUtils.i(TAG, "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
-		//		if (deviceType == DeviceType.UHFREADER) {
-		//		   uhfDeviceId = deviceIndentify;
-		//		   LogUtils.i(TAG, "uhfDevice   " + uhfDeviceId);
-		//		} else if (deviceType == DeviceType.Eth002) {
-		//		   eth002DeviceId = deviceIndentify;
-		//		}
+
 	   }
 
 	   @Override
@@ -119,55 +115,48 @@ public class AllDeviceCallBack {
 		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
 		mEthDeviceIdBack.clear();
 		mEthDeviceIdBack.addAll(strings);
+		mEthDeviceIdBack2.clear();
+		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 		EventBusUtils.post(new Event.HomeNoClickEvent(true));//禁止桌面左边菜单栏点击
 	   }
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-//		mEthDeviceId = DevicesUtils.getEthDeviceId();
-		//遍历已连接的设备，查看是否都是关闭状态
-//		for (String deviceId : mEthDeviceId) {
+
 		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
-		//		}
-		LogUtils.i(TAG, "门锁已关闭：    " + success);
-		EventBusUtils.post(new Event.HomeNoClickEvent(false));//开启桌面左边菜单栏点击
-		EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
+		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
+		for (int i =0;i<mEthDeviceIdBack2.size();i++){
+		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)){
+			mEthDeviceIdBack2.remove(i);
+		   }
+		}
+		if (mEthDeviceIdBack2==null||mEthDeviceIdBack2.size()==0){
+		   EventBusUtils.post(new Event.HomeNoClickEvent(false));//开启桌面左边菜单栏点击
+		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
+		}
+
+		EventBusUtils.postSticky(new Event.EventLoading(true));
+
 	   }
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-//		mEthDeviceId = DevicesUtils.getEthDeviceId();
-//		for (String deviceId : mEthDeviceId) {
-//
-//
-//		   LogUtils.i(TAG,
-//				  "deviceIndentify：    " + deviceIndentify + "    opened    " + opened);
-//		   LogUtils.i(TAG, "deviceId：    " + deviceId);
-//		   if (!opened && deviceIndentify.equals(deviceId)) {
-//			LogUtils.i(TAG,
-//				     "!opened：    " + !opened + "     " + deviceIndentify.equals(deviceId));
 			clossDoorStartScan(deviceIndentify);
-//		   } else {
-//			LogUtils.i(TAG, "没关门：    " + deviceId);
-//		   }
-//		}
 	   }
 
 	   @Override
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
 		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
-		if (!success) {
-		   //		   ToastUtils.showUiToast(UIUtils.getContext(), "扫描失败，请重试！");
-		}
-//		getDeviceDate(deviceId, epcs);
+
 		EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId,epcs));
 	   }
 
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
 		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 
 	   @Override
@@ -204,7 +193,6 @@ public class AllDeviceCallBack {
 			   LogUtils.i(TAG, "走了");
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
-
 			} else {
 			   startScan(deviceIndentify);
 			}
@@ -252,7 +240,6 @@ public class AllDeviceCallBack {
     */
    public void openDoor(
 	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
-	//	mShowLoading = DialogUtils.showLoading(mContext);
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 
@@ -308,7 +295,6 @@ public class AllDeviceCallBack {
     * @param deviceIndentify
     */
    private void startScan(String deviceIndentify) {
-
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {

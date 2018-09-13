@@ -69,7 +69,7 @@ public class BingDialogOutAdapter
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_two.setText(item.getPatientName());
 	mSeven_three.setText(item.getPatientId());
-	mSeven_four.setText(item.getRequestDateTime());
+	mSeven_four.setText(item.getScheduleDateTime());
 	mSeven_five.setText(item.getOperationSurgeonName());
 	mSeven_six.setText(item.getOperatingRoomNoName());
 	mCheckBox.setOnCheckedChangeListener(null);

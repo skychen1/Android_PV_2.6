@@ -89,14 +89,18 @@ public class DialogUtils {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
                         ContentConsumeOperateFrag2.mPause = false;
-                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-                                checkedPosition)
-                                .findViewById(R.id.seven_two)).getText().toString();
-                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-                                checkedPosition)
-                                .findViewById(R.id.seven_three)).getText().toString();
+			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+			     String id = patientInfos.get(checkedPosition).getPatientId();
+			     String name = patientInfos.get(checkedPosition).getPatientName();
+			     LogUtils.i("OutBoxBingActivity", " name "+name);
+//                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+//                                checkedPosition)
+//                                .findViewById(R.id.seven_two)).getText().toString();
+//                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+//                                checkedPosition)
+//                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, patientInfos.get(checkedPosition).getOperationScheduleId(), "firstBind", position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, operationScheduleId, "firstBind", position, mTbaseDevices));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -104,14 +108,17 @@ public class DialogUtils {
                             checkedPosition)) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
-                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-                                checkedPosition)
-                                .findViewById(R.id.seven_two)).getText().toString();
-                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-                                checkedPosition)
-                                .findViewById(R.id.seven_three)).getText().toString();
+//                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+//                                checkedPosition)
+//                                .findViewById(R.id.seven_two)).getText().toString();
+//                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+//                                checkedPosition)
+//                                .findViewById(R.id.seven_three)).getText().toString();
+			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+			     String id = patientInfos.get(checkedPosition).getPatientId();
+			     String name = patientInfos.get(checkedPosition).getPatientName();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, patientInfos.get(checkedPosition).getOperationScheduleId(), type, position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, operationScheduleId, type, position, mTbaseDevices));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);

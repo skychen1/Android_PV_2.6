@@ -20,7 +20,7 @@ public class BingFindSchedulesBean implements Serializable {
     /**
      * id : 0
      * thingCode : 402882a064f9ab850164f9ad0a470000
-     * patientInfos : [{"patientName":"李四","patientId":"3213123","requestDateTime":"","operationSurgeonName":"","operatingRoomNoName":""},{"patientName":"张三","requestDateTime":"2018-08-03 11:54:46","operationSurgeonName":"王医生","operatingRoomNoName":"312312","patientId":"3231232"}]
+     * patientInfos : [{"patientName":"李四","patientId":"3213123","scheduleDateTime":"","operationSurgeonName":"","operatingRoomNoName":""},{"patientName":"张三","scheduleDateTime":"2018-08-03 11:54:46","operationSurgeonName":"王医生","operatingRoomNoName":"312312","patientId":"3231232"}]
      */
 
     private int id;
@@ -57,19 +57,27 @@ public class BingFindSchedulesBean implements Serializable {
         /**
          * patientName : 李四
          * patientId : 3213123
-         * requestDateTime :
+         * scheduleDateTime :
          * operationSurgeonName :
          * operatingRoomNoName :
          */
         private boolean isSelected;
         private String patientName;
         private String patientId;
-        private String requestDateTime;
+        private String scheduleDateTime;
         private String operationSurgeonName;
         private String operatingRoomNoName;
         private String deptName;
         private String operationBeginDateTime;
         private String updateTime;
+
+        public String getScheduleDateTime() {
+            return scheduleDateTime;
+        }
+
+        public void setScheduleDateTime(String scheduleDateTime) {
+            this.scheduleDateTime = scheduleDateTime;
+        }
 
         public String getLpatsInId() {
             return lpatsInId;
@@ -149,14 +157,6 @@ public class BingFindSchedulesBean implements Serializable {
             this.patientId = patientId;
         }
 
-        public String getRequestDateTime() {
-            return requestDateTime;
-        }
-
-        public void setRequestDateTime(
-                String requestDateTime) {
-            this.requestDateTime = requestDateTime;
-        }
 
         public String getOperationSurgeonName() {
             return operationSurgeonName;

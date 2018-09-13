@@ -20,6 +20,7 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.fragment.RegisteFrag;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RotateUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -109,8 +110,12 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	mRightDelete.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
+		LogUtils.i(TAG, "holder.getAdapterPosition()   " + holder.getAdapterPosition());
+		LogUtils.i(TAG, "RegisteFrag.mDeviceVos.size()   " + RegisteFrag.mDeviceVos.size());
 		mData.remove(holder.getAdapterPosition());
-		RegisteFrag.mDeviceVos.remove(holder.getAdapterPosition());
+		if (RegisteFrag.mDeviceVos.size()>holder.getAdapterPosition()){
+		   RegisteFrag.mDeviceVos.remove(holder.getAdapterPosition());
+		}
 		notifyItemRemoved(holder.getAdapterPosition());
 	   }
 	});

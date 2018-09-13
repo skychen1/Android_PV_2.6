@@ -49,6 +49,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -86,8 +87,23 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    private String  mType  = "";
    private String mOperationScheduleId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
-   ;
+   private LoadingDialog.Builder mLoading;
    int k = 0;
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   } else {
+		if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	}
+   }
 
    @Override
    public int getCompanyType() {
@@ -107,13 +123,14 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	   @Override
 	   public void onClick(View view) {
 
-		   if (patientInfos != null) {
-			mPause = false;
+		if (patientInfos != null) {
+		   mPause = false;
 
-			mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientName();
-			mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
-			mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-				.getOperationScheduleId();
+		   mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getPatientName();
+		   mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
+		   mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getOperationScheduleId();
 
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
@@ -168,6 +185,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 
@@ -401,7 +423,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
 	bean.setName(event.userName);
 	bean.setIdNo(event.idCard);
-	bean.setRequestDateTime(event.time);
+	bean.setScheduleDateTime(event.time);
 	bean.setOperatingRoomNo(event.roomNum);
 	bean.setSex(event.userSex);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
@@ -422,7 +444,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 							  //                            BingFindSchedulesBean.PatientInfosBean tempPatientVo = new BingFindSchedulesBean.PatientInfosBean();
 							  //                            tempPatientVo.setPatientName(event.userName);
 							  //                            tempPatientVo.setPatientId("virtual");
-							  //                            tempPatientVo.setRequestDateTime(event.time);
+							  //                            tempPatientVo.setScheduleDateTime(event.time);
 							  //                            tempPatientVo.setOperatingRoomNoName(event.roomNum);
 							  //                            patientInfos.add(0, tempPatientVo);
 							  //                            mTypeView.mTempPatientAdapter.notifyDataSetChanged();

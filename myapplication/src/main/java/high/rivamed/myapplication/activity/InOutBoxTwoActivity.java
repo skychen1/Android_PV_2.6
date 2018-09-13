@@ -83,6 +83,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
+   private LoadingDialog.Builder mLoading;
+
    /**
     * dialog操作数据
     *
@@ -107,25 +109,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	super.initDataAndEvent(savedInstanceState);
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
-
-   /**
-    * 看关门后是否需要设置按钮为可以点击
-    *
-    * @param event
-    */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventClickBtn(Event.EventGoneBtn event) {
-	runOnUiThread(new Runnable() {
-	   @Override
-	   public void run() {
-
-		if (mTimelyLeft != null && mTimelyRight != null) {
-		   mTimelyLeft.setEnabled(true);
-		   mTimelyRight.setEnabled(true);
+   public void onEventLoading(Event.EventLoading event) {
+      if (event.loading){
+         if (mLoading==null){
+		LogUtils.i(TAG,"     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   }else {
+            if (!mLoading.mDialog.isShowing()){
+		   LogUtils.i(TAG,"     mLoading   重新开启");
+		   mLoading.create().show();
 		}
 	   }
-	});
+	}
    }
+
 
    /**
     * 扫描后EPC准备传值
@@ -136,8 +134,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-
-	LogUtils.i(TAG, "epc  "+  event.deviceId+"   "+ event.epcs.size());
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading=null;
+	}
+	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -146,18 +148,18 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
 		if (boxIdBeansss.size() > 1) {
-		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
 			   mEPCDate.putAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
 		   }
-		   if (k==boxIdBeansss.size()){
-			   LogUtils.i(TAG, "mEPCDate  zou l  " );
-			   k=0;
-			   getDeviceDate(event.deviceId, mEPCDate);
+		   if (k == boxIdBeansss.size()) {
+			LogUtils.i(TAG, "mEPCDate  zou l  ");
+			k = 0;
+			getDeviceDate(event.deviceId, mEPCDate);
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
@@ -199,7 +201,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				startActivity(new Intent(InOutBoxTwoActivity.this, MyInfoActivity.class));
 				break;
 			   case 1:
-				startActivity(new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
+				startActivity(
+					new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
 			   case 2:
 				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
@@ -214,7 +217,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				builder.setRight("确认", new DialogInterface.OnClickListener() {
 				   @Override
 				   public void onClick(DialogInterface dialog, int i) {
-					startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
+					startActivity(
+						new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
 					App.getInstance().removeALLActivity_();
 					dialog.dismiss();
 				   }
@@ -294,13 +298,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
 		   DeviceManager.getInstance().OpenDoor(deviceCode);
 		}
-
 		break;
 	}
-
    }
 
    private void moreStartScan() {
+
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
 	mEPCDate.clear();
@@ -316,6 +319,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
+
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -324,6 +329,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
+
 		int i = DeviceManager.getInstance().StartUhfScan(device_id);
 
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
@@ -584,7 +590,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryTwoDto == null&&mTCstInventoryDto.gettCstInventoryVos()!=null) {
+	if (mTCstInventoryTwoDto == null && mTCstInventoryDto.gettCstInventoryVos() != null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
 		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
@@ -664,7 +670,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   }
 		});
    }
-   
+
    @Override
    public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (keyCode == KeyEvent.KEYCODE_BACK) {
