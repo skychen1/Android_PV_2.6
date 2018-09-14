@@ -76,22 +76,22 @@ public class TestDevicesActivity extends SimpleActivity {
         txt_power = (EditText) findViewById(R.id.txt_power);
         bt_queryConnDev = (Button) findViewById(R.id.bt_queryConnDev);
         bt_uhf_reset = (Button) findViewById(R.id.bt_uhf_reset);
-        bt_back=(Button) findViewById(R.id.bt_back);
-        bt_clear=(Button)findViewById(R.id.bt_clear);
-        scroll_log=(ScrollView)findViewById(R.id.scroll_log);
-        bt_fingerCompare=(Button)findViewById(R.id.bt_fingerCompare);
-        txt_scantime=(EditText)findViewById(R.id.txt_scantime);
+        bt_back = (Button) findViewById(R.id.bt_back);
+        bt_clear = (Button) findViewById(R.id.bt_clear);
+        scroll_log = (ScrollView) findViewById(R.id.scroll_log);
+        bt_fingerCompare = (Button) findViewById(R.id.bt_fingerCompare);
+        txt_scantime = (EditText) findViewById(R.id.txt_scantime);
 
         initListener();
         initCallBack();
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
 
-        try{
-            WindowManager wm = (WindowManager)  getSystemService(Context.WINDOW_SERVICE);
+        try {
+            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
             DisplayMetrics dm = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(dm);
-            AppendLog("获取有效屏幕分辨率:X="+ dm.widthPixels+";Y="+ dm.heightPixels);
-        }catch (Throwable e){
+            AppendLog("获取有效屏幕分辨率:X=" + dm.widthPixels + ";Y=" + dm.heightPixels);
+        } catch (Throwable e) {
 
         }
 
@@ -110,7 +110,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 } else if (deviceType == DeviceType.Eth002) {
                     eth002DeviceId = deviceIndentify;
                 }
-                LogUtils.i("FFS","设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
+                LogUtils.i("FFS", "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
                 AppendLog("设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
             }
 
@@ -133,7 +133,7 @@ public class TestDevicesActivity extends SimpleActivity {
             public void OnFingerFea(String deviceId, String fingerFea) {
                 AppendLog("接收到指纹采集信息：" + deviceId + ":::FingerData=" + fingerFea);
                 Log.e("fff", fingerFea);
-                fingerData=fingerFea;
+                fingerData = fingerFea;
             }
 
             @Override
@@ -144,8 +144,8 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
                 AppendLog("接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
-                if(success){
-                    fingerTemplate=fingerData;
+                if (success) {
+                    fingerTemplate = fingerData;
                 }
             }
 
@@ -226,11 +226,11 @@ public class TestDevicesActivity extends SimpleActivity {
                 TestDevicesActivity.this.txt_log.append(s);
 
 
-                int offset=txt_log.getMeasuredHeight()-scroll_log.getMeasuredHeight();
-                if(offset<0){
-                    offset=0;
+                int offset = txt_log.getMeasuredHeight() - scroll_log.getMeasuredHeight();
+                if (offset < 0) {
+                    offset = 0;
                 }
-                scroll_log.scrollTo(0,offset);
+                scroll_log.scrollTo(0, offset);
                 Log.i("fff", msg);
             }
         });
@@ -240,9 +240,9 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_fingerCompare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FingerAlg fingerAlg=new FingerAlg();
-                int score=fingerAlg.AlgMatch(fingerTemplate,fingerData,3);
-                AppendLog("指纹对比结果 Score="+score);
+                FingerAlg fingerAlg = new FingerAlg();
+                int score = fingerAlg.AlgMatch(fingerTemplate, fingerData, 3);
+                AppendLog("指纹对比结果 Score=" + score);
             }
         });
         bt_back.setOnClickListener(new View.OnClickListener() {
@@ -255,20 +255,18 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int scanTime=3000;
-                if(txt_scantime.getText().length()>0){
-                    try{
-                        Integer.parseInt(txt_scantime.getText().toString());
-                        if (scanTime < 0 || scanTime > 100) {
-                            scanTime=3000;
-                        }
-                    }catch (Throwable e){
-
+                int scanTime = 3000;
+                try {
+                    Integer.parseInt(txt_scantime.getText().toString());
+                    if (scanTime < 0 || scanTime > 100) {
+                        scanTime = 3000;
                     }
+                } catch (Throwable e) {
+
                 }
 
-                int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId,scanTime*1000);
-                AppendLog("启动持续扫描，扫描时间为"+scanTime+";RET=" + ret);
+                int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId, scanTime * 1000);
+                AppendLog("启动持续扫描，扫描时间为" + scanTime + ";RET=" + ret);
             }
         });
 
