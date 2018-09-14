@@ -255,10 +255,18 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int scanTime= Integer.parseInt(txt_scantime.getText().toString());
-                if (scanTime < 0 || scanTime > 100) {
-                    scanTime=0;
+                int scanTime=3000;
+                if(txt_scantime.getText().length()>0){
+                    try{
+                        Integer.parseInt(txt_scantime.getText().toString());
+                        if (scanTime < 0 || scanTime > 100) {
+                            scanTime=3000;
+                        }
+                    }catch (Throwable e){
+
+                    }
                 }
+
                 int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId,scanTime*1000);
                 AppendLog("启动持续扫描，扫描时间为"+scanTime+";RET=" + ret);
             }
