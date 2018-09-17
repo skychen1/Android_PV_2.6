@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -30,7 +31,7 @@ public class SettingPopupWindow extends PopupWindow implements OnClickListener {
 
    private final TextView mSettingMeInfo;
    private final TextView mSettingLogin;
-   private final TextView mSettingLoginOut;
+//   private final TextView mSettingLoginOut;
    private final View     mView;
 	private final Context mContext;
 
@@ -42,11 +43,11 @@ public class SettingPopupWindow extends PopupWindow implements OnClickListener {
 		mView = LayoutInflater.from(context).inflate(R.layout.setting_popupwindow, null);
 	mSettingMeInfo = (TextView) mView.findViewById(R.id.setting_meinfo);
 	mSettingLogin = (TextView) mView.findViewById(R.id.setting_login);
-	mSettingLoginOut = (TextView) mView.findViewById(R.id.setting_loginout);
+//	mSettingLoginOut = (TextView) mView.findViewById(R.id.setting_loginout);
 
 	mSettingMeInfo.setOnClickListener(this);
 	mSettingLogin.setOnClickListener(this);
-	mSettingLoginOut.setOnClickListener(this);
+//	mSettingLoginOut.setOnClickListener(this);
    }
 
    public void showPopupWindow(View parent) {
@@ -68,8 +69,8 @@ public class SettingPopupWindow extends PopupWindow implements OnClickListener {
 
 //	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0]-50,
 //				mLocation[1] - ((this.getHeight() - parent.getHeight()-12)));
-	   showAtLocation(parent, Gravity.NO_GRAVITY, 1627,
-				124);
+	   showAtLocation(parent, Gravity.NO_GRAVITY, UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x1510),
+				UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y88));
 	} else {
 	   dismiss();
 	}
@@ -85,9 +86,9 @@ public class SettingPopupWindow extends PopupWindow implements OnClickListener {
 	   case R.id.setting_login:
 		mItemClickListener.onItemClick(1);
 		break;
-	   case R.id.setting_loginout:
-		mItemClickListener.onItemClick(2);
-		break;
+//	   case R.id.setting_loginout:
+//		mItemClickListener.onItemClick(2);
+//		break;
 	   default:
 		break;
 	}

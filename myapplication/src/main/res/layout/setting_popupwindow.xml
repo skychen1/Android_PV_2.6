@@ -61,26 +61,26 @@
 				android:text="登录设置"
 				android:textColor="@color/text_color_black"
 				android:textSize="@dimen/textsize_16"/>
-			<View
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/x2"
-				android:background="@color/bg_c"
-				android:gravity="center_horizontal"
-				android:layout_marginRight="@dimen/x20"
-				android:layout_marginLeft="@dimen/x20"
-				/>
-			<high.rivamed.myapplication.views.DrawableTextView
-				android:id="@+id/setting_loginout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingTop="@dimen/x25"
-				android:paddingBottom="@dimen/x25"
-				android:drawableLeft="@mipmap/hccz_ic_tcdl"
-				android:layout_gravity="center_horizontal"
-				android:drawablePadding="@dimen/x20"
-				android:text="退出登录"
-				android:textColor="@color/text_color_black"
-				android:textSize="@dimen/textsize_16"/>
+			<!--<View-->
+				<!--android:layout_width="match_parent"-->
+				<!--android:layout_height="@dimen/x2"-->
+				<!--android:background="@color/bg_c"-->
+				<!--android:gravity="center_horizontal"-->
+				<!--android:layout_marginRight="@dimen/x20"-->
+				<!--android:layout_marginLeft="@dimen/x20"-->
+				<!--/>-->
+			<!--<high.rivamed.myapplication.views.DrawableTextView-->
+				<!--android:id="@+id/setting_loginout"-->
+				<!--android:layout_width="wrap_content"-->
+				<!--android:layout_height="wrap_content"-->
+				<!--android:paddingTop="@dimen/x25"-->
+				<!--android:paddingBottom="@dimen/x25"-->
+				<!--android:drawableLeft="@mipmap/hccz_ic_tcdl"-->
+				<!--android:layout_gravity="center_horizontal"-->
+				<!--android:drawablePadding="@dimen/x20"-->
+				<!--android:text="退出登录"-->
+				<!--android:textColor="@color/text_color_black"-->
+				<!--android:textSize="@dimen/textsize_16"/>-->
 
 		</LinearLayout>
 

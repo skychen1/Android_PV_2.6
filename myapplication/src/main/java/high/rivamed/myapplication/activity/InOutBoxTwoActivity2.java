@@ -148,9 +148,10 @@ public class InOutBoxTwoActivity2 extends BaseTimelyActivity {
 	super.onStart();
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left,
-	   R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door,
+	   R.id.timely_left, R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb,
+	   R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -167,31 +168,31 @@ public class InOutBoxTwoActivity2 extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					mContext.startActivity(new Intent(mContext, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
 			}
 		   }
 		});
 		break;
 	   case R.id.base_tab_btn_msg:
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_back:
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));

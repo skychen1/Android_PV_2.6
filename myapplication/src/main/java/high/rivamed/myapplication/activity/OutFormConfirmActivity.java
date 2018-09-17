@@ -26,14 +26,16 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_FORM_CONFIRM;
  * 更新描述：   ${TODO}
  */
 
-public class OutFormConfirmActivity extends BaseTimelyActivity{
+public class OutFormConfirmActivity extends BaseTimelyActivity {
+
    @Override
    public int getCompanyType() {
 	super.my_id = ACT_TYPE_FORM_CONFIRM;
 	return my_id;
    }
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one})
+
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -50,29 +52,30 @@ public class OutFormConfirmActivity extends BaseTimelyActivity{
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				   builder.setTwoMsg("您确认要退出登录吗?");
-				   builder.setMsg("温馨提示");
-				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.setRight("确认", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-						   App.getInstance().removeALLActivity_();
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -82,7 +85,7 @@ public class OutFormConfirmActivity extends BaseTimelyActivity{
 	   case R.id.timely_start_btn:
 		break;
 	   case R.id.activity_btn_one:
-		DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功","3号柜" );
+		DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", "3号柜");
 		break;
 
 	}

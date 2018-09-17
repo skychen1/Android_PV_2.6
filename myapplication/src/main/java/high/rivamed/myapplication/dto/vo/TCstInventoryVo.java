@@ -35,10 +35,73 @@ public class TCstInventoryVo implements Serializable {
     private String patientName;
     private String patientId;
     private int    size;
-    private String name;
     private String type;
     private String operationStatus;
     private int deletetatus;//0不移除    1移除
+
+    private String name;//名字
+    private String idNo;//身份证
+    private String deptId;//科室ID
+    private String operatingRoomNo;//手术间ID
+    private String operatingRoomNoName;//手术间名字
+    private String scheduleDateTime;//手术时间
+    private String sex;//性别
+
+    public String getOperatingRoomNoName() {
+        return operatingRoomNoName;
+    }
+
+    public void setOperatingRoomNoName(String operatingRoomNoName) {
+        this.operatingRoomNoName = operatingRoomNoName;
+    }
+
+    public String getCstId() {
+        return cstId;
+    }
+
+    public void setCstId(String cstId) {
+        this.cstId = cstId;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getOperatingRoomNo() {
+        return operatingRoomNo;
+    }
+
+    public void setOperatingRoomNo(String operatingRoomNo) {
+        this.operatingRoomNo = operatingRoomNo;
+    }
+
+    public String getScheduleDateTime() {
+        return scheduleDateTime;
+    }
+
+    public void setScheduleDateTime(String scheduleDateTime) {
+        this.scheduleDateTime = scheduleDateTime;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     public String getOperationScheduleId() {
         return operationScheduleId;

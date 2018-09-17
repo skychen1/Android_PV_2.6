@@ -109,21 +109,21 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	super.initDataAndEvent(savedInstanceState);
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-      if (event.loading){
-         if (mLoading==null){
-		LogUtils.i(TAG,"     mLoading  新建 ");
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
 		mLoading = DialogUtils.showLoading(this);
-	   }else {
-            if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
+	   } else {
+		if (!mLoading.mDialog.isShowing()) {
+		   LogUtils.i(TAG, "     mLoading   重新开启");
 		   mLoading.create().show();
 		}
 	   }
 	}
    }
-
 
    /**
     * 扫描后EPC准备传值
@@ -137,7 +137,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
-	   mLoading=null;
+	   mLoading = null;
 	}
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
@@ -184,9 +184,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	super.onStart();
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left,
-	   R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door,
+	   R.id.timely_left, R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb,
+	   R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -204,30 +205,30 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				startActivity(
 					new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					startActivity(
-						new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;

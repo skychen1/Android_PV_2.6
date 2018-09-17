@@ -375,22 +375,26 @@ public class NetRequest {
     /**
      * 查询患者信息（包含临时患者）
      */
-    public void findSchedulesDate(String optienNameOrId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void findSchedulesDate(String optienNameOrId, int pageNo, int pageSize,  Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_PATIENTS_FIND).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("patientNameOrId", optienNameOrId)
+		    .params("page", pageNo)
+		    .params("rows", pageSize)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
-    /**
-     * 查询本科室下24小时的手术预约患者（不包含临时患者）
-     */
-    public void findSchedulesDateNoTemp(String optienNameOrId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(NetApi.URL_PATIENTS_FIND_NO_TEMP).tag(tag)
-                .params("thingCode", sThingCode)
-                .params("patientNameOrId", optienNameOrId)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
-    }
+//    /**
+//     * 查询本科室下24小时的手术预约患者（不包含临时患者）
+//     */
+//    public void findSchedulesDateNoTemp(String optienNameOrId, int pageNo, int pageSize,  Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+//        OkGo.<String>get(NetApi.URL_PATIENTS_FIND_NO_TEMP).tag(tag)
+//                .params("thingCode", sThingCode)
+//                .params("patientNameOrId", optienNameOrId)
+//              .params("page", pageNo)
+//              .params("rows", pageSize)
+//                .execute(new MyCallBack(tag, dialog, netResult, false));
+//    }
 
     /**
      * 查询所有的未绑定临时患者
@@ -417,8 +421,10 @@ public class NetRequest {
     public void findInPatientPage(String patientNameOrId, int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(NetApi.URL_FIND_IN_PATIENT_PAGE).tag(tag)
                 .params("patientNameOrId", patientNameOrId)
-                .params("pageNo", pageNo)
-                .params("pageSize", pageSize)
+//                .params("pageNo", pageNo)
+//                .params("pageSize", pageSize)
+              .params("page", pageNo)
+              .params("rows", pageSize)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 

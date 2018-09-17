@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -28,6 +32,7 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -45,6 +50,7 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -58,6 +64,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -85,8 +92,17 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private boolean                    mPause   = true;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    ;
+   private int mAllPage = 1;
+   private int mRows    = 20;
    int k = 0;
    private LoadingDialog.Builder mLoading;
+   private RvDialog.Builder      mAfterBind;
+   private String                mIdNo;
+   private String                mScheduleDateTime;
+   private String                mOperatingRoomNo;
+   private String                mOperatingRoomNoName;
+   private String                mSex;
+   private String                mDeptId;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
@@ -95,8 +111,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "     mLoading  新建 ");
 		mLoading = DialogUtils.showLoading(this);
 	   } else {
-		if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
+		if (!mLoading.mDialog.isShowing()) {
+		   LogUtils.i(TAG, "     mLoading   重新开启");
 		   mLoading.create().show();
 		}
 	   }
@@ -185,20 +201,32 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(Event.EventCheckbox event) {
-	int operation = mTCstInventoryDto.getOperation();
-
 	mPatient = event.mString;
 	mPatientId = event.id;
 	mOperationScheduleId = event.operationScheduleId;
+	mIdNo = event.idNo;
+	mScheduleDateTime = event.scheduleDateTime;
+	mOperatingRoomNo = event.operatingRoomNo;
+	mOperatingRoomNoName = event.operatingRoomNoName;
+	mSex = event.sex;
+	mDeptId = event.deptId;
 	Log.i(TAG, "mMovie  " + mPatient);
+	LogUtils.i(TAG, "mOperatingRoomNoName  " + mOperatingRoomNoName);
 	if (event.type != null && event.type.equals("firstBind")) {
 
 	} else {
-	   Log.i(TAG, "mMovie DDD " + mPatient);
+	   LogUtils.i(TAG, "mMovie DDD " + mPatient);
 	   if (!TextUtils.isEmpty(mPatient)) {
 		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
 		   mTCstInventoryVos.get(i).setPatientName(mPatient);
-		   mTCstInventoryVos.get(i).setPatientId(event.id);
+		   mTCstInventoryVos.get(i).setPatientId(mPatientId);
+		   mTCstInventoryVos.get(i).setIdNo(mIdNo);
+		   mTCstInventoryVos.get(i).setOperationScheduleId(mOperationScheduleId);
+		   mTCstInventoryVos.get(i).setScheduleDateTime(mScheduleDateTime);
+		   mTCstInventoryVos.get(i).setOperatingRoomNo(mOperatingRoomNo);
+		   mTCstInventoryVos.get(i).setOperatingRoomNoName(mOperatingRoomNoName);
+		   mTCstInventoryVos.get(i).setSex(mSex);
+		   mTCstInventoryVos.get(i).setDeptId(mDeptId);
 		}
 		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
@@ -215,14 +243,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   }
 		   String status = b.getStatus();
 		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
-			 status.equals("禁止退回") ||
-			 (operation == 3 && !status.contains("领用") && !status.equals("移除")) ||
-			 (operation == 2 && !status.contains("入库") && !status.equals("移除")) ||
-			 (operation == 9 && !status.contains("移出") && !status.equals("移除")) ||
-			 (operation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
-			 (operation == 10 && !status.contains("移入") && !status.equals("移除")) ||
-			 (operation == 7 && !status.contains("退回") && !status.equals("移除")) ||
-			 (operation == 8 && !status.contains("退货") && !status.equals("移除"))) {
+			 status.equals("禁止退回") || (!status.contains("领用") && !status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			return;
@@ -240,6 +261,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRvEvent(Event.EventString event) {
 	mRvEventString = event.mString;
+	mAllPage = 1;
+	patientInfos.clear();
 	loadBingDate(mRvEventString);
    }
 
@@ -249,9 +272,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	return my_id;
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_left, R.id.timely_right, R.id.timely_start_btn_right,
-	   R.id.timely_open_door_right, R.id.ly_bing_btn_right})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_left, R.id.timely_right,
+	   R.id.timely_start_btn_right, R.id.timely_open_door_right, R.id.ly_bing_btn_right})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -268,29 +291,30 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					mContext.startActivity(new Intent(mContext, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -351,8 +375,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	mEPCDate.clear();
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
-	mPatient = null;
-	mPatientId = null;
+	if (UIUtils.getConfigType(mContext, CONFIG_009)) {
+	   mPatient = null;
+	   mPatientId = null;
+	}
+
 	List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 	mTCstInventoryDto.gettCstInventoryVos().clear();
 	deviceInventoryVos.clear();
@@ -364,48 +391,22 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	}
    }
 
-   /**
-    * 后绑定患者
-    *
-    * @param mIntentType
-    */
-   private void loadBingAfterDate(int mIntentType) {
-	mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-	mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
-	mTCstInventoryDto.setPatientName(mPatient);
-	mTCstInventoryDto.setPatientId(mPatientId);
-	String toJson = mGson.toJson(mTCstInventoryDto);
-	LogUtils.i(TAG, "toJson  " + toJson);
-	NetRequest.getInstance().bingPatientsDate(toJson, this, null, new BaseResult() {
+   private void goToFirstBindAC(int position) {
+	//获取需要绑定的患者
+	NetRequest.getInstance().findSchedulesDate("", mAllPage, mRows, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
-		ToastUtils.showShort("操作成功");
-		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		if (mIntentType == 2) {
-		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		   App.getInstance().removeALLActivity_();
-		}
-		finish();
-	   }
-	});
-   }
 
-   private void goToFirstBindAC(int position) {
-	//获取需要绑定的患者
-	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												 BingFindSchedulesBean.class);
-		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
-		   mContext.startActivity(
-			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
-													   position)
-				   .putExtra("type", "afterBindTemp"));
+		FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+		if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+		   startActivity(
+			   new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
+				   "position", position).putExtra("type", "afterBindTemp"));
 		} else {
 		   ToastUtils.showShort("没有患者数据");
 		}
+
 	   }
 	});
    }
@@ -416,8 +417,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     * @param mIntentType
     */
    private void loadBingFistDate(int mIntentType) {
-	//	mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mTCstInventoryDto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+
 	mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
 	mTCstInventoryDto.setPatientName(mPatient);
 	mTCstInventoryDto.setPatientId(mPatientId);
@@ -444,15 +445,96 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private void loadBingDate(String optienNameOrId) {
 
 	NetRequest.getInstance()
-		.findSchedulesDateNoTemp(optienNameOrId, this, null, new BaseResult() {
+		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-													 BingFindSchedulesBean.class);
-			mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-			DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext, mPatientInfos,
-							 "afterBind", -1, null);
 			LogUtils.i(TAG, "result   " + result);
+			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+			   if (patientInfos != null) {
+				for (int i = 0; i < bean.getRows().size(); i++) {
+				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setPatientName(bean.getRows().get(i).getPatientName());
+				   data.setDeptName(bean.getRows().get(i).getDeptName());
+				   data.setOperationSurgeonName(
+					   bean.getRows().get(i).getOperationSurgeonName());
+				   data.setOperatingRoomNoName(
+					   bean.getRows().get(i).getOperatingRoomNoName());
+				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   patientInfos.add(data);
+				}
+				if (mAfterBind != null && mAfterBind.mDialog.isShowing()) {
+				   if (patientInfos != null && patientInfos.size() > 0) {
+					patientInfos.get(0).setSelected(true);
+				   }
+				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+				} else {
+				   mAfterBind = DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext,
+										     patientInfos, "afterBind", -1,
+										     null);
+				   mAfterBind.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+					@Override
+					public void onRefresh(RefreshLayout refreshLayout) {
+					   mAfterBind.mRefreshLayout.setNoMoreData(false);
+					   mAllPage = 1;
+					   patientInfos.clear();
+					   loadBingDate(mRvEventString);
+					   mAfterBind.mRefreshLayout.finishRefresh();
+					}
+				   });
+				   mAfterBind.mRefreshLayout.setOnLoadMoreListener(
+					   new OnLoadMoreListener() {
+						@Override
+						public void onLoadMore(RefreshLayout refreshLayout) {
+						   mAllPage++;
+						   loadBingDate(mRvEventString);
+						   mAfterBind.mRefreshLayout.finishLoadMore();
+						}
+					   });
+				}
+			   } else {
+				for (int i = 0; i < bean.getRows().size(); i++) {
+				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setPatientName(bean.getRows().get(i).getPatientName());
+				   data.setDeptName(bean.getRows().get(i).getDeptName());
+				   data.setOperationSurgeonName(
+					   bean.getRows().get(i).getOperationSurgeonName());
+				   data.setOperatingRoomNoName(
+					   bean.getRows().get(i).getOperatingRoomNoName());
+				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   mPatientInfos.add(data);
+				}
+				mAfterBind = DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext,
+										  patientInfos, "afterBind", -1, null);
+				mAfterBind.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+				   @Override
+				   public void onRefresh(RefreshLayout refreshLayout) {
+					mAfterBind.mRefreshLayout.setNoMoreData(false);
+					mAllPage = 1;
+					mPatientInfos.clear();
+					loadBingDate(mRvEventString);
+					mAfterBind.mRefreshLayout.finishRefresh();
+				   }
+				});
+				mAfterBind.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+				   @Override
+				   public void onLoadMore(RefreshLayout refreshLayout) {
+					mAllPage++;
+					loadBingDate(mRvEventString);
+					mAfterBind.mRefreshLayout.finishLoadMore();
+				   }
+				});
+			   }
+
+			}
 		   }
 		});
    }
@@ -601,11 +683,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   //
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
-	   //
-	   //	}
-	   //	if (mShowLoading != null) {
-	   //	   mShowLoading.mDialog.dismiss();
-	   //
+
 	}
    }
 

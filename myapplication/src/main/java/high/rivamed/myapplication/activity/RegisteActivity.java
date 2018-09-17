@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
@@ -42,10 +41,12 @@ public class RegisteActivity extends SimpleActivity {
    TextView         mBaseTabTvName;
    @BindView(R.id.base_tab_icon_right)
    CircleImageView  mBaseTabIconRight;
+   @BindView(R.id.base_tab_tv_outlogin)
+    TextView        mBaseTabOutLogin;
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;
-  public static ViewPager        mRegisteViewpager;
-   private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证","数据恢复"};
+   public static ViewPager mRegisteViewpager;
+   private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证", "数据恢复"};
    private RegistePagerAdapter mPagerAdapter;
 
    @Override
@@ -57,15 +58,17 @@ public class RegisteActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mRegisteViewpager = mContext.findViewById(R.id.registe_viewpager);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
+	mBaseTabIconRight.setVisibility(View.GONE);
+	mBaseTabTvName.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("工程模式");
-	mBaseTabTvName.setText("退出  ");
-	mBaseTabTvName.setTextSize(18);
-	mBaseTabTvName.setTextColor(getResources().getColor(R.color.color_drak_green));
-	ViewGroup.LayoutParams Params = (ViewGroup.LayoutParams) mBaseTabIconRight.getLayoutParams();
-	Params.height = 50;
-	Params.width = 50;
-	mBaseTabIconRight.setLayoutParams(Params);
-	mBaseTabIconRight.setImageResource(R.mipmap.gcms_ic_tc);
+//	mBaseTabTvName.setText("退出  ");
+//	mBaseTabTvName.setTextSize(18);
+//	mBaseTabTvName.setTextColor(getResources().getColor(R.color.color_drak_green));
+//	ViewGroup.LayoutParams Params = (ViewGroup.LayoutParams) mBaseTabIconRight.getLayoutParams();
+//	Params.height = 50;
+//	Params.width = 50;
+//	mBaseTabIconRight.setLayoutParams(Params);
+//	mBaseTabIconRight.setImageResource(R.mipmap.gcms_ic_tc);
 
 	mPagerAdapter = new RegistePagerAdapter(getSupportFragmentManager());
 	mRegisteViewpager.setAdapter(mPagerAdapter);
@@ -84,13 +87,11 @@ public class RegisteActivity extends SimpleActivity {
 	return null;
    }
 
-
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right})
+   @OnClick({R.id.base_tab_tv_outlogin})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
-	   case R.id.base_tab_tv_name:
-	   case R.id.base_tab_icon_right:
-	      startActivity(new Intent(this, LoginActivity.class));
+	   case R.id.base_tab_tv_outlogin:
+		startActivity(new Intent(this, LoginActivity.class));
 		finish();
 		break;
 	}
@@ -108,9 +109,9 @@ public class RegisteActivity extends SimpleActivity {
 		return RegisteFrag.newInstance();
 	   } else if (position == 1) {
 		return RegisteSelfCheckFrag.newInstance();
-	   } else if (position == 2){
+	   } else if (position == 2) {
 		return RegisteTestFrag.newInstance();
-	   }else {
+	   } else {
 		return RegisteRecoverFrag.newInstance();
 	   }
 	}

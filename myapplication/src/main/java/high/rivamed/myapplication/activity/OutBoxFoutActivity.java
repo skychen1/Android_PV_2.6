@@ -28,7 +28,7 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
+import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -248,9 +248,9 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	return my_id;
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.btn_four_ly, R.id.btn_four_yc,
-	   R.id.btn_four_tb, R.id.btn_four_th})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.btn_four_ly,
+	   R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -267,29 +267,30 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					mContext.startActivity(new Intent(mContext, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -299,7 +300,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   case R.id.timely_start_btn:
 		mShowLoading = DialogUtils.showLoading(mContext);
 		initCallBack();
-		for (String readerid : ContentConsumeOperateFrag.mReaderIdList) {
+		for (String readerid : ContentConsumeOperateFrag2.mReaderIdList) {
 		   LogUtils.i(TAG, "readerid    " + readerid);
 		   int ret = DeviceManager.getInstance().StartUhfScan(readerid);
 		   LogUtils.i(TAG, "readerid    " + ret);
@@ -341,7 +342,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private void setThDate(int mIntentType) {
 	mType = 2;//1.7退货
-	DialogUtils.showStoreDialog(mContext, 2, mType, null,mIntentType);
+	DialogUtils.showStoreDialog(mContext, 2, mType, null, mIntentType);
    }
 
    /**
@@ -352,17 +353,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
 	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
-	NetRequest.getInstance()
-		.getOperateDbDialog(deptId, branchCode, this, null, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			LogUtils.i(TAG, "8调拨   " + result);
-			HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-			DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
-			//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
+	NetRequest.getInstance().getOperateDbDialog(deptId, branchCode, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "8调拨   " + result);
+		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
+		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
+		//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
 
-		   }
-		});
+	   }
+	});
 
    }
 
@@ -377,7 +377,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "库房   " + result);
 		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
-		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean,mIntentType);
+		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
 
 	   }
 	});
@@ -390,10 +390,12 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private void setLyDate(int mIntentType) {
 	String mTCstInventoryDtoJson = null;
 	if (mTCstInventoryDtoFour == null) {
-	   mTCstInventoryDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	   mTCstInventoryDto.setStorehouseCode(
+		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDto);
 	} else {
-	   mTCstInventoryDtoFour.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	   mTCstInventoryDtoFour.setStorehouseCode(
+		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 	}
 	if (mTCstInventoryDto.getConfigPatientCollar().equals("0") ||
@@ -566,7 +568,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
-	   if (box_id!=null){
+	   if (box_id != null) {
 		deviceInventoryVo.setDeviceCode(box_id);
 	   }
 	}
@@ -584,7 +586,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryDtoFour = mGson.fromJson(result, TCstInventoryDto.class);
 		String string = null;
-		if (mTCstInventoryDtoFour.getErrorEpcs()!=null&&mTCstInventoryDtoFour.getErrorEpcs().size()>0){
+		if (mTCstInventoryDtoFour.getErrorEpcs() != null &&
+		    mTCstInventoryDtoFour.getErrorEpcs().size() > 0) {
 		   string = StringUtils.listToString(mTCstInventoryDtoFour.getErrorEpcs());
 		   ToastUtils.showLong(string);
 		}

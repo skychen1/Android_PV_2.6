@@ -50,297 +50,301 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
  */
 public class LoginInfoActivity extends BaseSimpleActivity {
 
-    private static final String TAG = "LoginInfoActivity";
-    @BindView(R.id.setting_password)
-    TextView mSettingPassword;
-    @BindView(R.id.setting_password_edit)
-    TextView mSettingPasswordEdit;
-    @BindView(R.id.setting_revise_password)
-    ImageView mSettingRevisePassword;
-    @BindView(R.id.setting_fingerprint)
-    TextView mSettingFingerprint;
-    @BindView(R.id.setting_fingerprint_edit)
-    TextView mSettingFingerprintEdit;
-    @BindView(R.id.setting_fingerprint_bind)
-    TextView mSettingFingerprintBind;
-    @BindView(R.id.setting_ic_card)
-    TextView mSettingIcCard;
-    @BindView(R.id.setting_ic_card_edit)
-    TextView mSettingIcCardEdit;
-    @BindView(R.id.setting_ic_card_bind)
-    TextView mSettingIcCardBind;
-    @BindView(R.id.top_icon)
-    ImageView mTopIcon;
-    private LoadingDialog.Builder mBuilder;
-    private String mUserId = "";
+   private static final String TAG = "LoginInfoActivity";
+   @BindView(R.id.setting_password)
+   TextView  mSettingPassword;
+   @BindView(R.id.setting_password_edit)
+   TextView  mSettingPasswordEdit;
+   @BindView(R.id.setting_revise_password)
+   ImageView mSettingRevisePassword;
+   @BindView(R.id.setting_fingerprint)
+   TextView  mSettingFingerprint;
+   @BindView(R.id.setting_fingerprint_edit)
+   TextView  mSettingFingerprintEdit;
+   @BindView(R.id.setting_fingerprint_bind)
+   TextView  mSettingFingerprintBind;
+   @BindView(R.id.setting_ic_card)
+   TextView  mSettingIcCard;
+   @BindView(R.id.setting_ic_card_edit)
+   TextView  mSettingIcCardEdit;
+   @BindView(R.id.setting_ic_card_bind)
+   TextView  mSettingIcCardBind;
+   @BindView(R.id.top_icon)
+   ImageView mTopIcon;
+   private LoadingDialog.Builder mBuilder;
+   private String mUserId = "";
 
-    @Override
-    public void initDataAndEvent(Bundle savedInstanceState) {
-        mBaseTabBack.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setText("登录信息");
-        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	 if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
-	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nan)
-		    .error(R.mipmap.hccz_mrtx_nan)
-		    .into(mBaseTabIconRight);
-	 }else {
-	    Glide.with(this)
-		    .load(R.mipmap.hccz_mrtx_nv)
-		    .error(R.mipmap.hccz_mrtx_nv)
-		    .into(mBaseTabIconRight);
-	 }
+   @Override
+   public void initDataAndEvent(Bundle savedInstanceState) {
+	mBaseTabBack.setVisibility(View.VISIBLE);
+	mBaseTabTvTitle.setVisibility(View.VISIBLE);
+	mBaseTabTvTitle.setText("登录信息");
+	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+	   Glide.with(this)
+		   .load(R.mipmap.hccz_mrtx_nan)
+		   .error(R.mipmap.hccz_mrtx_nan)
+		   .into(mBaseTabIconRight);
+	} else {
+	   Glide.with(this)
+		   .load(R.mipmap.hccz_mrtx_nv)
+		   .error(R.mipmap.hccz_mrtx_nv)
+		   .into(mBaseTabIconRight);
+	}
 
-        initData();
-    }
+	initData();
+   }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
+   @Override
+   protected void onPause() {
+	super.onPause();
+	finish();
+   }
 
-    private void initData() {
-        try {
-            String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-            LogUtils.i(TAG,"accountData    "+accountData);
-            LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
+   private void initData() {
+	try {
+	   String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
+	   LogUtils.i(TAG, "accountData    " + accountData);
+	   LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 
-            LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
+	   LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-            mUserId = appAccountInfoVo.getUserId();
-            if (appAccountInfoVo.getIsFinger() == 0) {
-                //指纹未绑定
-                mSettingFingerprintEdit.setText("未绑定");
-                mSettingFingerprintBind.setText("绑定");
-            } else {
-                //已绑定
-                mSettingFingerprintEdit.setText("已绑定");
-                mSettingFingerprintBind.setText("绑定");
-            }
+	   mUserId = appAccountInfoVo.getUserId();
+	   if (appAccountInfoVo.getIsFinger() == 0) {
+		//指纹未绑定
+		mSettingFingerprintEdit.setText("未绑定");
+		mSettingFingerprintBind.setText("绑定");
+	   } else {
+		//已绑定
+		mSettingFingerprintEdit.setText("已绑定");
+		mSettingFingerprintBind.setText("绑定");
+	   }
 
-            if (appAccountInfoVo.getIsWaidai() == 0) {
-                //指纹未绑定
-                mSettingIcCardEdit.setText("未绑定");
-                mSettingIcCardBind.setText("绑定");
-            } else {
-                //已绑定
-                mSettingIcCardEdit.setText("已绑定");
-                mSettingIcCardBind.setText("绑定");
-            }
-            if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX)!=null&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")){
-                Glide.with(this)
-                      .load(R.mipmap.hccz_mrtx_nan)
-                      .error(R.mipmap.hccz_mrtx_nan)
-                      .into(mTopIcon);
-            }else {
-                Glide.with(this)
-                      .load(R.mipmap.hccz_mrtx_nv)
-                      .error(R.mipmap.hccz_mrtx_nv)
-                      .into(mTopIcon);
-            }
+	   if (appAccountInfoVo.getIsWaidai() == 0) {
+		//指纹未绑定
+		mSettingIcCardEdit.setText("未绑定");
+		mSettingIcCardBind.setText("绑定");
+	   } else {
+		//已绑定
+		mSettingIcCardEdit.setText("已绑定");
+		mSettingIcCardBind.setText("绑定");
+	   }
+	   if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+		 SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+		Glide.with(this)
+			.load(R.mipmap.hccz_mrtx_nan)
+			.error(R.mipmap.hccz_mrtx_nan)
+			.into(mTopIcon);
+	   } else {
+		Glide.with(this)
+			.load(R.mipmap.hccz_mrtx_nv)
+			.error(R.mipmap.hccz_mrtx_nv)
+			.into(mTopIcon);
+	   }
 
+	} catch (Exception e) {
+	   e.printStackTrace();
+	}
+   }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+   @Override
+   protected int getContentLayoutId() {
+	return R.layout.setting_logininfo_layout;
+   }
 
-    @Override
-    protected int getContentLayoutId() {
-        return R.layout.setting_logininfo_layout;
-    }
+   @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right,
+	   R.id.base_tab_tv_outlogin, R.id.base_tab_btn_msg, R.id.base_tab_back,
+	   R.id.setting_revise_password, R.id.setting_fingerprint_bind})
+   public void onViewClicked(View view) {
+	switch (view.getId()) {
+	   case R.id.base_tab_icon_right:
+	   case R.id.base_tab_tv_name:
+		mPopupWindow = new SettingPopupWindow(mContext);
+		mPopupWindow.showPopupWindow(view);
+		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
+		   @Override
+		   public void onItemClick(int position) {
+			switch (position) {
+			   case 0:
+				startActivity(new Intent(LoginInfoActivity.this, MyInfoActivity.class));
+				break;
+			   case 1:
+				startActivity(new Intent(LoginInfoActivity.this, LoginInfoActivity.class));
+				break;
 
-    @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-            R.id.base_tab_back, R.id.setting_revise_password, R.id.setting_fingerprint_bind})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.base_tab_icon_right:
-            case R.id.base_tab_tv_name:
-                mPopupWindow = new SettingPopupWindow(mContext);
-                mPopupWindow.showPopupWindow(view);
-                mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        switch (position) {
-                            case 0:
-                               startActivity(new Intent(LoginInfoActivity.this, MyInfoActivity.class));
-                                break;
-                            case 1:
-                                startActivity(new Intent(LoginInfoActivity.this, LoginInfoActivity.class));
-                                break;
-                            case 2:
-                                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-                                builder.setTwoMsg("您确认要退出登录吗?");
-                                builder.setMsg("温馨提示");
-                                builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int i) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.setRight("确认", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int i) {
+			}
+		   }
+		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
+		break;
+	   case R.id.base_tab_btn_msg:
+		break;
+	   case R.id.base_tab_back:
+		finish();
+		break;
+	   case R.id.setting_revise_password:
+		DialogUtils.showOnePassWordDialog(mContext);
+		break;
+	   case R.id.setting_fingerprint_bind:
+		DialogUtils.showOneFingerDialog(mContext, new OnfingerprintBackListener() {
+		   @Override
+		   public void OnfingerprintBack(List<String> list) {
+			if (list.size() == 3) {
+			   bindFingerPrint(list);
+			} else {
+			   ToastUtils.showShort("采集失败,请重试");
+			}
+		   }
+		});
+		break;
+	   case R.id.setting_ic_card_bind:
+		DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
+		   @Override
+		   public void OnBindIdCard(String idCard) {
+			if (!TextUtils.isEmpty(idCard)) {
+			   bindIdCrad(idCard);
+			} else {
+			   ToastUtils.showShort("采集失败,请重试");
+			}
+		   }
+		});
+		break;
+	}
+   }
 
-                                        startActivity(new Intent(LoginInfoActivity.this, LoginActivity.class));
-                                        App.getInstance().removeALLActivity_();
-                                        finish();
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.create().show();
-                                break;
-                        }
-                    }
-                });
-                break;
-            case R.id.base_tab_btn_msg:
-                break;
-            case R.id.base_tab_back:
-                finish();
-                break;
-            case R.id.setting_revise_password:
-                DialogUtils.showOnePassWordDialog(mContext);
-                break;
-            case R.id.setting_fingerprint_bind:
-                DialogUtils.showOneFingerDialog(mContext, new OnfingerprintBackListener() {
-                    @Override
-                    public void OnfingerprintBack(List<String> list) {
-                        if (list.size() == 3) {
-                            bindFingerPrint(list);
-                        } else {
-                            ToastUtils.showShort("采集失败,请重试");
-                        }
-                    }
-                });
-                break;
-            case R.id.setting_ic_card_bind:
-                DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
-                    @Override
-                    public void OnBindIdCard(String idCard) {
-                        if (!TextUtils.isEmpty(idCard)) {
-                            bindIdCrad(idCard);
-                        } else {
-                            ToastUtils.showShort("采集失败,请重试");
-                        }
-                    }
-                });
-                break;
-        }
-    }
-
-    /*
+   /*
     * 腕带绑定
     * */
-    private void bindIdCrad(String idCard) {
-        mBuilder = DialogUtils.showLoading(mContext);
-        RegisterWandaiDto dto = new RegisterWandaiDto();
-        RegisterWandaiDto.UserFeatureInfoBean bean = new RegisterWandaiDto.UserFeatureInfoBean();
-        bean.setUserId(mUserId);
-        bean.setData(idCard);
-        bean.setType("2");
-        dto.setUserFeatureInfo(bean);
-        NetRequest.getInstance().registerIdCard(mGson.toJson(dto), this, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                try {
-                    RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
-                    if (data.isOperateSuccess()) {
-                        ToastUtils.showShort(data.getMsg());
-                        //指纹未绑定
-                        mSettingIcCardEdit.setText("已绑定");
-                        mSettingIcCardBind.setText("绑定");
+   private void bindIdCrad(String idCard) {
+	mBuilder = DialogUtils.showLoading(mContext);
+	RegisterWandaiDto dto = new RegisterWandaiDto();
+	RegisterWandaiDto.UserFeatureInfoBean bean = new RegisterWandaiDto.UserFeatureInfoBean();
+	bean.setUserId(mUserId);
+	bean.setData(idCard);
+	bean.setType("2");
+	dto.setUserFeatureInfo(bean);
+	NetRequest.getInstance().registerIdCard(mGson.toJson(dto), this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		try {
+		   RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
+		   if (data.isOperateSuccess()) {
+			ToastUtils.showShort(data.getMsg());
+			//指纹未绑定
+			mSettingIcCardEdit.setText("已绑定");
+			mSettingIcCardBind.setText("绑定");
 
-                        String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-                        LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
-                        data2.getAppAccountInfoVo().setIsFinger(1);
-                        SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
+			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA,
+									   "");
+			LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
+			data2.getAppAccountInfoVo().setIsFinger(1);
+			SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
 
-                    } else {
-                        ToastUtils.showShort(data.getMsg());
-                    }
+		   } else {
+			ToastUtils.showShort(data.getMsg());
+		   }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ToastUtils.showShort("绑定失败");
-                }
+		} catch (Exception e) {
+		   e.printStackTrace();
+		   ToastUtils.showShort("绑定失败");
+		}
 
-                mBuilder.mDialog.dismiss();
-            }
+		mBuilder.mDialog.dismiss();
+	   }
 
-            @Override
-            public void onError(String result) {
-                super.onError(result);
-                mBuilder.mDialog.dismiss();
-                ToastUtils.showShort("绑定失败");
-            }
-        });
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		mBuilder.mDialog.dismiss();
+		ToastUtils.showShort("绑定失败");
+	   }
+	});
 
-    }
+   }
 
-    /*
-     * 绑定指纹
-     * */
-    private void bindFingerPrint(List<String> list) {
-        mBuilder = DialogUtils.showLoading(mContext);
-        RegisterFingerDto dto = new RegisterFingerDto();
-        List<RegisterFingerDto.UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            RegisterFingerDto.UserFeatureInfosBean bean = new RegisterFingerDto.UserFeatureInfosBean();
-            bean.setUserId(mUserId);
-            bean.setType("1");
-            bean.setData(list.get(i));
-            userFeatureInfos.add(bean);
-        }
-        dto.setUserFeatureInfos(userFeatureInfos);
-        NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG,"result   "+result);
-                try {
-                    RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
-                    if (data.isOperateSuccess()) {
-                        ToastUtils.showShort("绑定成功");
-                        //指纹未绑定
-                        mSettingFingerprintEdit.setText("已绑定");
-                        mSettingFingerprintBind.setText("绑定");
+   /*
+    * 绑定指纹
+    * */
+   private void bindFingerPrint(List<String> list) {
+	mBuilder = DialogUtils.showLoading(mContext);
+	RegisterFingerDto dto = new RegisterFingerDto();
+	List<RegisterFingerDto.UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
+	for (int i = 0; i < list.size(); i++) {
+	   RegisterFingerDto.UserFeatureInfosBean bean = new RegisterFingerDto.UserFeatureInfosBean();
+	   bean.setUserId(mUserId);
+	   bean.setType("1");
+	   bean.setData(list.get(i));
+	   userFeatureInfos.add(bean);
+	}
+	dto.setUserFeatureInfos(userFeatureInfos);
+	NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		try {
+		   RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
+		   if (data.isOperateSuccess()) {
+			ToastUtils.showShort("绑定成功");
+			//指纹未绑定
+			mSettingFingerprintEdit.setText("已绑定");
+			mSettingFingerprintBind.setText("绑定");
 
-                        String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-                        LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
-                        data2.getAppAccountInfoVo().setIsFinger(1);
-                        SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
+			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA,
+									   "");
+			LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
+			data2.getAppAccountInfoVo().setIsFinger(1);
+			SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
 
+		   } else {
+			ToastUtils.showShort("绑定失败");
+		   }
 
-                    } else {
-                        ToastUtils.showShort("绑定失败");
-                    }
+		} catch (Exception e) {
+		   e.printStackTrace();
+		   ToastUtils.showShort("绑定失败");
+		}
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ToastUtils.showShort("绑定失败");
-                }
+		mBuilder.mDialog.dismiss();
+	   }
 
-                mBuilder.mDialog.dismiss();
-            }
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		mBuilder.mDialog.dismiss();
+		ToastUtils.showShort("绑定失败");
+	   }
+	});
+   }
 
-            @Override
-            public void onError(String result) {
-                super.onError(result);
-                mBuilder.mDialog.dismiss();
-                ToastUtils.showShort("绑定失败");
-            }
-        });
-    }
+   //提供接口
+   public interface OnfingerprintBackListener {
 
-    //提供接口
-    public interface OnfingerprintBackListener {
-        void OnfingerprintBack(List<String> list);
-    }
+	void OnfingerprintBack(List<String> list);
+   }
 
-    public interface OnBindIdCardListener {
-        void OnBindIdCard(String idCard);
-    }
+   public interface OnBindIdCardListener {
+
+	void OnBindIdCard(String idCard);
+   }
 
 }

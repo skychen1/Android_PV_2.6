@@ -15,9 +15,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -115,47 +112,47 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.timely_number)
    public TextView mTimelyNumber;
    @BindView(R.id.timely_ll)
-   LinearLayout           mLinearLayout;
+   LinearLayout mLinearLayout;
    @BindView(R.id.recyclerview)
-   RecyclerView           mRecyclerview;
+   RecyclerView mRecyclerview;
    @BindView(R.id.refreshLayout)
-   SmartRefreshLayout     mRefreshLayout;
+   public SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.timely_rl_title)
-   RelativeLayout         mRelativeLayout;
+   RelativeLayout mRelativeLayout;
    @BindView(R.id.timely_ll_gone)
-   LinearLayout           mTimelyLlGone;
+   LinearLayout   mTimelyLlGone;
    @BindView(R.id.timely_number_left)
-   TextView               mTimelyNumberLeft;
+   TextView       mTimelyNumberLeft;
    @BindView(R.id.timely_start_btn_right)
-   TextView               mTimelyStartBtnRight;
+   TextView       mTimelyStartBtnRight;
    @BindView(R.id.ly_bing_btn_right)
-   TextView               mLyBingBtnRight;
+   TextView       mLyBingBtnRight;
    @BindView(R.id.timely_ll_gone_right)
-   LinearLayout           mTimelyLlGoneRight;
+   LinearLayout   mTimelyLlGoneRight;
    @BindView(R.id.search_et)
-   EditText               mSearchEt;
+   EditText       mSearchEt;
    @BindView(R.id.search_iv_delete)
-   ImageView              mSearchIvDelete;
+   ImageView      mSearchIvDelete;
    @BindView(R.id.stock_search)
-   FrameLayout            mStockSearch;
+   FrameLayout    mStockSearch;
    @BindView(R.id.ly_creat_temporary_btn)
-   TextView               mLyCreatTemporaryBtn;
+   TextView       mLyCreatTemporaryBtn;
    @BindView(R.id.dialog_left)
-   TextView               mDialogLeft;
+   TextView       mDialogLeft;
    @BindView(R.id.dialog_right)
-   TextView               mDialogRight;
+   TextView       mDialogRight;
    @BindView(R.id.activity_down_btn_seven_ll)
-   LinearLayout           mActivityDownBtnSevenLl;
+   LinearLayout   mActivityDownBtnSevenLl;
    @BindView(R.id.timely_rl)
-   LinearLayout           mTimelyRl;
+   LinearLayout   mTimelyRl;
    @BindView(R.id.header)
-   MaterialHeader         mHeader;
+   MaterialHeader mHeader;
    @BindView(R.id.public_ll)
-   LinearLayout           mPublicLl;
+   LinearLayout   mPublicLl;
    @BindView(R.id.tv_patient_conn)
-   TextView               mTvPatientConn;
+   TextView       mTvPatientConn;
    @BindView(R.id.activity_down_patient_conn)
-   LinearLayout           mActivityDownPatientConn;
+   LinearLayout   mActivityDownPatientConn;
 
    private int           mLayout;
    private View          mHeadView;
@@ -174,6 +171,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
    private TCstInventoryDto mDto;
    private String           mBindFirstType;
+   private int              mOperation;
 
    /**
     * 看关门后是否需要设置按钮为可以点击
@@ -192,6 +190,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 	});
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
@@ -201,7 +200,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
-	int operation = mTCstInventoryDto.getOperation();
+	if (mTCstInventoryDto != null) {
+	   mOperation = mTCstInventoryDto.getOperation();
+	}
 	LogUtils.i(TAG, "fffffafafafafafa");
 	if (event.type) {
 	   if (event.bing) {
@@ -218,13 +219,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   String status = b.getStatus();
 		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
 			 status.equals("禁止退回") ||
-			 (operation == 3 && !status.contains("领用") && !status.equals("移除")) ||
-			 (operation == 2 && !status.contains("入库") && !status.equals("移除")) ||
-			 (operation == 9 && !status.contains("移出") && !status.equals("移除")) ||
-			 (operation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
-			 (operation == 10 && !status.contains("移入") && !status.equals("移除")) ||
-			 (operation == 7 && !status.contains("退回") && !status.equals("移除")) ||
-			 (operation == 8 && !status.contains("退货") && !status.equals("移除"))) {
+			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			return;
@@ -240,13 +241,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   String status = b.getStatus();
 		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
 			 status.equals("禁止退回") ||
-			 (operation == 3 && !status.contains("领用") && !status.equals("移除")) ||
-			 (operation == 2 && !status.contains("入库") && !status.equals("移除")) ||
-			 (operation == 9 && !status.contains("移出") && !status.equals("移除")) ||
-			 (operation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
-			 (operation == 10 && !status.contains("移入") && !status.equals("移除")) ||
-			 (operation == 7 && !status.contains("退回") && !status.equals("移除")) ||
-			 (operation == 8 && !status.contains("退货") && !status.equals("移除"))) {
+			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			return;
@@ -549,6 +550,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
 	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
@@ -737,6 +739,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -851,19 +854,19 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 上拉下拉刷新
     */
    private void initlistener() {
-	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-	   @Override
-	   public void onRefresh(RefreshLayout refreshLayout) {
-		mRefreshLayout.setNoMoreData(false);
-		refreshLayout.finishRefresh();
-	   }
-	});
-	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-	   @Override
-	   public void onLoadMore(RefreshLayout refreshLayout) {
-		refreshLayout.finishLoadMoreWithNoMoreData();
-	   }
-	});
+	//	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	//	   @Override
+	//	   public void onRefresh(RefreshLayout refreshLayout) {
+	//		mRefreshLayout.setNoMoreData(false);
+	//		refreshLayout.finishRefresh();
+	//	   }
+	//	});
+	//	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	//	   @Override
+	//	   public void onLoadMore(RefreshLayout refreshLayout) {
+	//		refreshLayout.finishLoadMoreWithNoMoreData();
+	//	   }
+	//	});
    }
 
    private List<Movie> genData6() {

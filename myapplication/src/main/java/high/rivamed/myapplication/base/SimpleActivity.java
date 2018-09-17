@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -49,7 +50,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+	   getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
 	   mContext = this;
 		mGson = new Gson();
 	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();

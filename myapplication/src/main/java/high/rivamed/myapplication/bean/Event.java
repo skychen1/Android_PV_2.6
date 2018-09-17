@@ -67,27 +67,28 @@ public class Event {
    }
    public static class EventCheckbox {
 	public String mString;
+	public CreatTempPatientBean creatTempPatientBean;
 	public String id;
+	public String deptId;
+	public String idNo;
+	public String scheduleDateTime;
+	public String operatingRoomNo;
+	public String sex;
+	public String operatingRoomNoName;
 	public String type;
 	public String operationScheduleId;
 	public int position;
 	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
-	public EventCheckbox(String trim) {
-	   this.mString = trim;
-	}
-	public EventCheckbox(String trim,String id) {
-	   this.mString = trim;
-	   this.id = id;
-	}
-	public EventCheckbox(String trim,String id,String type) {
-	   this.mString = trim;
-	   this.id = id;
-	   this.type = type;
-	}
-	public EventCheckbox(String name,String id,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	public EventCheckbox(String name,String mId,String idNo,String scheduleDateTime,String operatingRoomNo,String operatingRoomNoName,String sex,String deptId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   this.deptId = deptId;
+	   this.id = mId;
 	   this.mString = name;
-	   this.id = id;
+	   this.idNo = idNo;
+	   this.scheduleDateTime = scheduleDateTime;
+	   this.operatingRoomNo = operatingRoomNo;
+	   this.operatingRoomNoName = operatingRoomNoName;
+	   this.sex = sex;
 	   this.type = type;
 	   this.position = position;
 	   this.mTbaseDevices = mTbaseDevices;
@@ -185,13 +186,15 @@ public class Event {
         public String userSex="";
         public String idCard="";
         public String time="";
-        public String roomNum="";
+        public String roomNum="";//手术间名字
+        public String operatingRoomNo="";//手术间编号
 
-        public tempPatientEvent(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog) {
+        public tempPatientEvent(String userName, String roomNum,String roomId, String userSex, String idCard, String time, Dialog dialog) {
 
 
             this.userName = userName;
             this.roomNum = roomNum;
+            this.operatingRoomNo = roomId;
             this.userSex = userSex;
             this.dialog = dialog;
             this.idCard = idCard;

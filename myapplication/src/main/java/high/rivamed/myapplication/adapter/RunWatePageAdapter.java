@@ -11,7 +11,6 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.RunWateBean;
-import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -55,12 +54,12 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
         mSeven_two.setText(item.getCstName());
         mSeven_three.setText(item.getEpc());
         mSeven_four.setText(item.getCstSpec());
-        mSeven_five.setText(item.getExpiration());
+        mSeven_five.setText(item.getPatientNameAndId());
         mSeven_six.setText(item.getDeviceName());
         mSeven_seven.setText(item.getOptionDate());
         mSeven_eight.setText(item.getOptionName());
 
-        UIUtils.initTermOfValidity(mContext, helper, five, mSeven_five);
+//        UIUtils.initTermOfValidity(mContext, helper, five, mSeven_five);
 
         mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_green));
         //	if (one.contains("入库") || one.equals("移入") || one.equals("退回") ) {

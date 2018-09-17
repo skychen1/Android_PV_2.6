@@ -286,7 +286,7 @@ public class TimelyAllFrag2 extends SimpleFragment {
 			mDeviceInventoryVos.clear();
 		   }
 		   mTimelyAllAdapter.notifyDataSetChanged();
-		   ContentConsumeOperateFrag.mPause = true;
+		   ContentConsumeOperateFrag2.mPause = true;
 		   openDoor();
 
 		}
