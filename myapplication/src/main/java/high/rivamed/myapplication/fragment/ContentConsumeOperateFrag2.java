@@ -378,6 +378,12 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	initEvent();
    }
 
+   @Override
+   public void onStart() {
+	EventBusUtils.register(this);
+	super.onStart();
+   }
+
    private void initEvent() {
 	//关联患者
 	mFastopenTitleGuanlian.setOnClickListener(new View.OnClickListener() {
@@ -881,6 +887,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Override
    public void onPause() {
 	mPause = true;
+	EventBusUtils.unregister(this);
 	super.onPause();
    }
 

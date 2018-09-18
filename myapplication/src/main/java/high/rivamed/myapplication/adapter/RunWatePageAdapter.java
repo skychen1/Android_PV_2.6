@@ -54,7 +54,11 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
         mSeven_two.setText(item.getCstName());
         mSeven_three.setText(item.getEpc());
         mSeven_four.setText(item.getCstSpec());
-        mSeven_five.setText(item.getPatientNameAndId());
+        if (item.getPatientNameAndId()==null||item.getPatientNameAndId().equals("")){
+            mSeven_five.setText("/");
+        }else {
+            mSeven_five.setText(item.getPatientNameAndId());
+        }
         mSeven_six.setText(item.getDeviceName());
         mSeven_seven.setText(item.getOptionDate());
         mSeven_eight.setText(item.getOptionName());

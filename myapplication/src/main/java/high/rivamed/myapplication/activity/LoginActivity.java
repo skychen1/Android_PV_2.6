@@ -199,6 +199,7 @@ public class LoginActivity extends SimpleActivity {
 		   LogUtils.i(TAG, "findThingConfigDate   " + result);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
 
 		   if(getConfigTrue(tCstConfigVos)){//禁止

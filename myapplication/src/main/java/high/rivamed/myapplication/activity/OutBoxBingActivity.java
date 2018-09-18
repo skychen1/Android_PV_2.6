@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -622,25 +623,6 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
 	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
 	   ToastUtils.showLong(string);
-	} else if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
-		     (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-			mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
-		     mEthDeviceIdBack.size() == 1) {
-
-	   if (mTimelyLeft != null && mTimelyRight != null) {
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-	   }
-	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
-	   ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
-	   new Handler().postDelayed(new Runnable() {
-		public void run() {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
-		   finish();
-		}
-	   }, 3000);
-
 	} else {
 
 	   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
@@ -683,7 +665,28 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   //
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
+	   String toJson = mGson.toJson(mTCstInventoryTwoDto);
+	   LogUtils.i(TAG, "dddddddd    " + toJson);
+	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
+	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
+		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)) {
 
+		if (mTimelyLeft != null && mTimelyRight != null) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		}
+//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
+		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
+		new Handler().postDelayed(new Runnable() {
+		   public void run() {
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			finish();
+		   }
+		}, 3000);
+
+	   }
 	}
    }
 

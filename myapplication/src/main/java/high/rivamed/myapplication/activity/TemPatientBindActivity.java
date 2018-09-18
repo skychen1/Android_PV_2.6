@@ -279,6 +279,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    @Override
    public void onPause() {
 	mPause = true;
+	EventBusUtils.unregister(this);
 	super.onPause();
 
    }

@@ -180,17 +180,20 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-	if (event.loading) {
-	   if (mLoading == null) {
-		LogUtils.i(TAG, "     mLoading  新建 ");
-		mLoading = DialogUtils.showLoading(mContext);
-	   } else {
-		if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
-		   mLoading.create().show();
+      if(!mPause){
+	   if (event.loading) {
+		if (mLoading == null) {
+		   LogUtils.i(TAG, "     mLoading  新建 ");
+		   mLoading = DialogUtils.showLoading(mContext);
+		} else {
+		   if (!mLoading.mDialog.isShowing()){
+			LogUtils.i(TAG,"     mLoading   重新开启");
+			mLoading.create().show();
+		   }
 		}
 	   }
 	}
+
    }
 
    /**
@@ -271,12 +274,14 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void onPause() {
 	mPause = true;
+	EventBusUtils.unregister(this);
 	super.onPause();
 
    }
 
    @Override
    public void onResume() {
+	EventBusUtils.register(this);
 	mPause = false;
 	super.onResume();
    }

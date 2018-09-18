@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -493,11 +494,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
-
+	   String toJson = mGson.toJson(mTCstInventoryTwoDto);
+	   LogUtils.i(TAG, "dddddddd    " + toJson);
+	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
 		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
-		 mEthDeviceIdBack.size() == 1) {
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)) {
 
 		if (mShowLoading != null) {
 		   mShowLoading.mDialog.dismiss();
@@ -507,9 +509,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		}
-		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-		EventBusUtils.postSticky(mTCstInventoryTwoDto);
-		ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
+//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
+		Toast.makeText(this,"未扫描到操作的耗材,即将返回主界面，请重新操作",Toast.LENGTH_SHORT).show();
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -576,8 +578,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
-	super.onDestroy();
+	EventBusUtils.unregister(this);
 	mEthDeviceIdBack.clear();
+	super.onDestroy();
    }
 
    /**
