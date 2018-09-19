@@ -565,22 +565,28 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   new Thread() {
-		public void run() {
-		   for (BoxIdBean deviceid : deviceBean) {
-			String device_id = deviceid.getDevice_id();
-
-			int i = DeviceManager.getInstance().StartUhfScan(device_id,2000);
-			try {
-			   Thread.sleep(2000);
-			} catch (InterruptedException e) {
-			   e.printStackTrace();
-			}
-
-			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
-		   }
+//	   if (READER_TAG.equals(READER_2)) {
+//		new Thread() {
+//		   public void run() {
+//			for (BoxIdBean deviceid : deviceBean) {
+//			   String device_id = deviceid.getDevice_id();
+//			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+//			   LogUtils.i(TAG, "开始扫描了状态  罗丹贝尔  " + i + "    " + device_id);
+//			   try {
+//				Thread.sleep(3000);
+//			   } catch (InterruptedException e) {
+//				e.printStackTrace();
+//			   }
+//			}
+//		   }
+//		}.start();
+//	   } else {
+		for (BoxIdBean deviceid : deviceBean) {
+		   String device_id = deviceid.getDevice_id();
+		   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   LogUtils.i(TAG, "开始扫描了状态    " + i);
 		}
-	   }.start();
+//	   }
 	}
    }
 

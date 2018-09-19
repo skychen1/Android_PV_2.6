@@ -108,6 +108,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+
 	Log.e("aaa", "InOutBoxTwoActivity");
    }
 
@@ -123,12 +124,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
-	}else {
+	} else {
 	   if (mLoading != null) {
 		LogUtils.i(TAG, "     mLoading   关闭");
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
-		mLoading=null;
+		mLoading = null;
 	   }
 	}
    }
@@ -145,7 +146,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
-	   mLoading=null;
+	   mLoading = null;
 	}
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
@@ -335,31 +336,29 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   new Thread() {
-		public void run() {
-		   for (BoxIdBean deviceid : deviceBean) {
-			String device_id = deviceid.getDevice_id();
 
-			int i = DeviceManager.getInstance().StartUhfScan(device_id,2000);
-			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
-
-			try {
-			   Thread.sleep(2000);
-			} catch (InterruptedException e) {
-			   e.printStackTrace();
-			}
-
-		   }
-		}
-	   }.start();
-
-//	   for (BoxIdBean deviceid : deviceBean) {
-//		String device_id = deviceid.getDevice_id();
-//
-//		int i = DeviceManager.getInstance().StartUhfScan(device_id);
-//
-//		LogUtils.i(TAG, "开始扫描了状态    " + i);
-//	   }
+	   //	   if (READER_TAG.equals(READER_2)) {
+	   //		new Thread() {
+	   //		   public void run() {
+	   //			for (BoxIdBean deviceid : deviceBean) {
+	   //			   String device_id = deviceid.getDevice_id();
+	   //			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+	   //			   LogUtils.i(TAG, "开始扫描了状态  罗丹贝尔  " + i + "    " + device_id);
+	   //			   try {
+	   //				Thread.sleep(3000);
+	   //			   } catch (InterruptedException e) {
+	   //				e.printStackTrace();
+	   //			   }
+	   //			}
+	   //		   }
+	   //		}.start();
+	   //	   } else {
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		LogUtils.i(TAG, "开始扫描了状态    " + i);
+	   }
+	   //	   }
 	}
    }
 
@@ -529,7 +528,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
 		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)&& mEthDeviceIdBack.size()==1) {
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
+		 mEthDeviceIdBack.size() == 1) {
 
 		if (mShowLoading != null) {
 		   mShowLoading.mDialog.dismiss();
@@ -539,9 +539,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		}
-//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
-		Toast.makeText(this,"未扫描到操作的耗材,即将返回主界面，请重新操作",Toast.LENGTH_SHORT).show();
+		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
+		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -608,11 +608,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
-      if (mLoading != null) {
-	mLoading.mAnimationDrawable.stop();
-	mLoading.mDialog.dismiss();
-	mLoading = null;
-   }
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 
 	EventBusUtils.unregister(this);
 	mEthDeviceIdBack.clear();

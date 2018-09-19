@@ -526,7 +526,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (String readerCode : mReaderDeviceId) {
 		DeviceManager.getInstance().StartUhfScan(readerCode);
 	   }
-
 	} else {
 	   mBoxIdListss = new ArrayList<String>();
 	   mBoxIdListss.add(mDeviceCode);

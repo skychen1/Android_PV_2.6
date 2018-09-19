@@ -76,6 +76,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -130,6 +131,9 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+      if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP)!=null){
+	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	}
 	mLoginGone = findViewById(R.id.login_gone);
 	//清空accountID
 	mDownText.setText(
@@ -162,6 +166,8 @@ public class LoginActivity extends SimpleActivity {
 	initData();
 	initlistener();
 	initCall();
+
+
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
 	}
@@ -199,7 +205,6 @@ public class LoginActivity extends SimpleActivity {
 		   LogUtils.i(TAG, "findThingConfigDate   " + result);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
 
 		   if(getConfigTrue(tCstConfigVos)){//禁止

@@ -381,7 +381,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading = null;
 	}
 	//	mShowLoading = DialogUtils.showLoading(mContext);
-	LogUtils.i(TAG, "initDataAndEvent");
 	//	initCallBack();
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);

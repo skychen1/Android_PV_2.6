@@ -43,9 +43,10 @@ public class AllDeviceCallBack {
    public static  List<String>      mReaderIdList;
    public static  List<String>      mReaderDeviceId;
    public static  List<String>      eth002DeviceIdList;
+   public static  String            sReaderType;
 
    public static AllDeviceCallBack getInstance() {
-
+//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
 	if (instances == null) {
 	   synchronized (NetRequest.class) {
 		if (instances == null) {
@@ -149,7 +150,7 @@ public class AllDeviceCallBack {
 		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
 
 		EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, epcs));
-//		EventBusUtils.postSticky(new Event.EventLoading(false));
+		//		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 
 	   @Override
@@ -193,6 +194,7 @@ public class AllDeviceCallBack {
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
 			} else {
+
 			   startScan(deviceIndentify);
 			}
 		   } catch (Exception e) {
@@ -308,45 +310,32 @@ public class AllDeviceCallBack {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   new Thread() {
-		public void run() {
-		   for (BoxIdBean deviceid : deviceBean) {
-			String device_id = deviceid.getDevice_id();
-			int i = DeviceManager.getInstance().StartUhfScan(device_id,2000);
-			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
-
-			try {
-			   Thread.sleep(2000);
-			} catch (InterruptedException e) {
-			   e.printStackTrace();
-			}
-//			if (i == 2) {
-//			   DeviceManager.getInstance().StopUhfScan(device_id);
-//			   DeviceManager.getInstance().StartUhfScan(device_id);
-//			}
-		   }
-		}
-	   }.start();
-//	   for (BoxIdBean deviceid : deviceBean) {
-//		String device_id = deviceid.getDevice_id();
-//		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+//	   if (sReaderType.equals(READER_2)) {
 //		new Thread() {
 //		   public void run() {
-//			try {
-//			   Thread.sleep(3000);
-//			} catch (InterruptedException e) {
-//			   e.printStackTrace();
+//			for (BoxIdBean deviceid : deviceBean) {
+//			   String device_id = deviceid.getDevice_id();
+//			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+//			   LogUtils.i(TAG, "开始扫描了状态 罗丹贝尔   " + i + "    " + device_id);
+//			   try {
+//				Thread.sleep(3000);
+//			   } catch (InterruptedException e) {
+//				e.printStackTrace();
+//			   }
 //			}
-//			int i = DeviceManager.getInstance().StartUhfScan(device_id);
-//			if (i == 2) {
-//			   DeviceManager.getInstance().StopUhfScan(device_id);
-//			   DeviceManager.getInstance().StartUhfScan(device_id);
-//			}
-//			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
-//
 //		   }
 //		}.start();
-
+//	   } else {
+		for (BoxIdBean deviceid : deviceBean) {
+		   String device_id = deviceid.getDevice_id();
+		   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   if (i==2){
+			DeviceManager.getInstance().StopUhfScan(device_id);
+			DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   }
+		   LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
+		}
+//	   }
 	}
    }
 }

@@ -60,6 +60,7 @@ public class BingFindSchedulesBean implements Serializable {
          * scheduleDateTime :
          * operationSurgeonName :
          * operatingRoomNoName :
+         * tempPatientId
          */
         private boolean isSelected;
         private String patientName;//名字
@@ -74,6 +75,15 @@ public class BingFindSchedulesBean implements Serializable {
         private String operatingRoomNo;//手术间ID
         private String idNo;//身份证
         private String sex;//性别
+        private String tempPatientId;
+
+        public String getTempPatientId() {
+            return tempPatientId;
+        }
+
+        public void setTempPatientId(String tempPatientId) {
+            this.tempPatientId = tempPatientId;
+        }
 
         public String getDeptId() {
             return deptId;

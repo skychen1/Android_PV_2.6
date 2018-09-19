@@ -68,8 +68,8 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        mLoginName.setText("adminUM");
-        mLoginPassword.setText("000000");
+//        mLoginName.setText("adminUM");
+//        mLoginPassword.setText("000000");
     }
 
     @Override
@@ -114,6 +114,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
         for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+
 		if (s.getCode().equals(CONFIG_013)){
                 return true;
 		}
