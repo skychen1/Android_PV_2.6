@@ -101,7 +101,15 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START4")) {
+	   mPauseS=false;
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
 	   AllDeviceCallBack.getInstance().initCallBack();
+	}else {
+	   mPauseS=true;
 	}
    }
 
@@ -172,7 +180,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private       TimelyAllAdapter      mTimelyAllAdapter;
    private       String                mToJson;
    private       LoadingDialog.Builder mBuilder;
-   public static boolean                    mPause   = true;
+   public static boolean                    mPauseS   = true;
    private       Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
 
@@ -180,7 +188,8 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-      if(!mPause){
+      LogUtils.i(TAG,"mPause   "+mPauseS);
+      if(!mPauseS){
 	   if (event.loading) {
 		if (mLoading == null) {
 		   LogUtils.i(TAG, "     mLoading  新建 ");
@@ -191,6 +200,12 @@ public class TimelyAllFrag extends SimpleFragment {
 			mLoading.create().show();
 		   }
 		}
+	   }
+	}else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
 	   }
 	}
 
@@ -203,7 +218,9 @@ public class TimelyAllFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	LogUtils.i(TAG, "onCallBackEvent  mPause    " + mPause);
+	LogUtils.i(TAG, "onCallBackEvent  mPause    " + mPauseS);
+	if (!mPauseS){
+
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -217,6 +234,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   if (box_id != null) {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
+
 		if (boxIdBeansss.size() > 1) {
 
 		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
@@ -229,15 +247,16 @@ public class TimelyAllFrag extends SimpleFragment {
 		   }
 		   if (k == boxIdBeansss.size()) {
 			k = 0;
-			if (!mPause) {
+			if (!mPauseS) {
 			   LogUtils.i(TAG, "mEPCDate  zou l  ");
-			   AllDeviceCallBack.getInstance().initCallBack();
+
 			   getDeviceDate(event.deviceId, mEPCDate);
+			   AllDeviceCallBack.getInstance().initCallBack();
 			}
 		   }
 
 		} else {
-		   if (!mPause) {
+		   if (!mPauseS) {
 			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
 			AllDeviceCallBack.getInstance().initCallBack();
 			getDeviceDate(event.deviceId, event.epcs);
@@ -245,6 +264,8 @@ public class TimelyAllFrag extends SimpleFragment {
 		}
 	   }
 	}
+	}
+
    }
 
    @SuppressLint("ValidFragment")
@@ -262,7 +283,11 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	mPause = false;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
 	initDateAll();
 	//	initDate(0, 0, 0, 0);
@@ -273,7 +298,7 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Override
    public void onPause() {
-	mPause = true;
+	mPauseS = true;
 	EventBusUtils.unregister(this);
 	super.onPause();
 
@@ -281,8 +306,12 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Override
    public void onResume() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	EventBusUtils.register(this);
-	mPause = false;
 	super.onResume();
    }
 
@@ -577,7 +606,9 @@ public class TimelyAllFrag extends SimpleFragment {
 		//
 		if (mDeviceCode == null || mDeviceCode.equals("")) { //全部柜子扫描显示
 		   moreScanTimely(result, epcs, deviceId);
+		   LogUtils.i(TAG,"全部");
 		} else {
+		   LogUtils.i(TAG,"扫数");
 		   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId)
 			   .find(BoxIdBean.class);
 		   for (BoxIdBean boxIdBean : boxIdBeans) {

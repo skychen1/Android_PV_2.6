@@ -179,15 +179,22 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-
-	if (event.loading) {
-	   if (mLoading == null) {
-		LogUtils.i(TAG, "     mLoading  新建 ");
-		mLoading = DialogUtils.showLoading(mContext);
-	   } else {
-		if (!mLoading.mDialog.isShowing()) {
-		   LogUtils.i(TAG, "     mLoading   重新开启");
-		   mLoading.create().show();
+	if (!mPause){
+	   if (event.loading) {
+		if (mLoading == null) {
+		   LogUtils.i(TAG, "     mLoading  新建 ");
+		   mLoading = DialogUtils.showLoading(mContext);
+		} else {
+		   if (!mLoading.mDialog.isShowing()) {
+			LogUtils.i(TAG, "     mLoading   重新开启");
+			mLoading.create().show();
+		   }
+		}
+	   }else {
+		if (mLoading != null) {
+		   mLoading.mAnimationDrawable.stop();
+		   mLoading.mDialog.dismiss();
+		   mLoading = null;
 		}
 	   }
 	}
@@ -296,6 +303,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
+	   TimelyAllFrag.mPauseS = true;
 	   initData();
 	} else {
 	   //            mPause = true;
@@ -367,7 +375,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
-
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	//	mShowLoading = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "initDataAndEvent");
 	//	initCallBack();
@@ -382,6 +394,16 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void onStart() {
 	EventBusUtils.register(this);
 	super.onStart();
+   }
+
+   @Override
+   public void onResume() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	super.onResume();
    }
 
    private void initEvent() {
@@ -466,6 +488,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void putEPCDates(String toJson) {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -571,6 +598,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void initData() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
 	} else {
@@ -887,6 +919,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Override
    public void onPause() {
 	mPause = true;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	EventBusUtils.unregister(this);
 	super.onPause();
    }

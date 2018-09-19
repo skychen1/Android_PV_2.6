@@ -174,6 +174,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
 		   mHomeRunWateViewpager.setAdapter(mPagerAdapter);
 		   mHomeRunWateViewpager.setCurrentItem(0);
+		   mHomeRunWateViewpager.setOffscreenPageLimit(6);
 		   mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
 		   mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
 		}

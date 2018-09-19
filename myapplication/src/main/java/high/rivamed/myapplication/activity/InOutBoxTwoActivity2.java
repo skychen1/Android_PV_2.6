@@ -283,6 +283,8 @@ public class InOutBoxTwoActivity2 extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
+	EventBusUtils.postSticky(new Event.EventLoading(true));
+
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {

@@ -11,6 +11,9 @@ import android.widget.LinearLayout;
 
 import com.flyco.tablayout.SlidingTabLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -18,10 +21,12 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.StockLeftAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.SocketLeftDownBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_MIDDLE;
@@ -62,7 +67,17 @@ public class StockMiddleInforFrag extends SimpleFragment {
    private SocketLeftDownBean    mMiddleDateBean;
    private LoadingDialog.Builder mBuilder;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
-
+   /**
+    * 重新加载数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onJump(Event.EventJump event) {
+      if (mCttimecheckViewpager!=null){
+         mCttimecheckViewpager.setCurrentItem(event.jump);
+	}
+   }
    @Override
    public int getLayoutId() {
 	return R.layout.cttimecheck_layout;
@@ -74,7 +89,6 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	getMiddleDate();
 
    }
-
 
    public void getMiddleDate() {
 	NetRequest.getInstance().loadBoxSize(mContext, mBuilder,new BaseResult() {
@@ -94,12 +108,19 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	});
    }
 
+   @Override
+   public void onResume() {
+	EventBusUtils.register(this);
+	super.onResume();
+   }
+
    private void onSucceedDate() {
 //	mBuilder.mDialog.dismiss();
 
 	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
 	mCttimecheckViewpager.setAdapter(mPagerAdapter);
 	mCttimecheckViewpager.setCurrentItem(0);
+	mCttimecheckViewpager.setOffscreenPageLimit(6);
 	mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
    }
 
@@ -157,5 +178,11 @@ public class StockMiddleInforFrag extends SimpleFragment {
 		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
 	   }
 	}
+   }
+
+   @Override
+   public void onPause() {
+	EventBusUtils.unregister(this);
+	super.onPause();
    }
 }

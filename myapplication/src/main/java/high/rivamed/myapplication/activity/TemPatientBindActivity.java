@@ -103,6 +103,12 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
+	}else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
 	}
    }
 
@@ -115,6 +121,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	AllDeviceCallBack.getInstance().initCallBack();
 	mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra(
 		"mTemPTbaseDevices");
@@ -218,6 +229,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
    @Override
    protected void onResume() {
+	mPause =false;
 	super.onResume();
    }
 
@@ -271,11 +283,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	}
    }
 
-   //    @Override
-   //    public void onResume() {
-   //        mPause =false;
-   //        super.onResume();
-   //    }
+//       @Override
+//       public void onResume() {
+//           mPause =false;
+//           super.onResume();
+//       }
    @Override
    public void onPause() {
 	mPause = true;

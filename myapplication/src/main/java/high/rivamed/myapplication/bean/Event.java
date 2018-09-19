@@ -22,7 +22,13 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
+   public static class EventJump {
+	public int jump;
 
+	public EventJump(int jump) {
+	   this.jump = jump;
+	}
+   }
    public static class EventLoading {
 	public boolean loading;
 

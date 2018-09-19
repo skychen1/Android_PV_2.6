@@ -123,6 +123,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
+	}else {
+	   if (mLoading != null) {
+		LogUtils.i(TAG, "     mLoading   关闭");
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading=null;
+	   }
 	}
    }
 
@@ -138,7 +145,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
-	   mLoading = null;
+	   mLoading=null;
 	}
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
@@ -321,7 +328,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
-
 	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
@@ -329,13 +335,31 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
+	   new Thread() {
+		public void run() {
+		   for (BoxIdBean deviceid : deviceBean) {
+			String device_id = deviceid.getDevice_id();
 
-		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+			int i = DeviceManager.getInstance().StartUhfScan(device_id,2000);
+			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
 
-		LogUtils.i(TAG, "开始扫描了状态    " + i);
-	   }
+			try {
+			   Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			   e.printStackTrace();
+			}
+
+		   }
+		}
+	   }.start();
+
+//	   for (BoxIdBean deviceid : deviceBean) {
+//		String device_id = deviceid.getDevice_id();
+//
+//		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+//
+//		LogUtils.i(TAG, "开始扫描了状态    " + i);
+//	   }
 	}
    }
 
@@ -470,6 +494,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	String string = null;
 	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
 	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
@@ -495,11 +524,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 	   EventBusUtils.postSticky(mTCstInventoryTwoDto);
 	   String toJson = mGson.toJson(mTCstInventoryTwoDto);
+
 	   LogUtils.i(TAG, "dddddddd    " + toJson);
 	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
 		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)) {
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)&& mEthDeviceIdBack.size()==1) {
 
 		if (mShowLoading != null) {
 		   mShowLoading.mDialog.dismiss();
@@ -578,9 +608,35 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
+      if (mLoading != null) {
+	mLoading.mAnimationDrawable.stop();
+	mLoading.mDialog.dismiss();
+	mLoading = null;
+   }
+
 	EventBusUtils.unregister(this);
 	mEthDeviceIdBack.clear();
 	super.onDestroy();
+   }
+
+   @Override
+   protected void onResume() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	super.onResume();
+   }
+
+   @Override
+   protected void onPause() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	super.onPause();
    }
 
    /**

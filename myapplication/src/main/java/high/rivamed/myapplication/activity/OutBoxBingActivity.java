@@ -117,6 +117,12 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
+	}else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
 	}
    }
 
@@ -186,7 +192,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	Intent intent = getIntent();
 	int type = intent.getIntExtra("type", 0);
 	if (type == 100) {
@@ -331,7 +341,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		List<DeviceInventoryVo> deviceInventoryVoss = mTCstInventoryDto.getDeviceInventoryVos();
 		mTCstInventoryDto.gettCstInventoryVos().clear();
 		deviceInventoryVoss.clear();
-		TimelyAllFrag.mPause = true;
+		TimelyAllFrag.mPauseS = true;
 		mPatient = null;
 		mPatientId = null;
 		for (String deviceInventoryVo : mEthDeviceIdBack) {
@@ -384,7 +394,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 	mTCstInventoryDto.gettCstInventoryVos().clear();
 	deviceInventoryVos.clear();
-	TimelyAllFrag.mPause = true;
+	TimelyAllFrag.mPauseS = true;
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
 	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -543,6 +553,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    protected void onDestroy() {
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
+	EventBusUtils.unregister(this);
 	super.onDestroy();
    }
 
@@ -554,12 +565,22 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id);
+	   new Thread() {
+		public void run() {
+		   for (BoxIdBean deviceid : deviceBean) {
+			String device_id = deviceid.getDevice_id();
 
-		LogUtils.i(TAG, "开始扫描了状态    " + i);
-	   }
+			int i = DeviceManager.getInstance().StartUhfScan(device_id,2000);
+			try {
+			   Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			   e.printStackTrace();
+			}
+
+			LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
+		   }
+		}
+	   }.start();
 	}
    }
 
@@ -670,7 +691,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
 		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)) {
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)&& mEthDeviceIdBack.size()==1) {
 
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
