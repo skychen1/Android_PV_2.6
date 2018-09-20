@@ -108,13 +108,10 @@ public class OutMealActivity extends BaseSimpleActivity {
 		   mPublicAdapter.notifyDataSetChanged();
 		}
 
-
-
 	   } else {
 		String[] array = mContext.getResources().getStringArray(R.array.six_meal_arrays);
 		titeleList = Arrays.asList(array);
 		mSize = array.length;
-
 
 		if (mPublicAdapter == null) {
 		   if (event.mString.equals("xxx套餐-1")) {
@@ -173,12 +170,13 @@ public class OutMealActivity extends BaseSimpleActivity {
 
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	mRefreshLayout.setEnableAutoLoadMore(false);
+	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 	mLayout = R.layout.item_form_seven_layout;
 	mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
 							    (ViewGroup) mLinearLayout.getParent(), false);
-	if (mMealbing!=null&&mMealbing.equals("BING_MEAL")){
+	if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
 
 	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -188,7 +186,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 
-	}else {
+	} else {
 	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setVisibility(View.GONE);
 	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -208,15 +206,15 @@ public class OutMealActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-		if (mMealbing!=null&&mMealbing.equals("BING_MEAL")){
+		if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
 		   String six = mPublicAdapter.getItem(position).six;
-		   ToastUtils.showShort("six！"+six);
+		   ToastUtils.showShort("six！" + six);
 		   if (!six.equals("已领取")) {
 			DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
 		   } else {
 			ToastUtils.showShort("此项已领取！");
 		   }
-		}else {
+		} else {
 		   String six = mPublicAdapter.getItem(position).five;
 		   if (!six.equals("已领取")) {
 			DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
@@ -224,7 +222,6 @@ public class OutMealActivity extends BaseSimpleActivity {
 			ToastUtils.showShort("此项已领取！");
 		   }
 		}
-
 
 	   }
 	});
@@ -235,8 +232,8 @@ public class OutMealActivity extends BaseSimpleActivity {
 
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.meal_tv_search, R.id.meal_open_btn})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.meal_tv_search, R.id.meal_open_btn})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -253,29 +250,30 @@ public class OutMealActivity extends BaseSimpleActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				   builder.setTwoMsg("您确认要退出登录吗?");
-				   builder.setMsg("温馨提示");
-				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.setRight("确认", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-						   App.getInstance().removeALLActivity_();
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;

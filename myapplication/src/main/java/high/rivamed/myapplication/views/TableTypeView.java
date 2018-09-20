@@ -342,7 +342,6 @@ public class TableTypeView extends LinearLayout {
 			   lp.height = 81 * patientInfos.size();
 			}
 			for (int i = 0; i < patientInfos.size(); i++) {
-
 			   patientInfos.get(i).setSelected(false);
 			}
 			if (patientInfos != null && patientInfos.size() > 1) {
@@ -357,9 +356,9 @@ public class TableTypeView extends LinearLayout {
 
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			mRefreshLayout.setEnableAutoLoadMore(false);
-			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			mRefreshLayout.setEnableAutoLoadMore(true);
+			mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
 			View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
 			mBingOutAdapter.setEmptyView(inflate);
 			mRecyclerview.setAdapter(mBingOutAdapter);
@@ -530,6 +529,7 @@ public class TableTypeView extends LinearLayout {
 			   mRefreshLayout.setEnableAutoLoadMore(false);
 			   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+
 			   mRecyclerview.setAdapter(mAfterBingAdapter);
 			   mLinearLayout.addView(mHeadView);
 			} else {
@@ -565,23 +565,13 @@ public class TableTypeView extends LinearLayout {
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
 
-			//                        for (int i = 0; i < mTempPatientVoVos.size(); i++) {
-			//                            mCheckStates1.put(i, true);
-			//                        }
-			//                        mCheckStates1.put(0,true);
-			//                        for (int i = 0; i < patientInfos.size(); i++) {
-			//
-			//                            patientInfos.get(i).setSelected(false);
-			//                        }
-			//                        patientInfos.get(0).setSelected(true);
 			if (mTempPatientAdapter != null) {
 			   mTempPatientAdapter.notifyDataSetChanged();
 			} else {
 
 			   mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,
 											  mCheckStates1);
-			   //			mPublicAdapter = new TimelyPublicAdapter(mLayout, mMovies, mSize, STYPE_BING,
-			   //									     mCheckStates1);
+
 			   mTempPatientAdapter.setOnItemClickListener(
 				   new BaseQuickAdapter.OnItemClickListener() {
 					@Override
@@ -592,8 +582,6 @@ public class TableTypeView extends LinearLayout {
 						mCheckStates1.put(i, false);
 					   }
 					   mCheckStates1.put(position, true);
-					   //                                    checkBox.setChecked(true);
-					   //                                    mTempPatientAdapter.notifyDataSetChanged();
 					   adapter.notifyDataSetChanged();
 					}
 				   });
@@ -601,9 +589,11 @@ public class TableTypeView extends LinearLayout {
 
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRefreshLayout.setEnableAutoLoadMore(false);
-			   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			   mRefreshLayout.setEnableAutoLoadMore(true);
+			   mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
+			   mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+			   View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
+			   mTempPatientAdapter.setEmptyView(inflate);
 			   mRecyclerview.setAdapter(mTempPatientAdapter);
 			   mLinearLayout.addView(mHeadView);
 			}
@@ -630,6 +620,8 @@ public class TableTypeView extends LinearLayout {
 			   mRefreshLayout.setEnableAutoLoadMore(false);
 			   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			   View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
+			   mRecogHaocaiAdapter.setEmptyView(inflate);
 			   mRecyclerview.setAdapter(mRecogHaocaiAdapter);
 			   mLinearLayout.removeView(mHeadView);
 			   mLinearLayout.addView(mHeadView);

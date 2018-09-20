@@ -192,27 +192,7 @@ public class TempPatientDialog extends Dialog {
             mAddressFive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //                    final Calendar calendar = Calendar.getInstance();
-                    //                    DatePickerDialog dialog = new DatePickerDialog(mContext,
-                    //                            new DatePickerDialog.OnDateSetListener() {
-                    //                                @Override
-                    //                                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    //                                    LogUtils.d(TAG, "onDateSet: year: " + year + ", month: " + month + ", dayOfMonth: " + dayOfMonth);
-                    //
-                    //                                    calendar.set(Calendar.YEAR, year);
-                    //                                    calendar.set(Calendar.MONTH, month);
-                    //                                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    //                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    //                                    String str = formatter.format(calendar.getTime());
-                    //                                    mAddressFive.setText(str);
-                    //                                }
-                    //                            },
-                    //                            calendar.get(Calendar.YEAR),
-                    //                            calendar.get(Calendar.MONTH),
-                    //                            calendar.get(Calendar.DAY_OF_MONTH));
-                    //                    dialog.setTitle("手术时间");
-                    //                    dialog.getDatePicker().setMinDate(System.currentTimeMillis()); //设置日期最小值
-                    //                    dialog.show();
+
                     DialogUtils.showTimeDialog2(mContext, mAddressFive);
                 }
             });
@@ -238,13 +218,14 @@ public class TempPatientDialog extends Dialog {
                             String four = mAddressFour.getText().toString().trim();
                             String five = mAddressFive.getText().toString().trim();
                             String two = mAddressTwo.getText().toString().trim();
+                            String twoGone = mGoneTwoType.getText().toString().trim();
                             String one = mAddressOne.getText().toString().trim();
                             if (TextUtils.isEmpty(one)) {
                                 ToastUtils.showShort("请输入患者姓名");
                             } else if (TextUtils.isEmpty(two)) {
                                 ToastUtils.showShort("请选择手术间号");
                             } else {
-                                myListener.getDialogDate(one, two, three, four, five, dialog);
+                                myListener.getDialogDate(one, two,twoGone, three, four, five, dialog);
                             }
                         }
                     }
@@ -268,7 +249,8 @@ public class TempPatientDialog extends Dialog {
                     List<SelectBean> list = new ArrayList<>();
                     List<HospNameBean.TbaseOperationRoomsBean> tbaseOperationRooms = hospNameBean.getTbaseOperationRooms();
                     for (int i = 0; i < tbaseOperationRooms.size(); i++) {
-                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomNo()));
+
+                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomNoName(),tbaseOperationRooms.get(i).getRoomNo()));
                     }
                     setAdapterDate(list, mAddressTwo, mGoneTwoType);
                 }
@@ -280,7 +262,7 @@ public class TempPatientDialog extends Dialog {
         private SettingListener myListener = null;
 
         public interface SettingListener {
-            public void getDialogDate(String userName, String roomNum, String userSex, String idCard, String time, Dialog dialog);
+            public void getDialogDate(String userName, String roomNum,String roomId ,String userSex, String idCard, String time, Dialog dialog);
         }
 
         public void setOnSettingListener(SettingListener listener) {
@@ -305,7 +287,7 @@ public class TempPatientDialog extends Dialog {
                             public void onItemClick(
                                     BaseQuickAdapter adapter, View view, int position) {
                                 textview.setText(list.get(position).getContent());
-                                goneview.setText(list.get(position).getContent());
+                                goneview.setText(list.get(position).getId());
                                 mPopWindow.dismiss();
                             }
                         });

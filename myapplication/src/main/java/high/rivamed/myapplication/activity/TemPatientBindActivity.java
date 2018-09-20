@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,8 +34,8 @@ import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.CreatTempPatientBean;
-import high.rivamed.myapplication.bean.CreatTempPatientResultBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -70,11 +72,6 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    private String mRvEventString;
    private int mRbKey = 3;
 
-   //    @Subscribe(threadMode = ThreadMode.MAIN)
-   //    public void onRvEvent(Event.EventString event) {
-   //        mRvEventString = event.mString;
-   //        loadBingDate(mRvEventString);
-   //    }
    @BindView(R.id.dialog_right)
    TextView mDialogRight;
    @BindView(R.id.search_et)
@@ -89,6 +86,10 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
    int k = 0;
+   private int    mAllPage = 1;
+   private int    mRows    = 20;
+   private String mTrim    = "";
+   private CreatTempPatientBean mPatientBean;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
@@ -97,10 +98,16 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "     mLoading  新建 ");
 		mLoading = DialogUtils.showLoading(this);
 	   } else {
-		if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
+		if (!mLoading.mDialog.isShowing()) {
+		   LogUtils.i(TAG, "     mLoading   重新开启");
 		   mLoading.create().show();
 		}
+	   }
+	}else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
 	   }
 	}
    }
@@ -114,6 +121,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	AllDeviceCallBack.getInstance().initCallBack();
 	mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra(
 		"mTemPTbaseDevices");
@@ -123,7 +135,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	   @Override
 	   public void onClick(View view) {
 
-		if (patientInfos != null&&patientInfos.size()>0) {
+		if (patientInfos != null && patientInfos.size() > 0) {
 		   mPause = false;
 		   mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getPatientName();
@@ -133,9 +145,30 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
-			EventBusUtils.postSticky(
-				new Event.EventCheckbox(mName, mId, mOperationScheduleId, "afterBindTemp",
-								mPosition, mTemPTbaseDevices));
+			if (mId.equals("virtual")) {
+			   LogUtils.i(TAG, "JINLAI ");
+			   String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
+			   String name = mPatientBean.getTTransOperationSchedule().getName();
+			   String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
+			   String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
+				   .getScheduleDateTime();
+			   String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
+				   .getOperatingRoomNo();
+			   String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
+				   .getOperatingRoomNoName();
+			   String sex = mPatientBean.getTTransOperationSchedule().getSex();
+			   EventBusUtils.postSticky(
+				   new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
+								   operatingRoomNo, operatingRoomNoName, sex,
+								   deptId, "afterBindTemp", mPosition,
+								   mTemPTbaseDevices));
+			} else {
+			   LogUtils.i(TAG, "DDDDDDDD ");
+			   EventBusUtils.postSticky(
+				   new Event.EventCheckbox(mName, mId, mOperationScheduleId,
+								   "afterBindTemp", mPosition, mTemPTbaseDevices));
+			}
+
 			finish();
 		   } else {
 			//先绑定患者
@@ -159,8 +192,10 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-		String trim = charSequence.toString().trim();
-		loadBingDate(trim);
+		mTrim = charSequence.toString().trim();
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim);
 	   }
 
 	   @Override
@@ -168,10 +203,33 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
 	   }
 	});
+	initListener();
+   }
+
+   private void initListener() {
+	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	   @Override
+	   public void onRefresh(RefreshLayout refreshLayout) {
+		mRefreshLayout.setNoMoreData(false);
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim);
+		mRefreshLayout.finishRefresh();
+	   }
+	});
+	mTypeView.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	   @Override
+	   public void onLoadMore(RefreshLayout refreshLayout) {
+		mAllPage++;
+		loadBingDate(mTrim);
+		mRefreshLayout.finishLoadMore();
+	   }
+	});
    }
 
    @Override
    protected void onResume() {
+	mPause =false;
 	super.onResume();
    }
 
@@ -225,14 +283,15 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	}
    }
 
-   //    @Override
-   //    public void onResume() {
-   //        mPause =false;
-   //        super.onResume();
-   //    }
+//       @Override
+//       public void onResume() {
+//           mPause =false;
+//           super.onResume();
+//       }
    @Override
    public void onPause() {
 	mPause = true;
+	EventBusUtils.unregister(this);
 	super.onPause();
 
    }
@@ -308,9 +367,31 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		if (mRbKey == 3) {
 
 		   for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
-			tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
-			tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
-			tCstInventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
+			tCstInventoryVo.setPatientName(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getPatientName());
+			tCstInventoryVo.setPatientId(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getPatientId());
+			tCstInventoryVo.setIdNo(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo());
+			tCstInventoryVo.setOperationScheduleId(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getOperationScheduleId());
+			tCstInventoryVo.setScheduleDateTime(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getScheduleDateTime());
+			tCstInventoryVo.setOperatingRoomNo(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getOperatingRoomNo());
+			tCstInventoryVo.setOperatingRoomNoName(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getOperatingRoomNoName());
+			tCstInventoryVo.setSex(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex());
+			tCstInventoryVo.setDeptId(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getDeptId());
+
 		   }
 		   cstInventoryDto.setPatientId(mId);
 		   cstInventoryDto.setPatientName(mName);
@@ -337,8 +418,8 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    }
 
    @OnClick({R.id.ly_bing_btn_right, R.id.dialog_left, R.id.base_tab_tv_name,
-	   R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.search_et,
-	   R.id.ly_creat_temporary_btn,})
+	   R.id.base_tab_tv_outlogin, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+	   R.id.base_tab_back, R.id.search_et, R.id.ly_creat_temporary_btn,})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -356,29 +437,30 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					mContext.startActivity(new Intent(mContext, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_back:
 		finish();
@@ -395,14 +477,16 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 									   @Override
 									   public void getDialogDate(
 										   String userName, String roomNum,
-										   String userSex, String idCard,
-										   String time, Dialog dialog) {
+										   String roomId, String userSex,
+										   String idCard, String time,
+										   Dialog dialog) {
 										Log.e(TAG,
 											"showCreatTempPatientDialogaaaa");
 										creatTemPatient(
 											new Event.tempPatientEvent(
-												userName, roomNum, userSex,
-												idCard, time, dialog));
+												userName, roomNum, roomId,
+												userSex, idCard, time,
+												dialog));
 									   }
 									});
 		}
@@ -418,52 +502,37 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     * */
    private void creatTemPatient(Event.tempPatientEvent event) {
 	Log.e(TAG, "creatTemPatient");
-	CreatTempPatientBean data = new CreatTempPatientBean();
+	mPatientBean = new CreatTempPatientBean();
 	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
 	bean.setName(event.userName);
-	bean.setIdNo(event.idCard);
+	bean.setIdNo(event.idCard);//身份证
 	bean.setScheduleDateTime(event.time);
-	bean.setOperatingRoomNo(event.roomNum);
+	bean.setOperatingRoomNo(event.operatingRoomNo);
+	bean.setOperatingRoomNoName(event.roomNum);
 	bean.setSex(event.userSex);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
-	data.setTTransOperationSchedule(bean);
-	NetRequest.getInstance()
-		.saveTempPatient(mGson.toJson(data), TemPatientBindActivity.this, null,
-				     new BaseResult() {
-					  @Override
-					  public void onSucceed(String result) {
-					     try {
-						  CreatTempPatientResultBean bean1 = mGson.fromJson(result,
-														    CreatTempPatientResultBean.class);
+	mPatientBean.setTTransOperationSchedule(bean);
+	if (patientInfos != null) {
+	   BingFindSchedulesBean.PatientInfosBean data2 = new BingFindSchedulesBean.PatientInfosBean();
+	   data2.setPatientId("virtual");
+	   data2.setPatientName(event.userName);
+	   data2.setIdNo(event.idCard);//身份证
+	   data2.setScheduleDateTime(event.time);
+	   data2.setOperatingRoomNo(event.operatingRoomNo);
+	   data2.setOperatingRoomNoName(event.roomNum);
+	   data2.setSex(event.userSex);
+	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 
-						  if (bean1.isOperateSuccess()) {
-						     if (event.dialog != null) {
-							  event.dialog.dismiss();
-							  event.dialog = null;
-							  //                            BingFindSchedulesBean.PatientInfosBean tempPatientVo = new BingFindSchedulesBean.PatientInfosBean();
-							  //                            tempPatientVo.setPatientName(event.userName);
-							  //                            tempPatientVo.setPatientId("virtual");
-							  //                            tempPatientVo.setScheduleDateTime(event.time);
-							  //                            tempPatientVo.setOperatingRoomNoName(event.roomNum);
-							  //                            patientInfos.add(0, tempPatientVo);
-							  //                            mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-
-							  loadBingDate("");
-							  ToastUtils.showShort("创建成功");
-						     }
-						  } else {
-						     ToastUtils.showShort("创建失败");
-						  }
-					     } catch (JsonSyntaxException e) {
-						  e.printStackTrace();
-					     }
-					  }
-
-					  @Override
-					  public void onError(String result) {
-					     ToastUtils.showShort("创建失败");
-					  }
-				     });
+	   patientInfos.add(0, data2);
+	   ToastUtils.showShort("创建成功");
+	   event.dialog.dismiss();
+	   for (BingFindSchedulesBean.PatientInfosBean s : patientInfos) {
+		s.setSelected(false);
+	   }
+	   patientInfos.get(0).setSelected(true);
+	   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+	   mTypeView.mRecyclerview.scrollToPosition(0);
+	}
 
    }
 
@@ -471,26 +540,60 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
     * 获取需要绑定的患者
     */
    private void loadBingDate(String optienNameOrId) {
-	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												 BingFindSchedulesBean.class);
-		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
-		   patientInfos.clear();
-		   patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
-		   if (patientInfos.size() > 0) {
-			for (int i = 0; i < patientInfos.size(); i++) {
-			   patientInfos.get(i).setSelected(false);
-			}
-			patientInfos.get(0).setSelected(true);
-		   }
-		   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-		}
 
-		LogUtils.i("TemPatientBindActivity", "result   " + result);
-	   }
-	});
+	NetRequest.getInstance()
+		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, null, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result   " + result);
+
+			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+			   boolean isClear;
+			   if (patientInfos.size() == 0) {
+				isClear = true;
+			   } else {
+				isClear = false;
+			   }
+
+			   for (int i = 0; i < bean.getRows().size(); i++) {
+				BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				data.setPatientId(bean.getRows().get(i).getPatientId());
+				data.setPatientName(bean.getRows().get(i).getPatientName());
+				data.setDeptName(bean.getRows().get(i).getDeptName());
+				data.setOperationSurgeonName(
+					bean.getRows().get(i).getOperationSurgeonName());
+				data.setOperatingRoomNoName(bean.getRows().get(i).getOperatingRoomNoName());
+				data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				patientInfos.add(data);
+			   }
+			   if (isClear && patientInfos.size() > 0) {
+				patientInfos.get(0).setSelected(true);
+			   }
+			   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			}
+
+			//
+			//		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result, BingFindSchedulesBean.class);
+			//
+			//		List<BingFindSchedulesBean.PatientInfosBean> mPatientInfoss= bingFindSchedulesBean.getPatientInfos();
+			//		if (bingFindSchedulesBean != null && mPatientInfoss != null) {
+			//		   patientInfos.clear();
+			//		   patientInfos.addAll(mPatientInfoss);
+			//		   if (patientInfos.size() > 0) {
+			//			for (int i = 0; i < patientInfos.size(); i++) {
+			//			   patientInfos.get(i).setSelected(false);
+			//			}
+			//			patientInfos.get(0).setSelected(true);
+			//		   }
+			//		   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			//		}
+
+		   }
+		});
    }
 
 }

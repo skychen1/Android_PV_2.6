@@ -45,8 +45,17 @@ public class CreatTempPatientBean {
 
         private String deptId;
         private String operatingRoomNo;
+        private String operatingRoomNoName;
         private String scheduleDateTime;
         private String sex;
+
+        public String getOperatingRoomNoName() {
+            return operatingRoomNoName;
+        }
+
+        public void setOperatingRoomNoName(String operatingRoomNoName) {
+            this.operatingRoomNoName = operatingRoomNoName;
+        }
 
         public String getIdNo() {
             return idNo;

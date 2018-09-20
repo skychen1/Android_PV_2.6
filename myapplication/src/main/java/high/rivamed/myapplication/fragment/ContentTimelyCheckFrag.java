@@ -127,38 +127,12 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	   return mFragments.get(position);
 
 	}
-//	@Override
-//	public Fragment getItem(int position) {
-//	   String deviceCode = null;
-//	   if (mTbaseDevices.size()>1){
-//		if (position == 0) {
-//		   deviceCode = null;
-//		} else {
-//		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
-//		}
-//	   }else {
-//		deviceCode = mTbaseDevices.get(position).getDeviceCode();
-//	   }
-//	   mBuilder.mDialog.dismiss();
-//	   return TimelyAllFrag.newInstance(deviceCode);
-//
-//	}
+
 
 	@Override
 	public CharSequence getPageTitle(int position) {
 	   return mTbaseDevices.get(position).getDeviceName();
-//	   String deviceName = null;
-//	   if (mTbaseDevices.size()>1) {
-//		if (position == 0) {
-//		   deviceName = "全部";
-//		} else {
-//		   deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-//		}
-//	   }else {
-//		deviceName = mTbaseDevices.get(position).getDeviceName();
-//
-//	   }
-//	   return deviceName;
+
 	}
 
 	@Override
@@ -185,46 +159,9 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
 	@Override
 	public void onPageSelected(int position) {
-//	   String deviceCode = null;
-//	   if (position == 0) {
-//		deviceCode = "";
-//	   } else {
-//		deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
-//	   }
-//	   EventBusUtils.postSticky(new Event.EventTimelyCode(deviceCode));
+
 	}
    }
-
-
-
-   //
-   //
-   //   private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
-   //
-   //	private List<Fragment> mFragments;
-   //
-   //	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
-   //	   super(fm);
-   //	   this.mFragments = Fragments;
-   //	}
-   //
-   //	@Override
-   //	public Fragment getItem(int position) {
-   //
-   //	   return mFragments.get(position);
-   //
-   //	}
-   //
-   //	@Override
-   //	public CharSequence getPageTitle(int position) {
-   //	   return mTemPTbaseDevices.get(position).getDeviceName();
-   //	}
-   //
-   //	@Override
-   //	public int getCount() {
-   //	   return mFragments.size();
-   //	}
-   //   }
 }
 
 

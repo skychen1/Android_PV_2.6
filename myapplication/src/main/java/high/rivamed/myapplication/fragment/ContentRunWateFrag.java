@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.LoginActivity;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
@@ -32,6 +36,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 
@@ -169,6 +174,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
 		   mHomeRunWateViewpager.setAdapter(mPagerAdapter);
 		   mHomeRunWateViewpager.setCurrentItem(0);
+		   mHomeRunWateViewpager.setOffscreenPageLimit(6);
 		   mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
 		   mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
 		}
@@ -181,7 +187,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 	});
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,R.id.base_tab_tv_outlogin,
 	   R.id.search_iv_delete, R.id.search_time_start, R.id.search_time_end})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
@@ -190,6 +196,26 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 		mPopupWindow = new SettingPopupWindow(mContext);
 		mPopupWindow.showPopupWindow(mBaseTabIconRight);
 		popupClick();
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;

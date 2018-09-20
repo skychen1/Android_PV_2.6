@@ -67,7 +67,7 @@ public interface NetApi {
 
     //患者绑定
     String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findAllOperationSchedulePatients";//查询本科室下24小时的手术预约患者（包含临时患者）
-    String URL_PATIENTS_FIND_NO_TEMP = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findNearOperationSchedulePatients";//查询本科室下24小时的手术预约患者（不包含临时患者）
+//    String URL_PATIENTS_FIND_NO_TEMP = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findNearOperationSchedulePatients";//查询本科室下24小时的手术预约患者（不包含临时患者）
     String URL_BIND_PATIENT = MAIN_URL + "/rmApi/consumables/tCstInventory/tCstInventoryBingdingPatient";//患者绑定   后绑定患者用
     String URL_SAVE_TEMP_PATIENT = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/saveTempPatient";//创建临时患者信息
     String URL_FIND_IN_PATIENT_PAGE = MAIN_URL + "/rmApi/patient/tTransInPatientInfo/findInPatientPage";//查询所有在院患者信息

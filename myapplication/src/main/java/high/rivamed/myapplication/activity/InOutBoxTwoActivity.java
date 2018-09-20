@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -115,6 +116,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+
 	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
 	mStart.start();
 	Log.e("aaa", "InOutBoxTwoActivity");
@@ -122,18 +124,26 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-      if (event.loading){
-         if (mLoading==null){
-		LogUtils.i(TAG,"     mLoading  新建 ");
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
 		mLoading = DialogUtils.showLoading(this);
-	   }else {
-            if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
+	   } else {
+		if (!mLoading.mDialog.isShowing()) {
+		   LogUtils.i(TAG, "     mLoading   重新开启");
 		   mLoading.create().show();
 		}
 	   }
+	} else {
+	   if (mLoading != null) {
+		LogUtils.i(TAG, "     mLoading   关闭");
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
 	}
    }
+
 
    /**
     * 扫描后EPC准备传值
@@ -160,18 +170,18 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
 		if (boxIdBeansss.size() > 1) {
-		   for (BoxIdBean BoxIdBean:boxIdBeansss){
+		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)){
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
 			   mEPCDate.putAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
 		   }
-		   if (k==boxIdBeansss.size()){
-			   LogUtils.i(TAG, "mEPCDate  zou l  " );
-			   k=0;
-			   getDeviceDate(event.deviceId, mEPCDate);
+		   if (k == boxIdBeansss.size()) {
+			LogUtils.i(TAG, "mEPCDate  zou l  ");
+			k = 0;
+			getDeviceDate(event.deviceId, mEPCDate);
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
@@ -196,9 +206,10 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	super.onStart();
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left,
-	   R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.timely_open_door,
+	   R.id.timely_left, R.id.timely_right, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb,
+	   R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -216,29 +227,30 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 				startActivity(
 					new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
-			   case 2:
-				TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				builder.setTwoMsg("您确认要退出登录吗?");
-				builder.setMsg("温馨提示");
-				builder.setLeft("取消", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					dialog.dismiss();
-				   }
-				});
-				builder.setRight("确认", new DialogInterface.OnClickListener() {
-				   @Override
-				   public void onClick(DialogInterface dialog, int i) {
-					startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
-					App.getInstance().removeALLActivity_();
-					dialog.dismiss();
-				   }
-				});
-				builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -304,7 +316,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
 		   DeviceManager.getInstance().OpenDoor(deviceCode);
 		}
-
 		break;
 	}
 
@@ -342,7 +353,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    }
 
    private void startScan(String deviceIndentify) {
-
 	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
@@ -350,12 +360,29 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
+
+	   //	   if (READER_TAG.equals(READER_2)) {
+	   //		new Thread() {
+	   //		   public void run() {
+	   //			for (BoxIdBean deviceid : deviceBean) {
+	   //			   String device_id = deviceid.getDevice_id();
+	   //			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+	   //			   LogUtils.i(TAG, "开始扫描了状态  罗丹贝尔  " + i + "    " + device_id);
+	   //			   try {
+	   //				Thread.sleep(3000);
+	   //			   } catch (InterruptedException e) {
+	   //				e.printStackTrace();
+	   //			   }
+	   //			}
+	   //		   }
+	   //		}.start();
+	   //	   } else {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id);
-
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
+	   //	   }
 	}
    }
 
@@ -490,6 +517,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	String string = null;
 	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
 	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
@@ -530,9 +562,9 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   mStart.cancel();
 
 		}
-		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-		EventBusUtils.postSticky(mTCstInventoryTwoDto);
-		ToastUtils.showLong("未扫描到操作的耗材,即将返回主界面，请重新操作");
+		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
+		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -599,8 +631,36 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
-	super.onDestroy();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+
+	EventBusUtils.unregister(this);
 	mEthDeviceIdBack.clear();
+	super.onDestroy();
+   }
+
+   @Override
+   protected void onResume() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	super.onResume();
+   }
+
+   @Override
+   protected void onPause() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	mStart.cancel();
+	super.onPause();
    }
 
    /**
@@ -614,7 +674,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryTwoDto == null&&mTCstInventoryDto.gettCstInventoryVos()!=null) {
+	if (mTCstInventoryTwoDto == null && mTCstInventoryDto.gettCstInventoryVos() != null) {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
 		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
@@ -755,9 +815,5 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
    }
 
-   @Override
-   protected void onPause() {
-	mStart.cancel();
-	super.onPause();
-   }
+
 }

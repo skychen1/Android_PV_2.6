@@ -50,7 +50,7 @@ public class ConfigBean implements Serializable{
 
 	private Object dictId;
 	private String name;
-	private String value;
+	private String val;
 	private String code;
 
 	public Object getDictId() { return dictId;}
@@ -61,9 +61,9 @@ public class ConfigBean implements Serializable{
 
 	public void setName(String name) { this.name = name;}
 
-	public String getValue() { return value;}
+	public String getValue() { return val;}
 
-	public void setValue(String value) { this.value = value;}
+	public void setValue(String val) { this.val = val;}
 
 	public String getCode() { return code;}
 

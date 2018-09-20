@@ -92,18 +92,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 
    }
 
-//   private void getLeftDownDate() {
-//	NetRequest.getInstance().getStockDown("23233", null, null,-1, mContext, new BaseResult() {
-//	   @Override
-//	   public void onSucceed(String result) {
-//
-//		mLeftDownBean = mGson.fromJson(result, SocketLeftDownBean.class);
-//		if (mLeftDownBean != null) {
-//		   onSucceedDate();
-//		}
-//	   }
-//	});
-//   }
+
 
    public void getLeftDate() {
 	NetRequest.getInstance().materialControl( mContext, new BaseResult() {
@@ -137,7 +126,11 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		group.check(R.id.stock_rdbtn_middle);
 		ViewPager viewPager = (ViewPager) mContext.findViewById(R.id.home_stock_viewpager);
 		viewPager.setCurrentItem(1);
-
+		if (mLeftAdapter.getData().size()>1){
+		   EventBusUtils.postSticky(new Event.EventJump(position+1));
+		}else {
+		   EventBusUtils.postSticky(new Event.EventJump(position));
+		}
 		FragmentManager manager = getParentFragment().getFragmentManager();
 		StockMiddleInforFrag inforFrag = new StockMiddleInforFrag();
 		manager.beginTransaction().replace(R.id.home_stock_viewpager, inforFrag).commit();
@@ -146,6 +139,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
 	mCttimecheckViewpager.setAdapter(mPagerAdapter);
 	mCttimecheckViewpager.setCurrentItem(0);
+	mCttimecheckViewpager.setOffscreenPageLimit(6);
 	mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
    }
 

@@ -59,8 +59,8 @@ public class RvDialog extends Dialog {
         ImageView mSearchIvDelete;
         FrameLayout mStockSearch;
         LinearLayout mLinearLayout;
-        RecyclerView mRecyclerview;
-        SmartRefreshLayout mRefreshLayout;
+        public  RecyclerView mRecyclerview;
+        public SmartRefreshLayout mRefreshLayout;
         TextView mDialogLeft;
         TextView mDialogRight;
         private int mSize; //假数据 举例6个横向格子

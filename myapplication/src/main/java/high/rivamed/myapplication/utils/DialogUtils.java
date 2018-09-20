@@ -84,8 +84,7 @@ public class DialogUtils {
                 int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
                 if (type.equals("firstBind")) {//先绑定患者
                     LogUtils.i("OutBoxBingActivity", "先绑定患者");
-                    if ((sTableTypeView.mRecyclerview.getChildAt(
-                            checkedPosition)) == null) {
+                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
                         ContentConsumeOperateFrag2.mPause = false;
@@ -104,8 +103,7 @@ public class DialogUtils {
                     }
                     dialog.dismiss();
                 } else {//后绑定
-                    if ((sTableTypeView.mRecyclerview.getChildAt(
-                            checkedPosition)) == null) {
+                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(

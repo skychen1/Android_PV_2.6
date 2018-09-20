@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -33,6 +37,7 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
+import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
@@ -40,10 +45,12 @@ import high.rivamed.myapplication.activity.OutMealActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.activity.TemPatientBindActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -63,6 +70,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
+import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
@@ -142,18 +150,18 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    //   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices2;
    private HashMap<String, String>            mReaderMap;
 
-   public static List<String>                                 mReaderIdList;
-   private       int                                          mRbKey;
-   private       BoxSizeBean                                  mBoxSizeBean;
-   private       BoxSizeBean                                  mBoxSizeBean2;
-   private       List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
-   private       String                                       mRvEventString;
-   private       String                                       mPatientName;
-   private       String                                       mPatientId;
-   private       String                                       mFirstBind;
-   private       String                                       mDeviceCode;
-   private       RvDialog.Builder                             mShowRvDialog;
-   private       Handler                                      mHandler;
+   public static List<String> mReaderIdList;
+   private       int          mRbKey;
+   private       BoxSizeBean  mBoxSizeBean;
+   private       BoxSizeBean  mBoxSizeBean2;
+   private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
+   private String           mRvEventString;
+   private String           mPatientName;
+   private String           mPatientId;
+   private String           mFirstBind;
+   private String           mDeviceCode;
+   private RvDialog.Builder mShowRvDialog;
+   private Handler          mHandler;
    private String mOppenDoor = null;
    private List<String> mEthDeviceId;
    private       TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
@@ -163,21 +171,30 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private RvDialog.Builder                   mShowRvDialog2;
    private String                             mOperationScheduleId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
-   ;
    int k = 0;
+   private int mAllPage   = 1;
+   private int mNoTemPage = 1;
+   private int mRows      = 20;
    private LoadingDialog.Builder mLoading;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-
-	if (event.loading) {
-	   if (mLoading == null) {
-		LogUtils.i(TAG, "     mLoading  新建 ");
-		mLoading = DialogUtils.showLoading(mContext);
-	   } else {
-		if (!mLoading.mDialog.isShowing()){
-		   LogUtils.i(TAG,"     mLoading   重新开启");
-		   mLoading.create().show();
+	if (!mPause){
+	   if (event.loading) {
+		if (mLoading == null) {
+		   LogUtils.i(TAG, "     mLoading  新建 ");
+		   mLoading = DialogUtils.showLoading(mContext);
+		} else {
+		   if (!mLoading.mDialog.isShowing()) {
+			LogUtils.i(TAG, "     mLoading   重新开启");
+			mLoading.create().show();
+		   }
+		}
+	   }else {
+		if (mLoading != null) {
+		   mLoading.mAnimationDrawable.stop();
+		   mLoading.mDialog.dismiss();
+		   mLoading = null;
 		}
 	   }
 	}
@@ -286,6 +303,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
+	   TimelyAllFrag.mPauseS = true;
 	   initData();
 	} else {
 	   //            mPause = true;
@@ -297,6 +315,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void onRvEvent(Event.EventString event) {
 	mRvEventString = event.mString;
 	LogUtils.i(TAG, "mRvEventString   " + mRvEventString);
+	mAllPage = 1;
+	mPatientInfos.clear();
 	loadBingDate(mRvEventString, -2, null);
    }
 
@@ -355,15 +375,34 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
-
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	//	mShowLoading = DialogUtils.showLoading(mContext);
-	LogUtils.i(TAG, "initDataAndEvent");
 	//	initCallBack();
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	mContentRg.setVisibility(View.GONE);
 	initData();
 	initEvent();
+   }
+
+   @Override
+   public void onStart() {
+	EventBusUtils.register(this);
+	super.onStart();
+   }
+
+   @Override
+   public void onResume() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	super.onResume();
    }
 
    private void initEvent() {
@@ -383,6 +422,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	NetRequest.getInstance().findTempPatients("", this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
 		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
 												 BingFindSchedulesBean.class);
 		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null &&
@@ -447,6 +487,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void putEPCDates(String toJson) {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -552,6 +597,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void initData() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
 	} else {
@@ -800,6 +850,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   //先绑定患者再开柜，不启动临时患者
 	   LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
 	   //                                loadBingDate("", position, mTbaseDevices);
+	   mNoTemPage = 1;
 	   loadBingDateNoTemp("", position, mTbaseDevices);
 	} else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 		     UIUtils.getConfigType(mContext, CONFIG_010) &&
@@ -836,9 +887,10 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    private void goToFirstBindAC(int position) {
 	//获取需要绑定的患者
-	NetRequest.getInstance().findSchedulesDate("", this, null, new BaseResult() {
+	NetRequest.getInstance().findSchedulesDate("", mAllPage, mRows, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
 		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
 												 BingFindSchedulesBean.class);
 		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
@@ -866,13 +918,19 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Override
    public void onPause() {
 	mPause = true;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	EventBusUtils.unregister(this);
 	super.onPause();
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.function_title_meal, R.id.fastopen_title_form, R.id.content_rb_ly, R.id.content_rb_rk,
-	   R.id.content_rb_yc, R.id.content_rb_tb, R.id.content_rb_yr, R.id.content_rb_tuihui,
-	   R.id.content_rb_tuihuo})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
+	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
+	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -880,6 +938,26 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		mPopupWindow = new SettingPopupWindow(mContext);
 		mPopupWindow.showPopupWindow(mBaseTabIconRight);
 		popupClick();
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -919,34 +997,106 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private void loadBingDate(
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
-	NetRequest.getInstance().findSchedulesDate(optienNameOrId, this, null, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result   " + result);
-		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												 BingFindSchedulesBean.class);
-		if (mPatientInfos != null) {
-		   mPatientInfos.clear();
-		   List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean.getPatientInfos();
-		   mPatientInfos.addAll(patientInfos);
-		   if (mShowRvDialog.mDialog.isShowing()) {
-			sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-		   } else {
-			if (!mPause) {
-			   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
-										  "firstBind", position, mTbaseDevices);
+	NetRequest.getInstance()
+		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, null, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result   " + result);
+			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+
+			   if (mPatientInfos != null) {
+				for (int i = 0; i < bean.getRows().size(); i++) {
+				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setPatientName(bean.getRows().get(i).getPatientName());
+				   data.setDeptName(bean.getRows().get(i).getDeptName());
+				   data.setOperationSurgeonName(
+					   bean.getRows().get(i).getOperationSurgeonName());
+				   data.setOperatingRoomNoName(
+					   bean.getRows().get(i).getOperatingRoomNoName());
+				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   mPatientInfos.add(data);
+				}
+				if (mShowRvDialog != null && mShowRvDialog.mDialog.isShowing()) {
+				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+				} else {
+				   if (!mPause) {
+					mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext,
+											     mPatientInfos, "firstBind",
+											     position, mTbaseDevices);
+					mShowRvDialog.mRefreshLayout.setOnRefreshListener(
+						new OnRefreshListener() {
+						   @Override
+						   public void onRefresh(RefreshLayout refreshLayout) {
+							mShowRvDialog.mRefreshLayout.setNoMoreData(false);
+							mAllPage = 1;
+							mPatientInfos.clear();
+							loadBingDate(optienNameOrId, position, mTbaseDevices);
+							mShowRvDialog.mRefreshLayout.finishRefresh();
+						   }
+						});
+					mShowRvDialog.mRefreshLayout.setOnLoadMoreListener(
+						new OnLoadMoreListener() {
+						   @Override
+						   public void onLoadMore(RefreshLayout refreshLayout) {
+							mAllPage++;
+							loadBingDate(optienNameOrId, position, mTbaseDevices);
+							mShowRvDialog.mRefreshLayout.finishLoadMore();
+						   }
+						});
+				   }
+				}
+
+			   } else {
+				if (!mPause) {
+				   for (int i = 0; i < bean.getRows().size(); i++) {
+					BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+					data.setPatientId(bean.getRows().get(i).getPatientId());
+					data.setPatientName(bean.getRows().get(i).getPatientName());
+					data.setDeptName(bean.getRows().get(i).getDeptName());
+					data.setOperationSurgeonName(
+						bean.getRows().get(i).getOperationSurgeonName());
+					data.setOperatingRoomNoName(
+						bean.getRows().get(i).getOperatingRoomNoName());
+					data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+					data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+					data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+					data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+					mPatientInfos.add(data);
+				   }
+				   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext,
+											  mPatientInfos, "firstBind",
+											  position, mTbaseDevices);
+				   mShowRvDialog.mRefreshLayout.setOnRefreshListener(
+					   new OnRefreshListener() {
+						@Override
+						public void onRefresh(RefreshLayout refreshLayout) {
+						   mShowRvDialog.mRefreshLayout.setNoMoreData(false);
+						   mAllPage = 1;
+						   mPatientInfos.clear();
+						   loadBingDate(optienNameOrId, position, mTbaseDevices);
+						   mShowRvDialog.mRefreshLayout.finishRefresh();
+						}
+					   });
+				   mShowRvDialog.mRefreshLayout.setOnLoadMoreListener(
+					   new OnLoadMoreListener() {
+						@Override
+						public void onLoadMore(RefreshLayout refreshLayout) {
+						   mAllPage++;
+						   loadBingDate(optienNameOrId, position, mTbaseDevices);
+						   mShowRvDialog.mRefreshLayout.finishLoadMore();
+						}
+					   });
+				}
+			   }
 			}
 		   }
+		});
 
-		} else {
-		   if (!mPause) {
-			mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-			mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext, mPatientInfos,
-									     "firstBind", position, mTbaseDevices);
-		   }
-		}
-	   }
-	});
    }
 
    /**
@@ -956,38 +1106,169 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
 	NetRequest.getInstance()
-		.findSchedulesDateNoTemp(optienNameOrId, this, null, new BaseResult() {
+		.findSchedulesDate(optienNameOrId, mNoTemPage, mRows, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
-			BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-													 BingFindSchedulesBean.class);
-			if (bingFindSchedulesBean != null &&
-			    bingFindSchedulesBean.getPatientInfos() != null &&
-			    bingFindSchedulesBean.getPatientInfos().size() > 0) {
+
+			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+
 			   if (mPatientInfos != null) {
-				mPatientInfos.clear();
-				List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean
-					.getPatientInfos();
-				mPatientInfos.addAll(patientInfos);
+				for (int i = 0; i < bean.getRows().size(); i++) {
+				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setPatientName(bean.getRows().get(i).getPatientName());
+				   data.setDeptName(bean.getRows().get(i).getDeptName());
+				   data.setOperationSurgeonName(
+					   bean.getRows().get(i).getOperationSurgeonName());
+				   data.setOperatingRoomNoName(
+					   bean.getRows().get(i).getOperatingRoomNoName());
+				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   mPatientInfos.add(data);
+				}
 				if (mShowRvDialog2 != null && mShowRvDialog2.mDialog.isShowing()) {
 				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
 				} else {
 				   mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
 											   mPatientInfos, "firstBind",
 											   position, mTbaseDevices);
+				   mShowRvDialog2.mRefreshLayout.setOnRefreshListener(
+					   new OnRefreshListener() {
+						@Override
+						public void onRefresh(RefreshLayout refreshLayout) {
+						   mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
+						   mNoTemPage = 1;
+						   mPatientInfos.clear();
+						   loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
+						   mShowRvDialog2.mRefreshLayout.finishRefresh();
+						}
+					   });
+				   mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(
+					   new OnLoadMoreListener() {
+						@Override
+						public void onLoadMore(RefreshLayout refreshLayout) {
+						   mNoTemPage++;
+						   loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
+						   mShowRvDialog2.mRefreshLayout.finishLoadMore();
+						}
+					   });
 				}
-
 			   } else {
-				mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+				for (int i = 0; i < bean.getRows().size(); i++) {
+				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setPatientName(bean.getRows().get(i).getPatientName());
+				   data.setDeptName(bean.getRows().get(i).getDeptName());
+				   data.setOperationSurgeonName(
+					   bean.getRows().get(i).getOperationSurgeonName());
+				   data.setOperatingRoomNoName(
+					   bean.getRows().get(i).getOperatingRoomNoName());
+				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
+				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   mPatientInfos.add(data);
+				}
 				mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
 											mPatientInfos, "firstBind",
 											position, mTbaseDevices);
+				mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+				   @Override
+				   public void onRefresh(RefreshLayout refreshLayout) {
+					mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
+					mNoTemPage = 1;
+					mPatientInfos.clear();
+					loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
+					mShowRvDialog2.mRefreshLayout.finishRefresh();
+				   }
+				});
+				mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(
+					new OnLoadMoreListener() {
+					   @Override
+					   public void onLoadMore(RefreshLayout refreshLayout) {
+						mNoTemPage++;
+						loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
+						mShowRvDialog2.mRefreshLayout.finishLoadMore();
+					   }
+					});
 			   }
 			} else {
-			   ToastUtils.showShort("没有患者数据");
+			   if (mNoTemPage == 1) {
+				ToastUtils.showShort("没有患者数据");
+			   }
 			}
 		   }
+
+		   //
+		   //
+		   //			BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+		   //													 BingFindSchedulesBean.class);
+		   //			if (bingFindSchedulesBean != null &&
+		   //			    bingFindSchedulesBean.getPatientInfos() != null &&
+		   //			    bingFindSchedulesBean.getPatientInfos().size() > 0) {
+		   //			   if (mPatientInfos != null) {
+		   //				mPatientInfos.clear();
+		   //				List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean
+		   //					.getPatientInfos();
+		   //				mPatientInfos.addAll(patientInfos);
+		   //				if (mShowRvDialog2 != null && mShowRvDialog2.mDialog.isShowing()) {
+		   //				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+		   //				} else {
+		   //				   mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
+		   //											   mPatientInfos, "firstBind",
+		   //											   position, mTbaseDevices);
+		   //				   mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+		   //					@Override
+		   //					public void onRefresh(RefreshLayout refreshLayout) {
+		   //					   mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
+		   //					   mNoTemPage = 1;
+		   //					   mPatientInfos.clear();
+		   //					   loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
+		   //					   mShowRvDialog2.mRefreshLayout.finishRefresh();
+		   //					}
+		   //				   });
+		   //				   mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+		   //					@Override
+		   //					public void onLoadMore(RefreshLayout refreshLayout) {
+		   //					   mNoTemPage++;
+		   //					   loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
+		   //					   mShowRvDialog2.mRefreshLayout.finishLoadMore();
+		   //					}
+		   //				   });
+		   //				}
+		   //
+		   //			   } else {
+		   //				mPatientInfos = bingFindSchedulesBean.getPatientInfos();
+		   //				mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
+		   //											mPatientInfos, "firstBind",
+		   //											position, mTbaseDevices);
+		   //				mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+		   //				   @Override
+		   //				   public void onRefresh(RefreshLayout refreshLayout) {
+		   //					mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
+		   //					mNoTemPage = 1;
+		   //					mPatientInfos.clear();
+		   //					loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
+		   //					mShowRvDialog2.mRefreshLayout.finishRefresh();
+		   //				   }
+		   //				});
+		   //				mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+		   //				   @Override
+		   //				   public void onLoadMore(RefreshLayout refreshLayout) {
+		   //					mNoTemPage++;
+		   //					loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
+		   //					mShowRvDialog2.mRefreshLayout.finishLoadMore();
+		   //				   }
+		   //				});
+		   //			   }
+		   //			} else {
+		   //			   ToastUtils.showShort("没有患者数据");
+		   //			}
+		   //		   }
 		});
    }
 }

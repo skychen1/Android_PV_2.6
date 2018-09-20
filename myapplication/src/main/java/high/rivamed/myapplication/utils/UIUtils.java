@@ -204,7 +204,7 @@ public class UIUtils {
    public static boolean getConfigType(Context context,String code) {
 	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_CONFIG_STRING);
-	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
+//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
 	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
 	if (configBean!=null){
 	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
@@ -215,5 +215,26 @@ public class UIUtils {
 	   }
 	}
 	return false;
+   }
+   /**
+    * 获取配置项reader的val
+    * @param context
+    * @param code
+    * @return
+    */
+   public static String getConfigReaderType(Context context,String code) {
+	Gson gson = new Gson();
+	String string = SPUtils.getString(context, SAVE_CONFIG_STRING);
+//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
+	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
+	if (configBean!=null){
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+	   for (ConfigBean.TCstConfigVosBean configType :tCstConfigVos) {
+		if (code.equals(configType.getCode())){
+		   return configType.getValue();
+		}
+	   }
+	}
+	return "1";
    }
 }

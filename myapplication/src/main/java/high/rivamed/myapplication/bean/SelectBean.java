@@ -9,10 +9,15 @@ public class SelectBean {
     private String id = "";
     private String content = "";
 
-    public SelectBean(String content) {
+    public SelectBean(String content,String id) {
         this.content = content;
+        this.id = id;
     }
 
+    public SelectBean(String content) {
+        this.content = content;
+
+    }
     public String getId() {
         return id;
     }

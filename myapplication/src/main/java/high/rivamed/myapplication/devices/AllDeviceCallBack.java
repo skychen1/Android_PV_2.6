@@ -38,13 +38,15 @@ public class AllDeviceCallBack {
 
    // 设置本类为单例模式
    private static AllDeviceCallBack instances;
-   public static ArrayList<String>      mEthDeviceIdBack;
-   public static ArrayList<String>      mEthDeviceIdBack2;
+   public static  ArrayList<String> mEthDeviceIdBack;
+   public static  ArrayList<String> mEthDeviceIdBack2;
    public static  List<String>      mReaderIdList;
    public static  List<String>      mReaderDeviceId;
    public static  List<String>      eth002DeviceIdList;
-   public static AllDeviceCallBack getInstance() {
+   public static  String            sReaderType;
 
+   public static AllDeviceCallBack getInstance() {
+//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
 	if (instances == null) {
 	   synchronized (NetRequest.class) {
 		if (instances == null) {
@@ -126,23 +128,20 @@ public class AllDeviceCallBack {
 		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
-		for (int i =0;i<mEthDeviceIdBack2.size();i++){
-		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)){
+		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
+		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			mEthDeviceIdBack2.remove(i);
 		   }
 		}
-		if (mEthDeviceIdBack2==null||mEthDeviceIdBack2.size()==0){
+		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
 		   EventBusUtils.post(new Event.HomeNoClickEvent(false));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
-
-		EventBusUtils.postSticky(new Event.EventLoading(true));
-
 	   }
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-			clossDoorStartScan(deviceIndentify);
+		clossDoorStartScan(deviceIndentify);
 	   }
 
 	   @Override
@@ -150,7 +149,8 @@ public class AllDeviceCallBack {
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
 		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
 
-		EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId,epcs));
+		EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, epcs));
+		//		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 
 	   @Override
@@ -194,6 +194,7 @@ public class AllDeviceCallBack {
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
 			} else {
+
 			   startScan(deviceIndentify);
 			}
 		   } catch (Exception e) {
@@ -233,8 +234,10 @@ public class AllDeviceCallBack {
 	   }
 	}
    }
+
    /**
     * 开柜,开柜子获得reader的标识
+    *
     * @param position
     * @param mTbaseDevices
     */
@@ -259,7 +262,8 @@ public class AllDeviceCallBack {
 		LogUtils.i(TAG, " position   " + position);
 		initCallBack();
 		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG,
+				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		}
 	   } else {
@@ -273,43 +277,65 @@ public class AllDeviceCallBack {
 
    }
 
-
    /**
     * 获取设备门锁ID，并开柜
     */
    private void queryDoorId(String mDeviceCode) {
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
-	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode, UHF_TYPE).find(BoxIdBean.class);
+	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
+								    UHF_TYPE).find(BoxIdBean.class);
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(eth002DeviceIdList.get(i))) {
-		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG,
+				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   DeviceManager.getInstance().OpenDoor((String) eth002DeviceIdList.get(i));
 		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		}
 	   }
 	}
    }
+
    /**
     * 正式开始扫描
+    *
     * @param deviceIndentify
     */
    private void startScan(String deviceIndentify) {
+
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id);
-		if (i==2){
-		   DeviceManager.getInstance().StopUhfScan(device_id);
-		   DeviceManager.getInstance().StartUhfScan(device_id);
+//	   if (sReaderType.equals(READER_2)) {
+//		new Thread() {
+//		   public void run() {
+//			for (BoxIdBean deviceid : deviceBean) {
+//			   String device_id = deviceid.getDevice_id();
+//			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+//			   LogUtils.i(TAG, "开始扫描了状态 罗丹贝尔   " + i + "    " + device_id);
+//			   try {
+//				Thread.sleep(3000);
+//			   } catch (InterruptedException e) {
+//				e.printStackTrace();
+//			   }
+//			}
+//		   }
+//		}.start();
+//	   } else {
+		for (BoxIdBean deviceid : deviceBean) {
+		   String device_id = deviceid.getDevice_id();
+		   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   if (i==2){
+			DeviceManager.getInstance().StopUhfScan(device_id);
+			DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   }
+		   LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
 		}
-		LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
-	   }
+//	   }
 	}
    }
 }

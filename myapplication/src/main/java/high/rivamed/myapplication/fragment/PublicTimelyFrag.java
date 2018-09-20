@@ -653,8 +653,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 					   }
 					});
 				mHeadView.setBackgroundResource(R.color.bg_green);
-				mRecyclerview.addItemDecoration(
-					new DividerItemDecoration(mContext, VERTICAL));
+				mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 				mRefreshLayout.setEnableAutoLoadMore(false);mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 				mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能

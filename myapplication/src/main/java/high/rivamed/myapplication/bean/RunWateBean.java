@@ -106,6 +106,7 @@ public class RunWateBean implements Serializable{
 	 * optionName : adminUM
 	 * type : 0
 	 * count : null
+	 * patientNameAndId
 	 * epc : 95564564566457
 	 */
 
@@ -121,6 +122,15 @@ public class RunWateBean implements Serializable{
 	private int    stopFlag;
 	private Object count;
 	private String epc;
+	private String patientNameAndId;
+
+	public String getPatientNameAndId() {
+	   return patientNameAndId;
+	}
+
+	public void setPatientNameAndId(String patientNameAndId) {
+	   this.patientNameAndId = patientNameAndId;
+	}
 
 	public String getStatus() { return status;}
 

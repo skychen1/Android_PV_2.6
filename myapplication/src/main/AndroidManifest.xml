@@ -119,8 +119,7 @@
         <activity
             android:name=".activity.TemPatientBindActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".activity.RecognizeActivity" />
-        <activity
+		<activity
             android:name=".activity.PatientConnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 

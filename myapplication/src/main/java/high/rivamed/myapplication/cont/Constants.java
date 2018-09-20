@@ -53,7 +53,11 @@ public class Constants {
 
    public static final int DELETE_TATUS1  = 1;//移除
 
+   public static final String READER_1 = "1";//1鸿陆
+   public static final String READER_2 = "2";//2罗丹贝尔
+   public static final String READER_3 = "3";//3芯联
     //配置项的code
+    public static final String CONFIG_000 = "000";//reader类型val(1鸿陆 2罗丹贝尔 3芯联)
     public static final String CONFIG_005 = "005";//是否启用患者来源于门诊
     public static final String CONFIG_006 = "006";//是否启用患者来源于手术室
     public static final String CONFIG_007 = "007";//是否启用绑定患者领用耗材

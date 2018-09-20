@@ -88,7 +88,12 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
 		mSeven_seven.setText("");
 	   } else {
-		mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
+		if (item.getPatientId().equals("virtual")){
+		   mSeven_seven.setText(item.getPatientName());
+		}else {
+		   mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
+
+		}
 	   }
 	}
 

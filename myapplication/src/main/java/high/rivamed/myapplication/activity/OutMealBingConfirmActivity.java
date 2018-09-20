@@ -34,8 +34,10 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 	super.my_id = ACT_TYPE_MEAL_BING;
 	return my_id;
    }
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,
-	   R.id.base_tab_back, R.id.timely_start_btn_right, R.id.ly_bing_btn_right,R.id.timely_left, R.id.timely_right})
+
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn_right,
+	   R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -52,28 +54,30 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 			   case 1:
 				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 				break;
-			   case 2: TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-				   builder.setTwoMsg("您确认要退出登录吗?");
-				   builder.setMsg("温馨提示");
-				   builder.setLeft("取消", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.setRight("确认", new DialogInterface.OnClickListener() {
-					   @Override
-					   public void onClick(DialogInterface dialog, int i) {
-						   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-						   App.getInstance().removeALLActivity_();
-						   dialog.dismiss();
-					   }
-				   });
-				   builder.create().show();
-				break;
+
 			}
 		   }
 		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
 		break;
@@ -98,7 +102,7 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.ly_bing_btn_right:
 		ToastUtils.showShort("绑定");
-//		DialogUtils.showRvDialog(this, mContext);
+		//		DialogUtils.showRvDialog(this, mContext);
 		break;
 	}
    }

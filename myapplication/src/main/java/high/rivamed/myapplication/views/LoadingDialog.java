@@ -61,7 +61,7 @@ public class LoadingDialog extends Dialog {
 		   mAnimationDrawable.stop();
 		   mDialog.dismiss();
 		}
-	   }, 10000);
+	   }, 4000);
 	   return mDialog;
 	}
 

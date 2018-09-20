@@ -114,6 +114,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
         for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+
 		if (s.getCode().equals(CONFIG_013)){
                 return true;
 		}
