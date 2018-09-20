@@ -20,12 +20,15 @@ import java.util.Map;
 
 import cn.rivamed.DeviceManager;
 import cn.rivamed.callback.DeviceCallBack;
+import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+
+import static cn.rivamed.DeviceManager.getInstance;
 
 
 public class TestDevicesActivity extends SimpleActivity {
@@ -76,22 +79,22 @@ public class TestDevicesActivity extends SimpleActivity {
         txt_power = (EditText) findViewById(R.id.txt_power);
         bt_queryConnDev = (Button) findViewById(R.id.bt_queryConnDev);
         bt_uhf_reset = (Button) findViewById(R.id.bt_uhf_reset);
-        bt_back=(Button) findViewById(R.id.bt_back);
-        bt_clear=(Button)findViewById(R.id.bt_clear);
-        scroll_log=(ScrollView)findViewById(R.id.scroll_log);
-        bt_fingerCompare=(Button)findViewById(R.id.bt_fingerCompare);
-        txt_scantime=(EditText)findViewById(R.id.txt_scantime);
+        bt_back = (Button) findViewById(R.id.bt_back);
+        bt_clear = (Button) findViewById(R.id.bt_clear);
+        scroll_log = (ScrollView) findViewById(R.id.scroll_log);
+        bt_fingerCompare = (Button) findViewById(R.id.bt_fingerCompare);
+        txt_scantime = (EditText) findViewById(R.id.txt_scantime);
 
         initListener();
         initCallBack();
         //  Toast.makeText(this ,new DeviceManager().getI(),Toast.LENGTH_LONG).show();
 
-        try{
-            WindowManager wm = (WindowManager)  getSystemService(Context.WINDOW_SERVICE);
+        try {
+            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
             DisplayMetrics dm = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(dm);
-            AppendLog("获取有效屏幕分辨率:X="+ dm.widthPixels+";Y="+ dm.heightPixels);
-        }catch (Throwable e){
+            AppendLog("获取有效屏幕分辨率:X=" + dm.widthPixels + ";Y=" + dm.heightPixels);
+        } catch (Throwable e) {
 
         }
 
@@ -102,7 +105,7 @@ public class TestDevicesActivity extends SimpleActivity {
     }
 
     private void initCallBack() {
-        DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+        getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
             @Override
             public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
                 if (deviceType == DeviceType.UHFREADER) {
@@ -110,7 +113,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 } else if (deviceType == DeviceType.Eth002) {
                     eth002DeviceId = deviceIndentify;
                 }
-                LogUtils.i("FFS","设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
+                LogUtils.i("FFS", "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
                 AppendLog("设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
             }
 
@@ -133,7 +136,7 @@ public class TestDevicesActivity extends SimpleActivity {
             public void OnFingerFea(String deviceId, String fingerFea) {
                 AppendLog("接收到指纹采集信息：" + deviceId + ":::FingerData=" + fingerFea);
                 Log.e("fff", fingerFea);
-                fingerData=fingerFea;
+                fingerData = fingerFea;
             }
 
             @Override
@@ -144,8 +147,8 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
                 AppendLog("接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
-                if(success){
-                    fingerTemplate=fingerData;
+                if (success) {
+                    fingerTemplate = fingerData;
                 }
             }
 
@@ -226,11 +229,11 @@ public class TestDevicesActivity extends SimpleActivity {
                 TestDevicesActivity.this.txt_log.append(s);
 
 
-                int offset=txt_log.getMeasuredHeight()-scroll_log.getMeasuredHeight();
-                if(offset<0){
-                    offset=0;
+                int offset = txt_log.getMeasuredHeight() - scroll_log.getMeasuredHeight();
+                if (offset < 0) {
+                    offset = 0;
                 }
-                scroll_log.scrollTo(0,offset);
+                scroll_log.scrollTo(0, offset);
                 Log.i("fff", msg);
             }
         });
@@ -240,9 +243,9 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_fingerCompare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FingerAlg fingerAlg=new FingerAlg();
-                int score=fingerAlg.AlgMatch(fingerTemplate,fingerData,3);
-                AppendLog("指纹对比结果 Score="+score);
+                FingerAlg fingerAlg = new FingerAlg();
+                int score = fingerAlg.AlgMatch(fingerTemplate, fingerData, 3);
+                AppendLog("指纹对比结果 Score=" + score);
             }
         });
         bt_back.setOnClickListener(new View.OnClickListener() {
@@ -255,12 +258,21 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int scanTime= Integer.parseInt(txt_scantime.getText().toString());
-                if (scanTime < 0 || scanTime > 100) {
-                    scanTime=0;
+                int scanTime = 3000;
+                try {
+                    Integer.parseInt(txt_scantime.getText().toString());
+                    if (scanTime < 0 || scanTime > 100) {
+                        scanTime = 3000;
+                    }
+                } catch (Throwable e) {
+
                 }
-                int ret = DeviceManager.getInstance().StartUhfScan(uhfDeviceId,scanTime*1000);
-                AppendLog("启动持续扫描，扫描时间为"+scanTime+";RET=" + ret);
+                for (Map.Entry<String, DeviceHandler> device : DeviceManager.getInstance().getConnetedDevices().entrySet()) {
+                    if (device.getValue().getDeviceType() == DeviceType.UHFREADER) {
+                        int ret = getInstance().StartUhfScan(uhfDeviceId, scanTime * 1000);
+                        AppendLog("启动持续扫描,设备ID=" + device.getKey() + "，扫描时间为" + scanTime + ";RET=" + ret);
+                    }
+                }
             }
         });
 
@@ -272,7 +284,7 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().FingerReg(eth002DeviceId);
+                int ret = getInstance().FingerReg(eth002DeviceId);
                 AppendLog("指纹注册命令已发送 RET=" + ret + ";请等待质问注册执行结果");
             }
         });
@@ -287,7 +299,7 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().OpenDoor(eth002DeviceId);
+                int ret = getInstance().OpenDoor(eth002DeviceId);
                 AppendLog("开门命令已发出 ret=" + ret);
             }
         });
@@ -295,7 +307,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_checkState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().CheckDoorState(eth002DeviceId);
+                int ret = getInstance().CheckDoorState(eth002DeviceId);
                 AppendLog("检查门锁指令已发出 ret=" + ret);
             }
         });
@@ -303,7 +315,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_queryConnDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+                List<DeviceManager.DeviceInfo> deviceInfos = getInstance().QueryConnectedDevice();
                 String s = "";
                 for (DeviceManager.DeviceInfo d : deviceInfos
                         ) {
@@ -321,7 +333,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_checkState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().CheckDoorState(eth002DeviceId);
+                int ret = getInstance().CheckDoorState(eth002DeviceId);
                 AppendLog("检查门锁命令发送 RET=" + ret);
             }
         });
@@ -329,14 +341,14 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_openLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().OpenLight(eth002DeviceId);
+                int ret = getInstance().OpenLight(eth002DeviceId);
                 AppendLog("开灯指令发送 RET=" + ret);
             }
         });
         bt_closelight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().CloseLight(eth002DeviceId);
+                int ret = getInstance().CloseLight(eth002DeviceId);
                 AppendLog("关灯指令发送 RET=" + ret);
             }
         });
@@ -344,7 +356,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_getpower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().getUhfReaderPower(uhfDeviceId);
+                int ret = getInstance().getUhfReaderPower(uhfDeviceId);
                 AppendLog("获取RFID reader功率指令发送 RET=" + ret);
             }
         });
@@ -363,7 +375,7 @@ public class TestDevicesActivity extends SimpleActivity {
                     if (powerByte < 0 || powerByte > 30) {
                         throw new Exception();
                     }
-                    int ret = DeviceManager.getInstance().setUhfReaderPower(uhfDeviceId, powerByte);
+                    int ret = getInstance().setUhfReaderPower(uhfDeviceId, powerByte);
                     AppendLog("设置RFID reader功率指令发送 设备Ｉ=" + uhfDeviceId + ",功率=" + powerByte + " RET=" + ret);
                 } catch (Exception ex) {
                     Toast.makeText(TestDevicesActivity.this, "请输入有效的功率数值,1-30", Toast.LENGTH_LONG).show();
@@ -373,7 +385,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_uhf_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = DeviceManager.getInstance().ResetUhfReader(uhfDeviceId);
+                int ret = getInstance().ResetUhfReader(uhfDeviceId);
                 AppendLog("复位RFID reader功率指令发送 设备Ｉ=" + uhfDeviceId + " RET=" + ret);
             }
         });
