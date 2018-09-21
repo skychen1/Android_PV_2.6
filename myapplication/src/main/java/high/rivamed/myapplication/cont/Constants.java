@@ -13,7 +13,7 @@ package high.rivamed.myapplication.cont;
  */
 
 public class Constants {
-   public static final long COUNTDOWN_TIME = 40000;     //默认无操作自动退出
+   public static final long COUNTDOWN_TIME = 140000;     //默认无操作自动退出
     public static final long DEFAULT_MILLISECONDS = 8000;      //默认的超时时间
     public static final String TYPE_TIMELY               = "timely";
     public static final String TYPE_RUNWATE              = "runwate";
@@ -30,6 +30,8 @@ public class Constants {
     public static final String STYPE_MEAL_NOBING         = "meal_nobing";//套餐未绑定
     public static final String STYPE_TIMELY_FOUR_DETAILS = "timely_details";//实时盘点item详情
     public static final String STYPE_MEAL_BING           = "meal_bing";//套餐绑定
+   public static final String STYPE_LOSS_TYPE           = "stype_loss_type";//盘亏
+   public static final String STYPE_PROFIT_TYPE           = "stype_profit_type";//盘盈
     public static final int    ACTIVITY                  = 1;
     public static final int    FRAGMENT                  = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI = "act_type_confirm_haocai";//确认耗材领用界面
@@ -46,6 +48,7 @@ public class Constants {
     public static final int ACT_TYPE_TEMPORARY_BING = 9;//创建临时患者
     public static final int ACT_TYPE_CONFIRM_RECEIVE = 10;//确认领用耗材
     public static final int ACT_TYPE_PATIENT_CONN = 11;//选择临时患者
+
 
     public static final int TYPE_STOCK_LEFT   = 0;
     public static final int TYPE_STOCK_MIDDLE = 1;
@@ -94,6 +97,8 @@ public class Constants {
    public static final String KEY_USER_ICON           = "key_user_icon";//用户头像
    public static final String KEY_USER_SEX           = "key_user_sex";//用户性别
    public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
+   public static final String SAVE_STOREHOUSE_NAME     = "save_storehouse_name";//库房名字
+   public static final String SAVE_OPERATION_ROOM_NONAME          = "save_operation_room_noname";//手术间名字
 
 
 }

@@ -97,7 +97,7 @@ public class OneDialog extends Dialog {
 	   dialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_one_layout, null);
 	   dialog.addContentView(layout,
-					 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+					 new ViewGroup.LayoutParams(mContext.getResources().getDimensionPixelSize(R.dimen.x850),
 									    ViewGroup.LayoutParams.WRAP_CONTENT));
 
 	   mDialogMsg = (TextView) layout.findViewById(R.id.dialog_msg);

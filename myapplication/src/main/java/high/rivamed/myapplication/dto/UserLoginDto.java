@@ -12,6 +12,7 @@ public class UserLoginDto {
      */
 
     private String thingCode;
+    private String systemType;
 
     public String getThingCode() {
         return thingCode;
@@ -22,6 +23,14 @@ public class UserLoginDto {
     }
 
     private AccountBean account;
+
+    public String getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
+    }
 
     public AccountBean getAccount() {
         return account;

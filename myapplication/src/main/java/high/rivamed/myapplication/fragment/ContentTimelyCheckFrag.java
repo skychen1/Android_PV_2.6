@@ -22,6 +22,8 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -75,7 +77,12 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setText("实时盘点");
 //	mBuilder = DialogUtils.showLoading(mContext);
 	loadTopBoxSize();
-	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME));
+	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME)!=null){
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+	}
+	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME)!=null){
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
+	}
    }
 
    private void loadTopBoxSize() {

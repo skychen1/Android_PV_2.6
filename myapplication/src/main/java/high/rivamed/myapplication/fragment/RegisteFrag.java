@@ -46,11 +46,13 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -120,6 +122,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptId);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
 	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
+
 	   mFragRegisteRight.setEnabled(false);
 	   if (mSmallAdapter.mRightDelete != null) {
 		mSmallAdapter.mRightDelete.setVisibility(View.GONE);
@@ -140,6 +143,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	NetRequest.getInstance().setSaveActiveDate(fromDate, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+	      LogUtils.i(TAG,"result   "+result);
 		RegisteReturnBean registeReturnBean = mGson.fromJson(result, RegisteReturnBean.class);
 		if (registeReturnBean.isOperateSuccess()) {
 
@@ -148,7 +152,12 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   ToastUtils.showShort("设备已激活！");
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
-
+		   if (registeReturnBean.getTBaseThingSnVo().getStorehouseName()!=null) {
+			SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME, registeReturnBean.getTBaseThingSnVo().getStorehouseName());
+		   }
+		   if (registeReturnBean.getTBaseThingSnVo().getOperationRoomNoName()!=null){
+			SPUtils.putString(UIUtils.getContext(), SAVE_OPERATION_ROOM_NONAME, registeReturnBean.getTBaseThingSnVo().getOperationRoomNoName());
+		   }
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER,
 					   registeReturnBean.getTbaseThing().getSn());
@@ -187,6 +196,13 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				mSnRecoverBean.getTbaseThing().getBranchCode());
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE,
 				mSnRecoverBean.getTbaseThing().getStorehouseCode());
+	if (mSnRecoverBean.getTBaseThingSnVo().getStorehouseName()!=null) {
+	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME, mSnRecoverBean.getTBaseThingSnVo().getStorehouseName());
+	}
+	if (mSnRecoverBean.getTBaseThingSnVo().getOperationRoomNoName()!=null){
+	   SPUtils.putString(UIUtils.getContext(), SAVE_OPERATION_ROOM_NONAME, mSnRecoverBean.getTBaseThingSnVo().getOperationRoomNoName());
+	}
+
 	mFragRegisteRight.setEnabled(false);
 	if (mSmallAdapter.mRightDelete != null) {
 	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);

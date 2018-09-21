@@ -62,8 +62,10 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
+import static high.rivamed.myapplication.cont.Constants.STYPE_LOSS_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.STYPE_PROFIT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
 /**
@@ -215,6 +217,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
+			if(OutBoxBingActivity.mStart != null){
+			   OutBoxBingActivity.mStart.cancel();
+			}
 			return;
 		   }
 		   String status = b.getStatus();
@@ -309,8 +314,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 
-	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY);
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY,STYPE_LOSS_TYPE);
 
    }
 
@@ -327,8 +332,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, tCstInventoryVos, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY);
+	mTypeView = new TableTypeView(this, this, titeleList,  mSize, tCstInventoryVos,mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY,STYPE_PROFIT_TYPE);
    }
 
    /**

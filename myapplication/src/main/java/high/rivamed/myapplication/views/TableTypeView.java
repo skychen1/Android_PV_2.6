@@ -628,9 +628,9 @@ public class TableTypeView extends LinearLayout {
 			}
 		   } else {
 			//盘亏盘盈
-			mLayout = R.layout.item_realtime_seven_layout;
+			mLayout = R.layout.item_loss_seven_layout;
 			mHeadView = mActivity.getLayoutInflater()
-				.inflate(R.layout.item_realtime_seven_title_layout,
+				.inflate(R.layout.item_loss_seven_title_layout,
 					   (ViewGroup) mLinearLayout.getParent(), false);
 			findId();
 			mSeven_one.setText(titeleList.get(0));

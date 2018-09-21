@@ -301,8 +301,9 @@ public class RegisteDialog extends Dialog {
 			String mAddressTwos = mAddressTwo.getText().toString().trim();
 			String mAddressThrees = mAddressThree.getText().toString().trim();
 			String mAddressFours = mAddressFour.getText().toString().trim();
+			String mAddressFives = mAddressFive.getText().toString().trim();
 			if (mAddressOnes.length() > 1 && mAddressTwos.length() > 1 &&
-			    mAddressThrees.length() > 1 && mAddressFours.length() > 1) {
+			    mAddressThrees.length() > 1 && (mAddressFours.length() > 1||mAddressFives.length()>1)) {
 
 			   if (myListener != null) {
 				String deptId = mGoneThreeType.getText().toString().trim();
@@ -466,6 +467,8 @@ public class RegisteDialog extends Dialog {
 				String mGoneText = mGoneMeal.getText().toString().trim();
 				goneview.setText(mGoneText);
 				mAddressFour.setText(trim);
+				mAddressFive.setText("");
+				mGoneFiveType.setText("");
 				mMhospWindow.dismiss();
 			   }
 			});
@@ -483,6 +486,8 @@ public class RegisteDialog extends Dialog {
 				goneview.setText(mGoneText);
 				mAddressFive.setText(trim);
 				goneview.setText(mGoneText);
+				mAddressFour.setText("");
+				mGoneFourType.setText("");
 				mMhospWindow.dismiss();
 			   }
 			});

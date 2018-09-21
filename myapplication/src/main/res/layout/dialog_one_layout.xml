@@ -49,7 +49,7 @@
 		android:paddingTop="@dimen/x10"
 		android:text="确定"
 		android:textColor="@color/bg_f"
-		android:textSize="@dimen/textsize_17"
+		android:textSize="@dimen/textsize_19"
 		/>
 
 </RelativeLayout>

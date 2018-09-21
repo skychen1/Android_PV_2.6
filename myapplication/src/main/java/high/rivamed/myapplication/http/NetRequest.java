@@ -119,6 +119,14 @@ public class NetRequest {
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
+    /**
+     * 腕带解绑
+     */
+    public void unRegisterIdCard(String json, Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_USER_UNREGISTERWAIDAI).tag(tag)
+              .upJson(json)
+              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
 
     /**
      * 指纹登录

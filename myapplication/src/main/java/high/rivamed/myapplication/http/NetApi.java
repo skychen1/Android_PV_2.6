@@ -58,6 +58,7 @@ public interface NetApi {
     String URL_USER_RESET_PASSWORD = MAIN_URL + "/rmApi/userManage/account/resetPassword";//重置密码
     String URL_USER_VALIDATELOGINWRIST = MAIN_URL + "/rmApi/restLogin/validateLoginWrist";//腕带登录
     String URL_USER_REGISTERWAIDAI = MAIN_URL + "/rmApi/userManage/userFeature/registerWaidai";//腕带绑定
+    String URL_USER_UNREGISTERWAIDAI = MAIN_URL + "/rmApi/userManage/userFeature/untieWaidai";//腕带解绑
 
     //   实时盘点
     String URL_TIMELY_ONE = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点

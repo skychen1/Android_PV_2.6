@@ -99,7 +99,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEvent(Event.outBoxEvent event) {
 	event.dialog.dismiss();
 	if (event.type.equals("x")) {//移出
@@ -798,12 +798,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	}
 
 	@Override public void onTick ( long millisUntilFinished){// 计时过程显示
-	   if (millisUntilFinished / 1000 <= 30) {
+//	   if (millisUntilFinished / 1000 <= 30) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
-	   } else {
-		textView.setText("确认并退出登录");
-
-	   }
+//	   } else {
+//		textView.setText("确认并退出登录");
+//
+//	   }
 	}
    }
    @Override

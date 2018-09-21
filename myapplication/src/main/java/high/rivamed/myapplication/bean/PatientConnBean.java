@@ -17,6 +17,15 @@ public class PatientConnBean {
     private String operationScheduleId;
     private String accountId;
     private String thingCode;
+    private String tempPatientId;
+
+    public String getTempPatientId() {
+        return tempPatientId;
+    }
+
+    public void setTempPatientId(String tempPatientId) {
+        this.tempPatientId = tempPatientId;
+    }
 
     public String getThingCode() {
         return thingCode;

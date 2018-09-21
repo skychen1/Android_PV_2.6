@@ -11,7 +11,7 @@
 		android:id="@+id/consume_openall_top"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/x40"
+		android:layout_marginTop="@dimen/y35"
 		android:background="@color/bg_f"
 		android:orientation="vertical"
 		android:paddingBottom="@dimen/x20"
@@ -46,7 +46,7 @@
 		android:id="@+id/consume_openall_middle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/x40"
+		android:layout_marginTop="@dimen/y35"
 		android:background="@color/bg_f"
 		android:orientation="vertical"
 		android:paddingBottom="@dimen/x20"
@@ -158,13 +158,12 @@
 		android:id="@+id/consume_down"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/x40"
+		android:layout_marginTop="@dimen/y35"
 		android:background="@color/bg_f"
 		android:orientation="vertical"
-		android:layout_marginBottom="@dimen/x15"
-		android:paddingBottom="@dimen/x25"
+		android:paddingBottom="@dimen/y25"
 		android:paddingLeft="@dimen/x30"
-		android:paddingTop="@dimen/x35"
+		android:paddingTop="@dimen/y35"
 		android:paddingRight="@dimen/x30"
 		>
 
@@ -245,7 +244,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginLeft="@dimen/x36"
-			android:layout_marginTop="@dimen/x30"
+			android:layout_marginTop="@dimen/y25"
 			android:overScrollMode="never"
 			>
 		</android.support.v7.widget.RecyclerView>

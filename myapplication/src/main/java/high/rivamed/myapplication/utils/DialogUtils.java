@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +30,11 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
+import high.rivamed.myapplication.bean.LoginResultBean;
+import high.rivamed.myapplication.bean.UnRegistBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
@@ -47,6 +53,7 @@ import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 import high.rivamed.myapplication.views.WifiDialog;
 
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -137,14 +144,41 @@ public class DialogUtils {
         return builder;
     }
 
-    public static void showOneDialog(Context context, String title) {
+   /**
+    * 腕带解绑
+    * @param context
+    * @param title
+    */
+    public static void showUnRegistDialog(Context context, String title,String date) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-
-                dialog.dismiss();
+		   if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")){
+			NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult(){
+			   @Override
+			   public void onSucceed(String result) {
+				LogUtils.i("SHOW","result   "+result);
+				Gson gson = new Gson();
+				UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
+				if (unRegistBean.isOperateSuccess()){
+				   LoginInfoActivity.mIsWaidai=0;
+				   LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
+				   LoginInfoActivity.mSettingIcCardBind.setText("绑定");
+				}
+				Toast.makeText(context,unRegistBean.getMsg(),Toast.LENGTH_SHORT).show();
+				String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
+										   "");
+				LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
+				data2.getAppAccountInfoVo().setIsWaidai(0);
+				SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
+				dialog.dismiss();
+			   }
+			});
+		   }else {
+			dialog.dismiss();
+		   }
             }
         });
 
@@ -166,6 +200,9 @@ public class DialogUtils {
         builder.setLeft("", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
+
+			dialog.dismiss();
+
                 //		Log.i("TT", " nojump  " +nojump);
                 //	      if(nojump.equals("out")){
                 //		   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
@@ -191,7 +228,6 @@ public class DialogUtils {
                 //
                 //		}
 
-                dialog.dismiss();
             }
         });
 

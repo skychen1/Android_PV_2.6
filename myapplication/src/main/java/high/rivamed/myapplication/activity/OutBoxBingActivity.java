@@ -10,12 +10,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -790,13 +790,14 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   loadBingFistDate(mIntentType);
 	}
 
-	@Override public void onTick ( long millisUntilFinished){// 计时过程显示
-	   if (millisUntilFinished / 1000 <= 30) {
+	@Override
+	public void onTick ( long millisUntilFinished){// 计时过程显示
+//	   if (millisUntilFinished / 1000 <= 30) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
-	   } else {
-		textView.setText("确认并退出登录");
-
-	   }
+//	   } else {
+//		textView.setText("确认并退出登录");
+//
+//	   }
 	}
    }
 

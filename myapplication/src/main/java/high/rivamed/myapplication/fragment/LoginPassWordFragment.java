@@ -147,7 +147,9 @@ public class LoginPassWordFragment extends SimpleFragment {
         UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
         accountBean.setAccountName(mUserPhone);
         accountBean.setPassword(mPassword);
+        accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
+        userLoginDto.setSystemType("2");
         userLoginDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login","THING_CODE   "+mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {

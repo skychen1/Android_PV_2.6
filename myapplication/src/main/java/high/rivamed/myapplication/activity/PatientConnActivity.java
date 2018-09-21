@@ -412,8 +412,9 @@ public class PatientConnActivity extends BaseTimelyActivity {
    private void connPatient(int position, DialogInterface dialog) {
 	PatientConnBean bean = new PatientConnBean();
 	bean.setLPatsInId(mPatientInfos.get(position).getLpatsInId());
-	bean.setOperationScheduleId(
-		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
+	bean.setTempPatientId(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
+//	bean.setOperationScheduleId(
+//		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
 	bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	bean.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	NetRequest.getInstance()
