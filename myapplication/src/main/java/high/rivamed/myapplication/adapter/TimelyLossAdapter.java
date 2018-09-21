@@ -1,6 +1,9 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,16 +29,20 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class TimelyLossAdapter
 	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
-   private TextView mSeven_one;
+   private CheckBox mCheckBox;
    private TextView mSeven_two;
    private TextView mSeven_three;
    private TextView mSeven_four;
    private TextView mSeven_five;
    private TextView mSeven_six;
    private TextView mSeven_seven;
+   public int mSelectedPos;
+   public  List<TCstInventoryVo> mLossData;
    public TimelyLossAdapter(
 	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
 	super(layoutResId, data);
+	this.mLossData =data;
+
    }
 
    @Override
@@ -46,29 +53,65 @@ public class TimelyLossAdapter
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
-	mSeven_one = ((TextView) helper.getView(R.id.seven_one));
+	if (mSelectedPos == 0 && mLossData.size() > 0) {
+	   mLossData.get(mSelectedPos).setSelected(true);
+	}
+	for (int i = 0; i < mLossData.size(); i++) {
+	   if (mLossData.get(i).isSelected()) {
+		mSelectedPos = i;
+	   }
+	}
+	mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
 	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
 	mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-	int six =item.getCountActual();
-	int seven =item.getCountStock();
-	mSeven_one.setText(item.getCstName());
-	mSeven_two.setText(item.getEpc());
-	mSeven_three.setText(item.getCstSpec());
-	mSeven_four.setText(item.getExpiration());
-	mSeven_five.setText(item.getDeviceName());
-	mSeven_six.setText(six+"");
-	mSeven_seven.setText(seven+"");
-	if (six!=seven) {
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
-	} else {
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-	}
+
+	mSeven_two.setText(item.getCstName());
+	mSeven_three.setText(item.getEpc());
+	mSeven_four.setText(item.getCstSpec());
+	mSeven_five.setText(item.getExpiration());
+	mSeven_six.setText(item.getDeviceName());
+	mSeven_seven.setText("");
+
+	mCheckBox.setOnCheckedChangeListener(null);
+	int position = helper.getAdapterPosition();
+	mCheckBox.setChecked(item.isSelected());
+	helper.itemView.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View view) {
+//		mLossData.get(mSelectedPos).setSelected(false);
+		//设置新的Item勾选状态
+		mSelectedPos = position;
+		if (mLossData.get(mSelectedPos).isSelected()){
+		   mLossData.get(mSelectedPos).setSelected(false);
+		}else {
+		   mLossData.get(mSelectedPos).setSelected(true);
+		}
+
+		notifyDataSetChanged();
+	   }
+	});
+	mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+	   @Override
+	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//		mLossData.get(mSelectedPos).setSelected(false);
+		//设置新的Item勾选状态
+		mSelectedPos = position;
+		if (mLossData.get(mSelectedPos).isSelected()){
+		   mLossData.get(mSelectedPos).setSelected(false);
+		}else {
+		   mLossData.get(mSelectedPos).setSelected(true);
+		}
+
+		notifyDataSetChanged();
+	   }
+	});
+
+
 	int StopFlag = item.getStopFlag();
-	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_four);
+	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_five);
    }
 }

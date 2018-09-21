@@ -35,6 +35,7 @@ import high.rivamed.myapplication.adapter.RecogHaocaiAdapter;
 import high.rivamed.myapplication.adapter.StockDetailsAdapter;
 import high.rivamed.myapplication.adapter.TimeDetailsAdapter;
 import high.rivamed.myapplication.adapter.TimelyLossAdapter;
+import high.rivamed.myapplication.adapter.TimelyProfitAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
@@ -51,8 +52,10 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG2;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
+import static high.rivamed.myapplication.cont.Constants.STYPE_LOSS_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.STYPE_PROFIT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
 /**
@@ -569,22 +572,9 @@ public class TableTypeView extends LinearLayout {
 			   mTempPatientAdapter.notifyDataSetChanged();
 			} else {
 
-			   mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,
-											  mCheckStates1);
+			   mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos);
 
-			   mTempPatientAdapter.setOnItemClickListener(
-				   new BaseQuickAdapter.OnItemClickListener() {
-					@Override
-					public void onItemClick(
-						BaseQuickAdapter adapter, View view, int position) {
-					   CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
-					   for (int i = 0; i < patientInfos.size(); i++) {
-						mCheckStates1.put(i, false);
-					   }
-					   mCheckStates1.put(position, true);
-					   adapter.notifyDataSetChanged();
-					}
-				   });
+
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
@@ -626,7 +616,7 @@ public class TableTypeView extends LinearLayout {
 			   mLinearLayout.removeView(mHeadView);
 			   mLinearLayout.addView(mHeadView);
 			}
-		   } else {
+		   } else if (mDialog != null && mDialog.equals(STYPE_LOSS_TYPE)){
 			//盘亏盘盈
 			mLayout = R.layout.item_loss_seven_layout;
 			mHeadView = mActivity.getLayoutInflater()
@@ -642,6 +632,30 @@ public class TableTypeView extends LinearLayout {
 			mSeven_seven.setText(titeleList.get(6));
 			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout,
 													mTCstInventoryVos);
+			mHeadView.setBackgroundResource(R.color.bg_green);
+			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			mRefreshLayout.setEnableAutoLoadMore(false);
+			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			mRecyclerview.setAdapter(timelyLossAdapter);
+			mLinearLayout.addView(mHeadView);
+		   }else if (mDialog != null && mDialog.equals(STYPE_PROFIT_TYPE)){
+			//盘亏盘盈
+			mLayout = R.layout.item_realtime_seven_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_realtime_seven_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			findId();
+			mSeven_one.setText(titeleList.get(0));
+			mSeven_two.setText(titeleList.get(1));
+			mSeven_three.setText(titeleList.get(2));
+			mSeven_four.setText(titeleList.get(3));
+			mSeven_five.setText(titeleList.get(4));
+			mSeven_six.setText(titeleList.get(5));
+			mSeven_seven.setText(titeleList.get(6));
+			TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout,
+													    mTCstInventoryVos);
 
 			mHeadView.setBackgroundResource(R.color.bg_green);
 
@@ -650,7 +664,7 @@ public class TableTypeView extends LinearLayout {
 			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-			mRecyclerview.setAdapter(timelyLossAdapter);
+			mRecyclerview.setAdapter(timelyProfitAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }
 

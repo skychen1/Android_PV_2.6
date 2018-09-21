@@ -35,6 +35,7 @@ public class TCstInventoryVo implements Serializable {
     private String patientName;
     private String patientId;
     private int    size;
+    private int    isErrorOperation;
     private String type;
     private String operationStatus;
     private int deletetatus;//0不移除    1移除
@@ -46,6 +47,23 @@ public class TCstInventoryVo implements Serializable {
     private String operatingRoomNoName;//手术间名字
     private String scheduleDateTime;//手术时间
     private String sex;//性别
+    private boolean isSelected;
+
+    public int getIsErrorOperation() {
+        return isErrorOperation;
+    }
+
+    public void setIsErrorOperation(int isErrorOperation) {
+        this.isErrorOperation = isErrorOperation;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public String getOperatingRoomNoName() {
         return operatingRoomNoName;

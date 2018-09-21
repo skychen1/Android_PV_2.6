@@ -176,6 +176,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private TCstInventoryDto mDto;
    private String           mBindFirstType;
    private int              mOperation;
+   private int mDtoOperation;
 
    /**
     * 看关门后是否需要设置按钮为可以点击
@@ -410,7 +411,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTCstInventoryDto = event;
 	   mTCstInventoryVos = event.gettCstInventoryVos();
 	}
-
+	mDtoOperation = mTCstInventoryDto.getOperation();
    }
 
    @Override
@@ -763,7 +764,23 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 快速开柜入柜后赋值界面
     */
    private void setInBoxDate() {
-	mBaseTabTvTitle.setText("识别耗材");
+      if (mDtoOperation==8){
+	   mBaseTabTvTitle.setText("耗材退货");
+	}else if (mDtoOperation==3){
+	   mBaseTabTvTitle.setText("耗材领用");
+	}else if (mDtoOperation==2){
+	   mBaseTabTvTitle.setText("耗材入库");
+	}else if (mDtoOperation==9){
+	   mBaseTabTvTitle.setText("耗材移出");
+	}else if (mDtoOperation==11){
+	   mBaseTabTvTitle.setText("耗材调拨");
+	}else if (mDtoOperation==10){
+	   mBaseTabTvTitle.setText("耗材移入");
+	}else if (mDtoOperation==7){
+	   mBaseTabTvTitle.setText("耗材退回");
+	}else {
+	   mBaseTabTvTitle.setText("耗材识别");
+	}
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mTimelyOpenDoor.setVisibility(View.VISIBLE);

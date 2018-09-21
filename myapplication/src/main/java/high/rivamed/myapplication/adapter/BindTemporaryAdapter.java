@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.adapter;
 
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,13 +28,9 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     public int mSelectedPos;
     private List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
-    public BindTemporaryAdapter(
-            int layoutResId, List<BingFindSchedulesBean.PatientInfosBean> data) {
-        super(layoutResId, data);
-    }
 
     public BindTemporaryAdapter(
-            int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, SparseBooleanArray checkStates1) {
+            int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
         super(layout, patientInfos);
         this.patientInfos = patientInfos;
     }

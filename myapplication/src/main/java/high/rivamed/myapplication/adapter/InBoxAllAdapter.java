@@ -98,15 +98,15 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   }
 	});
 	Log.i("InOutBoxTwoActivity", "status   " + status);
-	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") || (mOperation == 3 && !status.contains("领用")) ||
-	    (mOperation == 2 && !status.contains("入库")) ||
-	    (mOperation == 9 && !status.contains("移出")) ||
-	    (mOperation == 11 && !status.contains("调拨")) ||
-	    (mOperation == 10 && !status.contains("移入")) ||
-	    (mOperation == 7 && !status.contains("退回")) ||
-	    (mOperation == 8 && !status.contains("退货"))) {
-	   LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
-
+//	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") || (mOperation == 3 && !status.contains("领用")) ||
+//	    (mOperation == 2 && !status.contains("入库")) ||
+//	    (mOperation == 9 && !status.contains("移出")) ||
+//	    (mOperation == 11 && !status.contains("调拨")) ||
+//	    (mOperation == 10 && !status.contains("移入")) ||
+//	    (mOperation == 7 && !status.contains("退回")) ||
+//	    (mOperation == 8 && !status.contains("退货"))) {
+//	   LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
+	if (item.getIsErrorOperation()==1){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
