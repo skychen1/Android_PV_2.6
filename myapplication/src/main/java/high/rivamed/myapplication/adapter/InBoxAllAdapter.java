@@ -3,6 +3,7 @@ package high.rivamed.myapplication.adapter;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,8 +19,6 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-
-import static high.rivamed.myapplication.cont.Constants.DELETE_TATUS1;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -42,6 +41,8 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
    TextView mSeven_four;
    TextView mSeven_five;
    TextView mSeven_six;
+   TextView mdeleteTv;
+   ImageView mdeleteIv;
    LinearLayout mLl;
    public InBoxAllAdapter(
 	   int layoutResId, List<TCstInventoryVo> data) {
@@ -74,7 +75,22 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	 mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
 	swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
+
 	LinearLayout delete = (LinearLayout) helper.getView(R.id.ll_delete);
+	TextView mdeleteTv = (TextView) helper.getView(R.id.tv_delete);
+	ImageView mdeleteIv = (ImageView) helper.getView(R.id.iv_delete);
+
+	if (item.getDeleteCount()>0){
+	   LogUtils.i("InBox","解除移除");
+	   mdeleteTv.setText("取消移除");
+	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
+	   mdeleteIv.setVisibility(View.GONE);
+	}else {
+	   LogUtils.i("InBox","移除");
+	   mdeleteTv.setText("移除");
+	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_delete));
+	   mdeleteIv.setVisibility(View.VISIBLE);
+	}
 
 	String status = item.getStatus();
 	mSeven_one.setText(item.getCstName());
@@ -87,14 +103,23 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   @Override
 	   public void onClick(View view) {
 		TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
-		inventoryVo.setDelete(true);
-		inventoryVo.setDeletetatus(DELETE_TATUS1);
-		inventoryVo.setStatus("移除");
-		mData.remove(helper.getAdapterPosition());
-		mData.add(inventoryVo);
+		if (inventoryVo.getDeleteCount()>0){
+		   inventoryVo.setDelete(false);
+		   inventoryVo.setDeleteCount(0);
+//		   inventoryVo.setIsErrorOperation(0);
+		   mData.remove(helper.getAdapterPosition());
+		   mData.add(inventoryVo);
+		}else {
+		   inventoryVo.setDelete(true);
+		   inventoryVo.setDeleteCount(inventoryVo.getDeleteCount()+1);
+//		   inventoryVo.setIsErrorOperation(0);
+//		   inventoryVo.setStatus("移除");
+		   mData.remove(helper.getAdapterPosition());
+		   mData.add(inventoryVo);
+		}
+
 		EventBusUtils.post(new Event.EventButton(true,false));
 		notifyDataSetChanged();
-
 	   }
 	});
 	Log.i("InOutBoxTwoActivity", "status   " + status);
@@ -106,7 +131,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 //	    (mOperation == 7 && !status.contains("退回")) ||
 //	    (mOperation == 8 && !status.contains("退货"))) {
 //	   LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
-	if (item.getIsErrorOperation()==1){
+	if (item.getIsErrorOperation()==1&&item.getDeleteCount()==0){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -127,9 +152,20 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
-	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
 
+	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
+
+	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
+	if (item.getDeleteCount()>0){
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_four.setBackgroundResource(R.color.bg_color);
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mLl.setBackgroundResource(R.color.bg_color);
+	}
 
 
    }
@@ -144,7 +180,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mLl.setBackgroundResource(R.color.bg_color);
-	   swipe.setSwipeEnabled(false);
+	   swipe.setSwipeEnabled(true);
 	} else {
 	   mSeven_one.setTextColor(Color.parseColor("#333333"));
 	   mSeven_two.setTextColor(Color.parseColor("#333333"));

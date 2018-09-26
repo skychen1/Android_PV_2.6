@@ -23,6 +23,16 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
    /**
+    * 耗材倒计时结束发起
+    */
+   public static class EventOverPut {
+	public boolean b;
+
+	public EventOverPut(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
     * Loss原因
     */
    public static class EventLoss {

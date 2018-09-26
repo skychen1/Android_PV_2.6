@@ -21,13 +21,14 @@
             android:src="@mipmap/ic_slid_delete"/>
 
         <TextView
+            android:id="@+id/tv_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_delete"
             android:gravity="center"
             android:text="移除"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize_15"
+            android:textSize="@dimen/textsize_16"
             android:textStyle="bold"/>
     </LinearLayout>
 

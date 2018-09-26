@@ -2,6 +2,7 @@ package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,8 +18,6 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-
-import static high.rivamed.myapplication.cont.Constants.DELETE_TATUS1;
 
 /**
  * 识别耗材页面adapter
@@ -64,15 +63,38 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
         swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
         LinearLayout  delete = (LinearLayout) helper.getView(R.id.ll_delete);
+        TextView mdeleteTv = (TextView) helper.getView(R.id.tv_delete);
+        ImageView mdeleteIv = (ImageView) helper.getView(R.id.iv_delete);
+
+        if (item.getDeleteCount()>0){
+            LogUtils.i("InBox","解除移除");
+            mdeleteTv.setText("取消移除");
+            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_green));
+            mdeleteIv.setVisibility(View.GONE);
+        }else {
+            LogUtils.i("InBox","移除");
+            mdeleteTv.setText("移除");
+            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_delete));
+            mdeleteIv.setVisibility(View.VISIBLE);
+        }
+
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
-                inventoryVo.setDelete(true);
-                inventoryVo.setDeletetatus(DELETE_TATUS1);
-                inventoryVo.setStatus("移除");
-                mData.remove(helper.getAdapterPosition());
-                mData.add(inventoryVo);
+                if (inventoryVo.getDeleteCount()>0){
+                    inventoryVo.setDelete(false);
+                    inventoryVo.setDeleteCount(0);
+                    mData.remove(helper.getAdapterPosition());
+                    mData.add(inventoryVo);
+                }else {
+                    inventoryVo.setDelete(true);
+                    inventoryVo.setDeleteCount(inventoryVo.getDeleteCount()+1);
+                    inventoryVo.setIsErrorOperation(0);
+                    mData.remove(helper.getAdapterPosition());
+                    mData.add(inventoryVo);
+                }
+
                 EventBusUtils.post(new Event.EventButton(true,true));
                 notifyDataSetChanged();
             }

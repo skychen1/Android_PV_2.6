@@ -3,14 +3,12 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -62,7 +60,6 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -101,7 +98,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private int mAllPage = 1;
    private int mRows    = 20;
    int k = 0;
-   public static CountDownTimer mStart;
+
    private LoadingDialog.Builder mLoading;
    private RvDialog.Builder      mAfterBind;
    private String                mIdNo;
@@ -110,7 +107,19 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                mOperatingRoomNoName;
    private String                mSex;
    private String                mDeptId;
-
+   /**
+    * 倒计时结束发起
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onOverEvent(Event.EventOverPut event) {
+	if (event.b){
+	   LogUtils.i(TAG,"EventOverPut");
+	   mIntentType = 2;//2确认并退出
+	   loadBingFistDate(mIntentType);
+	}
+   }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -141,8 +150,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-	mStart.cancel();
-	mStart.start();
+	mStarts.cancel();
+	mStarts.start();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -186,7 +195,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    protected void onPause() {
-	mStart.cancel();
+	mStarts.cancel();
 
 	mPause = true;
 	super.onPause();
@@ -218,8 +227,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	Log.e(TAG, "intent:" + mPatient);
 	Log.e(TAG, "intent:" + mPatientId);
 	Log.e(TAG, "intent:" + mOperationScheduleId);
-	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
-	mStart.start();
+//	mStarts.start();
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -262,22 +270,26 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			 (b.getPatientName() == null || b.getPatientName().equals(""))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
-			mStart.cancel();
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+
 			return;
 		   }
 		   String status = b.getStatus();
-		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
-			 status.equals("禁止退回") || (!status.contains("领用") && !status.equals("移除"))) {
+//		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
+//			 status.equals("禁止退回") || (!status.contains("领用") && !status.equals("移除"))) {
+		   if (b.getIsErrorOperation()==1&&b.getDeleteCount()==0){
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
-			mStart.cancel();
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
 			return;
 		   } else {
 			LogUtils.i(TAG, "我走了falsesss");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
-			mStart.cancel();
-			mStart.start();
+			mStarts.cancel();
+			mStarts.start();
 		   }
 		}
 	   }
@@ -349,12 +361,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.timely_start_btn_right://重新扫描
 		//		   mShowLoading = DialogUtils.showLoading(mContext);
-		mStart.cancel();
+		mStarts.cancel();
+		mTimelyRight.setText("确认并退出登录");
+
 		moreStartScan();
 
 		break;
 	   case R.id.timely_open_door_right://重新开门
-		mStart.cancel();
+		mStarts.cancel();
+		mTimelyRight.setText("确认并退出登录");
+
 		List<DeviceInventoryVo> deviceInventoryVoss = mTCstInventoryDto.getDeviceInventoryVos();
 		mTCstInventoryDto.gettCstInventoryVos().clear();
 		deviceInventoryVoss.clear();
@@ -758,13 +774,13 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "   ACTION_UP  ");
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-		   mStart.cancel();
-		   mStart.start();
+		   mStarts.cancel();
+		   mStarts.start();
 		}
 		break;
 	   //否则其他动作计时取消
 	   default:
-		mStart.cancel();
+		mStarts.cancel();
 		LogUtils.i(TAG, "   其他操作  ");
 
 		break;
@@ -772,34 +788,5 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
 	return super.dispatchTouchEvent(ev);
    }
-
-   /* 定义一个倒计时的内部类 */
-   private class TimeCount extends CountDownTimer {
-
-	TextView textView;
-
-	public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
-
-	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
-	   this.textView = textView;
-	}
-
-	@Override
-	public void onFinish() {// 计时完毕时触发
-	   mIntentType = 2;//2确认并退出
-	   loadBingFistDate(mIntentType);
-	}
-
-	@Override
-	public void onTick ( long millisUntilFinished){// 计时过程显示
-//	   if (millisUntilFinished / 1000 <= 30) {
-		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
-//	   } else {
-//		textView.setText("确认并退出登录");
-//
-//	   }
-	}
-   }
-
 
 }

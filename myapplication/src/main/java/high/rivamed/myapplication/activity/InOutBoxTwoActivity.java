@@ -2,15 +2,11 @@ package high.rivamed.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -52,7 +48,6 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -91,8 +86,19 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
    int k = 0;
    private LoadingDialog.Builder mLoading;
 
-   public static CountDownTimer mStart;
-
+   /**
+    * 倒计时结束发起
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onOverEvent(Event.EventOverPut event) {
+      if (event.b){
+         LogUtils.i(TAG,"EventOverPut");
+	   mIntentType = 2;//2确认并退出
+	   putDateOutLogin(mIntentType);
+	}
+   }
 
    /**
     * dialog操作数据
@@ -112,15 +118,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG, "TAG    " + event.context);
 
    }
-
-   @Override
-   public void initDataAndEvent(Bundle savedInstanceState) {
-	super.initDataAndEvent(savedInstanceState);
-
-	mStart = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
-	mStart.start();
-	Log.e("aaa", "InOutBoxTwoActivity");
-   }
+//
+//   @Override
+//   public void initDataAndEvent(Bundle savedInstanceState) {
+//	super.initDataAndEvent(savedInstanceState);
+//	mStarts.start();
+//	Log.e("aaa", "InOutBoxTwoActivity");
+//   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
@@ -160,8 +164,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   mLoading=null;
 	}
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
-	mStart.cancel();
-	mStart.start();
+	mStarts.cancel();
+	mStarts.start();
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -263,8 +267,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   return;
 		} else {
 		   //		   mShowLoading = DialogUtils.showLoading(mContext);
-		   mStart.cancel();
-
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
 		   moreStartScan();
 		}
 		break;
@@ -306,7 +310,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		}
 		break;
 	   case R.id.timely_open_door:
-		mStart.cancel();
+		mStarts.cancel();
 
 		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 		mTCstInventoryDto.gettCstInventoryVos().clear();
@@ -559,8 +563,8 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
-		   mStart.cancel();
-
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
 		}
 		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
@@ -659,7 +663,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	mStart.cancel();
+	mStarts.cancel();
 	super.onPause();
    }
 
@@ -765,13 +769,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "   ACTION_UP  ");
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
-		   mStart.cancel();
-		   mStart.start();
+		   mStarts.cancel();
+		   mStarts.start();
 		}
 		break;
 	   //否则其他动作计时取消
 	   default:
-		mStart.cancel();
+		mStarts.cancel();
 		LogUtils.i(TAG, "   其他操作  ");
 
 		break;
@@ -779,41 +783,4 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	return super.dispatchTouchEvent(ev);
    }
-
-   /* 定义一个倒计时的内部类 */
-   private class TimeCount extends CountDownTimer {
-
-	TextView textView;
-
-	public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
-
-	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
-	   this.textView = textView;
-	}
-
-	@Override
-	public void onFinish() {// 计时完毕时触发
-		mIntentType = 2;//2确认并退出
-		putDateOutLogin(mIntentType);
-	}
-
-	@Override public void onTick ( long millisUntilFinished){// 计时过程显示
-//	   if (millisUntilFinished / 1000 <= 30) {
-		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
-//	   } else {
-//		textView.setText("确认并退出登录");
-//
-//	   }
-	}
-   }
-   @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if (keyCode == KeyEvent.KEYCODE_BACK) {
-	   return true;
-	}
-	return super.onKeyDown(keyCode, event);
-
-   }
-
-
 }

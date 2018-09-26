@@ -36,6 +36,7 @@ public class TCstInventoryVo implements Serializable {
     private String patientId;
     private int    size;
     private int    isErrorOperation;
+    private int    deleteCount;//移除次数 0表示从未移除过，大于1 代表移除次数 置灰
     private String type;
     private String operationStatus;
     private String batchNumber;
@@ -49,6 +50,14 @@ public class TCstInventoryVo implements Serializable {
     private String scheduleDateTime;//手术时间
     private String sex;//性别
     private boolean isSelected;
+
+    public int getDeleteCount() {
+        return deleteCount;
+    }
+
+    public void setDeleteCount(int deleteCount) {
+        this.deleteCount = deleteCount;
+    }
 
     public String getBatchNumber() {
         return batchNumber;
