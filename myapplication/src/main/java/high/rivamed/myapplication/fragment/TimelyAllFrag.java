@@ -463,7 +463,7 @@ public class TimelyAllFrag extends SimpleFragment {
 				if (tCstInventoryDto.gettCstInventoryVos() != null &&
 				    tCstInventoryDto.gettCstInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
-				   tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
+//				   tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
 				   EventBusUtils.postSticky(new Event.timelyDate("盘盈", tCstInventoryDto));
 				} else {
 				   ToastUtils.showShort("暂无详情数据");
@@ -488,7 +488,7 @@ public class TimelyAllFrag extends SimpleFragment {
 				LogUtils.i(TAG, "盘亏 result   " + result);
 				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
 												   TCstInventoryDto.class);
-				tCstInventoryDto.setReduce(mCstInventoryDto.getReduce());
+//				tCstInventoryDto.setReduce(mCstInventoryDto.getReduce());
 				if (tCstInventoryDto.gettCstInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
 				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", tCstInventoryDto));
@@ -607,7 +607,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		   moreScanTimely(result, epcs, deviceId);
 		   LogUtils.i(TAG,"全部");
 		} else {
-		   LogUtils.i(TAG,"扫数");
+ 		   LogUtils.i(TAG,"扫数");
 		   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId)
 			   .find(BoxIdBean.class);
 		   for (BoxIdBean boxIdBean : boxIdBeans) {

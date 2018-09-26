@@ -65,6 +65,8 @@ public interface NetApi {
     String URL_TIMELY_PROFIT = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryProfit";//库存盘盈情况
     String URL_TIMELY_LOSSES = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryLosses";//库存盘亏情况
     String URL_TIMELY_DETAIL = MAIN_URL + "/rmApi/consumables/tCstInventory/inventoryCompareDetail";//耗材对比详情
+    String URL_PUT_LOSSES = MAIN_URL + "/rmApi/consumables/cstStockJournal/saveInventoryLosses";//盘亏进行操作
+    String URL_LOSSES_CAUSE = MAIN_URL + "/rmApi/consumables/cstStockJournal/getLossesList";//盘亏原因
 
     //患者绑定
     String URL_PATIENTS_FIND = MAIN_URL + "/rmApi/operation/tTransOperationSchedule/findAllOperationSchedulePatients";//查询本科室下24小时的手术预约患者（包含临时患者）

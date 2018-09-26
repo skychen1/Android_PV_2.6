@@ -53,9 +53,9 @@ public class TimelyLossAdapter
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
-	if (mSelectedPos == 0 && mLossData.size() > 0) {
-	   mLossData.get(mSelectedPos).setSelected(true);
-	}
+//	if (mSelectedPos == 0 && mLossData.size() > 0) {
+//	   mLossData.get(mSelectedPos).setSelected(true);
+//	}
 	for (int i = 0; i < mLossData.size(); i++) {
 	   if (mLossData.get(i).isSelected()) {
 		mSelectedPos = i;
@@ -74,7 +74,12 @@ public class TimelyLossAdapter
 	mSeven_four.setText(item.getCstSpec());
 	mSeven_five.setText(item.getExpiration());
 	mSeven_six.setText(item.getDeviceName());
-	mSeven_seven.setText("");
+	if (item.getRemark()==null||item.getRemark().equals("")){
+	   mSeven_seven.setText("");
+	}else {
+	   mSeven_seven.setText(item.getRemark());
+
+	}
 
 	mCheckBox.setOnCheckedChangeListener(null);
 	int position = helper.getAdapterPosition();

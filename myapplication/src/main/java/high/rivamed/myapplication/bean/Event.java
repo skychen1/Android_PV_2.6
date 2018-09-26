@@ -22,6 +22,17 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
+   /**
+    * Loss原因
+    */
+   public static class EventLoss {
+	public String string;
+
+	public EventLoss(String string) {
+	   this.string = string;
+	}
+   }
+
    public static class EventJump {
 	public int jump;
 

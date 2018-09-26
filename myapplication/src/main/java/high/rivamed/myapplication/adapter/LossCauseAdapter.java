@@ -11,12 +11,12 @@ import android.widget.TextView;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.DialogBean;
+import high.rivamed.myapplication.utils.LogUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
- * 创建时间:    2018/6/25 19:42
+ * 创建时间:    2018/9/25 19:42
  * 描述:        TODO:
  * 包名:        high.rivamed.myapplication.adapter
  * <p>
@@ -25,23 +25,23 @@ import high.rivamed.myapplication.bean.DialogBean;
  * 更新描述：   ${TODO}
  */
 
-public class gridviewAdapter extends BaseAdapter {
+public class LossCauseAdapter extends BaseAdapter {
    private int selected=0;
    Context          mContext;
    int              layoutResourceId;
 
-   List<DialogBean> mGridData;
+   List<String> mStringData;
 
-   public gridviewAdapter(Context context, int resource, List<DialogBean> objects) {
+   public LossCauseAdapter(Context context, int resource, List<String> string) {
       this.mContext = context;
       this.layoutResourceId = resource;
-      this.mGridData = objects;
+      this.mStringData = string;
 
    }
 
    @Override
    public int getCount() {
-      return mGridData.size();
+      return mStringData.size();
    }
 
    @Override
@@ -74,12 +74,9 @@ public class gridviewAdapter extends BaseAdapter {
          holder = (ViewHolder) convertView.getTag();
       }
 
-
-
       disposalView(position,holder);
-
-	holder.textView.setText(mGridData.get(position).getName());
-	holder.mGoneTextView.setText(mGridData.get(position).getCode());
+      LogUtils.i("Loss","mStringData.get(position)    "+mStringData.get(position));
+	holder.textView.setText(mStringData.get(position));
       return convertView;
    }
 

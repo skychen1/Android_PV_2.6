@@ -173,7 +173,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public TCstInventoryDto mTCstInventoryDto;
    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
-   private TCstInventoryDto mDto;
+   public TCstInventoryDto mDto;
    private String           mBindFirstType;
    private int              mOperation;
    private int mDtoOperation;
@@ -306,6 +306,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 获取盘亏数据
     */
    private void loadTimelyLossesDate() {
+	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mTimelyLeft.setText("盘亏原因");
+	mTimelyRight.setText("确认提交");
 	mBaseTabTvTitle.setText("盘亏耗材详情");
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
@@ -568,6 +571,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
 	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);

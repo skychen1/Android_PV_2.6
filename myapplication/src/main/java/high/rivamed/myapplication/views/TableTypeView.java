@@ -116,6 +116,7 @@ public class TableTypeView extends LinearLayout {
    public AfterBingAdapter     mAfterBingAdapter;
    public BindTemporaryAdapter mTempPatientAdapter;
    public RecogHaocaiAdapter   mRecogHaocaiAdapter;
+   public TimelyLossAdapter mTimelyLossAdapter;
    //    public List<TempPatientVo> mTempPatientVoVos = new ArrayList<>(); //入柜扫描到的epc信息
 
    //      @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -630,15 +631,14 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			TimelyLossAdapter timelyLossAdapter = new TimelyLossAdapter(mLayout,
-													mTCstInventoryVos);
+			mTimelyLossAdapter = new TimelyLossAdapter(mLayout, mTCstInventoryVos);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-			mRecyclerview.setAdapter(timelyLossAdapter);
+			mRecyclerview.setAdapter(mTimelyLossAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }else if (mDialog != null && mDialog.equals(STYPE_PROFIT_TYPE)){
 			//盘亏盘盈

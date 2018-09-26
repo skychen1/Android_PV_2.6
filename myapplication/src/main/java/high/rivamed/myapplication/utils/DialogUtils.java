@@ -41,6 +41,7 @@ import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.BindIdCardDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
@@ -256,6 +257,17 @@ public class DialogUtils {
         builder.create().show();
     }
 
+    /**
+     * 盘亏原因
+     * @param context
+     */
+    public static void showLossDialog(
+          Context context,List<String> strings) {
+        LossScuseDialog.Builder builder = new LossScuseDialog.Builder(context, strings );
+        builder.setTitle("请选择盘亏原因");
+
+        builder.create().show();
+    }
     public static void showTwoDialog(Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {

@@ -343,7 +343,21 @@ public class NetRequest {
                 .upJson(tCstInventoryDto)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
-
+    /**
+     * 盘亏原因
+     */
+    public void getLossCauseDate( Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(NetApi.URL_LOSSES_CAUSE).tag(tag)
+              .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+    /**
+     * 盘亏数据提交
+     */
+    public void putLossSDate(String LossDateBean, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_PUT_LOSSES).tag(tag)
+              .upJson(LossDateBean)
+              .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
     /**
      * 盘盈
      */

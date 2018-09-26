@@ -38,6 +38,7 @@ public class TCstInventoryVo implements Serializable {
     private int    isErrorOperation;
     private String type;
     private String operationStatus;
+    private String batchNumber;
     private int deletetatus;//0不移除    1移除
 
     private String name;//名字
@@ -48,6 +49,14 @@ public class TCstInventoryVo implements Serializable {
     private String scheduleDateTime;//手术时间
     private String sex;//性别
     private boolean isSelected;
+
+    public String getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(String batchNumber) {
+        this.batchNumber = batchNumber;
+    }
 
     public int getIsErrorOperation() {
         return isErrorOperation;
