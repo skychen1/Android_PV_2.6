@@ -293,22 +293,16 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public void onTimelyEvent(Event.timelyDate event) {
 	String s = event.type;
 	mDto = event.tCstInventoryDto;
-	//	if (s.equals("详情")){
-	//	   loadTimelyDetailsDate();
-	//	}else if (s.equals("盘盈")){
-	//	   loadTimelyProfitDate(event.tCstInventoryDto);
-	//	}else if (s.equals("盘亏")){
-	//	   loadTimelyLossesDate(event.tCstInventoryDto);
-	//	}
+
    }
 
    /**
     * 获取盘亏数据
     */
    private void loadTimelyLossesDate() {
-	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mTimelyLeft.setText("盘亏原因");
-	mTimelyRight.setText("确认提交");
+//	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);//盘亏界面修改
+//	mTimelyLeft.setText("盘亏原因");//盘亏界面修改
+//	mTimelyRight.setText("确认提交");//盘亏界面修改
 	mBaseTabTvTitle.setText("盘亏耗材详情");
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
@@ -329,7 +323,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private void loadTimelyProfitDate() {
 
 	mBaseTabTvTitle.setText("盘盈耗材详情");
-	//	List<TCstInventoryDto.InventorysBean> inventorys = mDto.getInventorys();
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 	mTimelyNumber.setText(
 		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));

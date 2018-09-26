@@ -73,6 +73,21 @@ public class DialogUtils {
 
     public static String sTimes;
 
+    /**
+     * 盘亏不提交弹出
+     */
+    public static void showOneDialog(Context context){
+        OneDialog.Builder builder = new OneDialog.Builder(context);
+        builder.setMsg("请完善耗材盘亏原因，再提交数据～");
+        builder.setRight("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
     public static RvDialog.Builder showRvDialog(
             Activity activity, final Context context,
             List<BingFindSchedulesBean.PatientInfosBean> patientInfos, String type, int position,

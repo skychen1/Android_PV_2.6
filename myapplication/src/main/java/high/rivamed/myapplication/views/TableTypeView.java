@@ -117,21 +117,6 @@ public class TableTypeView extends LinearLayout {
    public BindTemporaryAdapter mTempPatientAdapter;
    public RecogHaocaiAdapter   mRecogHaocaiAdapter;
    public TimelyLossAdapter mTimelyLossAdapter;
-   //    public List<TempPatientVo> mTempPatientVoVos = new ArrayList<>(); //入柜扫描到的epc信息
-
-   //      @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   //   public void onEventBing(Event.EventCheckbox event) {
-   //	   String patient= event.mString;
-   //	   Log.i("ff", "mMovie  " + patient);
-   //	   if (patient != null) {
-   //		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-   //		   mTCstInventoryVos.get(i).setPatientName(patient);
-   //		   mTCstInventoryVos.get(i).setPatientId(event.id);
-   //		}
-   //
-   //		mAfterBingAdapter.notifyDataSetChanged();
-   //	}
-   //   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventBing(TCstInventoryDto event) {
@@ -619,9 +604,12 @@ public class TableTypeView extends LinearLayout {
 			}
 		   } else if (mDialog != null && mDialog.equals(STYPE_LOSS_TYPE)){
 			//盘亏盘盈
-			mLayout = R.layout.item_loss_seven_layout;
+//			mLayout = R.layout.item_loss_seven_layout;//盘亏的提交的修改界面
+			mLayout = R.layout.item_realtime_seven_layout;
+
 			mHeadView = mActivity.getLayoutInflater()
-				.inflate(R.layout.item_loss_seven_title_layout,
+//				.inflate(R.layout.item_loss_seven_title_layout,//盘亏的提交的修改界面
+				.inflate(R.layout.item_realtime_seven_title_layout,
 					   (ViewGroup) mLinearLayout.getParent(), false);
 			findId();
 			mSeven_one.setText(titeleList.get(0));
@@ -631,14 +619,15 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
-			mTimelyLossAdapter = new TimelyLossAdapter(mLayout, mTCstInventoryVos);
+//			mTimelyLossAdapter = new TimelyLossAdapter(mLayout, mTCstInventoryVos);//盘亏的提交
+			TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout, mTCstInventoryVos);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			mRefreshLayout.setEnableAutoLoadMore(false);
 			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-			mRecyclerview.setAdapter(mTimelyLossAdapter);
+			mRecyclerview.setAdapter(timelyProfitAdapter);
 			mLinearLayout.addView(mHeadView);
 		   }else if (mDialog != null && mDialog.equals(STYPE_PROFIT_TYPE)){
 			//盘亏盘盈
