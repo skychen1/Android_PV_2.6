@@ -1,12 +1,16 @@
 package high.rivamed.myapplication.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -36,9 +40,14 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.gson.JsonSyntaxException;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.FileCallback;
+import com.lzy.okgo.model.Progress;
+import com.lzy.okgo.model.Response;
 
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,18 +63,23 @@ import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
+import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyValueFormatter;
+import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
@@ -78,6 +92,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -122,6 +137,7 @@ public class LoginActivity extends SimpleActivity {
    private SQLiteDatabase        mDb;
    private LoadingDialog.Builder mBuilder;
    private int mConfigType;
+   private String mDesc;
 
    @Override
    public int getLayoutId() {
@@ -167,7 +183,6 @@ public class LoginActivity extends SimpleActivity {
 	initlistener();
 	initCall();
 
-
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
 	}
@@ -183,9 +198,12 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,"");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,"");
+
+
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType,null);
    }
+
    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
 	for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
 	   if (s.getCode().equals(CONFIG_013)){
@@ -206,29 +224,39 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-
-		   if(getConfigTrue(tCstConfigVos)){//禁止
-			if (configType==0) {//正常登录密码登录限制
-			   mLoginGone.setVisibility(View.VISIBLE);
-			}else if (configType==1) {//IC卡登录限制
-			   mLoginGone.setVisibility(View.VISIBLE);
-			   ToastUtils.showShort("正在维护，请到管理端启用");
-			}else if (configType==2){
-			   //设备是否禁用
-			   mLoginGone.setVisibility(View.VISIBLE);
-			   ToastUtils.showShort("正在维护，请到管理端启用");
-			}
-		   }else {
-			if (configType==0) {//正常登录密码登录限制
-			   mLoginGone.setVisibility(View.GONE);
-			}else if (configType==1) {//IC卡登录限制
-			   validateLoginIdCard(loginType);
-			}else if (configType==2){
-			   validateLoginFinger(loginType);
-			}
-		   }
+		   getUpDateVer(tCstConfigVos, configType, loginType);
 		}
 	   });
+	}
+   }
+
+   /**
+    * 是否禁止使用
+    * @param tCstConfigVos
+    * @param configType
+    * @param loginType
+    */
+   private void loginEnjoin(
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	if(getConfigTrue(tCstConfigVos)){//禁止
+	   if (configType==0) {//正常登录密码登录限制
+		mLoginGone.setVisibility(View.VISIBLE);
+	   }else if (configType==1) {//IC卡登录限制
+		mLoginGone.setVisibility(View.VISIBLE);
+		ToastUtils.showShort("正在维护，请到管理端启用");
+	   }else if (configType==2){
+		//设备是否禁用
+		mLoginGone.setVisibility(View.VISIBLE);
+		ToastUtils.showShort("正在维护，请到管理端启用");
+	   }
+	}else {
+	   if (configType==0) {//正常登录密码登录限制
+		mLoginGone.setVisibility(View.GONE);
+	   }else if (configType==1) {//IC卡登录限制
+		validateLoginIdCard(loginType);
+	   }else if (configType==2){
+		validateLoginFinger(loginType);
+	   }
 	}
    }
 
@@ -531,6 +559,125 @@ public class LoginActivity extends SimpleActivity {
 	mChart.invalidate();
    }
 
+   /**
+    * 版本检测
+    */
+   public void getUpDateVer(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType,String loginType) {
+	NetRequest.getInstance().checkVer(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "checkVer:" + result);
+
+		VersionBean versionBean = mGson.fromJson(result, VersionBean.class);
+		// 本地版本号
+		String localVersion = PackageUtils.getVersionName(mContext);
+		// 网络版本
+		String netVersion = versionBean.getVersion();
+		// 比对LogUtils.i(TAG, "localVersion   " + localVersion);
+		LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
+		int i = StringUtils.compareVersion(netVersion, localVersion);
+		if (i == 1) {
+		   mDesc = versionBean.getDesc();
+		   showUpdateDialog(tCstConfigVos, configType, loginType);
+		} else {
+		   // 不需要更新
+		   loginEnjoin(tCstConfigVos, configType, loginType);
+		}
+	   }
+
+	   @Override
+	   public void onNetFailing(String result) {
+		super.onNetFailing(result);
+		loginEnjoin(tCstConfigVos, configType, loginType);
+
+	   }
+	});
+   }
+   /**
+    * 展现更新的dialog
+    */
+   private void showUpdateDialog(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	UpDateDialog.Builder builder = new UpDateDialog.Builder(this);
+
+	builder.setTitle(UIUtils.getString(R.string.ver_title));
+	builder.setMsg(mDesc);
+	builder.setLeft(UIUtils.getString(R.string.ver_cancel), new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		loginEnjoin(tCstConfigVos, configType, loginType);
+		dialog.dismiss();
+	   }
+	});
+	builder.setRight(UIUtils.getString(R.string.ver_ok), new DialogInterface.OnClickListener() {
+	   @Override
+	   public void onClick(DialogInterface dialog, int i) {
+		downloadNewVersion(tCstConfigVos, configType, loginType);//未下载就开始下载
+		dialog.dismiss();
+	   }
+	});
+
+	builder.create().show();
+
+   }
+
+   private void downloadNewVersion(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	// 1.显示进度的dialog
+	ProgressDialog mDialog = new ProgressDialog(this, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
+	mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+	mDialog.setCancelable(false);
+	mDialog.setMax(100);
+	mDialog.show();
+
+	loadUpDataVersion(mDialog,tCstConfigVos, configType, loginType);
+
+   }
+
+   private void loadUpDataVersion(final ProgressDialog mDialog,List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+
+	OkGo.<File>get(URL_UPDATE).tag(this)//
+		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
+		   @Override
+		   public void onSuccess(Response<File> response) {
+			mDialog.dismiss();
+			upActivity(response.body());
+		   }
+
+		   @Override
+		   public void downloadProgress(Progress progress) {
+			mDialog.setProgress((int) (progress.fraction / -1024));
+			super.downloadProgress(progress);
+
+		   }
+
+		   @Override
+		   public void onError(Response<File> response) {
+			super.onError(response);
+			ToastUtils.showShort(R.string.connection_fails);
+			mDialog.dismiss();
+			loginEnjoin(tCstConfigVos, configType, loginType);
+		   }
+		});
+
+   }
+
+   private void upActivity(File file) {
+	Intent intent = new Intent(Intent.ACTION_VIEW);
+	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+
+	   StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+	   StrictMode.setVmPolicy(builder.build());
+	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+
+	} else {
+	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+	   LogUtils.i(TAG, "apkUri " + Uri.fromFile(file));
+	}
+	startActivity(intent);
+	android.os.Process.killProcess(android.os.Process.myPid());
+   }
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
 	@Override

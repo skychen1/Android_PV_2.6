@@ -19,6 +19,10 @@ public interface NetApi {
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
 
+    //版本检测和下载
+    String URL_GET_VER = MAIN_URL + "/rmApi/app/app/listPage";//获取版本信息
+    String URL_UPDATE = MAIN_URL + "/rmApi/app/app/downLoadApk";//下载
+
     //工程模式
     String URL_TEST_SNQUERY = MAIN_URL + "/rmApi/device/tBaseThing/findEquipmentInfo";//SN码查询
     String URL_TEST_REGISTE = MAIN_URL + "/rmApi/device/tBaseThing/save";//预注册

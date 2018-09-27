@@ -18,4 +18,9 @@
     <string name="seven_number">柜号</string>
     <string name="seven_timely">实时扫描</string>
     <string name="seven_book">账面库存</string>
+
+    <string name="connection_fails">链接失败，请检查网络！</string>
+    <string name="ver_title">版本更新提醒</string>
+    <string name="ver_cancel">稍后再说</string>
+    <string name="ver_ok">立刻更新</string>
 </resources>

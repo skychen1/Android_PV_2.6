@@ -196,14 +196,12 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    protected void onPause() {
 	mStarts.cancel();
-
 	mPause = true;
 	super.onPause();
    }
 
    @Override
    public void onResume() {
-	//	moreStartScan();
 	mPause = false;
 	super.onResume();
    }

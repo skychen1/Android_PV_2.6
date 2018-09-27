@@ -83,7 +83,13 @@ public class NetRequest {
                 .upJson(TBaseThing)
                 .execute(new MyCallBack(tag, netResult, true));
     }
-
+    /**
+     * 版本检测
+     */
+    public void checkVer( Object tag, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_GET_VER).tag(tag)
+              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
     /**
      * 用户登录
      */

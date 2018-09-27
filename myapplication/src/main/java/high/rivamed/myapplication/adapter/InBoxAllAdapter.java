@@ -106,14 +106,11 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 		if (inventoryVo.getDeleteCount()>0){
 		   inventoryVo.setDelete(false);
 		   inventoryVo.setDeleteCount(0);
-//		   inventoryVo.setIsErrorOperation(0);
 		   mData.remove(helper.getAdapterPosition());
 		   mData.add(inventoryVo);
 		}else {
 		   inventoryVo.setDelete(true);
 		   inventoryVo.setDeleteCount(inventoryVo.getDeleteCount()+1);
-//		   inventoryVo.setIsErrorOperation(0);
-//		   inventoryVo.setStatus("移除");
 		   mData.remove(helper.getAdapterPosition());
 		   mData.add(inventoryVo);
 		}
