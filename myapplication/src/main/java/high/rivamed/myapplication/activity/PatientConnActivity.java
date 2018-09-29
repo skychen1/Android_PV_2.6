@@ -417,6 +417,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
 //		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId());
 	bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	bean.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	LogUtils.i(TAG,"mGson.toJson(bean)   "+mGson.toJson(bean));
 	NetRequest.getInstance()
 		.tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
 		   @Override

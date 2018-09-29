@@ -1,9 +1,7 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient;
 
-import android.os.Environment;
 import android.util.Log;
 
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +42,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
     /**
      * 预制天线列表
      */
-    byte[] ants = {0x00, 0x01, 0x02, 0x03};
+    byte[] ants = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
 
     /**
@@ -313,7 +311,7 @@ public class RodinbellReaderHandler extends NettyDeviceClientHandler implements 
             if (!scanModel) return true;
         }
         //(buf.length    ==6 标识执行错误   ==12 标识一个天线扫描执行结束
-        if ((buf.length == 6 || (buf.length == 12 && buf[4] >= 0x00 && buf[4] <= 0x03))) {
+        if ((buf.length == 6 || (buf.length == 12 && buf[4] >= 0x00 && buf[4] <= 0x07))) {
             boolean sentScanRet = false; //是否发送结果到MQ
 
             synchronized (locker) {  //判断当前是否为最后一次扫描

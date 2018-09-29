@@ -3,7 +3,6 @@ package high.rivamed.myapplication.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +25,6 @@ import org.litepal.LitePal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -47,6 +45,7 @@ import high.rivamed.myapplication.activity.TemPatientBindActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
+import high.rivamed.myapplication.bean.AllOutBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
@@ -86,6 +85,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONA
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -145,43 +145,52 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
 
-   private String                             eth002DeviceId;
-   private String                             uhfDeviceId;
    private NoDialog.Builder                   mBuilder;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
    //   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices2;
-   private HashMap<String, String>            mReaderMap;
 
-   public static List<String> mReaderIdList;
    private       int          mRbKey;
    private       BoxSizeBean  mBoxSizeBean;
-   private       BoxSizeBean  mBoxSizeBean2;
    private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
    private String           mRvEventString;
    private String           mPatientName;
    private String           mPatientId;
    private String           mFirstBind;
-   private String           mDeviceCode;
    private RvDialog.Builder mShowRvDialog;
-   private Handler          mHandler;
    private String mOppenDoor = null;
-   private List<String> mEthDeviceId;
-   private       TCstInventoryDto mTCstInventoryDtoAll = new TCstInventoryDto();
    public static boolean          mPause               = true;
    private int                                mPosition;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent;
    private RvDialog.Builder                   mShowRvDialog2;
    private String                             mOperationScheduleId;
-   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
+   private Map<String, String> mEPCDatess = new TreeMap<>();
+   private List<String> mDoorList = 	   new ArrayList<>();
+
    int k = 0;
    private int mAllPage   = 1;
    private int mNoTemPage = 1;
    private int mRows      = 20;
    private LoadingDialog.Builder mLoading;
+   private boolean               mIsClick;
+   private List<TCstInventoryVo> mVoOutList;
+
+   /**
+    * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onHomeNoClick(Event.HomeNoClickEvent event) {
+	LogUtils.i(TAG, "event   " + event.isClick);
+	mIsClick = event.isClick;
+	if (mIsClick){
+	   mDoorList.add(event.door);
+	}
+   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-	if (!mPause){
+	if (!mPause) {
 	   if (event.loading) {
 		if (mLoading == null) {
 		   LogUtils.i(TAG, "     mLoading  新建 ");
@@ -192,7 +201,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			mLoading.create().show();
 		   }
 		}
-	   }else {
+	   } else {
 		if (mLoading != null) {
 		   mLoading.mAnimationDrawable.stop();
 		   mLoading.mDialog.dismiss();
@@ -218,52 +227,114 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    /**
     * 扫描后EPC准备传值
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	LogUtils.i(TAG, "EventDeviceCallBack   " + mPause);
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-		.find(BoxIdBean.class);
-
-	for (BoxIdBean boxIdBean : boxIdBeanss) {
-	   String box_id = boxIdBean.getBox_id();
-	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-									   READER_TYPE).find(BoxIdBean.class);
-		if (boxIdBeansss.size() > 1) {
-
-		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
-			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-			   mEPCDate.putAll(event.epcs);
-			   k++;
-			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+	if (mRbKey == -1) {
+	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		   .find(BoxIdBean.class);
+	   for (BoxIdBean boxIdBean : boxIdBeanss) {
+		String box_id = boxIdBean.getBox_id();
+		List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id,
+									   UHF_TYPE).find(BoxIdBean.class);
+		for (BoxIdBean BoxIdBean : boxIdDoor) {
+		   String device_id = BoxIdBean.getDevice_id();
+		   for (int x = 0;x<mDoorList.size();x++){
+			if (device_id.equals(mDoorList.get(x))){
+			   mDoorList.remove(x);
 			}
 		   }
-		   LogUtils.i(TAG, "mEPCDate  k  " + k);
-		   if (k == boxIdBeansss.size()) {
-			k = 0;
-			LogUtils.i(TAG, "mEPCDate  zou l  " + (k == boxIdBeansss.size()));
+		}
+		if (box_id != null) {
+		   List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+										READER_TYPE).find(BoxIdBean.class);
+		   if (boxIdBeansss.size() > 1) {
+			for (BoxIdBean BoxIdBean : boxIdBeansss) {
+			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+				mEPCDate.putAll(event.epcs);
+				k++;
+				LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			   }
+			}
+			LogUtils.i(TAG, "mEPCDate  k  " + k);
+			if (k == boxIdBeansss.size()) {
+			   k = 0;
+			   if (!mPause) {
+				if (mEPCDate.size()==0){
+				   mEPCDatess.put("",box_id);//没有空格
+				}
+				for (Map.Entry<String, List<TagInfo>> v : mEPCDate.entrySet()) {
+				   mEPCDatess.put(v.getKey(),box_id);
+				}
+				LogUtils.i(TAG, "mEPCDates.mEPCDates()多reader  " + mEPCDatess.size());
+			   } else {
+				mEPCDate.clear();
+				mEPCDatess.clear();
+			   }
+			}else {
+			   return;
+			}
+		   } else {
 			if (!mPause) {
-			   LogUtils.i(TAG, "mEPCDate  zou l  ");
-			   getDeviceDate(event.deviceId, mEPCDate);
-			} else {
-			   mEPCDate.clear();
+			   if (event.epcs.size()==0){
+				mEPCDatess.put(" ",box_id);//1个空格
+			   }
+			   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+				mEPCDatess.put(v.getKey(),box_id);
+			   }
+			   LogUtils.i(TAG, "mEPCDates.mEPCDates()单reader  " + mEPCDatess.size());
 			}
 		   }
-
-		} else {
-		   if (!mPause) {
-			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-			getDeviceDate(event.deviceId, event.epcs);
+		}
+	   }
+	   LogUtils.i(TAG, "mDoorList.size()   " + mDoorList.size());
+	   if (mIsClick||mDoorList.size()!=0) {
+		return;
+	   }
+	   LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
+	   if (!mPause) {
+		putAllOutEPCDates(mEPCDatess);
+	   }
+	} else {
+	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		   .find(BoxIdBean.class);
+	   for (BoxIdBean boxIdBean : boxIdBeanss) {
+		String box_id = boxIdBean.getBox_id();
+		if (box_id != null) {
+		   List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+										READER_TYPE).find(BoxIdBean.class);
+		   if (boxIdBeansss.size() > 1) {
+			for (BoxIdBean BoxIdBean : boxIdBeansss) {
+			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+				mEPCDate.putAll(event.epcs);
+				k++;
+				LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			   }
+			}
+			LogUtils.i(TAG, "mEPCDate  k  " + k);
+			if (k == boxIdBeansss.size()) {
+			   k = 0;
+			   LogUtils.i(TAG, "mEPCDate  zou l  " + (k == boxIdBeansss.size()));
+			   if (!mPause) {
+				getDeviceDate(event.deviceId, mEPCDate);
+			   } else {
+				mEPCDate.clear();
+			   }
+			}
+		   } else {
+			if (!mPause) {
+			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+			   getDeviceDate(event.deviceId, event.epcs);
+			}
 		   }
 		}
 	   }
@@ -485,9 +556,105 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
+	mEPCDatess.clear();
 	putEPCDates(toJson);
+
    }
 
+   /**
+    * 快速开柜出柜查询
+    * @param epcs
+    */
+   private void putAllOutEPCDates(Map<String, String> epcs) {
+	String toJson = getEpcDtoString(epcs);
+	NetRequest.getInstance().putAllOutEPCDate(toJson, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result s   " + result);
+		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		mVoOutList = cstInventoryDto.gettCstInventoryVos();
+		putAllInEPCDate(toJson);//用于判断出柜提示显示
+
+		String string = null;
+		if (cstInventoryDto.getErrorEpcs() != null &&
+		    cstInventoryDto.getErrorEpcs().size() > 0) {
+		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+		   ToastUtils.showLong(string);
+		}
+		if (mVoOutList != null && mVoOutList.size() != 0) {
+		   LogUtils.i(TAG, "跳出柜" );
+		   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
+		   EventBusUtils.postSticky(cstInventoryDto);
+		} else {
+		   putAllInEPCDate(toJson);
+		}
+	   }
+	});
+   }
+
+   /**
+    * 快速开柜epc放入DTO
+    * @param epcs
+    * @return
+    */
+   private String getEpcDtoString(Map<String, String> epcs) {
+	AllOutBean allOutBean = new AllOutBean();
+	List<AllOutBean.TCstInventoryVos> epcList = new ArrayList<>();
+	for (Map.Entry<String, String> v : epcs.entrySet()) {
+	   AllOutBean.TCstInventoryVos tCstInventory = new AllOutBean.TCstInventoryVos();
+	   tCstInventory.setEpc(v.getKey());
+	   tCstInventory.setDeviceCode(v.getValue());
+	   epcList.add(tCstInventory);
+	}
+	allOutBean.setTCstInventoryVos(epcList);
+	allOutBean.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	String toJson = mGson.toJson(allOutBean);
+	LogUtils.i(TAG, "toJson s   " + toJson);
+	return toJson;
+   }
+
+   /**
+    * 快速开柜入柜查询
+    */
+   private void putAllInEPCDate(String json) {
+	NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result sIn   " + result);
+		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		LogUtils.i(TAG, "result size   " + cstInventoryDto.gettCstInventoryVos().size());
+		String string = null;
+		if (cstInventoryDto.getErrorEpcs() != null &&
+		    cstInventoryDto.getErrorEpcs().size() > 0) {
+		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+		   ToastUtils.showLong(string);
+		}
+		if (mVoOutList!=null&&mVoOutList.size()==0&&cstInventoryDto.gettCstInventoryVos() != null &&
+		    cstInventoryDto.gettCstInventoryVos().size() != 0) {
+		   LogUtils.i(TAG, "跳入入柜 " );
+		   mContext.startActivity(new Intent(mContext, InOutBoxTwoActivity.class));
+		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   EventBusUtils.postSticky(cstInventoryDto);
+		} else {
+		   LogUtils.i(TAG, "显示提示" );
+		   if (cstInventoryDto.gettCstInventoryVos().size()>0){
+		      EventBusUtils.postSticky(new Event.EventOutTitleV(true));
+			LogUtils.i(TAG, "xianshi " );
+		   } else {
+		      if (mVoOutList!=null){
+			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+			}
+		   }
+		}
+	   }
+	});
+   }
+
+   /**
+    * 选择开柜查询
+    *
+    * @param toJson
+    */
    private void putEPCDates(String toJson) {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
@@ -669,11 +836,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材操作");
-	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					   SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 	}
-	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
+	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					   SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
 	}
 
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
@@ -688,6 +857,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		mRbKey = -1;
+		mPause = false;
 		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 
 		// else if (position == 1){
@@ -698,20 +868,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		//		   ToastUtils.showShort("按套餐领用-绑定患者！");
 		//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
 		//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
-		//
-		//		}else if (position ==4){
-		//
-		//		}
 
-		//		if (position == 0) {
-		//		   int mType = 1;//1.8.3未绑定
-		//		   showTwoDialog(mType);
-		//		} else if (position == 1) {
-		//		   int mType = 1;//1.6移出
-		//		   showStoreDialog(3, mType);
-		//		} else if (position == 2) {
-		//		   int mType = 2;//1.7退货
-		//		   showStoreDialog(2, mType);
+
 		//		} else if (position == 3) {
 		//		   int mType = 3;//1.8调拨
 		//		   showStoreDialog(2, mType);
@@ -864,9 +1022,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者，启动临时患者
 	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
-	   //				mContext.startActivity(
-	   //					new Intent(mContext, TemPatientBindActivity.class).putExtra(
-	   //						"mTemPTbaseDevices", (Serializable) mTbaseDevices));
+
 	   goToFirstBindAC(position);
 	} else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
 		     UIUtils.getConfigType(mContext, CONFIG_009) &&
@@ -887,8 +1043,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	}
 	EventBusUtils.postSticky(new Event.EventAct("inout"));
-	//			   loadBingDate("", position, mTbaseDevices);
-
 	return;
    }
 
@@ -930,6 +1084,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
+	mDoorList.clear();
 	EventBusUtils.unregister(this);
 	super.onPause();
    }
@@ -939,63 +1094,67 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
 	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo})
    public void onViewClicked(View view) {
-	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(mBaseTabIconRight);
-		popupClick();
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
+	if (!mIsClick) {
+	   switch (view.getId()) {
+		case R.id.base_tab_icon_right:
+		case R.id.base_tab_tv_name:
+		   mPopupWindow = new SettingPopupWindow(mContext);
+		   mPopupWindow.showPopupWindow(mBaseTabIconRight);
+		   popupClick();
+		   break;
+		case R.id.base_tab_tv_outlogin:
+		   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		   builder.setTwoMsg("您确认要退出登录吗?");
+		   builder.setMsg("温馨提示");
+		   builder.setLeft("取消", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int i) {
+			   dialog.dismiss();
+			}
+		   });
+		   builder.setRight("确认", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int i) {
+			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			   dialog.dismiss();
+			}
+		   });
+		   builder.create().show();
+		   break;
+		case R.id.base_tab_btn_msg:
+		   break;
+		case R.id.function_title_meal:
+		   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+			 UIUtils.getConfigType(mContext, CONFIG_010)) {
+			mContext.startActivity(new Intent(mContext, OutMealActivity.class));
+			EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
+		   } else {
+			ToastUtils.showShort("此功能暂未开放");
 		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		break;
-	   case R.id.function_title_meal:
-		if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-		    UIUtils.getConfigType(mContext, CONFIG_010)) {
-		   mContext.startActivity(new Intent(mContext, OutMealActivity.class));
-		   EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
-		} else {
-		   ToastUtils.showShort("此功能暂未开放");
-		}
 
-		break;
-	   case R.id.fastopen_title_form:
-		if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-		    UIUtils.getConfigType(mContext, CONFIG_010)) {
-		   mContext.startActivity(new Intent(mContext, OutFormActivity.class));
-		} else {
-		   ToastUtils.showShort("此功能暂未开放");
-		   //		   DialogUtils.showRegisteDialog(mContext, _mActivity);
-		}
-		break;
-	   case R.id.fastopen_title_guanlian://患者关联
-		//                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
-		break;
+		   break;
+		case R.id.fastopen_title_form:
+		   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+			 UIUtils.getConfigType(mContext, CONFIG_010)) {
+			mContext.startActivity(new Intent(mContext, OutFormActivity.class));
+		   } else {
+			ToastUtils.showShort("此功能暂未开放");
+			//		   DialogUtils.showRegisteDialog(mContext, _mActivity);
+		   }
+		   break;
+		case R.id.fastopen_title_guanlian://患者关联
+		   //                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+		   break;
+	   }
+	   //选择操作监听
+	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
+		doSelectOption(0, view.getId());
+	   }
+	} else {
+	   ToastUtils.showShort("请关闭柜门再进行操作");
 	}
 
-	//选择操作监听
-	if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-	   doSelectOption(0, view.getId());
-	}
    }
 
    /**
@@ -1209,73 +1368,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			   }
 			}
 		   }
-
-		   //
-		   //
-		   //			BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-		   //													 BingFindSchedulesBean.class);
-		   //			if (bingFindSchedulesBean != null &&
-		   //			    bingFindSchedulesBean.getPatientInfos() != null &&
-		   //			    bingFindSchedulesBean.getPatientInfos().size() > 0) {
-		   //			   if (mPatientInfos != null) {
-		   //				mPatientInfos.clear();
-		   //				List<BingFindSchedulesBean.PatientInfosBean> patientInfos = bingFindSchedulesBean
-		   //					.getPatientInfos();
-		   //				mPatientInfos.addAll(patientInfos);
-		   //				if (mShowRvDialog2 != null && mShowRvDialog2.mDialog.isShowing()) {
-		   //				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-		   //				} else {
-		   //				   mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
-		   //											   mPatientInfos, "firstBind",
-		   //											   position, mTbaseDevices);
-		   //				   mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-		   //					@Override
-		   //					public void onRefresh(RefreshLayout refreshLayout) {
-		   //					   mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
-		   //					   mNoTemPage = 1;
-		   //					   mPatientInfos.clear();
-		   //					   loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
-		   //					   mShowRvDialog2.mRefreshLayout.finishRefresh();
-		   //					}
-		   //				   });
-		   //				   mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-		   //					@Override
-		   //					public void onLoadMore(RefreshLayout refreshLayout) {
-		   //					   mNoTemPage++;
-		   //					   loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
-		   //					   mShowRvDialog2.mRefreshLayout.finishLoadMore();
-		   //					}
-		   //				   });
-		   //				}
-		   //
-		   //			   } else {
-		   //				mPatientInfos = bingFindSchedulesBean.getPatientInfos();
-		   //				mShowRvDialog2 = DialogUtils.showRvDialog(_mActivity, mContext,
-		   //											mPatientInfos, "firstBind",
-		   //											position, mTbaseDevices);
-		   //				mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-		   //				   @Override
-		   //				   public void onRefresh(RefreshLayout refreshLayout) {
-		   //					mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
-		   //					mNoTemPage = 1;
-		   //					mPatientInfos.clear();
-		   //					loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
-		   //					mShowRvDialog2.mRefreshLayout.finishRefresh();
-		   //				   }
-		   //				});
-		   //				mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-		   //				   @Override
-		   //				   public void onLoadMore(RefreshLayout refreshLayout) {
-		   //					mNoTemPage++;
-		   //					loadBingDateNoTemp(optienNameOrId,position,mTbaseDevices);
-		   //					mShowRvDialog2.mRefreshLayout.finishLoadMore();
-		   //				   }
-		   //				});
-		   //			   }
-		   //			} else {
-		   //			   ToastUtils.showShort("没有患者数据");
-		   //			}
-		   //		   }
 		});
    }
 }

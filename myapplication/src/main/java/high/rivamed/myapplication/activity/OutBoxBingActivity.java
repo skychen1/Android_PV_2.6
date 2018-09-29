@@ -107,9 +107,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                mOperatingRoomNoName;
    private String                mSex;
    private String                mDeptId;
+
    /**
     * 倒计时结束发起
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -150,47 +150,50 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-	mStarts.cancel();
-	mStarts.start();
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-		.find(BoxIdBean.class);
+	if (!mOnBtnGone){
+	   mStarts.cancel();
+	   mStarts.start();
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
+	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		   .find(BoxIdBean.class);
 
-	for (BoxIdBean boxIdBean : boxIdBeanss) {
-	   String box_id = boxIdBean.getBox_id();
-	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-									   READER_TYPE).find(BoxIdBean.class);
-		if (boxIdBeansss.size() > 1) {
+	   for (BoxIdBean boxIdBean : boxIdBeanss) {
+		String box_id = boxIdBean.getBox_id();
+		if (box_id != null) {
+		   List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+										READER_TYPE).find(BoxIdBean.class);
+		   if (boxIdBeansss.size() > 1) {
 
-		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
-			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-			   mEPCDate.putAll(event.epcs);
-			   k++;
-			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			for (BoxIdBean BoxIdBean : boxIdBeansss) {
+			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+				mEPCDate.putAll(event.epcs);
+				k++;
+				LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
+			   }
 			}
-		   }
-		   if (k == boxIdBeansss.size()) {
-			k = 0;
+			if (k == boxIdBeansss.size()) {
+			   k = 0;
+			   if (!mPause) {
+				LogUtils.i(TAG, "mEPCDate  zou l  ");
+				getDeviceDate(event.deviceId, mEPCDate);
+			   }
+			}
+
+		   } else {
 			if (!mPause) {
-			   LogUtils.i(TAG, "mEPCDate  zou l  ");
-			   getDeviceDate(event.deviceId, mEPCDate);
+			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+			   getDeviceDate(event.deviceId, event.epcs);
 			}
-		   }
-
-		} else {
-		   if (!mPause) {
-			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-			getDeviceDate(event.deviceId, event.epcs);
 		   }
 		}
 	   }
 	}
+
    }
 
    @Override
@@ -291,6 +294,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   }
 		}
 	   }
+	}
+	if (mOnBtnGone){
+	   mTCstInventoryDto.settCstInventoryVos(mTCstInventoryVos);
 	}
    }
 
@@ -470,11 +476,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		if (mIntentType == 2) {
-		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		   App.getInstance().removeALLActivity_();
+		if (mOnBtnGone){
+		   finish();
+		}else {
+		   if (mIntentType == 2) {
+			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+		   }
+		   finish();
 		}
-		finish();
+
 	   }
 	});
    }
@@ -581,6 +592,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
+	mOnBtnGone=false;
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);
 	super.onDestroy();

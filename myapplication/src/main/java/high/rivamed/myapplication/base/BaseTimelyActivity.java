@@ -31,10 +31,10 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -117,48 +117,51 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.timely_number)
    public TextView mTimelyNumber;
    @BindView(R.id.timely_ll)
-   LinearLayout           mLinearLayout;
+   LinearLayout mLinearLayout;
    @BindView(R.id.recyclerview)
-   RecyclerView           mRecyclerview;
+   RecyclerView mRecyclerview;
    @BindView(R.id.refreshLayout)
    public SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.timely_rl_title)
-   RelativeLayout         mRelativeLayout;
+   RelativeLayout mRelativeLayout;
    @BindView(R.id.timely_ll_gone)
-   LinearLayout           mTimelyLlGone;
+   LinearLayout   mTimelyLlGone;
    @BindView(R.id.timely_number_left)
-   TextView               mTimelyNumberLeft;
+   TextView       mTimelyNumberLeft;
    @BindView(R.id.timely_start_btn_right)
-   TextView               mTimelyStartBtnRight;
+   TextView       mTimelyStartBtnRight;
+   @BindView(R.id.timely_open_door_right)
+   TextView       mTimelyOpenDoorRight;
    @BindView(R.id.ly_bing_btn_right)
-   TextView               mLyBingBtnRight;
+   TextView       mLyBingBtnRight;
    @BindView(R.id.timely_ll_gone_right)
-   LinearLayout           mTimelyLlGoneRight;
+   LinearLayout   mTimelyLlGoneRight;
    @BindView(R.id.search_et)
-   EditText               mSearchEt;
+   EditText       mSearchEt;
    @BindView(R.id.search_iv_delete)
-   ImageView              mSearchIvDelete;
+   ImageView      mSearchIvDelete;
    @BindView(R.id.stock_search)
-   FrameLayout            mStockSearch;
+   FrameLayout    mStockSearch;
    @BindView(R.id.ly_creat_temporary_btn)
-   TextView               mLyCreatTemporaryBtn;
+   TextView       mLyCreatTemporaryBtn;
    @BindView(R.id.dialog_left)
-   TextView               mDialogLeft;
+   TextView       mDialogLeft;
    @BindView(R.id.dialog_right)
-   TextView               mDialogRight;
+   TextView       mDialogRight;
    @BindView(R.id.activity_down_btn_seven_ll)
-   LinearLayout           mActivityDownBtnSevenLl;
+   LinearLayout   mActivityDownBtnSevenLl;
    @BindView(R.id.timely_rl)
-   LinearLayout           mTimelyRl;
+   LinearLayout   mTimelyRl;
    @BindView(R.id.header)
-   MaterialHeader         mHeader;
+   MaterialHeader mHeader;
    @BindView(R.id.public_ll)
-   LinearLayout           mPublicLl;
+   LinearLayout   mPublicLl;
    @BindView(R.id.tv_patient_conn)
-   TextView               mTvPatientConn;
+   TextView       mTvPatientConn;
    @BindView(R.id.activity_down_patient_conn)
-   LinearLayout           mActivityDownPatientConn;
-
+   LinearLayout   mActivityDownPatientConn;
+   @BindView(R.id.all_out_text)
+   public TextView       mAllOutText;
    private int           mLayout;
    private View          mHeadView;
    public  String        mData;
@@ -174,11 +177,25 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public TCstInventoryDto mTCstInventoryDto;
    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
-   public        TCstInventoryDto mDto;
-   private       String           mBindFirstType;
-   private       int              mOperation;
-   private       int              mDtoOperation;
+   public  TCstInventoryDto mDto;
+   private String           mBindFirstType;
+   private int              mOperation;
+   private int              mDtoOperation;
    public  CountDownTimer   mStarts;
+   public boolean mOnBtnGone =false;
+
+   /**
+    * 隐藏按钮
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onBtnGoneEvent(Event.EventButGone event) {
+	mOnBtnGone = event.b;
+	if (mOnBtnGone){
+	   mTimelyStartBtnRight.setVisibility(View.GONE);
+	   mTimelyOpenDoorRight.setVisibility(View.GONE);
+	}
+   }
    /**
     * 看关门后是否需要设置按钮为可以点击
     *
@@ -196,6 +213,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 	});
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
@@ -220,27 +238,27 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
-			if(mStarts != null){
+			if (mStarts != null) {
 			   mStarts.cancel();
 			   mTimelyRight.setText("确认并退出登录");
 			}
 			return;
 		   }
-//		   String status = b.getStatus();
-//		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
-//			 status.equals("禁止退回") ||
-//			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
-//			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
-//			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
-//			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
-//			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
-//			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
-//			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
-		   if (b.getIsErrorOperation()==1&&b.getDeleteCount()==0) {
+		   //		   String status = b.getStatus();
+		   //		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
+		   //			 status.equals("禁止退回") ||
+		   //			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+		   //			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+		   //			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+		   //			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+		   //			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+		   //			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+		   //			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
+		   if (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "OutBoxBingActivity   cancel");
-			if(mStarts != null){
+			if (mStarts != null) {
 			   mStarts.cancel();
 			   mTimelyRight.setText("确认并退出登录");
 			}
@@ -249,7 +267,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			LogUtils.i(TAG, "OutBoxBingActivity   start");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
-			if(mStarts != null){
+			if (mStarts != null) {
 			   mStarts.cancel();
 			   mStarts.start();
 			}
@@ -257,21 +275,21 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		}
 	   } else {
 		for (TCstInventoryVo b : mTCstInventoryVos) {
-//		   String status = b.getStatus();
-//		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
-//			 status.equals("禁止退回") ||
-//			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
-//			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
-//			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
-//			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
-//			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
-//			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
-//			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
-		   if (b.getIsErrorOperation()==1&&b.getDeleteCount()==0) {
+		   //		   String status = b.getStatus();
+		   //		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
+		   //			 status.equals("禁止退回") ||
+		   //			 (mOperation == 3 && !status.contains("领用") && !status.equals("移除")) ||
+		   //			 (mOperation == 2 && !status.contains("入库") && !status.equals("移除")) ||
+		   //			 (mOperation == 9 && !status.contains("移出") && !status.equals("移除")) ||
+		   //			 (mOperation == 11 && !status.contains("调拨") && !status.equals("移除")) ||
+		   //			 (mOperation == 10 && !status.contains("移入") && !status.equals("移除")) ||
+		   //			 (mOperation == 7 && !status.contains("退回") && !status.equals("移除")) ||
+		   //			 (mOperation == 8 && !status.contains("退货") && !status.equals("移除"))) {
+		   if (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "InOutBoxTwoActivity   cancel");
-			if(mStarts != null){
+			if (mStarts != null) {
 			   mStarts.cancel();
 			   mTimelyRight.setText("确认并退出登录");
 			}
@@ -280,7 +298,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			LogUtils.i(TAG, "InOutBoxTwoActivity   start");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
-			if(mStarts != null){
+			if (mStarts != null) {
 			   mStarts.cancel();
 			   mStarts.start();
 			}
@@ -309,9 +327,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 获取盘亏数据
     */
    private void loadTimelyLossesDate() {
-//	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);//盘亏界面修改
-//	mTimelyLeft.setText("盘亏原因");//盘亏界面修改
-//	mTimelyRight.setText("确认提交");//盘亏界面修改
+	//	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);//盘亏界面修改
+	//	mTimelyLeft.setText("盘亏原因");//盘亏界面修改
+	//	mTimelyRight.setText("确认提交");//盘亏界面修改
 	mBaseTabTvTitle.setText("盘亏耗材详情");
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
@@ -322,7 +340,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mSize = array.length;
 
 	mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY,STYPE_LOSS_TYPE);
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_LOSS_TYPE);
 
    }
 
@@ -338,8 +356,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList,  mSize, tCstInventoryVos,mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY,STYPE_PROFIT_TYPE);
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos, mLinearLayout,
+						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_PROFIT_TYPE);
    }
 
    /**
@@ -394,9 +412,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
 	   mTCstInventoryDto = event;
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
+	   List<TCstInventory> tCstInventories = event.gettCstInventorys();
 	   mTCstInventoryVos.clear();
-	   mTCstInventoryVos.addAll(tCstInventoryVos);
-
+	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
 	   if (my_id == ACT_TYPE_HCCZ_OUT) {
 		LogUtils.i(TAG, "event  " + "ACT_TYPE_HCCZ_OUT");
 		setOutBoxTitles();
@@ -414,7 +432,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	} else {
 	   mTCstInventoryDto = event;
-	   mTCstInventoryVos = event.gettCstInventoryVos();
+	   mTCstInventoryVos = event.gettCstInventoryVos();//选择开柜
 	}
 	mDtoOperation = mTCstInventoryDto.getOperation();
    }
@@ -567,7 +585,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.GONE);
 	mLyBingBtn.setVisibility(View.GONE);
 	mTimelyNumber.setVisibility(View.GONE);
-	mBaseTabBack.setVisibility(View.GONE);
+	if (mOnBtnGone){
+	   mBaseTabBack.setVisibility(View.VISIBLE);
+	}else {
+	   mBaseTabBack.setVisibility(View.GONE);
+	}
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
 	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
@@ -578,7 +600,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
-	   if(mStarts != null){
+	   if (mStarts != null) {
 		mStarts.cancel();
 		mTimelyRight.setText("确认并退出登录");
 	   }
@@ -589,15 +611,16 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTimelyLeft.setEnabled(true);
 	   mTimelyRight.setEnabled(true);
 	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-//		if (!vosBean.getStatus().equals("禁止操作")) {
-		if (vosBean.getIsErrorOperation()==0||(vosBean.getIsErrorOperation()==1&&vosBean.getDeleteCount()!=0)){
+		//		if (!vosBean.getStatus().equals("禁止操作")) {
+		if (vosBean.getIsErrorOperation() == 0 ||
+		    (vosBean.getIsErrorOperation() == 1 && vosBean.getDeleteCount() != 0)) {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		} else {
 		   LogUtils.i(TAG, "我走了falsesss");
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
-		   if(mStarts != null){
+		   if (mStarts != null) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
 		   }
@@ -614,7 +637,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		  (vosBean.getPatientName() == null || vosBean.getPatientName().equals("")))) {
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
-		if(mStarts != null){
+		if (mStarts != null) {
 		   mStarts.cancel();
 		   mTimelyRight.setText("确认并退出登录");
 		}
@@ -652,7 +675,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
 	mTimelyLeft.setEnabled(false);
 	mTimelyRight.setEnabled(false);
-	if(mStarts != null){
+	if (mStarts != null) {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
@@ -662,34 +685,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		strings.add(vosBean.getCstCode());
 	   }
 	}
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	//
-	//        mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-	//                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-	//                mTCstInventoryVos.size() + "</big></font>"));
-	List<String> titeleList = new ArrayList<String>();
-	titeleList.add(0, "选择");
-	titeleList.add(1, "患者姓名");
-	titeleList.add(2, "患者ID");
-	titeleList.add(3, "手术时间");
-	titeleList.add(4, "医生");
-	titeleList.add(5, "手术间");
-	titeleList.add(6, "是否为临时患者");
 
-	//	   String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
-	//	   titeleList = Arrays.asList(array);
+	String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	titeleList = Arrays.asList(array);
 	mSize = titeleList.size();
 
 	mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-
-	//        List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
-	//        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
-	//                mLinearLayout, mRecyclerview,
-	//                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-
-	//        mTypeView = new TableTypeView(this, this, titeleList, mSize, mTempPatientVoVos, mLinearLayout,
-	//                mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG, 0, 0);
 
    }
 
@@ -705,7 +707,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownPatientConn.setVisibility(View.VISIBLE);
 	mTimelyLeft.setEnabled(false);
 	mTimelyRight.setEnabled(false);
-	if(mStarts != null){
+	if (mStarts != null) {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
@@ -751,10 +753,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	setOutBoxTitles();
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
+	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
+	mBaseTabBack.setVisibility(View.GONE);
+	mBaseTabIconRight.setEnabled(false);
+	mBaseTabTvName.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
 	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
    }
 
@@ -776,21 +783,21 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 快速开柜入柜后赋值界面
     */
    private void setInBoxDate() {
-      if (mDtoOperation==8){
+	if (mDtoOperation == 8) {
 	   mBaseTabTvTitle.setText("耗材退货");
-	}else if (mDtoOperation==3){
+	} else if (mDtoOperation == 3) {
 	   mBaseTabTvTitle.setText("耗材领用");
-	}else if (mDtoOperation==2){
+	} else if (mDtoOperation == 2) {
 	   mBaseTabTvTitle.setText("耗材入库");
-	}else if (mDtoOperation==9){
+	} else if (mDtoOperation == 9) {
 	   mBaseTabTvTitle.setText("耗材移出");
-	}else if (mDtoOperation==11){
+	} else if (mDtoOperation == 11) {
 	   mBaseTabTvTitle.setText("耗材调拨");
-	}else if (mDtoOperation==10){
+	} else if (mDtoOperation == 10) {
 	   mBaseTabTvTitle.setText("耗材移入");
-	}else if (mDtoOperation==7){
+	} else if (mDtoOperation == 7) {
 	   mBaseTabTvTitle.setText("耗材退回");
-	}else {
+	} else {
 	   mBaseTabTvTitle.setText("耗材识别");
 	}
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
@@ -799,11 +806,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
-	if(mStarts != null){
+	mBaseTabOutLogin.setEnabled(false);
+	if (mStarts != null) {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
-	mBaseTabOutLogin.setEnabled(false);
+
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -833,26 +841,27 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	   for (TCstInventoryVo b : mTCstInventoryVos) {
 		String status = b.getStatus();
-//		if ((operation == 3 && status.contains("领用") && b.getStopFlag() != 0) ||
-//		    (operation == 2 && status.contains("入库") && b.getStopFlag() != 0) ||
-//		    (operation == 9 && status.contains("移出") && b.getStopFlag() != 0) ||
-//		    (operation == 11 && status.contains("调拨") && b.getStopFlag() != 0) ||
-//		    (operation == 10 &&
-//		     (status.contains("移入") && !status.equals("禁止移入") && b.getStopFlag() != 0)) ||
-//		    (operation == 7 && status.contains("退回") && b.getStopFlag() != 0) ||
-//		    (operation == 8 && status.contains("退货"))) {
-		if (b.getIsErrorOperation()==0||(b.getIsErrorOperation()==1&&b.getDeleteCount()!=0)) {
+		//		if ((operation == 3 && status.contains("领用") && b.getStopFlag() != 0) ||
+		//		    (operation == 2 && status.contains("入库") && b.getStopFlag() != 0) ||
+		//		    (operation == 9 && status.contains("移出") && b.getStopFlag() != 0) ||
+		//		    (operation == 11 && status.contains("调拨") && b.getStopFlag() != 0) ||
+		//		    (operation == 10 &&
+		//		     (status.contains("移入") && !status.equals("禁止移入") && b.getStopFlag() != 0)) ||
+		//		    (operation == 7 && status.contains("退回") && b.getStopFlag() != 0) ||
+		//		    (operation == 8 && status.contains("退货"))) {
+		if (b.getIsErrorOperation() == 0 ||
+		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0)) {
 		   LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
-		   if(mStarts != null){
+		   if (mStarts != null) {
 			mStarts.cancel();
 			mStarts.start();
 		   }
 		} else {
 		   LogUtils.i(TAG, "我走了false");
-		   LogUtils.i(TAG, "InOutBoxTwoActivity.mStart   "+(mStarts==null));
+		   LogUtils.i(TAG, "InOutBoxTwoActivity.mStart   " + (mStarts == null));
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
-		   if(mStarts != null){
+		   if (mStarts != null) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
 		   }
@@ -881,15 +890,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
 		"</big></font>"));
 
-	for (TCstInventoryVo b : mTCstInventoryVos) {
-	   String status = b.getStatus();
-	   if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
-		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		return;
-	   }
-	}
+//	for (TCstInventoryVo b : mTCstInventoryVos) {
+//	   String status = b.getStatus();
+//	   if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
+//		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+//		mTimelyLeft.setEnabled(false);
+//		mTimelyRight.setEnabled(false);
+//		return;
+//	   }
+//	}
    }
 
    /**
@@ -940,7 +949,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	}
 
-	@Override public void onTick ( long millisUntilFinished){// 计时过程显示
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
 	   if (millisUntilFinished / 1000 <= 135) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
 	   } else {
@@ -948,6 +958,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+
    @Override
    public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (keyCode == KeyEvent.KEYCODE_BACK) {

@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.dto.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 
 /**
@@ -98,10 +97,10 @@ public class TCstInventory implements Serializable {
 	private String epc;
 
 	//有效期
-	private Date expirationTime;
+	private String expirationTime;
 
 	//生产日期
-	private Date productionDate;
+	private String productionDate;
 
 	//单号
 	private String sheetId;
@@ -111,13 +110,13 @@ public class TCstInventory implements Serializable {
 	//库房编码
 	private String storehouseCode;
 	
-	private Date createDate;
+	private String createDate;
 	
 	private String accountId;
 	
 	private String userName;
 	
-	private Date lastUpdateDate;
+	private String lastUpdateDate;
 	
 	private String remark;
 	
@@ -223,19 +222,19 @@ public class TCstInventory implements Serializable {
 	this.epc = epc;
    }
 
-   public Date getExpirationTime() {
+   public String getExpirationTime() {
 	return expirationTime;
    }
 
-   public void setExpirationTime(Date expirationTime) {
+   public void setExpirationTime(String expirationTime) {
 	this.expirationTime = expirationTime;
    }
 
-   public Date getProductionDate() {
+   public String getProductionDate() {
 	return productionDate;
    }
 
-   public void setProductionDate(Date productionDate) {
+   public void setProductionDate(String productionDate) {
 	this.productionDate = productionDate;
    }
 
@@ -263,11 +262,11 @@ public class TCstInventory implements Serializable {
 	this.storehouseCode = storehouseCode;
    }
 
-   public Date getCreateDate() {
+   public String getCreateDate() {
 	return createDate;
    }
 
-   public void setCreateDate(Date createDate) {
+   public void setCreateDate(String createDate) {
 	this.createDate = createDate;
    }
 
@@ -287,11 +286,11 @@ public class TCstInventory implements Serializable {
 	this.userName = userName;
    }
 
-   public Date getLastUpdateDate() {
+   public String getLastUpdateDate() {
 	return lastUpdateDate;
    }
 
-   public void setLastUpdateDate(Date lastUpdateDate) {
+   public void setLastUpdateDate(String lastUpdateDate) {
 	this.lastUpdateDate = lastUpdateDate;
    }
 

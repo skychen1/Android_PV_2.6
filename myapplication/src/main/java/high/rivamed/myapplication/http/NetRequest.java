@@ -296,6 +296,24 @@ public class NetRequest {
     }
 
     /**
+     * 耗材操作开柜扫描提交数据(快速开柜入柜)
+     */
+    public void putAllInEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_QUERY_ALL_IN).tag(tag)
+              .upJson(deviceInventoryVos)
+              .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
+     * 耗材操作开柜扫描提交数据(快速开柜出柜)
+     */
+    public void putAllOutEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_QUERY_ALL_OUT).tag(tag)
+              .upJson(deviceInventoryVos)
+              .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
      * 耗材操作开柜扫描提交数据
      */
     public void putEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {

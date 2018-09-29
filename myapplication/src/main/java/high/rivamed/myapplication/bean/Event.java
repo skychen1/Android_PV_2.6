@@ -23,6 +23,26 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
    /**
+    * 隐藏绑定患者的界面按钮
+    */
+   public static class EventButGone {
+	public boolean b;
+
+	public EventButGone(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
+    * 快速开柜入柜提示
+    */
+   public static class EventOutTitleV {
+	public boolean b;
+
+	public EventOutTitleV(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
     * 耗材倒计时结束发起
     */
    public static class EventOverPut {
@@ -145,9 +165,11 @@ public class Event {
     */
    public static class HomeNoClickEvent {
 	public boolean isClick;
+	public String door;
 
-	public HomeNoClickEvent(boolean isClick) {
+	public HomeNoClickEvent(boolean isClick,String door) {
 	   this.isClick = isClick;
+	   this.door = door;
 	}
    }
 

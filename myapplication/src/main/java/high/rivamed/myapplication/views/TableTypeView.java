@@ -40,6 +40,7 @@ import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -110,7 +111,7 @@ public class TableTypeView extends LinearLayout {
    public  InBoxAllAdapter                       mInBoxAllAdapter;
    public  OutBoxAllAdapter                      mOutBoxAllAdapter;
    private TimeDetailsAdapter                    mTimeDetailsAdapter;
-   private List<TCstInventoryDto.InventorysBean> mInventorys;
+   private List<TCstInventory> mTCstInventorys;
    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
    public BingDialogOutAdapter mBingOutAdapter;
    public AfterBingAdapter     mAfterBingAdapter;
@@ -126,20 +127,22 @@ public class TableTypeView extends LinearLayout {
    }
 
    public TableTypeView(
-	   Context context, Activity activity, List<String> titeleList,
-	   List<TCstInventoryVo> inventorys, int size, LinearLayout linearLayout,
-	   RecyclerView recyclerview, SmartRefreshLayout refreshLayout, int type) {
-
+	   Context context, Activity activity, List<String> titeleList, int size,
+	   LinearLayout linearLayout, RecyclerView recyclerview, SmartRefreshLayout refreshLayout, List<TCstInventory> mTCstInventorys,
+	   int type, String dialog) {
 	super(context);
+	EventBusUtils.register(this);
+
 	this.mActivity = activity;
 	this.mContext = context;
 	this.titeleList = titeleList;
 	this.mSize = size;
-	this.mTCstInventoryVos = inventorys;
+	this.mTCstInventorys = mTCstInventorys;
 	this.mLinearLayout = linearLayout;
 	this.mRecyclerview = recyclerview;
 	this.mRefreshLayout = refreshLayout;
 	this.mType = type;
+	this.mDialog = dialog;
 	initData();
    }
 

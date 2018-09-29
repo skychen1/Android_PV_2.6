@@ -119,12 +119,11 @@ public class AllDeviceCallBack {
 		mEthDeviceIdBack.addAll(strings);
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
-		EventBusUtils.post(new Event.HomeNoClickEvent(true));//禁止桌面左边菜单栏点击
+		EventBusUtils.post(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-
 		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
@@ -134,7 +133,7 @@ public class AllDeviceCallBack {
 		   }
 		}
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.post(new Event.HomeNoClickEvent(false));//开启桌面左边菜单栏点击
+		   EventBusUtils.post(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
 	   }

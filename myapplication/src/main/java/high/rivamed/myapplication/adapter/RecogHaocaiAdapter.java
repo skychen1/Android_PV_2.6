@@ -69,7 +69,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         if (item.getDeleteCount()>0){
             LogUtils.i("InBox","解除移除");
             mdeleteTv.setText("取消移除");
-            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_green));
+            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
             mdeleteIv.setVisibility(View.GONE);
         }else {
             LogUtils.i("InBox","移除");
@@ -90,7 +90,6 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
                 }else {
                     inventoryVo.setDelete(true);
                     inventoryVo.setDeleteCount(inventoryVo.getDeleteCount()+1);
-                    inventoryVo.setIsErrorOperation(0);
                     mData.remove(helper.getAdapterPosition());
                     mData.add(inventoryVo);
                 }
@@ -107,18 +106,13 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         mSeven_three.setText(item.getCstSpec());
         mSeven_four.setText(item.getExpiration());
         mSeven_five.setText(item.getDeviceName());
-        mSeven_seven.setText(status);
+        if (status.equals("2")){
+            mSeven_seven.setText("领用");
+        }else {
+            mSeven_seven.setText(status);
+        }
 
-        if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") ||
-            item.getStopFlag() == 0 || (mOperation == 3 && !status.contains("领用")) ||
-            (mOperation == 2 && !status.contains("入库")) ||
-            (mOperation == 9 && !status.contains("移出")) ||
-            (mOperation == 11 && !status.contains("调拨")) ||
-            (mOperation == 10 && !status.contains("移入")) ||
-            (mOperation == 7 && !status.contains("退回")) ||
-            (mOperation == 8 && !status.contains("退货"))) {
-            LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
-
+        if (item.getIsErrorOperation()==1&&item.getDeleteCount()==0){
             mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_red));
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -160,6 +154,16 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
 
         setDeleteView(item.isDelete(),swipe);
+        if (item.getDeleteCount()>0){
+            mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_four.setBackgroundResource(R.color.bg_color);
+            mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mLl.setBackgroundResource(R.color.bg_color);
+        }
 
     }
 
@@ -174,7 +178,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
             mSeven_six.setTextColor(Color.parseColor("#999999"));
             mSeven_seven.setTextColor(Color.parseColor("#999999"));
             mLl.setBackgroundResource(R.color.bg_color);
-            swipe.setSwipeEnabled(false);
+            swipe.setSwipeEnabled(true);
         } else {
             mSeven_one.setTextColor(Color.parseColor("#333333"));
             mSeven_two.setTextColor(Color.parseColor("#333333"));

@@ -26,6 +26,7 @@
 		<item>手术时间</item>
 		<item>医生</item>
 		<item>手术间</item>
+		<item>是否为临时患者</item>
 	</string-array>
 	<string-array name="seven_title_bing_arrays">
 		<item>名称</item>
