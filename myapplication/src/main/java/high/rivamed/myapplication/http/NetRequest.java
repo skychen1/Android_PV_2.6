@@ -332,6 +332,14 @@ public class NetRequest {
     }
 
     /**
+     * 耗材操作确认操作(快速开柜)
+     */
+    public void putAllOperateYes(String operateTCstInventory, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(NetApi.URL_QUERY_ALL_YES).tag(tag)
+              .upJson(operateTCstInventory)
+              .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+    /**
      * 根据科室查询库房情况    移出查
      */
     public void getOperateYcDeptYes(String deptId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {

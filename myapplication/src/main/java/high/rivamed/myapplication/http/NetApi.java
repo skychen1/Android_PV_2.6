@@ -53,10 +53,11 @@ public interface NetApi {
     String URL_OPERATE_YC_YES = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findBydept";//根据科室查询库房情况Dialog 移出查
     String URL_OPERATE_DB_YES = MAIN_URL + "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查
 
+
     //快速开柜
     String URL_QUERY_ALL_IN = MAIN_URL + "/rmApi/consumables/tCstInventory/inCupboardList";//同入同出入柜列表
     String URL_QUERY_ALL_OUT = MAIN_URL + "/rmApi/consumables/tCstInventory/outCupboardList";//同入同出出柜列表
-
+    String URL_QUERY_ALL_YES = MAIN_URL + "/rmApi/consumables/tCstInventory/fastOperateTCstInventories";//快速开柜确认
 
     //用户
     String URL_USER_LOGIN = MAIN_URL + "/rmApi/restLogin/validateLoginPassword";//登录
