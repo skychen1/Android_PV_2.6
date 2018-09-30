@@ -232,7 +232,7 @@ public class DialogUtils {
                 //		   Log.i("TT", " EventAct  " );
                 //		   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
                 ////		   EventBusUtils.postSticky(new Event.EventAct("all"));
-                ////		   Intent intent2 = new Intent(context, InOutBoxTwoActivity.class);
+                ////		   Intent intent2 = new Intent(context, SelInOutBoxTwoActivity.class);
                 ////		   context.startActivity(intent2);
                 //
                 //		}else if (nojump.equals("form")){

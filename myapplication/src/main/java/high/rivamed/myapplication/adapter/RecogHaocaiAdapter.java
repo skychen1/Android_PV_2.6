@@ -106,11 +106,11 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         mSeven_three.setText(item.getCstSpec());
         mSeven_four.setText(item.getExpiration());
         mSeven_five.setText(item.getDeviceName());
-        if (status.equals("2")){
-            mSeven_seven.setText("领用");
-        }else {
+//        if (status.equals("2")){
+//            mSeven_seven.setText("领用");
+//        }else {
             mSeven_seven.setText(status);
-        }
+//        }
 
         if (item.getIsErrorOperation()==1&&item.getDeleteCount()==0){
             mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_red));

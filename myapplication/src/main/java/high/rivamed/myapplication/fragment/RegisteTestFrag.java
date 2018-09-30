@@ -19,7 +19,7 @@ import cn.rivamed.callback.DeviceCallBack;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
+import high.rivamed.myapplication.activity.SelInOutBoxTwoActivity;
 import high.rivamed.myapplication.adapter.RegisteTestAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
@@ -182,7 +182,7 @@ public class RegisteTestFrag extends SimpleFragment {
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   EventBusUtils.postSticky(new Event.EventAct("all"));
-		   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+		   Intent intent2 = new Intent(mContext, SelInOutBoxTwoActivity.class);
 		   mContext.startActivity(intent2);
 		}
 	   }

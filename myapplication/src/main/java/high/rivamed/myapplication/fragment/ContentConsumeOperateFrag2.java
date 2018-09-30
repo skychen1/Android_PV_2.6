@@ -34,7 +34,8 @@ import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.InOutBoxTwoActivity;
+import high.rivamed.myapplication.activity.InBoxAllTwoActivity;
+import high.rivamed.myapplication.activity.SelInOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
@@ -632,7 +633,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		if (mVoOutList!=null&&mVoOutList.size()==0&&cstInventoryDto.gettCstInventoryVos() != null &&
 		    cstInventoryDto.gettCstInventoryVos().size() != 0) {
 		   LogUtils.i(TAG, "跳入入柜 " );
-		   mContext.startActivity(new Intent(mContext, InOutBoxTwoActivity.class));
+		   mContext.startActivity(new Intent(mContext, InBoxAllTwoActivity.class));
 		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   EventBusUtils.postSticky(cstInventoryDto);
 		} else {
@@ -735,27 +736,19 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			if (cstInventoryDto.getType() == 0) {//放入
 			   if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
 				 mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
-				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+				Intent intent2 = new Intent(mContext, SelInOutBoxTwoActivity.class);
 				mContext.startActivity(intent2);
 				EventBusUtils.postSticky(new Event.EventAct("inout"));
 				cstInventoryDto.setOperation(mRbKey);
-				EventBusUtils.postSticky(cstInventoryDto);
-			   } else {
-				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-				mContext.startActivity(intent2);
-				EventBusUtils.postSticky(new Event.EventAct("all"));
 				EventBusUtils.postSticky(cstInventoryDto);
 			   }
 			} else {//拿出
 			   if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
 				 mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
-				Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
+				Intent intent2 = new Intent(mContext, SelInOutBoxTwoActivity.class);
 				mContext.startActivity(intent2);
 				EventBusUtils.postSticky(new Event.EventAct("inout"));
 				cstInventoryDto.setOperation(mRbKey);
-				EventBusUtils.postSticky(cstInventoryDto);
-			   } else {
-				mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
 				EventBusUtils.postSticky(cstInventoryDto);
 			   }
 			}
@@ -771,11 +764,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
+//	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
-	} else {
-	   mConsumeOpenallTop.setVisibility(View.GONE);
-	}
+//	} else {
+//	   mConsumeOpenallTop.setVisibility(View.GONE);
+//	}
 
 	//是否启用功能开柜
 	if (UIUtils.getConfigType(mContext, CONFIG_016)) {

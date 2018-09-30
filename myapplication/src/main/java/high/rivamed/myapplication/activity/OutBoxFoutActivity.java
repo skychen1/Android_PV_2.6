@@ -37,7 +37,6 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -73,10 +72,31 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private Map<String, String>        mEPCDatess = new TreeMap<>();
    int k = 0;
    private List<TCstInventoryVo> mVoOutList;
+   private boolean mDate;
+
+   /**
+    * 再次显示后的数据
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventFourDate(Event.EventDate event) {
+	mDate = event.b;
+	if (mDate){
+	   if (mTCstInventoryDtoFour == null) {
+		mTCstInventoryDto.setStorehouseCode(
+			SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+		EventBusUtils.postSticky(mTCstInventoryDto);
+	   } else {
+		mTCstInventoryDtoFour.setStorehouseCode(
+			SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+		EventBusUtils.postSticky(mTCstInventoryDtoFour);
+	   }
+	}
+   }
+
 
    /**
     * 顶部的红色提示
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -363,6 +383,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
 		if (mTypeView.mCheckStates.get(i)) {
 		   mTCstInventoryDto.gettCstInventoryVos().remove(i);
+		   mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 		}
 	   }
 	   if (mTCstInventoryDto.gettCstInventoryVos().size() == 0) {
@@ -373,6 +394,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
 		if (mTypeView.mCheckStates.get(i)) {
 		   mTCstInventoryDtoFour.gettCstInventoryVos().remove(i);
+		   mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 		}
 	   }
 	   if (mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) {
@@ -380,6 +402,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		putAllInEPCDate(toJson);
 	   }
 	}
+	EventBusUtils.postSticky(new Event.EventDate(true));
+
    }
 
    @Override
@@ -460,7 +484,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
-
 	}
    }
 
@@ -525,7 +548,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 	}
-	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
+//	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
+	if (true) {//直接领取
 	   LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
@@ -585,7 +609,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    /**
     * 扫描后传值
     */
-
    private void putAllOutEPCDates(Map<String, String> epcs) {
 	String toJson = getEpcDtoString(epcs);
 	NetRequest.getInstance().putAllOutEPCDate(toJson, this, null, new BaseResult() {
@@ -634,7 +657,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		if (mVoOutList != null && mVoOutList.size() == 0 &&mTCstInventoryDtoFour.gettCstInventoryVos().size()==0&&
 		    cstInventoryDto.gettCstInventoryVos() != null &&
 		    cstInventoryDto.gettCstInventoryVos().size() != 0) {
-		   mContext.startActivity(new Intent(mContext, InOutBoxTwoActivity.class));
+		   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
 		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   EventBusUtils.postSticky(cstInventoryDto);
 		} else {
@@ -659,7 +682,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
    /**
     * 快速开柜epc放入DTO
-    *
     * @param epcs
     * @return
     */

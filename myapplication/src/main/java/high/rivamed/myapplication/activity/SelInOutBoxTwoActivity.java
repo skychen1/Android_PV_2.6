@@ -27,7 +27,6 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
-import high.rivamed.myapplication.bean.InBoxDtoBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -70,18 +69,13 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
  * 更新描述：   ${TODO}
  */
 
-public class InOutBoxTwoActivity extends BaseTimelyActivity {
+public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 
-   private static final String TAG = "InOutBoxTwoActivity";
+   private static final String TAG = "SelInOutBoxTwoActivity";
    int mType;
-   private InBoxDtoBean          mInBoxDtoBean;
-   private boolean               mSuccess;
    private TCstInventoryDto      mTCstInventoryTwoDto;
-   private LoadingDialog.Builder mShowLoading;
-   private String                uhfDeviceId;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
    private int          mIntentType;
-   private List<String> mEthDeviceId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
    private LoadingDialog.Builder mLoading;
@@ -123,7 +117,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 //   public void initDataAndEvent(Bundle savedInstanceState) {
 //	super.initDataAndEvent(savedInstanceState);
 //	mStarts.start();
-//	Log.e("aaa", "InOutBoxTwoActivity");
+//	Log.e("aaa", "SelInOutBoxTwoActivity");
 //   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -225,11 +219,11 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onItemClick(int position) {
 			switch (position) {
 			   case 0:
-				startActivity(new Intent(InOutBoxTwoActivity.this, MyInfoActivity.class));
+				startActivity(new Intent(SelInOutBoxTwoActivity.this, MyInfoActivity.class));
 				break;
 			   case 1:
 				startActivity(
-					new Intent(InOutBoxTwoActivity.this, LoginInfoActivity.class));
+					new Intent(SelInOutBoxTwoActivity.this, LoginInfoActivity.class));
 				break;
 
 			}
@@ -454,18 +448,16 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
-	NetRequest.getInstance().putOperateYes(s, this, mShowLoading, new BaseResult() {
+	NetRequest.getInstance().putOperateYes(s, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
 		ToastUtils.showShort("操作成功");
 		if (mIntentType == 2) {
-		   startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
+		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
-		if (mShowLoading != null) {
-		   mShowLoading.mDialog.dismiss();
-		}
+
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		finish();
 	   }
@@ -505,7 +497,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	String toJson = mGson.toJson(tCstInventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
-	NetRequest.getInstance().putEPCDate(toJson, this, mShowLoading, new BaseResult() {
+	NetRequest.getInstance().putEPCDate(toJson, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
@@ -556,10 +548,6 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
 		 mEthDeviceIdBack.size() == 1) {
 
-		if (mShowLoading != null) {
-		   mShowLoading.mDialog.dismiss();
-		}
-
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
@@ -575,12 +563,7 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 			finish();
 		   }
 		}, 3000);
-
 	   }
-	}
-	if (mShowLoading != null) {
-	   mShowLoading.mDialog.dismiss();
-
 	}
    }
 
@@ -611,16 +594,13 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putOperateYes(mTCstInventoryDtoJsons, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
 			ToastUtils.showShort("操作成功");
 			if (event.mIntentType == 2) {
-			   startActivity(new Intent(InOutBoxTwoActivity.this, LoginActivity.class));
-			}
-			if (mShowLoading != null) {
-			   mShowLoading.mDialog.dismiss();
+			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 			}
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
@@ -693,14 +673,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putOperateYes(mTCstInventoryDtoJsons, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result退货   " + result);
 			ToastUtils.showShort("操作成功");
-			if (mShowLoading != null) {
-			   mShowLoading.mDialog.dismiss();
-			}
+
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
@@ -740,14 +718,12 @@ public class InOutBoxTwoActivity extends BaseTimelyActivity {
 
 	LogUtils.i(TAG, "调拨   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putOperateYes(mTCstInventoryDtoJsons, this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result调拨   " + result);
 			ToastUtils.showShort("操作成功");
-			if (mShowLoading != null) {
-			   mShowLoading.mDialog.dismiss();
-			}
+
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }

@@ -31,7 +31,6 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -43,6 +42,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
+import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_ALL_IN;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_FORM_CONFIRM;
@@ -161,7 +161,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.activity_down_patient_conn)
    LinearLayout   mActivityDownPatientConn;
    @BindView(R.id.all_out_text)
-   public TextView       mAllOutText;
+   public  TextView      mAllOutText;
    private int           mLayout;
    private View          mHeadView;
    public  String        mData;
@@ -182,20 +182,22 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private int              mOperation;
    private int              mDtoOperation;
    public  CountDownTimer   mStarts;
-   public boolean mOnBtnGone =false;
+   public boolean mOnBtnGone = false;
 
    /**
     * 隐藏按钮
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onBtnGoneEvent(Event.EventButGone event) {
 	mOnBtnGone = event.b;
-	if (mOnBtnGone){
+	if (mOnBtnGone) {
 	   mTimelyStartBtnRight.setVisibility(View.GONE);
 	   mTimelyOpenDoorRight.setVisibility(View.GONE);
 	}
    }
+
    /**
     * 看关门后是否需要设置按钮为可以点击
     *
@@ -288,14 +290,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   if (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "InOutBoxTwoActivity   cancel");
+			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
 			if (mStarts != null) {
 			   mStarts.cancel();
 			   mTimelyRight.setText("确认并退出登录");
 			}
 			return;
 		   } else {
-			LogUtils.i(TAG, "InOutBoxTwoActivity   start");
+			LogUtils.i(TAG, "SelInOutBoxTwoActivity   start");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
 			if (mStarts != null) {
@@ -412,19 +414,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
 	   mTCstInventoryDto = event;
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
-	   List<TCstInventory> tCstInventories = event.gettCstInventorys();
 	   mTCstInventoryVos.clear();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
 	   if (my_id == ACT_TYPE_HCCZ_OUT) {
-		LogUtils.i(TAG, "event  " + "ACT_TYPE_HCCZ_OUT");
 		setOutBoxTitles();
 		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	   } else if (my_id == ACT_TYPE_HCCZ_IN) {
-		if (mActivityType.equals("all")) {
-		   setInBoxTitles();
-		} else {
-		   setInBoxDate();
-		}
+		mTimelyOpenDoor.setVisibility(View.VISIBLE);
+		setInBoxDate();
+		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+	   } else if (my_id == ACT_TYPE_ALL_IN) {
+		mTimelyOpenDoor.setVisibility(View.GONE);
+		setInBoxTitles();
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   } else if (my_id == ACT_TYPE_HCCZ_BING) {
 		setAfterBing();
@@ -500,7 +501,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   setOutBoxDate();
-
+	} else if (my_id == ACT_TYPE_ALL_IN) {//快速开柜入柜
+	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 	   setAfterBing();
 
@@ -585,9 +587,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.GONE);
 	mLyBingBtn.setVisibility(View.GONE);
 	mTimelyNumber.setVisibility(View.GONE);
-	if (mOnBtnGone){
+	if (mOnBtnGone) {
 	   mBaseTabBack.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mBaseTabBack.setVisibility(View.GONE);
 	}
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
@@ -717,31 +719,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		strings.add(vosBean.getCstCode());
 	   }
 	}
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	//
-	//        mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-	//                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-	//                mTCstInventoryVos.size() + "</big></font>"));
-	List<String> titeleList = new ArrayList<String>();
-	titeleList.add(0, "选择");
-	titeleList.add(1, "患者姓名");
-	titeleList.add(2, "患者ID");
-	titeleList.add(3, "手术时间");
-	titeleList.add(4, "医生");
-	titeleList.add(5, "手术间");
-	titeleList.add(6, "是否为临时患者");
 
-	//	   String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
-	//	   titeleList = Arrays.asList(array);
+	String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	titeleList = Arrays.asList(array);
 	mSize = titeleList.size();
 
 	mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-
-	//        List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
-	//        mTypeView = new TableTypeView(mContext, this, patientInfos, titeleList, mSize,
-	//                mLinearLayout, mRecyclerview,
-	//                mRefreshLayout, ACTIVITY, STYPE_DIALOG);
 
    }
 
@@ -761,7 +745,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,mLinearLayout,
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
    }
 
@@ -802,7 +786,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mTimelyOpenDoor.setVisibility(View.VISIBLE);
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
@@ -816,12 +799,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 
-	if (mActivityType != null && mActivityType.equals("all")) {
+	if (my_id == ACT_TYPE_ALL_IN) {
+	   mTimelyOpenDoor.setVisibility(View.GONE);
 	   setInBoxTitles();
 	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_IN);
 	} else {
+	   mTimelyOpenDoor.setVisibility(View.VISIBLE);
 	   ArrayList<String> strings = new ArrayList<>();
 	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
 		strings.add(vosBean.getCstCode());
@@ -838,37 +823,31 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 							STYPE_IN, operation);
 	   }
+	   setTimeStart();
+	}
+   }
 
-	   for (TCstInventoryVo b : mTCstInventoryVos) {
-		String status = b.getStatus();
-		//		if ((operation == 3 && status.contains("领用") && b.getStopFlag() != 0) ||
-		//		    (operation == 2 && status.contains("入库") && b.getStopFlag() != 0) ||
-		//		    (operation == 9 && status.contains("移出") && b.getStopFlag() != 0) ||
-		//		    (operation == 11 && status.contains("调拨") && b.getStopFlag() != 0) ||
-		//		    (operation == 10 &&
-		//		     (status.contains("移入") && !status.equals("禁止移入") && b.getStopFlag() != 0)) ||
-		//		    (operation == 7 && status.contains("退回") && b.getStopFlag() != 0) ||
-		//		    (operation == 8 && status.contains("退货"))) {
-		if (b.getIsErrorOperation() == 0 ||
-		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0)) {
-		   LogUtils.i(TAG, "我走了truestatus   " + status + "    operation  " + operation);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mStarts.start();
-		   }
-		} else {
-		   LogUtils.i(TAG, "我走了false");
-		   LogUtils.i(TAG, "InOutBoxTwoActivity.mStart   " + (mStarts == null));
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mTimelyRight.setText("确认并退出登录");
-		   }
-		   return;
+   private void setTimeStart() {
+	for (TCstInventoryVo b : mTCstInventoryVos) {
+	   String status = b.getStatus();
+
+	   if (b.getIsErrorOperation() == 0 ||
+		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0)) {
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mStarts.start();
 		}
+	   } else {
+		LogUtils.i(TAG, "我走了false");
+		LogUtils.i(TAG, "SelInOutBoxTwoActivity.mStart   " + (mStarts == null));
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
+		}
+		return;
 	   }
-
 	}
    }
 
@@ -889,16 +868,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		"</big>&emsp</font>耗材种类：<font color='#262626'><big>" + list.size() +
 		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
 		"</big></font>"));
-
-//	for (TCstInventoryVo b : mTCstInventoryVos) {
-//	   String status = b.getStatus();
-//	   if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回")) {
-//		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
-//		mTimelyLeft.setEnabled(false);
-//		mTimelyRight.setEnabled(false);
-//		return;
-//	   }
-//	}
+	setTimeStart();
    }
 
    /**

@@ -361,6 +361,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.base_tab_btn_msg:
 		break;
 	   case R.id.base_tab_back:
+	      EventBusUtils.postSticky(new Event.EventDate(true));
 		finish();
 		break;
 	   case R.id.timely_start_btn_right://重新扫描
@@ -477,6 +478,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		ToastUtils.showShort("操作成功");
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		if (mOnBtnGone){
+		   EventBusUtils.postSticky(new Event.EventDate(true));
 		   finish();
 		}else {
 		   if (mIntentType == 2) {

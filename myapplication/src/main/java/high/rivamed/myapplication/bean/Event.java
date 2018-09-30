@@ -23,6 +23,16 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
    /**
+    * 快速开柜数据的替换
+    */
+   public static class EventDate {
+	public boolean b;
+
+	public EventDate(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
     * 隐藏绑定患者的界面按钮
     */
    public static class EventButGone {

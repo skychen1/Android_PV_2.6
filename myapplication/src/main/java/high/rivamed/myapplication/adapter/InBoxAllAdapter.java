@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -81,12 +80,10 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	ImageView mdeleteIv = (ImageView) helper.getView(R.id.iv_delete);
 
 	if (item.getDeleteCount()>0){
-	   LogUtils.i("InBox","解除移除");
 	   mdeleteTv.setText("取消移除");
 	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
 	   mdeleteIv.setVisibility(View.GONE);
 	}else {
-	   LogUtils.i("InBox","移除");
 	   mdeleteTv.setText("移除");
 	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_delete));
 	   mdeleteIv.setVisibility(View.VISIBLE);
@@ -119,15 +116,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 		notifyDataSetChanged();
 	   }
 	});
-	Log.i("InOutBoxTwoActivity", "status   " + status);
-//	if (status.equals("禁止入库") || status.equals("禁止移入") || status.equals("禁止退回") || (mOperation == 3 && !status.contains("领用")) ||
-//	    (mOperation == 2 && !status.contains("入库")) ||
-//	    (mOperation == 9 && !status.contains("移出")) ||
-//	    (mOperation == 11 && !status.contains("调拨")) ||
-//	    (mOperation == 10 && !status.contains("移入")) ||
-//	    (mOperation == 7 && !status.contains("退回")) ||
-//	    (mOperation == 8 && !status.contains("退货"))) {
-//	   LogUtils.i("InOutBoxTwoActivity", "mOperation   " + mOperation + "   status   " + status);
+
 	if (item.getIsErrorOperation()==1&&item.getDeleteCount()==0){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -162,6 +151,11 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mLl.setBackgroundResource(R.color.bg_color);
+	}else if (item.getStopFlag()==0){
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	}
 
 

@@ -70,11 +70,15 @@
             android:name=".activity.StockMidTypeActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.InOutBoxTwoActivity"
+            android:name=".activity.SelInOutBoxTwoActivity"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.OutBoxFoutActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.InBoxAllTwoActivity"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
