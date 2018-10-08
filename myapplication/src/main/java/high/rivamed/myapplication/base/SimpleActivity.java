@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -18,13 +19,11 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.MyTimer;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
-
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -48,12 +47,14 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    public    List<String> mReaderDeviceId;
    public    List<String> eth002DeviceIdList;
 	private Unbinder     unbinder;
-	
-	
+
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	   getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
+	   Intent intent = new Intent(this, TimerService.class);
+	   startService(intent);
 	   mContext = this;
 		mGson = new Gson();
 	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();

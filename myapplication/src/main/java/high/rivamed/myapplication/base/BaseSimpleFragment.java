@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -20,6 +23,8 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -71,10 +76,29 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
    public RelativeLayout mBaseTabLl;
    @BindView(R.id.base_tab_rlayout)
    public RelativeLayout mBaseTabRlayout;
-
+   public ImageView      mBaseTabBtnConn;
    private ViewStub           mStub;
    public  SettingPopupWindow mPopupWindow;
-
+   private boolean mTitleConn;
+   /**
+    * 设备title连接状态
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onTitleConnEvent(Event.EventTitleConn event) {
+	mTitleConn = event.b;
+	if (mTitleConn){
+	   Glide.with(this)
+		   .load(R.mipmap.connect_yes)
+		   .error(R.mipmap.connect_no)
+		   .into(mBaseTabBtnConn);
+	}else {
+	   Glide.with(this)
+		   .load(R.mipmap.connect_no)
+		   .error(R.mipmap.connect_no)
+		   .into(mBaseTabBtnConn);
+	}
+   }
    @Override
    public void getTitleName() {
 	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
@@ -90,12 +114,14 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 		   .error(R.mipmap.hccz_mrtx_nv)
 		   .into(mBaseTabIconRight);
 	}
+
 	super.getTitleName();
 
    }
 
    @Override
    public int getLayoutId() {
+	EventBusUtils.register(this);
 	return R.layout.fragment_base_title;
    }
 
@@ -108,8 +134,10 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
    @Override
    public void onBindViewBefore(View root) {
 	mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
+	mBaseTabBtnConn = (ImageView) root.findViewById(R.id.base_tab_conn);
 	mStub.setLayoutResource(getContentLayoutId());
 	mStub.inflate();
+
 	//        String accountData = SPUtils.getString(getActivity(), KEY_ACCOUNT_DATA);
 	//
 	//        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);

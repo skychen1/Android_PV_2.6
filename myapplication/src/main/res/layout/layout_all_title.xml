@@ -157,7 +157,16 @@
 					android:src="@mipmap/hccz_dhl_ic_xx"
 					android:visibility="gone"
 					/>
-
+				<ImageView
+					android:id="@+id/base_tab_conn"
+					android:layout_width="@dimen/x80"
+					android:layout_height="match_parent"
+					android:layout_centerVertical="true"
+					android:layout_marginRight="@dimen/x15"
+					android:paddingLeft="@dimen/x15"
+					android:paddingRight="@dimen/x15"
+					android:layout_toLeftOf="@+id/base_tab_btn_msg"
+					/>
 			</RelativeLayout>
 
 		</RelativeLayout>

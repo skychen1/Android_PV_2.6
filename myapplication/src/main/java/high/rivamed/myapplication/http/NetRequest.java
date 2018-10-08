@@ -91,6 +91,13 @@ public class NetRequest {
               .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
     /**
+     * 连接状态检测
+     */
+    public void connectTitle( Object tag, NetResult netResult) {
+        OkGo.<String>get(NetApi.URL_CONNECT_TITLE).tag(tag)
+              .execute(new NetRequest.MyCallBack2(tag, netResult, false));
+    }
+    /**
      * 用户登录
      */
     public void userLogin(String account, Object tag, NetResult netResult) {
@@ -548,6 +555,56 @@ public class NetRequest {
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
+        }
+    }
+    private class MyCallBack2 extends StringCallback {
+
+
+        private Object tag;
+        private NetResult netResult;
+        private LoadingDialog.Builder dialog;
+        private boolean isGet;//是否是get请求
+
+        public MyCallBack2(Object tag, LoadingDialog.Builder dialog, NetResult netResult,
+                          boolean isGet) {
+            super();
+
+            this.tag = tag;
+            this.netResult = netResult;
+            this.isGet = isGet;
+            this.dialog = dialog;
+        }
+
+        public MyCallBack2(Object tag, NetResult netResult,
+                          boolean isGet) {
+            super();
+
+            this.tag = tag;
+            this.netResult = netResult;
+            this.isGet = isGet;
+        }
+
+        @Override
+        public void onError(Response<String> response) {
+            if (netResult != null) {
+                LogUtils.i(TAG, "网络接口联网失败");
+                netResult.onError(response.code() + "");
+            }
+
+            if (dialog != null) {
+                dialog.mDialog.dismiss();
+            }
+        }
+
+        @Override
+        public void onSuccess(Response<String> response) {
+            if (netResult != null) {
+                netResult.onSucceed(response.body());
+            }
+            if (dialog != null) {
+                dialog.mDialog.dismiss();
+            }
+
         }
     }
 }

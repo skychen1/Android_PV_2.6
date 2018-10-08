@@ -134,6 +134,8 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+        <service android:name=".service.TimerService" >   </service>
+        <receiver android:name=".service.AlarmReceiver" >   </receiver>
     </application>
 
 </manifest>

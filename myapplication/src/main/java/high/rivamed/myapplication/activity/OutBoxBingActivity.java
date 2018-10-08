@@ -110,16 +110,18 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    /**
     * 倒计时结束发起
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOverEvent(Event.EventOverPut event) {
-	if (event.b){
-	   LogUtils.i(TAG,"EventOverPut");
+	if (event.b) {
+	   LogUtils.i(TAG, "EventOverPut");
 	   mIntentType = 2;//2确认并退出
 	   loadBingFistDate(mIntentType);
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -132,7 +134,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
-	}else {
+	} else {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
@@ -150,7 +152,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
-	if (!mOnBtnGone){
+	if (!mOnBtnGone) {
 	   mStarts.cancel();
 	   mStarts.start();
 	   if (mLoading != null) {
@@ -228,7 +230,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	Log.e(TAG, "intent:" + mPatient);
 	Log.e(TAG, "intent:" + mPatientId);
 	Log.e(TAG, "intent:" + mOperationScheduleId);
-//	mStarts.start();
+	//	mStarts.start();
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -273,13 +275,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			mTimelyRight.setEnabled(false);
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
-
 			return;
 		   }
-		   String status = b.getStatus();
-//		   if (status.equals("禁止操作") || status.equals("禁止入库") || status.equals("禁止移入") ||
-//			 status.equals("禁止退回") || (!status.contains("领用") && !status.equals("移除"))) {
-		   if (b.getIsErrorOperation()==1&&b.getDeleteCount()==0){
+
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+			 b.getStopFlag() == 0) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			mStarts.cancel();
@@ -295,7 +295,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		}
 	   }
 	}
-	if (mOnBtnGone){
+	if (mOnBtnGone) {
 	   mTCstInventoryDto.settCstInventoryVos(mTCstInventoryVos);
 	}
    }
@@ -361,7 +361,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.base_tab_btn_msg:
 		break;
 	   case R.id.base_tab_back:
-	      EventBusUtils.postSticky(new Event.EventDate(true));
+		EventBusUtils.postSticky(new Event.EventDate(true));
 		finish();
 		break;
 	   case R.id.timely_start_btn_right://重新扫描
@@ -452,7 +452,13 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 			   new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
 				   "position", position).putExtra("type", "afterBindTemp"));
 		} else {
-		   ToastUtils.showShort("没有患者数据");
+		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+			startActivity(
+				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
+					"position", position).putExtra("type", "afterBindTemp"));
+		   } else {
+			ToastUtils.showShort("没有患者数据");
+		   }
 		}
 
 	   }
@@ -469,27 +475,37 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	mTCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
 	mTCstInventoryDto.setPatientName(mPatient);
 	mTCstInventoryDto.setPatientId(mPatientId);
+	mTCstInventoryDto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	String toJson = mGson.toJson(mTCstInventoryDto);
 	LogUtils.i(TAG, "toJson  " + toJson);
-	NetRequest.getInstance().putOperateYes(toJson, this, mShowLoading, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result   " + result);
-		ToastUtils.showShort("操作成功");
-		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		if (mOnBtnGone){
+
+	if (mOnBtnGone) {
+	   NetRequest.getInstance().putAllOperateYes(toJson, this, mShowLoading, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   LogUtils.i(TAG, "result   " + result);
+		   ToastUtils.showShort("操作成功");
+		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   EventBusUtils.postSticky(new Event.EventDate(true));
 		   finish();
-		}else {
+		}
+	   });
+	} else {
+	   NetRequest.getInstance().putOperateYes(toJson, this, mShowLoading, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   LogUtils.i(TAG, "result   " + result);
+		   ToastUtils.showShort("操作成功");
+		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+
 		   if (mIntentType == 2) {
 			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 			App.getInstance().removeALLActivity_();
 		   }
 		   finish();
 		}
-
-	   }
-	});
+	   });
+	}
    }
 
    /**
@@ -594,7 +610,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
    @Override
    protected void onDestroy() {
-	mOnBtnGone=false;
+	mOnBtnGone = false;
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);
 	super.onDestroy();
@@ -608,28 +624,28 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-//	   if (READER_TAG.equals(READER_2)) {
-//		new Thread() {
-//		   public void run() {
-//			for (BoxIdBean deviceid : deviceBean) {
-//			   String device_id = deviceid.getDevice_id();
-//			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
-//			   LogUtils.i(TAG, "开始扫描了状态  罗丹贝尔  " + i + "    " + device_id);
-//			   try {
-//				Thread.sleep(3000);
-//			   } catch (InterruptedException e) {
-//				e.printStackTrace();
-//			   }
-//			}
-//		   }
-//		}.start();
-//	   } else {
-		for (BoxIdBean deviceid : deviceBean) {
-		   String device_id = deviceid.getDevice_id();
-		   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
-		   LogUtils.i(TAG, "开始扫描了状态    " + i);
-		}
-//	   }
+	   //	   if (READER_TAG.equals(READER_2)) {
+	   //		new Thread() {
+	   //		   public void run() {
+	   //			for (BoxIdBean deviceid : deviceBean) {
+	   //			   String device_id = deviceid.getDevice_id();
+	   //			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+	   //			   LogUtils.i(TAG, "开始扫描了状态  罗丹贝尔  " + i + "    " + device_id);
+	   //			   try {
+	   //				Thread.sleep(3000);
+	   //			   } catch (InterruptedException e) {
+	   //				e.printStackTrace();
+	   //			   }
+	   //			}
+	   //		   }
+	   //		}.start();
+	   //	   } else {
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		LogUtils.i(TAG, "开始扫描了状态    " + i);
+	   }
+	   //	   }
 	}
    }
 
@@ -740,14 +756,15 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   LogUtils.i(TAG, "mEthDeviceIdBack.size()    " + mEthDeviceIdBack.size());
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
 		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1)&& mEthDeviceIdBack.size()==1) {
+		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
+		 mEthDeviceIdBack.size() == 1) {
 
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		}
-//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
+		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
 		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
@@ -775,6 +792,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	return super.onKeyDown(keyCode, event);
 
    }
+
    /**
     * 分发触摸事件给所有注册了MyTouchListener的接口
     */

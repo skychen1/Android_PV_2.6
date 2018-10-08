@@ -38,6 +38,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -300,7 +301,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
-	mDtoLy.setOperation(11);
+	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	if (mTCstInventoryDtoFour == null) {
@@ -449,11 +450,11 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		mIntentType = 1;
 		setYcDate(mIntentType);
 		break;
-	   case R.id.btn_four_tb://调拨
-		//确认
-		mIntentType = 1;
-		setDbDate(mIntentType);
-		break;
+//	   case R.id.btn_four_tb://调拨
+//		//确认
+//		mIntentType = 1;
+//		setDbDate(mIntentType);
+//		break;
 	   case R.id.btn_four_th://退货
 		//确认
 		mIntentType = 1;
@@ -556,9 +557,10 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 	}
-//	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
-	if (true) {//直接领取
-	   LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
+	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
+	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
+//	if (true) {//直接领取
+
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
@@ -584,9 +586,10 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   } else {
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson, TCstInventoryDto.class);
 		tCstInventoryDto.setBindType("afterBind");
+		EventBusUtils.postSticky(new Event.EventButGone(true));
+
 		startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
 		EventBusUtils.postSticky(tCstInventoryDto);
-		EventBusUtils.postSticky(new Event.EventButGone(true));
 
 	   }
 	}
@@ -669,6 +672,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
 		   EventBusUtils.postSticky(new Event.EventAct("all"));
 		   EventBusUtils.postSticky(cstInventoryDto);
+		   finish();
 		} else {
 		   if (cstInventoryDto.gettCstInventoryVos().size() > 0) {
 		      LogUtils.i(TAG,"请重新操作");

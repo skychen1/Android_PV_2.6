@@ -321,7 +321,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
-	NetRequest.getInstance().putOperateYes(s, this, null, new BaseResult() {
+	NetRequest.getInstance().putAllOperateYes(s, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
@@ -333,6 +333,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		finish();
+
 	   }
 	});
    }

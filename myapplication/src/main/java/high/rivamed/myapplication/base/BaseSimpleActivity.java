@@ -11,6 +11,11 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,6 +25,9 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -69,9 +77,32 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    public List<String>       eth002DeviceIdList;
    public ViewStub           mStub;
    public SettingPopupWindow mPopupWindow;
+   public ImageView      mBaseTabBtnConn;
+   private boolean mTitleConn;
 
+   /**
+    * 设备title连接状态
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onTitleConnEvent(Event.EventTitleConn event) {
+	mTitleConn = event.b;
+	LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
+	if (mTitleConn){
+	   Glide.with(this)
+		   .load(R.mipmap.connect_yes)
+		   .error(R.mipmap.connect_no)
+		   .into(mBaseTabBtnConn);
+	}else {
+	   Glide.with(this)
+		   .load(R.mipmap.connect_no)
+		   .error(R.mipmap.connect_no)
+		   .into(mBaseTabBtnConn);
+	}
+   }
    @Override
    public int getLayoutId() {
+	EventBusUtils.register(this);
 	return R.layout.fragment_base_title;
    }
 
@@ -82,7 +113,9 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
    @Override
    public void onBindViewBefore() {
+
 	mStub = (ViewStub) findViewById(R.id.viewstub_layout);
+	mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
 	mStub.setLayoutResource(getContentLayoutId());
 	mStub.inflate();
 

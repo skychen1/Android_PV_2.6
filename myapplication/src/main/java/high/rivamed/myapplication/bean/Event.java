@@ -23,6 +23,16 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
    /**
+    * 页面顶部的连接状态改变
+    */
+   public static class EventTitleConn {
+	public boolean b;
+
+	public EventTitleConn(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
     * 快速开柜数据的替换
     */
    public static class EventDate {

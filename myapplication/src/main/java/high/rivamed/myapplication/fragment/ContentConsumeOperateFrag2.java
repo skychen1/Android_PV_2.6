@@ -764,11 +764,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-//	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
+	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
-//	} else {
-//	   mConsumeOpenallTop.setVisibility(View.GONE);
-//	}
+	} else {
+	   mConsumeOpenallTop.setVisibility(View.GONE);
+	}
 
 	//是否启用功能开柜
 	if (UIUtils.getConfigType(mContext, CONFIG_016)) {

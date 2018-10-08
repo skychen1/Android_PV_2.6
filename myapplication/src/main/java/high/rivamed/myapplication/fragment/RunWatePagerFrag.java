@@ -156,7 +156,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
       LogUtils.i(TAG,"START2   "+event.type);
-	if (event.type.equals("START2")) {
+	if (event.type.equals("START2")&&mSearchTimeStart!=null) {
 	   mSearchTimeStart.setText("");
 	   mSearchTimeEnd.setText("");
 	   initDate();
