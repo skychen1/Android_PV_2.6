@@ -315,7 +315,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 	TCstInventoryDto dto = new TCstInventoryDto();
 	dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	dto.settCstInventoryVos(mTCstInventoryVos);
-	dto.setOperation(mTCstInventoryDto.getOperation());
+//	dto.setOperation(mTCstInventoryDto.getOperation());
 	dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 

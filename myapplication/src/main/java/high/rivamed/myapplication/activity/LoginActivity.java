@@ -67,6 +67,7 @@ import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -78,11 +79,13 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
@@ -109,25 +112,25 @@ public class LoginActivity extends SimpleActivity {
 
    private static final String TAG = "LoginActivity";
    @BindView(R.id.login_logo)
-   ImageView   mLoginLogo;
+   ImageView       mLoginLogo;
    @BindView(R.id.login_password)
-   RadioButton mLoginPassword;
+   RadioButton     mLoginPassword;
    @BindView(R.id.login_pass)
-   RadioButton mLoginPass;
+   RadioButton     mLoginPass;
    @BindView(R.id.login_radiogroup)
-   RadioGroup  mLoginRadiogroup;
+   RadioGroup      mLoginRadiogroup;
    @BindView(R.id.login_viewpager)
-   ViewPager   mLoginViewpager;
+   CustomViewPager mLoginViewpager;
    @BindView(R.id.chart1)
-   BarChart    mChart;
+   BarChart        mChart;
    @BindView(R.id.down_text)
-   TextView    mDownText;
+   TextView        mDownText;
    @BindView(R.id.left_guo_text)
-   TextView    mTextGuo;
+   TextView        mTextGuo;
    @BindView(R.id.left_jin_text)
-   TextView    mTextJin;
-//   @BindView(R.id.login_gone)
-  public static View mLoginGone;
+   TextView        mTextJin;
+   //   @BindView(R.id.login_gone)
+   public static View mLoginGone;
 
    private ArrayList<Fragment> mFragments = new ArrayList<>();
 
@@ -136,8 +139,8 @@ public class LoginActivity extends SimpleActivity {
    long[] mHits = new long[COUNTS];
    private SQLiteDatabase        mDb;
    private LoadingDialog.Builder mBuilder;
-   private int mConfigType;
-   private String mDesc;
+   private int                   mConfigType;
+   private String                mDesc;
 
    @Override
    public int getLayoutId() {
@@ -147,7 +150,7 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-      if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP)!=null){
+	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
 	mLoginGone = findViewById(R.id.login_gone);
@@ -174,10 +177,8 @@ public class LoginActivity extends SimpleActivity {
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
 	}
-
 	mFragments.add(new LoginPassWordFragment());//用户名登录
-	//	mFragments.add(new LoginPassFragment());//紧急登录
-	mLoginPass.setVisibility(View.GONE);
+	mFragments.add(new LoginPassFragment());//紧急登录
 
 	initData();
 	initlistener();
@@ -196,26 +197,26 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,"");
-	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,"");
-
+	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
+	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
 
 	mConfigType = 0;//默认获取
-	getConfigDate(mConfigType,null);
+	getConfigDate(mConfigType, null);
    }
 
    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-	for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
-	   if (s.getCode().equals(CONFIG_013)){
+	for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
+	   if (s.getCode().equals(CONFIG_013)) {
 		return true;
 	   }
 	}
 	return false;
    }
+
    /**
     * 获取配置项
     */
-   public void getConfigDate(int configType,String loginType) {
+   public void getConfigDate(int configType, String loginType) {
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
 		@Override
@@ -224,7 +225,16 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-		   getUpDateVer(tCstConfigVos, configType, loginType);
+		   if (tCstConfigVos.size() != 0) {
+			getUpDateVer(tCstConfigVos, configType, loginType);
+		   }
+		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+			mLoginPass.setVisibility(View.VISIBLE);
+			mLoginViewpager.setScanScroll(true);
+		   } else {
+			mLoginPass.setVisibility(View.GONE);
+			mLoginViewpager.setScanScroll(false);
+		   }
 		}
 	   });
 	}
@@ -232,29 +242,30 @@ public class LoginActivity extends SimpleActivity {
 
    /**
     * 是否禁止使用
+    *
     * @param tCstConfigVos
     * @param configType
     * @param loginType
     */
    private void loginEnjoin(
 	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
-	if(getConfigTrue(tCstConfigVos)){//禁止
-	   if (configType==0) {//正常登录密码登录限制
+	if (getConfigTrue(tCstConfigVos)) {//禁止
+	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
-	   }else if (configType==1) {//IC卡登录限制
+	   } else if (configType == 1) {//IC卡登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
 		ToastUtils.showShort("正在维护，请到管理端启用");
-	   }else if (configType==2){
+	   } else if (configType == 2) {
 		//设备是否禁用
 		mLoginGone.setVisibility(View.VISIBLE);
 		ToastUtils.showShort("正在维护，请到管理端启用");
 	   }
-	}else {
-	   if (configType==0) {//正常登录密码登录限制
+	} else {
+	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.GONE);
-	   }else if (configType==1) {//IC卡登录限制
+	   } else if (configType == 1) {//IC卡登录限制
 		validateLoginIdCard(loginType);
-	   }else if (configType==2){
+	   } else if (configType == 2) {
 		validateLoginFinger(loginType);
 	   }
 	}
@@ -284,7 +295,7 @@ public class LoginActivity extends SimpleActivity {
 		   return;
 		} else {
 		   mConfigType = 1;//IC卡
-		   getConfigDate(mConfigType,idCard);
+		   getConfigDate(mConfigType, idCard);
 		}
 	   }
 
@@ -294,7 +305,7 @@ public class LoginActivity extends SimpleActivity {
 		   return;
 		} else {
 		   mConfigType = 2;//指纹登录
-		   getConfigDate(mConfigType,fingerFea.trim().replaceAll("\n", ""));
+		   getConfigDate(mConfigType, fingerFea.trim().replaceAll("\n", ""));
 		}
 	   }
 
@@ -359,11 +370,11 @@ public class LoginActivity extends SimpleActivity {
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
 	data.setThingCode(SPUtils.getString(mContext, THING_CODE));
-	LogUtils.i(TAG,"mGson.toJson(data)   "+mGson.toJson(data));
+	LogUtils.i(TAG, "mGson.toJson(data)   " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-	      LogUtils.i(TAG,"validateLoginIdCard  result   "+result);
+		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
 		try {
 		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 		   if (loginResultBean.isOperateSuccess()) {
@@ -372,8 +383,9 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
-//			SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getSex());
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
+			//			SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getSex());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
+						loginResultBean.getAppAccountInfoVo().getSex());
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
@@ -395,7 +407,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
 	data.setThingCode(thingCode);
-	LogUtils.i("Login","THING_CODE validateLoginFinger  "+mGson.toJson(data));
+	LogUtils.i("Login", "THING_CODE validateLoginFinger  " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -408,8 +420,9 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
-//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
+						loginResultBean.getAppAccountInfoVo().getSex());
+			//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
@@ -474,8 +487,8 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onClick(View v) {
 		ToastUtils.showShort("正在维护，请到管理端启用");
-		mConfigType =0;
-		getConfigDate(mConfigType,null);
+		mConfigType = 0;
+		getConfigDate(mConfigType, null);
 	   }
 	});
    }
@@ -505,14 +518,24 @@ public class LoginActivity extends SimpleActivity {
 	mLoginRadiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup radioGroup, int i) {
-		switch (radioGroup.getCheckedRadioButtonId()) {
-		   case R.id.login_password:
-			mLoginViewpager.setCurrentItem(0);
-			break;
-		   //		   case R.id.login_pass:
-		   //			mLoginViewpager.setCurrentItem(1);
-		   //			break;
+		if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_password:
+			   mLoginViewpager.setCurrentItem(0);
+			   break;
+			case R.id.login_pass:
+			   mLoginViewpager.setCurrentItem(1);
+			   break;
+		   }
+		} else {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_password:
+			   mLoginViewpager.setCurrentItem(0);
+			   break;
+
+		   }
 		}
+
 	   }
 	});
 
@@ -562,7 +585,8 @@ public class LoginActivity extends SimpleActivity {
    /**
     * 版本检测
     */
-   public void getUpDateVer(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType,String loginType) {
+   public void getUpDateVer(
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	NetRequest.getInstance().checkVer(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -593,21 +617,24 @@ public class LoginActivity extends SimpleActivity {
 	   }
 	});
    }
+
    /**
     * 展现更新的dialog
     */
-   private void showUpdateDialog(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+   private void showUpdateDialog(
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	UpDateDialog.Builder builder = new UpDateDialog.Builder(this);
 
 	builder.setTitle(UIUtils.getString(R.string.ver_title));
 	builder.setMsg(mDesc);
-	builder.setLeft(UIUtils.getString(R.string.ver_cancel), new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		loginEnjoin(tCstConfigVos, configType, loginType);
-		dialog.dismiss();
-	   }
-	});
+	builder.setLeft(UIUtils.getString(R.string.ver_cancel),
+			    new DialogInterface.OnClickListener() {
+				 @Override
+				 public void onClick(DialogInterface dialog, int i) {
+				    loginEnjoin(tCstConfigVos, configType, loginType);
+				    dialog.dismiss();
+				 }
+			    });
 	builder.setRight(UIUtils.getString(R.string.ver_ok), new DialogInterface.OnClickListener() {
 	   @Override
 	   public void onClick(DialogInterface dialog, int i) {
@@ -620,7 +647,8 @@ public class LoginActivity extends SimpleActivity {
 
    }
 
-   private void downloadNewVersion(List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+   private void downloadNewVersion(
+	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	// 1.显示进度的dialog
 	ProgressDialog mDialog = new ProgressDialog(this, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
 	mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -628,14 +656,17 @@ public class LoginActivity extends SimpleActivity {
 	mDialog.setMax(100);
 	mDialog.show();
 
-	loadUpDataVersion(mDialog,tCstConfigVos, configType, loginType);
+	loadUpDataVersion(mDialog, tCstConfigVos, configType, loginType);
 
    }
 
-   private void loadUpDataVersion(final ProgressDialog mDialog,List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+   private void loadUpDataVersion(
+	   final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
+	   int configType, String loginType) {
 
 	OkGo.<File>get(URL_UPDATE).tag(this)//
-		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
+		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
+						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
 		   public void onSuccess(Response<File> response) {
 			mDialog.dismiss();
@@ -678,6 +709,7 @@ public class LoginActivity extends SimpleActivity {
 	startActivity(intent);
 	android.os.Process.killProcess(android.os.Process.myPid());
    }
+
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
 	@Override
@@ -687,14 +719,24 @@ public class LoginActivity extends SimpleActivity {
 
 	@Override
 	public void onPageSelected(int position) {
-	   switch (position) {
-		case 0:
-		   mLoginRadiogroup.check(R.id.login_password);
-		   break;
-		//		case 1:
-		//		   mLoginRadiogroup.check(R.id.login_pass);
-		//		   break;
+	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+		switch (position) {
+		   case 0:
+			mLoginRadiogroup.check(R.id.login_password);
+			break;
+
+		   case 1:
+			mLoginRadiogroup.check(R.id.login_pass);
+			break;
+		}
+	   } else {
+		switch (position) {
+		   case 0:
+			mLoginRadiogroup.check(R.id.login_password);
+			break;
+		}
 	   }
+
 	}
 
 	@Override

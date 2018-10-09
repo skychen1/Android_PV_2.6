@@ -248,7 +248,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			return;
 		   }
 
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||b.getStopFlag()==0) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag()==0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "OutBoxBingActivity   cancel");
@@ -270,7 +270,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   } else {
 		for (TCstInventoryVo b : mTCstInventoryVos) {
 
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||b.getStopFlag()==0) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag()==0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
@@ -825,6 +825,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	   if ((b.getIsErrorOperation() == 0&&b.getStopFlag()!=0 )||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0 &&b.getStopFlag()!=0)) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
 		if (mStarts != null) {
 		   mStarts.cancel();
 		   mStarts.start();
