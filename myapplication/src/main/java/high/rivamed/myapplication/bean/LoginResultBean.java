@@ -72,8 +72,17 @@ public class LoginResultBean implements Serializable {
         private String userId;
         private int isFinger;
         private int isWaidai;
+        private int isEmergency;
         private String sex;
         private String headIcon;
+
+        public int getIsEmergency() {
+            return isEmergency;
+        }
+
+        public void setIsEmergency(int isEmergency) {
+            this.isEmergency = isEmergency;
+        }
 
         public String getHeadIcon() {
             return headIcon;

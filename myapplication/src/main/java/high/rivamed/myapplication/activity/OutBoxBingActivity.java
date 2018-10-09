@@ -107,7 +107,16 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                mOperatingRoomNoName;
    private String                mSex;
    private String                mDeptId;
+   /**
+    * 隐藏按钮
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onBtnGoneEvent(Event.EventButGone event) {
+	mOnBtnGone = event.b;
 
+   }
    /**
     * 倒计时结束发起
     *
@@ -208,6 +217,10 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    public void onResume() {
 	mPause = false;
+	if (mOnBtnGone) {
+	   mTimelyStartBtnRight.setVisibility(View.GONE);
+	   mTimelyOpenDoorRight.setVisibility(View.GONE);
+	}
 	super.onResume();
    }
 

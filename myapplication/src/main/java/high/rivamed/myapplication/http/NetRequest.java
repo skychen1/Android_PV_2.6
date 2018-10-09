@@ -15,6 +15,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -149,7 +150,15 @@ public class NetRequest {
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
-
+    /**
+     * 紧急登录密码修改
+     */
+    public void emergencySetting(String pwd, Object tag, NetResult netResult) {
+        OkGo.<String>get(NetApi.URL_USER_EMERGENCY_PWD).tag(tag)
+              .params("account.accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
+              .params("account.emergencyPwd", pwd)
+              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
     /**
      * IdCard登录
      */

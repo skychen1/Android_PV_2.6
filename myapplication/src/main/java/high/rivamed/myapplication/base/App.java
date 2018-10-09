@@ -55,7 +55,7 @@ public class App extends Application {
      */
     private static ACache mAppCache;
 
-    public static String MAIN_URL = null;
+//    public static String MAIN_URL = null;
 
     public static Handler getHandler() {
         return mHandler;
@@ -89,7 +89,6 @@ public class App extends Application {
         initOkGo();
 
         InitDeviceService();
-        MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
     }
 

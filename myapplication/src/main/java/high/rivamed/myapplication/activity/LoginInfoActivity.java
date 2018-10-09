@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -52,19 +53,25 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    private static final String TAG = "LoginInfoActivity";
    @BindView(R.id.setting_password)
-   TextView  mSettingPassword;
+   TextView     mSettingPassword;
    @BindView(R.id.setting_password_edit)
-   TextView  mSettingPasswordEdit;
+   TextView     mSettingPasswordEdit;
    @BindView(R.id.setting_revise_password)
-   ImageView mSettingRevisePassword;
+   ImageView    mSettingRevisePassword;
    @BindView(R.id.setting_fingerprint)
-   TextView  mSettingFingerprint;
+   TextView     mSettingFingerprint;
    @BindView(R.id.setting_fingerprint_edit)
-   TextView  mSettingFingerprintEdit;
+   TextView     mSettingFingerprintEdit;
    @BindView(R.id.setting_fingerprint_bind)
-   TextView  mSettingFingerprintBind;
+   TextView     mSettingFingerprintBind;
    @BindView(R.id.setting_ic_card)
-   TextView  mSettingIcCard;
+   TextView     mSettingIcCard;
+   @BindView(R.id.setting_pass_edit)
+   TextView     mSettingPassEdit;
+   @BindView(R.id.setting_pass_setting)
+   TextView     mSettingPassSetting;
+   @BindView(R.id.setting_pass_ll)
+   LinearLayout mSettingPassLL;
 //   @BindView(R.id.setting_ic_card_edit)
   public static TextView  mSettingIcCardEdit;
 //   @BindView(R.id.setting_ic_card_bind)
@@ -78,6 +85,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mSettingPassLL.setVisibility(View.GONE);//隐藏底部紧急登录修改密码
 	mSettingIcCardBind = findViewById(R.id.setting_ic_card_bind);
 	mSettingIcCardEdit = findViewById(R.id.setting_ic_card_edit);
 	mBaseTabBack.setVisibility(View.VISIBLE);
@@ -125,7 +133,15 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		mSettingFingerprintEdit.setText("已绑定");
 		mSettingFingerprintBind.setText("绑定");
 	   }
-
+	   if (mAppAccountInfoVo.getIsEmergency() == 0) {
+		//紧急登录未绑定
+		mSettingPassEdit.setText("未设置");
+		mSettingPassSetting.setText("设置");
+	   } else {
+		//已绑定
+		mSettingPassEdit.setText("已设置");
+		mSettingPassSetting.setText("设置");
+	   }
 	   if (mIsWaidai == 0) {
 		//指纹未绑定
 		mSettingIcCardEdit.setText("未绑定");
@@ -160,7 +176,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right,
 	   R.id.base_tab_tv_outlogin, R.id.base_tab_btn_msg, R.id.base_tab_back,
-	   R.id.setting_revise_password, R.id.setting_fingerprint_bind})
+	   R.id.setting_revise_password, R.id.setting_fingerprint_bind,R.id.setting_pass_setting})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -202,7 +218,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		});
 		builder.create().show();
 		break;
-	   case R.id.base_tab_btn_msg:
+	   case R.id.setting_pass_setting://紧急登录密码修改
+		DialogUtils.showEmergencyDialog(mContext);
 		break;
 	   case R.id.base_tab_back:
 		finish();

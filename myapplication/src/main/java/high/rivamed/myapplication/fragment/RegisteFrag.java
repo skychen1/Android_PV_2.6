@@ -40,7 +40,6 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -667,7 +666,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				   mFragRegisteSeveripEdit.getText().toString().trim());
 	   SPUtils.putString(UIUtils.getContext(), SAVE_SEVER_CODE,
 				   mFragRegistePortEdit.getText().toString().trim());
-	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+//	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
 
 	   NetRequest.getInstance()
@@ -679,8 +678,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				   ToastUtils.showShort("服务器已连接成功！");
 				   LogUtils.i(TAG,
 						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
-				   LogUtils.i(TAG,
-						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+
 				   mNameBean = mGson.fromJson(result, DeviceNameBean.class);
 				   mNameList = mNameBean.getTBaseDeviceDictVos();
 				   mBaseDevices = generateData();

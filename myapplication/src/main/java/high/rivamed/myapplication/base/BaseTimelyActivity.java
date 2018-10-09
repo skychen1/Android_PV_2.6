@@ -130,9 +130,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.timely_number_left)
    TextView       mTimelyNumberLeft;
    @BindView(R.id.timely_start_btn_right)
- public   TextView       mTimelyStartBtnRight;
+  public   TextView       mTimelyStartBtnRight;
    @BindView(R.id.timely_open_door_right)
-   public TextView       mTimelyOpenDoorRight;
+   public  TextView       mTimelyOpenDoorRight;
    @BindView(R.id.ly_bing_btn_right)
    TextView       mLyBingBtnRight;
    @BindView(R.id.timely_ll_gone_right)
@@ -184,20 +184,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private int              mDtoOperation;
    public  CountDownTimer   mStarts;
    public boolean mOnBtnGone = false;
-
-   /**
-    * 隐藏按钮
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onBtnGoneEvent(Event.EventButGone event) {
-	mOnBtnGone = event.b;
-	if (mOnBtnGone) {
-	   mTimelyStartBtnRight.setVisibility(View.GONE);
-	   mTimelyOpenDoorRight.setVisibility(View.GONE);
-	}
-   }
 
    /**
     * 看关门后是否需要设置按钮为可以点击

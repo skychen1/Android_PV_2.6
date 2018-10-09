@@ -390,7 +390,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
 		if (mTypeView.mCheckStates.get(i)) {
 		   mTCstInventoryDto.gettCstInventoryVos().remove(i);
-
+		   mTypeView.mCheckStates.delete(i);
 		}
 	   }
 	   if (mTCstInventoryDto.gettCstInventoryVos().size() == 0) {
@@ -402,6 +402,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		if (mTypeView.mCheckStates.get(i)) {
 		   Log.i(TAG,"在循环    "+i);
 		   mTCstInventoryDtoFour.gettCstInventoryVos().remove(i);
+		   mTypeView.mCheckStates.delete(i);
 		}
 	   }
 	   Log.i(TAG,"在循环size    "+mTCstInventoryDtoFour.gettCstInventoryVos().size());
@@ -471,6 +472,9 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mEPCDate.clear();
 	mEPCDatess.clear();
 	mTCstInventoryDto.gettCstInventoryVos().clear();
+	if (mTCstInventoryDtoFour!=null){
+	   mTCstInventoryDtoFour=null;
+	}
 	LogUtils.i(TAG, "mEthDeviceIdBack    " + mEthDeviceIdBack.size());
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;

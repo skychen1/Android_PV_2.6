@@ -1078,6 +1078,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading = null;
 	}
 	mDoorList.clear();
+	mEPCDate.clear();
+	mEPCDatess.clear();
 	EventBusUtils.unregister(this);
 	super.onPause();
    }

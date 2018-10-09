@@ -39,6 +39,7 @@ import high.rivamed.myapplication.timeutil.DateListener;
 import high.rivamed.myapplication.timeutil.TimeConfig;
 import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.BindIdCardDialog;
+import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
@@ -72,7 +73,25 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 public class DialogUtils {
 
     public static String sTimes;
-
+    /**
+     * 紧急登录密码修改
+     */
+    public static void showEmergencyDialog(Context context){
+        EmergencyTwoDialog.Builder builder = new EmergencyTwoDialog.Builder(context);
+        builder.setRight("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
     /**
      * 盘亏不提交弹出
      */

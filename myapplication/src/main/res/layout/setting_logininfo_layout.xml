@@ -130,7 +130,41 @@
                     android:textSize="@dimen/textsize_18" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/setting_pass_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x300"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/x50">
 
+                <TextView
+                    android:id="@+id/setting_pass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="紧急登录密码："
+                    android:textColor="@color/color_drak_green"
+                    android:textSize="@dimen/textsize_18" />
+
+                <TextView
+                    android:id="@+id/setting_pass_edit"
+                    android:layout_width="@dimen/x470"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="无"
+                    android:textColor="@color/text_color_6"
+                    android:textSize="@dimen/textsize_18" />
+
+                <TextView
+                    android:id="@+id/setting_pass_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/x24"
+                    android:paddingRight="@dimen/x24"
+                    android:text="设置"
+                    android:textColor="@color/color_green"
+                    android:textSize="@dimen/textsize_18" />
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

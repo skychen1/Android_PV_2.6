@@ -1,6 +1,9 @@
 package high.rivamed.myapplication.http;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -18,6 +21,7 @@ public interface NetApi {
     //正式
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
+    public static String  MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 
     //版本检测和下载
     String URL_GET_VER = MAIN_URL + "/rmApi/app/app/listPage";//获取版本信息
@@ -68,6 +72,7 @@ public interface NetApi {
     String URL_USER_VALIDATELOGINWRIST = MAIN_URL + "/rmApi/restLogin/validateLoginWrist";//腕带登录
     String URL_USER_REGISTERWAIDAI = MAIN_URL + "/rmApi/userManage/userFeature/registerWaidai";//腕带绑定
     String URL_USER_UNREGISTERWAIDAI = MAIN_URL + "/rmApi/userManage/userFeature/untieWaidai";//腕带解绑
+    String URL_USER_EMERGENCY_PWD = MAIN_URL + "/rmApi/userManage/account/bindEmergencyPwd";//紧急登录密码修改
 
     //   实时盘点
     String URL_TIMELY_ONE = MAIN_URL + "/rmApi/consumables/tCstInventory/findStocktaking";//库存盘点

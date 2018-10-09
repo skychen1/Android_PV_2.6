@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+					android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:background="@drawable/dialog_bg"
+				android:orientation="vertical"
+	>
+
+	<TextView
+		android:id="@+id/emergency_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="@dimen/x39"
+		android:paddingTop="@dimen/x39"
+		android:text="设置紧急登录密码"
+		android:textColor="@color/color_drak_green"
+		android:textSize="@dimen/textsize_18" />
+
+	<LinearLayout
+		android:id="@+id/password_one_ll"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/x40"
+		android:paddingLeft="@dimen/x60"
+		android:layout_below="@+id/emergency_title"
+		android:orientation="horizontal"
+		>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:text="* "
+			android:textColor="@color/color_red"
+			android:textSize="@dimen/textsize_19"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="@dimen/textsize_20"
+			android:textColor="@color/text_color_6"
+			android:layout_gravity="center_vertical"
+			android:text="新  密  码  :"/>
+		<high.rivamed.myapplication.views.VerificationCodeView
+			android:id="@+id/emergency_et1"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/x75"
+			app:icv_et_bg_focus="@drawable/shape_icv_et_bg_focus"
+			app:icv_et_bg_normal="@drawable/shape_icv_et_bg_normal"
+			app:icv_et_divider_drawable="@drawable/shape_divider_identifying"
+			app:icv_et_number="6"
+			app:icv_et_pwd="false"
+			app:icv_et_pwd_radius="10dp"
+			app:icv_et_text_color="#000000"
+			app:icv_et_text_size="@dimen/textsize_20"
+			app:icv_et_width="@dimen/x75" />
+		<!--<EditText-->
+			<!--android:id="@+id/password_one"-->
+			<!--android:layout_width="@dimen/x400"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:layout_marginLeft="@dimen/x25"-->
+			<!--android:paddingLeft="@dimen/x10"-->
+			<!--android:paddingRight="@dimen/x10"-->
+			<!--android:textSize="@dimen/textsize_17"-->
+			<!--android:background="@drawable/bg_password_line_nor"-->
+			<!--/>-->
+	</LinearLayout>
+
+
+	<high.rivamed.myapplication.views.CustomNumKeyView2
+		android:id="@+id/login_keynum"
+		android:layout_below="@+id/password_one_ll"
+		android:layout_marginTop="@dimen/x40"
+		android:layout_marginLeft="@dimen/x60"
+		android:layout_marginRight="@dimen/x60"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/y360"
+		android:layout_gravity="center_horizontal"
+		>
+
+	</high.rivamed.myapplication.views.CustomNumKeyView2>
+
+	<TextView
+		android:id="@+id/dialog_right"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/x68"
+		android:layout_alignParentRight="true"
+		android:layout_below="@+id/login_keynum"
+		android:layout_marginBottom="@dimen/x40"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x50"
+		android:layout_marginTop="@dimen/x40"
+		android:background="@drawable/bg_btn_line_pre"
+		android:clickable="false"
+		android:gravity="center"
+		android:paddingBottom="@dimen/x10"
+		android:paddingLeft="@dimen/x50"
+		android:paddingRight="@dimen/x50"
+		android:paddingTop="@dimen/x10"
+		android:text="确定"
+		android:textColor="@color/bg_f"
+		android:textSize="@dimen/textsize_17"
+		/>
+
+	<TextView
+		android:id="@+id/dialog_left"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/x68"
+		android:layout_below="@+id/login_keynum"
+		android:layout_marginBottom="@dimen/x40"
+		android:layout_marginTop="@dimen/x40"
+		android:layout_toLeftOf="@+id/dialog_right"
+		android:background="@drawable/bg_btn_line_nor"
+		android:gravity="center"
+		android:paddingBottom="@dimen/x10"
+		android:paddingLeft="@dimen/x50"
+		android:paddingRight="@dimen/x50"
+		android:paddingTop="@dimen/x10"
+		android:text="取消"
+		android:textColor="@color/text_color_58"
+		android:textSize="@dimen/textsize_17"/>
+
+
+</RelativeLayout>
