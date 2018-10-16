@@ -67,7 +67,16 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
    public  ArrayList<String>   mDoorList  = new ArrayList<>();
    private Map<String, String> mEPCDatess = new TreeMap<>();
    private TCstInventoryDto      mTCstInventoryDtoTwo;
-
+   /**
+    * 倒计时结束发起
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onDoorEvent(Event.EventDoorList event) {
+      LogUtils.i(TAG," event  "+event.doorList.size());
+	mDoorList.addAll(event.doorList);
+   }
    /**
     * 倒计时结束发起
     *
@@ -101,16 +110,16 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean BoxIdBean : boxIdDoor) {
-		String device_id = BoxIdBean.getDevice_id();
-		for (int x = 0; x < mDoorList.size(); x++) {
-		   if (device_id.equals(mDoorList.get(x))) {
-			mDoorList.remove(x);
-		   }
-		}
-	   }
+//	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
+//		   .find(BoxIdBean.class);
+//	   for (BoxIdBean BoxIdBean : boxIdDoor) {
+//		String device_id = BoxIdBean.getDevice_id();
+//		for (int x = 0; x < mDoorList.size(); x++) {
+//		   if (device_id.equals(mDoorList.get(x))) {
+//			mDoorList.remove(x);
+//		   }
+//		}
+//	   }
 	   if (box_id != null) {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
@@ -190,7 +199,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
    @Override
    public void onStart() {
-	//	moreStartScan();
+
 	super.onStart();
    }
 
@@ -261,7 +270,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
    }
 
    private void moreStartScan() {
-	mDoorList.addAll(mEthDeviceIdBack);
+
 	mEPCDate.clear();
 	mEPCDatess.clear();
 	mTCstInventoryDto.gettCstInventoryVos().clear();
@@ -332,6 +341,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 		}
 
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		startActivity(new Intent(InBoxAllTwoActivity.this, HomeActivity.class));
 		finish();
 
 	   }

@@ -2,7 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -68,44 +68,80 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private String                uhfDeviceId;
    private TCstInventoryDto      mDtoLyFour;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
+   public  TCstInventoryDto      mNewDtos;
    private int                   mIntentType;
    private LoadingDialog.Builder mLoading;
    public  ArrayList<String>          mDoorList  = new ArrayList<>();
    private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
    int k = 0;
-   private List<TCstInventoryVo> mVoOutList;
-   private boolean mDate;
+   public  List<TCstInventoryVo> mVoOutList;
+   private boolean               mDate;
+   private TCstInventoryDto      mCstInEpcDto;
+   private String                mToJson;
+   private int mSelType = 0;
+   private List<TCstInventoryVo> mMTCstInventoryVoss;
+
+   @Override
+   public int getCompanyType() {
+	super.my_id = ACT_TYPE_HCCZ_OUT;
+	return my_id;
+   }
 
    /**
     * 再次显示后的数据
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventFourDate(Event.EventDate event) {
 	mDate = event.b;
-	LogUtils.i(TAG,"mDate  "+mDate);
-	if (mDate){
-	   if (mTCstInventoryDtoFour == null) {
-		mTCstInventoryDto.setStorehouseCode(
-			SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-		EventBusUtils.postSticky(mTCstInventoryDto);
-	   } else {
-		mTCstInventoryDtoFour.setStorehouseCode(
-			SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-		EventBusUtils.postSticky(mTCstInventoryDtoFour);
+	LogUtils.i(TAG, "mDate  " + mDate + "    mSelType   " + mSelType);
+
+	if (mDate) {
+	   if (mSelType == 1 && event.moreScan) {
+		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
+		mStarts.cancel();
+		moreStartScan();
+	   } else if (mSelType != 1 && mSelType != 0) {
+		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
+//		if (mTCstInventoryDtoFour == null) {
+		   mOutDto.setStorehouseCode(
+			   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+		   EventBusUtils.postSticky(new Event.EventOutDto(mOutDto));
+//		}
+//		else {
+//		   mTCstInventoryDtoFour.setStorehouseCode(
+//			   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+//		   EventBusUtils.postSticky(new Event.EventOutDto(mTCstInventoryDtoFour));
+//		}
+		LogUtils.i(TAG,"mO    "+mCstInEpcDto.gettCstInventoryVos().size());
+		if (mOutDto.gettCstInventoryVos().size() == 0 && mCstInEpcDto != null &&
+		    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
+		   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
+		   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
+		   EventBusUtils.postSticky(new Event.EventAct("all"));
+		   EventBusUtils.postSticky(mCstInEpcDto);
+		} else {
+		   if (mOutDto.gettCstInventoryVos().size() == 0){
+			mEthDeviceIdBack.clear();
+			finish();
+		   }else {
+			mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+		   }
+		}
 	   }
 	}
    }
 
-
    /**
     * 顶部的红色提示
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventTitle(Event.EventOutTitleV event) {
-	if (event.b) {
+	if (event.b&&mAllOutText!=null) {
 	   mAllOutText.setVisibility(View.VISIBLE);
 	}
    }
@@ -226,7 +262,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG, "TAG    " + event.context);
 
    }
-//
+   //
 
    @Override
    protected void onDestroy() {
@@ -235,8 +271,10 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
+	mSelType = 0;
+	LogUtils.i(TAG, "onDestroy  ");
 	EventBusUtils.unregister(this);
-	mEthDeviceIdBack.clear();
+
 	mEPCDate.clear();
 	mEPCDatess.clear();
 	super.onDestroy();
@@ -244,7 +282,15 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    }
 
    @Override
+   protected void onResume() {
+	LogUtils.i(TAG, "onResume  ");
+	super.onResume();
+   }
+
+   @Override
    public void onStart() {
+	LogUtils.i(TAG, "onStart  ");
+	putAllInEPCDate(mInJson);
 	mDoorList.addAll(mEthDeviceIdBack);
 	super.onStart();
    }
@@ -260,19 +306,19 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(11);
 	mDtoLy.setStorehouseCode(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryDtoFour == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+//	if (mTCstInventoryDtoFour == null) {
+	   for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
+		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
+		   tCstInventoryVos.add(mOutDto.gettCstInventoryVos().get(i));
 		}
 	   }
-	} else {
-	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
-		}
-	   }
-	}
+//	} else {
+//	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
+//		if (mTCstInventoryDtoFour.gettCstInventoryVos().get(i).isSelected()) {
+//		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
+//		}
+//	   }
+//	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
@@ -304,19 +350,19 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryDtoFour == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+//	if (mTCstInventoryDtoFour == null) {
+	   for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
+		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
+		   tCstInventoryVos.add(mOutDto.gettCstInventoryVos().get(i));
 		}
 	   }
-	} else {
-	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
-		}
-	   }
-	}
+//	} else {
+//	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
+//		if (mTCstInventoryDtoFour.gettCstInventoryVos().get(i).isSelected()) {
+//		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
+//		}
+//	   }
+//	}
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
@@ -349,19 +395,19 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mDtoLy.setOperation(9);
 	mDtoLy.setStorehouseRemark(event.context);
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryDtoFour == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+//	if (mTCstInventoryDtoFour == null) {
+	   for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
+		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
+		   tCstInventoryVos.add(mOutDto.gettCstInventoryVos().get(i));
 		}
 	   }
-	} else {
-	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
-		}
-	   }
-	}
+//	} else {
+//	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
+//		if (mTCstInventoryDtoFour.gettCstInventoryVos().get(i).isSelected()) {
+//		   tCstInventoryVos.add(mTCstInventoryDtoFour.gettCstInventoryVos().get(i));
+//		}
+//	   }
+//	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
@@ -371,7 +417,11 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
-			ToastUtils.showShort("操作成功");
+			if (mDtoLy.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
+
+			}else {
+			   ToastUtils.showShort("操作成功");
+			}
 			overFinish();
 		   }
 
@@ -386,40 +436,62 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 完成操作后看是否还有耗材，无耗材跳转入柜界面或者直接退出
     */
    private void overFinish() {
-	if (mTCstInventoryDtoFour == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   mTCstInventoryDto.gettCstInventoryVos().remove(i);
-		   mTypeView.mCheckStates.delete(i);
+//	if (mTCstInventoryDtoFour == null) {
+
+	   LogUtils.i(TAG,"xxxxxx  "+mOutDto.gettCstInventoryVos().size());
+	   mMTCstInventoryVoss = new ArrayList<>();
+
+	   for (int i = 0;i<mOutDto.gettCstInventoryVos().size();i++) {
+		LogUtils.i(TAG,"xxfff    "+i+"    " +mOutDto.gettCstInventoryVos().get(i).isSelected());
+		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
+		   mMTCstInventoryVoss.add(mOutDto.gettCstInventoryVos().get(i));
+
+		}else {
+		   LogUtils.i(TAG,"wei删除  "+mOutDto.gettCstInventoryVos().get(i).getEpc());
 		}
 	   }
-	   if (mTCstInventoryDto.gettCstInventoryVos().size() == 0) {
-		String toJson = getEpcDtoString(mEPCDatess);
-		putAllInEPCDate(toJson);
-	   }
-	} else {
-	   for (int i = 0; i < mTCstInventoryDtoFour.gettCstInventoryVos().size(); i++) {
-		if (mTypeView.mCheckStates.get(i)) {
-		   Log.i(TAG,"在循环    "+i);
-		   mTCstInventoryDtoFour.gettCstInventoryVos().remove(i);
-		   mTypeView.mCheckStates.delete(i);
+	   if (mMTCstInventoryVoss.size()==mOutDto.gettCstInventoryVos().size()){
+		mOutDto.gettCstInventoryVos().clear();
+	   }else {
+	      for (int x=0;x<mOutDto.gettCstInventoryVos().size();x++){
+	        for (TCstInventoryVo s:mMTCstInventoryVoss){
+	           if (s.getEpc().equals(mOutDto.gettCstInventoryVos().get(x).getEpc())){
+			  mOutDto.gettCstInventoryVos().remove(x);
+		     }
+		  }
 		}
 	   }
-	   Log.i(TAG,"在循环size    "+mTCstInventoryDtoFour.gettCstInventoryVos().size());
-	   if (mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) {
-		String toJson = getEpcDtoString(mEPCDatess);
-		putAllInEPCDate(toJson);
+	   if (mOutDto.gettCstInventoryVos().size() == 0) {
+		putAllInEPCDate(mInJson);
 	   }
+//	} else {
+//
+//	   for (int i = 0;i<mTCstInventoryDtoFour.gettCstInventoryVos().size();i++) {
+//		if (mTCstInventoryDtoFour.gettCstInventoryVos().get(i).isSelected()) {
+//		   mTCstInventoryDtoFour.gettCstInventoryVos().remove(i);
+//		}
+//	   }
+//	   Log.i(TAG, "在循环size    " + mTCstInventoryDtoFour.gettCstInventoryVos().size());
+//	   if (mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) {
+//		//		String toJson = getEpcDtoString(mEPCDatess);
+//		putAllInEPCDate(mToJson);
+//	   }
+//	}
+
+	if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
+	    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
+	   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
+
+	   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
+	   EventBusUtils.postSticky(new Event.EventAct("all"));
+	   EventBusUtils.postSticky(mCstInEpcDto);
+	} else if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
+		     mCstInEpcDto.gettCstInventoryVos().size() == 0) {
+	   mEthDeviceIdBack.clear();
+	   finish();
 	}
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	EventBusUtils.postSticky(new Event.EventDate(true));
-
-   }
-
-   @Override
-   public int getCompanyType() {
-	super.my_id = ACT_TYPE_HCCZ_OUT;
-	return my_id;
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -444,21 +516,24 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   case R.id.btn_four_ly://领用 3
 		//确认
 		mIntentType = 1;
+		mSelType = 1;
 		setLyDate(mIntentType);
 		break;
 	   case R.id.btn_four_yc://移出
 		//确认
 		mIntentType = 1;
+		mSelType = 2;
 		setYcDate(mIntentType);
 		break;
-//	   case R.id.btn_four_tb://调拨
-//		//确认
-//		mIntentType = 1;
-//		setDbDate(mIntentType);
-//		break;
+	   //	   case R.id.btn_four_tb://调拨
+	   //		//确认
+	   //		mIntentType = 1;
+	   //		setDbDate(mIntentType);
+	   //		break;
 	   case R.id.btn_four_th://退货
 		//确认
 		mIntentType = 1;
+		mSelType = 3;
 		setThDate(mIntentType);
 		break;
 	}
@@ -471,9 +546,12 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mDoorList.addAll(mEthDeviceIdBack);
 	mEPCDate.clear();
 	mEPCDatess.clear();
-	mTCstInventoryDto.gettCstInventoryVos().clear();
-	if (mTCstInventoryDtoFour!=null){
-	   mTCstInventoryDtoFour=null;
+	mSelType = 0;
+	if (mTCstInventoryDtoFour != null) {
+	   mTCstInventoryDtoFour = null;
+	}
+	if (mVoOutList != null) {
+	   mVoOutList.clear();
 	}
 	LogUtils.i(TAG, "mEthDeviceIdBack    " + mEthDeviceIdBack.size());
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
@@ -552,19 +630,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     */
    private void setLyDate(int mIntentType) {
 	String mTCstInventoryDtoJson = null;
-	if (mTCstInventoryDtoFour == null) {
-	   mTCstInventoryDto.setStorehouseCode(
-		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDto);
-	} else {
-	   mTCstInventoryDtoFour.setStorehouseCode(
-		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
-	}
+//	if (mTCstInventoryDtoFour == null) {
+	   mOutDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	   mTCstInventoryDtoJson = setNewDate(mOutDto);
+//	} else {
+//	   mTCstInventoryDtoFour.setStorehouseCode(
+//		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+//	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
+//	}
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
-//	if (true) {//直接领取
-
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
@@ -588,7 +663,27 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
-		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson, TCstInventoryDto.class);
+		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson,
+										   TCstInventoryDto.class);
+//		overFinish();
+
+
+		if (tCstInventoryDto.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
+		   mOutDto.gettCstInventoryVos().clear();
+		}else {
+		   for (int x=0;x<mOutDto.gettCstInventoryVos().size();x++){
+			for (TCstInventoryVo s:tCstInventoryDto.gettCstInventoryVos()){
+			   if (s.getEpc().equals(mOutDto.gettCstInventoryVos().get(x).getEpc())){
+				mOutDto.gettCstInventoryVos().remove(x);
+			   }
+			}
+		   }
+		}
+		for (TCstInventoryVo c:mOutDto.gettCstInventoryVos()){
+		  c.setSelected(true);
+		}
+
+
 		tCstInventoryDto.setBindType("afterBind");
 		EventBusUtils.postSticky(new Event.EventButGone(true));
 
@@ -612,12 +707,13 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mDtoLy.setConfigPatientCollar(tCstInventoryDto.getConfigPatientCollar());
 	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
 	for (int i = 0; i < tCstInventoryDto.gettCstInventoryVos().size(); i++) {
-	   if (mTypeView.mCheckStates.get(i)) {
+	   if (tCstInventoryDto.gettCstInventoryVos().get(i).isSelected()) {
 		tCstInventoryVos.add(tCstInventoryDto.gettCstInventoryVos().get(i));
 	   }
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
+
 	String mTCstInventoryDtoJson = mGson.toJson(mDtoLy);
 	return mTCstInventoryDtoJson;
    }
@@ -626,14 +722,18 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 扫描后传值
     */
    private void putAllOutEPCDates(Map<String, String> epcs) {
-	String toJson = getEpcDtoString(epcs);
-	NetRequest.getInstance().putAllOutEPCDate(toJson, this, null, new BaseResult() {
+	mToJson=null;
+	mToJson = getEpcDtoString(epcs);
+	NetRequest.getInstance().putAllOutEPCDate(mToJson, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result s   " + result);
 		mTCstInventoryDtoFour = mGson.fromJson(result, TCstInventoryDto.class);
 		mVoOutList = mTCstInventoryDtoFour.gettCstInventoryVos();
-		putAllInEPCDate(toJson);
+		for (int i = 0; i < mVoOutList.size(); i++) {
+		   mVoOutList.get(i).setSelected(true);
+		}
+		putAllInEPCDate(mToJson);
 		String string = null;
 		if (mTCstInventoryDtoFour.getErrorEpcs() != null &&
 		    mTCstInventoryDtoFour.getErrorEpcs().size() > 0) {
@@ -641,11 +741,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   ToastUtils.showLong(string);
 		}
 		if (mVoOutList.size() == 0) {
-		   putAllInEPCDate(toJson);
+		   View inflate = LayoutInflater.from(mContext).inflate(R.layout.recy_null, null);
+		   mTypeView.mOutBoxAllAdapter.setEmptyView(inflate);
+		   mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+		   putAllInEPCDate(mToJson);
+
 		   //	ToastUtils.showShort("未扫描到操作的耗材");
 		} else {
+		   LogUtils.i(TAG,"重新来了");
 		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-		   EventBusUtils.postSticky(mTCstInventoryDtoFour);
+		   EventBusUtils.postSticky(new Event.EventOutDto(mTCstInventoryDtoFour));
 		}
 	   }
 	});
@@ -655,38 +760,54 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 快速开柜入柜查询
     */
    private void putAllInEPCDate(String json) {
+	LogUtils.i(TAG, "json s   " + json);
 	NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result s   " + result);
-		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		LogUtils.i(TAG, "result size   " + cstInventoryDto.gettCstInventoryVos().size());
+		mCstInEpcDto = mGson.fromJson(result, TCstInventoryDto.class);
 		String string = null;
-		if (mAllOutText != null && cstInventoryDto.gettCstInventoryVos().size() == 0) {
+		if (mAllOutText != null && mCstInEpcDto.gettCstInventoryVos().size() == 0) {
 		   mAllOutText.setVisibility(View.GONE);
 		}
-		if (cstInventoryDto.getErrorEpcs() != null &&
-		    cstInventoryDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+		if (mCstInEpcDto.getErrorEpcs() != null && mCstInEpcDto.getErrorEpcs().size() > 0) {
+		   string = StringUtils.listToString(mCstInEpcDto.getErrorEpcs());
 		   ToastUtils.showLong(string);
+		   LogUtils.i(TAG, " string   " + string);
 		}
-		if (mVoOutList != null && mVoOutList.size() == 0 &&mTCstInventoryDtoFour.gettCstInventoryVos().size()==0&&
-		    cstInventoryDto.gettCstInventoryVos() != null &&
-		    cstInventoryDto.gettCstInventoryVos().size() != 0) {
-		   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
-		   EventBusUtils.postSticky(new Event.EventAct("all"));
-		   EventBusUtils.postSticky(cstInventoryDto);
-		   finish();
+		LogUtils.i(TAG, " string   " + string);
+		if (((mVoOutList != null && mVoOutList.size() == 0) || mVoOutList == null) &&
+		    ((mTCstInventoryDtoFour != null &&
+			mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) ||
+		     (mOutDto != null && mOutDto.gettCstInventoryVos().size() == 0)) &&
+		    mCstInEpcDto.gettCstInventoryVos() != null &&
+		    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
+		   mBtnFourLy.setEnabled(false);
+		   mBtnFourYc.setEnabled(false);
+		   mBtnFourTh.setEnabled(false);
+		   mTCstInventoryDto=mCstInEpcDto;
+		   mTCstInventoryDto.settCstInventoryVos(mCstInEpcDto.gettCstInventoryVos());
+		   new Handler().postDelayed(new Runnable() {
+			public void run() {
+			   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
+			   EventBusUtils.postSticky(mTCstInventoryDto);
+			   EventBusUtils.postSticky(new Event.EventAct("all"));
+			   EventBusUtils.postSticky(new Event.EventDoorList(mDoorList));
+			   finish();
+			}
+		   }, 2000);
+
 		} else {
-		   if (cstInventoryDto.gettCstInventoryVos().size() > 0) {
-		      LogUtils.i(TAG,"请重新操作");
+		   if (mCstInEpcDto.gettCstInventoryVos().size() > 0) {
+			LogUtils.i(TAG, "请重新操作");
 			EventBusUtils.postSticky(new Event.EventOutTitleV(true));
 		   } else {
-			if (mVoOutList == null) {
+			if (mVoOutList != null && mVoOutList.size() == 0) {
 			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			   new Handler().postDelayed(new Runnable() {
 				public void run() {
 				   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+				   mEthDeviceIdBack.clear();
 				   finish();
 				}
 			   }, 3000);
@@ -699,6 +820,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
    /**
     * 快速开柜epc放入DTO
+    *
     * @param epcs
     * @return
     */

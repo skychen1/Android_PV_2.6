@@ -3,7 +3,6 @@ package high.rivamed.myapplication.adapter;
 import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,17 +35,12 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
    private TextView           mSeven_four;
    private TextView           mSeven_five;
    private TextView           mSeven_six;
-
+   public int mSelectedPos;
+   private List<TCstInventoryVo> mDataVo ;
    public OutBoxAllAdapter(
 	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
 	super(layoutResId, data);
-   }
-
-   public OutBoxAllAdapter(
-	   int layout, List<TCstInventoryVo> data, SparseBooleanArray mCheckStates) {
-	super(layout, data);
-	this.mData = data;
-	this.mCheckStates = mCheckStates;
+	this.mDataVo = data;
    }
 
    @Override
@@ -57,6 +51,8 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
+
+
 	mMCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -65,7 +61,7 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 
 
-	mMCheckBox.setChecked(mCheckStates.get(helper.getAdapterPosition()));
+
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
@@ -74,12 +70,40 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	UIUtils.initTermOfValidity(mContext,helper, item.getStopFlag(), mSeven_five);
 
 	mMCheckBox.setOnCheckedChangeListener(null);
-	mMCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-		mCheckStates.put(helper.getAdapterPosition(), b);
 
-	   }
-	});
+	mMCheckBox.setChecked(item.isSelected());
+
+//	helper.itemView.setOnClickListener(new View.OnClickListener() {
+//	   @Override
+//	   public void onClick(View view) {
+//		int position = helper.getAdapterPosition();
+//		LogUtils.i(TAG," position    "+position  +"     mDataVo.get(position).isSelected()   "+mDataVo.get(position).isSelected());
+//		if (item.isSelected()){
+//		   mData.get(position).setSelected(false);
+//		}else {
+//		   mData.get(position).setSelected(true);
+//		}
+////		((CheckBox)helper.itemView.getRootView().findViewById(R.id.seven_one)).setChecked(item.isSelected());
+//		notifyDataSetChanged();
+//		//设置新的Item勾选状态
+////		mMCheckBox.setChecked(item.isSelected());
+////		notifyDataSetChanged();
+//	   }
+//	});
+//	mMCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//	   @Override
+//	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//		int position = helper.getAdapterPosition();
+//		if (mDataVo.get(position).isSelected()){
+//		   mDataVo.get(position).setSelected(false);
+//		}else {
+//		   mDataVo.get(position).setSelected(true);
+//		}
+//		LogUtils.i(TAG," position    "+position  +"     mDataVo.get(position).isSelected()   "+mDataVo.get(position).isSelected());
+//		mMCheckBox.setChecked(mDataVo.get(position).isSelected());
+//		//设置新的Item勾选状态
+////		notifyDataSetChanged();
+//	   }
+//	});
    }
 }

@@ -83,6 +83,7 @@ import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -92,8 +93,8 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetApi.MAIN_URL;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
@@ -149,9 +150,9 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
-//	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-//	}
+	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
+	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	}
 	mLoginGone = findViewById(R.id.login_gone);
 	//清空accountID
 	mDownText.setText(
@@ -661,7 +662,7 @@ public class LoginActivity extends SimpleActivity {
    private void loadUpDataVersion(
 	   final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
-
+	LogUtils.i(TAG, "apkUri " + FileUtils.getDiskCacheDir(mContext));
 	OkGo.<File>get(URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名

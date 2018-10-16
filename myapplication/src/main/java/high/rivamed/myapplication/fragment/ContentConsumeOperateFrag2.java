@@ -35,13 +35,13 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InBoxAllTwoActivity;
-import high.rivamed.myapplication.activity.SelInOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
+import high.rivamed.myapplication.activity.SelInOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.TemPatientBindActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
 import high.rivamed.myapplication.base.App;
@@ -378,6 +378,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
+	   mEPCDatess.clear();
+	   mEPCDate.clear();
 	   initData();
 	} else {
 	   //            mPause = true;
@@ -459,6 +461,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	mContentRg.setVisibility(View.GONE);
+	if (mEPCDate!=null){
+	   mEPCDate.clear();
+	}
 	initData();
 	initEvent();
    }
@@ -574,6 +579,10 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		LogUtils.i(TAG, "result s   " + result);
 		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		mVoOutList = cstInventoryDto.gettCstInventoryVos();
+		for (int i = 0; i < mVoOutList.size(); i++) {
+		   mVoOutList.get(i).setSelected(true);
+		}
+		LogUtils.i(TAG, "mVoOutList s   " + mVoOutList.size());
 		putAllInEPCDate(toJson);//用于判断出柜提示显示
 
 		String string = null;
@@ -585,7 +594,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		if (mVoOutList != null && mVoOutList.size() != 0) {
 		   LogUtils.i(TAG, "跳出柜" );
 		   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
-		   EventBusUtils.postSticky(cstInventoryDto);
+//		   EventBusUtils.postSticky(cstInventoryDto);
+		   EventBusUtils.postSticky(new Event.EventOutDto(cstInventoryDto,toJson));
 		} else {
 		   putAllInEPCDate(toJson);
 		}
@@ -642,7 +652,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		      EventBusUtils.postSticky(new Event.EventOutTitleV(true));
 			LogUtils.i(TAG, "xianshi " );
 		   } else {
-		      if (mVoOutList!=null){
+			LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
+		      if (mVoOutList!=null&&mVoOutList.size()==0){
 			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			}
 		   }

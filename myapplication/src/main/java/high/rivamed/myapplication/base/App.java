@@ -55,7 +55,7 @@ public class App extends Application {
      */
     private static ACache mAppCache;
 
-//    public static String MAIN_URL = null;
+    public static String MAIN_URL = null;
 
     public static Handler getHandler() {
         return mHandler;
@@ -89,6 +89,7 @@ public class App extends Application {
         initOkGo();
 
         InitDeviceService();
+        MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
     }
 
@@ -158,7 +159,7 @@ public class App extends Application {
                 .setOkHttpClient(builder.build())               //建议设置OkHttpClient，不设置会使用默认的
                 .setCacheMode(CacheMode.NO_CACHE)               //全局统一缓存模式，默认不使用缓存，可以不传
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)   //全局统一缓存时间，默认永不过期，可以不传
-                .setRetryCount(1);                              //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
+                .setRetryCount(0);                              //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 
     }
 
@@ -196,7 +197,7 @@ public class App extends Application {
      */
     public void addActivity_(Activity activity) {
         // 判断当前集合中不存在该Activity
-        if (!oList.contains(activity)) {
+        if (!oList.contains(activity)&&!activity.getClass().getName().toString().equals("high.rivamed.myapplication.activity.LoginActivity")) {
             oList.add(activity);//把当前Activity添加到集合中
             Log.e(TAG, "Activity-------------->"+activity.getClass().getName());
         }

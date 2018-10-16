@@ -88,9 +88,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public int my_id;
    public int mSize;
    @BindView(R.id.timely_start_btn)
-   TextView mTimelyStartBtn;
+   public TextView mTimelyStartBtn;
    @BindView(R.id.timely_open_door)
-   TextView mTimelyOpenDoor;
+   public  TextView mTimelyOpenDoor;
    @BindView(R.id.ly_bing_btn)
    TextView mLyBingBtn;
    @BindView(R.id.timely_left)
@@ -100,13 +100,13 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.activity_down_btnll)
    LinearLayout mActivityDownBtnTwoll;
    @BindView(R.id.btn_four_ly)
-   TextView     mBtnFourLy;
+   public TextView     mBtnFourLy;
    @BindView(R.id.btn_four_yc)
-   TextView     mBtnFourYc;
+   public TextView     mBtnFourYc;
    @BindView(R.id.btn_four_tb)
-   TextView     mBtnFourTb;
+   public  TextView     mBtnFourTb;
    @BindView(R.id.btn_four_th)
-   TextView     mBtnFourTh;
+   public TextView     mBtnFourTh;
    @BindView(R.id.activity_down_btn_four_ll)
    LinearLayout mActivityDownBtnFourLl;
    @BindView(R.id.activity_down_btn_one_ll)
@@ -148,7 +148,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.dialog_left)
    TextView       mDialogLeft;
    @BindView(R.id.dialog_right)
-   TextView       mDialogRight;
+  public TextView       mDialogRight;
    @BindView(R.id.activity_down_btn_seven_ll)
    LinearLayout   mActivityDownBtnSevenLl;
    @BindView(R.id.timely_rl)
@@ -175,7 +175,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private List<TCstInventoryVo> mStockDetailsDownList;
    public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
 
-   public TCstInventoryDto mTCstInventoryDto;
+   public        TCstInventoryDto mTCstInventoryDto;
+   public static TCstInventoryDto mOutDto;
    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
 
    public  TCstInventoryDto mDto;
@@ -183,7 +184,8 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private int              mOperation;
    private int              mDtoOperation;
    public  CountDownTimer   mStarts;
-   public boolean mOnBtnGone = false;
+   public static boolean mOnBtnGone = false;
+   public String mInJson;
 
    /**
     * 看关门后是否需要设置按钮为可以点击
@@ -370,7 +372,41 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mStockDetailsTopBean = event;
 
    }
+   /**
+    * 接收快速开柜的数据
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   public void onOutDtoEvent(Event.EventOutDto event) {
 
+	LogUtils.i(TAG," onOutDtoEvent     "+event.cstInventoryDto.gettCstInventoryVos().size());
+	LogUtils.i(TAG," onOutDtoEvent     "+(mOutDto!=null));
+	if (mOutDto!=null){
+//	   List<TCstInventoryVo> tCstInventoryVos = event.cstInventoryDto.gettCstInventoryVos();
+//	   mTCstInventoryVos.clear();
+//	   mTCstInventoryVos.addAll(tCstInventoryVos);
+//	   mOutDto.gettCstInventoryVos().clear();
+	   mOutDto.settCstInventoryVos(event.cstInventoryDto.gettCstInventoryVos());
+	   mInJson = event.json;
+	}else {
+	   mOutDto =event.cstInventoryDto;
+	   mTCstInventoryVos=  mOutDto.gettCstInventoryVos();
+	   mInJson = event.json;
+	}
+	for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
+	   mOutDto.gettCstInventoryVos().get(i).setSelected(true);
+	}
+	List<TCstInventoryVo> voList = mOutDto.gettCstInventoryVos();
+	for (int i = 0; i < voList.size(); i++) {
+	   voList.get(i).setSelected(true);
+	}
+//	setOutBoxDate(voList);
+
+	//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+
+
+   }
    /**
     * 接收入库的数据
     *
@@ -383,21 +419,20 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
 	   mTCstInventoryDto = event;
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
+	   LogUtils.i(TAG,"mTCstInventoryVos  ff    "+tCstInventoryVos.size()+"     "+tCstInventoryVos.get(0).getEpc());
 	   mTCstInventoryVos.clear();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
-	   if (my_id == ACT_TYPE_HCCZ_OUT) {
-		setOutBoxTitles();
-		mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+	   if (my_id == ACT_TYPE_HCCZ_BING) {
+		setAfterBing();
 	   } else if (my_id == ACT_TYPE_HCCZ_IN) {
 		mTimelyOpenDoor.setVisibility(View.VISIBLE);
 		setInBoxDate();
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   } else if (my_id == ACT_TYPE_ALL_IN) {
 		mTimelyOpenDoor.setVisibility(View.GONE);
-		setInBoxTitles();
+//		setInBoxTitles();
+		setInBoxDate();
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
-	   } else if (my_id == ACT_TYPE_HCCZ_BING) {
-		setAfterBing();
 	   }
 
 	} else {
@@ -468,13 +503,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   loadStockDetails();
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
 	   setInBoxDate();
-	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   setOutBoxDate();
+	} else if (my_id == ACT_TYPE_HCCZ_BING) {//绑定
+	   setAfterBing();
 	} else if (my_id == ACT_TYPE_ALL_IN) {//快速开柜入柜
 	   setInBoxDate();
-	} else if (my_id == ACT_TYPE_HCCZ_BING) {//首页耗材操作单个或者全部柜子的详情界面   拿出
-	   setAfterBing();
-
+	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
+	   setOutBoxDate(mOutDto.gettCstInventoryVos());
 	} else if (my_id == ACT_TYPE_FORM_CONFIRM) {
 	   mBaseTabTvTitle.setText("识别耗材");
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
@@ -556,11 +590,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.GONE);
 	mLyBingBtn.setVisibility(View.GONE);
 	mTimelyNumber.setVisibility(View.GONE);
-	if (mOnBtnGone) {
-	   mBaseTabBack.setVisibility(View.VISIBLE);
-	} else {
+//	if (mOnBtnGone) {
+//	   mBaseTabBack.setVisibility(View.VISIBLE);
+//	} else {
 	   mBaseTabBack.setVisibility(View.GONE);
-	}
+//	}
 	mTimelyNumberLeft.setVisibility(View.VISIBLE);
 	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
@@ -653,6 +687,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mStockSearch.setVisibility(View.VISIBLE);
 	mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
+
 	mTimelyLeft.setEnabled(false);
 	mTimelyRight.setEnabled(false);
 	if (mStarts != null) {
@@ -710,9 +745,10 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    /**
     * 快速开柜拿出数据
     */
-   private void setOutBoxDate() {
-	mBaseTabTvTitle.setText("识别耗材");
-	setOutBoxTitles();
+   private void setOutBoxDate(List<TCstInventoryVo> voList) {
+      LogUtils.i(TAG,"   DAFFAFAFAFAF");
+	mBaseTabTvTitle.setText("出柜识别耗材");
+	setOutBoxTitles(voList);
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
@@ -723,22 +759,31 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos, mLinearLayout,
+
+	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
+   if (mTypeView==null){
+	mTypeView = new TableTypeView(this, this, titeleList, mSize, voList, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
+   }else {
+	mTypeView.mTCstInventoryVos.clear();
+	mTypeView.mTCstInventoryVos.addAll(voList);
+   }
+
+	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
    }
 
    /**
     * 取出耗材 重新扫描后增减的数据  title显示
     */
-   private void setOutBoxTitles() {
+   private void setOutBoxTitles(List<TCstInventoryVo> voList) {
 	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+	for (TCstInventoryVo vosBean : voList) {
 	   strings.add(vosBean.getCstCode());
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							mTCstInventoryVos.size() + "</big></font>"));
+							voList.size() + "</big></font>"));
    }
 
    /**
@@ -759,8 +804,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mBaseTabTvTitle.setText("耗材移入");
 	} else if (mDtoOperation == 7) {
 	   mBaseTabTvTitle.setText("耗材退回");
-	} else {
+	} else if (my_id == ACT_TYPE_ALL_IN){
+	   mBaseTabTvTitle.setText("入柜耗材识别");
+	}else {
 	   mBaseTabTvTitle.setText("耗材识别");
+
 	}
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);

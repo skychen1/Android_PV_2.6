@@ -37,6 +37,7 @@ import high.rivamed.myapplication.adapter.TimeDetailsAdapter;
 import high.rivamed.myapplication.adapter.TimelyLossAdapter;
 import high.rivamed.myapplication.adapter.TimelyProfitAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
+import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -45,6 +46,7 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 
+import static high.rivamed.myapplication.base.BaseTimelyActivity.mOnBtnGone;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.FRAGMENT;
@@ -434,39 +436,38 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 			for (int i = 0; i < mTCstInventoryVos.size(); i++) {
-			   mCheckStates.put(i, true);
+			   mTCstInventoryVos.get(i).setSelected(true);
 			}
 			if (mOutBoxAllAdapter != null) {
 			   mOutBoxAllAdapter.notifyDataSetChanged();
 			} else {
 
-			   mOutBoxAllAdapter = new OutBoxAllAdapter(mLayout, mTCstInventoryVos,
-										  mCheckStates);
+			   mOutBoxAllAdapter = new OutBoxAllAdapter(mLayout, mTCstInventoryVos);
 			   mHeadView.setBackgroundResource(R.color.bg_green);
 			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 			   mRefreshLayout.setEnableAutoLoadMore(false);
 			   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 			   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+			   View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
+			   mOutBoxAllAdapter.setEmptyView(inflate);
 			   mRecyclerview.setAdapter(mOutBoxAllAdapter);
 			   mLinearLayout.addView(mHeadView);
 			}
-			mOutBoxAllAdapter.setOnItemClickListener(
-				new BaseQuickAdapter.OnItemClickListener() {
-				   @Override
-				   public void onItemClick(
-					   BaseQuickAdapter adapter, View view, int position) {
-					CheckBox checkBox = (CheckBox) view.findViewById(R.id.seven_one);
-					if (checkBox.isChecked()) {
-					   checkBox.setChecked(false);
-					   mCheckStates.put(position, false);
-					} else {
-					   mCheckStates.put(position, true);
-					   checkBox.setChecked(true);
-					}
-					mOutBoxAllAdapter.notifyDataSetChanged();
-				   }
-				});
+			mOutBoxAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			   @Override
+			   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+				LogUtils.i("Out"," position    "+position  +"     mDataVo.get(position).isSelected()   "+mTCstInventoryVos.get(position).isSelected());
+				if (mTCstInventoryVos.get(position).isSelected()){
+				   mTCstInventoryVos.get(position).setSelected(false);
+				}else {
+				   mTCstInventoryVos.get(position).setSelected(true);
+				}
+				BaseTimelyActivity.mOutDto.settCstInventoryVos(mTCstInventoryVos);
+				LogUtils.i("Out"," position    "+position  +"     mDataVo.get(position).isSelected()   "+mTCstInventoryVos.get(position).isSelected());
+				mOutBoxAllAdapter.notifyDataSetChanged();
+			   }
+			});
 
 		   } else if (mDialog != null && mDialog.equals(STYPE_FORM_CONF)) {
 			mLayout = R.layout.item_formcon_six_layout;
@@ -588,7 +589,11 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 			((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-
+			if (mOnBtnGone) {
+			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setVisibility(GONE);
+			}else {
+			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setVisibility(VISIBLE);
+			}
 			if (mRecogHaocaiAdapter != null) {
 			   mRecogHaocaiAdapter.notifyDataSetChanged();
 			} else {

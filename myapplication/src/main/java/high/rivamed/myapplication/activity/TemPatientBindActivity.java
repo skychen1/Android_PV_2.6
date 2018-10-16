@@ -229,8 +229,19 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
    @Override
    protected void onResume() {
+	if (mOnBtnGone){
+	   mBaseTabOutLogin.setEnabled(false);
+	   mBaseTabIconRight.setEnabled(false);
+	   mBaseTabTvName.setEnabled(false);
+	}
 	mPause =false;
 	super.onResume();
+   }
+
+   @Override
+   protected void onDestroy() {
+	patientInfos.clear();
+	super.onDestroy();
    }
 
    /**

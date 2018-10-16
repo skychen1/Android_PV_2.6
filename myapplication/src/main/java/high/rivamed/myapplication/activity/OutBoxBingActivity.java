@@ -220,6 +220,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	if (mOnBtnGone) {
 	   mTimelyStartBtnRight.setVisibility(View.GONE);
 	   mTimelyOpenDoorRight.setVisibility(View.GONE);
+	   mTimelyRight.setVisibility(View.GONE);
 	}
 	super.onResume();
    }
@@ -374,7 +375,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	   case R.id.base_tab_btn_msg:
 		break;
 	   case R.id.base_tab_back:
-		EventBusUtils.postSticky(new Event.EventDate(true));
+//		EventBusUtils.postSticky(new Event.EventDate(true));
 		finish();
 		break;
 	   case R.id.timely_start_btn_right://重新扫描
@@ -498,8 +499,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
 		   ToastUtils.showShort("操作成功");
-		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-		   EventBusUtils.postSticky(new Event.EventDate(true));
+//		   startActivity(new Intent(OutBoxBingActivity.this, OutBoxFoutActivity.class));
+//		   EventBusUtils.postSticky(new Event.EventDate(true,true));
 		   finish();
 		}
 	   });
@@ -624,6 +625,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    @Override
    protected void onDestroy() {
 	mOnBtnGone = false;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);
 	super.onDestroy();
@@ -779,6 +785,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
 		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
+		mTimelyOpenDoor.setEnabled(false);
+		mTimelyStartBtn.setEnabled(false);
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -786,6 +794,10 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   }
 		}, 3000);
 
+	   }else {
+
+		mTimelyOpenDoor.setEnabled(true);
+		mTimelyStartBtn.setEnabled(true);
 	   }
 	}
    }

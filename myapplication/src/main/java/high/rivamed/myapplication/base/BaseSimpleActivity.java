@@ -90,13 +90,13 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 	LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
 	if (mTitleConn){
 	   Glide.with(this)
-		   .load(R.mipmap.connect_yes)
-		   .error(R.mipmap.connect_no)
+		   .load(R.mipmap.connect_y)
+		   .error(R.mipmap.connect_n)
 		   .into(mBaseTabBtnConn);
 	}else {
 	   Glide.with(this)
-		   .load(R.mipmap.connect_no)
-		   .error(R.mipmap.connect_no)
+		   .load(R.mipmap.connect_n)
+		   .error(R.mipmap.connect_n)
 		   .into(mBaseTabBtnConn);
 	}
    }
@@ -159,9 +159,10 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		builder.setRight("确认", new DialogInterface.OnClickListener() {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			dialog.dismiss();
+
+			startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
 		   }
 		});
 		builder.create().show();

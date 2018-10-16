@@ -557,12 +557,17 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 		//		EventBusUtils.postSticky(new Event.EventAct(mActivityType));
 		//		EventBusUtils.postSticky(mTCstInventoryTwoDto);
 		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
+		mTimelyOpenDoor.setEnabled(false);
+		mTimelyStartBtn.setEnabled(false);
 		new Handler().postDelayed(new Runnable() {
 		   public void run() {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
 		}, 3000);
+	   }else {
+		mTimelyOpenDoor.setEnabled(true);
+		mTimelyStartBtn.setEnabled(true);
 	   }
 	}
    }

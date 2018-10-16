@@ -19,6 +19,9 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static android.view.View.GONE;
+import static high.rivamed.myapplication.base.BaseTimelyActivity.mOnBtnGone;
+
 /**
  * 识别耗材页面adapter
  */
@@ -60,6 +63,13 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
         mSeven_six = (TextView) helper.getView(R.id.seven_six);
         mSeven_seven = (TextView) helper.getView(R.id.seven_seven);
+
+        if (mOnBtnGone) {
+            mSeven_seven.setVisibility(GONE);
+        }else {
+            mSeven_seven.setVisibility(View.VISIBLE);
+        }
+
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
         swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
         LinearLayout  delete = (LinearLayout) helper.getView(R.id.ll_delete);
@@ -70,7 +80,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
             LogUtils.i("InBox","解除移除");
             mdeleteTv.setText("取消移除");
             delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
-            mdeleteIv.setVisibility(View.GONE);
+            mdeleteIv.setVisibility(GONE);
         }else {
             LogUtils.i("InBox","移除");
             mdeleteTv.setText("移除");

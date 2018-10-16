@@ -3,6 +3,7 @@ package high.rivamed.myapplication.bean;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,30 @@ public class Event {
    /**
     * 页面顶部的连接状态改变
     */
+   public static class EventDoorList {
+	public ArrayList<String> doorList;
+	public EventDoorList(ArrayList<String> doorList) {
+	   this.doorList = doorList;
+	}
+   }
+   /**
+    * 快速开柜的数据
+    */
+   public static class EventOutDto {
+	public TCstInventoryDto cstInventoryDto;
+	public String json;
+
+	public EventOutDto(TCstInventoryDto cstInventoryDto) {
+	   this.cstInventoryDto = cstInventoryDto;
+	}
+	public EventOutDto(TCstInventoryDto cstInventoryDto,String json) {
+	   this.cstInventoryDto = cstInventoryDto;
+	   this.json = json;
+	}
+   }
+   /**
+    * 页面顶部的连接状态改变
+    */
    public static class EventTitleConn {
 	public boolean b;
 
@@ -37,9 +62,14 @@ public class Event {
     */
    public static class EventDate {
 	public boolean b;
+	public boolean moreScan;
 
 	public EventDate(boolean b) {
 	   this.b = b;
+	}
+	public EventDate(boolean b,boolean moreScan) {
+	   this.b = b;
+	   this.moreScan = moreScan;
 	}
    }
    /**

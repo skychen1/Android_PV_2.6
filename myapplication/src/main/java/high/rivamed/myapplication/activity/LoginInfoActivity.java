@@ -211,9 +211,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		builder.setRight("确认", new DialogInterface.OnClickListener() {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			dialog.dismiss();
+			startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+
 		   }
 		});
 		builder.create().show();

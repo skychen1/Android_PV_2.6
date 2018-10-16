@@ -1,9 +1,6 @@
 package high.rivamed.myapplication.http;
 
-import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.UIUtils;
-
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -21,7 +18,7 @@ public interface NetApi {
     //正式
     String RELEASED_URL = "http://cc.p5w.net/";
     //测试
-    public static String  MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+
 
     //版本检测和下载
     String URL_GET_VER = MAIN_URL + "/rmApi/app/app/listPage";//获取版本信息

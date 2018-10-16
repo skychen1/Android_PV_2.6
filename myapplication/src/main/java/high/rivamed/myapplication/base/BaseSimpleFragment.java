@@ -89,13 +89,13 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 	mTitleConn = event.b;
 	if (mTitleConn){
 	   Glide.with(this)
-		   .load(R.mipmap.connect_yes)
-		   .error(R.mipmap.connect_no)
+		   .load(R.mipmap.connect_y)
+		   .error(R.mipmap.connect_n)
 		   .into(mBaseTabBtnConn);
 	}else {
 	   Glide.with(this)
-		   .load(R.mipmap.connect_no)
-		   .error(R.mipmap.connect_no)
+		   .load(R.mipmap.connect_n)
+		   .error(R.mipmap.connect_n)
 		   .into(mBaseTabBtnConn);
 	}
    }
