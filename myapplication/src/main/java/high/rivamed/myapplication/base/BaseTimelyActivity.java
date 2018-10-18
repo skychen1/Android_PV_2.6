@@ -379,29 +379,33 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
-
-	LogUtils.i(TAG," onOutDtoEvent     "+event.cstInventoryDto.gettCstInventoryVos().size());
-	LogUtils.i(TAG," onOutDtoEvent     "+(mOutDto!=null));
-	if (mOutDto!=null){
-//	   List<TCstInventoryVo> tCstInventoryVos = event.cstInventoryDto.gettCstInventoryVos();
-//	   mTCstInventoryVos.clear();
-//	   mTCstInventoryVos.addAll(tCstInventoryVos);
-//	   mOutDto.gettCstInventoryVos().clear();
-	   mOutDto.settCstInventoryVos(event.cstInventoryDto.gettCstInventoryVos());
-	   mInJson = event.json;
-	}else {
-	   mOutDto =event.cstInventoryDto;
-	   mTCstInventoryVos=  mOutDto.gettCstInventoryVos();
-	   mInJson = event.json;
+//	if (!mOnOutDestroy){
+	   LogUtils.i(TAG," onOutDtoEvent     "+event.cstInventoryDto.gettCstInventoryVos().size());
+	   LogUtils.i(TAG," onOutDtoEvent     "+(mOutDto!=null));
+	   if (mOutDto!=null){
+		//	   List<TCstInventoryVo> tCstInventoryVos = event.cstInventoryDto.gettCstInventoryVos();
+		//	   mTCstInventoryVos.clear();
+		//	   mTCstInventoryVos.addAll(tCstInventoryVos);
+		//	   mOutDto.gettCstInventoryVos().clear();
+		mOutDto.settCstInventoryVos(event.cstInventoryDto.gettCstInventoryVos());
+		mInJson = event.json;
+	   }else {
+		mOutDto =event.cstInventoryDto;
+		mTCstInventoryVos=  mOutDto.gettCstInventoryVos();
+		mInJson = event.json;
+	   }
+	   for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
+		mOutDto.gettCstInventoryVos().get(i).setSelected(true);
+	   }
+	   List<TCstInventoryVo> voList = mOutDto.gettCstInventoryVos();
+	   for (int i = 0; i < voList.size(); i++) {
+		voList.get(i).setSelected(true);
+	   }
+	   //	initData();
+	if (mBaseTabTvTitle!=null){
+	   setOutBoxDate(voList);
 	}
-	for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
-	   mOutDto.gettCstInventoryVos().get(i).setSelected(true);
-	}
-	List<TCstInventoryVo> voList = mOutDto.gettCstInventoryVos();
-	for (int i = 0; i < voList.size(); i++) {
-	   voList.get(i).setSelected(true);
-	}
-//	setOutBoxDate(voList);
+//	}
 
 	//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 
@@ -426,12 +430,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		setAfterBing();
 	   } else if (my_id == ACT_TYPE_HCCZ_IN) {
 		mTimelyOpenDoor.setVisibility(View.VISIBLE);
-		setInBoxDate();
+		LogUtils.i(TAG,"ACT_TYPE_HCCZ_IN  sss ");
+		setInBoxDate(null);
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   } else if (my_id == ACT_TYPE_ALL_IN) {
 		mTimelyOpenDoor.setVisibility(View.GONE);
 //		setInBoxTitles();
-		setInBoxDate();
+		LogUtils.i(TAG,"ACT_TYPE_ALL_IN  sss ");
+		setInBoxDate(mTCstInventoryVos);
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   }
 
@@ -502,12 +508,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	   loadStockDetails();
 	} else if (my_id == ACT_TYPE_HCCZ_IN) {//首页耗材操作单个或者全部柜子的详情界面 放入
-	   setInBoxDate();
+	   LogUtils.i(TAG,"ACT_TYPE_HCCZ_IN ");
+	   setInBoxDate(null);
 	} else if (my_id == ACT_TYPE_HCCZ_BING) {//绑定
 	   setAfterBing();
 	} else if (my_id == ACT_TYPE_ALL_IN) {//快速开柜入柜
-	   setInBoxDate();
+	   LogUtils.i(TAG,"ACT_TYPE_ALL_IN ");
+	   setInBoxDate(mTCstInventoryVos);
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
+
 	   setOutBoxDate(mOutDto.gettCstInventoryVos());
 	} else if (my_id == ACT_TYPE_FORM_CONFIRM) {
 	   mBaseTabTvTitle.setText("识别耗材");
@@ -761,15 +770,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mSize = array.length;
 
 	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
-   if (mTypeView==null){
+//   if (mTypeView==null){
 	mTypeView = new TableTypeView(this, this, titeleList, mSize, voList, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
-   }else {
-	mTypeView.mTCstInventoryVos.clear();
-	mTypeView.mTCstInventoryVos.addAll(voList);
-   }
+//   }else {
 
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+//   }
+
    }
 
    /**
@@ -789,7 +797,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    /**
     * 快速开柜入柜后赋值界面
     */
-   private void setInBoxDate() {
+   private void setInBoxDate( List<TCstInventoryVo> tCstInventoryVos) {
 	if (mDtoOperation == 8) {
 	   mBaseTabTvTitle.setText("耗材退货");
 	} else if (mDtoOperation == 3) {
@@ -824,13 +832,18 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-
+LogUtils.i(TAG,"mTCstInventoryVos   "+tCstInventoryVos.size());
 	if (my_id == ACT_TYPE_ALL_IN) {
 	   mTimelyOpenDoor.setVisibility(View.GONE);
 	   setInBoxTitles();
-	   mTypeView = new TableTypeView(this, this, titeleList, mSize, mTCstInventoryVos,
-						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						   STYPE_IN);
+//	   if (mTypeView!=null){
+
+//	   }else {
+		mTypeView = new TableTypeView(this, this, titeleList, mSize, tCstInventoryVos,
+							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+							STYPE_IN);
+	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+//	   }
 	} else {
 	   mTimelyOpenDoor.setVisibility(View.VISIBLE);
 	   ArrayList<String> strings = new ArrayList<>();

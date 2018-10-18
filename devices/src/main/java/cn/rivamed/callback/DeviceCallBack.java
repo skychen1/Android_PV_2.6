@@ -1,10 +1,10 @@
 package cn.rivamed.callback;
 
-import cn.rivamed.model.TagInfo;
-import cn.rivamed.device.DeviceType;
-
 import java.util.List;
 import java.util.Map;
+
+import cn.rivamed.device.DeviceType;
+import cn.rivamed.model.TagInfo;
 
 /**
  * @Author 郝小鹏
@@ -98,14 +98,15 @@ public interface DeviceCallBack {
      * 柜门状态变通知
      * @param deviceIndentify
      */
-    void OnDoorCheckedState(String deviceIndentify,boolean opened);
+    void OnDoorCheckedState(String deviceIndentify, boolean opened);
 
     /***
      * RFID UHF RFID READER  扫描结果通知，每次扫描可能有多个通知；通知结束后，会有OnUhfScanCompleted通知
      * @param deviceId 设备标识
      * @param epcs      epc扫描结果，其中Key为EPC，value 为每个epc被多次扫描的信息
      */
-    void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs);
+    void OnUhfScanRet(
+	    boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs);
 
     /***
      * UHF READER 扫描结束通知
@@ -125,7 +126,7 @@ public interface DeviceCallBack {
      * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
      *
      * */
-    void OnGetAnts(String deviceId, boolean success,List<Integer> ants);
+    void OnGetAnts(String deviceId, boolean success, List<Integer> ants);
 
     /**
      * UHF READER 设置功率结果通知

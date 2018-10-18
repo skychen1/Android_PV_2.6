@@ -81,6 +81,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private String                mToJson;
    private int mSelType = 0;
    private List<TCstInventoryVo> mMTCstInventoryVoss;
+   public static boolean mOnOutDestroy =false;
 
    @Override
    public int getCompanyType() {
@@ -277,12 +278,21 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	mEPCDate.clear();
 	mEPCDatess.clear();
+
+	   mOnOutDestroy =true;
 	super.onDestroy();
 
    }
 
    @Override
+   protected void onPause() {
+	mOnOutDestroy = true;
+	super.onPause();
+   }
+
+   @Override
    protected void onResume() {
+	mOnOutDestroy =false;
 	LogUtils.i(TAG, "onResume  ");
 	super.onResume();
    }
@@ -290,7 +300,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    @Override
    public void onStart() {
 	LogUtils.i(TAG, "onStart  ");
-	putAllInEPCDate(mInJson);
+//	putAllInEPCDate(mInJson);
+	mOnOutDestroy =false;
 	mDoorList.addAll(mEthDeviceIdBack);
 	super.onStart();
    }
@@ -420,7 +431,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			if (mDtoLy.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
 
 			}else {
-			   ToastUtils.showShort("操作成功");
+//			   ToastUtils.showShort("操作成功");
 			}
 			overFinish();
 		   }
@@ -665,9 +676,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   } else {
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson,
 										   TCstInventoryDto.class);
-//		overFinish();
-
-
 		if (tCstInventoryDto.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
 		   mOutDto.gettCstInventoryVos().clear();
 		}else {
@@ -750,7 +758,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		} else {
 		   LogUtils.i(TAG,"重新来了");
 		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-		   EventBusUtils.postSticky(new Event.EventOutDto(mTCstInventoryDtoFour));
+		   EventBusUtils.postSticky(new Event.EventOutDto(mTCstInventoryDtoFour,mInJson));
 		}
 	   }
 	});
@@ -787,12 +795,17 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   mBtnFourTh.setEnabled(false);
 		   mTCstInventoryDto=mCstInEpcDto;
 		   mTCstInventoryDto.settCstInventoryVos(mCstInEpcDto.gettCstInventoryVos());
+		   if (mVoOutList != null){
+			Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
+		   }
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {
-			   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
-			   EventBusUtils.postSticky(mTCstInventoryDto);
+
+			   EventBusUtils.postSticky(mCstInEpcDto);
+			   LogUtils.i(TAG,"mTCstInventoryDto   "+mCstInEpcDto.gettCstInventoryVos().size());
 			   EventBusUtils.postSticky(new Event.EventAct("all"));
 			   EventBusUtils.postSticky(new Event.EventDoorList(mDoorList));
+			   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
 			   finish();
 			}
 		   }, 2000);
@@ -839,4 +852,5 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG, "toJson s   " + toJson);
 	return toJson;
    }
+
 }

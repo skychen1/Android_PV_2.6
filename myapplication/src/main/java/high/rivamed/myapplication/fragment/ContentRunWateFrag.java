@@ -175,8 +175,8 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 		   ArrayList<Fragment> fragments = new ArrayList<>();
 		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
 
-			//			fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
-			fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
+		      fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
+//			fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
 		   }
 		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
 		   mHomeRunWateViewpager.setAdapter(mPagerAdapter);

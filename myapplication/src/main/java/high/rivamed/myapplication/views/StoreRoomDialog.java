@@ -182,11 +182,11 @@ public class StoreRoomDialog extends Dialog {
 
 	   ViewGroup.LayoutParams lps = sGridView.getLayoutParams();
 	   if (list.size() >= 8) {
-		lps.height = 450;
+		lps.height =  UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y450);
 	   } else if (list.size()<3){
-		lps.height = 140 * list.size();
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * list.size();
 	   }else {
-		lps.height = 140 * list.size() / 2;
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * list.size() / 2;
 	   }
 	   sGridView.setLayoutParams(lps);
 	   sAdapter = new gridviewAdapter(mContext, R.layout.item_tag, list);

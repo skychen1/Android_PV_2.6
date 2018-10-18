@@ -67,7 +67,7 @@ public class ColuNettyService extends BaseService implements UhfService {
                                 channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
                                 ColuNettyClientHandle channelHandler = new ColuNettyClientHandle();
                                 Log.i(log_tag, "接收到新的链接请求" + channel.remoteAddress());
-                                channelHandler.RegisterMessageListener(new ColuNettyService.ColuNettyMessageListener());
+                                channelHandler.RegisterMessageListener(new ColuNettyMessageListener());
                               //  channel.pipeline().addLast(new IdleStateHandler(10, 0, 0));
                                 /**
                                  *

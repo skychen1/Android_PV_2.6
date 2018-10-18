@@ -309,9 +309,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		}
 	   }
 	}
-	if (mOnBtnGone) {
-	   mTCstInventoryDto.settCstInventoryVos(mTCstInventoryVos);
-	}
+//	if (mOnBtnGone) {
+//	   mTCstInventoryDto.settCstInventoryVos(mTCstInventoryVos);
+//	}
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -498,9 +498,8 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
-		   ToastUtils.showShort("操作成功");
-//		   startActivity(new Intent(OutBoxBingActivity.this, OutBoxFoutActivity.class));
-//		   EventBusUtils.postSticky(new Event.EventDate(true,true));
+		   startActivity(new Intent(OutBoxBingActivity.this, OutBoxFoutActivity.class));
+		   EventBusUtils.postSticky(new Event.EventDate(true,true));
 		   finish();
 		}
 	   });
@@ -526,7 +525,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     * 获取需要绑定的患者
     */
    private void loadBingDate(String optienNameOrId) {
-
+	patientInfos.clear();
 	NetRequest.getInstance()
 		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, null, new BaseResult() {
 		   @Override
@@ -549,6 +548,14 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
 				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
 				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
+//				   patientInfos.add(data);
 				}
 				if (mAfterBind != null && mAfterBind.mDialog.isShowing()) {
 				   if (patientInfos != null && patientInfos.size() > 0) {

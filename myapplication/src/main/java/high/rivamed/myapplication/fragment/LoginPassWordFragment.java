@@ -223,14 +223,20 @@ public class LoginPassWordFragment extends SimpleFragment {
                 // 网络版本
                 String netVersion = versionBean.getVersion();
                 // 比对LogUtils.i(TAG, "localVersion   " + localVersion);
-                int i = StringUtils.compareVersion(netVersion, localVersion);
-                if (i == 1) {
-			 mDesc = versionBean.getDesc();
-			 showUpdateDialog(tCstConfigVos);
-                } else {
-                    // 不需要更新
-			 loginEnjoin(tCstConfigVos);
-		    }
+		   if (netVersion!=null){
+			int i = StringUtils.compareVersion(netVersion, localVersion);
+			if (i == 1) {
+			   mDesc = versionBean.getDesc();
+			   showUpdateDialog(tCstConfigVos);
+			} else {
+			   // 不需要更新
+			   loginEnjoin(tCstConfigVos);
+			}
+		   }else {
+			loginEnjoin(tCstConfigVos);
+		   }
+
+
             }
 
             @Override

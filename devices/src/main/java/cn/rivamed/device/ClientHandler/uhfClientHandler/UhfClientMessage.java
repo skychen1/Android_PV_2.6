@@ -34,7 +34,8 @@ public interface UhfClientMessage {
      * @param deviceId 设备标识
      * @param epcs      epc扫描结果，其中Key为EPC，value 为每个epc被多次扫描的信息
      */
-    void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs);
+    void OnUhfScanRet(
+	    boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs);
 
     /***
      * UHF READER 扫描结束通知

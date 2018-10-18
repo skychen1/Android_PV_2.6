@@ -4,7 +4,7 @@ import android.util.Log;
 
 import cn.rivamed.DeviceManager;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
-import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler11;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
@@ -66,7 +66,7 @@ public class RodinBellService extends BaseService implements UhfService {
                         .childHandler(new ChannelInitializer() {
                             protected void initChannel(Channel channel) throws Exception {
                                 channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
-                                RodinbellReaderHandler channelHandler = new RodinbellReaderHandler();
+                                RodinbellReaderHandler11 channelHandler = new RodinbellReaderHandler11();
                                 Log.i(log_tag, "接收到新的链接请求" + channel.remoteAddress());
                                 channelHandler.RegisterMessageListener(new RodinBellMessageListener());
                                 channel.pipeline().addLast(new IdleStateHandler(5, 0, 0));
