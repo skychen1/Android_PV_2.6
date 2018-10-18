@@ -14,6 +14,7 @@ import com.flyco.tablayout.SlidingTabLayout;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import butterknife.BindView;
@@ -115,8 +116,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
    }
 
    private void onSucceedDate() {
-//	mBuilder.mDialog.dismiss();
-
+	if (!isAdded()) return;
 	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
 	mCttimecheckViewpager.setAdapter(mPagerAdapter);
 	mCttimecheckViewpager.setCurrentItem(0);
@@ -184,5 +184,16 @@ public class StockMiddleInforFrag extends SimpleFragment {
    public void onPause() {
 	EventBusUtils.unregister(this);
 	super.onPause();
+   }
+   @Override
+   public void onDestroyView() {
+	super.onDestroyView();
+	try {
+	   Field f = Fragment.class.getDeclaredField("mChildFragmentManager");
+	   f.setAccessible(true);
+	   f.set(this, null);
+	} catch (Exception e) {
+	   e.printStackTrace();
+	}
    }
 }

@@ -775,7 +775,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	if (UIUtils.getConfigType(mContext, CONFIG_011)) {
+	if (UIUtils.getConfigType(mContext, CONFIG_011)&&mConsumeOpenallTop!=null) {
 	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
