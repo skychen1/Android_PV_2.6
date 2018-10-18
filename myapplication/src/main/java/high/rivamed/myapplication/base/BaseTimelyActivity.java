@@ -380,7 +380,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
 //	if (!mOnOutDestroy){
-	   LogUtils.i(TAG," onOutDtoEvent     "+event.cstInventoryDto.gettCstInventoryVos().size());
+//	   LogUtils.i(TAG," onOutDtoEvent     "+event.cstInventoryDto.gettCstInventoryVos().size());
 	   LogUtils.i(TAG," onOutDtoEvent     "+(mOutDto!=null));
 	   if (mOutDto!=null){
 		//	   List<TCstInventoryVo> tCstInventoryVos = event.cstInventoryDto.gettCstInventoryVos();
@@ -423,7 +423,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
 	   mTCstInventoryDto = event;
 	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
-	   LogUtils.i(TAG,"mTCstInventoryVos  ff    "+tCstInventoryVos.size()+"     "+tCstInventoryVos.get(0).getEpc());
+//	   LogUtils.i(TAG,"mTCstInventoryVos  ff    "+tCstInventoryVos.size()+"     "+tCstInventoryVos.get(0).getEpc());
 	   mTCstInventoryVos.clear();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
 	   if (my_id == ACT_TYPE_HCCZ_BING) {
@@ -669,7 +669,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	LogUtils.i(TAG, "list.size()  " + list.size() + "      " + mTCstInventoryVos.size());
+//	LogUtils.i(TAG, "list.size()  " + list.size() + "      " + mTCstInventoryVos.size());
 	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 							    mTCstInventoryVos.size() + "</big></font>"));
@@ -769,7 +769,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 
-	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
+//	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
 //   if (mTypeView==null){
 	mTypeView = new TableTypeView(this, this, titeleList, mSize, voList, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
@@ -832,7 +832,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-LogUtils.i(TAG,"mTCstInventoryVos   "+tCstInventoryVos.size());
+//LogUtils.i(TAG,"mTCstInventoryVos   "+tCstInventoryVos.size());
 	if (my_id == ACT_TYPE_ALL_IN) {
 	   mTimelyOpenDoor.setVisibility(View.GONE);
 	   setInBoxTitles();
