@@ -109,14 +109,14 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 //		if (mTCstInventoryDtoFour == null) {
 		   mOutDto.setStorehouseCode(
 			   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-		   EventBusUtils.postSticky(new Event.EventOutDto(mOutDto));
+		   EventBusUtils.postSticky(new Event.EventOutDto(mOutDto,mInJson));
 //		}
 //		else {
 //		   mTCstInventoryDtoFour.setStorehouseCode(
 //			   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 //		   EventBusUtils.postSticky(new Event.EventOutDto(mTCstInventoryDtoFour));
 //		}
-		LogUtils.i(TAG,"mO    "+mCstInEpcDto.gettCstInventoryVos().size());
+//		LogUtils.i(TAG,"mO    "+mCstInEpcDto.gettCstInventoryVos().size());
 		if (mOutDto.gettCstInventoryVos().size() == 0 && mCstInEpcDto != null &&
 		    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
 		   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
@@ -164,13 +164,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
-	   String box_id = boxIdBean.getBox_id();
+	   String box_id = boxIdBean.getBox_id().trim();
 	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean BoxIdBean : boxIdDoor) {
 		String device_id = BoxIdBean.getDevice_id();
+		LogUtils.i(TAG, "device_id  " + device_id );
 		for (int x = 0; x < mDoorList.size(); x++) {
-		   if (device_id.equals(mDoorList.get(x))) {
+
+		   if (device_id.equals(mDoorList.get(x).trim())) {
+			LogUtils.i(TAG, "mDoorList  " + mDoorList.get(x) );
 			mDoorList.remove(x);
 		   }
 		}
@@ -302,6 +305,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	LogUtils.i(TAG, "onStart  ");
 //	putAllInEPCDate(mInJson);
 	mOnOutDestroy =false;
+	mDoorList.clear();
 	mDoorList.addAll(mEthDeviceIdBack);
 	super.onStart();
    }
@@ -472,9 +476,12 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		  }
 		}
 	   }
-	   if (mOutDto.gettCstInventoryVos().size() == 0) {
+//	   if (mOutDto.gettCstInventoryVos().size() == 0) {
+//		LogUtils.i(TAG, "json s   " + mInJson);
+
 		putAllInEPCDate(mInJson);
-	   }
+//		putAllInEPCDate(mToJson);
+//	   }
 //	} else {
 //
 //	   for (int i = 0;i<mTCstInventoryDtoFour.gettCstInventoryVos().size();i++) {
@@ -489,18 +496,18 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 //	   }
 //	}
 
-	if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
-	    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
-	   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
-
-	   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
-	   EventBusUtils.postSticky(new Event.EventAct("all"));
-	   EventBusUtils.postSticky(mCstInEpcDto);
-	} else if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
-		     mCstInEpcDto.gettCstInventoryVos().size() == 0) {
-	   mEthDeviceIdBack.clear();
-	   finish();
-	}
+//	if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
+//	    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
+//	   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
+//
+//	   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
+//	   EventBusUtils.postSticky(new Event.EventAct("all"));
+//	   EventBusUtils.postSticky(mCstInEpcDto);
+//	} else if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
+//		     mCstInEpcDto.gettCstInventoryVos().size() == 0) {
+//	   mEthDeviceIdBack.clear();
+//	   finish();
+//	}
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	EventBusUtils.postSticky(new Event.EventDate(true));
    }
@@ -554,6 +561,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 重新扫描
     */
    private void moreStartScan() {
+	mDoorList.clear();
 	mDoorList.addAll(mEthDeviceIdBack);
 	mEPCDate.clear();
 	mEPCDatess.clear();
@@ -768,7 +776,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 快速开柜入柜查询
     */
    private void putAllInEPCDate(String json) {
-	LogUtils.i(TAG, "json s   " + json);
+
 	NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -800,7 +808,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   }
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {
-
 			   EventBusUtils.postSticky(mCstInEpcDto);
 			   LogUtils.i(TAG,"mTCstInventoryDto   "+mCstInEpcDto.gettCstInventoryVos().size());
 			   EventBusUtils.postSticky(new Event.EventAct("all"));

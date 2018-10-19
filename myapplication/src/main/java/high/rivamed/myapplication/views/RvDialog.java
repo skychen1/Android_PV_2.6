@@ -164,15 +164,15 @@ public class RvDialog extends Dialog {
             //	   String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
             //	   titeleList = Arrays.asList(array);
             mSize = titeleList.size();
-	     ViewGroup.LayoutParams lps = mRecyclerview.getLayoutParams();
-	     if (patientInfos.size() >= 8) {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y450);
+            ViewGroup.LayoutParams lps = mRecyclerview.getLayoutParams();
+            if (patientInfos.size() >= 8) {
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y550);
             } else if (patientInfos.size()<3){
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * patientInfos.size();
             }else {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * patientInfos.size() / 2;
             }
-	     mRecyclerview.setLayoutParams(lps);
+            mRecyclerview.setLayoutParams(lps);
             sTableTypeView = new TableTypeView(mContext, mActivity, patientInfos, titeleList, mSize,
                     mLinearLayout, mRecyclerview,
                     mRefreshLayout, ACTIVITY, STYPE_DIALOG);
@@ -213,6 +213,7 @@ public class RvDialog extends Dialog {
                     mRightBtn.onClick(mDialog, DialogInterface.BUTTON_POSITIVE);
                 }
             });
+
             return mDialog;
         }
     }

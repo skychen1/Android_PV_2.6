@@ -131,7 +131,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    private int  mLayout;
    private int PAGE = 1;
    private int SIZE = 20;
-   public  static  String mDeviceCode;
+   public   String mDeviceCode;
    private String mTerm = null;
    private String mEndTime;
    private String mStartTime;
@@ -142,18 +142,18 @@ public class RunWatePagerFrag extends SimpleFragment {
    private RunWateBean                mRunWateBean;
    private String                     mStartTimes;
 
-//   @SuppressLint("ValidFragment")
-//   public RunWatePagerFrag(String deviceCode) {
-//	this.mDeviceCode = deviceCode;
-//
-//   }
-   public static RunWatePagerFrag newInstance(String deviceCode) {
-	Bundle args = new Bundle();
-	RunWatePagerFrag fragment = new RunWatePagerFrag();
-	mDeviceCode = deviceCode;
-	fragment.setArguments(args);
-	return fragment;
+   @SuppressLint("ValidFragment")
+   public RunWatePagerFrag(String deviceCode) {
+	this.mDeviceCode = deviceCode;
+
    }
+//   public static RunWatePagerFrag newInstance(String deviceCode) {
+//	Bundle args = new Bundle();
+//	RunWatePagerFrag fragment = new RunWatePagerFrag();
+////	mDeviceCode = deviceCode;
+//	fragment.setArguments(args);
+//	return fragment;
+//   }
    /**
     * 重新加载数据
     *

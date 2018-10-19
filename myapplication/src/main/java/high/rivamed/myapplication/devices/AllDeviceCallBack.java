@@ -119,6 +119,7 @@ public class AllDeviceCallBack {
 		mEthDeviceIdBack.addAll(strings);
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
+		LogUtils.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
 		EventBusUtils.post(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
@@ -127,7 +128,9 @@ public class AllDeviceCallBack {
 		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
+		LogUtils.i(TAG, "门锁已关闭：    " + deviceIndentify);
 		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
+		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
 		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			mEthDeviceIdBack2.remove(i);
 		   }

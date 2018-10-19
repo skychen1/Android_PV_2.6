@@ -297,6 +297,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		}
 	   }
 	   LogUtils.i(TAG, "mDoorList.size()   " + mDoorList.size());
+	   LogUtils.i(TAG, "mIsClick   " + mIsClick);
 	   if (mIsClick||mDoorList.size()!=0) {
 		return;
 	   }
@@ -380,7 +381,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   TimelyAllFrag.mPauseS = true;
 	   mEPCDatess.clear();
 	   mEPCDate.clear();
-	   initData();
+//	   initData();
 	} else {
 	   //            mPause = true;
 	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
@@ -398,6 +399,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
+      mDoorList.clear();
 	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
 
@@ -573,6 +575,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
     */
    private void putAllOutEPCDates(Map<String, String> epcs) {
 	String toJson = getEpcDtoString(epcs);
+	mEPCDate.clear();
+	mEPCDatess.clear();
 	NetRequest.getInstance().putAllOutEPCDate(toJson, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -583,7 +587,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   mVoOutList.get(i).setSelected(true);
 		}
 		LogUtils.i(TAG, "mVoOutList s   " + mVoOutList.size());
-		putAllInEPCDate(toJson);//用于判断出柜提示显示
+//		putAllInEPCDate(toJson);//用于判断出柜提示显示
 
 		String string = null;
 		if (cstInventoryDto.getErrorEpcs() != null &&
@@ -592,10 +596,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   ToastUtils.showLong(string);
 		}
 		if (mVoOutList != null && mVoOutList.size() != 0) {
-		   LogUtils.i(TAG, "跳出柜" );
+		   LogUtils.i(TAG, "跳出柜" +toJson);
+		   putAllInEPCDate(toJson);
+		   EventBusUtils.postSticky(new Event.EventOutDto(cstInventoryDto,toJson));
 		   mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
 //		   EventBusUtils.postSticky(cstInventoryDto);
-		   EventBusUtils.postSticky(new Event.EventOutDto(cstInventoryDto,toJson));
 		} else {
 		   putAllInEPCDate(toJson);
 		}
@@ -654,6 +659,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   } else {
 			LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
 		      if (mVoOutList!=null&&mVoOutList.size()==0){
+			   mDoorList.clear();
 			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			}
 		   }
@@ -706,7 +712,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 						    cstInventoryDto.getOperationScheduleId()));
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
-
+		      mDoorList.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -727,6 +733,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
+			mDoorList.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();

@@ -329,20 +329,13 @@ public class TableTypeView extends LinearLayout {
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			ViewGroup.LayoutParams lp = mRecyclerview.getLayoutParams();
-			if (patientInfos.size() > 7) {
-			   lp.height = 575;
-			} else {
-			   lp.height = 81 * patientInfos.size();
-			}
+
 			for (int i = 0; i < patientInfos.size(); i++) {
 			   patientInfos.get(i).setSelected(false);
 			}
 			if (patientInfos != null && patientInfos.size() > 1) {
 			   patientInfos.get(0).setSelected(true);
 			}
-
-			mRecyclerview.setLayoutParams(lp);
 
 			mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos);
 

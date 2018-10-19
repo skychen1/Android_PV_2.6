@@ -160,7 +160,6 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
-
 			startActivity(new Intent(mContext, LoginActivity.class));
 			App.getInstance().removeALLActivity_();
 		   }
