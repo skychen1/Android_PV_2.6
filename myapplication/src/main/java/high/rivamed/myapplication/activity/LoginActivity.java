@@ -389,7 +389,7 @@ public class LoginActivity extends SimpleActivity {
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "登录失败！", Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -426,7 +426,7 @@ public class LoginActivity extends SimpleActivity {
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();

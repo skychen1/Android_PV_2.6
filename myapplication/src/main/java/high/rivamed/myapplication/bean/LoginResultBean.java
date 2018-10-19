@@ -9,153 +9,163 @@ import java.util.List;
  * @功能描述:登录返回结果
  */
 public class LoginResultBean implements Serializable {
+
     /**
      * operateSuccess : true
      * id : 0
-     * msg:"
-     * appAccountInfoVo : {"accountName":"adminUM","userName":"asdasd","roleNames":["管理员1","管理员2"],"accountId":"8a80cb8164d9b3940164da1bff760002","userId":"8a80cb8164d9b3940164da1bff760003","isFinger":1}
+     * userFeatureInfo : {"type":"2","data":"DA40BDC4"}
+     * thingCode : 402882a9668b101701668b3427860015
+     * appAccountInfoVo : {"accountName":"adminUM","tenantId":"1","userName":"高级管理员","roles":[{"roleCode":"0","roleName":"系统管理员","funcs":[]},{"roleCode":"0","roleName":"医院医生","funcs":[]},{"roleCode":"0","roleName":"医院护士","funcs":[]}],"accountId":"8a80cb8164d9b3940164da1bff760005","userId":"8a80cb8164d9b3940164da1bff760003","isFinger":1,"isWaidai":1,"isEmergency":0,"sex":"女","useState":"1","emergencyPwd":null}
      */
 
     private boolean operateSuccess;
-    private int id;
-    private String msg;
-
+    private int                  id;
+    private UserFeatureInfoBean  userFeatureInfo;
+    private String               thingCode;
     private AppAccountInfoVoBean appAccountInfoVo;
 
-    public String getMsg() {
-        return msg;
-    }
+    public boolean isOperateSuccess() { return operateSuccess;}
 
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
+    public void setOperateSuccess(boolean operateSuccess) { this.operateSuccess = operateSuccess;}
 
-    public boolean isOperateSuccess() {
-        return operateSuccess;
-    }
+    public int getId() { return id;}
 
-    public void setOperateSuccess(boolean operateSuccess) {
-        this.operateSuccess = operateSuccess;
-    }
+    public void setId(int id) { this.id = id;}
 
-    public int getId() {
-        return id;
-    }
+    public UserFeatureInfoBean getUserFeatureInfo() { return userFeatureInfo;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setUserFeatureInfo(
+          UserFeatureInfoBean userFeatureInfo) { this.userFeatureInfo = userFeatureInfo;}
 
-    public AppAccountInfoVoBean getAppAccountInfoVo() {
-        return appAccountInfoVo;
-    }
+    public String getThingCode() { return thingCode;}
 
-    public void setAppAccountInfoVo(AppAccountInfoVoBean appAccountInfoVo) {
-        this.appAccountInfoVo = appAccountInfoVo;
+    public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+
+    public AppAccountInfoVoBean getAppAccountInfoVo() { return appAccountInfoVo;}
+
+    public void setAppAccountInfoVo(
+          AppAccountInfoVoBean appAccountInfoVo) { this.appAccountInfoVo = appAccountInfoVo;}
+
+    public static class UserFeatureInfoBean {
+
+        /**
+         * type : 2
+         * data : DA40BDC4
+         */
+
+        private String type;
+        private String data;
+
+        public String getType() { return type;}
+
+        public void setType(String type) { this.type = type;}
+
+        public String getData() { return data;}
+
+        public void setData(String data) { this.data = data;}
     }
 
     public static class AppAccountInfoVoBean {
+
         /**
          * accountName : adminUM
-         * userName : asdasd
-         * roleNames : ["管理员1","管理员2"]
-         * accountId : 8a80cb8164d9b3940164da1bff760002
+         * tenantId : 1
+         * userName : 高级管理员
+         * roles : [{"roleCode":"0","roleName":"系统管理员","funcs":[]},{"roleCode":"0","roleName":"医院医生","funcs":[]},{"roleCode":"0","roleName":"医院护士","funcs":[]}]
+         * accountId : 8a80cb8164d9b3940164da1bff760005
          * userId : 8a80cb8164d9b3940164da1bff760003
          * isFinger : 1
-         * sex:1
-         * headIcon
+         * isWaidai : 1
+         * isEmergency : 0
+         * sex : 女
+         * useState : 1
+         * emergencyPwd : null
          */
 
         private String accountName;
-        private String userName;
-        private String accountId;
-        private String userId;
-        private int isFinger;
-        private int isWaidai;
-        private int isEmergency;
-        private String sex;
-        private String headIcon;
+        private String          tenantId;
+        private String          userName;
+        private String          accountId;
+        private String          userId;
+        private int             isFinger;
+        private int             isWaidai;
+        private int             isEmergency;
+        private String          sex;
+        private String          useState;
+        private Object          emergencyPwd;
+        private List<RolesBean> roles;
 
-        public int getIsEmergency() {
-            return isEmergency;
-        }
+        public String getAccountName() { return accountName;}
 
-        public void setIsEmergency(int isEmergency) {
-            this.isEmergency = isEmergency;
-        }
+        public void setAccountName(String accountName) { this.accountName = accountName;}
 
-        public String getHeadIcon() {
-            return headIcon;
-        }
+        public String getTenantId() { return tenantId;}
 
-        public void setHeadIcon(String headIcon) {
-            this.headIcon = headIcon;
-        }
+        public void setTenantId(String tenantId) { this.tenantId = tenantId;}
 
-        public String getSex() {
-            return sex;
-        }
+        public String getUserName() { return userName;}
 
-        public void setSex(String sex) {
-            this.sex = sex;
-        }
+        public void setUserName(String userName) { this.userName = userName;}
 
-        public int getIsWaidai() {
-            return isWaidai;
-        }
+        public String getAccountId() { return accountId;}
 
-        public void setIsWaidai(int isWaidai) {
-            this.isWaidai = isWaidai;
-        }
+        public void setAccountId(String accountId) { this.accountId = accountId;}
 
-        private List<String> roleNames;
+        public String getUserId() { return userId;}
 
-        public String getAccountName() {
-            return accountName;
-        }
+        public void setUserId(String userId) { this.userId = userId;}
 
-        public void setAccountName(String accountName) {
-            this.accountName = accountName;
-        }
+        public int getIsFinger() { return isFinger;}
 
-        public String getUserName() {
-            return userName;
-        }
+        public void setIsFinger(int isFinger) { this.isFinger = isFinger;}
 
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
+        public int getIsWaidai() { return isWaidai;}
 
-        public String getAccountId() {
-            return accountId;
-        }
+        public void setIsWaidai(int isWaidai) { this.isWaidai = isWaidai;}
 
-        public void setAccountId(String accountId) {
-            this.accountId = accountId;
-        }
+        public int getIsEmergency() { return isEmergency;}
 
-        public String getUserId() {
-            return userId;
-        }
+        public void setIsEmergency(int isEmergency) { this.isEmergency = isEmergency;}
 
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
+        public String getSex() { return sex;}
 
-        public int getIsFinger() {
-            return isFinger;
-        }
+        public void setSex(String sex) { this.sex = sex;}
 
-        public void setIsFinger(int isFinger) {
-            this.isFinger = isFinger;
-        }
+        public String getUseState() { return useState;}
 
-        public List<String> getRoleNames() {
-            return roleNames;
-        }
+        public void setUseState(String useState) { this.useState = useState;}
 
-        public void setRoleNames(List<String> roleNames) {
-            this.roleNames = roleNames;
+        public Object getEmergencyPwd() { return emergencyPwd;}
+
+        public void setEmergencyPwd(Object emergencyPwd) { this.emergencyPwd = emergencyPwd;}
+
+        public List<RolesBean> getRoles() { return roles;}
+
+        public void setRoles(List<RolesBean> roles) { this.roles = roles;}
+
+        public static class RolesBean {
+
+            /**
+             * roleCode : 0
+             * roleName : 系统管理员
+             * funcs : []
+             */
+
+            private String roleCode;
+            private String  roleName;
+            private List<?> funcs;
+
+            public String getRoleCode() { return roleCode;}
+
+            public void setRoleCode(String roleCode) { this.roleCode = roleCode;}
+
+            public String getRoleName() { return roleName;}
+
+            public void setRoleName(String roleName) { this.roleName = roleName;}
+
+            public List<?> getFuncs() { return funcs;}
+
+            public void setFuncs(List<?> funcs) { this.funcs = funcs;}
         }
     }
 }

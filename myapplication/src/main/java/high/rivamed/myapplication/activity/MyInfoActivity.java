@@ -13,6 +13,7 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.LoginResultBean;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -34,6 +35,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 public class MyInfoActivity extends BaseSimpleActivity {
 
+    private static final String TAG = "MyInfoActivity";
     @BindView(R.id.setting_name)
     TextView  mSettingName;
     @BindView(R.id.setting_department)
@@ -75,16 +77,16 @@ public class MyInfoActivity extends BaseSimpleActivity {
     private void initData() {
         try {
             String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-
+            LogUtils.i(TAG,"accountData   "+accountData);
             LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 
             LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-            List<String> roleNames = appAccountInfoVo.getRoleNames();
-            String roleName = "";
-            for (int i = 0; i < roleNames.size(); i++) {
-                roleName = roleName + roleNames.get(i);
-                if (i < roleNames.size() - 1) {
+	     List<LoginResultBean.AppAccountInfoVoBean.RolesBean> roles = appAccountInfoVo.getRoles();
+	     String roleName = "";
+            for (int i = 0; i < roles.size(); i++) {
+                roleName = roleName + roles.get(i).getRoleName();
+                if (i < roles.size() - 1) {
                     roleName = roleName + "/";
                 }
             }

@@ -84,8 +84,8 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        mLoginName.setText("adminUM");
-        mLoginPassword.setText("000000");
+//        mLoginName.setText("adminUM");
+//        mLoginPassword.setText("000000");
     }
 
     @Override
@@ -194,7 +194,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                         mContext.startActivity(intent);
                         mContext.finish();
                     }else {
-                        Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "登录失败！", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
