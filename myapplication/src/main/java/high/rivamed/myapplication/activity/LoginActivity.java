@@ -168,6 +168,20 @@ public class LoginActivity extends SimpleActivity {
 
 	Log.d("fbl", size.x + " , " + size.y + " , ");
 
+	getWindowManager().getDefaultDisplay().getMetrics(dm);
+	int heightPixels = dm.heightPixels;
+	int widthPixels = dm.widthPixels;
+	float density = dm.density;
+	float heightDP = heightPixels / density;
+	float widthDP = widthPixels / density;
+	float smallestWidthDP;
+	if(widthDP < heightDP) {
+	   smallestWidthDP = widthDP;
+	}else {
+	   smallestWidthDP = heightDP;
+	}
+
+	LogUtils.i("fbl", smallestWidthDP +"    我是dp单位     "+density);
 	//---------------------------------------------------
 
 	//创建数据库表

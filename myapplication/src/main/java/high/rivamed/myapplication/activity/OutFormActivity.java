@@ -29,7 +29,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/29 14:45
- * 描述:        请领单主界面
+ * 描述:        请领单主界面（医嘱）
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$

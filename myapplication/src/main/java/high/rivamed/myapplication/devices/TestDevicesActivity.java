@@ -94,6 +94,18 @@ public class TestDevicesActivity extends SimpleActivity {
             DisplayMetrics dm = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(dm);
             AppendLog("获取有效屏幕分辨率:X=" + dm.widthPixels + ";Y=" + dm.heightPixels);
+            int heightPixels = dm.heightPixels;
+            int widthPixels = dm.widthPixels;
+            float density = dm.density;
+            float heightDP = heightPixels / density;
+            float widthDP = widthPixels / density;
+            float smallestWidthDP;
+            if(widthDP < heightDP) {
+                smallestWidthDP = widthDP;
+            }else {
+                smallestWidthDP = heightDP;
+            }
+            AppendLog("我是dp单位最小宽度:   " + smallestWidthDP+"    屏幕密度:  "+density);
         } catch (Throwable e) {
 
         }

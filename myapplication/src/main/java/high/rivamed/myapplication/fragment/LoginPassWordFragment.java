@@ -84,8 +84,8 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-//        mLoginName.setText("adminUM");
-//        mLoginPassword.setText("000000");
+        mLoginName.setText("adminUM");
+        mLoginPassword.setText("000000");
     }
 
     @Override

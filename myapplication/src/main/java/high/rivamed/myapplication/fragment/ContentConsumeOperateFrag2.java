@@ -467,7 +467,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mEPCDate.clear();
 	}
 	initData();
-	initEvent();
+
    }
 
    @Override
@@ -484,19 +484,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading = null;
 	}
 	super.onResume();
-   }
-
-   private void initEvent() {
-	//关联患者
-	mFastopenTitleGuanlian.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View view) {
-		if (UIUtils.isFastDoubleClick()) {
-		   return;
-		}
-		goToPatientConn();//患者关联
-	   }
-	});
    }
 
    private void goToPatientConn() {
@@ -1137,9 +1124,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   break;
 		case R.id.base_tab_btn_msg:
 		   break;
-		case R.id.function_title_meal:
-		   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-			 UIUtils.getConfigType(mContext, CONFIG_010)) {
+		case R.id.function_title_meal://套组
+		   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
 			mContext.startActivity(new Intent(mContext, OutMealActivity.class));
 			EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
 		   } else {
@@ -1147,9 +1133,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   }
 
 		   break;
-		case R.id.fastopen_title_form:
-		   if (UIUtils.getConfigType(mContext, CONFIG_007) &&
-			 UIUtils.getConfigType(mContext, CONFIG_010)) {
+		case R.id.fastopen_title_form://医嘱
+		   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
 			mContext.startActivity(new Intent(mContext, OutFormActivity.class));
 		   } else {
 			ToastUtils.showShort("此功能暂未开放");
@@ -1157,7 +1142,10 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   }
 		   break;
 		case R.id.fastopen_title_guanlian://患者关联
-		   //                mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   }
+		   goToPatientConn();//患者关联
 		   break;
 	   }
 	   //选择操作监听
