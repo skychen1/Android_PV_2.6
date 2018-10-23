@@ -120,7 +120,7 @@ public class AllDeviceCallBack {
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 		LogUtils.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
-		EventBusUtils.post(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
+		EventBusUtils.postSticky(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
 	   @Override
@@ -136,7 +136,7 @@ public class AllDeviceCallBack {
 		   }
 		}
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.post(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
+		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
 	   }

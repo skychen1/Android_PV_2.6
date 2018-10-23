@@ -218,12 +218,16 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-	for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
-	   if (s.getCode().equals(CONFIG_013)) {
-		return true;
+      if (tCstConfigVos.size()==0){
+	   return false;
+	}else {
+	   for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
+		if (s.getCode().equals(CONFIG_013)) {
+		   return true;
+		}
 	   }
+	   return false;
 	}
-	return false;
    }
 
    /**
@@ -238,9 +242,7 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-		   if (tCstConfigVos.size() != 0) {
 			getUpDateVer(tCstConfigVos, configType, loginType);
-		   }
 		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 			mLoginPass.setVisibility(View.VISIBLE);
 			mLoginViewpager.setScanScroll(true);
@@ -612,12 +614,16 @@ public class LoginActivity extends SimpleActivity {
 		String netVersion = versionBean.getVersion();
 		// 比对LogUtils.i(TAG, "localVersion   " + localVersion);
 		LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
-		int i = StringUtils.compareVersion(netVersion, localVersion);
-		if (i == 1) {
-		   mDesc = versionBean.getDesc();
-		   showUpdateDialog(tCstConfigVos, configType, loginType);
-		} else {
-		   // 不需要更新
+		if (netVersion!=null) {
+		   int i = StringUtils.compareVersion(netVersion, localVersion);
+		   if (i == 1) {
+			mDesc = versionBean.getDesc();
+			showUpdateDialog(tCstConfigVos, configType, loginType);
+		   } else {
+			// 不需要更新
+			loginEnjoin(tCstConfigVos, configType, loginType);
+		   }
+		}else {
 		   loginEnjoin(tCstConfigVos, configType, loginType);
 		}
 	   }

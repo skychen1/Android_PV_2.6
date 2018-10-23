@@ -213,7 +213,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			dialog.dismiss();
 			startActivity(new Intent(mContext, LoginActivity.class));
 //			App.getInstance().removeALLActivity_();
-
+			finish();
 		   }
 		});
 		builder.create().show();

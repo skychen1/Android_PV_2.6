@@ -423,6 +423,9 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 //		}
 //	   }
 //	}
+	if (getExceedTime(tCstInventoryVos)) {
+	   return;
+	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
@@ -535,12 +538,14 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		//确认
 		mIntentType = 1;
 		mSelType = 1;
+
 		setLyDate(mIntentType);
 		break;
 	   case R.id.btn_four_yc://移出
 		//确认
 		mIntentType = 1;
 		mSelType = 2;
+
 		setYcDate(mIntentType);
 		break;
 	   //	   case R.id.btn_four_tb://调拨
@@ -555,6 +560,17 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		setThDate(mIntentType);
 		break;
 	}
+   }
+
+   private boolean getExceedTime(List<TCstInventoryVo> voList) {
+	for (TCstInventoryVo s:voList){
+	   if (s.getIsErrorOperation()==1){
+		   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+		   mTimelyRight.setBackgroundResource(R.drawable.bg_btn_gray_pre);
+		return true;
+	   }
+	}
+	return false;
    }
 
    /**
@@ -658,10 +674,17 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 //	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
 //	}
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
+	TCstInventoryDto tCstInventoryDtos = mGson.fromJson(mTCstInventoryDtoJson,
+									    TCstInventoryDto.class);
+	List<TCstInventoryVo> voList = tCstInventoryDtos.gettCstInventoryVos();
+	if (getExceedTime(voList)) {
+	   return;
+	}
 	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
+
 		NetRequest.getInstance()
 			.putAllOperateYes(mTCstInventoryDtoJson, this, null, new BaseResult() {
 			   @Override
@@ -682,6 +705,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
+
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson,
 										   TCstInventoryDto.class);
 		if (tCstInventoryDto.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
@@ -791,7 +815,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   ToastUtils.showLong(string);
 		   LogUtils.i(TAG, " string   " + string);
 		}
-		LogUtils.i(TAG, " string   " + string);
+
 		if (((mVoOutList != null && mVoOutList.size() == 0) || mVoOutList == null) &&
 		    ((mTCstInventoryDtoFour != null &&
 			mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) ||
@@ -818,12 +842,17 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   }, 2000);
 
 		} else {
+		   LogUtils.i(TAG,"mVoOutList.size()    "+mVoOutList.size());
+		   LogUtils.i(TAG,"mCstInEpcDto.gettCstInventoryVos().size()    "+mCstInEpcDto.gettCstInventoryVos().size());
 		   if (mCstInEpcDto.gettCstInventoryVos().size() > 0) {
 			LogUtils.i(TAG, "请重新操作");
 			EventBusUtils.postSticky(new Event.EventOutTitleV(true));
 		   } else {
 			if (mVoOutList != null && mVoOutList.size() == 0) {
-			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+			   mBtnFourLy.setEnabled(false);
+			   mBtnFourYc.setEnabled(false);
+			   mBtnFourTh.setEnabled(false);
+			   Toast.makeText(mContext, "出柜操作完成!", Toast.LENGTH_SHORT).show();
 			   new Handler().postDelayed(new Runnable() {
 				public void run() {
 				   EventBusUtils.postSticky(new Event.EventFrag("START1"));

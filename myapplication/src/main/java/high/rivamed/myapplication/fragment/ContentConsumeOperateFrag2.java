@@ -180,7 +180,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	mIsClick = event.isClick;
@@ -487,6 +487,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void goToPatientConn() {
+	LogUtils.i(TAG, "result   ");
 	NetRequest.getInstance().findTempPatients("", this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -1092,7 +1093,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
 	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
 	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
-	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo})
+	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo,R.id.fastopen_title_guanlian})
    public void onViewClicked(View view) {
 	if (!mIsClick) {
 	   switch (view.getId()) {

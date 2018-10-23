@@ -219,7 +219,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	LogUtils.i(TAG, "fffffafafafafafa");
 	if (event.type) {
-	   if (event.bing) {
+	   if (event.bing) {//绑定的按钮转换
 		for (TCstInventoryVo b : mTCstInventoryVos) {
 		   ArrayList<String> strings = new ArrayList<>();
 		   strings.add(b.getCstCode());
@@ -257,7 +257,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		}
 	   } else {
 		for (TCstInventoryVo b : mTCstInventoryVos) {
-
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag()==0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
