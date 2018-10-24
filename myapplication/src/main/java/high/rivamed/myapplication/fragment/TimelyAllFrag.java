@@ -346,7 +346,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	mSize = array.length;
 
 	mLayout = R.layout.item_realtime_six_layout;
-	mHeadView = getLayoutInflater().inflate(R.layout.item_realtime_six_title_layout,
+	mHeadView = LayoutInflater.from(_mActivity).inflate(R.layout.item_realtime_six_title_layout,
 							    (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -357,8 +357,8 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRefreshLayout.setEnableAutoLoadMore(false);
 
 	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能

@@ -321,7 +321,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 		//		mLinearLayout.addView(mHeadView);
 	   } else {
 		mLayout = R.layout.item_frg_six_layout;
-		mHeadView = getLayoutInflater().inflate(R.layout.item_frg_six_title_layout,
+		mHeadView = LayoutInflater.from(_mActivity)
+			.inflate(R.layout.item_frg_six_title_layout,
 								    (ViewGroup) mLinearLayout.getParent(), false);
 		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 		((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -366,7 +367,8 @@ public class PublicTimelyFrag extends SimpleFragment {
 		lp.setMargins(0, 0, 0, 0);
 		mPublicLl.setLayoutParams(lp);
 		mLayout = R.layout.item_form_seven_layout;
-		mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
+		mHeadView = LayoutInflater.from(_mActivity)
+			.inflate(R.layout.item_form_seven_title_layout,
 								    (ViewGroup) mLinearLayout.getParent(), false);
 
 		((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));

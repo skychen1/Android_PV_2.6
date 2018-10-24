@@ -44,6 +44,7 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
@@ -286,7 +287,7 @@ public class LoginPassWordFragment extends SimpleFragment {
    }
 
    private void loadUpDataVersion(final ProgressDialog mDialog,List<ConfigBean.TCstConfigVosBean> tCstConfigVos){
-	OkGo.<File>get(URL_UPDATE).tag(this)//
+	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
 		   public void onSuccess(Response<File> response) {

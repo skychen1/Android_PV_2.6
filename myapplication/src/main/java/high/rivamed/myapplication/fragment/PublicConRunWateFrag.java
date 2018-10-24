@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -91,8 +92,8 @@ public class PublicConRunWateFrag extends SimpleFragment {
 	mSize = array.length;
 
 	mLayout = R.layout.item_runwate_eight_layout;
-	mHeadView = getLayoutInflater().inflate(R.layout.item_runwate_eight_title_layout,
-							    (ViewGroup) mLinearLayout.getParent(), false);
+	mHeadView = LayoutInflater.from(_mActivity).inflate(R.layout.item_runwate_eight_title_layout,
+										 (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));

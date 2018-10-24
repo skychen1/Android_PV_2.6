@@ -388,7 +388,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
 			   mWateBeanRows = mRunWateBean.getRows();
 			   mLayout = R.layout.item_runwate_eight_layout;
-			   mHeadView = getLayoutInflater().inflate(
+			   mHeadView = LayoutInflater.from(_mActivity).inflate(
 				   R.layout.item_runwate_eight_title_layout,
 				   (ViewGroup) mLinearLayout.getParent(), false);
 			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
@@ -408,8 +408,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
 
 			   mHeadView.setBackgroundResource(R.color.bg_green);
-			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 			   mRefreshLayout.setEnableAutoLoadMore(true);
 			   mRecyclerview.setAdapter(mWatePageAdapter);
 			   View inflate = LayoutInflater.from(_mActivity)

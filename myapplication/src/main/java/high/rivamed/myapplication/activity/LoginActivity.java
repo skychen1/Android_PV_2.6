@@ -683,7 +683,8 @@ public class LoginActivity extends SimpleActivity {
 	   final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
 	LogUtils.i(TAG, "apkUri " + FileUtils.getDiskCacheDir(mContext));
-	OkGo.<File>get(URL_UPDATE).tag(this)//
+	LogUtils.i(TAG, "apkUrL " +URL_UPDATE);
+	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
