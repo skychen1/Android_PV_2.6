@@ -159,11 +159,10 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
+	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size()+"    mOnBtnGone    "+mOnBtnGone);
 	AllDeviceCallBack.getInstance().initCallBack();
 	if (!mOnBtnGone) {
-	   mStarts.cancel();
-	   mStarts.start();
+
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
