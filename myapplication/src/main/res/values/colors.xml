@@ -19,7 +19,7 @@
 	<color name="bg_f6">#f6f6f6</color>
 	<color name="bg_delete">#F5222D</color>
 
-	<color name="color_drak_green">#1B6573</color>
+	<color name="color_drak_green">#1C6573</color>
 	<!--用于突出按钮文字激活状态的控件-->
 	<color name="color_g">#01B362</color>
 	<color name="color_green">#00A98D</color>

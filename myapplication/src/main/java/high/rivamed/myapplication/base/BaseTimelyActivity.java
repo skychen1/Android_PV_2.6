@@ -250,6 +250,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
 			if (mStarts != null) {
+			   LogUtils.i(TAG, "OutBoxBingActivity   ssss");
 			   mStarts.cancel();
 			   mStarts.start();
 			}
@@ -456,7 +457,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
@@ -472,8 +473,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   .error(R.mipmap.hccz_mrtx_nv)
 		   .into(mBaseTabIconRight);
 	}
-	getCompanyType();
 
+	getCompanyType();
+	if (mStarts==null){
+	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+	}
 	initData();
    }
 
@@ -682,7 +686,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   ACT_TYPE_CONFIRM_HAOCAI, operation);
 	}
-
+	setTimeStart();
    }
 
    /**
@@ -875,6 +879,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
 		if (mStarts != null) {
+		   LogUtils.i(TAG, "true  s s ss s ");
 		   mStarts.cancel();
 		   mStarts.start();
 		}
@@ -962,7 +967,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	@Override
 	public void onTick(long millisUntilFinished) {// 计时过程显示
-	   if (millisUntilFinished / 1000 <= 135) {
+	   if (millisUntilFinished / 1000 <= 35) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
 	   } else {
 		textView.setText("确认并退出登录");

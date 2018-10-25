@@ -23,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
@@ -85,8 +86,11 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        mLoginName.setText("adminUM");
-        mLoginPassword.setText("000000");
+
+	 if (BuildConfig.DEBUG) {
+	    mLoginName.setText("adminUM");
+	    mLoginPassword.setText("000000");
+	 }
     }
 
     @Override

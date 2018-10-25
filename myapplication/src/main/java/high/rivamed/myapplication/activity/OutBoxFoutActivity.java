@@ -101,11 +101,11 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	if (mDate) {
 	   if (mSelType == 1 && event.moreScan) {
-		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
+//		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
 		mStarts.cancel();
 		moreStartScan();
 	   } else if (mSelType != 1 && mSelType != 0) {
-		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
+//		LogUtils.i(TAG, "mTCstInventoryDto  " + mOutDto.gettCstInventoryVos().size());
 //		if (mTCstInventoryDtoFour == null) {
 		   mOutDto.setStorehouseCode(
 			   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
@@ -456,16 +456,14 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    private void overFinish() {
 //	if (mTCstInventoryDtoFour == null) {
 
-	   LogUtils.i(TAG,"xxxxxx  "+mOutDto.gettCstInventoryVos().size());
+//	   LogUtils.i(TAG,"xxxxxx  "+mOutDto.gettCstInventoryVos().size());
 	   mMTCstInventoryVoss = new ArrayList<>();
 
 	   for (int i = 0;i<mOutDto.gettCstInventoryVos().size();i++) {
-		LogUtils.i(TAG,"xxfff    "+i+"    " +mOutDto.gettCstInventoryVos().get(i).isSelected());
 		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
 		   mMTCstInventoryVoss.add(mOutDto.gettCstInventoryVos().get(i));
 
 		}else {
-		   LogUtils.i(TAG,"wei删除  "+mOutDto.gettCstInventoryVos().get(i).getEpc());
 		}
 	   }
 	   if (mMTCstInventoryVoss.size()==mOutDto.gettCstInventoryVos().size()){
@@ -833,7 +831,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {
 			   EventBusUtils.postSticky(mCstInEpcDto);
-			   LogUtils.i(TAG,"mTCstInventoryDto   "+mCstInEpcDto.gettCstInventoryVos().size());
+//			   LogUtils.i(TAG,"mTCstInventoryDto   "+mCstInEpcDto.gettCstInventoryVos().size());
 			   EventBusUtils.postSticky(new Event.EventAct("all"));
 			   EventBusUtils.postSticky(new Event.EventDoorList(mDoorList));
 			   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
@@ -842,8 +840,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   }, 2000);
 
 		} else {
-		   LogUtils.i(TAG,"mVoOutList.size()    "+mVoOutList.size());
-		   LogUtils.i(TAG,"mCstInEpcDto.gettCstInventoryVos().size()    "+mCstInEpcDto.gettCstInventoryVos().size());
+//		   LogUtils.i(TAG,"mVoOutList.size()    "+mVoOutList.size());
+//		   LogUtils.i(TAG,"mCstInEpcDto.gettCstInventoryVos().size()    "+mCstInEpcDto.gettCstInventoryVos().size());
 		   if (mCstInEpcDto.gettCstInventoryVos().size() > 0) {
 			LogUtils.i(TAG, "请重新操作");
 			EventBusUtils.postSticky(new Event.EventOutTitleV(true));

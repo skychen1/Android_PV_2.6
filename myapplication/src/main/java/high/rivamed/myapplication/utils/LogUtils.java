@@ -2,8 +2,6 @@ package high.rivamed.myapplication.utils;
 
 import com.orhanobut.logger.Logger;
 
-import high.rivamed.myapplication.BuildConfig;
-
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -17,7 +15,7 @@ import high.rivamed.myapplication.BuildConfig;
  */
 public class LogUtils {
 
-   public static boolean isDebug = BuildConfig.API_ENV;
+   public static boolean isDebug = true;
 
    public static void e(String tag, Throwable throwable) {
 	if (isDebug) {

@@ -270,19 +270,16 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int scanTime = 3000;
+                int scanTime = 3;
                 try {
-                    Integer.parseInt(txt_scantime.getText().toString());
-                    if (scanTime < 0 || scanTime > 100) {
-                        scanTime = 3000;
-                    }
+                    scanTime = Integer.parseInt(txt_scantime.getText().toString());
                 } catch (Throwable e) {
 
                 }
                 for (Map.Entry<String, DeviceHandler> device : DeviceManager.getInstance().getConnetedDevices().entrySet()) {
                     if (device.getValue().getDeviceType() == DeviceType.UHFREADER) {
                         int ret = getInstance().StartUhfScan(uhfDeviceId, scanTime * 1000);
-                        AppendLog("启动持续扫描,设备ID=" + device.getKey() + "，扫描时间为" + scanTime + ";RET=" + ret);
+                        AppendLog("启动持续扫描,设备ID=" + device.getKey() + "，扫描时间为" + scanTime + "s ;RET=" + ret);
                     }
                 }
             }
