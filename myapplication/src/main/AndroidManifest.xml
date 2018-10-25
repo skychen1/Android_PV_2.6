@@ -122,10 +122,12 @@
         <!-- </receiver> -->
         <activity
             android:name=".activity.TemPatientBindActivity"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 		<activity
             android:name=".activity.PatientConnActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
 
         <receiver android:name=".http.ContentReceiver"
             >

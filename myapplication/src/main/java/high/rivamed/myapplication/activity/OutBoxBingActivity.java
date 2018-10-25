@@ -124,7 +124,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOverEvent(Event.EventOverPut event) {
-	if (event.b) {
+	if (event.b&&!mOnBtnGone) {
 	   LogUtils.i(TAG, "EventOverPut");
 	   mIntentType = 2;//2确认并退出
 	   loadBingFistDate(mIntentType);

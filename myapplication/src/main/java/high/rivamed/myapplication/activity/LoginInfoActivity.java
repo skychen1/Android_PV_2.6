@@ -89,7 +89,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	mSettingIcCardEdit = findViewById(R.id.setting_ic_card_edit);
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvTitle.setText("登录信息");
+	mBaseTabTvTitle.setText("登录设置");
 	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
 	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
 	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
