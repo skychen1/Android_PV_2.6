@@ -30,10 +30,13 @@
 	<color name="text_color_6">#666666</color>
 	<color name="text_color_26">#262626</color>
 	<color name="text_color_9">#999999</color>
+	<color name="text_color_0">#000000</color>
 	<color name="color_edit_line">#b2b2b2</color>
 	<color name="color_red">#F5222D</color>
 	<color name="color_red_type">#FF520E</color>
 	<color name="color_line">#979797</color>
+	<color name="color_text_line">#7C8188</color>
+	<color name="color_navy_blue">#007FA9</color>
 
 	<color name="card_stock_text">#F94641</color>
 	<!--过期耗材信息提示-->
