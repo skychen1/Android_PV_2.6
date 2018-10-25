@@ -703,7 +703,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
-
 		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mTCstInventoryDtoJson,
 										   TCstInventoryDto.class);
 		if (tCstInventoryDto.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
