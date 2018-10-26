@@ -266,7 +266,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   } else {
 		for (TCstInventoryVo b : mTCstInventoryVos) {
 		   LogUtils.i(TAG, "mOperation   cancel" + mOperation);
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8)) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag()!=0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
@@ -886,15 +886,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private void setTimeStart() {
 	for (TCstInventoryVo b : mTCstInventoryVos) {
 	   String status = b.getStatus();
-	   LogUtils.i(TAG, "b.getPatientName()    " + (b.getPatientName() == null));
+	   LogUtils.i(TAG, "b.getPatientName()    " + (b.getPatientName() == null)+mDtoOperation);
 //	   if (((b.getIsErrorOperation() == 0 && b.getStopFlag() != 0) &&
 //		  (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) &&
 //		   b.getPatientName() != null)) ||
 //		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0 && b.getStopFlag() != 0) ||
 //		 (b.getStopFlag() == 0 && mDtoOperation == 8)) {
-	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&mDtoOperation!=8) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		  b.getStopFlag() == 0) ||
+		  b.getStopFlag() == 0&&mDtoOperation!=8) ||
 		 (mDtoOperation == 3 &&UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)){
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
