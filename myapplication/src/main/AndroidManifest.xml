@@ -9,9 +9,10 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.android.example.USB_PERMISSION"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_LOGS"
+    <uses-permission android:name="com.android.example.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -31,12 +32,10 @@
 
         <meta-data
             android:name="design_width"
-            android:value="1920">
-        </meta-data>
+            android:value="1920"></meta-data>
         <meta-data
             android:name="design_height"
-            android:value="1200">
-        </meta-data>
+            android:value="1200"></meta-data>
 
         <activity
             android:name=".activity.LoginActivity"
@@ -49,8 +48,7 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:screenOrientation="sensorLandscape"
-            />
+            android:screenOrientation="sensorLandscape" />
 
         <activity
             android:name=".activity.MyInfoActivity"
@@ -89,7 +87,7 @@
             android:name=".activity.OutFormActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.OutFormConfirmActivity"
+            android:name=".activity.NewOutFormConfirmActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.OutMealActivity"
@@ -100,8 +98,11 @@
         <activity
             android:name=".activity.RegisteActivity"
             android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".activity.NewOutMealBingConfirmActivity"
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.OutMealBingConfirmActivity"
             android:screenOrientation="sensorLandscape" />
@@ -123,19 +124,18 @@
         <activity
             android:name=".activity.TemPatientBindActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-		<activity
+        <activity
             android:name=".activity.PatientConnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
-        <receiver android:name=".http.ContentReceiver"
-            >
+        <receiver android:name=".http.ContentReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.TimerService" >   </service>
-        <receiver android:name=".service.AlarmReceiver" >   </receiver>
+        <service android:name=".service.TimerService"></service>
+        <receiver android:name=".service.AlarmReceiver"></receiver>
     </application>
 
 </manifest>
