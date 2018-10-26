@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/x30">
+
+    <ImageView
+        android:id="@+id/dialog_closs"
+        android:layout_width="@dimen/x30"
+        android:layout_height="@dimen/x30"
+        android:layout_gravity="right"
+        android:src="@mipmap/icon_cabinet_close" />
+
+    <TextView
+        android:id="@+id/dialog_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择要打开的柜子"
+        android:textColor="@color/text_color_3"
+        android:textSize="34px"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dialog_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/x30"
+        android:layout_weight="1"
+        android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/x42"
+        android:layout_marginTop="@dimen/x66"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dialog_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_text_line_gray"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="取消"
+            android:textSize="@dimen/textsize_17" />
+
+        <TextView
+            android:id="@+id/dialog_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/x30"
+            android:background="@drawable/bg_text_navyblue_nor"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_17" />
+    </LinearLayout>
+</LinearLayout>

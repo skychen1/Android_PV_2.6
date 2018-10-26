@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toos="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/x30"
+    android:layout_marginTop="@dimen/x30"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/form_cardview"
+        android:layout_width="@dimen/x250"
+        android:layout_height="@dimen/x120"
+        android:clickable="true"
+        app:cardElevation="@dimen/x6"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:id="@+id/form_card_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_line_sel"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_cabinet"
+                    android:layout_width="@dimen/x38"
+                    android:layout_height="@dimen/x38"
+                    android:background="@mipmap/icon_ofcd_cabinet_nor" />
+
+                <TextView
+                    android:id="@+id/tv_cabinet_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x33"
+                    android:textColor="@color/text_color_0"
+                    android:textSize="@dimen/x26"
+                    toos:text="柜子01" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

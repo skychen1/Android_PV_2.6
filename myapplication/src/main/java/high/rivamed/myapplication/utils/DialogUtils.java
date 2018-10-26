@@ -31,6 +31,7 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
+import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.UnRegistBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.http.BaseResult;
@@ -42,6 +43,7 @@ import high.rivamed.myapplication.views.BindIdCardDialog;
 import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
@@ -50,6 +52,7 @@ import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.RvDialog2;
+import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -73,10 +76,11 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 public class DialogUtils {
 
     public static String sTimes;
+
     /**
      * 紧急登录密码修改
      */
-    public static void showEmergencyDialog(Context context){
+    public static void showEmergencyDialog(Context context) {
         EmergencyTwoDialog.Builder builder = new EmergencyTwoDialog.Builder(context);
         builder.setRight("确定", new DialogInterface.OnClickListener() {
             @Override
@@ -92,10 +96,11 @@ public class DialogUtils {
         });
         builder.create().show();
     }
+
     /**
      * 盘亏不提交弹出
      */
-    public static void showOneDialog(Context context){
+    public static void showOneDialog(Context context) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg("请完善耗材盘亏原因，再提交数据～");
         builder.setRight("确定", new DialogInterface.OnClickListener() {
@@ -126,14 +131,14 @@ public class DialogUtils {
                 int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
                 if (type.equals("firstBind")) {//先绑定患者
                     LogUtils.i("OutBoxBingActivity", "先绑定患者");
-                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
+                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
                         ContentConsumeOperateFrag2.mPause = false;
-			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-			     String id = patientInfos.get(checkedPosition).getPatientId();
-			     String name = patientInfos.get(checkedPosition).getPatientName();
-			     LogUtils.i("OutBoxBingActivity", " name "+name);
+                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+                        String id = patientInfos.get(checkedPosition).getPatientId();
+                        String name = patientInfos.get(checkedPosition).getPatientName();
+                        LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_two)).getText().toString();
@@ -145,7 +150,7 @@ public class DialogUtils {
                     }
                     dialog.dismiss();
                 } else {//后绑定
-                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
+                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
@@ -154,9 +159,9 @@ public class DialogUtils {
 //                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
-			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-			     String id = patientInfos.get(checkedPosition).getPatientId();
-			     String name = patientInfos.get(checkedPosition).getPatientName();
+                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+                        String id = patientInfos.get(checkedPosition).getPatientId();
+                        String name = patientInfos.get(checkedPosition).getPatientName();
                         EventBusUtils.postSticky(
                                 new Event.EventCheckbox(name, id, operationScheduleId, type, position, mTbaseDevices));
                         dialog.dismiss();
@@ -173,47 +178,48 @@ public class DialogUtils {
         Display display = windowManager.getDefaultDisplay();
         Window window = rvDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = (int)(display.getWidth()); //设置宽度
+        lp.width = (int) (display.getWidth()); //设置宽度
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setAttributes(lp);
         return builder;
     }
 
-   /**
-    * 腕带解绑
-    * @param context
-    * @param title
-    */
-    public static void showUnRegistDialog(Context context, String title,String date) {
+    /**
+     * 腕带解绑
+     *
+     * @param context
+     * @param title
+     */
+    public static void showUnRegistDialog(Context context, String title, String date) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-		   if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")){
-			NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult(){
-			   @Override
-			   public void onSucceed(String result) {
-				LogUtils.i("SHOW","result   "+result);
-				Gson gson = new Gson();
-				UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
-				if (unRegistBean.isOperateSuccess()){
-				   LoginInfoActivity.mIsWaidai=0;
-				   LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
-				   LoginInfoActivity.mSettingIcCardBind.setText("绑定");
-				}
-				Toast.makeText(context,unRegistBean.getMsg(),Toast.LENGTH_SHORT).show();
-				String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
-										   "");
-				LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
-				data2.getAppAccountInfoVo().setIsWaidai(0);
-				SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
-				dialog.dismiss();
-			   }
-			});
-		   }else {
-			dialog.dismiss();
-		   }
+                if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")) {
+                    NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult() {
+                        @Override
+                        public void onSucceed(String result) {
+                            LogUtils.i("SHOW", "result   " + result);
+                            Gson gson = new Gson();
+                            UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
+                            if (unRegistBean.isOperateSuccess()) {
+                                LoginInfoActivity.mIsWaidai = 0;
+                                LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
+                                LoginInfoActivity.mSettingIcCardBind.setText("绑定");
+                            }
+                            Toast.makeText(context, unRegistBean.getMsg(), Toast.LENGTH_SHORT).show();
+                            String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
+                                    "");
+                            LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
+                            data2.getAppAccountInfoVo().setIsWaidai(0);
+                            SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -236,7 +242,7 @@ public class DialogUtils {
             @Override
             public void onClick(DialogInterface dialog, int i) {
 
-			dialog.dismiss();
+                dialog.dismiss();
 
                 //		Log.i("TT", " nojump  " +nojump);
                 //	      if(nojump.equals("out")){
@@ -293,15 +299,17 @@ public class DialogUtils {
 
     /**
      * 盘亏原因
+     *
      * @param context
      */
     public static void showLossDialog(
-          Context context,List<String> strings) {
-        LossScuseDialog.Builder builder = new LossScuseDialog.Builder(context, strings );
+            Context context, List<String> strings) {
+        LossScuseDialog.Builder builder = new LossScuseDialog.Builder(context, strings);
         builder.setTitle("请选择盘亏原因");
 
         builder.create().show();
     }
+
     public static void showTwoDialog(Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {
@@ -669,7 +677,7 @@ public class DialogUtils {
     /*
      * 显示创建临时患者弹窗
      * */
-    public static void showCreatTempPatientDialog(final Context context, Activity activity,TempPatientDialog.Builder.SettingListener listener) {
+    public static void showCreatTempPatientDialog(final Context context, Activity activity, TempPatientDialog.Builder.SettingListener listener) {
 
         TempPatientDialog.Builder builder = new TempPatientDialog.Builder(context, activity);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -685,12 +693,13 @@ public class DialogUtils {
 
     /**
      * 选择关联患者弹窗
+     *
      * @param activity
      * @param context
      * @param patientInfos
      * @param onClickBackListener
      */
-    public static  RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
+    public static RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
         RvDialog2.Builder builder = new RvDialog2.Builder(activity, context, patientInfos);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -703,7 +712,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 for (int x = 0; x < patientInfos.size(); x++) {
                     if (patientInfos.get(x).isSelected()) {
-                        onClickBackListener.OnClickBack(x,dialog);
+                        onClickBackListener.OnClickBack(x, dialog);
                     }
                 }
             }
@@ -714,7 +723,7 @@ public class DialogUtils {
         Display display = windowManager.getDefaultDisplay();
         Window window = rvDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = (int)(display.getWidth()); //设置宽度
+        lp.width = (int) (display.getWidth()); //设置宽度
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setAttributes(lp);
         return builder;
@@ -744,5 +753,48 @@ public class DialogUtils {
         LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
         builder.create().show();
         return builder;
+    }
+
+    /**
+     * 医嘱领用-确实-选择耗材柜
+     */
+    public static void showSelectOpenCabinetDialog(Context context, List<Movie> list) {
+        SelectOpenCabinetDialog.Builder builder = new SelectOpenCabinetDialog.Builder(context, 0);
+        builder.setDate(list);
+        builder.setRightListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setLeftListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    /**
+     * 医嘱领用-确认-查看请领单
+     */
+    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<Movie> list) {
+        LookUpDetailedListDialog.Builder builder = new LookUpDetailedListDialog.Builder(context);
+        builder.setDate(list);
+        builder.setLeftTopViewShow(isShowLeftTopView);
+        builder.setRightListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setLeftListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

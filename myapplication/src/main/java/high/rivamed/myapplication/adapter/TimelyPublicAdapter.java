@@ -99,7 +99,9 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
         this.mSize = size;
         this.mType = type;
         this.mCheckStates = mCheckStates;
-        Log.i("xxx", "mSize   " + mSize);
+        Log.i("xb", "mSize   " + mSize);
+        Log.i("xb", "mSize1   " + data);
+        Log.i("xb", "mSize1   " + data.size());
     }
 
     public void clear() {
@@ -252,7 +254,7 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
                 mSeven_five.setText(item.five);
                 initTermOfValidity(helper, item.four, mSeven_four);
 
-            }  else if (mType != null && mType.equals(STYPE_MEAL_NOBING)) {
+            } else if (mType != null && mType.equals(STYPE_MEAL_NOBING)) {
 
                 findId(helper, mSize);
                 mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/x30">
+
+    <RelativeLayout
+        android:id="@+id/timely_rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x30"
+        android:paddingLeft="@dimen/x40"
+        android:paddingRight="@dimen/x40">
+
+        <TextView
+            android:id="@+id/tv_patient_name_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/x10"
+            android:text="患者姓名："
+            android:textColor="@color/text_color_6"
+            android:textSize="@dimen/textsize_17" />
+
+        <TextView
+            android:id="@+id/tv_patient_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_patient_name_hint"
+            android:paddingTop="@dimen/x10"
+            android:textColor="@color/text_color_3"
+            android:textSize="@dimen/textsize_17"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:text="张三" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <LinearLayout
+                android:id="@+id/ll_cost_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="@dimen/x10"
+                    android:text="耗材种类："
+                    android:textColor="@color/text_color_6"
+                    android:textSize="@dimen/textsize_17" />
+
+                <TextView
+                    android:id="@+id/tv_cost_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/x10"
+                    android:textColor="@color/text_color_3"
+                    android:textSize="@dimen/textsize_17"
+                    android:textStyle="bold"
+                    tools:text="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x30"
+                android:layout_toRightOf="@id/ll_cost_type"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="@dimen/x10"
+                    android:text="耗材数量："
+                    android:textColor="@color/text_color_6"
+                    android:textSize="@dimen/textsize_17" />
+
+                <TextView
+                    android:id="@+id/tv_cost_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/x10"
+                    android:textColor="@color/text_color_3"
+                    android:textSize="@dimen/textsize_17"
+                    android:textStyle="bold"
+                    tools:text="2" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/public_ll"
+        layout="@layout/include_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/x40"
+        android:layout_marginRight="@dimen/x40"
+        android:layout_marginTop="@dimen/x30"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@color/bg_e" />
+
+    <LinearLayout
+        android:id="@+id/activity_down_btn_seven_ll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x128"
+        android:background="@color/bg_f"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/dialog_left"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x68"
+            android:background="@drawable/bg_btn_line_nor"
+            android:gravity="center"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="取消"
+            android:textColor="@color/text_color_58"
+            android:textSize="@dimen/textsize_17" />
+
+        <TextView
+            android:id="@+id/dialog_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x68"
+            android:layout_marginLeft="@dimen/x30"
+            android:background="@drawable/bg_btn_line_pre"
+            android:gravity="center"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="确定"
+            android:textColor="@color/bg_f"
+            android:textSize="@dimen/textsize_17" />
+    </LinearLayout>
+</LinearLayout>
