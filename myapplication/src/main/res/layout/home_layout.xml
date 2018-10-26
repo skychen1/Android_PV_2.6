@@ -7,32 +7,33 @@
 	>
 	<FrameLayout
 		android:id="@+id/fl_tab_container"
-		android:layout_marginLeft="@dimen/x260"
+		android:layout_marginLeft="@dimen/x180"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		/>
 	<View
 		android:layout_width="@dimen/x2"
 		android:layout_height="match_parent"
-		android:layout_marginLeft="@dimen/x260"
+		android:layout_marginLeft="@dimen/x180"
 		android:background="@color/login_line"/>
 
 	<LinearLayout
 		android:id="@+id/rg_ll"
-		android:layout_width="@dimen/x280"
+		android:layout_width="@dimen/x195"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		>
 
 		<ImageView
 			android:id="@+id/home_logo"
-			android:layout_width="@dimen/y163"
-			android:layout_height="@dimen/x105"
-			android:layout_marginTop="@dimen/y67"
-			android:layout_marginRight="@dimen/x10"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/y80"
+			android:layout_marginTop="@dimen/y20"
+			android:layout_marginRight="@dimen/x35"
+			android:layout_marginLeft="@dimen/x30"
 			android:layout_marginBottom="@dimen/y40"
 			android:layout_gravity="center"
-			android:src="@mipmap/hckg_logo"
+			android:background="@mipmap/hckg_logo"
 			/>
 
 		<RadioGroup
@@ -65,13 +66,18 @@
 				style="@style/content_rb_style"
 				android:drawableTop="@mipmap/sspd_ic"
 				android:text="@string/content_timely_check"/>
+			<RadioButton
+				android:id="@+id/content_take_notes"
+				style="@style/content_rb_style"
+				android:drawableTop="@mipmap/sspd_ic"
+				android:text="@string/content_take_notes"/>
 		</RadioGroup>
 
 	</LinearLayout>
 	<View
 		android:id="@+id/rg_gone"
 		android:visibility="gone"
-		android:layout_width="@dimen/x280"
+		android:layout_width="@dimen/x195"
 		android:layout_height="match_parent">
 	</View>
 

@@ -9,14 +9,14 @@
 	<EditText
 		android:id="@+id/login_name"
 		style="@style/login_edittext"
-		android:layout_marginTop="@dimen/x100"
+		android:layout_marginTop="@dimen/y100"
 		android:drawableLeft="@mipmap/login_name"
 		android:drawablePadding="@dimen/x15"
 		android:hint="请输入用户名"/>
 	<EditText
 		android:id="@+id/login_password"
 		style="@style/login_edittext"
-		android:layout_marginTop="@dimen/x60"
+		android:layout_marginTop="@dimen/y60"
 		android:drawableLeft="@mipmap/login_password"
 		android:drawablePadding="@dimen/x15"
 		android:inputType="textPassword"
@@ -24,10 +24,10 @@
 	<TextView
 		android:id="@+id/login_button"
 		android:layout_width="fill_parent"
-		android:layout_height="@dimen/x80"
+		android:layout_height="@dimen/y80"
 		android:layout_marginLeft="@dimen/x50"
 		android:layout_marginRight="@dimen/x50"
-		android:layout_marginTop="@dimen/x100"
+		android:layout_marginTop="@dimen/y100"
 		android:background="@drawable/bg_login_btn_sel"
 		android:gravity="center"
 		android:text="登     录"

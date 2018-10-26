@@ -8,7 +8,7 @@
     <string name="content_stock_status">库存状态</string>
     <string name="content_consume_operate">耗材操作</string>
     <string name="content_running_wate">耗材流水</string>
-    <!--<string name="content_fast_return">快速退货</string>-->
+    <string name="content_take_notes">使用记录</string>
     <string name="content_timely_check">实时盘点</string>
 
     <string name="seven_name">名称</string>
