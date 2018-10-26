@@ -58,8 +58,6 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
    protected void convert(
 	   BaseViewHolder helper, TCstInventoryVo item) {
 
-	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getCstName());
-	LogUtils.i("faf", "   mTCstInventoryVos  " + item.getDeviceName());
 	 mLl=((LinearLayout) helper.getView(R.id.seven_ll));
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   mLl.setBackgroundResource(R.color.bg_color);
@@ -117,7 +115,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   }
 	});
 
-	if (item.getIsErrorOperation()==1&&item.getDeleteCount()==0){
+	if ((item.getIsErrorOperation()==1&&item.getDeleteCount()==0)||(item.getIsErrorOperation()==1&&item.getDeleteCount()==0&&item.getStopFlag()!=0&&mOperation!=8)){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -151,11 +149,17 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mLl.setBackgroundResource(R.color.bg_color);
-	}else if (item.getStopFlag()==0){
+	}else if (item.getStopFlag()==0&&mOperation!=8){
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	}else if (item.getStopFlag()==0&&mOperation==8){
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 
 

@@ -87,6 +87,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -648,6 +649,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
 		      if (mVoOutList!=null&&mVoOutList.size()==0){
 			   mDoorList.clear();
+			   mEthDeviceIdBack.clear();
 			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			}
 		   }
@@ -701,6 +703,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
 		      mDoorList.clear();
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -722,6 +725,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
 			mDoorList.clear();
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -735,6 +739,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
 			}
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
 		   } else {
 			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
@@ -905,6 +910,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   ToastUtils.showShort("请选择操作方式！");
 		} else {
 		   //点击柜子进行操作
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   }
 		   doSelectOption(position, id);
 		}
 	   }
@@ -1151,6 +1159,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		}
 		doSelectOption(0, view.getId());
 	   }
 	} else {

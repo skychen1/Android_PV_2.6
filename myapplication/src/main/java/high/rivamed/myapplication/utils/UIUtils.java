@@ -119,7 +119,7 @@ public class UIUtils {
 
    public static boolean isFastDoubleClick() {
 	long time = System.currentTimeMillis();
-	if (time - lastClickTime < 2000) {
+	if (time - lastClickTime < 2500) {
 	   return true;
 	}
 	lastClickTime = time;

@@ -338,10 +338,10 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 		if (mIntentType == 2) {
 		   startActivity(new Intent(InBoxAllTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
+		} else {
+		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   startActivity(new Intent(InBoxAllTwoActivity.this, HomeActivity.class));
 		}
-
-		EventBusUtils.postSticky(new Event.EventFrag("START1"));
-		startActivity(new Intent(InBoxAllTwoActivity.this, HomeActivity.class));
 		finish();
 
 	   }

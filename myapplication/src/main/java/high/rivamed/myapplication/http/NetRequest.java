@@ -538,14 +538,13 @@ public class NetRequest {
         @Override
         public void onError(Response<String> response) {
             if (netResult != null) {
-                LogUtils.i(TAG, "网络接口联网失败");
                 netResult.onError(response.code() + "");
             }
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
             if (response.code()==-1){
-                Toast.makeText(UIUtils.getContext(), "网络异常，请检查服务器连接状态", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UIUtils.getContext(), "网络连接超时，请扫后重试！", Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
             }
