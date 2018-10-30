@@ -394,9 +394,13 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 			tCstInventoryVo.setPatientName(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 					.getPatientName());
+			tCstInventoryVo.setCreate(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).isCreate());
 			tCstInventoryVo.setPatientId(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 					.getPatientId());
+			tCstInventoryVo.setTempPatientId(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getTempPatientId());
 			tCstInventoryVo.setIdNo(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo());
 			tCstInventoryVo.setOperationScheduleId(
@@ -570,6 +574,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	   BingFindSchedulesBean.PatientInfosBean data2 = new BingFindSchedulesBean.PatientInfosBean();
 	   data2.setPatientId("virtual");
 	   data2.setPatientName(event.userName);
+	   data2.setCreate(true);
 	   data2.setIdNo(event.idCard);//身份证
 	   data2.setScheduleDateTime(event.time);
 	   data2.setOperatingRoomNo(event.operatingRoomNo);
