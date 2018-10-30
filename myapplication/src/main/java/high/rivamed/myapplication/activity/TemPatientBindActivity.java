@@ -63,6 +63,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 
 /*
  * 患者列表页面,可以创建临时患者
@@ -449,7 +450,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
 	   case R.id.base_tab_tv_name:
 		if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定患者
-		   if (mEthDeviceIdBack.size() == 0) {
+		   if (mEthDeviceIdBack2.size() == 0) {
 			mPopupWindow = new SettingPopupWindow(mContext);
 			mPopupWindow.showPopupWindow(view);
 			mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
@@ -474,7 +475,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.base_tab_tv_outlogin:
 		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
-		   if (mEthDeviceIdBack.size() == 0) {
+		   if (mEthDeviceIdBack2.size() == 0) {
 			TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
 			builder.setTwoMsg("您确认要退出登录吗?");
 			builder.setMsg("温馨提示");
@@ -500,7 +501,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.base_tab_back:
 		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
-		   if (mEthDeviceIdBack.size() == 0) {
+		   if (mEthDeviceIdBack2.size() == 0) {
 			finish();
 		   } else {
 			ToastUtils.showShort("请关闭柜门！");
@@ -537,7 +538,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		break;
 	   case R.id.dialog_left://取消
 		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
-		   if (mEthDeviceIdBack.size() == 0) {
+		   if (mEthDeviceIdBack2.size() == 0) {
 			finish();
 		   } else {
 			ToastUtils.showShort("请关闭柜门！");
