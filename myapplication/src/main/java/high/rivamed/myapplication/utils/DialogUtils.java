@@ -133,6 +133,7 @@ public class DialogUtils {
 			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
 			     String id = patientInfos.get(checkedPosition).getPatientId();
 			     String name = patientInfos.get(checkedPosition).getPatientName();
+			     String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
 			     LogUtils.i("OutBoxBingActivity", " name "+name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
@@ -141,7 +142,7 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, operationScheduleId, "firstBind", position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id,mTempPatientId,operationScheduleId, "firstBind", position, mTbaseDevices));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -157,8 +158,9 @@ public class DialogUtils {
 			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
 			     String id = patientInfos.get(checkedPosition).getPatientId();
 			     String name = patientInfos.get(checkedPosition).getPatientName();
+                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, operationScheduleId, type, position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id,mTempPatientId, operationScheduleId, type, position, mTbaseDevices));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);

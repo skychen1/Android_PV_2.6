@@ -14,6 +14,8 @@ public class TCstInventoryVo implements Serializable {
     private String expiration;
     private String deviceName;
     private String status;
+    private String tempPatientId;
+    private boolean isCreate;
 
     // 0 已过期
     private Integer stopFlag = 1;
@@ -50,6 +52,22 @@ public class TCstInventoryVo implements Serializable {
     private String scheduleDateTime;//手术时间
     private String sex;//性别
     private boolean isSelected;
+
+   public String getTempPatientId() {
+	return tempPatientId;
+   }
+
+   public void setTempPatientId(String tempPatientId) {
+	this.tempPatientId = tempPatientId;
+   }
+
+   public boolean isCreate() {
+        return isCreate;
+    }
+
+    public void setCreate(boolean create) {
+        isCreate = create;
+    }
 
     public int getDeleteCount() {
         return deleteCount;

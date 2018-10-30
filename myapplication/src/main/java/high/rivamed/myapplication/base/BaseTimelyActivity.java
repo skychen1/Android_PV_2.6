@@ -892,18 +892,28 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 //		   b.getPatientName() != null)) ||
 //		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0 && b.getStopFlag() != 0) ||
 //		 (b.getStopFlag() == 0 && mDtoOperation == 8)) {
-	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&mDtoOperation!=8) ||
+	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		  b.getStopFlag() == 0&&mDtoOperation!=8) ||
 		 (mDtoOperation == 3 &&UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)){
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		if (mStarts != null) {
-		   mStarts.cancel();
-		   mTimelyRight.setText("确认并退出登录");
+	      if (mDtoOperation==8&&b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag() == 0){
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			LogUtils.i(TAG, "true  ssssssfafafa s ss s ");
+			mStarts.cancel();
+			mStarts.start();
+		   }
+		}else {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		   return;
 		}
 
-		return;
 	   } else {
 
 		LogUtils.i(TAG, "我走了false");
