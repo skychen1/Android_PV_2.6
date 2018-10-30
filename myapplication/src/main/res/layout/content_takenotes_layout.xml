@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:orientation="vertical"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:layout_marginLeft="@dimen/x30"
+			  android:layout_marginRight="@dimen/x30"
+			  android:layout_marginTop="@dimen/x18"
+			  android:background="@color/bg_f"
+			  android:paddingBottom="@dimen/x25"
+			  android:paddingTop="@dimen/x20"
+				>
+	<include
+		android:id="@+id/take_search"
+		layout="@layout/view_search_et_layout"
+		android:layout_width="@dimen/x700"
+		android:layout_height="@dimen/x60"
+		/>
+
+	<include
+		android:id="@+id/take_rv"
+		layout="@layout/include_recyclerview"
+		android:layout_width="match_parent"
+		android:layout_weight="1"
+		android:layout_height="0dp"
+		android:layout_below="@+id/rvdialog_search"
+		android:layout_marginTop="@dimen/x30" />
+</LinearLayout>

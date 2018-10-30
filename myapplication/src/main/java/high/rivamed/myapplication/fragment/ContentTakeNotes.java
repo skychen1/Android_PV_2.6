@@ -2,6 +2,7 @@ package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
 
+import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 
 /**
@@ -25,6 +26,6 @@ public class ContentTakeNotes  extends BaseSimpleFragment {
 
    @Override
    protected int getContentLayoutId() {
-	return 0;
+	return R.layout.content_takenotes_layout;
    }
 }
