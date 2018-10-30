@@ -47,29 +47,29 @@
 			<RadioButton
 				android:id="@+id/content_consume_operate"
 				style="@style/content_rb_style"
-				android:drawableTop="@mipmap/hccz_ic"
+				android:drawableTop="@drawable/hccz_cz_sel"
 				android:text="@string/content_consume_operate"/>
 
 			<RadioButton
 				android:id="@+id/content_running_wate"
 				style="@style/content_rb_style"
-				android:drawableTop="@mipmap/hcls_ic"
+				android:drawableTop="@drawable/hcls_ic_sel"
 				android:text="@string/content_running_wate"/>
 			<RadioButton
 				android:id="@+id/content_stock_status"
 				style="@style/content_rb_style"
-				android:drawableTop="@mipmap/kczt_ic"
+				android:drawableTop="@drawable/hccz_kc_sel"
 				android:text="@string/content_stock_status"/>
 
 			<RadioButton
 				android:id="@+id/content_timely_check"
 				style="@style/content_rb_style"
-				android:drawableTop="@mipmap/sspd_ic"
+				android:drawableTop="@drawable/hccz_pd_sel"
 				android:text="@string/content_timely_check"/>
 			<RadioButton
-				android:id="@+id/content_take_notes"
+				android:id="@+id/content_syjl"
 				style="@style/content_rb_style"
-				android:drawableTop="@mipmap/sspd_ic"
+				android:drawableTop="@drawable/hccz_jl_sel"
 				android:text="@string/content_take_notes"/>
 		</RadioGroup>
 
