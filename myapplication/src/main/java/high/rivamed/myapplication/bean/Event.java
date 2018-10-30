@@ -183,11 +183,13 @@ public class Event {
 	public String sex;
 	public String operatingRoomNoName;
 	public String type;
+	public String mTempPatientId;
 	public String operationScheduleId;
 	public int position;
+	public boolean create;
 	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
-	public EventCheckbox(String name,String mId,String idNo,String scheduleDateTime,String operatingRoomNo,String operatingRoomNoName,String sex,String deptId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	public EventCheckbox(String name,String mId,String idNo,String scheduleDateTime,String operatingRoomNo,String operatingRoomNoName,String sex,String deptId,boolean create,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	   this.deptId = deptId;
 	   this.id = mId;
 	   this.mString = name;
@@ -198,11 +200,13 @@ public class Event {
 	   this.sex = sex;
 	   this.type = type;
 	   this.position = position;
+	   this.create = create;
 	   this.mTbaseDevices = mTbaseDevices;
 	}
-	public EventCheckbox(String name,String id,String operationScheduleId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	public EventCheckbox(String name,String id,String mTempPatientId,String operationScheduleId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	   this.mString = name;
 	   this.id = id;
+	   this.mTempPatientId = mTempPatientId;
 	   this.type = type;
 	   this.position = position;
 	   this.mTbaseDevices = mTbaseDevices;

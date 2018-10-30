@@ -83,6 +83,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    private boolean mPause = true;
    private String  mType  = "";
    private String mOperationScheduleId;
+   private String mTempPatientId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
    int k = 0;
@@ -142,30 +143,39 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		   mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
 		   mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getOperationScheduleId();
-
+		   mTempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getTempPatientId();
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
 			if (mId.equals("virtual")) {
 			   LogUtils.i(TAG, "JINLAI ");
-			   String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
-			   String name = mPatientBean.getTTransOperationSchedule().getName();
-			   String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
-			   String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
-				   .getScheduleDateTime();
-			   String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
-				   .getOperatingRoomNo();
-			   String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
-				   .getOperatingRoomNoName();
-			   String sex = mPatientBean.getTTransOperationSchedule().getSex();
-			   EventBusUtils.postSticky(
-				   new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
-								   operatingRoomNo, operatingRoomNoName, sex,
-								   deptId, "afterBindTemp", mPosition,
-								   mTemPTbaseDevices));
+			   if (mPatientBean==null){
+				EventBusUtils.postSticky(
+					new Event.EventCheckbox(mName, mId,mTempPatientId, mOperationScheduleId,
+									"afterBindTemp", mPosition, mTemPTbaseDevices));
+			   }else {
+				String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
+				String name = mPatientBean.getTTransOperationSchedule().getName();
+				String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
+				String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
+					.getScheduleDateTime();
+				String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
+					.getOperatingRoomNo();
+				String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
+					.getOperatingRoomNoName();
+				String sex = mPatientBean.getTTransOperationSchedule().getSex();
+				boolean create = mPatientBean.getTTransOperationSchedule().isCreate();
+				EventBusUtils.postSticky(
+					new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
+									operatingRoomNo, operatingRoomNoName, sex,
+									deptId, create,"afterBindTemp", mPosition,
+									mTemPTbaseDevices));
+			   }
+
 			} else {
 			   LogUtils.i(TAG, "DDDDDDDD ");
 			   EventBusUtils.postSticky(
-				   new Event.EventCheckbox(mName, mId, mOperationScheduleId,
+				   new Event.EventCheckbox(mName, mId,mTempPatientId, mOperationScheduleId,
 								   "afterBindTemp", mPosition, mTemPTbaseDevices));
 			}
 
@@ -521,6 +531,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	bean.setOperatingRoomNo(event.operatingRoomNo);
 	bean.setOperatingRoomNoName(event.roomNum);
 	bean.setSex(event.userSex);
+	bean.setCreate(true);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
@@ -570,6 +581,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 			   for (int i = 0; i < bean.getRows().size(); i++) {
 				BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
 				data.setPatientId(bean.getRows().get(i).getPatientId());
+				data.setTempPatientId(bean.getRows().get(i).getTempPatientId());
 				data.setPatientName(bean.getRows().get(i).getPatientName());
 				data.setDeptName(bean.getRows().get(i).getDeptName());
 				data.setOperationSurgeonName(
