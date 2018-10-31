@@ -54,7 +54,8 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	initData();
 	mFragments.add(new StockLeftListenerFrag());
 	mFragments.add(new StockMiddleInforFrag());
-	mFragments.add(new StockRightUnconfFrag());
+//	mFragments.add(new StockRightUnconfFrag());
+	mStockRdbtnRight.setVisibility(View.GONE);
 	mHomeStockViewpager.setAdapter(new StockPagerAdapter(getChildFragmentManager()));
 	mHomeStockViewpager.addOnPageChangeListener(new PageChangeListener());
 	initListener();
@@ -84,9 +85,9 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 		   case R.id.stock_rdbtn_middle:
 			mHomeStockViewpager.setCurrentItem(1);
 			break;
-		   case R.id.stock_rdbtn_right:
-			mHomeStockViewpager.setCurrentItem(2);
-			break;
+//		   case R.id.stock_rdbtn_right:
+//			mHomeStockViewpager.setCurrentItem(2);
+//			break;
 		}
 	   }
 	});
@@ -131,9 +132,9 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 		case 1:
 		   mRgGroup.check(R.id.stock_rdbtn_middle);
 		   break;
-		case 2:
-		   mRgGroup.check(R.id.stock_rdbtn_right);
-		   break;
+//		case 2:
+//		   mRgGroup.check(R.id.stock_rdbtn_right);
+//		   break;
 
 	   }
 	}

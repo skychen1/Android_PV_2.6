@@ -82,21 +82,18 @@
 					android:id="@+id/stock_rdbtn_left"
 					style="@style/all_title_rb_style"
 					android:checked="true"
-					android:background="@drawable/title_stock_bg_left_sel"
 					android:text="库存监控"
 					/>
 
 				<RadioButton
 					android:id="@+id/stock_rdbtn_middle"
 					style="@style/all_title_rb_style"
-					android:background="@drawable/title_stock_bg_middle_sel"
 					android:text="库存详情"
 					/>
 
 				<RadioButton
 					android:id="@+id/stock_rdbtn_right"
 					style="@style/all_title_rb_style"
-					android:background="@drawable/title_stock_bg_right_sel"
 					android:text="未确认耗材"
 					/>
 

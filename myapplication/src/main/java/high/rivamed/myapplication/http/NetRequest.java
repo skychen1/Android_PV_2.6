@@ -17,6 +17,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -492,8 +493,6 @@ public class NetRequest {
     public void findInPatientPage(String patientNameOrId, int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_IN_PATIENT_PAGE).tag(tag)
                 .params("patientNameOrId", patientNameOrId)
-//                .params("pageNo", pageNo)
-//                .params("pageSize", pageSize)
               .params("page", pageNo)
               .params("rows", pageSize)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
@@ -506,6 +505,24 @@ public class NetRequest {
         OkGo.<String>get(MAIN_URL+NetApi.URL_THING_CONFIG_FIND).tag(tag)
                 .params("thingCode", sThingCode)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
+     * 使用记录的患者列表
+     */
+    public void getFindPatientDate(Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_PATIENT).tag(tag)
+              .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
+              .execute(new MyCallBack(tag, netResult, false));
+    }
+
+    /**
+     * 使用记录详情
+     */
+    public void getFindEpcDetails(Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_EPC_DETAILS).tag(tag)
+              .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
+              .execute(new MyCallBack(tag, netResult, false));
     }
 
     private class MyCallBack extends StringCallback {

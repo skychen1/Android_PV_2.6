@@ -18,7 +18,7 @@
         <item name="android:background">@drawable/home_rb_bg_sel</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/selector_stock_title_text</item>
+        <item name="android:textColor">@color/selector_f_3_text</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -143,6 +143,7 @@
 
     <!--标题栏顶部RadioButton样式-->
     <style name="all_title_rb_style">
+        <item name="android:background">@drawable/title_stock_bg_middle_sel</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@null</item>

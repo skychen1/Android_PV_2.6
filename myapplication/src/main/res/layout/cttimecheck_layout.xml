@@ -5,14 +5,14 @@
 			  android:layout_width="match_parent"
 			  android:id="@+id/ll"
 			  android:layout_height="match_parent"
-			  android:background="@color/bg_color"
+			  android:background="@color/bg"
 			  android:orientation="vertical"
 	>
 	<LinearLayout
 		android:id="@+id/stock_left_alltop"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@color/bg_color"
+		android:background="@color/bg"
 		android:layout_marginTop="@dimen/x20"
 		android:layout_marginLeft="@dimen/x30"
 		android:orientation="vertical"
@@ -21,7 +21,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="耗材效期监控："
-			android:textSize="@dimen/textsize_16"
+			android:textSize="@dimen/textsize_18"
 			android:textColor="@color/text_color_3"
 			android:textStyle="bold"/>
 		<android.support.v7.widget.RecyclerView
@@ -37,7 +37,7 @@
 			android:layout_height="wrap_content"
 			android:text="耗材库存预警："
 			android:layout_marginTop="@dimen/x20"
-			android:textSize="@dimen/textsize_16"
+			android:textSize="@dimen/textsize_18"
 			android:textColor="@color/text_color_3"
 			android:textStyle="bold"/>
 	</LinearLayout>
@@ -45,23 +45,22 @@
 	<com.flyco.tablayout.SlidingTabLayout
 		android:id="@+id/cttimecheck_rg"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/x80"
-		android:background="@color/bg_color"
-		android:layout_marginTop="@dimen/x18"
+		android:layout_height="@dimen/y65"
+		android:background="@color/bg"
+		android:layout_marginTop="@dimen/y18"
 		android:layout_marginLeft="@dimen/x30"
-		android:paddingTop="@dimen/x20"
-		android:paddingBottom="@dimen/x25"
 		android:layout_marginRight="@dimen/x30"
 
 		tl:tl_indicator_color="@color/bg_f"
-		tl:tl_indicator_corner_radius="@dimen/x8"
-		tl:tl_indicator_style="BLOCK"
-		tl:tl_tab_padding="@dimen/x40"
-		tl:tl_textsize="@dimen/textsize_17"
-		tl:tl_textSelectColor="@color/bg_green"
+		tl:tl_indicator_height="@dimen/y65"
+		tl:tl_indicator_corner_radius="0dp"
+		tl:tl_indicator_style="NORMAL"
+		tl:tl_tab_padding="@dimen/x55"
+		tl:tl_textsize="@dimen/textsize_18"
+		tl:tl_textBold="SELECT"
+		tl:tl_textSelectColor="@color/text_color_0"
 		tl:tl_textUnselectColor="@color/text_color_3"
-		tl:tl_underline_height="@dimen/x20"
-		tl:tl_underline_gravity="BOTTOM"/>
+		/>
 
 
 	<android.support.v4.view.ViewPager

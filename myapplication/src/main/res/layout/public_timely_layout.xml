@@ -8,6 +8,7 @@
 	>
 	<RelativeLayout
 		android:id="@+id/public_rl"
+		android:paddingTop="@dimen/y30"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		>
@@ -28,7 +29,7 @@
 				android:layout_height="@dimen/x50"
 				android:layout_marginRight="@dimen/x30"
 				android:layout_marginLeft="@dimen/x30"
-				android:background="@drawable/bg_btn_line_nor"
+				android:background="@drawable/bg_btn_line_circle_nor"
 				android:gravity="center_vertical"
 				android:paddingLeft="@dimen/x22"
 				android:paddingRight="@dimen/x22"
@@ -42,7 +43,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="@dimen/x50"
 				android:layout_marginRight="@dimen/x25"
-				android:background="@drawable/bg_btn_line_nor"
+				android:background="@drawable/bg_btn_line_circle_nor"
 				android:gravity="center_vertical"
 				android:paddingLeft="@dimen/x22"
 				android:paddingRight="@dimen/x22"
