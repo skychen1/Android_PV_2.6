@@ -57,11 +57,13 @@ import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 
 /*
  * 患者列表页面,可以创建临时患者
@@ -83,6 +85,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
    private boolean mPause = true;
    private String  mType  = "";
    private String mOperationScheduleId;
+   private String mTempPatientId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
    int k = 0;
@@ -103,7 +106,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		   mLoading.create().show();
 		}
 	   }
-	}else {
+	} else {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
@@ -142,30 +145,40 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		   mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
 		   mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getOperationScheduleId();
-
+		   mTempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getTempPatientId();
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
 			if (mId.equals("virtual")) {
 			   LogUtils.i(TAG, "JINLAI ");
-			   String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
-			   String name = mPatientBean.getTTransOperationSchedule().getName();
-			   String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
-			   String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
-				   .getScheduleDateTime();
-			   String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
-				   .getOperatingRoomNo();
-			   String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
-				   .getOperatingRoomNoName();
-			   String sex = mPatientBean.getTTransOperationSchedule().getSex();
-			   EventBusUtils.postSticky(
-				   new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
-								   operatingRoomNo, operatingRoomNoName, sex,
-								   deptId, "afterBindTemp", mPosition,
-								   mTemPTbaseDevices));
+			   if (mPatientBean == null) {
+				EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
+												 mOperationScheduleId,
+												 "afterBindTemp", mPosition,
+												 mTemPTbaseDevices));
+			   } else {
+				String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
+				String name = mPatientBean.getTTransOperationSchedule().getName();
+				String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
+				String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
+					.getScheduleDateTime();
+				String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
+					.getOperatingRoomNo();
+				String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
+					.getOperatingRoomNoName();
+				String sex = mPatientBean.getTTransOperationSchedule().getSex();
+				boolean create = mPatientBean.getTTransOperationSchedule().isCreate();
+				EventBusUtils.postSticky(
+					new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
+									operatingRoomNo, operatingRoomNoName, sex,
+									deptId, create, "afterBindTemp", mPosition,
+									mTemPTbaseDevices));
+			   }
+
 			} else {
 			   LogUtils.i(TAG, "DDDDDDDD ");
 			   EventBusUtils.postSticky(
-				   new Event.EventCheckbox(mName, mId, mOperationScheduleId,
+				   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
 								   "afterBindTemp", mPosition, mTemPTbaseDevices));
 			}
 
@@ -229,12 +242,12 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 
    @Override
    protected void onResume() {
-	if (mOnBtnGone){
+	if (mOnBtnGone) {
 	   mBaseTabOutLogin.setEnabled(false);
 	   mBaseTabIconRight.setEnabled(false);
 	   mBaseTabTvName.setEnabled(false);
 	}
-	mPause =false;
+	mPause = false;
 	super.onResume();
    }
 
@@ -294,11 +307,11 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	}
    }
 
-//       @Override
-//       public void onResume() {
-//           mPause =false;
-//           super.onResume();
-//       }
+   //       @Override
+   //       public void onResume() {
+   //           mPause =false;
+   //           super.onResume();
+   //       }
    @Override
    public void onPause() {
 	mPause = true;
@@ -381,9 +394,13 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 			tCstInventoryVo.setPatientName(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 					.getPatientName());
+			tCstInventoryVo.setCreate(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).isCreate());
 			tCstInventoryVo.setPatientId(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 					.getPatientId());
+			tCstInventoryVo.setTempPatientId(
+				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+					.getTempPatientId());
 			tCstInventoryVo.setIdNo(
 				patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo());
 			tCstInventoryVo.setOperationScheduleId(
@@ -436,45 +453,66 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	   case R.id.base_tab_icon_right:
 
 	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-				break;
-			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-				break;
+		if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定患者
+		   if (mEthDeviceIdBack2.size() == 0) {
+			mPopupWindow = new SettingPopupWindow(mContext);
+			mPopupWindow.showPopupWindow(view);
+			mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
+			   @Override
+			   public void onItemClick(int position) {
+				switch (position) {
 
-			}
+				   case 0:
+					mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+					break;
+				   case 1:
+					mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+					break;
+
+				}
+			   }
+			});
+		   } else {
+			ToastUtils.showShort("请关闭柜门！");
 		   }
-		});
+		}
 		break;
 	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
+		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
+		   if (mEthDeviceIdBack2.size() == 0) {
+			TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+			builder.setTwoMsg("您确认要退出登录吗?");
+			builder.setMsg("温馨提示");
+			builder.setLeft("取消", new DialogInterface.OnClickListener() {
+			   @Override
+			   public void onClick(DialogInterface dialog, int i) {
+				dialog.dismiss();
+			   }
+			});
+			builder.setRight("确认", new DialogInterface.OnClickListener() {
+			   @Override
+			   public void onClick(DialogInterface dialog, int i) {
+				mContext.startActivity(new Intent(mContext, LoginActivity.class));
+				App.getInstance().removeALLActivity_();
+				dialog.dismiss();
+			   }
+			});
+			builder.create().show();
+		   } else {
+			ToastUtils.showShort("请关闭柜门！");
 		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
+		}
 		break;
 	   case R.id.base_tab_back:
-		finish();
+		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
+		   if (mEthDeviceIdBack2.size() == 0) {
+			finish();
+		   } else {
+			ToastUtils.showShort("请关闭柜门！");
+		   }
+		} else {
+		   finish();
+		}
 		break;
 	   case R.id.search_et://搜索
 		break;
@@ -503,7 +541,15 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 		}
 		break;
 	   case R.id.dialog_left://取消
-		finish();
+		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
+		   if (mEthDeviceIdBack2.size() == 0) {
+			finish();
+		   } else {
+			ToastUtils.showShort("请关闭柜门！");
+		   }
+		} else {
+		   finish();
+		}
 		break;
 	}
    }
@@ -521,12 +567,14 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 	bean.setOperatingRoomNo(event.operatingRoomNo);
 	bean.setOperatingRoomNoName(event.roomNum);
 	bean.setSex(event.userSex);
+	bean.setCreate(true);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
 	   BingFindSchedulesBean.PatientInfosBean data2 = new BingFindSchedulesBean.PatientInfosBean();
 	   data2.setPatientId("virtual");
 	   data2.setPatientName(event.userName);
+	   data2.setCreate(true);
 	   data2.setIdNo(event.idCard);//身份证
 	   data2.setScheduleDateTime(event.time);
 	   data2.setOperatingRoomNo(event.operatingRoomNo);
@@ -570,6 +618,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 			   for (int i = 0; i < bean.getRows().size(); i++) {
 				BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
 				data.setPatientId(bean.getRows().get(i).getPatientId());
+				data.setTempPatientId(bean.getRows().get(i).getTempPatientId());
 				data.setPatientName(bean.getRows().get(i).getPatientName());
 				data.setDeptName(bean.getRows().get(i).getDeptName());
 				data.setOperationSurgeonName(

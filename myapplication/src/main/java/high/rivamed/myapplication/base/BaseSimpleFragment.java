@@ -68,7 +68,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
    @BindView(R.id.base_tab_icon_right)
    public CircleImageView mBaseTabIconRight;
    @BindView(R.id.base_tab_tv_outlogin)
-   public TextView        mBaseTabOutLogin;
+   public ImageView        mBaseTabOutLogin;
 
    @BindView(R.id.base_tab_btn_msg)
    public ImageView      mBaseTabBtnMsg;

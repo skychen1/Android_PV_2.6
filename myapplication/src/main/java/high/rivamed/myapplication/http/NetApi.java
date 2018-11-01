@@ -79,7 +79,7 @@ public interface NetApi {
 
     //患者绑定
     String URL_PATIENTS_FIND = "/rmApi/operation/tTransOperationSchedule/findAllOperationSchedulePatients";//查询本科室下24小时的手术预约患者（包含临时患者）
-    //    String URL_PATIENTS_FIND_NO_TEMP = "/rmApi/operation/tTransOperationSchedule/findNearOperationSchedulePatients";//查询本科室下24小时的手术预约患者（不包含临时患者）
+//    String URL_PATIENTS_FIND_NO_TEMP = "/rmApi/operation/tTransOperationSchedule/findNearOperationSchedulePatients";//查询本科室下24小时的手术预约患者（不包含临时患者）
     String URL_BIND_PATIENT = "/rmApi/consumables/tCstInventory/tCstInventoryBingdingPatient";//患者绑定   后绑定患者用
     String URL_SAVE_TEMP_PATIENT = "/rmApi/operation/tTransOperationSchedule/saveTempPatient";//创建临时患者信息
     String URL_FIND_IN_PATIENT_PAGE = "/rmApi/patient/tTransInPatientInfo/findInPatientPage";//查询所有在院患者信息
@@ -89,6 +89,10 @@ public interface NetApi {
     //查询配置项
     String URL_THING_CONFIG_FIND = "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项
     String URL_CONNECT_TITLE = "/rmApi/restLogin/connectAble";//顶部连接状态
+
+    //使用记录
+    String URL_FIND_PATIENT = "/rmApi/consumables/tCstInventoryJournal/findPatientUseRecordForPad";//患者的列表
+    String URL_FIND_EPC_DETAILS = "/rmApi/consumables/tCstInventoryJournal/findCstDetailByPatientForPad";//使用耗材的详情
 
     //医嘱请领单领用
     String URL_RECEIVEORDER_LISTALL = "/rmApi/order/transReceiveOrder/listAll";//顶部医嘱单列表

@@ -190,4 +190,23 @@
 		<item>IP地址</item>
 		<item>检测状态</item>
 	</string-array>
+
+	<string-array name="syjl_title_seven">
+		<item>患者姓名</item>
+		<item>患者ID</item>
+		<item>性别</item>
+		<item>手术时间</item>
+		<item>医生</item>
+		<item>手术间</item>
+		<item>操作</item>
+	</string-array>
+
+	<string-array name="six_takenotes_arrays">
+		<item>EPC</item>
+		<item>耗材名称</item>
+		<item>规格型号</item>
+		<item>操作时间</item>
+		<item>操作人</item>
+		<item>操作</item>
+	</string-array>
 </resources>

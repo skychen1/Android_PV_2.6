@@ -18,14 +18,14 @@
         <item name="android:background">@drawable/home_rb_bg_sel</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/selector_stock_title_text</item>
+        <item name="android:textColor">@color/selector_f_3_text</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:paddingTop">@dimen/x43</item>
+        <item name="android:paddingTop">@dimen/y50</item>
         <item name="android:paddingRight">@dimen/x20</item>
-        <item name="android:paddingBottom">@dimen/x43</item>
-        <item name="android:drawablePadding">@dimen/x10</item>
+        <item name="android:paddingBottom">@dimen/y10</item>
+        <!--<item name="android:drawablePadding">@dimen/x10</item>-->
         <item name="android:textSize">@dimen/textsize_19</item>
     </style>
 
@@ -143,6 +143,7 @@
 
     <!--标题栏顶部RadioButton样式-->
     <style name="all_title_rb_style">
+        <item name="android:background">@drawable/title_stock_bg_middle_sel</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@null</item>
@@ -182,15 +183,18 @@
     </style>
 
     <style name="consume_rb_style" parent="android:Widget.CompoundButton.RadioButton">
-        <item name="android:background">@null</item>
+        <item name="android:background">@drawable/bg_fastopen_sel</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:textColor">@color/color_drak_green</item>
+        <item name="android:textColor">@color/selector_f_3_text</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:textSize">@dimen/textsize_19</item>
+        <item name="android:padding">@dimen/y17</item>
+        <item name="android:layout_marginRight">@dimen/x30</item>
+        <item name="android:layout_marginLeft">@dimen/x30</item>
+        <item name="android:textSize">@dimen/textsize_18</item>
     </style>
 
     <style name="login_edittext" parent="@style/AppTheme">

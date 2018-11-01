@@ -28,7 +28,6 @@ public class HomeFastOpenAdapter
 	extends BaseQuickAdapter<BoxSizeBean.TbaseDevicesBean, BaseViewHolder> {
 
    TextView mFastopenTitle;
-   CardView mFastopenCardview;
 
    public HomeFastOpenAdapter(int layout, List<BoxSizeBean.TbaseDevicesBean> data) {
 	super(layout, data);
@@ -44,7 +43,6 @@ public class HomeFastOpenAdapter
    private void findId(BaseViewHolder helper) {
 
 	mFastopenTitle = ((TextView) helper.getView(R.id.fastopen_title));
-	mFastopenCardview = ((CardView) helper.getView(R.id.fastopen_cardview));
 
    }
 }

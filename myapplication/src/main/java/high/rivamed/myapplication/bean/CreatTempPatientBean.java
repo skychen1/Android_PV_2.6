@@ -48,6 +48,15 @@ public class CreatTempPatientBean {
         private String operatingRoomNoName;
         private String scheduleDateTime;
         private String sex;
+        private boolean isCreate;
+
+        public boolean isCreate() {
+            return isCreate;
+        }
+
+        public void setCreate(boolean create) {
+            isCreate = create;
+        }
 
         public String getOperatingRoomNoName() {
             return operatingRoomNoName;

@@ -3,7 +3,6 @@ package high.rivamed.myapplication.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -111,12 +110,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    LinearLayout mConsumeOpenallTop;
    @BindView(R.id.function_title_meal)
    TextView     mFunctionTitleMeal;
-   @BindView(R.id.function_cardview_meal)
-   CardView     mFunctionCardviewMeal;
+
    @BindView(R.id.fastopen_title_form)
    TextView     mFastopenTitleForm;
-   @BindView(R.id.function_cardview_form)
-   CardView     mFunctionCardviewForm;
    @BindView(R.id.consume_openall_middle)
    LinearLayout mConsumeOpenallMiddle;
    @BindView(R.id.content_rb_ly)
@@ -141,8 +137,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    LinearLayout mConsumeDown;
    @BindView(R.id.fastopen_title_guanlian)
    TextView     mFastopenTitleGuanlian;
-   @BindView(R.id.function_cardview_guanlian)
-   CardView     mFunctionCardviewGuanlian;
    private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
@@ -787,23 +781,23 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
 	   //是否启用套餐领用
 	   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-		mFunctionCardviewMeal.setVisibility(View.VISIBLE);
+		mFunctionTitleMeal.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewMeal.setVisibility(View.GONE);
+		mFunctionTitleMeal.setVisibility(View.GONE);
 	   }
 
 	   //是否启用请领单领用
 	   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
-		mFunctionCardviewForm.setVisibility(View.VISIBLE);
+		mFastopenTitleForm.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewForm.setVisibility(View.GONE);
+		mFastopenTitleForm.setVisibility(View.GONE);
 	   }
 
 	   //是否启用关联患者
 	   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		mFunctionCardviewGuanlian.setVisibility(View.VISIBLE);
+		mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewGuanlian.setVisibility(View.GONE);
+		mFastopenTitleGuanlian.setVisibility(View.GONE);
 	   }
 	} else {
 	   mConsumeOpenallMiddle.setVisibility(View.GONE);

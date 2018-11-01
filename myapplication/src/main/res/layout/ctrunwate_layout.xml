@@ -3,7 +3,7 @@
 			  xmlns:tl="http://schemas.android.com/apk/res-auto"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:background="@color/bg_color"
+			  android:background="@color/bg"
 			  android:focusable="true"
 			  android:focusableInTouchMode="true"
 			  android:orientation="vertical"
@@ -12,24 +12,24 @@
 	<com.flyco.tablayout.SlidingTabLayout
 		android:id="@+id/home_runwate_rg"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/x80"
+		android:layout_height="@dimen/y65"
+		android:background="@color/bg"
+		android:layout_marginTop="@dimen/y18"
 		android:layout_marginLeft="@dimen/x30"
 		android:layout_marginRight="@dimen/x30"
-		android:layout_marginTop="@dimen/x18"
-		android:background="@color/bg_color"
-		android:paddingBottom="@dimen/x25"
-		android:paddingTop="@dimen/x20"
+
 		tl:tl_indicator_color="@color/bg_f"
-		tl:tl_indicator_corner_radius="@dimen/x8"
-		tl:tl_indicator_style="BLOCK"
-		tl:tl_tab_padding="@dimen/x40"
-		tl:tl_textSelectColor="@color/bg_green"
-		tl:tl_textUnselectColor="@color/text_color_3"
-		tl:tl_textsize="@dimen/textsize_17"
-		tl:tl_underline_gravity="BOTTOM"
-		tl:tl_underline_height="@dimen/x20"/>
+		tl:tl_indicator_height="@dimen/y65"
+		tl:tl_indicator_corner_radius="0dp"
+		tl:tl_indicator_style="NORMAL"
+		tl:tl_tab_padding="@dimen/x55"
+		tl:tl_textsize="@dimen/textsize_18"
+		tl:tl_textBold="SELECT"
+		tl:tl_textSelectColor="@color/text_color_0"
+		tl:tl_textUnselectColor="@color/text_color_3"/>
 
 	<LinearLayout
+		android:paddingTop="@dimen/y30"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="@dimen/x30"
@@ -48,16 +48,16 @@
 
 			<FrameLayout
 				android:layout_width="wrap_content"
-				android:layout_height="@dimen/x60"
+				android:layout_height="@dimen/y70"
 				android:background="@color/bg_f"
 				android:orientation="horizontal"
 				>
 
 				<EditText
 					android:id="@+id/search_et"
-					android:layout_width="@dimen/x500"
+					android:layout_width="@dimen/x600"
 					android:layout_height="match_parent"
-					android:background="@drawable/bg_btn_line_nor"
+					android:background="@drawable/bg_search"
 					android:drawableLeft="@mipmap/runwate_search"
 					android:drawablePadding="@dimen/x10"
 					android:hint="请输入耗材名称、操作人、EPC查询"

@@ -166,7 +166,7 @@ public class LoginActivity extends SimpleActivity {
 	size.x = dm.widthPixels;
 	size.y = dm.heightPixels;
 
-	Log.d("fbl", size.x + " , " + size.y + " , ");
+	Log.d(TAG, size.x + " , " + size.y + " , ");
 
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	int heightPixels = dm.heightPixels;
@@ -181,7 +181,7 @@ public class LoginActivity extends SimpleActivity {
 	   smallestWidthDP = heightDP;
 	}
 
-	LogUtils.i("fbl", smallestWidthDP +"    我是dp单位     "+density);
+	LogUtils.i(TAG, smallestWidthDP +"    我是dp单位     "+density);
 	//---------------------------------------------------
 
 	//创建数据库表
