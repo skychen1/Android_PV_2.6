@@ -3,7 +3,7 @@
 			  xmlns:app="http://schemas.android.com/apk/res-auto"
 			  android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"
-			  android:layout_marginRight="@dimen/x20"
+			  android:layout_marginRight="@dimen/x30"
 			  android:gravity="center"
 			  android:id="@+id/ll"
 			  android:orientation="vertical">
@@ -12,16 +12,16 @@
 		<TextView
 			android:id="@+id/fastopen_title"
 			android:layout_width="@dimen/x250"
-			android:layout_height="@dimen/y120"
+			android:layout_height="@dimen/y130"
 			android:gravity="center"
-			android:padding="@dimen/x20"
+			android:padding="@dimen/y25"
 			android:drawableLeft="@drawable/bg_fastopen_icon_sel"
 			android:drawablePadding="@dimen/x20"
 			android:text="全部开柜"
 			android:maxLines="2"
 			android:background="@drawable/bg_fastopen_sel"
 			android:textColor="@color/selector_fastopen_text"
-			android:textSize="@dimen/textsize_16"/>
+			android:textSize="@dimen/textsize_18"/>
 
 
 </LinearLayout>

@@ -105,19 +105,17 @@
 				android:layout_height="match_parent"
 				android:layout_alignParentRight="true"
 				>
-				<TextView
+				<ImageView
 					android:id="@+id/base_tab_tv_outlogin"
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:layout_centerVertical="true"
 					android:layout_alignParentRight="true"
-					android:drawablePadding="@dimen/x10"
-					android:text="退出"
-					android:textSize="@dimen/textsize_17"
-					android:paddingRight="@dimen/x10"
+					android:paddingRight="@dimen/x20"
+					android:paddingLeft="@dimen/x20"
 					android:textColor="@color/bg_f"
 					android:gravity="center_vertical"
-					android:drawableLeft="@mipmap/gcms_ic_tc"
+					android:src="@mipmap/gcms_ic_tc"
 					/>
 				<TextView
 					android:id="@+id/base_tab_tv_name"
@@ -126,7 +124,7 @@
 					android:layout_toLeftOf="@+id/base_tab_tv_outlogin"
 					android:clickable="true"
 					android:gravity="center"
-					android:paddingRight="@dimen/x30"
+					android:paddingRight="@dimen/x20"
 					android:textColor="@color/bg_f"
 					android:textSize="@dimen/textsize_18"
 					/>

@@ -12,10 +12,10 @@
 		android:layout_height="match_parent"
 		/>
 	<View
-		android:layout_width="@dimen/x2"
+		android:layout_width="@dimen/x13"
 		android:layout_height="match_parent"
 		android:layout_marginLeft="@dimen/x180"
-		android:background="@color/login_line"/>
+		android:background="@mipmap/left_yinying"/>
 
 	<LinearLayout
 		android:id="@+id/rg_ll"

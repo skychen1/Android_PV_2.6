@@ -5,7 +5,7 @@
 				android:orientation="vertical"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-	android:background="@color/bg_color">
+	android:background="@color/bg">
 	<include
 		android:id="@+id/appbar"
 		layout="@layout/layout_all_title"
@@ -32,14 +32,13 @@
 
 
 	<android.support.v4.view.ViewPager
-		android:paddingTop="@dimen/y30"
 		android:layout_below="@+id/appbar"
 		android:layout_marginTop="@dimen/x85"
 		android:id="@+id/registe_viewpager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:overScrollMode="never"
-		android:background="@color/bg_color"
+		android:background="@color/bg"
 		>
 	</android.support.v4.view.ViewPager>
 

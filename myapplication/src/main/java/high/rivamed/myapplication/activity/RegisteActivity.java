@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
@@ -42,7 +43,7 @@ public class RegisteActivity extends SimpleActivity {
    @BindView(R.id.base_tab_icon_right)
    CircleImageView  mBaseTabIconRight;
    @BindView(R.id.base_tab_tv_outlogin)
-    TextView        mBaseTabOutLogin;
+   ImageView        mBaseTabOutLogin;
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;
    public static ViewPager mRegisteViewpager;
