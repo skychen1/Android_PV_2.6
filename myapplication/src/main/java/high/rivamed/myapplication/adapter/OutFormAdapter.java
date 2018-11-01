@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderSheetBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -25,7 +27,7 @@ import high.rivamed.myapplication.bean.Movie;
  * 更新描述：   ${TODO}
  */
 
-public class OutFormAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> {
+public class OutFormAdapter extends BaseQuickAdapter<OrderSheetBean.RowsBean, BaseViewHolder> {
 
     TextView mTvOpNumber;
     TextView mTvTime;
@@ -34,41 +36,44 @@ public class OutFormAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> {
     TextView mTvPatientNameHint;
     TextView mTvPatientName;
     LinearLayout mFormCardLL;
-    public int selectedPosition = -5; //默认一个参数
+    public int selectedPosition =0; //默认一个参数
 
-    public OutFormAdapter(int layout, List<Movie> data) {
+    public OutFormAdapter(int layout, List<OrderSheetBean.RowsBean> data) {
         super(layout, data);
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, Movie item) {
+    protected void convert(final BaseViewHolder helper, OrderSheetBean.RowsBean item) {
         findId(helper);
-        if (helper.getAdapterPosition() == 0) {
+        if (helper.getAdapterPosition() == selectedPosition) {
             setView(true);
         } else {
             setView(false);
         }
-        mTvOpNumber.setText("1号手术间");
-        mTvTime.setText("16:04");
-        mTvRequestName.setText("程静");
-        mTvPatientName.setText("张三/23438977");
-        clickItem(helper);
-    }
-
-    public void clickItem(final BaseViewHolder helper) {
-        mFormCardLL.setSelected(selectedPosition == helper.getAdapterPosition());
-        if (selectedPosition == helper.getAdapterPosition()) {
-            mFormCardLL.setSelected(true);
+        if (!TextUtils.isEmpty(item.getOperationRoomName())) {
+            mTvOpNumber.setText(item.getOperationRoomName());
         } else {
-            mFormCardLL.setSelected(false);
+            mTvOpNumber.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getCreateTime())) {
+            mTvTime.setText(item.getCreateTime());
+        } else {
+            mTvTime.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getUserName())) {
+            mTvRequestName.setText(item.getUserName());
+        } else {
+            mTvRequestName.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getPatientName())) {
+            mTvPatientName.setText(item.getPatientName());
+        } else {
+            mTvPatientName.setText("");
         }
         mFormCardLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClickListener.OnItemClick(v, helper, helper.getAdapterPosition());
-                selectedPosition = helper.getAdapterPosition(); //选择的position赋值给参数，
-                //		notifyItemChanged(selectedPosition);//刷新当前点击item
-                notifyDataSetChanged();
             }
         });
     }

@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,17 +32,24 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.NewOutFormConfirmActivity;
+import high.rivamed.myapplication.adapter.BillStockAdapter;
 import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
 import high.rivamed.myapplication.adapter.StockRightAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
@@ -107,20 +115,19 @@ public class ReciveBillFrag extends SimpleFragment {
     @BindView(R.id.stock_timely_ll)
     RelativeLayout mStockTimelyLl;
 
-    private TimelyPublicAdapter mPublicAdapter;
+    private BillStockAdapter mPublicAdapter;
     private int mSize; //假数据 举例6个横向格子
     private View mHeadView;
     private int mLayout;
-    private TCstInventoryDto mLeftDownBean;
     List<String> titeleList = null;
-    private TCstInventoryDto mTCstInventoryDto;
-    private List<TCstInventoryVo> mTCstInventoryVos;
-    private StockLeftDownAdapter mDownAdapter;
-    private List<TCstInventoryVo> mTCstStockRightList;
-    private StockRightAdapter mRightAdapter;
-    private List<RunWateBean.RowsBean> mWateBeanRows;
-    private StockLeftDownAdapter mStockLeftAdapter;
-    private List<TCstInventoryVo> mInventoryVos;
+    //上个界面-医嘱单顶部数据
+    private OrderSheetBean.RowsBean mPrePageDate;
+    private static final String TAG = "ReciveBillFrag";
+
+    /**
+     * 柜内所用耗材
+     */
+    private List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosList;
 
     /**
      * 重新加载数据
@@ -134,8 +141,9 @@ public class ReciveBillFrag extends SimpleFragment {
         }
     }
 
-    public static ReciveBillFrag newInstance() {
+    public static ReciveBillFrag newInstance(OrderSheetBean.RowsBean item) {
         Bundle args = new Bundle();
+        args.putSerializable("OrderSheet", item);
         ReciveBillFrag fragment = new ReciveBillFrag();
         fragment.setArguments(args);
         return fragment;
@@ -149,7 +157,9 @@ public class ReciveBillFrag extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        initData();
+        mTransReceiveOrderDetailVosList = new ArrayList<>();
+        mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
+        getStockByOrderId(mPrePageDate.getId());
         initlistener();
     }
 
@@ -177,17 +187,24 @@ public class ReciveBillFrag extends SimpleFragment {
         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
         ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
         ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-        mPublicAdapter = new TimelyPublicAdapter(mLayout, genData72(), mSize, STYPE_FORM);
+
+        mPublicAdapter = new BillStockAdapter(mLayout, mTransReceiveOrderDetailVosList);
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                String six = mPublicAdapter.getItem(position).six;
+                String six = mPublicAdapter.getItem(position).getReceivedStatus();
                 if (!six.equals("已领取")) {
                     DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
                 } else {
                     ToastUtils.showShort("此项已领取！");
                 }
 
+                if (position == 0) {
+                    EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate,mTransReceiveOrderDetailVosList));
+                    //TODO 测试
+                    Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
+                    mContext.startActivity(intent);
+                }
             }
         });
         mHeadView.setBackgroundResource(R.color.bg_green);
@@ -225,28 +242,22 @@ public class ReciveBillFrag extends SimpleFragment {
 
     }
 
-    private List<Movie> genData72() {
-
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "微创路入系统";
-            String two = "FLR01" + i;
-            ;
-            String three = "" + i;
-            String four = "王麻子" + i;
-            String five = i + "号柜";
-            ;
-            String seven = "打开柜门";
-            String six = "";
-            if (i == 2) {
-                six = "已领取";
-            } else {
-                six = "未领取";
+    private void getStockByOrderId(String Id) {
+        NetRequest.getInstance().findStockByOrderId(Id, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogUtils.i(TAG, "getStockByOrderId   " + result);
+                BillStockResultBean billStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
+                mTransReceiveOrderDetailVosList.addAll(billStockResultBean.getTransReceiveOrderDetailVos());
+                initData();
             }
-            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-            list.add(movie);
-        }
-        return list;
+
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
     }
+
 
 }

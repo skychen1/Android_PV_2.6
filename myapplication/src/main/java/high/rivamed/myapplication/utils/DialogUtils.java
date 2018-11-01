@@ -26,6 +26,7 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
@@ -779,7 +780,7 @@ public class DialogUtils {
     /**
      * 医嘱领用-确认-查看请领单
      */
-    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<Movie> list) {
+    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.TransReceiveOrderDetailVosBean> list) {
         LookUpDetailedListDialog.Builder builder = new LookUpDetailedListDialog.Builder(context);
         builder.setDate(list);
         builder.setLeftTopViewShow(isShowLeftTopView);

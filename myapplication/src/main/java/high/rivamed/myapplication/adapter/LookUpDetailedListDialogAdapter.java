@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Movie;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
@@ -43,7 +44,7 @@ import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
  * 更新描述：   ${TODO}
  */
 
-public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> {
+public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockResultBean.TransReceiveOrderDetailVosBean, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -51,7 +52,7 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<Movie, Bas
     private TextView mSeven_four;
     private SparseBooleanArray mCheckStates;
 
-    public LookUpDetailedListDialogAdapter(List<Movie> data) {
+    public LookUpDetailedListDialogAdapter(List<BillStockResultBean.TransReceiveOrderDetailVosBean> data) {
         super(R.layout.item_form_four_layout, data);
         if (mData == null) {
             mData = new ArrayList<>();
@@ -68,18 +69,17 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<Movie, Bas
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, Movie item) {
+    protected void convert(final BaseViewHolder helper, BillStockResultBean.TransReceiveOrderDetailVosBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         }
         findId(helper);
-        mSeven_one.setText(item.one);
-        mSeven_two.setText(item.two);
-        mSeven_three.setText(item.three);
-        mSeven_four.setText(item.four);
-
+        mSeven_one.setText(item.getCstName());
+        mSeven_two.setText(item.getCstSpec());
+        mSeven_three.setText(""+item.getCounts());
+        mSeven_four.setText(item.getThingName());
     }
 
     private void findId(BaseViewHolder helper) {

@@ -96,6 +96,16 @@
 					android:visibility="gone"
 					android:text="请选择患者绑定"
 					/>
+				<TextView
+					android:id="@+id/ly_bind_patient"
+					style="@style/btn_style_sel"
+					android:layout_width="wrap_content"
+					android:layout_marginLeft="@dimen/x30"
+					android:paddingLeft="@dimen/x30"
+					android:paddingRight="@dimen/x30"
+					android:visibility="gone"
+					android:text="请选择患者绑定"
+					/>
 			</LinearLayout>
 
 			<TextView

@@ -9,6 +9,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -22,23 +23,23 @@ import high.rivamed.myapplication.bean.Movie;
  * 更新描述：   ${TODO}
  */
 
-public class MealPopAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> {
+public class MealPopAdapter extends BaseQuickAdapter<OutMealSuitBeanResult, BaseViewHolder> {
 
-   TextView mMeal;
+    TextView mMeal;
 
-   public MealPopAdapter(int layout, List<Movie> data) {
-      super(layout, data);
-   }
+    public MealPopAdapter(int layout, List<OutMealSuitBeanResult> data) {
+        super(layout, data);
+    }
 
-   @Override
-   protected void convert(BaseViewHolder helper, Movie item) {
-      findId(helper);
-      mMeal.setText(item.getString());
-   }
+    @Override
+    protected void convert(BaseViewHolder helper, OutMealSuitBeanResult item) {
+        findId(helper);
+        mMeal.setText(item.getPlanName());
+    }
 
-   private void findId(BaseViewHolder helper) {
+    private void findId(BaseViewHolder helper) {
 
-      mMeal = ((TextView) helper.getView(R.id.item_meal));
+        mMeal = ((TextView) helper.getView(R.id.item_meal));
 
-   }
+    }
 }

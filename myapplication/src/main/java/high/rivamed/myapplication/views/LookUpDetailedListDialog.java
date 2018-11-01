@@ -22,6 +22,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.LookUpDetailedListDialogAdapter;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -73,7 +74,7 @@ public class LookUpDetailedListDialog extends Dialog {
 
         private RecyclerView mRecyclerView;
 
-        private List<Movie> mDate;
+        private List<BillStockResultBean.TransReceiveOrderDetailVosBean> mDate;
         private List<String> titeleList = null;
 
         private boolean mIsShowLeftTopView = true;
@@ -82,7 +83,7 @@ public class LookUpDetailedListDialog extends Dialog {
             this.mContext = context;
         }
 
-        public Builder setDate(List<Movie> list) {
+        public Builder setDate(List<BillStockResultBean.TransReceiveOrderDetailVosBean> list) {
             this.mDate = list;
             return this;
         }
@@ -180,7 +181,7 @@ public class LookUpDetailedListDialog extends Dialog {
             mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                    String six = mPublicAdapter.getItem(position).six;
+                    String six = mPublicAdapter.getItem(position).getReceivedStatus();
                     if (!six.equals("已领取")) {
                         DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
                     } else {

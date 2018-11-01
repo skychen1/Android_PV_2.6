@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -26,20 +27,33 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.adapter.OutMealTopSuitAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderCstResultBean;
+import high.rivamed.myapplication.bean.OrderSheetBean;
+import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
+import high.rivamed.myapplication.bean.SureReciveOrder;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -54,14 +68,12 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
  */
 
 public class OutMealActivity extends BaseSimpleActivity {
-
+    private final String TAG = "OutMealActivity";
     @BindView(R.id.meal_tv_search)
     TextView mMealTvSearch;
     @BindView(R.id.meal_open_btn)
     TextView mMealOpenBtn;
 
-    //   @BindView(R.id.meal_rv)
-    //   RecyclerView       mMealRv;
     @BindView(R.id.recyclerview_null)
     RelativeLayout mRecyclerviewNull;
     @BindView(R.id.timely_ll)
@@ -72,84 +84,47 @@ public class OutMealActivity extends BaseSimpleActivity {
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.public_ll)
     LinearLayout mPublicLl;
-    List<Movie> movies = new ArrayList<>();
+    List<OrderCstResultBean.CstPlanVosBean> movies = new ArrayList<>();
     private MealPopupWindow mPopupWindowSearch;
-    private TimelyPublicAdapter mPublicAdapter;
+    private OutMealTopSuitAdapter mPublicAdapter;
     private View mHeadView;
     private int mLayout;
     private int mSize;
     private String mMealbing;
     private List<String> titeleList = null;
 
+    /**
+     * 套餐列表
+     */
+    private List<OutMealSuitBeanResult> mOutMealSuitList;
+    /**
+     * 一个套餐所包含的耗材列表
+     */
+    private OrderCstResultBean mOrderCstResult;
+
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
         mMealbing = event.mString;
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onPopupBean(Event.PopupEvent event) {
-
+    public void onPopupBean(Event.EventOutMealSuit event) {
         if (event.isMute) {
-            mMealTvSearch.setText(event.mString);
+            mMealTvSearch.setText(event.mOutMealSuitBeanResult.getPlanName());
             mPopupWindowSearch.dismiss();
             mRecyclerviewNull.setVisibility(View.GONE);
-
             if (mMealbing != null && mMealbing.equals("BING_MEAL")) {//判断是否是绑定患者的套餐
                 String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
                 titeleList = Arrays.asList(array);
                 mSize = array.length;
-                if (mPublicAdapter == null) {
-                    movies.addAll(genData7());
-                    initData(movies);
-                } else {
-                    movies.clear();
-                    movies.addAll(genData7());
-                    mPublicAdapter.notifyDataSetChanged();
-                }
-
             } else {
                 String[] array = mContext.getResources().getStringArray(R.array.six_meal_arrays);
                 titeleList = Arrays.asList(array);
                 mSize = array.length;
-
-                if (mPublicAdapter == null) {
-                    if (event.mString.equals("xxx套餐-1")) {
-                        movies.addAll(genData6());
-                        initData(movies);
-                    } else if (event.mString.equals("xxx套餐-5")) {
-                        movies.addAll(genData61());
-                        initData(movies);
-                    } else {
-                        movies.addAll(genData62());
-                        initData(movies);
-                    }
-                    Log.i("CC", " event.isMute   ");
-                } else {
-                    if (event.mString.equals("xxx套餐-1")) {
-                        movies.clear();
-                        movies.addAll(genData6());
-                        mPublicAdapter.notifyDataSetChanged();
-                        Log.i("CC", " event.xxx套餐-1   ");
-                    } else if (event.mString.equals("xxx套餐-5")) {
-                        movies.clear();
-                        movies.addAll(genData61());
-                        mPublicAdapter.notifyDataSetChanged();
-                        Log.i("CC", " event.xxx套餐-5   ");
-                    } else {
-                        movies.clear();
-                        movies.addAll(genData62());
-                        mPublicAdapter.notifyDataSetChanged();
-                        Log.i("CC", " event.isMxxxxxute   ");
-                    }
-                }
-
-                //		Log.i("CC", " event.isMxxxxxute   " );
-
             }
-
+            findOrderCstListDate("" + event.mOutMealSuitBeanResult.getId(), SPUtils.getString(mContext, THING_CODE));
         }
-
     }
 
     @Override
@@ -164,9 +139,10 @@ public class OutMealActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("套餐领用");
         initlistener();
+        findOrderCstPlanDate(true);
     }
 
-    private void initData(List<Movie> movies) {
+    private void initData(List<OrderCstResultBean.CstPlanVosBean> movies) {
 
         mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -197,39 +173,69 @@ public class OutMealActivity extends BaseSimpleActivity {
 
         }
 
-        mPublicAdapter = new TimelyPublicAdapter(mLayout, movies, mSize, STYPE_MEAL_NOBING,
-                mMealbing);
+        mPublicAdapter = new OutMealTopSuitAdapter(mLayout, movies);
         mLinearLayout.addView(mHeadView);
         mRecyclerview.setAdapter(mPublicAdapter);
         mPublicAdapter.notifyDataSetChanged();
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
-                if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
-                    String six = mPublicAdapter.getItem(position).six;
-                    ToastUtils.showShort("six！" + six);
-                    if (!six.equals("已领取")) {
-                        DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
+                if (mPublicAdapter.getItem(position).getStatus() != null) {
+                    if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
+                        String six = mPublicAdapter.getItem(position).getStatus();
+                        ToastUtils.showShort("six！" + six);
+                        if (!six.equals("已领取")) {
+                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
+                        } else {
+                            ToastUtils.showShort("此项已领取！");
+                        }
                     } else {
-                        ToastUtils.showShort("此项已领取！");
-                    }
-                } else {
-                    String six = mPublicAdapter.getItem(position).five;
-                    if (!six.equals("已领取")) {
-                        DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
-                    } else {
-                        ToastUtils.showShort("此项已领取！");
+                        String six = mPublicAdapter.getItem(position).getStatus();
+                        if (!six.equals("已领取")) {
+                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
+                        } else {
+                            ToastUtils.showShort("此项已领取！");
+                        }
                     }
                 }
 
+
+                // 统一数据格式
+                OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
+                orderSheetBean.setId("" + mOrderCstResult.getCstPlan().getId());
+                List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList=new ArrayList<>();
+                for (OrderCstResultBean.CstPlanVosBean item:mOrderCstResult.getCstPlanVos()){
+                    BillStockResultBean.TransReceiveOrderDetailVosBean  info=new BillStockResultBean.TransReceiveOrderDetailVosBean();
+                    info.setOrderDetailId(item.getId());
+                    info.setIsHaveNum(item.getTotalCount());
+                    info.setCounts(item.getPlanNum());
+                    info.setCstId(item.getCstId());
+                    info.setCstName(item.getCstName());
+                    info.setCstSpec(item.getCstSpec());
+                    info.setReceivedStatus(item.getStatus());
+                    info.setReceiveNum(item.getTotalCount());
+                    info.setNeedNum(item.getTotalCount());
+                    info.setPatientName("");
+                    StringBuffer sb=new StringBuffer();
+                    for (int i=0;i<item.getDeviceNames().size();i++) {
+                        sb.append(item.getDeviceNames().get(i));
+                    }
+                    info.setThingName(sb.toString());
+                    transReceiveOrderDetailVosList.add(info);
+                }
+                EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList));
+                Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
+                startActivity(intent);
             }
         });
 
     }
 
     private void initlistener() {
-
+        mRecyclerviewNull.setVisibility(View.GONE);
+        String[] array = mContext.getResources().getStringArray(R.array.six_meal_arrays);
+        titeleList = Arrays.asList(array);
+        mSize = array.length;
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -281,127 +287,79 @@ public class OutMealActivity extends BaseSimpleActivity {
                 finish();
                 break;
             case R.id.meal_tv_search:
-                mPopupWindowSearch = new MealPopupWindow(this);
-                mPopupWindowSearch.showPopupWindow(mMealTvSearch);
+                if (mOutMealSuitList != null) {
+                    if (mOutMealSuitList.size() > 0) {
+                        mPopupWindowSearch = new MealPopupWindow(this, mOutMealSuitList);
+                        mPopupWindowSearch.showPopupWindow(mMealTvSearch);
+                    } else {
+                        ToastUtils.showShort("该部门暂未套组");
+                    }
+                } else {
+                    findOrderCstPlanDate(false);
+                }
                 break;
             case R.id.meal_open_btn:
                 ToastUtils.showShort("全部开柜");
-                Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
-                startActivity(intent);
                 break;
         }
     }
 
-    private List<Movie> genData72() {
-
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "微创路入系统";
-            String two = "FLR01" + i;
-            ;
-            String three = "" + i;
-            String four = "王麻子" + i;
-            String five = i + "号柜";
-            ;
-            String seven = "打开柜门";
-            String six = "";
-            if (i == 2) {
-                six = "已领取";
-            } else {
-                six = "未领取";
+    /**
+     * 获取套餐列表
+     */
+    private void findOrderCstPlanDate(boolean isDefulat) {
+        NetRequest.getInstance().findOrderCstPlanDate(SPUtils.getString(mContext, SAVE_DEPT_CODE), this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                mOutMealSuitList = mGson.fromJson(result, new TypeToken<List<OutMealSuitBeanResult>>() {
+                }.getType());
+                if (!isDefulat) {
+                    if (mOutMealSuitList.size() > 0) {
+                        mPopupWindowSearch = new MealPopupWindow(OutMealActivity.this, mOutMealSuitList);
+                        mPopupWindowSearch.showPopupWindow(mMealTvSearch);
+                    } else {
+                        ToastUtils.showShort("该部门暂未套组");
+                    }
+                } else {
+                    if (mOutMealSuitList.size() > 0) {
+                        mMealTvSearch.setText(mOutMealSuitList.get(0).getPlanName());
+                        //默认数据
+                        findOrderCstListDate("" + mOutMealSuitList.get(0).getId(), SPUtils.getString(mContext, THING_CODE));
+                    }
+                }
             }
-            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-            list.add(movie);
-        }
-        return list;
+
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
     }
 
-    private List<Movie> genData6() {
-
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "微创路genData6入系统";
-            String two = "genData6" + i;
-            String three = "" + i;
-            String four = i + "号柜";
-            String five = "";
-            String six = "打开柜门";
-
-            if (i == 2) {
-                five = "已领取";
-            } else {
-                five = "未领取";
+    /**
+     * 获取套餐包含耗材
+     */
+    private void findOrderCstListDate(String cstPlanId, String thingCode) {
+        NetRequest.getInstance().findOrderCstListById(cstPlanId, thingCode, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                mOrderCstResult = mGson.fromJson(result, OrderCstResultBean.class);
+                if (mPublicAdapter == null) {
+                    movies.addAll(mOrderCstResult.getCstPlanVos());
+                    initData(movies);
+                } else {
+                    movies.clear();
+                    movies.addAll(mOrderCstResult.getCstPlanVos());
+                    mPublicAdapter.notifyDataSetChanged();
+                }
             }
-            Movie movie = new Movie(one, two, three, four, five, six, null, null);
-            list.add(movie);
-        }
-        return list;
+
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
     }
 
-    private List<Movie> genData61() {
 
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "微创路入系统genData61";
-            String two = "genData61" + i;
-            String three = "" + i;
-            String four = i + "号柜";
-            String five = "";
-            String six = "打开柜门";
-
-            if (i == 2) {
-                five = "已领取";
-            } else {
-                five = "未领取";
-            }
-            Movie movie = new Movie(one, two, three, four, five, six, null, null);
-            list.add(movie);
-        }
-        return list;
-    }
-
-    private List<Movie> genData62() {
-
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "genData62微创路入系统";
-            String two = "genData62" + i;
-            String three = "" + i;
-            String four = i + "号柜";
-            String five = "";
-            String six = "打开柜门";
-
-            if (i == 2) {
-                five = "已领取";
-            } else {
-                five = "未领取";
-            }
-            Movie movie = new Movie(one, two, three, four, five, six, null, null);
-            list.add(movie);
-        }
-        return list;
-    }
-
-    private List<Movie> genData7() {
-
-        ArrayList<Movie> list = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            String one = "微创路genData6入系统";
-            String two = "genData6" + i;
-            String three = "" + i;
-            String four = i + "号柜";
-            String five = "王麻子";
-            String six = "";
-            String seven = "打开柜门";
-
-            if (i == 2) {
-                six = "已领取";
-            } else {
-                six = "未领取";
-            }
-            Movie movie = new Movie(one, two, three, four, five, six, seven, null);
-            list.add(movie);
-        }
-        return list;
-    }
 }

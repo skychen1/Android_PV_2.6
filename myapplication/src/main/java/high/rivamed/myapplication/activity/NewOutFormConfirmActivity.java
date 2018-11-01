@@ -8,6 +8,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,16 +37,27 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BingDialogOutAdapter;
+import high.rivamed.myapplication.adapter.OutFormConfirmAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderSheetBean;
+import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
+import high.rivamed.myapplication.bean.OutFromConfirmRequestBean;
+import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
@@ -150,16 +166,26 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     public TableTypeView mTypeView;
     List<String> titeleList = null;
 
-
     public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+    /**
+     * 根据EPC请求网络参数
+     */
+    public OutFromConfirmRequestBean mOutFromConfirmRequestBean;
+    /**
+     * 确认领用使用参数
+     */
+    private OrderSheetBean.RowsBean mPrePageDate;
 
+    /**
+     * 所有耗材列表
+     */
+    private List<OutFormConfirmResultBean.TcstInventoryOrderVosBean> mTransReceiveOrderDetailVosAllList;
 
-    public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
-
+    private OutFormConfirmResultBean mAllOutFormConfirmRequest;
 
     private int mLayout;
     private View mHeadView;
-    private TimelyPublicAdapter mPublicAdapter;
+    private OutFormConfirmAdapter mPublicAdapter;
     public SparseBooleanArray mCheckStates = new SparseBooleanArray();
 
     @Override
@@ -185,11 +211,14 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                     .error(R.mipmap.hccz_mrtx_nv)
                     .into(mBaseTabIconRight);
         }
-        initData();
         initView();
     }
 
-    private void initData() {
+    private void initView() {
+        mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+        mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+        mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+        mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
         mBaseTabTvTitle.setText("识别耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
@@ -213,7 +242,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-            R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one})
+            R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one, R.id.ly_bing_btn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.base_tab_icon_right:
@@ -263,10 +292,103 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             case R.id.timely_start_btn:
                 break;
             case R.id.activity_btn_one:
-                DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", "3号柜");
+                sureTransReceiveOrder();
                 break;
-
+            case R.id.ly_bing_btn:
+                DialogUtils.showLookUpDetailedListDialog(mContext, true, mOutFromConfirmRequestBean.getTransReceiveOrderDetailVos());
+                break;
         }
+    }
+
+    private void initData() {
+
+        mLayout = R.layout.item_formcon_six_layout;
+        mHeadView = mContext.getLayoutInflater()
+                .inflate(R.layout.item_formcon_six_title_layout,
+                        (ViewGroup) mLinearLayout.getParent(), false);
+        ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+        ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+        ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+        ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+        ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+        ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+        mPublicAdapter = new OutFormConfirmAdapter(mLayout, mTransReceiveOrderDetailVosAllList);
+        mHeadView.setBackgroundResource(R.color.bg_green);
+
+        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
+        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+        mRefreshLayout.setEnableAutoLoadMore(false);
+        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+        mRecyclerview.setAdapter(mPublicAdapter);
+        mLinearLayout.removeView(mHeadView);
+        mLinearLayout.addView(mHeadView);
+        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                //TODO 10.23 选择要打开的耗材柜弹出框
+                // DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
+            }
+        });
+    }
+
+    private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
+        NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogUtils.i(TAG, "getBillStockByEpc   " + result);
+                OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
+                mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
+                mAllOutFormConfirmRequest = outFormConfirmResultBean;
+                mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
+                initData();
+            }
+
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
+    }
+
+    private void sureTransReceiveOrder() {
+
+        NetRequest.getInstance().sureReceiveOrder(mGson.toJson(mAllOutFormConfirmRequest), this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogUtils.i(TAG, "getBillStockByEpc   " + result);
+                SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
+                if (sureReciveOrder.isOperateSuccess()) {
+                    if (!sureReciveOrder.getMsg().contains("全部")) {
+                        DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", sureReciveOrder.getMsg());
+                    } else {
+                        DialogUtils.showTwoDialog(mContext, 1, "耗材领用成功", sureReciveOrder.getMsg());
+                    }
+                } else {
+                    ToastUtils.showShort(sureReciveOrder.getMsg());
+                }
+            }
+
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void reciveBillStockDate(Event.EventBillStock event) {
+        if (mOutFromConfirmRequestBean == null) {
+            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+            mOutFromConfirmRequestBean.getEpcs().add("00021720180412000336");
+            mOutFromConfirmRequestBean.getEpcs().add("00021720180409000045");
+            mOutFromConfirmRequestBean.getEpcs().add("00021020180921000002");
+        }
+        mPrePageDate = event.orderSheetBean;
+        mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+        getBillStockByEpc(mOutFromConfirmRequestBean);
+        EventBusUtils.removeStickyEvent(Event.EventBillStock.class);
     }
 
     private List<Movie> genData6() {
@@ -326,40 +448,5 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             list.add(movie);
         }
         return list;
-    }
-
-    private void initView() {
-
-        mLayout = R.layout.item_formcon_six_layout;
-        mHeadView = mContext.getLayoutInflater()
-                .inflate(R.layout.item_formcon_six_title_layout,
-                        (ViewGroup) mLinearLayout.getParent(), false);
-        ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-        ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-        ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-        ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-        ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-        ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-        mPublicAdapter = new TimelyPublicAdapter(mLayout, genData6(), mSize, STYPE_FORM_CONF,
-                mCheckStates);
-        mHeadView.setBackgroundResource(R.color.bg_green);
-
-        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        mRefreshLayout.setEnableAutoLoadMore(false);
-        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-        mRecyclerview.setAdapter(mPublicAdapter);
-        mLinearLayout.removeView(mHeadView);
-        mLinearLayout.addView(mHeadView);
-        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                //TODO 10.23 选择要打开的耗材柜弹出框
-                DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
-                //TODO 10.24 查看请领单
-                DialogUtils.showLookUpDetailedListDialog(mContext, true, genData6());
-            }
-        });
     }
 }

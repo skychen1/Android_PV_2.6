@@ -11,7 +11,8 @@
         android:id="@+id/form_cardview"
         android:layout_width="@dimen/x425"
         android:layout_height="@dimen/x230"
-        android:clickable="true"
+        android:clickable="false"
+        app:cardBackgroundColor="@color/bg_color"
         app:cardElevation="@dimen/x10"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">
