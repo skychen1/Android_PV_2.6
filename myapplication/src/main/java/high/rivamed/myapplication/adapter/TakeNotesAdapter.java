@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.RunWateBean;
+import high.rivamed.myapplication.bean.TakeNotesBean;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -23,7 +23,7 @@ import high.rivamed.myapplication.bean.RunWateBean;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class TakeNotesAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, BaseViewHolder> {
+public class TakeNotesAdapter extends BaseQuickAdapter<TakeNotesBean.RowsBean, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -35,32 +35,27 @@ public class TakeNotesAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, Bas
     private TextView mSeven_eight;
 
     public TakeNotesAdapter(
-            int layoutResId, @Nullable List<RunWateBean.RowsBean> data) {
+            int layoutResId, @Nullable List<TakeNotesBean.RowsBean> data) {
         super(layoutResId, data);
     }
 
     @Override
     protected void convert(
-            BaseViewHolder helper, RunWateBean.RowsBean item) {
+            BaseViewHolder helper, TakeNotesBean.RowsBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         }
-        findId(helper);
-        int five = item.getStopFlag();
-        String one = item.getStatus();
-        mSeven_one.setText(one);
-        mSeven_two.setText(item.getCstName());
-        mSeven_three.setText(item.getEpc());
-        mSeven_four.setText(item.getCstSpec());
-        if (item.getPatientNameAndId()==null||item.getPatientNameAndId().equals("")){
-            mSeven_five.setText("/");
-        }else {
-            mSeven_five.setText(item.getPatientNameAndId());
-        }
-        mSeven_six.setText(item.getDeviceName());
-        mSeven_seven.setText(item.getOptionDate());
+        mSeven_one.setText(item.getPatientName());
+        mSeven_two.setText(item.getPatientId());
+        mSeven_three.setText(item.getSex());
+        mSeven_four.setText(item.getCreateDate());
+
+        mSeven_five.setText(item.getOperationSurgeonName());
+
+        mSeven_six.setText(item.getOperatingRoomNoName());
+        mSeven_seven.setText("耗材明细");
         mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.bg_green));
 
     }

@@ -510,8 +510,12 @@ public class NetRequest {
     /**
      * 使用记录的患者列表
      */
-    public void getFindPatientDate(Object tag, NetResult netResult) {
+    public void getFindPatientDate(String string,int page, int rows,Object tag, NetResult netResult) {
         OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_PATIENT).tag(tag)
+              .params("patientNameOrId", string)
+              .params("pageNo", page)
+              .params("rows",rows)
+              .params("thingCode",sThingCode)
               .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
               .execute(new MyCallBack(tag, netResult, false));
     }

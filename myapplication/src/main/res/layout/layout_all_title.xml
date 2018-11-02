@@ -145,21 +145,20 @@
 					android:layout_height="match_parent"
 					android:layout_centerVertical="true"
 					android:layout_marginRight="@dimen/x15"
-					android:paddingLeft="@dimen/x15"
+					android:paddingLeft="@dimen/x20"
 					android:paddingRight="@dimen/x15"
 					android:layout_toLeftOf="@+id/base_tab_icon_right"
-					android:src="@mipmap/hccz_dhl_ic_xx"
-					android:visibility="gone"
+					android:src="@drawable/msg_sel"
 					/>
 				<ImageView
 					android:id="@+id/base_tab_conn"
-					android:layout_width="@dimen/x80"
+					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:layout_centerVertical="true"
-					android:layout_marginRight="@dimen/x15"
 					android:paddingLeft="@dimen/x15"
 					android:paddingRight="@dimen/x15"
 					android:layout_toLeftOf="@+id/base_tab_btn_msg"
+					android:src="@drawable/conn_sel"
 					/>
 			</RelativeLayout>
 

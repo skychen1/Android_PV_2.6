@@ -11,8 +11,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -89,15 +87,15 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 	mTitleConn = event.b;
 	LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
 	if (mTitleConn){
-	   Glide.with(this)
-		   .load(R.mipmap.connect_yes)
-		   .error(R.mipmap.connect_no)
-		   .into(mBaseTabBtnConn);
+	   LogUtils.i(TAG,"mBaseTabBtnConn.setEnabled(true)  ");
+	   mBaseTabBtnConn.setEnabled(true);
+//	   Glide.with(this)
+//		   .load(R.mipmap.connect_yes)
+//		   .error(R.mipmap.connect_no)
+//		   .into(mBaseTabBtnConn);
 	}else {
-	   Glide.with(this)
-		   .load(R.mipmap.connect_no)
-		   .error(R.mipmap.connect_no)
-		   .into(mBaseTabBtnConn);
+	   LogUtils.i(TAG,"mBaseTabBtnConn.setEnabled(false)  ");
+	   mBaseTabBtnConn.setEnabled(false);
 	}
    }
    @Override

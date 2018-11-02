@@ -754,7 +754,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 	switch (ev.getAction()) {
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_UP:
-		LogUtils.i(TAG, "   ACTION_UP  ");
+//		LogUtils.i(TAG, "   ACTION_UP  ");
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
 		   mStarts.cancel();
@@ -764,7 +764,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 	   //否则其他动作计时取消
 	   default:
 		mStarts.cancel();
-		LogUtils.i(TAG, "   其他操作  ");
+//		LogUtils.i(TAG, "   其他操作  ");
 
 		break;
 	}

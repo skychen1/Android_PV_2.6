@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,6 +32,7 @@ import high.rivamed.myapplication.activity.TakeNotesDetailsActivity;
 import high.rivamed.myapplication.adapter.TakeNotesAdapter;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.TakeNotesBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -57,8 +62,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    ImageView          mSearchIvDelete;
    @BindView(R.id.timely_ll)
    LinearLayout       mLinearLayout;
-   @BindView(R.id.header)
-   MaterialHeader     mHeader;
+
    @BindView(R.id.recyclerview)
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
@@ -67,6 +71,10 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    private View mHeadView;
    private int  mLayout;
    private TakeNotesAdapter mNotesAdapter;
+   private int PAGE = 1;
+   private int SIZE = 20;
+   private String mTrim;
+   private List<TakeNotesBean.RowsBean> mRows;
 
    public static ContentTakeNotesFrag newInstance() {
 	Bundle args = new Bundle();
@@ -91,6 +99,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	initData();
 
+	initListener();
    }
 
    @Override
@@ -102,7 +111,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("使用记录");
-	mSearchEt.setHint("请输入耗材名称、型号规格查询");
+	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
 	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null){
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 	}
@@ -128,29 +137,85 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
 		titeleList.get(6));
+	mHeadView.setBackgroundResource(R.color.bg_green);
+	mLinearLayout.addView(mHeadView);
 	mHeadView.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
 		mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
 	   }
 	});
-	loadDate();
+	loadDate("");
 
    }
-
-   private void loadDate() {
-
-	NetRequest.getInstance().getFindPatientDate(_mActivity,new BaseResult(){
+   private void initListener() {
+	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG,"result   "+result);
+	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+		mTrim = charSequence.toString().trim();
+		PAGE = 1;
+		mRows.clear();
+		loadDate(mTrim);
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable editable) {
 
 	   }
 	});
-	mNotesAdapter = new TakeNotesAdapter(mLayout, null);
 
-	mHeadView.setBackgroundResource(R.color.bg_green);
+	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	   @Override
+	   public void onRefresh(RefreshLayout refreshLayout) {
+		mRefreshLayout.setNoMoreData(false);
+		PAGE = 1;
+		mRows.clear();
+		loadDate(mTrim);
+		mRefreshLayout.finishRefresh();
+	   }
+	});
+
+	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+	   @Override
+	   public void onLoadMore(RefreshLayout refreshLayout) {
+		PAGE++;
+		loadDate(mTrim);
+		mRefreshLayout.finishLoadMore();
+	   }
+	});
+   }
+   private void loadDate(String string) {
+
+	setDate();
+	NetRequest.getInstance().getFindPatientDate(string,PAGE,SIZE,_mActivity,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG,"result   "+result);
+		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
+
+		if (mRows==null){
+		   mRows = takeNotesBean.getRows();
+		}else {
+		   List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
+		   mRows.addAll(rows);
+		}
+		mNotesAdapter.notifyDataSetChanged();
+
+	   }
+	});
+
+   }
+
+   /**
+    * 设置数据
+    */
+   private void setDate() {
+	mNotesAdapter = new TakeNotesAdapter(mLayout, mRows);
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 	mRefreshLayout.setEnableAutoLoadMore(true);
@@ -158,8 +223,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	View inflate = LayoutInflater.from(_mActivity)
 		.inflate(R.layout.recy_null, null);
 	mNotesAdapter.setEmptyView(inflate);
-	mLinearLayout.addView(mHeadView);
-	mNotesAdapter.notifyDataSetChanged();
    }
 
 }

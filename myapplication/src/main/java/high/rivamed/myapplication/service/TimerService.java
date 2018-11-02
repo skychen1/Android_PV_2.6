@@ -11,6 +11,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 
 /**
  * 项目名称:    Android_PV_2.6.1
@@ -35,7 +36,7 @@ public class TimerService extends Service {
 	NetRequest.getInstance().connectTitle(this, new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
-//		LogUtils.i("result","result   "+result.equals("true")  );
+		LogUtils.i("result","result   "+result.equals("true")  );
 		if (result.equals("true")){
 		   EventBusUtils.post(new Event.EventTitleConn(true));
 		}else {
@@ -56,6 +57,7 @@ public class TimerService extends Service {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
+		LogUtils.i("result", "resultdddddddd   "  );
 	   }
 	}).start();
 	AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
