@@ -434,4 +434,14 @@ public class Event {
         }
     }
 
+	/**
+	 * 消息--删除消息
+	 */
+	public static class EventMsgDelete {
+		public PendingTaskBean.MessagesBean data;
+
+		public EventMsgDelete(PendingTaskBean.MessagesBean data) {
+			this.data = data;
+		}
+	}
 }

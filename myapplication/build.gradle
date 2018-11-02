@@ -18,16 +18,19 @@ android {
     }
     signingConfigs {
         debug_config {
-            storeFile file('F:/RUI_HUA/ruihua.jks')
-//            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
+
+//            storeFile file('F:/RUI_HUA/ruihua.jks')
+//            storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
+            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias "Rivamed"
             storePassword "ruihua888888"
             keyPassword "ruihua888888"
             v2SigningEnabled true
         }
         release_config {
-            storeFile file('F:/RUI_HUA/ruihua.jks')
-//            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
+//            storeFile file('F:/RUI_HUA/ruihua.jks')
+//          storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
+            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias 'Rivamed'
             keyPassword 'ruihua888888'
             storePassword 'ruihua888888'
@@ -35,9 +38,21 @@ android {
         }
     }
     buildTypes {
-        release {
-            minifyEnabled false
+        debug {
+            buildConfigField "boolean", "API_ENV", "true"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            debuggable true
+            debuggable false
+            minifyEnabled false
+            signingConfig signingConfigs.debug_config
+        }
+        release {
+            buildConfigField "boolean", "API_ENV", "true"
+//            buildConfigField "boolean", "API_ENV", "false"
+            minifyEnabled false
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release_config
         }
     }
     allprojects {
@@ -91,6 +106,8 @@ dependencies {
     //侧滑
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation "com.github.bumptech.glide:glide:3.7.0"
+    //推送
+    implementation project(':androidpnclient')
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

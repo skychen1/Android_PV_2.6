@@ -182,6 +182,17 @@
 		<item>操作人</item>
 	</string-array>
 
+	<string-array name="eight_unconfirm_arrays">
+		<item>状态</item>
+		<item>名称</item>
+		<item>EPC</item>
+		<item>规格型号</item>
+		<item>效期</item>
+		<item>柜号</item>
+		<item>操作时间</item>
+		<item>操作人</item>
+	</string-array>
+
 
 	<string-array name="self_check_title">
 		<item>部件名称</item>
