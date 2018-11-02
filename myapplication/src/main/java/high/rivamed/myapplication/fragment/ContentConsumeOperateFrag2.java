@@ -36,6 +36,7 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.InBoxAllTwoActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
+import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutBoxFoutActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
@@ -1123,7 +1124,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   builder.create().show();
 		   break;
 		case R.id.base_tab_btn_msg:
-		   break;
+			mContext.startActivity(new Intent(mContext, MessageActivity.class));
+			break;
 		case R.id.function_title_meal://套组
 		   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
 			mContext.startActivity(new Intent(mContext, OutMealActivity.class));

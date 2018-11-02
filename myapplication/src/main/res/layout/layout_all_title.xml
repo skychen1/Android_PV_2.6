@@ -102,6 +102,31 @@
 					/>
 
 			</RadioGroup>
+			<RadioGroup
+				android:id="@+id/rg_group2"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_centerVertical="true"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal"
+				android:visibility="gone">
+
+				<RadioButton
+					android:id="@+id/msg_rdbtn_left"
+					style="@style/all_title_rb_style"
+					android:checked="true"
+					android:background="@drawable/title_stock_bg_middle_sel"
+					android:text=" 待办任务 "
+					/>
+
+				<RadioButton
+					android:id="@+id/msg_rdbtn_right"
+					style="@style/all_title_rb_style"
+					android:background="@drawable/title_stock_bg_middle_sel"
+					android:text="未确认耗材"
+					/>
+
+			</RadioGroup>
 
 			<RelativeLayout
 				android:id="@+id/base_tab_ll"
@@ -155,7 +180,6 @@
 					android:paddingRight="@dimen/x15"
 					android:layout_toLeftOf="@+id/base_tab_icon_right"
 					android:src="@mipmap/hccz_dhl_ic_xx"
-					android:visibility="gone"
 					/>
 				<ImageView
 					android:id="@+id/base_tab_conn"

@@ -87,6 +87,7 @@ public class Constants {
    public static final String KEY_USER_NAME              = "key_user_name";//用户名字
    public static final String KEY_USER_ICON              = "key_user_icon";//用户头像
    public static final String KEY_USER_SEX               = "key_user_sex";//用户性别
+   public static final String KEY_USER_ID                = "key_user_id";//用户userID
    public static final String KEY_ACCOUNT_ID             = "key_account_id";//用户ID
    public static final String SAVE_STOREHOUSE_NAME       = "save_storehouse_name";//库房名字
    public static final String SAVE_OPERATION_ROOM_NONAME = "save_operation_room_noname";//手术间名字

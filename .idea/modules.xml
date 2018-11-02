@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/Android_PV_2.6.1.iml" filepath="$PROJECT_DIR$/Android_PV_2.6.1.iml" />
       <module fileurl="file://$PROJECT_DIR$/Android_PV_2.6.1_new.iml" filepath="$PROJECT_DIR$/Android_PV_2.6.1_new.iml" />
       <module fileurl="file://$PROJECT_DIR$/Android_PV_2.6_new_two.iml" filepath="$PROJECT_DIR$/Android_PV_2.6_new_two.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PV_2.6.3.iml" filepath="$PROJECT_DIR$/PV_2.6.3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidpnclient/androidpnclient.iml" filepath="$PROJECT_DIR$/androidpnclient/androidpnclient.iml" />
       <module fileurl="file://$PROJECT_DIR$/devices/devices.iml" filepath="$PROJECT_DIR$/devices/devices.iml" />
       <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
     </modules>

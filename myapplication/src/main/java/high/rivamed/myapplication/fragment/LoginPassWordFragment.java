@@ -47,6 +47,7 @@ import high.rivamed.myapplication.views.UpDateDialog;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
@@ -189,6 +190,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
 //                        SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
+                        SPUtils.putString(UIUtils.getContext(), KEY_USER_ID,loginResultBean.getAppAccountInfoVo().getUserId());
 
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);

@@ -17,6 +17,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_ID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -499,6 +500,15 @@ public class NetRequest {
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
+    /**
+     * 查询待办任务列表
+     */
+    public void getPendingTaskList(Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_MESSAGE_BY_ACCOUNTID).tag(tag)
+                .params("accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
+                .params("userId",  SPUtils.getString(UIUtils.getContext(), KEY_USER_ID))
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
     /**
      * 查询所有的配置项
      */

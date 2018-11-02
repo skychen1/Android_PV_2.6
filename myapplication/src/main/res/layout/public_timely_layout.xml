@@ -1,211 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:layout_width="match_parent"
-			  android:layout_height="match_parent"
-			  android:background="@color/bg_f"
-			  android:layout_marginTop="@dimen/x10"
-			  android:orientation="vertical"
-	>
-	<RelativeLayout
-		android:id="@+id/public_rl"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		>
-		<RelativeLayout
-			android:id="@+id/timely_title"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			>
-			<TextView
-				android:id="@+id/timely_start_btn"
-				style="@style/btn_style_sel"
-				android:text="开始盘点"
-				/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    android:layout_marginTop="@dimen/x10"
+    android:background="@color/bg_f"
+    android:orientation="vertical">
 
-			<TextView
-				android:id="@+id/timely_loss"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/x50"
-				android:layout_marginRight="@dimen/x30"
-				android:layout_marginLeft="@dimen/x30"
-				android:background="@drawable/bg_btn_line_nor"
-				android:gravity="center_vertical"
-				android:paddingLeft="@dimen/x22"
-				android:paddingRight="@dimen/x22"
-				android:text="盘亏：3"
-				android:layout_toRightOf="@+id/timely_start_btn"
-				android:textColor="@color/text_color_58"
-				android:textSize="@dimen/textsize_15"
-				/>
-			<TextView
-				android:id="@+id/timely_profit"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/x50"
-				android:layout_marginRight="@dimen/x25"
-				android:background="@drawable/bg_btn_line_nor"
-				android:gravity="center_vertical"
-				android:paddingLeft="@dimen/x22"
-				android:paddingRight="@dimen/x22"
-				android:text="盘盈：30"
-				android:layout_toRightOf="@+id/timely_loss"
-				android:textColor="@color/text_color_58"
-				android:textSize="@dimen/textsize_15"
-				/>
+    <RelativeLayout
+        android:id="@+id/public_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-		</RelativeLayout>
-		<include android:id="@+id/stock_search"
-				 layout="@layout/view_search_et_layout"
-				 android:layout_width="@dimen/x700"
-				 android:layout_marginLeft="@dimen/x30"
-				 android:layout_height="@dimen/x60"
-				 android:visibility="gone"
-			/>
+        <RelativeLayout
+            android:id="@+id/timely_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-		<RelativeLayout
-			android:id="@+id/stock_timely_ll"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:gravity="center_vertical"
-			android:layout_below="@+id/stock_search"
-			android:layout_marginTop="@dimen/x30"
-			android:layout_marginLeft="@dimen/x30"
-			android:visibility="gone"
-			android:orientation="horizontal"
-			>
+            <TextView
+                android:id="@+id/timely_start_btn"
+                style="@style/btn_style_sel"
+                android:text="开始盘点" />
 
-			<TextView
-				android:id="@+id/tag"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_centerVertical="true"
-				android:text="效期:"
-				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_17"/>
+            <TextView
+                android:id="@+id/timely_loss"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_marginLeft="@dimen/x30"
+                android:layout_marginRight="@dimen/x30"
+                android:layout_toRightOf="@+id/timely_start_btn"
+                android:background="@drawable/bg_btn_line_nor"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/x22"
+                android:paddingRight="@dimen/x22"
+                android:text="盘亏：3"
+                android:textColor="@color/text_color_58"
+                android:textSize="@dimen/textsize_15" />
 
-			<RadioGroup
-				android:layout_toRightOf="@+id/tag"
-				android:id="@+id/stock_left_rg"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/x50"
-				android:layout_gravity="center_horizontal"
-				android:gravity="center"
-				android:orientation="horizontal">
+            <TextView
+                android:id="@+id/timely_profit"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_marginRight="@dimen/x25"
+                android:layout_toRightOf="@+id/timely_loss"
+                android:background="@drawable/bg_btn_line_nor"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/x22"
+                android:paddingRight="@dimen/x22"
+                android:text="盘盈：30"
+                android:textColor="@color/text_color_58"
+                android:textSize="@dimen/textsize_15" />
 
+        </RelativeLayout>
 
-				<RadioButton
-					android:id="@+id/stock_left_all"
-					style="@style/runwate_btn_style"
-					android:checked="true"
-					android:text="全部"/>
+        <include
+            android:id="@+id/stock_search"
+            layout="@layout/view_search_et_layout"
+            android:layout_width="@dimen/x700"
+            android:layout_height="@dimen/x60"
+            android:layout_marginLeft="@dimen/x30"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/stock_timely_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stock_search"
+            android:layout_marginLeft="@dimen/x30"
+            android:layout_marginTop="@dimen/x30"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="效期:"
+                android:textColor="@color/text_color_3"
+                android:textSize="@dimen/textsize_17" />
+
+            <RadioGroup
+                android:id="@+id/stock_left_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@+id/tag"
+                android:gravity="center"
+                android:orientation="horizontal">
 
 
-				<RadioButton
-					android:id="@+id/stock_left_guoqi"
-					style="@style/runwate_btn_style"
-					android:text="过期耗材"/>
-
-				<!--<RadioButton-->
-					<!--android:id="@+id/stock_left_quehuo"-->
-					<!--style="@style/runwate_btn_style"-->
-					<!--android:text="缺货耗材"/>-->
-
-				<RadioButton
-					android:id="@+id/stock_left_jinqi"
-					style="@style/runwate_btn_style"
-					android:text="近效期耗材"/>
-				<RadioButton
-					android:id="@+id/stock_left_zhengchang"
-					style="@style/runwate_btn_style"
-					android:text="正常耗材"/>
-			</RadioGroup>
-
-				<TextView
-					android:id="@+id/timely_reality2"
-					android:layout_width="wrap_content"
-					android:layout_height="@dimen/x50"
-					android:layout_alignParentRight="true"
-					android:layout_marginRight="@dimen/x30"
-					android:gravity="bottom"
-					android:text="实际扫描数：97"
-					android:textColor="@color/text_color_26"
-					android:textSize="@dimen/textsize_16"/>
-
-		</RelativeLayout>
-		<include
-			android:id="@+id/right_top"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			layout="@layout/view_right_top_layout"
-			android:layout_alignParentRight="true"
-			/>
-		<LinearLayout
-			android:id="@+id/stock_right_btn"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@+id/stock_search"
-			android:layout_gravity="center_vertical"
-			android:layout_marginRight="@dimen/x30"
-			android:layout_marginLeft="@dimen/x30"
-			android:orientation="horizontal"
-			android:layout_centerVertical="true"
-			android:visibility="gone">
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:gravity="center_vertical"
-				android:text="状态:"
-				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_17"/>
-
-			<RadioGroup
-				android:id="@+id/stock_right_rg"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/x50"
-				android:layout_gravity="center_horizontal"
-				android:gravity="center"
-				android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/stock_left_all"
+                    style="@style/runwate_btn_style"
+                    android:checked="true"
+                    android:text="全部" />
 
 
-				<RadioButton
-					android:id="@+id/stock_right_all"
-					style="@style/runwate_btn_style"
-					android:checked="true"
-					android:text="全部"/>
+                <RadioButton
+                    android:id="@+id/stock_left_guoqi"
+                    style="@style/runwate_btn_style"
+                    android:text="过期耗材" />
+
+                <!--<RadioButton-->
+                <!--android:id="@+id/stock_left_quehuo"-->
+                <!--style="@style/runwate_btn_style"-->
+                <!--android:text="缺货耗材"/>-->
+
+                <RadioButton
+                    android:id="@+id/stock_left_jinqi"
+                    style="@style/runwate_btn_style"
+                    android:text="近效期耗材" />
+
+                <RadioButton
+                    android:id="@+id/stock_left_zhengchang"
+                    style="@style/runwate_btn_style"
+                    android:text="正常耗材" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/timely_reality2"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/x30"
+                android:gravity="bottom"
+                android:text="实际扫描数：97"
+                android:textColor="@color/text_color_26"
+                android:textSize="@dimen/textsize_16" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/right_top"
+            layout="@layout/view_right_top_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true" />
+
+        <LinearLayout
+            android:id="@+id/stock_right_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/x30"
+            android:layout_marginRight="@dimen/x30"
+            android:layout_toRightOf="@+id/stock_search"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="状态:"
+                android:textColor="@color/text_color_3"
+                android:textSize="@dimen/textsize_17" />
+
+            <RadioGroup
+                android:id="@+id/stock_right_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal">
 
 
-				<RadioButton
-					android:id="@+id/stock_right_unused"
-					style="@style/runwate_btn_style"
-					android:text="未使用"/>
+                <RadioButton
+                    android:id="@+id/stock_right_all"
+                    style="@style/runwate_btn_style"
+                    android:checked="true"
+                    android:text="全部" />
 
-				<RadioButton
-					android:id="@+id/stock_right_tobemovedin"
-					style="@style/runwate_btn_style"
-					android:text="待移入"/>
 
-				<RadioButton
-					android:id="@+id/stock_right_tobestoredin"
-					style="@style/runwate_btn_style"
-					android:text="待入库"/>
-			</RadioGroup>
+                <RadioButton
+                    android:id="@+id/stock_right_unused"
+                    style="@style/runwate_btn_style"
+                    android:text="未使用" />
 
-		</LinearLayout>
-	</RelativeLayout>
-	<RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
-		<include
-			android:id="@+id/public_ll"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			layout="@layout/include_recyclerview"
-			android:layout_marginTop="@dimen/x25"
-			android:layout_marginLeft="@dimen/x30"
-			android:layout_marginRight="@dimen/x30"
-			/>
-		<!--<include layout="@layout/null_activity_loading"/>-->
-	</RelativeLayout>
+                <RadioButton
+                    android:id="@+id/stock_right_tobemovedin"
+                    style="@style/runwate_btn_style"
+                    android:text="待移入" />
+
+                <RadioButton
+                    android:id="@+id/stock_right_tobestoredin"
+                    style="@style/runwate_btn_style"
+                    android:text="待入库" />
+            </RadioGroup>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/public_ll"
+            layout="@layout/include_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/x30"
+            android:layout_marginRight="@dimen/x30"
+            android:layout_marginTop="@dimen/x25" />
+        <!--<include layout="@layout/null_activity_loading"/>-->
+    </RelativeLayout>
 
 
 </LinearLayout>

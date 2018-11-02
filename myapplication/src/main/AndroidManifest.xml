@@ -9,9 +9,10 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.android.example.USB_PERMISSION"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_LOGS"
+    <uses-permission android:name="com.android.example.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -28,15 +29,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-
         <meta-data
             android:name="design_width"
-            android:value="1920">
-        </meta-data>
+            android:value="1920"></meta-data>
         <meta-data
             android:name="design_height"
-            android:value="1200">
-        </meta-data>
+            android:value="1200"></meta-data>
 
         <activity
             android:name=".activity.LoginActivity"
@@ -44,14 +42,13 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:screenOrientation="sensorLandscape"
-            />
-
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.MyInfoActivity"
             android:launchMode="singleInstance"
@@ -100,12 +97,10 @@
         <activity
             android:name=".activity.RegisteActivity"
             android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan"/>
-
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.OutMealBingConfirmActivity"
             android:screenOrientation="sensorLandscape" />
-
         <activity
             android:name=".activity.TestLoginActivity"
             android:screenOrientation="sensorLandscape" />
@@ -123,19 +118,46 @@
         <activity
             android:name=".activity.TemPatientBindActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-		<activity
+        <activity
             android:name=".activity.PatientConnActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <receiver android:name=".http.ContentReceiver"
-            >
+        <!--androidpnclient 开始-->
+        <activity
+            android:name="org.androidpn.demoapp.DemoAppActivity"
+            android:label="@string/app_name">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name="org.androidpn.client.NotificationDetailsActivity"
+            android:label="Notification Details"></activity>
+
+        <service
+            android:name="org.androidpn.client.NotificationService"
+            android:enabled="true"
+            android:label="NotificationService">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="org.androidpn.client.NotificationService" />
+            </intent-filter>
+        </service>
+        <!--androidpnclient 结束-->
+
+        <receiver android:name=".http.ContentReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.TimerService" >   </service>
-        <receiver android:name=".service.AlarmReceiver" >   </receiver>
+
+        <service android:name=".service.TimerService"></service>
+
+        <receiver android:name=".service.AlarmReceiver"></receiver>
+
+        <activity android:name=".activity.MessageActivity"></activity>
     </application>
 
 </manifest>

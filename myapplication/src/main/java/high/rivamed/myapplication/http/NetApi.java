@@ -90,5 +90,8 @@ public interface NetApi {
     String URL_THING_CONFIG_FIND = "/rmApi/config/tCstConfigThing/findThingConfig";//查询所有的配置项
     String URL_CONNECT_TITLE = "/rmApi/restLogin/connectAble";//顶部连接状态
 
+    //消息
+    String URL_FIND_MESSAGE_BY_ACCOUNTID = "/rmApi/message/message/findMessageByAccountId";//查询待办任务列表
+
 
 }
