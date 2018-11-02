@@ -67,7 +67,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
     @Override
     protected void convert(final BaseViewHolder helper, OrderCstResultBean.CstPlanVosBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         }
@@ -85,7 +85,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
         if (!TextUtils.isEmpty(item.getStatus())) {
             mSeven_six.setText(item.getStatus());
         } else {
-            mSeven_six.setText("");
+            mSeven_six.setText("未领用");
         }
         mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
         mSeven_seven.setText("打开柜门");

@@ -17,6 +17,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -592,6 +593,24 @@ public class NetRequest {
         OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_FINDCSTANDCOMPARETOCSTPLAN).tag(tag)
                 .upJson(json)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+    /**
+     * 消息-查询待办任务列表
+     */
+    public void getPendingTaskList(Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_MESSAGE_BY_ACCOUNTID).tag(tag)
+                .params("accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
+                .params("userId",  SPUtils.getString(UIUtils.getContext(), KEY_USER_ID))
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    }
+
+  /**
+     * 消息-删除待办任务
+     */
+    public void deleteMessageById(String id,Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL+NetApi.URL_DELETE_MESSAGE_BY_ID).tag(tag)
+                .params("message.id", id)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
 
     /**

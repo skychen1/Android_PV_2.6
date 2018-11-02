@@ -32,7 +32,6 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-
 public class MyInfoActivity extends BaseSimpleActivity {
 
     private static final String TAG = "MyInfoActivity";

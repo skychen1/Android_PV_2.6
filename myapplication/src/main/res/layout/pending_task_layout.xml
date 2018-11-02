@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    android:layout_marginTop="@dimen/x10"
+    android:background="@color/bg_f"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_task_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/x30"
+        android:gravity="center_vertical"
+        android:text="任务 (0个进行中)"
+        android:layout_marginTop="@dimen/x25"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textsize_16" />
+
+    <include
+        android:id="@+id/public_ll"
+        layout="@layout/include_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/x30"
+        android:layout_marginRight="@dimen/x30"
+        android:layout_marginTop="@dimen/x25"
+        />
+
+
+</LinearLayout>

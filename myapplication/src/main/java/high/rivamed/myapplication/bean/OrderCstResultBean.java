@@ -397,7 +397,7 @@ public class OrderCstResultBean implements Serializable {
             this.inventoryEnough = inventoryEnough;
         }
 
-        public List<?> getDeviceCodes() {
+        public List<String> getDeviceCodes() {
             return deviceCodes;
         }
 
