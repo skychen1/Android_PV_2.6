@@ -425,10 +425,12 @@ public class Event {
     public static class EventBillOrder{
         public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
         public OrderSheetBean.RowsBean orderSheetBean;
+		public List<BoxSizeBean.TbaseDevicesBean> tbaseDevices;
 
-        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList) {
+        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.TbaseDevicesBean> tbaseDevices) {
             this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
             this.orderSheetBean = orderSheetBean;
+            this.tbaseDevices=tbaseDevices;
         }
     }
 

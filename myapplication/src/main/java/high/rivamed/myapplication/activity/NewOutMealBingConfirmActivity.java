@@ -30,13 +30,18 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.DeviceManager;
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BillOrderAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
@@ -51,13 +56,16 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindBillOrderBean;
 import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
 import high.rivamed.myapplication.bean.OutFromConfirmRequestBean;
 import high.rivamed.myapplication.bean.UseCstOderResultBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -95,9 +103,12 @@ import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -228,11 +239,21 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     /**
      * 查询耗材返回数据
      */
-    private List<BillOrderResultBean> mBillOrderResultList;
+    private BillOrderResultBean mBillOrderResultBean;
     /**
      * 确认领用-请求参数
      */
     private UseCstOrderBean mUseCstOrderRequest;
+
+
+    /**
+     * 传输的EPC
+     *
+     * @param event
+     */
+    private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
+
+    private LoadingDialog.Builder mLoadingDialog;
 
     @Override
     protected int getContentLayoutId() {
@@ -258,9 +279,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     .into(mBaseTabIconRight);
         }
         initData(false);
-        if (mPublicAdapter != null && mBillOrderResultList != null) {
+        if (mPublicAdapter != null && mBillOrderResultBean.getCstInventoryVos() != null) {
             initView(false);
         }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLoadingDialog = DialogUtils.showLoading(mContext);
     }
 
     /**
@@ -306,7 +333,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
             R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn_right,
-            R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right, R.id.ly_bing_btn, R.id.ly_bind_patient, R.id.activity_btn_one})
+            R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right, R.id.ly_bing_btn,R.id.timely_start_btn, R.id.ly_bind_patient, R.id.timely_open_door, R.id.activity_btn_one})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.base_tab_icon_right:
@@ -373,6 +400,17 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 ToastUtils.showShort("绑定");
                 //		DialogUtils.showRvDialog(this, mContext);
                 break;
+            case R.id.timely_start_btn:
+                mLoadingDialog=DialogUtils.showLoading(mContext);
+                for (String deviceInventoryVo : mEthDeviceIdBack) {
+                    String deviceCode = deviceInventoryVo;
+                    LogUtils.i(TAG, "deviceCode    " + deviceCode);
+                    startScan(deviceCode);
+                }
+                break;
+            case R.id.timely_open_door:
+                reOpenDoor();
+                break;
             case R.id.ly_bing_btn:
                 DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos);
                 break;
@@ -383,6 +421,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 if (UIUtils.getConfigType(mContext, CONFIG_012)) {
                     Intent intent = new Intent(mContext, TemPatientBindActivity.class);
                     intent.putExtra("type", "afterBindTemp");
+                    intent.putExtra("position", -1000);
                     startActivity(intent);
                 } else {
                     loadBingDateNoTemp("", 0, mTbaseDevices);
@@ -419,7 +458,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
             ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
         }
-        mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBillOrderResultList);
+        mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBillOrderResultBean.getCstInventoryVos());
         mHeadView.setBackgroundResource(R.color.bg_green);
 
         mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
@@ -453,26 +492,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             cstPlanBean.setId(mPrePageDate.getId());
             mFindBillOrderBean.setCstPlan(cstPlanBean);
             mFindBillOrderBean.setCstInventoryVos(new ArrayList<>());
-            FindBillOrderBean.CstInventoryVosBean item1 = new FindBillOrderBean.CstInventoryVosBean();
-            item1.setEpc("00021720180412000336");
-            FindBillOrderBean.CstInventoryVosBean item2 = new FindBillOrderBean.CstInventoryVosBean();
-            item2.setEpc("00021720180409000045");
-            FindBillOrderBean.CstInventoryVosBean item3 = new FindBillOrderBean.CstInventoryVosBean();
-            item1.setEpc("00021020180921000002");
-            FindBillOrderBean.CstInventoryVosBean item4 = new FindBillOrderBean.CstInventoryVosBean();
-            item4.setEpc("000000002C10201809040035");
-            mFindBillOrderBean.getCstInventoryVos().add(item1);
-            mFindBillOrderBean.getCstInventoryVos().add(item2);
-            mFindBillOrderBean.getCstInventoryVos().add(item3);
-            mFindBillOrderBean.getCstInventoryVos().add(item4);
         }
         if (mUseCstOrderRequest == null) {
             mUseCstOrderRequest = new UseCstOrderBean();
             mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
             mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
         }
+        mTbaseDevices = event.tbaseDevices;
         EventBusUtils.removeStickyEvent(Event.EventBillOrder.class);
-        findBillOrder();
+        //findBillOrder();
         loadDate();
     }
 
@@ -480,18 +508,21 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 根据EPC查询的套组耗材信息
      */
     private void findBillOrder() {
+        mEPCMapDate.clear();
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                mBillOrderResultList = mGson.fromJson(result, new TypeToken<List<BillOrderResultBean>>() {
-                }.getType());
+                mFindBillOrderBean.getCstInventoryVos().clear();
+                mBillOrderResultBean= mGson.fromJson(result, BillOrderResultBean.class);
                 if (mPublicAdapter == null) {
                     initView(false);
                 } else {
-                    mPublicAdapter.setNewData(mBillOrderResultList);
+                    mPublicAdapter.setNewData(mBillOrderResultBean.getCstInventoryVos());
                     mPublicAdapter.notifyDataSetChanged();
                 }
-
+                mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + mBillOrderResultBean.getCountKind() +
+                        "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+                        mBillOrderResultBean.getCountNum() + "</big></font>"));
             }
 
             @Override
@@ -506,7 +537,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      */
     private void useOrderCst() {
         mUseCstOrderRequest.getTCstInventoryVos().clear();
-        for (BillOrderResultBean item : mBillOrderResultList) {
+        for (BillOrderResultBean.CstInventoryVosBean item : mBillOrderResultBean.getCstInventoryVos()) {
             UseCstOrderBean.TCstInventoryVosBean info = new UseCstOrderBean.TCstInventoryVosBean();
             info.setCount(item.getCount());
             info.setCountActual(item.getCountActual());
@@ -683,11 +714,63 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRvCheckBindEvent(Event.EventCheckbox event) {
         mUseCstOrderRequest.setPatientId(event.id);
-        for (BillOrderResultBean item : mBillOrderResultList) {
+        for (BillOrderResultBean.CstInventoryVosBean item : mBillOrderResultBean.getCstInventoryVos()) {
             item.setPatientId(event.id);
             item.setPatientName(event.mString);
         }
         initView(true);
         mPublicAdapter.notifyDataSetChanged();
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void scanEPCResult(Event.EventDeviceCallBack event) {
+        mEPCMapDate.putAll(event.epcs);
+        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+            FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
+            item.setEpc(v.getKey());
+            mFindBillOrderBean.getCstInventoryVos().add(item);
+        }
+        mLoadingDialog.mDialog.dismiss();
+        if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
+            findBillOrder();
+        } else {
+            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+        }
+    }
+
+    /**
+     * 重新打开柜门
+     */
+    private void reOpenDoor() {
+        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
+            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+        } else {
+            ToastUtils.showShort("无柜子信息!");
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isDoorOpened(Event.HomeNoClickEvent event) {
+        if (event.isClick) {
+            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+        }
+    }
+
+    private void startScan(String deviceIndentify) {
+        EventBusUtils.postSticky(new Event.EventLoading(true));
+        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+                UHF_TYPE).find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeans) {
+            String box_id = boxIdBean.getBox_id();
+            List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+                    .find(BoxIdBean.class);
+
+            for (BoxIdBean deviceid : deviceBean) {
+                String device_id = deviceid.getDevice_id();
+                int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+                LogUtils.i(TAG, "开始扫描了状态    " + i);
+            }
+        }
+    }
+
+
 }

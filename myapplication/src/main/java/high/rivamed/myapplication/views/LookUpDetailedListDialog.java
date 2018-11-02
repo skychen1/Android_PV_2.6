@@ -67,7 +67,7 @@ public class LookUpDetailedListDialog extends Dialog {
         private LinearLayout mPublicLl;
         private LinearLayout mListTag;
         private View mHeadView;
-        ;
+
 
         private SmartRefreshLayout mSmartRefreshLayout;
         private MaterialHeader mMaterialHeader;
@@ -160,9 +160,9 @@ public class LookUpDetailedListDialog extends Dialog {
             if (mDate.size() >= 8) {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y550);
             } else if (mDate.size() < 3) {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * mDate.size();
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * mDate.size()/ 2;
             } else {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * mDate.size() / 2;
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y100) * mDate.size() ;
             }
             mRecyclerView.setLayoutParams(lps);
             String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
@@ -181,12 +181,12 @@ public class LookUpDetailedListDialog extends Dialog {
             mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                    String six = mPublicAdapter.getItem(position).getReceivedStatus();
-                    if (!six.equals("已领取")) {
-                        DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
-                    } else {
-                        ToastUtils.showShort("此项已领取！");
-                    }
+//                    String six = mPublicAdapter.getItem(position).getReceivedStatus();
+//                    if (!six.equals("已领取")) {
+//                        DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
+//                    } else {
+//                        ToastUtils.showShort("此项已领取！");
+//                    }
 
                 }
             });

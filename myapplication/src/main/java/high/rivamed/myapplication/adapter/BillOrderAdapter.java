@@ -44,7 +44,7 @@ import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
  * 更新描述：   ${TODO}
  */
 
-public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean, BaseViewHolder> {
+public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstInventoryVosBean, BaseViewHolder> {
     private TextView mSeven_one;
     private TextView mSeven_two;
     private TextView mSeven_three;
@@ -62,7 +62,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean, Base
 
 
     public BillOrderAdapter(
-            int layout, int type, List<BillOrderResultBean> data) {
+            int layout, int type, List<BillOrderResultBean.CstInventoryVosBean> data) {
         super(layout, data);
         this.mType = "" + type;
     }
@@ -79,7 +79,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean, Base
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, BillOrderResultBean item) {
+    protected void convert(final BaseViewHolder helper, BillOrderResultBean.CstInventoryVosBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {

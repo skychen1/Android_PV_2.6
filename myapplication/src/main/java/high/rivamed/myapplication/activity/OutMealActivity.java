@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +24,27 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutMealTopSuitAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BillStockResultBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
 import high.rivamed.myapplication.bean.SureReciveOrder;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -102,6 +109,15 @@ public class OutMealActivity extends BaseSimpleActivity {
      */
     private OrderCstResultBean mOrderCstResult;
 
+    /**
+     * 开门柜子列表
+     */
+    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent = new ArrayList<>();
+
+    /**
+     * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
+     */
+    private boolean mIsCanSkipToSurePage=true;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
@@ -172,7 +188,11 @@ public class OutMealActivity extends BaseSimpleActivity {
             ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
 
         }
-
+        if (movies != null && movies.size() > 0) {
+            mRecyclerviewNull.setVisibility(View.GONE);
+        } else {
+            mRecyclerviewNull.setVisibility(View.VISIBLE);
+        }
         mPublicAdapter = new OutMealTopSuitAdapter(mLayout, movies);
         mLinearLayout.addView(mHeadView);
         mRecyclerview.setAdapter(mPublicAdapter);
@@ -198,34 +218,18 @@ public class OutMealActivity extends BaseSimpleActivity {
                         }
                     }
                 }
-
-
-                // 统一数据格式
-                OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
-                orderSheetBean.setId("" + mOrderCstResult.getCstPlan().getId());
-                List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList=new ArrayList<>();
-                for (OrderCstResultBean.CstPlanVosBean item:mOrderCstResult.getCstPlanVos()){
-                    BillStockResultBean.TransReceiveOrderDetailVosBean  info=new BillStockResultBean.TransReceiveOrderDetailVosBean();
-                    info.setOrderDetailId(item.getId());
-                    info.setIsHaveNum(item.getTotalCount());
-                    info.setCounts(item.getPlanNum());
-                    info.setCstId(item.getCstId());
-                    info.setCstName(item.getCstName());
-                    info.setCstSpec(item.getCstSpec());
-                    info.setReceivedStatus(item.getStatus());
-                    info.setReceiveNum(item.getTotalCount());
-                    info.setNeedNum(item.getTotalCount());
-                    info.setPatientName("");
-                    StringBuffer sb=new StringBuffer();
-                    for (int i=0;i<item.getDeviceNames().size();i++) {
-                        sb.append(item.getDeviceNames().get(i));
+                if (mPublicAdapter.getItem(position).getDeviceCodes()!=null&&mPublicAdapter.getItem(position).getDeviceCodes().size()>0) {
+                    mTbaseDevicesFromEvent.clear();
+                    for (String deviceCode:mPublicAdapter.getItem(position).getDeviceCodes()) {
+                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
+                        oneDoor.setDeviceCode(deviceCode);
+                        mTbaseDevicesFromEvent.add(oneDoor);
                     }
-                    info.setThingName(sb.toString());
-                    transReceiveOrderDetailVosList.add(info);
+                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+
+                }else{
+                    ToastUtils.showShort("该耗材无耗材柜信息!");
                 }
-                EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList));
-                Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -299,7 +303,20 @@ public class OutMealActivity extends BaseSimpleActivity {
                 }
                 break;
             case R.id.meal_open_btn:
-                ToastUtils.showShort("全部开柜");
+                if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
+                    ToastUtils.showShort("全部开柜");
+                    mTbaseDevicesFromEvent.clear();
+                    for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
+                        for (String deviceCode:mPublicAdapter.getItem(i).getDeviceCodes()) {
+                            BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
+                            oneDoor.setDeviceCode(deviceCode);
+                            mTbaseDevicesFromEvent.add(oneDoor);
+                        }
+                    }
+                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                } else {
+                    ToastUtils.showShort("无耗材数据");
+                }
                 break;
         }
     }
@@ -325,6 +342,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mMealTvSearch.setText(mOutMealSuitList.get(0).getPlanName());
                         //默认数据
                         findOrderCstListDate("" + mOutMealSuitList.get(0).getId(), SPUtils.getString(mContext, THING_CODE));
+                    } else {
+                        mRecyclerviewNull.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -362,4 +381,56 @@ public class OutMealActivity extends BaseSimpleActivity {
     }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isDoorOpened(Event.HomeNoClickEvent event) {
+        if (event.isClick) {
+            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isDoorClosed(Event.HomeNoClickEvent event) {
+        if (mIsCanSkipToSurePage) {
+            if (!event.isClick) {
+                // 统一数据格式
+                OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
+                orderSheetBean.setId("" + mOrderCstResult.getCstPlan().getId());
+                List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList = new ArrayList<>();
+                for (OrderCstResultBean.CstPlanVosBean item : mOrderCstResult.getCstPlanVos()) {
+                    BillStockResultBean.TransReceiveOrderDetailVosBean info = new BillStockResultBean.TransReceiveOrderDetailVosBean();
+                    info.setOrderDetailId(item.getId());
+                    info.setIsHaveNum(item.getTotalCount());
+                    info.setCounts(item.getPlanNum());
+                    info.setCstId(item.getCstId());
+                    info.setCstName(item.getCstName());
+                    info.setCstSpec(item.getCstSpec());
+                    info.setReceivedStatus(item.getStatus());
+                    info.setReceiveNum(item.getTotalCount());
+                    info.setNeedNum(item.getTotalCount());
+                    info.setPatientName("");
+                    StringBuffer sb = new StringBuffer();
+                    for (int i = 0; i < item.getDeviceNames().size(); i++) {
+                        sb.append(item.getDeviceNames().get(i));
+                    }
+                    info.setThingName(sb.toString());
+                    transReceiveOrderDetailVosList.add(info);
+                }
+                EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
+                Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsCanSkipToSurePage=true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsCanSkipToSurePage=false;
+    }
 }
