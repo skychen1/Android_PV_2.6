@@ -145,6 +145,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
 	   }
 	});
+
 	loadDate("");
 
    }
@@ -184,26 +185,36 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
 		PAGE++;
-		loadDate(mTrim);
+		loadMoreDate(mTrim);
 		mRefreshLayout.finishLoadMore();
 	   }
 	});
    }
+
+   private void loadMoreDate(String trim) {
+	NetRequest.getInstance().getFindPatientDate(trim,PAGE,SIZE,_mActivity,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG,"result   "+result);
+		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
+		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
+		mRows.addAll(rows);
+		//		setDate();
+		mNotesAdapter.notifyDataSetChanged();
+
+	   }
+	});
+   }
+
    private void loadDate(String string) {
 
-	setDate();
 	NetRequest.getInstance().getFindPatientDate(string,PAGE,SIZE,_mActivity,new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG,"result   "+result);
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
-
-		if (mRows==null){
-		   mRows = takeNotesBean.getRows();
-		}else {
-		   List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
-		   mRows.addAll(rows);
-		}
+		mRows = takeNotesBean.getRows();
+		setDate();
 		mNotesAdapter.notifyDataSetChanged();
 
 	   }
@@ -215,14 +226,19 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     * 设置数据
     */
    private void setDate() {
-	mNotesAdapter = new TakeNotesAdapter(mLayout, mRows);
-	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
-	mRefreshLayout.setEnableAutoLoadMore(true);
-	mRecyclerview.setAdapter(mNotesAdapter);
-	View inflate = LayoutInflater.from(_mActivity)
-		.inflate(R.layout.recy_null, null);
-	mNotesAdapter.setEmptyView(inflate);
+	if (mNotesAdapter!=null){
+	   mNotesAdapter.notifyDataSetChanged();
+	}else {
+	   mNotesAdapter = new TakeNotesAdapter(mLayout, mRows);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
+	   mRefreshLayout.setEnableAutoLoadMore(true);
+	   mRecyclerview.setAdapter(mNotesAdapter);
+	   View inflate = LayoutInflater.from(_mActivity)
+		   .inflate(R.layout.recy_null, null);
+	   mNotesAdapter.setEmptyView(inflate);
+	}
+
    }
 
 }

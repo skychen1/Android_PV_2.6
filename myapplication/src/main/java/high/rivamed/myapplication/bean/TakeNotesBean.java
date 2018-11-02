@@ -18,8 +18,8 @@ public class TakeNotesBean implements Serializable {
 
    /**
     * pageNo : 1
-    * pageSize : 10
-    * rows : [{"patientId":"576558","cstNo":null,"patientName":"张倩","sex":"女","deptName":null,"operationSurgeonName":"白日星","operationSurgeonCode":null,"createDate":"2018-10-31 13:41:46","operationName":null,"operatingRoomNoName":"导管手术室4","operationBeginDateTime":null,"status":null,"loperPatsId":null}]
+    * pageSize : 20
+    * rows : [{"patientId":"4028829366c2ad720166c2e1787d0009","cstNo":null,"patientName":"啦啦啦啦啦啦啦","sex":"未知","deptName":null,"operationSurgeonName":"","operationSurgeonCode":null,"createDate":"2018-11-02 18:17:09","operationName":null,"operatingRoomNoName":"","operationBeginDateTime":"2018-10-30 10:55:00","status":null,"loperPatsId":null}]
     * total : 1
     */
 
@@ -47,17 +47,17 @@ public class TakeNotesBean implements Serializable {
    public static class RowsBean {
 
 	/**
-	 * patientId : 576558
+	 * patientId : 4028829366c2ad720166c2e1787d0009
 	 * cstNo : null
-	 * patientName : 张倩
-	 * sex : 女
+	 * patientName : 啦啦啦啦啦啦啦
+	 * sex : 未知
 	 * deptName : null
-	 * operationSurgeonName : 白日星
+	 * operationSurgeonName :
 	 * operationSurgeonCode : null
-	 * createDate : 2018-10-31 13:41:46
+	 * createDate : 2018-11-02 18:17:09
 	 * operationName : null
-	 * operatingRoomNoName : 导管手术室4
-	 * operationBeginDateTime : null
+	 * operatingRoomNoName :
+	 * operationBeginDateTime : 2018-10-30 10:55:00
 	 * status : null
 	 * loperPatsId : null
 	 */
@@ -72,7 +72,7 @@ public class TakeNotesBean implements Serializable {
 	private String createDate;
 	private Object operationName;
 	private String operatingRoomNoName;
-	private Object operationBeginDateTime;
+	private String operationBeginDateTime;
 	private Object status;
 	private Object loperPatsId;
 
@@ -119,10 +119,10 @@ public class TakeNotesBean implements Serializable {
 	public void setOperatingRoomNoName(
 		String operatingRoomNoName) { this.operatingRoomNoName = operatingRoomNoName;}
 
-	public Object getOperationBeginDateTime() { return operationBeginDateTime;}
+	public String getOperationBeginDateTime() { return operationBeginDateTime;}
 
 	public void setOperationBeginDateTime(
-		Object operationBeginDateTime) { this.operationBeginDateTime = operationBeginDateTime;}
+		String operationBeginDateTime) { this.operationBeginDateTime = operationBeginDateTime;}
 
 	public Object getStatus() { return status;}
 

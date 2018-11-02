@@ -47,6 +47,7 @@ public class TakeNotesAdapter extends BaseQuickAdapter<TakeNotesBean.RowsBean, B
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         }
+        findId(helper);
         mSeven_one.setText(item.getPatientName());
         mSeven_two.setText(item.getPatientId());
         mSeven_three.setText(item.getSex());
