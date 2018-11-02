@@ -1,69 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:app="http://schemas.android.com/apk/res-auto"
-			  android:layout_width="wrap_content"
-			  android:layout_height="wrap_content"
-			  android:layout_marginRight="@dimen/x25"
-			  android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/x25"
+    android:background="@color/bg_color"
+    android:orientation="vertical">
 
-	<android.support.v7.widget.CardView
-		android:id="@+id/form_cardview"
-		android:layout_width="@dimen/x340"
-		android:layout_height="@dimen/x200"
-		android:clickable="true"
-		app:cardElevation="@dimen/x6"
-		app:cardPreventCornerOverlap="true"
-		app:cardUseCompatPadding="true">
-		<LinearLayout
-			android:id="@+id/form_card_ll"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:background="@drawable/bg_card_line_sel"
-			android:paddingTop="@dimen/x20"
-			android:gravity="center_vertical"
-			android:orientation="vertical">
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
+    <android.support.v7.widget.CardView
+        android:id="@+id/form_cardview"
+        android:layout_width="@dimen/x425"
+        android:layout_height="@dimen/x230"
+        android:clickable="false"
+        app:cardBackgroundColor="@color/bg_color"
+        app:cardElevation="@dimen/x10"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
 
-				<TextView
-					android:layout_width="@dimen/x10"
-					android:layout_height="@dimen/x40"
-					android:background="@color/bg_green"/>
+        <LinearLayout
+            android:id="@+id/form_card_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg_outform_top_item_nor"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/x10">
 
-				<TextView
-					android:id="@+id/form_card_number"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginLeft="@dimen/x20"
-					android:layout_gravity="center_vertical"
-					android:text="1号柜"
-					android:textColor="@color/text_color_3"
-					android:textSize="@dimen/textsize_16"
-					android:textStyle="bold"
-					/>
-			</LinearLayout>
-			<TextView
-				android:id="@+id/form_card_name"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/x20"
-				android:layout_marginLeft="@dimen/x30"
-				android:textSize="@dimen/textsize_15"
-				android:textColor="@color/text_color_58"
-				android:text="● 过期耗材：8种"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-			<TextView
-				android:id="@+id/form_card_id"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/x20"
-				android:layout_marginLeft="@dimen/x30"
-				android:paddingBottom="@dimen/x20"
-				android:textSize="@dimen/textsize_15"
-				android:textColor="@color/text_color_58"
-				android:text="● 近效期耗材：10种"/>
-		</LinearLayout>
-	</android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/tv_oproom_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="1号手术间"
+                    android:textColor="@color/text_color_0"
+                    android:textSize="@dimen/x30" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/x20"
+                    android:text="16:04"
+                    android:textColor="@color/text_color_58"
+                    android:textSize="@dimen/x26"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x40"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_request_person_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="申请人："
+                    android:textColor="@color/text_color_58"
+                    android:textSize="@dimen/x26" />
+
+                <TextView
+                    android:id="@+id/tv_request_person"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="程静"
+                    android:textColor="@color/text_color_0"
+                    android:textSize="@dimen/x26" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x10"
+                android:layout_marginTop="@dimen/x10"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_patient_name_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="患者："
+                    android:textColor="@color/text_color_58"
+                    android:textSize="@dimen/textsize_15" />
+
+                <TextView
+                    android:id="@+id/tv_patient_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="张三/23438977"
+                    android:textColor="@color/text_color_0"
+                    android:textSize="@dimen/x26" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

@@ -137,7 +137,7 @@ public class RvDialog extends Dialog {
             mDialog.setCancelable(false);
             View layout = inflater.inflate(R.layout.dialog_rv_layout, null);
             mDialog.addContentView(layout,
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
 
             mSearchEt = (EditText) layout.findViewById(R.id.search_et);

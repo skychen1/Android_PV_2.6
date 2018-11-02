@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
-import android.support.v7.widget.CardView;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderSheetBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -25,64 +27,97 @@ import high.rivamed.myapplication.bean.Movie;
  * 更新描述：   ${TODO}
  */
 
-public class OutFormAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>{
+public class OutFormAdapter extends BaseQuickAdapter<OrderSheetBean.RowsBean, BaseViewHolder> {
 
-   TextView mFormCardNumber;
-   TextView mFormCardName;
-   TextView mFormCardId;
-   CardView mFormCardview;
-   LinearLayout mFormCardLL;
-   public int selectedPosition = -5; //默认一个参数
-   public OutFormAdapter(int layout, List<Movie> data) {
-      super(layout, data);
-   }
+    TextView mTvOpNumber;
+    TextView mTvTime;
+    TextView mTvRequestNameHint;
+    TextView mTvRequestName;
+    TextView mTvPatientNameHint;
+    TextView mTvPatientName;
+    LinearLayout mFormCardLL;
+    public int selectedPosition =0; //默认一个参数
 
-   @Override
-   protected void convert(final BaseViewHolder helper, Movie item) {
-      findId(helper);
+    public OutFormAdapter(int layout, List<OrderSheetBean.RowsBean> data) {
+        super(layout, data);
+    }
 
-	mFormCardNumber.setText("请领单:"+item.one);
-	mFormCardName.setText("患者姓名：" + item.two);
-	mFormCardId.setText("患者ID：" + item.three);
-	clickItem(helper);
+    @Override
+    protected void convert(final BaseViewHolder helper, OrderSheetBean.RowsBean item) {
+        findId(helper);
+        if (helper.getAdapterPosition() == selectedPosition) {
+            setView(true);
+        } else {
+            setView(false);
+        }
+        if (!TextUtils.isEmpty(item.getOperationRoomName())) {
+            mTvOpNumber.setText(item.getOperationRoomName());
+        } else {
+            mTvOpNumber.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getCreateTime())) {
+            mTvTime.setText(item.getCreateTime());
+        } else {
+            mTvTime.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getUserName())) {
+            mTvRequestName.setText(item.getUserName());
+        } else {
+            mTvRequestName.setText("");
+        }
+        if (!TextUtils.isEmpty(item.getPatientName())) {
+            mTvPatientName.setText(item.getPatientName());
+        } else {
+            mTvPatientName.setText("");
+        }
+        mFormCardLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.OnItemClick(v, helper, helper.getAdapterPosition());
+            }
+        });
+    }
 
-   }
+    private void findId(BaseViewHolder helper) {
+        mTvOpNumber = ((TextView) helper.getView(R.id.tv_oproom_number));
+        mTvTime = ((TextView) helper.getView(R.id.tv_time));
+        mTvRequestNameHint = ((TextView) helper.getView(R.id.tv_request_person_hint));
+        mTvRequestName = ((TextView) helper.getView(R.id.tv_request_person));
+        mTvPatientNameHint = ((TextView) helper.getView(R.id.tv_patient_name_hint));
+        mTvPatientName = ((TextView) helper.getView(R.id.tv_patient_name));
+        mFormCardLL = ((LinearLayout) helper.getView(R.id.form_card_ll));
+    }
 
-   public void clickItem(final BaseViewHolder helper){
-	mFormCardLL.setSelected(selectedPosition == helper.getAdapterPosition());
-	if (selectedPosition ==  helper.getAdapterPosition()) {
-	   mFormCardLL.setSelected(true);
-	} else {
-	   mFormCardLL.setSelected(false);
-	}
-	mFormCardLL.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-		onItemClickListener.OnItemClick(v, helper,helper.getAdapterPosition());
-		selectedPosition = helper.getAdapterPosition(); //选择的position赋值给参数，
-		//		notifyItemChanged(selectedPosition);//刷新当前点击item
-		notifyDataSetChanged();
-	   }
-	});
-   }
-   private void findId(BaseViewHolder helper) {
+    private void setView(boolean isSelected) {
+        if (isSelected) {
+            mTvOpNumber.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mTvTime.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mTvRequestNameHint.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mTvRequestName.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mTvPatientNameHint.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mTvPatientName.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            mFormCardLL.setBackgroundResource(R.mipmap.bg_outform_top_item_pre);
+        } else {
+            mTvOpNumber.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_0));
+            mTvTime.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_58));
+            mTvRequestNameHint.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_58));
+            mTvRequestName.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_0));
+            mTvPatientNameHint.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_58));
+            mTvPatientName.setTextColor(ContextCompat.getColor(mContext, R.color.text_color_0));
+            mFormCardLL.setBackgroundResource(R.mipmap.bg_outform_top_item_nor);
+        }
 
-	mFormCardNumber = ((TextView) helper.getView(R.id.form_card_number));
-	mFormCardName = ((TextView) helper.getView(R.id.form_card_name));
-	mFormCardId = ((TextView) helper.getView(R.id.form_card_id));
-	mFormCardview = ((CardView) helper.getView(R.id.form_cardview));
-	mFormCardLL = ((LinearLayout) helper.getView(R.id.form_card_ll));
+    }
 
 
-   }
-   private OnItemClickListener onItemClickListener;
+    private OnItemClickListener onItemClickListener;
 
-   public interface OnItemClickListener {  //定义接口，实现Recyclerview点击事件
-	void OnItemClick(View view,BaseViewHolder helper, int position);
-   }
+    public interface OnItemClickListener {  //定义接口，实现Recyclerview点击事件
+        void OnItemClick(View view, BaseViewHolder helper, int position);
+    }
 
-   public void setOnItemClickListener(OnItemClickListener onItemClickListener) {   //实现点击
-	this.onItemClickListener = onItemClickListener;
-   }
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {   //实现点击
+        this.onItemClickListener = onItemClickListener;
+    }
 
 }

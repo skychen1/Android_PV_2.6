@@ -91,6 +91,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private LoadingDialog.Builder                        mShowLoading;
    private String                                       mPatient;
    private String                                       mPatientId;
+   private String                                       mTempPatientId;
    private String                                       mOperationScheduleId;
    private boolean                    mPause   = true;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
@@ -107,6 +108,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    private String                mOperatingRoomNoName;
    private String                mSex;
    private String                mDeptId;
+   private boolean                mIsCreate;
    /**
     * 隐藏按钮
     *
@@ -124,7 +126,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOverEvent(Event.EventOverPut event) {
-	if (event.b) {
+	if (event.b&&!mOnBtnGone) {
 	   LogUtils.i(TAG, "EventOverPut");
 	   mIntentType = 2;//2确认并退出
 	   loadBingFistDate(mIntentType);
@@ -159,11 +161,10 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
+	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size()+"    mOnBtnGone    "+mOnBtnGone);
 	AllDeviceCallBack.getInstance().initCallBack();
 	if (!mOnBtnGone) {
-	   mStarts.cancel();
-	   mStarts.start();
+
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
@@ -251,6 +252,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
    public void onEventBing(Event.EventCheckbox event) {
 	mPatient = event.mString;
 	mPatientId = event.id;
+	mTempPatientId = event.mTempPatientId;
 	mOperationScheduleId = event.operationScheduleId;
 	mIdNo = event.idNo;
 	mScheduleDateTime = event.scheduleDateTime;
@@ -258,6 +260,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	mOperatingRoomNoName = event.operatingRoomNoName;
 	mSex = event.sex;
 	mDeptId = event.deptId;
+	mIsCreate = event.create;
 	Log.i(TAG, "mMovie  " + mPatient);
 	LogUtils.i(TAG, "mOperatingRoomNoName  " + mOperatingRoomNoName);
 	if (event.type != null && event.type.equals("firstBind")) {
@@ -268,6 +271,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		for (int i = 0; i < mTCstInventoryVos.size(); i++) {
 		   mTCstInventoryVos.get(i).setPatientName(mPatient);
 		   mTCstInventoryVos.get(i).setPatientId(mPatientId);
+		   mTCstInventoryVos.get(i).setTempPatientId(mTempPatientId);
 		   mTCstInventoryVos.get(i).setIdNo(mIdNo);
 		   mTCstInventoryVos.get(i).setOperationScheduleId(mOperationScheduleId);
 		   mTCstInventoryVos.get(i).setScheduleDateTime(mScheduleDateTime);
@@ -275,6 +279,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   mTCstInventoryVos.get(i).setOperatingRoomNoName(mOperatingRoomNoName);
 		   mTCstInventoryVos.get(i).setSex(mSex);
 		   mTCstInventoryVos.get(i).setDeptId(mDeptId);
+		   mTCstInventoryVos.get(i).setCreate(mIsCreate);
 		}
 		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();

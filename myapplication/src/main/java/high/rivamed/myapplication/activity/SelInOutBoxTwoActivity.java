@@ -158,8 +158,8 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 	   mLoading=null;
 	}
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
-	mStarts.cancel();
-	mStarts.start();
+//	mStarts.cancel();
+//	mStarts.start();
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -456,9 +456,9 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 		if (mIntentType == 2) {
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
+		}else {
+		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		}
-
-		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		finish();
 	   }
 	});
@@ -606,8 +606,9 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 			ToastUtils.showShort("操作成功");
 			if (event.mIntentType == 2) {
 			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			}else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			}
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
 
@@ -683,8 +684,11 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result退货   " + result);
 			ToastUtils.showShort("操作成功");
-
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			if (event.mIntentType == 2) {
+			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			}else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			}
 			finish();
 		   }
 
@@ -728,8 +732,11 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result调拨   " + result);
 			ToastUtils.showShort("操作成功");
-
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			if (event.mIntentType == 2) {
+			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			}else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			}
 			finish();
 		   }
 

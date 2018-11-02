@@ -59,6 +59,7 @@ public class FindInPatientBean {
          * patientId : 180810sl02256931
          * patientName : 陈桂英
          * deptName : 120急救
+         * tempPatientId:
          * operatingRoomNoName : null
          * operationSurgeonName : null
          * operationBeginDateTime : null
@@ -75,7 +76,16 @@ public class FindInPatientBean {
         private String updateTime = "";
         private String loperPatsId = "";
         private String scheduleDateTime = "";
+        private String tempPatientId = "";
         private boolean isSelected;
+
+        public String getTempPatientId() {
+            return tempPatientId;
+        }
+
+        public void setTempPatientId(String tempPatientId) {
+            this.tempPatientId = tempPatientId;
+        }
 
         public String getScheduleDateTime() {
             return scheduleDateTime;

@@ -3,7 +3,6 @@ package high.rivamed.myapplication.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -88,6 +87,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -111,12 +111,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    LinearLayout mConsumeOpenallTop;
    @BindView(R.id.function_title_meal)
    TextView     mFunctionTitleMeal;
-   @BindView(R.id.function_cardview_meal)
-   CardView     mFunctionCardviewMeal;
+
    @BindView(R.id.fastopen_title_form)
    TextView     mFastopenTitleForm;
-   @BindView(R.id.function_cardview_form)
-   CardView     mFunctionCardviewForm;
    @BindView(R.id.consume_openall_middle)
    LinearLayout mConsumeOpenallMiddle;
    @BindView(R.id.content_rb_ly)
@@ -141,8 +138,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    LinearLayout mConsumeDown;
    @BindView(R.id.fastopen_title_guanlian)
    TextView     mFastopenTitleGuanlian;
-   @BindView(R.id.function_cardview_guanlian)
-   CardView     mFunctionCardviewGuanlian;
    private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
@@ -181,7 +176,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	mIsClick = event.isClick;
@@ -488,6 +483,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    }
 
    private void goToPatientConn() {
+	LogUtils.i(TAG, "result   ");
 	NetRequest.getInstance().findTempPatients("", this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -648,6 +644,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
 		      if (mVoOutList!=null&&mVoOutList.size()==0){
 			   mDoorList.clear();
+			   mEthDeviceIdBack.clear();
 			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			}
 		   }
@@ -701,6 +698,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
 		      mDoorList.clear();
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -722,6 +720,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
 			mDoorList.clear();
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -735,6 +734,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
 			}
+			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
 		   } else {
 			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
@@ -782,23 +782,23 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
 	   //是否启用套餐领用
 	   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-		mFunctionCardviewMeal.setVisibility(View.VISIBLE);
+		mFunctionTitleMeal.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewMeal.setVisibility(View.GONE);
+		mFunctionTitleMeal.setVisibility(View.GONE);
 	   }
 
 	   //是否启用请领单领用
 	   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
-		mFunctionCardviewForm.setVisibility(View.VISIBLE);
+		mFastopenTitleForm.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewForm.setVisibility(View.GONE);
+		mFastopenTitleForm.setVisibility(View.GONE);
 	   }
 
 	   //是否启用关联患者
 	   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		mFunctionCardviewGuanlian.setVisibility(View.VISIBLE);
+		mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
 	   } else {
-		mFunctionCardviewGuanlian.setVisibility(View.GONE);
+		mFastopenTitleGuanlian.setVisibility(View.GONE);
 	   }
 	} else {
 	   mConsumeOpenallMiddle.setVisibility(View.GONE);
@@ -905,6 +905,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   ToastUtils.showShort("请选择操作方式！");
 		} else {
 		   //点击柜子进行操作
+		   if (UIUtils.isFastDoubleClick()) {
+			return;
+		   }
 		   doSelectOption(position, id);
 		}
 	   }
@@ -1093,7 +1096,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
 	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
 	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
-	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo})
+	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo,R.id.fastopen_title_guanlian})
    public void onViewClicked(View view) {
 	if (!mIsClick) {
 	   switch (view.getId()) {
@@ -1152,6 +1155,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		}
 		doSelectOption(0, view.getId());
 	   }
 	} else {

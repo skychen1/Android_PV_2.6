@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:text="密码："
                     android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_password_edit"
@@ -49,7 +49,7 @@
                     android:letterSpacing="0.5"
                     android:text="******"
                     android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <ImageView
                     android:id="@+id/setting_revise_password"
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:text="指纹："
                     android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_fingerprint_edit"
@@ -83,7 +83,7 @@
                     android:layout_gravity="center_vertical"
                     tools:text="未绑定"
                     android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_fingerprint_bind"
@@ -93,7 +93,7 @@
                     android:paddingRight="@dimen/x24"
                     tools:text="绑定"
                     android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:text="腕带："
                     android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_ic_card_edit"
@@ -117,7 +117,7 @@
                     android:layout_gravity="center_vertical"
                     tools:text="未绑定"
                     android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_ic_card_bind"
@@ -127,7 +127,7 @@
                     android:paddingRight="@dimen/x24"
                     tools:text="绑定"
                     android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:text="紧急登录密码："
                     android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_pass_edit"
@@ -153,7 +153,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="无"
                     android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
 
                 <TextView
                     android:id="@+id/setting_pass_setting"
@@ -163,7 +163,7 @@
                     android:paddingRight="@dimen/x24"
                     android:text="设置"
                     android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_18" />
+                    android:textSize="@dimen/textsize_21" />
             </LinearLayout>
         </LinearLayout>
 

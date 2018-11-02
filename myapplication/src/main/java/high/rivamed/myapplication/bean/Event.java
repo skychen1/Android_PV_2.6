@@ -183,11 +183,13 @@ public class Event {
 	public String sex;
 	public String operatingRoomNoName;
 	public String type;
+	public String mTempPatientId;
 	public String operationScheduleId;
 	public int position;
+	public boolean create;
 	public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
-	public EventCheckbox(String name,String mId,String idNo,String scheduleDateTime,String operatingRoomNo,String operatingRoomNoName,String sex,String deptId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	public EventCheckbox(String name,String mId,String idNo,String scheduleDateTime,String operatingRoomNo,String operatingRoomNoName,String sex,String deptId,boolean create,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	   this.deptId = deptId;
 	   this.id = mId;
 	   this.mString = name;
@@ -198,11 +200,13 @@ public class Event {
 	   this.sex = sex;
 	   this.type = type;
 	   this.position = position;
+	   this.create = create;
 	   this.mTbaseDevices = mTbaseDevices;
 	}
-	public EventCheckbox(String name,String id,String operationScheduleId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	public EventCheckbox(String name,String id,String mTempPatientId,String operationScheduleId,String type,int position,List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
 	   this.mString = name;
 	   this.id = id;
+	   this.mTempPatientId = mTempPatientId;
 	   this.type = type;
 	   this.position = position;
 	   this.mTbaseDevices = mTbaseDevices;
@@ -383,9 +387,49 @@ public class Event {
 	public boolean type;
 	public boolean bing;
 
-	public EventButton(boolean type,boolean bing) {
-	   this.type = type;
-	   this.bing = bing;
-	}
-   }
+        public EventButton(boolean type, boolean bing) {
+            this.type = type;
+            this.bing = bing;
+        }
+    }
+
+    /**
+     * 医嘱单领用--确认领用请求所需耗材信息
+     */
+    public static class EventBillStock {
+        public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
+        public OrderSheetBean.RowsBean orderSheetBean;
+
+        public EventBillStock(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList) {
+            this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
+            this.orderSheetBean = orderSheetBean;
+        }
+    }
+
+    /**
+     * 套组领用-选择套组后传递数据给获取耗材使用
+     */
+    public static class EventOutMealSuit {
+        public OutMealSuitBeanResult mOutMealSuitBeanResult;
+        public boolean isMute;
+
+        public EventOutMealSuit(boolean isMute, OutMealSuitBeanResult outMealSuitBeanResult) {
+            this.mOutMealSuitBeanResult = outMealSuitBeanResult;
+            this.isMute = isMute;
+        }
+    }
+
+    /**
+     * 套组领用--确认领用请求所需耗材信息
+     */
+    public static class EventBillOrder{
+        public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
+        public OrderSheetBean.RowsBean orderSheetBean;
+
+        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList) {
+            this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
+            this.orderSheetBean = orderSheetBean;
+        }
+    }
+
 }

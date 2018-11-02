@@ -106,21 +106,27 @@ public class AllDeviceCallBack {
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
 		//目前设备监控开门success有可能出现错误   都设置成true
 		EventBusUtils.post(new Event.EventOppenDoor("true"));
-		LogUtils.i(TAG, "开门结果  开门     " + success);
+
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开"));
 		} else {
 
 		}
+		LogUtils.i(TAG, "开门结果  开门stringsdeviceIndentify     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		mEthDeviceIdBack.add(deviceIndentify);
+		LogUtils.i(TAG, "开门结果  开门yss     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		//筛选相同的锁
 		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
+		for (String s:strings){
+		   LogUtils.i(TAG, "  开门strings     " + s);
+		}
+		LogUtils.i(TAG, "开门结果  开门strings     " + strings.size());
 		mEthDeviceIdBack.clear();
 		mEthDeviceIdBack.addAll(strings);
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 		LogUtils.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
-		EventBusUtils.post(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
+		EventBusUtils.postSticky(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
 	   @Override
@@ -128,15 +134,17 @@ public class AllDeviceCallBack {
 		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
-		LogUtils.i(TAG, "门锁已关闭：    " + deviceIndentify);
+
 		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
 		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
 		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			mEthDeviceIdBack2.remove(i);
 		   }
 		}
+		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
+
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.post(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
+		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
 	   }
@@ -194,6 +202,7 @@ public class AllDeviceCallBack {
 			if (mReaderIdList.size() == 0) {
 			   LogUtils.i(TAG, "走了");
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+			   mEthDeviceIdBack.clear();
 			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
 			} else {
 

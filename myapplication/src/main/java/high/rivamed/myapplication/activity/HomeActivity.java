@@ -17,6 +17,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
+import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -60,12 +61,13 @@ public class HomeActivity extends SimpleActivity {
    RadioGroup   mHomeRg;
    @BindView(R.id.rg_gone)
    View mHomeRgGone;
-   private SupportFragment[] mFragments = new SupportFragment[4];
+   private SupportFragment[] mFragments = new SupportFragment[5];
 
    public static final int CONSUME = 0;
    public static final int RUNWATE = 1;
    public static final int STOCK   = 2;
    public static final int CHECK   = 3;
+   public static final int SYJL   = 4;
    private int LastId;
    private boolean mIsClick;
 
@@ -145,15 +147,17 @@ public class HomeActivity extends SimpleActivity {
 	   mFragments[RUNWATE] = ContentRunWateFrag.newInstance();
 	   mFragments[STOCK] = ContentStockStatusFrag.newInstance();
 	   mFragments[CHECK] = ContentTimelyCheckFrag.newInstance();
+	   mFragments[SYJL] = ContentTakeNotesFrag.newInstance();
 
 	   loadMultipleRootFragment(R.id.fl_tab_container, CONSUME, mFragments[CONSUME],
-					    mFragments[RUNWATE], mFragments[STOCK], mFragments[CHECK]);
+					    mFragments[RUNWATE], mFragments[STOCK], mFragments[CHECK],mFragments[SYJL]);
 	} else {
 	   // 拿到mFragments的引用
 	   mFragments[CONSUME] = firstFragment;
 	   mFragments[RUNWATE] = findFragment(ContentRunWateFrag.class);
 	   mFragments[STOCK] = findFragment(ContentStockStatusFrag.class);
 	   mFragments[CHECK] = findFragment(ContentTimelyCheckFrag.class);
+	   mFragments[SYJL] = findFragment(ContentTakeNotesFrag.class);
 	}
 
 	//设置选中的页面
@@ -192,6 +196,11 @@ public class HomeActivity extends SimpleActivity {
 			showHideFragment(mFragments[3], mFragments[LastId]);
 			EventBusUtils.postSticky(new Event.EventFrag("START4"));
 			LastId = 3;
+			break;
+		   case R.id.content_syjl://
+			showHideFragment(mFragments[4], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START5"));
+			LastId = 4;
 			break;
 		}
 	   }

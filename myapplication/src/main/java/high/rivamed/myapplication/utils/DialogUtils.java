@@ -26,11 +26,13 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
+import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.UnRegistBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.http.BaseResult;
@@ -42,6 +44,7 @@ import high.rivamed.myapplication.views.BindIdCardDialog;
 import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
@@ -50,6 +53,7 @@ import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.RvDialog2;
+import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
@@ -133,6 +137,7 @@ public class DialogUtils {
 			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
 			     String id = patientInfos.get(checkedPosition).getPatientId();
 			     String name = patientInfos.get(checkedPosition).getPatientName();
+			     String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
 			     LogUtils.i("OutBoxBingActivity", " name "+name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
@@ -141,7 +146,7 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, operationScheduleId, "firstBind", position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id,mTempPatientId,operationScheduleId, "firstBind", position, mTbaseDevices));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -157,8 +162,9 @@ public class DialogUtils {
 			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
 			     String id = patientInfos.get(checkedPosition).getPatientId();
 			     String name = patientInfos.get(checkedPosition).getPatientName();
+                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, operationScheduleId, type, position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id,mTempPatientId, operationScheduleId, type, position, mTbaseDevices));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
@@ -173,7 +179,7 @@ public class DialogUtils {
         Display display = windowManager.getDefaultDisplay();
         Window window = rvDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = (int)(display.getWidth()); //设置宽度
+        lp.width = (int) (display.getWidth()); //设置宽度
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setAttributes(lp);
         return builder;
@@ -190,30 +196,30 @@ public class DialogUtils {
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-		   if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")){
-			NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult(){
-			   @Override
-			   public void onSucceed(String result) {
-				LogUtils.i("SHOW","result   "+result);
-				Gson gson = new Gson();
-				UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
-				if (unRegistBean.isOperateSuccess()){
-				   LoginInfoActivity.mIsWaidai=0;
-				   LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
-				   LoginInfoActivity.mSettingIcCardBind.setText("绑定");
-				}
-				Toast.makeText(context,unRegistBean.getMsg(),Toast.LENGTH_SHORT).show();
-				String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
-										   "");
-				LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
-				data2.getAppAccountInfoVo().setIsWaidai(0);
-				SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
-				dialog.dismiss();
-			   }
-			});
-		   }else {
-			dialog.dismiss();
-		   }
+                if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")) {
+                    NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult() {
+                        @Override
+                        public void onSucceed(String result) {
+                            LogUtils.i("SHOW", "result   " + result);
+                            Gson gson = new Gson();
+                            UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
+                            if (unRegistBean.isOperateSuccess()) {
+                                LoginInfoActivity.mIsWaidai = 0;
+                                LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
+                                LoginInfoActivity.mSettingIcCardBind.setText("绑定");
+                            }
+                            Toast.makeText(context, unRegistBean.getMsg(), Toast.LENGTH_SHORT).show();
+                            String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
+                                    "");
+                            LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
+                            data2.getAppAccountInfoVo().setIsWaidai(0);
+                            SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -236,7 +242,7 @@ public class DialogUtils {
             @Override
             public void onClick(DialogInterface dialog, int i) {
 
-			dialog.dismiss();
+                dialog.dismiss();
 
                 //		Log.i("TT", " nojump  " +nojump);
                 //	      if(nojump.equals("out")){
@@ -669,7 +675,7 @@ public class DialogUtils {
     /*
      * 显示创建临时患者弹窗
      * */
-    public static void showCreatTempPatientDialog(final Context context, Activity activity,TempPatientDialog.Builder.SettingListener listener) {
+    public static void showCreatTempPatientDialog(final Context context, Activity activity, TempPatientDialog.Builder.SettingListener listener) {
 
         TempPatientDialog.Builder builder = new TempPatientDialog.Builder(context, activity);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -703,7 +709,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 for (int x = 0; x < patientInfos.size(); x++) {
                     if (patientInfos.get(x).isSelected()) {
-                        onClickBackListener.OnClickBack(x,dialog);
+                        onClickBackListener.OnClickBack(x, dialog);
                     }
                 }
             }
@@ -714,7 +720,7 @@ public class DialogUtils {
         Display display = windowManager.getDefaultDisplay();
         Window window = rvDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = (int)(display.getWidth()); //设置宽度
+        lp.width = (int) (display.getWidth()); //设置宽度
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setAttributes(lp);
         return builder;
@@ -744,5 +750,48 @@ public class DialogUtils {
         LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
         builder.create().show();
         return builder;
+    }
+
+    /**
+     * 医嘱领用-确实-选择耗材柜
+     */
+    public static void showSelectOpenCabinetDialog(Context context, List<Movie> list) {
+        SelectOpenCabinetDialog.Builder builder = new SelectOpenCabinetDialog.Builder(context, 0);
+        builder.setDate(list);
+        builder.setRightListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setLeftListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    /**
+     * 医嘱领用-确认-查看请领单
+     */
+    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.TransReceiveOrderDetailVosBean> list) {
+        LookUpDetailedListDialog.Builder builder = new LookUpDetailedListDialog.Builder(context);
+        builder.setDate(list);
+        builder.setLeftTopViewShow(isShowLeftTopView);
+        builder.setRightListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setLeftListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

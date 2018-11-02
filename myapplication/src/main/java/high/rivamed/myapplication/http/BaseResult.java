@@ -2,7 +2,6 @@ package high.rivamed.myapplication.http;
 
 import android.text.TextUtils;
 
-import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 /**
@@ -46,10 +45,7 @@ public class BaseResult implements NetResult {
 	@Override
 	public void onDataError(int errorCode, String msg) {
 		
-		if (BuildConfig.API_ENV) {
-		   ToastUtils.showShort("测试环境错误原因：" + errorCode + "==" + msg);
-		}
-		
+
 	}
 	
 

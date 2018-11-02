@@ -23,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
@@ -44,6 +45,7 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
@@ -85,8 +87,11 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        mLoginName.setText("adminUM");
-        mLoginPassword.setText("000000");
+
+	 if (BuildConfig.DEBUG) {
+	    mLoginName.setText("adminUM");
+	    mLoginPassword.setText("000000");
+	 }
     }
 
     @Override
@@ -288,7 +293,7 @@ public class LoginPassWordFragment extends SimpleFragment {
    }
 
    private void loadUpDataVersion(final ProgressDialog mDialog,List<ConfigBean.TCstConfigVosBean> tCstConfigVos){
-	OkGo.<File>get(URL_UPDATE).tag(this)//
+	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
 		   public void onSuccess(Response<File> response) {

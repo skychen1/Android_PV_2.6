@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_dialog_main"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/dialog_bg"
@@ -21,7 +21,9 @@
         android:id="@+id/dialog_rv"
         layout="@layout/include_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+
         android:layout_below="@+id/rvdialog_search"
         android:layout_marginTop="@dimen/x30" />
 

@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "2.6.2.4.2"
+        versionName "2.6.2.4.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 //        ndk {
@@ -19,18 +19,18 @@ android {
     signingConfigs {
         debug_config {
 
-//            storeFile file('F:/RUI_HUA/ruihua.jks')
+            storeFile file('F:/RUI_HUA/ruihua.jks')
 //            storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
-            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
+//            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias "Rivamed"
             storePassword "ruihua888888"
             keyPassword "ruihua888888"
             v2SigningEnabled true
         }
         release_config {
-//            storeFile file('F:/RUI_HUA/ruihua.jks')
+            storeFile file('F:/RUI_HUA/ruihua.jks')
 //          storeFile file('D:/RUI_HUA/ruihua.jks')  // 郝小鹏 环境使用
-            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
+//            storeFile file('/Users/a1111/Work_Rivamed/jks/ruihua.jks')  // 钱凯 环境使用
             keyAlias 'Rivamed'
             keyPassword 'ruihua888888'
             storePassword 'ruihua888888'
@@ -104,8 +104,9 @@ dependencies {
     implementation 'org.litepal.android:core:2.0.0'
     implementation project(path: ':devices')
     //侧滑
-    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation "com.github.bumptech.glide:glide:3.7.0"
+    //推送
     implementation project(':androidpnclient')
 }
 tasks.withType(JavaCompile) {

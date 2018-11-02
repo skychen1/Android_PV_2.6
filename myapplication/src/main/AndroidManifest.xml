@@ -29,6 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
+
         <meta-data
             android:name="design_width"
             android:value="1920"></meta-data>
@@ -42,13 +43,13 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="sensorLandscape" />
+
         <activity
             android:name=".activity.MyInfoActivity"
             android:launchMode="singleInstance"
@@ -86,7 +87,7 @@
             android:name=".activity.OutFormActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.OutFormConfirmActivity"
+            android:name=".activity.NewOutFormConfirmActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.OutMealActivity"
@@ -98,9 +99,14 @@
             android:name=".activity.RegisteActivity"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".activity.NewOutMealBingConfirmActivity"
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.OutMealBingConfirmActivity"
             android:screenOrientation="sensorLandscape" />
+
         <activity
             android:name=".activity.TestLoginActivity"
             android:screenOrientation="sensorLandscape" />
@@ -117,18 +123,22 @@
         <!-- </receiver> -->
         <activity
             android:name=".activity.TemPatientBindActivity"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.PatientConnActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name=".activity.TakeNotesDetailsActivity"
+            android:screenOrientation="sensorLandscape" />
         <!--androidpnclient 开始-->
         <activity
             android:name="org.androidpn.demoapp.DemoAppActivity"
             android:label="@string/app_name">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
         <activity

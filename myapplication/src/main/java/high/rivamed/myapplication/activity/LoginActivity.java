@@ -45,7 +45,6 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
-import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -75,7 +74,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyValueFormatter;
-import high.rivamed.myapplication.utils.NotificationsUtils;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
@@ -114,35 +112,35 @@ public class LoginActivity extends SimpleActivity {
 
     private static final String TAG = "LoginActivity";
     @BindView(R.id.login_logo)
-    ImageView mLoginLogo;
+    ImageView       mLoginLogo;
     @BindView(R.id.login_password)
-    RadioButton mLoginPassword;
+    RadioButton     mLoginPassword;
     @BindView(R.id.login_pass)
-    RadioButton mLoginPass;
+    RadioButton     mLoginPass;
     @BindView(R.id.login_radiogroup)
-    RadioGroup mLoginRadiogroup;
+    RadioGroup      mLoginRadiogroup;
     @BindView(R.id.login_viewpager)
     CustomViewPager mLoginViewpager;
     @BindView(R.id.chart1)
-    BarChart mChart;
+    BarChart        mChart;
     @BindView(R.id.down_text)
-    TextView mDownText;
+    TextView        mDownText;
     @BindView(R.id.left_guo_text)
-    TextView mTextGuo;
+    TextView        mTextGuo;
     @BindView(R.id.left_jin_text)
-    TextView mTextJin;
+    TextView        mTextJin;
     //   @BindView(R.id.login_gone)
     public static View mLoginGone;
 
     private ArrayList<Fragment> mFragments = new ArrayList<>();
 
-    final static int COUNTS = 5;// 点击次数  2s内点击8次进入注册界面
+    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
     final static long DURATION = 2000;// 规定有效时间
     long[] mHits = new long[COUNTS];
-    private SQLiteDatabase mDb;
+    private SQLiteDatabase        mDb;
     private LoadingDialog.Builder mBuilder;
-    private int mConfigType;
-    private String mDesc;
+    private int                   mConfigType;
+    private String                mDesc;
 
     @Override
     public int getLayoutId() {
@@ -168,7 +166,7 @@ public class LoginActivity extends SimpleActivity {
         size.x = dm.widthPixels;
         size.y = dm.heightPixels;
 
-        Log.d("fbl", size.x + " , " + size.y + " , ");
+        Log.d(TAG, size.x + " , " + size.y + " , ");
 
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int heightPixels = dm.heightPixels;
@@ -177,13 +175,13 @@ public class LoginActivity extends SimpleActivity {
         float heightDP = heightPixels / density;
         float widthDP = widthPixels / density;
         float smallestWidthDP;
-        if (widthDP < heightDP) {
+        if(widthDP < heightDP) {
             smallestWidthDP = widthDP;
-        } else {
+        }else {
             smallestWidthDP = heightDP;
         }
 
-        LogUtils.i("fbl", smallestWidthDP + "    我是dp单位     " + density);
+        LogUtils.i(TAG, smallestWidthDP +"    我是dp单位     "+density);
         //---------------------------------------------------
 
         //创建数据库表
@@ -196,8 +194,6 @@ public class LoginActivity extends SimpleActivity {
         mFragments.add(new LoginPassWordFragment());//用户名登录
         mFragments.add(new LoginPassFragment());//紧急登录
 
-        intiPushService();
-
         initData();
         initlistener();
         initCall();
@@ -206,44 +202,6 @@ public class LoginActivity extends SimpleActivity {
             getLeftDate();
         }
 
-    }
-
-    /*
-    * 初始化推送服务
-    * */
-    private void intiPushService() {
-        if (!NotificationsUtils.isNotificationEnabled(this)) {
-            //		   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BASE) {
-            //			   // 进入设置系统应用权限界面
-            //			   Intent intent = new Intent(Settings.ACTION_SETTINGS);
-            //			   startActivity(intent);
-            //			   return;
-            //		   } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {// 运行系统在5.x环境使用
-            //			   // 进入设置系统应用权限界面
-            //			   Intent intent = new Intent(Settings.ACTION_SETTINGS);
-            //			   startActivity(intent);
-            //			   return;
-            //		   }
-            Intent localIntent = new Intent();
-            localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (Build.VERSION.SDK_INT >= 9) {
-                localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-                localIntent.setData(Uri.fromParts("package", LoginActivity.this.getPackageName(), null));
-            } else if (Build.VERSION.SDK_INT <= 8) {
-                localIntent.setAction(Intent.ACTION_VIEW);
-
-                localIntent.setClassName("com.android.settings",
-                        "com.android.settings.InstalledAppDetails");
-
-                localIntent.putExtra("com.android.settings.ApplicationPkgName",
-                        LoginActivity.this.getPackageName());
-            }
-            startActivity(localIntent);
-        }
-        // Start the service
-        ServiceManager serviceManager = new ServiceManager(this);
-        serviceManager.setNotificationIcon(org.androidpn.demoapp.R.drawable.notification);
-        serviceManager.startService();
     }
 
     @Override
@@ -260,12 +218,16 @@ public class LoginActivity extends SimpleActivity {
     }
 
     private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-        for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
-            if (s.getCode().equals(CONFIG_013)) {
-                return true;
+        if (tCstConfigVos.size()==0){
+            return false;
+        }else {
+            for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
+                if (s.getCode().equals(CONFIG_013)) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     /**
@@ -280,9 +242,7 @@ public class LoginActivity extends SimpleActivity {
                     SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
                     ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
                     List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-                    if (tCstConfigVos.size() != 0) {
-                        getUpDateVer(tCstConfigVos, configType, loginType);
-                    }
+                    getUpDateVer(tCstConfigVos, configType, loginType);
                     if (UIUtils.getConfigType(mContext, CONFIG_017)) {
                         mLoginPass.setVisibility(View.VISIBLE);
                         mLoginViewpager.setScanScroll(true);
@@ -654,12 +614,16 @@ public class LoginActivity extends SimpleActivity {
                 String netVersion = versionBean.getVersion();
                 // 比对LogUtils.i(TAG, "localVersion   " + localVersion);
                 LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
-                int i = StringUtils.compareVersion(netVersion, localVersion);
-                if (i == 1) {
-                    mDesc = versionBean.getDesc();
-                    showUpdateDialog(tCstConfigVos, configType, loginType);
-                } else {
-                    // 不需要更新
+                if (netVersion!=null) {
+                    int i = StringUtils.compareVersion(netVersion, localVersion);
+                    if (i == 1) {
+                        mDesc = versionBean.getDesc();
+                        showUpdateDialog(tCstConfigVos, configType, loginType);
+                    } else {
+                        // 不需要更新
+                        loginEnjoin(tCstConfigVos, configType, loginType);
+                    }
+                }else {
                     loginEnjoin(tCstConfigVos, configType, loginType);
                 }
             }
@@ -719,7 +683,8 @@ public class LoginActivity extends SimpleActivity {
             final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
             int configType, String loginType) {
         LogUtils.i(TAG, "apkUri " + FileUtils.getDiskCacheDir(mContext));
-        OkGo.<File>get(URL_UPDATE).tag(this)//
+        LogUtils.i(TAG, "apkUrL " +URL_UPDATE);
+        OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
                         "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
                     @Override

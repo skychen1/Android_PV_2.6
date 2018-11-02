@@ -5,7 +5,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="@dimen/y88"
-	android:background="@color/bg_f"
+	android:background="@color/bg_green"
 	android:fitsSystemWindows="true"
 	app:elevation="0dp"
 	>
@@ -14,7 +14,7 @@
 		android:id="@+id/toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/y86"
-		android:background="@color/bg_f"
+		android:background="@color/bg_green"
 		app:contentInsetLeft="0dp"
 		app:contentInsetStart="0dp"
 		app:layout_scrollFlags="scroll|enterAlways"
@@ -23,7 +23,7 @@
 			android:id="@+id/base_tab_rlayout"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/y86"
-			android:background="@color/bg_f">
+			android:background="@color/bg_green">
 			<!-- 标题栏 -->
 			<TextView
 				android:id="@+id/base_tab_back"
@@ -38,7 +38,7 @@
 				android:paddingTop="@dimen/x10"
 				android:text="返回"
 				android:textStyle="bold"
-				android:textColor="@color/color_drak_green"
+				android:textColor="@color/bg_f"
 				android:textSize="@dimen/textsize_16"
 				android:visibility="gone"
 				/>
@@ -53,8 +53,8 @@
 				android:gravity="center"
 				android:textStyle="bold"
 				android:paddingLeft="@dimen/x10"
-				android:text="我是标题"
-				android:textColor="@color/color_drak_green"
+
+				android:textColor="@color/bg_f"
 				android:textSize="@dimen/textsize_17"
 				android:visibility="gone"
 				/>
@@ -63,11 +63,10 @@
 				android:id="@+id/base_tab_tv_title"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:layout_alignParentTop="true"
 				android:gravity="center"
 				android:textStyle="bold"
-				android:textColor="@color/color_drak_green"
-				android:textSize="@dimen/textsize_18"
+				android:textColor="@color/bg_f"
+				android:textSize="@dimen/textsize_20"
 				/>
 
 			<RadioGroup
@@ -83,21 +82,18 @@
 					android:id="@+id/stock_rdbtn_left"
 					style="@style/all_title_rb_style"
 					android:checked="true"
-					android:background="@drawable/title_stock_bg_left_sel"
 					android:text="库存监控"
 					/>
 
 				<RadioButton
 					android:id="@+id/stock_rdbtn_middle"
 					style="@style/all_title_rb_style"
-					android:background="@drawable/title_stock_bg_middle_sel"
 					android:text="库存详情"
 					/>
 
 				<RadioButton
 					android:id="@+id/stock_rdbtn_right"
 					style="@style/all_title_rb_style"
-					android:background="@drawable/title_stock_bg_right_sel"
 					android:text="未确认耗材"
 					/>
 
@@ -134,19 +130,17 @@
 				android:layout_height="match_parent"
 				android:layout_alignParentRight="true"
 				>
-				<TextView
+				<ImageView
 					android:id="@+id/base_tab_tv_outlogin"
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:layout_centerVertical="true"
 					android:layout_alignParentRight="true"
-					android:drawablePadding="@dimen/x10"
-					android:text="退出"
-					android:textSize="@dimen/textsize_17"
-					android:paddingRight="@dimen/x10"
-					android:textColor="@color/color_drak_green"
+					android:paddingRight="@dimen/x20"
+					android:paddingLeft="@dimen/x20"
+					android:textColor="@color/bg_f"
 					android:gravity="center_vertical"
-					android:drawableLeft="@mipmap/gcms_ic_tc"
+					android:src="@mipmap/gcms_ic_tc"
 					/>
 				<TextView
 					android:id="@+id/base_tab_tv_name"
@@ -155,9 +149,9 @@
 					android:layout_toLeftOf="@+id/base_tab_tv_outlogin"
 					android:clickable="true"
 					android:gravity="center"
-					android:paddingRight="@dimen/x30"
-					android:textColor="@color/text_color_58"
-					android:textSize="@dimen/textsize_17"
+					android:paddingRight="@dimen/x20"
+					android:textColor="@color/bg_f"
+					android:textSize="@dimen/textsize_18"
 					/>
 
 				<de.hdodenhof.circleimageview.CircleImageView
