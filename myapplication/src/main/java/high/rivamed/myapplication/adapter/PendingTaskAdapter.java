@@ -1,6 +1,8 @@
 package high.rivamed.myapplication.adapter;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -9,7 +11,10 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.OutFormActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.PendingTaskBean;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -28,6 +33,7 @@ public class PendingTaskAdapter
     private TextView tv_top_name;
     private TextView tv_bottom_name;
     private TextView tv_check_detail;
+    private TextView tv_delete;
 
     public PendingTaskAdapter(
             int layoutResId, @Nullable List<PendingTaskBean.MessagesBean> data) {
@@ -38,14 +44,30 @@ public class PendingTaskAdapter
     protected void convert(
             BaseViewHolder helper, PendingTaskBean.MessagesBean item) {
         findId(helper);
-        tv_top_name.setText(item.getType());
+        tv_top_name.setText(item.getTitle());
 //        tv_bottom_name.setText(Html.fromHtml("任务在2018-05-22 18:00已启动，请前往<font color='#ff0000'><big><big>5号</big></big></font>柜领取"));
         tv_bottom_name.setText(item.getText());
+        tv_check_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.getType().equals("1")) {
+                    mContext.startActivity(new Intent(mContext, OutFormActivity.class));
+                }
+            }
+        });
+        tv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBusUtils.post(new Event.EventMsgDelete(item));
+            }
+        });
     }
+
 
     private void findId(BaseViewHolder helper) {
         tv_top_name = ((TextView) helper.getView(R.id.tv_top_name));
         tv_bottom_name = ((TextView) helper.getView(R.id.tv_bottom_name));
         tv_check_detail = ((TextView) helper.getView(R.id.tv_check_detail));
+        tv_delete = ((TextView) helper.getView(R.id.tv_delete));
     }
 }

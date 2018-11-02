@@ -78,9 +78,9 @@ public class LoginPassWordFragment extends SimpleFragment {
     private String mUserPhone;
     private String mPassword;
     private LoadingDialog.Builder mBuilder;
-   private String mDesc;
+    private String mDesc;
 
-   @Override
+    @Override
     public int getLayoutId() {
         return R.layout.login_passname_layout;
     }
@@ -88,10 +88,10 @@ public class LoginPassWordFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
 
-	 if (BuildConfig.DEBUG) {
-	    mLoginName.setText("adminUM");
-	    mLoginPassword.setText("000000");
-	 }
+        if (BuildConfig.DEBUG) {
+        }
+            mLoginName.setText("adminUM");
+            mLoginPassword.setText("000000");
     }
 
     @Override
@@ -111,6 +111,7 @@ public class LoginPassWordFragment extends SimpleFragment {
             }
         }
     }
+
     /**
      * 获取配置项
      */
@@ -123,32 +124,33 @@ public class LoginPassWordFragment extends SimpleFragment {
                     ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
                     List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
                     getUpDateVer(tCstConfigVos);
-		    }
+                }
             });
         }
     }
 
-   /**
-    * 是否禁止使用
-    * @param tCstConfigVos
-    */
-   private void loginEnjoin(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-	if (getConfigTrue(tCstConfigVos)) {
-	    LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
-	    ToastUtils.showShort("正在维护，请到管理端启用");
-	}else {
-	    LoginActivity.mLoginGone.setVisibility(View.GONE);
-	    loadLogin();
-	}
-   }
+    /**
+     * 是否禁止使用
+     *
+     * @param tCstConfigVos
+     */
+    private void loginEnjoin(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        if (getConfigTrue(tCstConfigVos)) {
+            LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
+            ToastUtils.showShort("正在维护，请到管理端启用");
+        } else {
+            LoginActivity.mLoginGone.setVisibility(View.GONE);
+            loadLogin();
+        }
+    }
 
-   private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-        for (ConfigBean.TCstConfigVosBean s:tCstConfigVos){
+    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
 
-		if (s.getCode().equals(CONFIG_013)){
+            if (s.getCode().equals(CONFIG_013)) {
                 return true;
-		}
-	  }
+            }
+        }
         return false;
     }
 
@@ -172,7 +174,7 @@ public class LoginPassWordFragment extends SimpleFragment {
      * 获取登录
      */
     private void loadLogin() {
-//        mBuilder = DialogUtils.showLoading(mContext);
+        //        mBuilder = DialogUtils.showLoading(mContext);
         UserLoginDto userLoginDto = new UserLoginDto();
         UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
         accountBean.setAccountName(mUserPhone);
@@ -181,7 +183,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         userLoginDto.setAccount(accountBean);
         userLoginDto.setSystemType("2");
         userLoginDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
-        LogUtils.i("Login","THING_CODE   "+mGson.toJson(userLoginDto));
+        LogUtils.i("Login", "THING_CODE   " + mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -189,31 +191,31 @@ public class LoginPassWordFragment extends SimpleFragment {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 
                     if (loginResultBean.isOperateSuccess()) {
-                        LogUtils.i("BaseSimpleFragment","result  "+result);
+                        LogUtils.i("BaseSimpleFragment", "result  " + result);
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
-//                        SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
-                        SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,loginResultBean.getAppAccountInfoVo().getSex());
-                        SPUtils.putString(UIUtils.getContext(), KEY_USER_ID,loginResultBean.getAppAccountInfoVo().getUserId());
+                        //                        SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+                        SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, loginResultBean.getAppAccountInfoVo().getSex());
+                        SPUtils.putString(UIUtils.getContext(), KEY_USER_ID, loginResultBean.getAppAccountInfoVo().getUserId());
 
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();
-                    }else {
+                    } else {
                         Toast.makeText(mContext, "登录失败！", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-//                mBuilder.mDialog.dismiss();
+                //                mBuilder.mDialog.dismiss();
             }
 
             @Override
             public void onError(String result) {
-                LogUtils.i("BaseSimpleFragment","登录失败  "+result);
+                LogUtils.i("BaseSimpleFragment", "登录失败  " + result);
                 Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
-//                mBuilder.mDialog.dismiss();
+                //                mBuilder.mDialog.dismiss();
             }
         });
     }
@@ -230,18 +232,18 @@ public class LoginPassWordFragment extends SimpleFragment {
                 // 网络版本
                 String netVersion = versionBean.getVersion();
                 // 比对LogUtils.i(TAG, "localVersion   " + localVersion);
-		   if (netVersion!=null){
-			int i = StringUtils.compareVersion(netVersion, localVersion);
-			if (i == 1) {
-			   mDesc = versionBean.getDesc();
-			   showUpdateDialog(tCstConfigVos);
-			} else {
-			   // 不需要更新
-			   loginEnjoin(tCstConfigVos);
-			}
-		   }else {
-			loginEnjoin(tCstConfigVos);
-		   }
+                if (netVersion != null) {
+                    int i = StringUtils.compareVersion(netVersion, localVersion);
+                    if (i == 1) {
+                        mDesc = versionBean.getDesc();
+                        showUpdateDialog(tCstConfigVos);
+                    } else {
+                        // 不需要更新
+                        loginEnjoin(tCstConfigVos);
+                    }
+                } else {
+                    loginEnjoin(tCstConfigVos);
+                }
 
 
             }
@@ -254,88 +256,90 @@ public class LoginPassWordFragment extends SimpleFragment {
             }
         });
     }
-   /**
-    * 展现更新的dialog
-    */
-   private void showUpdateDialog(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-	UpDateDialog.Builder builder = new UpDateDialog.Builder(mContext);
 
-	builder.setTitle(UIUtils.getString(R.string.ver_title));
-	builder.setMsg(mDesc);
-	builder.setLeft(UIUtils.getString(R.string.ver_cancel), new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		loginEnjoin(tCstConfigVos);
-		dialog.dismiss();
-	   }
-	});
-	builder.setRight(UIUtils.getString(R.string.ver_ok), new DialogInterface.OnClickListener() {
-	   @Override
-	   public void onClick(DialogInterface dialog, int i) {
-		downloadNewVersion(tCstConfigVos);//未下载就开始下载
-		dialog.dismiss();
-	   }
-	});
+    /**
+     * 展现更新的dialog
+     */
+    private void showUpdateDialog(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        UpDateDialog.Builder builder = new UpDateDialog.Builder(mContext);
 
-	builder.create().show();
+        builder.setTitle(UIUtils.getString(R.string.ver_title));
+        builder.setMsg(mDesc);
+        builder.setLeft(UIUtils.getString(R.string.ver_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                loginEnjoin(tCstConfigVos);
+                dialog.dismiss();
+            }
+        });
+        builder.setRight(UIUtils.getString(R.string.ver_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                downloadNewVersion(tCstConfigVos);//未下载就开始下载
+                dialog.dismiss();
+            }
+        });
 
-   }
-   private void downloadNewVersion(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-	// 1.显示进度的dialog
-	ProgressDialog mDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
-	mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-	mDialog.setCancelable(false);
-	mDialog.setMax(100);
-	mDialog.show();
+        builder.create().show();
 
-	loadUpDataVersion(mDialog,tCstConfigVos);
+    }
 
-   }
+    private void downloadNewVersion(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        // 1.显示进度的dialog
+        ProgressDialog mDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setCancelable(false);
+        mDialog.setMax(100);
+        mDialog.show();
 
-   private void loadUpDataVersion(final ProgressDialog mDialog,List<ConfigBean.TCstConfigVosBean> tCstConfigVos){
-	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
-		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
-		   @Override
-		   public void onSuccess(Response<File> response) {
-			mDialog.dismiss();
-			upActivity(response.body());
-		   }
+        loadUpDataVersion(mDialog, tCstConfigVos);
 
-		   @Override
-		   public void downloadProgress(Progress progress) {
-			mDialog.setProgress((int) (progress.fraction / -1024));
-			super.downloadProgress(progress);
+    }
 
-		   }
+    private void loadUpDataVersion(final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+        OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(this)//
+                .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
+                    @Override
+                    public void onSuccess(Response<File> response) {
+                        mDialog.dismiss();
+                        upActivity(response.body());
+                    }
 
-		   @Override
-		   public void onError(Response<File> response) {
-			super.onError(response);
-			ToastUtils.showShort(R.string.connection_fails);
-			mDialog.dismiss();
-			loginEnjoin(tCstConfigVos);
-		   }
-		});
+                    @Override
+                    public void downloadProgress(Progress progress) {
+                        mDialog.setProgress((int) (progress.fraction / -1024));
+                        super.downloadProgress(progress);
 
-   }
+                    }
 
-   private void upActivity(File file) {
-	Intent intent = new Intent(Intent.ACTION_VIEW);
-	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    @Override
+                    public void onError(Response<File> response) {
+                        super.onError(response);
+                        ToastUtils.showShort(R.string.connection_fails);
+                        mDialog.dismiss();
+                        loginEnjoin(tCstConfigVos);
+                    }
+                });
 
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
-	   //	   Uri apkUri = getUriForFile(getApplicationContext(),
-	   //								 "wetg.p5w.net.fileprovider", file);
-	   StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-	   StrictMode.setVmPolicy(builder.build());
-	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+    }
 
-	} else {
-	   intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-	   LogUtils.i("Login", "apkUri " + Uri.fromFile(file));
-	}
-	startActivity(intent);
-	android.os.Process.killProcess(android.os.Process.myPid());
-   }
+    private void upActivity(File file) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+            //	   Uri apkUri = getUriForFile(getApplicationContext(),
+            //								 "wetg.p5w.net.fileprovider", file);
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            LogUtils.i("Login", "apkUri " + Uri.fromFile(file));
+        }
+        startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
 }

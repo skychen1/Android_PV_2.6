@@ -64,12 +64,21 @@ public class PendingTaskBean {
          * accountId : 1
          */
 
-        private String id;
-        private String type;
-        private String text;
-        private String detail;
+        private String id = "";
+        private String type = "";
+        private String text = "";
+        private String detail = "";
         private String createTime;
-        private String accountId;
+        private String accountId = "";
+        private String title = "";
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
 
         public String getId() {
             return id;

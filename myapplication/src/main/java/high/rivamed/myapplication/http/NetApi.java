@@ -108,4 +108,5 @@ public interface NetApi {
 
     //消息
     String URL_FIND_MESSAGE_BY_ACCOUNTID = "/rmApi/message/message/findMessageByAccountId";//查询待办任务列表
+    String URL_DELETE_MESSAGE_BY_ID = "/rmApi/message/message/deleteMessageById";//删除待办任务
 }

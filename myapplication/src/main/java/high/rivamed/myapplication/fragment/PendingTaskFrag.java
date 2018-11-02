@@ -126,6 +126,41 @@ public class PendingTaskFrag extends SimpleFragment {
         initlistener();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventMsgDelete(Event.EventMsgDelete event) {
+        deleteMsg(event.data.getId());
+    }
+
+    /**
+     * 删除待办任务
+     */
+    private void deleteMsg(String id) {
+        NetRequest.getInstance().deleteMessageById(id, this, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                try {
+                    PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
+                    mMessagesList.clear();
+
+                    for (int i = 0; i < 5; i++) {//todo 假数据
+                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
+                        bean.setType("1");
+                        bean.setTitle("医嘱");
+                        bean.setText("前往领取");
+                        mMessagesList.add(bean);
+                    }
+
+                    if (emergencyBean.getMessages() != null) {
+                        mMessagesList.addAll(emergencyBean.getMessages());
+                        mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
+                    }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     /**
      * 数据加载
      */
@@ -146,8 +181,18 @@ public class PendingTaskFrag extends SimpleFragment {
                 try {
                     PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
                     mMessagesList.clear();
+
+                    for (int i = 0; i < 5; i++) {//todo 假数据
+                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
+                        bean.setType("1");
+                        bean.setTitle("医嘱");
+                        bean.setText("前往领取");
+                        mMessagesList.add(bean);
+                    }
+
                     if (emergencyBean.getMessages() != null) {
                         mMessagesList.addAll(emergencyBean.getMessages());
+                        mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
