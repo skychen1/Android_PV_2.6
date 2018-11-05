@@ -263,8 +263,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 BillStockResultBean billStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
                 mTransReceiveOrderDetailVosList.addAll(billStockResultBean.getTransReceiveOrderDetailVos());
                 ((OutFormActivity) getActivity()).setCstTypeAndNumber("" + billStockResultBean.getCstTypes(), "" + billStockResultBean.getCstCount());
-                mPrePageDate.cstType=""+billStockResultBean.getCstTypes();
-                mPrePageDate.cstNumber=""+billStockResultBean.getCstCount();
+                mPrePageDate.cstType = "" + billStockResultBean.getCstTypes();
+                mPrePageDate.cstNumber = "" + billStockResultBean.getCstCount();
                 initData();
             }
 
@@ -279,23 +279,32 @@ public class ReciveBillFrag extends SimpleFragment {
      * 打开全部柜子
      */
     public void openAllDoor() {
-        if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
-            ToastUtils.showShort("全部开柜");
-            mTbaseDevices.clear();
-            for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
-                for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
-                    BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
-                    oneDoor.setDeviceCode(deviceCode);
-                    if (deviceCode != null) {
-                        mTbaseDevices.add(oneDoor);
+
+
+        if (mPublicAdapter!=null) {
+            if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
+                ToastUtils.showShort("全部开柜");
+                mTbaseDevices.clear();
+                for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
+                    for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
+                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
+                        oneDoor.setDeviceCode(deviceCode);
+                        if (deviceCode != null) {
+                            mTbaseDevices.add(oneDoor);
+                        }
                     }
                 }
+                if (mTbaseDevices.size() > 0) {
+                    Log.e("xb", "mTbaseDevices:" + mTbaseDevices.size());
+                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                } else {
+                    ToastUtils.showShort("无耗材柜数据");
+                }
+            } else {
+                ToastUtils.showShort("无耗材数据");
             }
-            if (mTbaseDevices.size() > 0) {
-                AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-            }
-        } else {
-            ToastUtils.showShort("无耗材数据");
+        }else{
+            ToastUtils.showShort("空");
         }
 
     }

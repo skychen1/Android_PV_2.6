@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,32 +23,24 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutMealTopSuitAdapter;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
-import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
@@ -58,8 +49,6 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
-import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -117,7 +106,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     /**
      * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
      */
-    private boolean mIsCanSkipToSurePage=true;
+    private boolean mIsCanSkipToSurePage = true;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
@@ -218,16 +207,16 @@ public class OutMealActivity extends BaseSimpleActivity {
                         }
                     }
                 }
-                if (mPublicAdapter.getItem(position).getDeviceCodes()!=null&&mPublicAdapter.getItem(position).getDeviceCodes().size()>0) {
+                if (mPublicAdapter.getItem(position).getDeviceCodes() != null && mPublicAdapter.getItem(position).getDeviceCodes().size() > 0) {
                     mTbaseDevicesFromEvent.clear();
-                    for (String deviceCode:mPublicAdapter.getItem(position).getDeviceCodes()) {
+                    for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
                         mTbaseDevicesFromEvent.add(oneDoor);
                     }
-                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
 
-                }else{
+                } else {
                     ToastUtils.showShort("该耗材无耗材柜信息!");
                 }
             }
@@ -307,13 +296,17 @@ public class OutMealActivity extends BaseSimpleActivity {
                     ToastUtils.showShort("全部开柜");
                     mTbaseDevicesFromEvent.clear();
                     for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
-                        for (String deviceCode:mPublicAdapter.getItem(i).getDeviceCodes()) {
+                        for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
                             BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                             oneDoor.setDeviceCode(deviceCode);
                             mTbaseDevicesFromEvent.add(oneDoor);
                         }
                     }
-                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                    if (mTbaseDevicesFromEvent.size() > 0) {
+                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                    } else {
+                        ToastUtils.showShort("无耗材柜数据");
+                    }
                 } else {
                     ToastUtils.showShort("无耗材数据");
                 }
@@ -425,12 +418,12 @@ public class OutMealActivity extends BaseSimpleActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mIsCanSkipToSurePage=true;
+        mIsCanSkipToSurePage = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mIsCanSkipToSurePage=false;
+        mIsCanSkipToSurePage = false;
     }
 }

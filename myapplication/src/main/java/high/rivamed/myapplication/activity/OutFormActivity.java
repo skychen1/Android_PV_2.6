@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 /**
@@ -68,6 +70,10 @@ public class OutFormActivity extends BaseSimpleActivity {
 
     //顶部全部医嘱单列表
     private List<OrderSheetBean.RowsBean> mAllOrderSheetList;
+    /**
+     * 当前所显示页面
+     */
+    private ReciveBillFrag mCurrentFragment;
 
     @Override
     protected int getContentLayoutId() {
@@ -110,6 +116,7 @@ public class OutFormActivity extends BaseSimpleActivity {
                 mCttimecheckViewpager.setCurrentItem(position);
                 mOutFormAdapter.selectedPosition = position;
                 mOutFormAdapter.notifyDataSetChanged();
+                Log.e("xb", "position:" + mOutFormAdapter.selectedPosition);
             }
         });
         //横向滑动到最后自动加载更多
@@ -148,7 +155,7 @@ public class OutFormActivity extends BaseSimpleActivity {
 
     @OnClick(R.id.tv_open_all)
     public void onViewClicked() {
-        ((ReciveBillFrag) mPagerAdapter.getItem(mOutFormAdapter.selectedPosition)).openAllDoor();
+        mCurrentFragment.openAllDoor();
     }
 
     public void setCstTypeAndNumber(String type, String number) {
@@ -165,8 +172,13 @@ public class OutFormActivity extends BaseSimpleActivity {
 
         @Override
         public Fragment getItem(int position) {
-
             return ReciveBillFrag.newInstance(mAllOrderSheetList.get(position));
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            mCurrentFragment = (ReciveBillFrag) object;
+            super.setPrimaryItem(container, position, object);
         }
 
         @Override
