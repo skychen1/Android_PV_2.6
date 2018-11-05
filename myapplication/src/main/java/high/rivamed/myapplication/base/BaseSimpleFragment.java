@@ -88,15 +88,11 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
    public void onTitleConnEvent(Event.EventTitleConn event) {
 	mTitleConn = event.b;
 	if (mTitleConn){
-	   Glide.with(this)
-		   .load(R.mipmap.connect_yes)
-		   .error(R.mipmap.connect_no)
-		   .into(mBaseTabBtnConn);
+	   LogUtils.i(TAG,"mBaseTabBtnConn.setEnabled(true)  ");
+	   mBaseTabBtnConn.setEnabled(true);
 	}else {
-	   Glide.with(this)
-		   .load(R.mipmap.connect_no)
-		   .error(R.mipmap.connect_no)
-		   .into(mBaseTabBtnConn);
+	   LogUtils.i(TAG,"mBaseTabBtnConn.setEnabled(false)  ");
+	   mBaseTabBtnConn.setEnabled(false);
 	}
    }
    @Override

@@ -116,7 +116,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 
-	NetRequest.getInstance().getFindPatientDate(this, new BaseResult(){
+	NetRequest.getInstance().getFindEpcDetails(this, new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);

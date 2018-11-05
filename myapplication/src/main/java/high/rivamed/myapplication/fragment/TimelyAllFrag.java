@@ -316,6 +316,23 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void initDateAll() {
+	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+
+	mLayout = R.layout.item_realtime_six_layout;
+	mHeadView = LayoutInflater.from(_mActivity).inflate(R.layout.item_realtime_six_title_layout,
+									    (ViewGroup) mLinearLayout.getParent(), false);
+	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+
+	mHeadView.setBackgroundResource(R.color.bg_green);
+	mLinearLayout.addView(mHeadView);
+	LogUtils.i(TAG,"第一次");
 	initDate(0, 0, 0, 0);
    }
 
@@ -341,30 +358,15 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
 	}
 
-	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
 
-	mLayout = R.layout.item_realtime_six_layout;
-	mHeadView = LayoutInflater.from(_mActivity).inflate(R.layout.item_realtime_six_title_layout,
-							    (ViewGroup) mLinearLayout.getParent(), false);
-	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-
-	mHeadView.setBackgroundResource(R.color.bg_green);
-	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
-	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	mRefreshLayout.setEnableAutoLoadMore(false);
-
-	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-	mLinearLayout.addView(mHeadView);
-	mRecyclerview.setAdapter(mTimelyAllAdapter);
+	   mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	   mRefreshLayout.setEnableAutoLoadMore(false);
+	   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	   mRecyclerview.setAdapter(mTimelyAllAdapter);
+	   mTimelyAllAdapter.notifyDataSetChanged();
 	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
 	mTimelyAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -627,6 +629,7 @@ public class TimelyAllFrag extends SimpleFragment {
 				   Reduce += l.getReduce();
 				   Add += l.getAdd();
 				}
+				LogUtils.i(TAG,"第二次");
 				initDate(epcs, mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(),
 					   number);
 			   } else {//重新刷新的数据
@@ -707,6 +710,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
 		number += TCstInventoryVo.getCountStock();
 	   }
+	   LogUtils.i(TAG,"第二次");
 	   initDate(epcs, mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(), number);
 	} else {//扫描后数据更新
 	   mTCstInventoryVos.clear();

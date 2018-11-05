@@ -80,6 +80,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
@@ -171,6 +172,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private LoadingDialog.Builder mLoading;
    private boolean               mIsClick;
    private List<TCstInventoryVo> mVoOutList;
+   private String mTypeAct;
 
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
@@ -428,6 +430,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   //识别耗材重新扫描回调
 	   LogUtils.i(TAG, "RecognizeActivity  重新扫描 ");
 	   AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
+	}else {
+	   mTypeAct = event.mString;
 	}
 
    }
@@ -658,7 +662,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
     *
     * @param toJson
     */
-   private void putEPCDates(String toJson) {
+   public void putEPCDates(String toJson) {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -706,6 +710,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			}
 		   }
 		} else if (UIUtils.getConfigType(mContext, CONFIG_009) && mRbKey == 3) {//后绑定患者
+		   LogUtils.i(TAG,"后绑定患者DDDDDD");
+
 		   if (cstInventoryDto.gettCstInventoryVos() != null &&
 			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
 			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
@@ -775,7 +781,12 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
 	}
-
+	//是否启用选择操作
+	if (UIUtils.getConfigType(mContext, CONFIG_019)){
+	   mConsumeDown.setVisibility(View.VISIBLE);
+	}else {
+	   mConsumeDown.setVisibility(View.GONE);
+	}
 	//是否启用功能开柜
 	if (UIUtils.getConfigType(mContext, CONFIG_016)) {
 	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
@@ -919,6 +930,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
     * 选择操作
     * */
    private void doSelectOption(int position, int id) {
+	EventBusUtils.postSticky(new Event.EventButGone(false));
 	mPause = false;
 	switch (id) {
 	   case R.id.content_rb_ly://领用

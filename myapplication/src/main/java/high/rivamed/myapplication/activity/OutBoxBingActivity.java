@@ -248,7 +248,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 	//	mStarts.start();
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventBing(Event.EventCheckbox event) {
 	mPatient = event.mString;
 	mPatientId = event.id;

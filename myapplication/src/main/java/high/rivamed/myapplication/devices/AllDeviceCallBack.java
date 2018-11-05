@@ -131,7 +131,7 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
+//		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
 
@@ -147,11 +147,12 @@ public class AllDeviceCallBack {
 		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
+		clossDoorStartScan(deviceIndentify);
+
 	   }
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-		clossDoorStartScan(deviceIndentify);
 	   }
 
 	   @Override

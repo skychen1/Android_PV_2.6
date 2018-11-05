@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import high.rivamed.myapplication.utils.LogUtils;
+
 /**
  * 项目名称:    Android_PV_2.6.1
  * 创建者:      DanMing
@@ -18,6 +20,7 @@ import android.content.Intent;
 public class AlarmReceiver extends BroadcastReceiver {
    @Override
    public void onReceive(Context context, Intent intent) {
+	LogUtils.i("AlarmReceiver","fdfdfdfdfdfdf");
 	Intent i = new Intent(context,TimerService.class);
 	context.startService(i);
    }
