@@ -627,6 +627,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mBaseTabTvName.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
 	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
+	   LogUtils.i(TAG,"CONFIG_009");
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
@@ -636,6 +637,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 	   mLyBingBtnRight.setVisibility(View.VISIBLE);
 	} else if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定
+	   LogUtils.i(TAG,"CONFIG_010");
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mLyBingBtnRight.setVisibility(View.GONE);
 	   mTimelyLeft.setEnabled(true);
@@ -659,6 +661,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {//hua
+	   LogUtils.i(TAG,"CXXXXX0");
 	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
 	   mLyBingBtnRight.setVisibility(View.VISIBLE);
 	   mTimelyLeft.setEnabled(false);
