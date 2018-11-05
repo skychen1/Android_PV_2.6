@@ -613,7 +613,7 @@ public class LoginActivity extends SimpleActivity {
 		// 网络版本
 		String netVersion = versionBean.getVersion();
 		// 比对LogUtils.i(TAG, "localVersion   " + localVersion);
-		LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
+//		LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
 		if (netVersion!=null) {
 		   int i = StringUtils.compareVersion(netVersion, localVersion);
 		   if (i == 1) {

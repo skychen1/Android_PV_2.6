@@ -66,6 +66,7 @@ public class Constants {
    public static final String CONFIG_015 = "015";//是否启用请领单领用
    public static final String CONFIG_016 = "016";//是否启用功能开柜
    public static final String CONFIG_017 = "017";//是否启用紧急登录
+   public static final String CONFIG_019 = "019";//是否启选择操作
 
    //sp存入的key
    public static final String SAVE_SEVER_IP              = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
