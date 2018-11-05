@@ -180,6 +180,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"
 					android:layout_centerVertical="true"
+					android:layout_marginRight="@dimen/x15"
 					android:paddingLeft="@dimen/x15"
 					android:paddingRight="@dimen/x15"
 					android:layout_toLeftOf="@+id/base_tab_btn_msg"
