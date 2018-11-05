@@ -17,10 +17,11 @@ import java.util.List;
  */
 public class BillStockResultBean implements Serializable {
 
+
     /**
-     * pageModel : {"pageNo":1,"pageSize":10,"rows":[{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293668bfb3601668bfdb3350000","thingName":"2号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":3,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"未领取","receiveNum":0,"needNum":3,"patientName":"马羊焕","thingCode":"ff80818166861cb001668622ab080000,40288293669e921601669fa48062003f","thingName":"3号柜,1号柜","thingStore":"ff80818166861cb001668622ab080000:2,40288293669e921601669fa48062003f:1","codeArray":["ff80818166861cb001668622ab080000","40288293669e921601669fa48062003f"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"3","receiveNum":0,"needNum":3,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":0,"counts":1,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"3","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"ff80818166861cb001668622ab080000","thingName":"3号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":0,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"3","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null}],"total":6}
+     * pageModel : {"pageNo":1,"pageSize":10,"rows":[{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"1","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"2","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]}],"total":5}
      * id : 0
-     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293668bfb3601668bfdb3350000","thingName":"2号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":3,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"未领取","receiveNum":0,"needNum":3,"patientName":"马羊焕","thingCode":"ff80818166861cb001668622ab080000,40288293669e921601669fa48062003f","thingName":"3号柜,1号柜","thingStore":"ff80818166861cb001668622ab080000:2,40288293669e921601669fa48062003f:1","codeArray":["ff80818166861cb001668622ab080000","40288293669e921601669fa48062003f"]}]
+     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]}]
      * orderId : 40288293667aa53e01667aa5fc610000
      * cstCount : 7
      * cstTypes : 3
@@ -85,8 +86,8 @@ public class BillStockResultBean implements Serializable {
         /**
          * pageNo : 1
          * pageSize : 10
-         * rows : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"未领取","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293668bfb3601668bfdb3350000","thingName":"2号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":3,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"未领取","receiveNum":0,"needNum":3,"patientName":"马羊焕","thingCode":"ff80818166861cb001668622ab080000,40288293669e921601669fa48062003f","thingName":"3号柜,1号柜","thingStore":"ff80818166861cb001668622ab080000:2,40288293669e921601669fa48062003f:1","codeArray":["ff80818166861cb001668622ab080000","40288293669e921601669fa48062003f"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"3","receiveNum":0,"needNum":3,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":0,"counts":1,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"3","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"ff80818166861cb001668622ab080000","thingName":"3号柜","thingStore":null,"codeArray":null},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":0,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"3","receiveNum":0,"needNum":2,"patientName":"马羊焕","thingCode":"40288293669e921601669fa48062003f","thingName":"1号柜","thingStore":null,"codeArray":null}]
-         * total : 6
+         * rows : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"1","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"2","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]}]
+         * total : 5
          */
 
         private int pageNo;
@@ -126,7 +127,7 @@ public class BillStockResultBean implements Serializable {
             this.rows = rows;
         }
 
-        public static class RowsBean implements Serializable {
+        public static class RowsBean implements Serializable{
             /**
              * orderDetailId : 40288293667aa53e01667aa5fcf30001
              * isHaveNum : 1
@@ -134,14 +135,14 @@ public class BillStockResultBean implements Serializable {
              * cstId : 106
              * cstName : 晶体植入镊
              * cstSpec : 直平台
-             * receivedStatus : 未领取
-             * receiveNum : 0
+             * receivedStatus : 部分领取
+             * receiveNum : 1
              * needNum : 2
              * patientName : 马羊焕
-             * thingCode : 40288293669e921601669fa48062003f
-             * thingName : 1号柜
-             * thingStore : null
-             * codeArray : null
+             * deviceCode : 40288293669e921601669fa480630040
+             * deviceName : 1柜
+             * deviceStore : null
+             * deviceCodes : ["40288293669e921601669fa480630040"]
              */
 
             private String orderDetailId;
@@ -154,10 +155,10 @@ public class BillStockResultBean implements Serializable {
             private int receiveNum;
             private int needNum;
             private String patientName;
-            private String thingCode;
-            private String thingName;
-            private String thingStore;
-            private List<String> codeArray;
+            private String deviceCode;
+            private String deviceName;
+            private String deviceStore;
+            private List<String> deviceCodes;
 
             public String getOrderDetailId() {
                 return orderDetailId;
@@ -239,41 +240,41 @@ public class BillStockResultBean implements Serializable {
                 this.patientName = patientName;
             }
 
-            public String getThingCode() {
-                return thingCode;
+            public String getDeviceCode() {
+                return deviceCode;
             }
 
-            public void setThingCode(String thingCode) {
-                this.thingCode = thingCode;
+            public void setDeviceCode(String deviceCode) {
+                this.deviceCode = deviceCode;
             }
 
-            public String getThingName() {
-                return thingName;
+            public String getDeviceName() {
+                return deviceName;
             }
 
-            public void setThingName(String thingName) {
-                this.thingName = thingName;
+            public void setDeviceName(String deviceName) {
+                this.deviceName = deviceName;
             }
 
-            public String getThingStore() {
-                return thingStore;
+            public String getDeviceStore() {
+                return deviceStore;
             }
 
-            public void setThingStore(String thingStore) {
-                this.thingStore = thingStore;
+            public void setDeviceStore(String deviceStore) {
+                this.deviceStore = deviceStore;
             }
 
-            public List<String> getCodeArray() {
-                return codeArray;
+            public List<String> getDeviceCodes() {
+                return deviceCodes;
             }
 
-            public void setCodeArray(List<String> codeArray) {
-                this.codeArray = codeArray;
+            public void setDeviceCodes(List<String> deviceCodes) {
+                this.deviceCodes = deviceCodes;
             }
         }
     }
 
-    public static class TransReceiveOrderDetailVosBean implements Serializable {
+    public static class TransReceiveOrderDetailVosBean implements Serializable{
         /**
          * orderDetailId : 40288293667aa53e01667aa5fcf30001
          * isHaveNum : 1
@@ -281,14 +282,14 @@ public class BillStockResultBean implements Serializable {
          * cstId : 106
          * cstName : 晶体植入镊
          * cstSpec : 直平台
-         * receivedStatus : 未领取
-         * receiveNum : 0
+         * receivedStatus : 部分领取
+         * receiveNum : 1
          * needNum : 2
          * patientName : 马羊焕
-         * thingCode : 40288293669e921601669fa48062003f
-         * thingName : 1号柜
-         * thingStore : null
-         * codeArray : null
+         * deviceCode : 40288293669e921601669fa480630040
+         * deviceName : 1柜
+         * deviceStore : null
+         * deviceCodes : ["40288293669e921601669fa480630040"]
          */
 
         private String orderDetailId;
@@ -301,11 +302,10 @@ public class BillStockResultBean implements Serializable {
         private int receiveNum;
         private int needNum;
         private String patientName;
-        private String thingCode;
-        private String thingName;
-        private String thingStore;
-        private List<String> codeArray;
-        public String OpName = "打开柜门";
+        private String deviceCode;
+        private String deviceName;
+        private String deviceStore;
+        private List<String> deviceCodes;
 
         public String getOrderDetailId() {
             return orderDetailId;
@@ -387,36 +387,36 @@ public class BillStockResultBean implements Serializable {
             this.patientName = patientName;
         }
 
-        public String getThingCode() {
-            return thingCode;
+        public String getDeviceCode() {
+            return deviceCode;
         }
 
-        public void setThingCode(String thingCode) {
-            this.thingCode = thingCode;
+        public void setDeviceCode(String deviceCode) {
+            this.deviceCode = deviceCode;
         }
 
-        public String getThingName() {
-            return thingName;
+        public String getDeviceName() {
+            return deviceName;
         }
 
-        public void setThingName(String thingName) {
-            this.thingName = thingName;
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
         }
 
-        public String getThingStore() {
-            return thingStore;
+        public String getDeviceStore() {
+            return deviceStore;
         }
 
-        public void setThingStore(String thingStore) {
-            this.thingStore = thingStore;
+        public void setDeviceStore(String deviceStore) {
+            this.deviceStore = deviceStore;
         }
 
-        public List<String> getCodeArray() {
-            return codeArray;
+        public List<String> getDeviceCodes() {
+            return deviceCodes;
         }
 
-        public void setCodeArray(List<String> codeArray) {
-            this.codeArray = codeArray;
+        public void setDeviceCodes(List<String> deviceCodes) {
+            this.deviceCodes = deviceCodes;
         }
     }
 }

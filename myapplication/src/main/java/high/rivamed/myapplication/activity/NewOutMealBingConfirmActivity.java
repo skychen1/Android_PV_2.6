@@ -300,9 +300,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
         }
         mBaseTabTvTitle.setText("识别耗材");
-        mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 2 +
+        mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-                7 + "</big></font>"));
+                0 + "</big></font>"));
         mTimelyStartBtn.setVisibility(View.VISIBLE);
         mDownBtnOneLL.setVisibility(View.VISIBLE);
         String[] array;
@@ -333,7 +333,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
             R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn_right,
-            R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right, R.id.ly_bing_btn,R.id.timely_start_btn, R.id.ly_bind_patient, R.id.timely_open_door, R.id.activity_btn_one})
+            R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right, R.id.ly_bing_btn, R.id.timely_start_btn, R.id.ly_bind_patient, R.id.timely_open_door, R.id.activity_btn_one})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.base_tab_icon_right:
@@ -401,7 +401,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 //		DialogUtils.showRvDialog(this, mContext);
                 break;
             case R.id.timely_start_btn:
-                mLoadingDialog=DialogUtils.showLoading(mContext);
+                mLoadingDialog = DialogUtils.showLoading(mContext);
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
                     LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -412,7 +412,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 reOpenDoor();
                 break;
             case R.id.ly_bing_btn:
-                DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos);
+                OrderSheetBean.RowsBean prePageDate = new OrderSheetBean.RowsBean();
+                prePageDate.cstType = "" + mBillOrderResultBean.getCountKind();
+                prePageDate.cstNumber = "" + mBillOrderResultBean.getCountNum();
+                DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos, prePageDate);
                 break;
             case R.id.activity_btn_one:
                 useOrderCst();
@@ -513,7 +516,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             @Override
             public void onSucceed(String result) {
                 mFindBillOrderBean.getCstInventoryVos().clear();
-                mBillOrderResultBean= mGson.fromJson(result, BillOrderResultBean.class);
+                mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
                 if (mPublicAdapter == null) {
                     initView(false);
                 } else {
@@ -730,7 +733,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             item.setEpc(v.getKey());
             mFindBillOrderBean.getCstInventoryVos().add(item);
         }
-        mLoadingDialog.mDialog.dismiss();
+        if (mLoadingDialog != null) {
+            mLoadingDialog.mDialog.dismiss();
+        }
         if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
             findBillOrder();
         } else {
@@ -748,6 +753,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             ToastUtils.showShort("无柜子信息!");
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void isDoorOpened(Event.HomeNoClickEvent event) {
         if (event.isClick) {

@@ -78,8 +78,8 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
         findId(helper);
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
-        mSeven_three.setText(""+item.getCounts());
-        mSeven_four.setText(item.getThingName());
+        mSeven_three.setText("" + item.getCounts());
+        mSeven_four.setText(item.getDeviceName());
     }
 
     private void findId(BaseViewHolder helper) {

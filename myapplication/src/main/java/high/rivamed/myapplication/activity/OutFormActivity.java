@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -18,24 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutFormAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.bean.ConfigBean;
-import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
-import high.rivamed.myapplication.fragment.PublicTimelyFrag;
 import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
-
-import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
-import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -55,11 +49,17 @@ public class OutFormActivity extends BaseSimpleActivity {
     RecyclerView mOutFormRv;
     @BindView(R.id.cttimecheck_viewpager)
     ViewPager mCttimecheckViewpager;
-    //   @BindView(R.id.timely_ll)
-//   LinearLayout   mLinearLayout;
+    @BindView(R.id.tv_open_all)
+    TextView mtTvOpenAll;
     @BindView(R.id.recyclerview_null)
     RelativeLayout mRecyclerviewNull;
     public int mSize;
+    @BindView(R.id.tv_material_type)
+    TextView tvMaterialType;
+    @BindView(R.id.tv_material_number)
+    TextView tvMaterialNumber;
+    @BindView(R.id.stock_left_alltop)
+    LinearLayout stockLeftAlltop;
 
     private TableTypeView mTypeView;
     private OutFormAdapter mOutFormAdapter;
@@ -108,22 +108,17 @@ public class OutFormActivity extends BaseSimpleActivity {
                 mRecyclerviewNull.setVisibility(View.GONE);
                 mCttimecheckViewpager.setVisibility(View.VISIBLE);
                 mCttimecheckViewpager.setCurrentItem(position);
-//                //TODO 测试
-//                if (position == 1) {
-//                    Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
-//                    mContext.startActivity(intent);
-//                }
                 mOutFormAdapter.selectedPosition = position;
                 mOutFormAdapter.notifyDataSetChanged();
             }
         });
         //横向滑动到最后自动加载更多
-//        mOutFormRv.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
-//            @Override
-//            public void onLoadMore() {
-//
-//            }
-//        });
+        mOutFormRv.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+
+            }
+        });
     }
 
     private void getTopOrderSheetDate(int pageNo, int PageSize) {
@@ -151,6 +146,17 @@ public class OutFormActivity extends BaseSimpleActivity {
     }
 
 
+    @OnClick(R.id.tv_open_all)
+    public void onViewClicked() {
+        ((ReciveBillFrag) mPagerAdapter.getItem(mOutFormAdapter.selectedPosition)).openAllDoor();
+    }
+
+    public void setCstTypeAndNumber(String type, String number) {
+        tvMaterialType.setText(type);
+        tvMaterialNumber.setText(number);
+    }
+
+
     private class OutFormPagerAdapter extends FragmentStatePagerAdapter {
 
         public OutFormPagerAdapter(FragmentManager fm) {
@@ -168,6 +174,7 @@ public class OutFormActivity extends BaseSimpleActivity {
             return mAllOrderSheetList == null ? 0 : mAllOrderSheetList.size();
         }
     }
+
 
     //横向滑动加载更多
     public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {

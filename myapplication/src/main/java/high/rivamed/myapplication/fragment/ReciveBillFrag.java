@@ -33,16 +33,21 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.NewOutFormConfirmActivity;
+import high.rivamed.myapplication.activity.NewOutMealBingConfirmActivity;
+import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.adapter.BillStockAdapter;
 import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
 import high.rivamed.myapplication.adapter.StockRightAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BillStockResultBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.RunWateBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -130,6 +135,15 @@ public class ReciveBillFrag extends SimpleFragment {
     private List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosList;
 
     /**
+     * 柜子信息
+     */
+    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices = new ArrayList<>();
+    /**
+     * 是否可以触发事件跳转界面
+     */
+    private boolean mIsCanSkipToSurePage = true;
+
+    /**
      * 重新加载数据
      *
      * @param event
@@ -194,16 +208,15 @@ public class ReciveBillFrag extends SimpleFragment {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 String six = mPublicAdapter.getItem(position).getReceivedStatus();
                 if (!six.equals("已领取")) {
-                    DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
+                    mTbaseDevices.clear();
+                    for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
+                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
+                        oneDoor.setDeviceCode(deviceCode);
+                        mTbaseDevices.add(oneDoor);
+                    }
+                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                 } else {
                     ToastUtils.showShort("此项已领取！");
-                }
-
-                if (position == 0) {
-                    EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate,mTransReceiveOrderDetailVosList));
-                    //TODO 测试
-                    Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
-                    mContext.startActivity(intent);
                 }
             }
         });
@@ -249,6 +262,9 @@ public class ReciveBillFrag extends SimpleFragment {
                 LogUtils.i(TAG, "getStockByOrderId   " + result);
                 BillStockResultBean billStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
                 mTransReceiveOrderDetailVosList.addAll(billStockResultBean.getTransReceiveOrderDetailVos());
+                ((OutFormActivity) getActivity()).setCstTypeAndNumber("" + billStockResultBean.getCstTypes(), "" + billStockResultBean.getCstCount());
+                mPrePageDate.cstType=""+billStockResultBean.getCstTypes();
+                mPrePageDate.cstNumber=""+billStockResultBean.getCstCount();
                 initData();
             }
 
@@ -259,5 +275,59 @@ public class ReciveBillFrag extends SimpleFragment {
         });
     }
 
+    /**
+     * 打开全部柜子
+     */
+    public void openAllDoor() {
+        if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
+            ToastUtils.showShort("全部开柜");
+            mTbaseDevices.clear();
+            for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
+                for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
+                    BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
+                    oneDoor.setDeviceCode(deviceCode);
+                    if (deviceCode != null) {
+                        mTbaseDevices.add(oneDoor);
+                    }
+                }
+            }
+            if (mTbaseDevices.size() > 0) {
+                AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+            }
+        } else {
+            ToastUtils.showShort("无耗材数据");
+        }
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isDoorOpened(Event.HomeNoClickEvent event) {
+        if (event.isClick) {
+            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isDoorClosed(Event.HomeNoClickEvent event) {
+        if (mIsCanSkipToSurePage) {
+            if (!event.isClick) {
+                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+                Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
+                mContext.startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIsCanSkipToSurePage = true;
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mIsCanSkipToSurePage = false;
+    }
 }

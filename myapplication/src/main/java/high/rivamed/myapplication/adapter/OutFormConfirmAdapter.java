@@ -70,7 +70,7 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResult
 
     @Override
     protected void convert(final BaseViewHolder helper, OutFormConfirmResultBean.TcstInventoryOrderVosBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
+        if (!item.isIsContain()) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);

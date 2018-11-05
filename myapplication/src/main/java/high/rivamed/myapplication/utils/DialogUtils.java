@@ -33,6 +33,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
+import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
 import high.rivamed.myapplication.http.BaseResult;
@@ -77,10 +78,11 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 public class DialogUtils {
 
     public static String sTimes;
+
     /**
      * 紧急登录密码修改
      */
-    public static void showEmergencyDialog(Context context){
+    public static void showEmergencyDialog(Context context) {
         EmergencyTwoDialog.Builder builder = new EmergencyTwoDialog.Builder(context);
         builder.setRight("确定", new DialogInterface.OnClickListener() {
             @Override
@@ -96,10 +98,11 @@ public class DialogUtils {
         });
         builder.create().show();
     }
+
     /**
      * 盘亏不提交弹出
      */
-    public static void showOneDialog(Context context){
+    public static void showOneDialog(Context context) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg("请完善耗材盘亏原因，再提交数据～");
         builder.setRight("确定", new DialogInterface.OnClickListener() {
@@ -130,15 +133,15 @@ public class DialogUtils {
                 int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
                 if (type.equals("firstBind")) {//先绑定患者
                     LogUtils.i("OutBoxBingActivity", "先绑定患者");
-                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
+                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
                         ContentConsumeOperateFrag2.mPause = false;
-			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-			     String id = patientInfos.get(checkedPosition).getPatientId();
-			     String name = patientInfos.get(checkedPosition).getPatientName();
-			     String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
-			     LogUtils.i("OutBoxBingActivity", " name "+name);
+                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+                        String id = patientInfos.get(checkedPosition).getPatientId();
+                        String name = patientInfos.get(checkedPosition).getPatientName();
+                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
+                        LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_two)).getText().toString();
@@ -146,11 +149,11 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id,mTempPatientId,operationScheduleId, "firstBind", position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices));
                     }
                     dialog.dismiss();
                 } else {//后绑定
-                    if ((patientInfos!=null&&patientInfos.size()==0 )||patientInfos.get(checkedPosition) == null) {
+                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
@@ -159,12 +162,12 @@ public class DialogUtils {
 //                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
-			     String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-			     String id = patientInfos.get(checkedPosition).getPatientId();
-			     String name = patientInfos.get(checkedPosition).getPatientName();
+                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+                        String id = patientInfos.get(checkedPosition).getPatientId();
+                        String name = patientInfos.get(checkedPosition).getPatientName();
                         String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id,mTempPatientId, operationScheduleId, type, position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
@@ -185,12 +188,13 @@ public class DialogUtils {
         return builder;
     }
 
-   /**
-    * 腕带解绑
-    * @param context
-    * @param title
-    */
-    public static void showUnRegistDialog(Context context, String title,String date) {
+    /**
+     * 腕带解绑
+     *
+     * @param context
+     * @param title
+     */
+    public static void showUnRegistDialog(Context context, String title, String date) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
@@ -299,15 +303,17 @@ public class DialogUtils {
 
     /**
      * 盘亏原因
+     *
      * @param context
      */
     public static void showLossDialog(
-          Context context,List<String> strings) {
-        LossScuseDialog.Builder builder = new LossScuseDialog.Builder(context, strings );
+            Context context, List<String> strings) {
+        LossScuseDialog.Builder builder = new LossScuseDialog.Builder(context, strings);
         builder.setTitle("请选择盘亏原因");
 
         builder.create().show();
     }
+
     public static void showTwoDialog(Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {
@@ -691,12 +697,13 @@ public class DialogUtils {
 
     /**
      * 选择关联患者弹窗
+     *
      * @param activity
      * @param context
      * @param patientInfos
      * @param onClickBackListener
      */
-    public static  RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
+    public static RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
         RvDialog2.Builder builder = new RvDialog2.Builder(activity, context, patientInfos);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -776,9 +783,12 @@ public class DialogUtils {
     /**
      * 医嘱领用-确认-查看请领单
      */
-    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.TransReceiveOrderDetailVosBean> list) {
+    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.TransReceiveOrderDetailVosBean> list, OrderSheetBean.RowsBean prePageDate) {
         LookUpDetailedListDialog.Builder builder = new LookUpDetailedListDialog.Builder(context);
         builder.setDate(list);
+        builder.setCstNumber(prePageDate.cstNumber);
+        builder.setCstType(prePageDate.cstType);
+        builder.setPatientName(prePageDate.getPatientName());
         builder.setLeftTopViewShow(isShowLeftTopView);
         builder.setRightListener(new DialogInterface.OnClickListener() {
             @Override

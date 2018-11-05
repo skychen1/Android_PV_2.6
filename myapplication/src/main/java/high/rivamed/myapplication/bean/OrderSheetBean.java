@@ -82,6 +82,8 @@ public class OrderSheetBean implements Serializable {
         private String operationRoomNo;
         private String operationRoomName;
         private String createTime;
+        public String cstType;
+        public String cstNumber;
 
         public String getId() {
             return id;

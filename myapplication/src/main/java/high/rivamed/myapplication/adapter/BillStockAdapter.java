@@ -68,7 +68,7 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
 
     @Override
     protected void convert(final BaseViewHolder helper, BillStockResultBean.TransReceiveOrderDetailVosBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
+        if (item.getReceivedStatus().equals("已领取")) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
@@ -79,11 +79,11 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getCounts());
-        mSeven_four.setText(item.getThingName());
+        mSeven_four.setText(item.getDeviceName());
         mSeven_five.setText(item.getPatientName());
         mSeven_six.setText(item.getReceivedStatus());
         mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
-        mSeven_seven.setText(item.OpName);
+        mSeven_seven.setText("打开柜门");
         if (item.getReceivedStatus().equals("已领取")) {
             mSeven_seven.setText("");
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -92,6 +92,15 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
             mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+        }else{
+            mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
+            mSeven_seven.setText("打开柜门");
         }
     }
 

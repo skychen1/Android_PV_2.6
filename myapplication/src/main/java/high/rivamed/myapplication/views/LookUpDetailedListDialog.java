@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,10 @@ public class LookUpDetailedListDialog extends Dialog {
         private LinearLayout mListTag;
         private View mHeadView;
 
+        private String patientName="";
+        private String cstType="";
+        private String cstNumber="";
+
 
         private SmartRefreshLayout mSmartRefreshLayout;
         private MaterialHeader mMaterialHeader;
@@ -102,6 +107,18 @@ public class LookUpDetailedListDialog extends Dialog {
             this.mRightBtn = listener;
             return this;
         }
+        public Builder setPatientName(String name) {
+            this.patientName = name;
+            return this;
+        }
+        public Builder setCstType(String type) {
+            this.cstType = type;
+            return this;
+        }
+        public Builder setCstNumber(String number) {
+            this.cstNumber = number;
+            return this;
+        }
 
 
         public LookUpDetailedListDialog create() {
@@ -125,9 +142,9 @@ public class LookUpDetailedListDialog extends Dialog {
             mSmartRefreshLayout = (SmartRefreshLayout) layout.findViewById(R.id.refreshLayout);
             mMaterialHeader = (MaterialHeader) layout.findViewById(R.id.header);
 
-            mTvPatientName.setText("战三");
-            mTvCostType.setText("5");
-            mTvCostNumber.setText("3");
+            mTvPatientName.setText(patientName);
+            mTvCostType.setText(cstType);
+            mTvCostNumber.setText(cstNumber);
             if (mIsShowLeftTopView) {
                 mTvPatientName.setVisibility(View.VISIBLE);
                 mTvPatientNameHint.setVisibility(View.VISIBLE);
@@ -160,9 +177,9 @@ public class LookUpDetailedListDialog extends Dialog {
             if (mDate.size() >= 8) {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y550);
             } else if (mDate.size() < 3) {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * mDate.size()/ 2;
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y180) * mDate.size() / 2;
             } else {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y100) * mDate.size() ;
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y100) * mDate.size();
             }
             mRecyclerView.setLayoutParams(lps);
             String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
