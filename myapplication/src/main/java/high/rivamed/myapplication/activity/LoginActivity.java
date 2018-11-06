@@ -200,9 +200,17 @@ public class LoginActivity extends SimpleActivity {
 
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
+//	   getAllCstDate();
 	}
 
    }
+//
+//   /**
+//    * 所有耗材数据的获取（用于本地）
+//    */
+//   private void getAllCstDate() {
+//
+//   }
 
    @Override
    public void onStart() {
