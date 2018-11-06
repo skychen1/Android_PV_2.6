@@ -70,11 +70,12 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
 
     @Override
     protected void convert(final BaseViewHolder helper, BillStockResultBean.TransReceiveOrderDetailVosBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+//        }
+        ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         findId(helper);
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());

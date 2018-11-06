@@ -269,6 +269,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
         mLyBingBtn.setText("查看医嘱清单");
+        mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_nor3);
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -381,6 +382,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
                 outFromConfirmRequestBean.getEpcs().clear();
+                mEPCMapDate.clear();
+                mTransReceiveOrderDetailVosAllList.clear();
                 OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
                 mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
                 mAllOutFormConfirmRequest = outFormConfirmResultBean;
@@ -452,7 +455,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
         }
+        mEPCMapDate.clear();
         mEPCMapDate.putAll(event.epcs);
+        mOutFromConfirmRequestBean.getEpcs().clear();
         for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
             mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
         }

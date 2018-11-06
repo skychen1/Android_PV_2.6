@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -70,11 +71,12 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResult
 
     @Override
     protected void convert(final BaseViewHolder helper, OutFormConfirmResultBean.TcstInventoryOrderVosBean item) {
-        if (!item.isIsContain()) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        if (!item.isIsContain()) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+//        }
+        ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         mSeven_one = ((TextView) helper.getView(R.id.seven_one));
         mSeven_two = ((TextView) helper.getView(R.id.seven_two));
         mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -89,8 +91,12 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResult
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getEpc());
         mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getExpirationTime());
-        mSeven_five.setText(item.getThingName());
+        if (!TextUtils.isEmpty(item.getExpirationTime()) && item.getExpirationTime().length() > 10) {
+            mSeven_four.setText(item.getExpirationTime().substring(0, 10));
+        } else {
+            mSeven_four.setText(item.getExpirationTime());
+        }
+        mSeven_five.setText(item.getDeviceName());
         initTermOfValidity(helper, item.getExpirationTime(), mSeven_four);
     }
 
@@ -117,10 +123,11 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResult
             textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
         } else {
             if (helper.getAdapterPosition() % 2 == 0) {
-                textview.setBackgroundResource(R.color.bg_color);
+                textview.setBackgroundResource(R.color.bg_f);
             } else {
                 textview.setBackgroundResource(R.color.bg_f);
             }
+            textview.setBackgroundResource(R.color.bg_f);
             textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
 

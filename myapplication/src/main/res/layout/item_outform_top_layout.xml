@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/x20"
-                    android:text="申请人："
+                    android:text="申领人："
                     android:textColor="@color/text_color_58"
                     android:textSize="@dimen/x26" />
 
@@ -89,9 +89,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/x20"
-                    android:text="患者："
+                    android:text="患    者："
                     android:textColor="@color/text_color_58"
-                    android:textSize="@dimen/textsize_15" />
+                    android:textSize="@dimen/x26" />
 
                 <TextView
                     android:id="@+id/tv_patient_name"

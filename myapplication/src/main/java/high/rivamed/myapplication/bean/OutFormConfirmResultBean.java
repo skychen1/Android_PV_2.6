@@ -246,6 +246,8 @@ public class OutFormConfirmResultBean implements Serializable {
          * thingName : 2号柜
          * thingCode : 40288293668bfb3601668bfdb3350000
          * isContain : false
+         * deviceName": 柜子
+         * deviceCode:4028829366e7fad30166e82a8f860008
          */
 
         private String cstName;
@@ -255,7 +257,25 @@ public class OutFormConfirmResultBean implements Serializable {
         private String expirationTime;
         private String thingName;
         private String thingCode;
+        private String deviceName;
+        private String deviceCode;
         private boolean isContain;
+
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
+        }
+
+        public String getDeviceCode() {
+            return deviceCode;
+        }
+
+        public void setDeviceCode(String deviceCode) {
+            this.deviceCode = deviceCode;
+        }
 
         public String getCstName() {
             return cstName;

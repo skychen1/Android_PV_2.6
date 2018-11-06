@@ -94,7 +94,7 @@ public class OutFormActivity extends BaseSimpleActivity {
         mAllOrderSheetList = new ArrayList<>();
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setText("识别耗材");
+        mBaseTabTvTitle.setText("术间请领单");
         initlistener();
         getTopOrderSheetDate(mPageNo, PAGE_SIZE);
     }
@@ -126,7 +126,6 @@ public class OutFormActivity extends BaseSimpleActivity {
                 mOutFormAdapter.selectedPosition = position;
                 mOutFormAdapter.notifyDataSetChanged();
                 mPagerAdapter.notifyDataSetChanged();
-                Log.e("xb", "position:" + mOutFormAdapter.selectedPosition);
             }
         });
         //横向滑动到最后自动加载更多

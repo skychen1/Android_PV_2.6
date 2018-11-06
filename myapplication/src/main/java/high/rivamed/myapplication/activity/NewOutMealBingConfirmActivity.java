@@ -305,6 +305,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 0 + "</big></font>"));
         mTimelyStartBtn.setVisibility(View.VISIBLE);
         mDownBtnOneLL.setVisibility(View.VISIBLE);
+        mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_nor3);
         String[] array;
         if (isShowPatient) {
             array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
@@ -727,6 +728,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
+        mEPCMapDate.clear();
+        mFindBillOrderBean.getCstInventoryVos().clear();
         mEPCMapDate.putAll(event.epcs);
         for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
             FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
