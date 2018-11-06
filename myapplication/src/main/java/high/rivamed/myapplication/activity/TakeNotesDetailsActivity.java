@@ -165,8 +165,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    }
 
    private void initDate() {
-	mTakeNumber.setText(
-		Html.fromHtml("耗材数量：<font color='#262626'><big>" + 10 + "</big>&emsp</font>"));
+
 	String[] array = mContext.getResources().getStringArray(R.array.six_takenotes_arrays);
 	titeleList = Arrays.asList(array);
 
@@ -196,6 +195,14 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
     * 设置数据
     */
    private void setAdapterDates() {
+      if (mDetailVos!=null){
+	   mTakeNumber.setText(
+		   Html.fromHtml("耗材数量：<font color='#262626'><big>" + mDetailVos.size() + "</big>&emsp</font>"));
+	}else {
+	   mTakeNumber.setText(
+		   Html.fromHtml("耗材数量：<font color='#262626'><big>" + 0 + "</big>&emsp</font>"));
+	}
+
       if (mNotesEpcAdapter==null){
 	   mNotesEpcAdapter = new TakeNotesEpcAdapter(mLayout, mDetailVos);
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
