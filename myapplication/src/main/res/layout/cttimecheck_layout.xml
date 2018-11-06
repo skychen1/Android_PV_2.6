@@ -13,7 +13,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:background="@color/bg"
-		android:layout_marginTop="@dimen/x20"
+		android:layout_marginTop="@dimen/y30"
 		android:layout_marginLeft="@dimen/x30"
 		android:orientation="vertical"
 		android:visibility="gone">
@@ -22,11 +22,13 @@
 			android:layout_height="wrap_content"
 			android:text="耗材效期监控："
 			android:textSize="@dimen/textsize_18"
+			android:drawableLeft="@drawable/line_top"
+			android:drawablePadding="@dimen/x15"
 			android:textColor="@color/text_color_3"
 			android:textStyle="bold"/>
 		<android.support.v7.widget.RecyclerView
 			android:id="@+id/stock_left_rv"
-			android:layout_marginTop="@dimen/x10"
+			android:layout_marginTop="@dimen/y15"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:overScrollMode="never"
@@ -36,7 +38,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="耗材库存预警："
-			android:layout_marginTop="@dimen/x20"
+			android:drawableLeft="@drawable/line_top"
+			android:drawablePadding="@dimen/x15"
+			android:layout_marginTop="@dimen/y20"
 			android:textSize="@dimen/textsize_18"
 			android:textColor="@color/text_color_3"
 			android:textStyle="bold"/>
