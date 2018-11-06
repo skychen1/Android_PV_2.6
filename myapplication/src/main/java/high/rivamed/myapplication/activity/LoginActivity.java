@@ -200,17 +200,22 @@ public class LoginActivity extends SimpleActivity {
 
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
-//	   getAllCstDate();
+	   getAllCstDate();
 	}
 
    }
-//
-//   /**
-//    * 所有耗材数据的获取（用于本地）
-//    */
-//   private void getAllCstDate() {
-//
-//   }
+
+   /**
+    * 所有耗材数据的获取（用于本地）
+    */
+   private void getAllCstDate() {
+	NetRequest.getInstance().getAllCstDate(this,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+	      LogUtils.i(TAG,"getAllCstDate    "+result);
+	   }
+	});
+   }
 
    @Override
    public void onStart() {

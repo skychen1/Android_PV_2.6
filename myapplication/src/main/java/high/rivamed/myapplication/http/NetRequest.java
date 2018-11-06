@@ -626,10 +626,10 @@ public class NetRequest {
     /**
      * 获取设备中所有的耗材
      */
-    public void getAllCstDate(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void getAllCstDate(Object tag,  NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_OPERATETCSTINVENTORY).tag(tag)
               .params("thingCode", sThingCode)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+              .execute(new MyCallBack(tag,  netResult, false));
     }
 
     private class MyCallBack extends StringCallback {
