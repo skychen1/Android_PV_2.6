@@ -17,9 +17,17 @@ package org.androidpn.client;
 
 import org.jivesoftware.smack.ConnectionListener;
 
+import android.content.Intent;
 import android.util.Log;
 
-/** 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.androidpn.client.AppBroadcastReceiverManager.ACTION_NOTIFICATION_NETSTATE;
+import static org.androidpn.client.AppBroadcastReceiverManager.DATE_NETLINKED;
+
+/**
  * A listener class for monitoring connection closing and reconnection events.
  *
  * @author Sehwan Noh (devnoh@gmail.com)
@@ -58,11 +66,16 @@ public class PersistentConnectionListener implements ConnectionListener {
     @Override
     public void reconnectionFailed(Exception e) {
         Log.d(LOGTAG, "reconnectionFailed()...");
+        Intent myIntent = new Intent(ACTION_NOTIFICATION_NETSTATE);
+        myIntent.putExtra(DATE_NETLINKED,false);
+        xmppManager.getContext().sendBroadcast(myIntent);
     }
 
     @Override
     public void reconnectionSuccessful() {
         Log.d(LOGTAG, "reconnectionSuccessful()...");
+        Intent myIntent = new Intent(ACTION_NOTIFICATION_NETSTATE);
+        myIntent.putExtra(DATE_NETLINKED,true);
+        xmppManager.getContext().sendBroadcast(myIntent);
     }
-
 }

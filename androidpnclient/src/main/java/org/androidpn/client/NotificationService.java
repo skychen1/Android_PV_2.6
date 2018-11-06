@@ -38,9 +38,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Service that continues to run in background and respond to the push 
+ * Service that continues to run in background and respond to the push
  * notification events from the server. This should be registered as service
- * in AndroidManifest.xml. 
+ * in AndroidManifest.xml.
  *
  * @author Sehwan Noh (devnoh@gmail.com)
  */
@@ -82,6 +82,7 @@ public class NotificationService extends Service {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
+        AppBroadcastReceiverManager.registerNetLinkReceiver(this.getApplication());
     }
 
     @SuppressLint("NewApi")
@@ -166,6 +167,7 @@ public class NotificationService extends Service {
         intent.setPackage(context.getPackageName());//这里你需要设置你应用的包名
         return intent;
     }
+
     public static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
         // Retrieve all services that can match the given intent
         PackageManager pm = context.getPackageManager();
@@ -190,6 +192,7 @@ public class NotificationService extends Service {
 
         return explicitIntent;
     }
+
     public ExecutorService getExecutorService() {
         return executorService;
     }
@@ -274,6 +277,7 @@ public class NotificationService extends Service {
         Log.d(LOGTAG, "stop()...");
         unregisterNotificationReceiver();
         unregisterConnectivityReceiver();
+        AppBroadcastReceiverManager.unregisterNetLinkReceiver(this.getApplication());
         xmppManager.disconnect();
         executorService.shutdown();
     }
