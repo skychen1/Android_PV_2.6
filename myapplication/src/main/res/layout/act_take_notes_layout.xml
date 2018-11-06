@@ -35,16 +35,10 @@
 
 
 			<RadioButton
-				android:id="@+id/take_left_all"
-				style="@style/runwate_btn_style"
-				android:text="全部"/>
-
-
-			<RadioButton
 				android:id="@+id/take_left_ly"
 				style="@style/runwate_btn_style"
 				android:checked="true"
-				android:text="领用"/>
+				android:text="最终领用"/>
 
 			<RadioButton
 				android:id="@+id/take_left_tu"

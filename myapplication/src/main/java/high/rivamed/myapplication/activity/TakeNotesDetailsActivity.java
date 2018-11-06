@@ -17,6 +17,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,8 +28,11 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.TakeNotesEpcAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.TakeNotesDetailsBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -50,8 +57,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private static final String TAG = "TakeNotesDetailsActivity";
    @BindView(R.id.tag)
    TextView           mTag;
-   @BindView(R.id.take_left_all)
-   RadioButton        mTakeLeftAll;
+
    @BindView(R.id.take_left_ly)
    RadioButton        mTakeLeftLy;
    @BindView(R.id.take_left_tu)
@@ -72,6 +78,45 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private View mHeadView;
    private int  mLayout;
    private TakeNotesEpcAdapter mNotesEpcAdapter;
+   private String mPatientId;
+   private int mStatus;
+   private List<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean> mDetailVos =new ArrayList<>();
+
+   /**
+    * 接收id和status
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   public void onPidEvent(Event.EventPatientId event) {
+	mPatientId = event.patientId;
+	mStatus = event.status;
+
+   }
+
+   /**
+    * 获取数据
+    * @param patientId
+    * @param status
+    */
+   private void loadDate(String patientId, int status) {
+	NetRequest.getInstance().getFindEpcDetails(patientId, status, this, new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		mDetailVos.clear();
+		TakeNotesDetailsBean takeNotesDetailsBean = mGson.fromJson(result, TakeNotesDetailsBean.class);
+		List<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean> detailVos = takeNotesDetailsBean.getTTransInPatientInfoUseDetailVos();
+		mDetailVos.addAll(detailVos);
+		setAdapterDates();
+	   }
+
+	   @Override
+	   public void onError(String result) {
+
+		setAdapterDates();
+	   }
+	});
+   }
 
    @Override
    protected int getContentLayoutId() {
@@ -80,6 +125,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	mStatus=3;
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材明细");
@@ -97,6 +143,25 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 		   .into(mBaseTabIconRight);
 	}
 	initDate();
+	initListener();
+   }
+
+   private void initListener() {
+	mTakeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+	   @Override
+	   public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+		   case R.id.take_left_ly://最终领用
+			mStatus=3;
+			loadDate(mPatientId,mStatus);
+			break;
+		   case R.id.take_left_tu://退回
+			mStatus=7;
+			loadDate(mPatientId,mStatus);
+			break;
+		}
+	   }
+	});
    }
 
    private void initDate() {
@@ -115,27 +180,36 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	mHeadView.setBackgroundResource(R.color.bg_green);
+	mLinearLayout.addView(mHeadView);
+	loadDate(mPatientId,mStatus);
 
-	NetRequest.getInstance().getFindEpcDetails(this, new BaseResult(){
+	mBaseTabBack.setOnClickListener(new View.OnClickListener() {
 	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result   " + result);
-
-
+	   public void onClick(View v) {
+		EventBusUtils.postSticky(new Event.EventFrag("START5"));
+		finish();
 	   }
 	});
+   }
 
-	mNotesEpcAdapter = new TakeNotesEpcAdapter(mLayout, null);
-	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	mRefreshLayout.setEnableAutoLoadMore(false);
+   /**
+    * 设置数据
+    */
+   private void setAdapterDates() {
+      if (mNotesEpcAdapter==null){
+	   mNotesEpcAdapter = new TakeNotesEpcAdapter(mLayout, mDetailVos);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	   mRefreshLayout.setEnableAutoLoadMore(false);
+	   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	   mRecyclerview.setAdapter(mNotesEpcAdapter);
+	   View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
+	   mNotesEpcAdapter.setEmptyView(inflate);
+	}else {
+         mNotesEpcAdapter.notifyDataSetChanged();
+	}
 
-	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-	mLinearLayout.addView(mHeadView);
-	mRecyclerview.setAdapter(mNotesEpcAdapter);
-	View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
-	mNotesEpcAdapter.setEmptyView(inflate);
    }
 
 

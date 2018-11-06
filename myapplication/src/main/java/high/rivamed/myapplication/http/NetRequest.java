@@ -524,9 +524,10 @@ public class NetRequest {
     /**
      * 使用记录详情
      */
-    public void getFindEpcDetails(Object tag, NetResult netResult) {
+    public void getFindEpcDetails(String patientId, int status,Object tag, NetResult netResult) {
         OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_EPC_DETAILS).tag(tag)
-              .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
+              .params("patientId", patientId)
+              .params("status", status)
               .execute(new MyCallBack(tag, netResult, false));
     }
 

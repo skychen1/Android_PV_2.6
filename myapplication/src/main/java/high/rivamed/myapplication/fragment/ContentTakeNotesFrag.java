@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -23,6 +24,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.TakeNotesBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 
@@ -74,7 +77,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    private int PAGE = 1;
    private int SIZE = 20;
    private String mTrim;
-   private List<TakeNotesBean.RowsBean> mRows;
+   private List<TakeNotesBean.RowsBean> mRows=new ArrayList<>();
 
    public static ContentTakeNotesFrag newInstance() {
 	Bundle args = new Bundle();
@@ -90,6 +93,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
+      LogUtils.i(TAG,event.type);
 	if (event.type.equals("START5")) {
 	   initData();
 	}
@@ -98,7 +102,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	initData();
-
 	initListener();
    }
 
@@ -139,12 +142,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		titeleList.get(6));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
-	mHeadView.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-		mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
-	   }
-	});
 
 	loadDate("");
 
@@ -199,24 +196,27 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
 		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
 		mRows.addAll(rows);
-		//		setDate();
 		mNotesAdapter.notifyDataSetChanged();
 
 	   }
 	});
    }
 
+   /**
+    * 加载数据
+    * @param string
+    */
    private void loadDate(String string) {
 
 	NetRequest.getInstance().getFindPatientDate(string,PAGE,SIZE,_mActivity,new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG,"result   "+result);
+		mRows.clear();
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
-		mRows = takeNotesBean.getRows();
+		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
+		mRows.addAll(rows);
 		setDate();
-		mNotesAdapter.notifyDataSetChanged();
-
 	   }
 	});
 
@@ -238,7 +238,16 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		   .inflate(R.layout.recy_null, null);
 	   mNotesAdapter.setEmptyView(inflate);
 	}
-
+	mNotesAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		String patientId = mRows.get(position).getPatientId();
+		int status = 3;
+		EventBusUtils.postSticky(new Event.EventPatientId(patientId,status));
+		mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
+	   }
+	});
    }
+
 
 }
