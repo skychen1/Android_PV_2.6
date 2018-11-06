@@ -85,8 +85,8 @@
         <item name="android:lineSpacingExtra">@dimen/x10</item>
         <item name="android:paddingRight">@dimen/x10</item>
         <item name="android:paddingLeft">@dimen/x10</item>
-        <item name="android:paddingTop">@dimen/x20</item>
-        <item name="android:paddingBottom">@dimen/x20</item>
+        <item name="android:paddingTop">@dimen/y20</item>
+        <item name="android:paddingBottom">@dimen/y20</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text_color_3</item>
     </style>
@@ -97,8 +97,8 @@
         <item name="android:maxLines">3</item>
         <item name="android:paddingRight">@dimen/x10</item>
         <item name="android:paddingLeft">@dimen/x10</item>
-        <item name="android:paddingTop">@dimen/x10</item>
-        <item name="android:paddingBottom">@dimen/x10</item>
+        <item name="android:paddingTop">@dimen/y10</item>
+        <item name="android:paddingBottom">@dimen/y10</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text_color_3</item>
     </style>

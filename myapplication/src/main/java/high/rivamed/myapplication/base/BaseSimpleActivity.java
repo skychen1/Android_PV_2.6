@@ -76,6 +76,12 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    public ViewStub           mStub;
    public SettingPopupWindow mPopupWindow;
    public ImageView      mBaseTabBtnConn;
+   @BindView(R.id.msg_rdbtn_left)
+   public RadioButton mMsgRdbtnLeft;
+   @BindView(R.id.msg_rdbtn_right)
+   public RadioButton mMsgRdbtnRight;
+   @BindView(R.id.rg_group2)
+   public RadioGroup mRgGroup2;
    private boolean mTitleConn;
 
    /**
