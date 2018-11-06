@@ -25,6 +25,7 @@
 	<color name="color_drak_green">#1C6573</color>
 	<!--用于突出按钮文字激活状态的控件-->
 	<color name="color_g">#01B362</color>
+	<color name="color_gr">#00A98D</color>
 	<color name="color_green">#007FA9</color>
 	<color name="bg_green">#1C6573</color>
 	<color name="bg_greens">#0383b2</color>
@@ -41,7 +42,7 @@
 	<color name="color_text_line">#7C8188</color>
 	<color name="color_navy_blue">#00354B</color>
 
-	<color name="card_stock_text">#F94641</color>
+	<color name="card_stock_text">#FF0000</color>
 	<!--过期耗材信息提示-->
 	<color name="color_overdue_prompt">#F45955</color>
 	<!--近效期耗材<=100天信息提示-->

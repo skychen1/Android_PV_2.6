@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/x25"
-    android:background="@color/bg_color"
+    android:background="@color/bg"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
@@ -13,7 +13,7 @@
         android:layout_height="@dimen/x230"
         android:clickable="false"
         app:cardBackgroundColor="@color/bg_color"
-        app:cardElevation="@dimen/x10"
+        app:cardElevation="0dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">
 

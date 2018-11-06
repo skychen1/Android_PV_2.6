@@ -2,10 +2,12 @@ package high.rivamed.myapplication.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -163,6 +165,16 @@ public class ReciveBillFrag extends SimpleFragment {
         return fragment;
     }
 
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (mPublicAdapter == null && mPrePageDate != null) {
+            getStockByOrderId(mPrePageDate.getId());
+        }
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.public_timely_layout;
@@ -281,7 +293,7 @@ public class ReciveBillFrag extends SimpleFragment {
     public void openAllDoor() {
 
 
-        if (mPublicAdapter!=null) {
+        if (mPublicAdapter != null) {
             if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
                 ToastUtils.showShort("全部开柜");
                 mTbaseDevices.clear();
@@ -303,7 +315,7 @@ public class ReciveBillFrag extends SimpleFragment {
             } else {
                 ToastUtils.showShort("无耗材数据");
             }
-        }else{
+        } else {
             ToastUtils.showShort("空");
         }
 
@@ -338,5 +350,9 @@ public class ReciveBillFrag extends SimpleFragment {
     public void onPause() {
         super.onPause();
         mIsCanSkipToSurePage = false;
+    }
+
+    public OrderSheetBean.RowsBean getTypeAndNumber() {
+        return mPrePageDate;
     }
 }
