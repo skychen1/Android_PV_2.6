@@ -3,7 +3,7 @@
 			  android:id="@+id/timely_rl"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:background="@color/bg_color"
+			  android:background="@color/bg"
 			  android:orientation="vertical"
 			  android:paddingTop="@dimen/x30">
 

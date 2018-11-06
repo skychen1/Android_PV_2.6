@@ -74,6 +74,15 @@ public class OutFormActivity extends BaseSimpleActivity {
      * 当前所显示页面
      */
     private ReciveBillFrag mCurrentFragment;
+    /**
+     * 医嘱单页码
+     */
+    private int mPageNo = 1;
+    private final int PAGE_SIZE = 10;
+    /**
+     * 总医嘱单数
+     */
+    private int TOTAL_SIZE;
 
     @Override
     protected int getContentLayoutId() {
@@ -87,7 +96,7 @@ public class OutFormActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("识别耗材");
         initlistener();
-        getTopOrderSheetDate(1, 10);
+        getTopOrderSheetDate(mPageNo, PAGE_SIZE);
     }
 
     private void initData() {
@@ -116,6 +125,7 @@ public class OutFormActivity extends BaseSimpleActivity {
                 mCttimecheckViewpager.setCurrentItem(position);
                 mOutFormAdapter.selectedPosition = position;
                 mOutFormAdapter.notifyDataSetChanged();
+                mPagerAdapter.notifyDataSetChanged();
                 Log.e("xb", "position:" + mOutFormAdapter.selectedPosition);
             }
         });
@@ -123,7 +133,9 @@ public class OutFormActivity extends BaseSimpleActivity {
         mOutFormRv.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
-
+                if (mAllOrderSheetList.size() < TOTAL_SIZE) {
+                    getTopOrderSheetDate(mPageNo, PAGE_SIZE);
+                }
             }
         });
     }
@@ -135,7 +147,16 @@ public class OutFormActivity extends BaseSimpleActivity {
                 LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);
                 OrderSheetBean orderSheetBean = mGson.fromJson(result, OrderSheetBean.class);
                 mAllOrderSheetList.addAll(orderSheetBean.getRows());
-                initData();
+                if (mOutFormAdapter == null) {
+                    initData();
+                } else {
+                    mOutFormAdapter.notifyDataSetChanged();
+                    mPagerAdapter.notifyDataSetChanged();
+                }
+                TOTAL_SIZE = orderSheetBean.getTotal();
+                if (mAllOrderSheetList.size() < orderSheetBean.getTotal()) {
+                    mPageNo++;
+                }
             }
 
             @Override
@@ -179,6 +200,9 @@ public class OutFormActivity extends BaseSimpleActivity {
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             mCurrentFragment = (ReciveBillFrag) object;
             super.setPrimaryItem(container, position, object);
+            if (mCurrentFragment.getTypeAndNumber() != null) {
+                setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
+            }
         }
 
         @Override
