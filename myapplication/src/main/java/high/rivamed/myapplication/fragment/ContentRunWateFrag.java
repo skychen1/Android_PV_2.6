@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
+import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -56,230 +57,232 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
 public class ContentRunWateFrag extends BaseSimpleFragment {
 
-   @BindView(R.id.home_runwate_viewpager)
-   ViewPager        mHomeRunWateViewpager;
-   @BindView(R.id.home_runwate_rg)
-   SlidingTabLayout mHomeRunwateRg;
+    @BindView(R.id.home_runwate_viewpager)
+    ViewPager mHomeRunWateViewpager;
+    @BindView(R.id.home_runwate_rg)
+    SlidingTabLayout mHomeRunwateRg;
 
-   public static EditText mSearchEt;
-   @BindView(R.id.search_iv_delete)
-   ImageView   mSearchIvDelete;
-   @BindView(R.id.search_time_all)
-   RadioButton mSearchTimeAll;
-   @BindView(R.id.search_time_day)
-   RadioButton mSearchTimeDay;
-   @BindView(R.id.search_time_week)
-   RadioButton mSearchTimeWeek;
-   @BindView(R.id.search_time_moon)
-   RadioButton mSearchTimeMoon;
-   @BindView(R.id.search_time_rg)
-   RadioGroup  mSearchTimeRg;
-   public static TextView mSearchTimeStart;
-   public static TextView mSearchTimeEnd;
-   @BindView(R.id.search_type_all)
-   RadioButton mSearchTypeAll;
-   @BindView(R.id.search_type_hous)
-   RadioButton mSearchTypeHous;
-   @BindView(R.id.search_type_use)
-   RadioButton mSearchTypeUse;
-   @BindView(R.id.search_type_info)
-   RadioButton mSearchTypeInfo;
-   @BindView(R.id.search_type_out)
-   RadioButton mSearchTypeOut;
-   @BindView(R.id.search_type_return)
-   RadioButton mSearchTypeReturn;
-   @BindView(R.id.search_type_return_goods)
-   RadioButton mSearchTypeReturnGoods;
+    public static EditText mSearchEt;
+    @BindView(R.id.search_iv_delete)
+    ImageView mSearchIvDelete;
+    @BindView(R.id.search_time_all)
+    RadioButton mSearchTimeAll;
+    @BindView(R.id.search_time_day)
+    RadioButton mSearchTimeDay;
+    @BindView(R.id.search_time_week)
+    RadioButton mSearchTimeWeek;
+    @BindView(R.id.search_time_moon)
+    RadioButton mSearchTimeMoon;
+    @BindView(R.id.search_time_rg)
+    RadioGroup mSearchTimeRg;
+    public static TextView mSearchTimeStart;
+    public static TextView mSearchTimeEnd;
+    @BindView(R.id.search_type_all)
+    RadioButton mSearchTypeAll;
+    @BindView(R.id.search_type_hous)
+    RadioButton mSearchTypeHous;
+    @BindView(R.id.search_type_use)
+    RadioButton mSearchTypeUse;
+    @BindView(R.id.search_type_info)
+    RadioButton mSearchTypeInfo;
+    @BindView(R.id.search_type_out)
+    RadioButton mSearchTypeOut;
+    @BindView(R.id.search_type_return)
+    RadioButton mSearchTypeReturn;
+    @BindView(R.id.search_type_return_goods)
+    RadioButton mSearchTypeReturnGoods;
 
-   public static RadioGroup mSearchTypeRg;
-   @BindView(R.id.search_type_db)
-   RadioButton mSearchTypeDb;
-   @BindView(R.id.search_type_thzc)
-   RadioButton mSearchTypeThzc;
+    public static RadioGroup mSearchTypeRg;
+    @BindView(R.id.search_type_db)
+    RadioButton mSearchTypeDb;
+    @BindView(R.id.search_type_thzc)
+    RadioButton mSearchTypeThzc;
 
-   public RunWatePagerAdapter mPagerAdapter;
-   private       int TOTAL_SIZE = 26;
-   private final int PAGE_SIZE  = 20;
-   private       int mCount     = 0;
-   private LoadingDialog.Builder              mBuilder;
-   private String                             mStatus;
-   private String                             mTrim;
-   private String                             mStartTime;
-   private String                             mEndTime;
-   private List<RunWateBean.RowsBean>         mWateBeanRows;
-   private String                             mDeviceCode;
-   public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+    public RunWatePagerAdapter mPagerAdapter;
+    private int TOTAL_SIZE = 26;
+    private final int PAGE_SIZE = 20;
+    private int mCount = 0;
+    private LoadingDialog.Builder mBuilder;
+    private String mStatus;
+    private String mTrim;
+    private String mStartTime;
+    private String mEndTime;
+    private List<RunWateBean.RowsBean> mWateBeanRows;
+    private String mDeviceCode;
+    public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
 
-   public static ContentRunWateFrag newInstance() {
-	Bundle args = new Bundle();
-	ContentRunWateFrag fragment = new ContentRunWateFrag();
-	fragment.setArguments(args);
-	return fragment;
-   }
+    public static ContentRunWateFrag newInstance() {
+        Bundle args = new Bundle();
+        ContentRunWateFrag fragment = new ContentRunWateFrag();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-   @Override
-   protected int getContentLayoutId() {
-	return R.layout.ctrunwate_layout;
-   }
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.ctrunwate_layout;
+    }
 
-   @Override
-   public void initDataAndEvent(Bundle savedInstanceState) {
-//	mBuilder = DialogUtils.showLoading(mContext);
-	initData();
+    @Override
+    public void initDataAndEvent(Bundle savedInstanceState) {
+        //	mBuilder = DialogUtils.showLoading(mContext);
+        initData();
 
-   }
-   /**
-    * 重新加载数据
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onStartFrag(Event.EventFrag event) {
-	if (event.type.equals("START2")) {
-	   initData();
-	}
-   }
+    }
 
-   private void initData() {
-	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
-	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvTitle.setText("耗材流水");
-	mSearchEt = mContext.findViewById(R.id.search_et);
-	mSearchTypeRg = mContext.findViewById(R.id.search_type_rg);
-	mSearchTimeEnd = mContext.findViewById(R.id.search_time_end);
-	mSearchTimeStart = mContext.findViewById(R.id.search_time_start);
-	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-	}
-	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
-	}
-	loadTopBoxSize();
-   }
+    /**
+     * 重新加载数据
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onStartFrag(Event.EventFrag event) {
+        if (event.type.equals("START2")) {
+            initData();
+        }
+    }
 
-   private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext, mBuilder, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getTbaseDevices();
-		if (mTbaseDevices != null) {
-		   if (mTbaseDevices.size() > 1) {
-			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
-			devicesBean1.setDeviceName("全部");
-			devicesBean1.setDeviceCode("");
-			mTbaseDevices.add(0, devicesBean1);
-		   }
+    private void initData() {
+        mBaseTabBtnLeft.setVisibility(View.VISIBLE);
+        mBaseTabTvTitle.setVisibility(View.VISIBLE);
+        mBaseTabTvTitle.setText("耗材流水");
+        mSearchEt = mContext.findViewById(R.id.search_et);
+        mSearchTypeRg = mContext.findViewById(R.id.search_type_rg);
+        mSearchTimeEnd = mContext.findViewById(R.id.search_time_end);
+        mSearchTimeStart = mContext.findViewById(R.id.search_time_start);
+        if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
+            mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+        }
+        if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
+            mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
+        }
+        loadTopBoxSize();
+    }
 
-//		   mBuilder.mDialog.dismiss();
-		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
+    private void loadTopBoxSize() {
+        NetRequest.getInstance().loadBoxSize(mContext, mBuilder, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+                mTbaseDevices = boxSizeBean.getTbaseDevices();
+                if (mTbaseDevices != null) {
+                    if (mTbaseDevices.size() > 1) {
+                        BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+                        devicesBean1.setDeviceName("全部");
+                        devicesBean1.setDeviceCode("");
+                        mTbaseDevices.add(0, devicesBean1);
+                    }
 
-//		      fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
-			fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
-		   }
-		   mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
-		   mHomeRunWateViewpager.setAdapter(mPagerAdapter);
-		   mHomeRunWateViewpager.setCurrentItem(0);
-		   mHomeRunWateViewpager.setOffscreenPageLimit(6);
-		   mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
-		   mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
-		}
-	   }
+                    //		   mBuilder.mDialog.dismiss();
+                    ArrayList<Fragment> fragments = new ArrayList<>();
+                    for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
 
-	   @Override
-	   public void onError(String result) {
-//		mBuilder.mDialog.dismiss();
-	   }
-	});
-   }
+                        //		      fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
+                        fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
+                    }
+                    mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
+                    mHomeRunWateViewpager.setAdapter(mPagerAdapter);
+                    mHomeRunWateViewpager.setCurrentItem(0);
+                    mHomeRunWateViewpager.setOffscreenPageLimit(6);
+                    mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
+                    mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
+                }
+            }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg,R.id.base_tab_tv_outlogin,
-	   R.id.search_iv_delete, R.id.search_time_start, R.id.search_time_end})
-   public void onViewClicked(View view) {
-	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(mBaseTabIconRight);
-		popupClick();
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		break;
-	   case R.id.search_iv_delete:
-		break;
-	   case R.id.search_time_start:
-//		mStartTime = DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
-		break;
-	   case R.id.search_time_end:
-//		mEndTime = DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
-		break;
-	}
-   }
+            @Override
+            public void onError(String result) {
+                //		mBuilder.mDialog.dismiss();
+            }
+        });
+    }
 
-   private class RunWatePagerAdapter extends FragmentStatePagerAdapter {
+    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_tv_outlogin,
+            R.id.search_iv_delete, R.id.search_time_start, R.id.search_time_end})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.base_tab_icon_right:
+            case R.id.base_tab_tv_name:
+                mPopupWindow = new SettingPopupWindow(mContext);
+                mPopupWindow.showPopupWindow(mBaseTabIconRight);
+                popupClick();
+                break;
+            case R.id.base_tab_tv_outlogin:
+                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+                builder.setTwoMsg("您确认要退出登录吗?");
+                builder.setMsg("温馨提示");
+                builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setRight("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                        App.getInstance().removeALLActivity_();
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                break;
+            case R.id.base_tab_btn_msg:
+                mContext.startActivity(new Intent(mContext, MessageActivity.class));
+                break;
+            case R.id.search_iv_delete:
+                break;
+            case R.id.search_time_start:
+                //		mStartTime = DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
+                break;
+            case R.id.search_time_end:
+                //		mEndTime = DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
+                break;
+        }
+    }
 
-	private List<Fragment> mFragments;
+    private class RunWatePagerAdapter extends FragmentStatePagerAdapter {
 
-	public RunWatePagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
-	   super(fm);
-	   this.mFragments = Fragments;
-	}
+        private List<Fragment> mFragments;
 
-	@Override
-	public Fragment getItem(int position) {
+        public RunWatePagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
+            super(fm);
+            this.mFragments = Fragments;
+        }
 
-	   return mFragments.get(position);
+        @Override
+        public Fragment getItem(int position) {
 
-	}
+            return mFragments.get(position);
 
-	@Override
-	public CharSequence getPageTitle(int position) {
-	   return mTbaseDevices.get(position).getDeviceName();
-	}
+        }
 
-	@Override
-	public int getCount() {
-	   return mFragments.size();
-	}
-   }
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTbaseDevices.get(position).getDeviceName();
+        }
 
-   private class PageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+    }
 
-	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
-	}
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-	@Override
-	public void onPageSelected(int position) {
-	   //	   mSearchTimeRg.check(R.id.search_time_all);
-	   mSearchTypeRg.check(R.id.search_type_all);
-	}
+        }
 
-	@Override
-	public void onPageScrollStateChanged(int state) {
+        @Override
+        public void onPageSelected(int position) {
+            //	   mSearchTimeRg.check(R.id.search_time_all);
+            mSearchTypeRg.check(R.id.search_type_all);
+        }
 
-	}
-   }
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
 }

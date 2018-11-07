@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.RadioGroup;
 
 import java.util.ArrayList;
 
@@ -36,7 +35,7 @@ public class MessageActivity extends BaseSimpleActivity {
         mFragments.add(PendingTaskFrag.newInstance());
 //        mFragments.add(UnconfirmHaocaiFrag.newInstance());
         mMsgViewpager.setAdapter(new StockPagerAdapter(getSupportFragmentManager()));
-        mMsgViewpager.addOnPageChangeListener(new PageChangeListener());
+//        mMsgViewpager.addOnPageChangeListener(new PageChangeListener());
         initListener();
     }
 
@@ -54,19 +53,19 @@ public class MessageActivity extends BaseSimpleActivity {
     }
 
     private void initListener() {
-        mRgGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.msg_rdbtn_left:
-                        mMsgViewpager.setCurrentItem(0);
-                        break;
-                    case R.id.msg_rdbtn_right:
-                        mMsgViewpager.setCurrentItem(1);
-                        break;
-                }
-            }
-        });
+//        mRgGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch (checkedId) {
+//                    case R.id.msg_rdbtn_left:
+//                        mMsgViewpager.setCurrentItem(0);
+//                        break;
+//                    case R.id.msg_rdbtn_right:
+//                        mMsgViewpager.setCurrentItem(1);
+//                        break;
+//                }
+//            }
+//        });
     }
 
     /**
@@ -92,29 +91,29 @@ public class MessageActivity extends BaseSimpleActivity {
     /**
      * fragment监听
      */
-    private class PageChangeListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            switch (position) {
-                case 0:
-                    mRgGroup2.check(R.id.msg_rdbtn_left);
-                    break;
-                case 1:
-                    mRgGroup2.check(R.id.msg_rdbtn_right);
-                    break;
-
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
+//    private class PageChangeListener implements ViewPager.OnPageChangeListener {
+//
+//        @Override
+//        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//        }
+//
+//        @Override
+//        public void onPageSelected(int position) {
+//            switch (position) {
+//                case 0:
+//                    mRgGroup2.check(R.id.msg_rdbtn_left);
+//                    break;
+//                case 1:
+//                    mRgGroup2.check(R.id.msg_rdbtn_right);
+//                    break;
+//
+//            }
+//        }
+//
+//        @Override
+//        public void onPageScrollStateChanged(int state) {
+//
+//        }
+//    }
 }

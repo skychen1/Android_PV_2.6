@@ -15,17 +15,19 @@
  */
 package org.androidpn.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Future;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Handler;
+import android.util.Log;
 
+import org.androidpn.utils.SPUtils;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -35,11 +37,10 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.provider.ProviderManager;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Handler;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Future;
 
 /**
  * This class is to manage the XMPP connection between client and server.
@@ -341,7 +342,7 @@ public class XmppManager {
             if (!xmppManager.isRegistered()) {
 //                final String newUsername = newRandomUUID();
 //                final String newPassword = newRandomUUID();
-                final String newUsername = "19005";
+                final String newUsername = SPUtils.getString(context, "key_user_name");
                 final String newPassword = "xb";
 
                 Registration registration = new Registration();

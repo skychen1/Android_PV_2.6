@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import high.rivamed.myapplication.R;
@@ -51,7 +53,16 @@ public class PendingTaskAdapter
             @Override
             public void onClick(View view) {
                 if (item.getType().equals("1")) {
-                    mContext.startActivity(new Intent(mContext, OutFormActivity.class));
+                    String detail = item.getDetail();
+                    try {
+                        JSONObject jsonObject = new JSONObject(detail);
+                        String orderId = jsonObject.optString("orderId");
+                        Intent intent = new Intent(mContext, OutFormActivity.class);
+                        intent.putExtra("orderId",orderId);
+                        mContext.startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

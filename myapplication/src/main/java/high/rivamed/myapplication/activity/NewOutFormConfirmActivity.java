@@ -3,15 +3,12 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,24 +38,17 @@ import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.BingDialogOutAdapter;
 import high.rivamed.myapplication.adapter.OutFormConfirmAdapter;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.bean.BillStockResultBean;
-import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.FindBillOrderBean;
-import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
 import high.rivamed.myapplication.bean.OutFromConfirmRequestBean;
 import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -73,12 +63,9 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
-import static android.icu.lang.UCharacter.DecompositionType.VERTICAL;
-import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 
@@ -316,6 +303,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 builder.create().show();
                 break;
             case R.id.base_tab_btn_msg:
+                mContext.startActivity(new Intent(this, MessageActivity.class));
+
                 break;
             case R.id.base_tab_back:
                 finish();

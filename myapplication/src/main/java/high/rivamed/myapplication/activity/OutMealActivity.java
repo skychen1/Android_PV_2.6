@@ -275,6 +275,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                 builder.create().show();
                 break;
             case R.id.base_tab_btn_msg:
+                mContext.startActivity(new Intent(this, MessageActivity.class));
+
                 break;
             case R.id.base_tab_back:
                 finish();

@@ -17,4 +17,5 @@ android {
 
 dependencies {
     implementation files('lib/asmack.jar')
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }

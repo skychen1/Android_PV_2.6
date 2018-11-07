@@ -29,81 +29,83 @@ import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_MEAL_BING;
 
 public class OutMealBingConfirmActivity extends BaseTimelyActivity {
 
-   @Override
-   public int getCompanyType() {
-	super.my_id = ACT_TYPE_MEAL_BING;
-	return my_id;
-   }
+    @Override
+    public int getCompanyType() {
+        super.my_id = ACT_TYPE_MEAL_BING;
+        return my_id;
+    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn_right,
-	   R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right})
-   public void onViewClicked(View view) {
-	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-				break;
-			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-				break;
+    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+            R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn_right,
+            R.id.ly_bing_btn_right, R.id.timely_left, R.id.timely_right})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.base_tab_icon_right:
+            case R.id.base_tab_tv_name:
+                mPopupWindow = new SettingPopupWindow(mContext);
+                mPopupWindow.showPopupWindow(view);
+                mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        switch (position) {
+                            case 0:
+                                mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+                                break;
+                            case 1:
+                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+                                break;
 
-			}
-		   }
-		});
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		break;
-	   case R.id.base_tab_back:
-		finish();
-		break;
-	   case R.id.timely_start_btn_right:
-		break;
-	   case R.id.timely_left:
-		if (UIUtils.isFastDoubleClick()) {
-		   return;
-		} else {
-		   ToastUtils.showShort("timely_left");
-		}
-		break;
-	   case R.id.timely_right:
-		if (UIUtils.isFastDoubleClick()) {
-		   return;
-		} else {
-		   ToastUtils.showShort("timely_right");
-		}
-		break;
-	   case R.id.ly_bing_btn_right:
-		ToastUtils.showShort("绑定");
-		//		DialogUtils.showRvDialog(this, mContext);
-		break;
-	}
-   }
+                        }
+                    }
+                });
+                break;
+            case R.id.base_tab_tv_outlogin:
+                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+                builder.setTwoMsg("您确认要退出登录吗?");
+                builder.setMsg("温馨提示");
+                builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setRight("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                        App.getInstance().removeALLActivity_();
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                break;
+            case R.id.base_tab_btn_msg:
+                mContext.startActivity(new Intent(this, MessageActivity.class));
+
+                break;
+            case R.id.base_tab_back:
+                finish();
+                break;
+            case R.id.timely_start_btn_right:
+                break;
+            case R.id.timely_left:
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    ToastUtils.showShort("timely_left");
+                }
+                break;
+            case R.id.timely_right:
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    ToastUtils.showShort("timely_right");
+                }
+                break;
+            case R.id.ly_bing_btn_right:
+                ToastUtils.showShort("绑定");
+                //		DialogUtils.showRvDialog(this, mContext);
+                break;
+        }
+    }
 }
