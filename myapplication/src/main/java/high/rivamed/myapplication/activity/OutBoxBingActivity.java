@@ -47,6 +47,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -373,6 +374,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();

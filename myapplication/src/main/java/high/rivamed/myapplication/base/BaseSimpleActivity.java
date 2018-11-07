@@ -28,6 +28,7 @@ import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -180,6 +181,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                         dialog.dismiss();
                         startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();

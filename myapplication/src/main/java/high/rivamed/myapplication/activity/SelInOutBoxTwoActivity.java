@@ -38,6 +38,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -246,6 +247,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();
@@ -455,6 +457,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "result  " + result);
                 ToastUtils.showShort("操作成功");
+                MusicPlayer.playSoundByOperation(mTCstInventoryDto.getOperation());//播放操作成功提示音
                 if (mIntentType == 2) {
                     startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                     App.getInstance().removeALLActivity_();

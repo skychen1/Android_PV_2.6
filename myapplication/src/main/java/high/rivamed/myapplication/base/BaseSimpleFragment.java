@@ -28,6 +28,7 @@ import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -211,6 +212,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();

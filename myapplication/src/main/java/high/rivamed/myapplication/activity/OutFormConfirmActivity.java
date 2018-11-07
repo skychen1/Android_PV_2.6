@@ -9,6 +9,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -73,6 +74,7 @@ public class OutFormConfirmActivity extends BaseTimelyActivity {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();

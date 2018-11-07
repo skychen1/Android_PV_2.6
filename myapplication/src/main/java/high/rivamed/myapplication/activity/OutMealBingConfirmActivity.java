@@ -8,6 +8,7 @@ import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseTimelyActivity;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -75,6 +76,7 @@ public class OutMealBingConfirmActivity extends BaseTimelyActivity {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }
                 });
                 builder.create().show();

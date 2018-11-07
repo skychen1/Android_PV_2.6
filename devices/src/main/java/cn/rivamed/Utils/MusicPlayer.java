@@ -1,4 +1,4 @@
-package high.rivamed.myapplication.utils;
+package cn.rivamed.Utils;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -8,8 +8,8 @@ import android.os.Handler;
 import java.util.Map;
 import java.util.TreeMap;
 
-import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
+import cn.rivamed.devices.R;
+
 
 public class MusicPlayer {
 	private Context mContext;
@@ -37,16 +37,16 @@ public class MusicPlayer {
 		mContext = context;
 		sSpMap = new TreeMap<Integer, Integer>();
 		mSp = new SoundPool(2, AudioManager.STREAM_MUSIC, 100);
-		sSpMap.put(Type.LOGIN_SUC, mSp.load(mContext, R.raw.login_suc, 1));
-		sSpMap.put(Type.LOGOUT_SUC, mSp.load(mContext, R.raw.logout_suc, 1));
-		sSpMap.put(Type.NOT_NORMAL, mSp.load(mContext, R.raw.not_normal, 1));
-		sSpMap.put(Type.IN_BOX_SUC, mSp.load(mContext, R.raw.in_box_suc, 1));
-		sSpMap.put(Type.MOVE_IN_SUC, mSp.load(mContext, R.raw.move_in_suc, 1));
-		sSpMap.put(Type.RETURN_SUC, mSp.load(mContext, R.raw.return_suc, 1));
-		sSpMap.put(Type.USE_SUC, mSp.load(mContext, R.raw.use_suc, 1));
-		sSpMap.put(Type.MOVE_OUT_SUC, mSp.load(mContext, R.raw.move_out_suc, 1));
-		sSpMap.put(Type.RETURN_GOOD_SUC, mSp.load(mContext, R.raw.return_good_suc, 1));
-		sSpMap.put(Type.UNCONFIRM_SUC, mSp.load(mContext, R.raw.unconfirm_suc, 1));
+//		sSpMap.put(Type.LOGIN_SUC, mSp.load(mContext, R.raw.login_suc, 1));
+//		sSpMap.put(Type.LOGOUT_SUC, mSp.load(mContext, R.raw.logout_suc, 1));
+//		sSpMap.put(Type.NOT_NORMAL, mSp.load(mContext, R.raw.not_normal, 1));
+//		sSpMap.put(Type.IN_BOX_SUC, mSp.load(mContext, R.raw.in_box_suc, 1));
+//		sSpMap.put(Type.MOVE_IN_SUC, mSp.load(mContext, R.raw.move_in_suc, 1));
+//		sSpMap.put(Type.RETURN_SUC, mSp.load(mContext, R.raw.return_suc, 1));
+//		sSpMap.put(Type.USE_SUC, mSp.load(mContext, R.raw.use_suc, 1));
+//		sSpMap.put(Type.MOVE_OUT_SUC, mSp.load(mContext, R.raw.move_out_suc, 1));
+//		sSpMap.put(Type.RETURN_GOOD_SUC, mSp.load(mContext, R.raw.return_good_suc, 1));
+//		sSpMap.put(Type.UNCONFIRM_SUC, mSp.load(mContext, R.raw.unconfirm_suc, 1));
 		sSpMap.put(Type.DOOR_OPEN, mSp.load(mContext, R.raw.door_open, 1));
 		sSpMap.put(Type.DOOR_CLOSED, mSp.load(mContext, R.raw.door_closed, 1));
 		// sSpMap.put(Type.MUSIC_FOCUSED, mSp.load(mContext, R.raw.focused, 1))
@@ -54,42 +54,13 @@ public class MusicPlayer {
 	}
 
 	static {
-		sInstance = new MusicPlayer(App.getInstance().getApplicationContext());
+		sInstance = new MusicPlayer(DeviceApp.getInstance().getApplicationContext());
 	}
 
 	public static MusicPlayer getInstance() {
 			return sInstance;
 	}
 
-	/**
-	 * 根据操作类型播放操作成功提示音
-	 * @param operation
-	 */
-	public static void playSoundByOperation(int operation) {
-		switch (operation) {
-			case 2://入库
-				MusicPlayer.getInstance().play(MusicPlayer.Type.IN_BOX_SUC);
-				break;
-			case 10://移入
-				MusicPlayer.getInstance().play(MusicPlayer.Type.MOVE_IN_SUC);
-				break;
-			case 7://退回
-				MusicPlayer.getInstance().play(MusicPlayer.Type.RETURN_SUC);
-				break;
-			case 3://领用
-				MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
-				break;
-			case 9://移出
-				MusicPlayer.getInstance().play(MusicPlayer.Type.MOVE_OUT_SUC);
-				break;
-			case 8://退货
-				MusicPlayer.getInstance().play(MusicPlayer.Type.RETURN_GOOD_SUC);
-				break;
-
-			default:
-				break;
-		}
-	}
 	public void play(int type) {
 		if (sSpMap.get(type) == null)
 			return;
