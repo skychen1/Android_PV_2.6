@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.base;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -19,7 +18,6 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
-import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -53,8 +51,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	   getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
-	   Intent intent = new Intent(this, TimerService.class);
-	   startService(intent);
 	   mContext = this;
 		mGson = new Gson();
 	   eth002DeviceIdList = DevicesUtils.getEthDeviceId();

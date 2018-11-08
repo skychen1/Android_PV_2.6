@@ -19,6 +19,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
@@ -83,7 +84,8 @@ public class App extends Application {
         mHandler = new Handler();
         mAppCache = ACache.get(UIUtils.getContext());
         Logger.addLogAdapter(new AndroidLogAdapter());
-
+        ServiceManager serviceManager = new ServiceManager(this);
+        serviceManager.startService();
         initBugly();
 
         initOkGo();

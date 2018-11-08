@@ -312,7 +312,8 @@ public class XmppManager {
                             "androidpn:iq:notification",
                             new NotificationIQProvider());
 
-                } catch (XMPPException e) {
+                } catch (Exception e) {
+                    connectionListener.reconnectionFailed(e);
                     Log.e(LOGTAG, "XMPP connection failed", e);
                 }
 

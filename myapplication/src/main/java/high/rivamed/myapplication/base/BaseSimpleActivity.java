@@ -11,6 +11,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.androidpn.client.AppBroadcastReceiverManager;
+import org.androidpn.client.NetLinkReceiver;
 import org.androidpn.client.Notifier;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -25,7 +27,6 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
-import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -81,27 +82,30 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     public ImageView mBaseTabBtnConn;
     private boolean mTitleConn;
 
-    /**
-     * 设备title连接状态
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTitleConnEvent(Event.EventTitleConn event) {
-        mTitleConn = event.b;
-        LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
-        if (mTitleConn) {
-            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(true)  ");
-            mBaseTabBtnConn.setEnabled(true);
-            //	   Glide.with(this)
-            //		   .load(R.mipmap.connect_yes)
-            //		   .error(R.mipmap.connect_no)
-            //		   .into(mBaseTabBtnConn);
-        } else {
-            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(false)  ");
-            mBaseTabBtnConn.setEnabled(false);
-        }
-    }
+//    /**
+//     * 设备title连接状态
+//     *
+//     * @param event
+//     */
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onTitleConnEvent(Event.EventTitleConn event) {
+//        mTitleConn = event.b;
+//        LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
+//
+//
+//        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
+//            @Override
+//            public void isNetconnected(boolean isConnected) {
+//                if (isConnected) {
+//                    LogUtils.i(TAG, "isConnected  "+isConnected);
+//                    mBaseTabBtnConn.setEnabled(true);
+//                } else {
+//                    LogUtils.i(TAG, "isConnected  "+isConnected);
+//                    mBaseTabBtnConn.setEnabled(false);
+//                }
+//            }
+//        });
+//    }
 
     /**
      * 是否显示消息提醒
@@ -122,6 +126,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     @Override
     public int getLayoutId() {
         EventBusUtils.register(this);
+
         return R.layout.fragment_base_title;
     }
 
@@ -135,6 +140,18 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
         mStub = (ViewStub) findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
+        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
+            @Override
+            public void isNetconnected(boolean isConnected) {
+                if (isConnected) {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(true);
+                } else {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(false);
+                }
+            }
+        });
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
 

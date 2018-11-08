@@ -94,13 +94,7 @@ public class NetRequest {
         OkGo.<String>post(MAIN_URL+NetApi.URL_GET_VER).tag(tag)
               .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
-    /**
-     * 连接状态检测
-     */
-    public void connectTitle( Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_CONNECT_TITLE).tag(tag)
-              .execute(new NetRequest.MyCallBack2(tag, netResult, false));
-    }
+
     /**
      * 用户登录
      */
@@ -546,7 +540,7 @@ public class NetRequest {
      */
     public void findStockByOrderId(String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDBYORDERID).tag(tag)
-                .params("orderId", Id)
+                .params("receiveOrderId", Id)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 

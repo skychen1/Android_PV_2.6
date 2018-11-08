@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.androidpn.client.AppBroadcastReceiverManager;
+import org.androidpn.client.NetLinkReceiver;
 import org.androidpn.client.Notifier;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -25,7 +27,6 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
-import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -84,22 +85,22 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public SettingPopupWindow mPopupWindow;
     private boolean mTitleConn;
 
-    /**
-     * 设备title连接状态
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTitleConnEvent(Event.EventTitleConn event) {
-        mTitleConn = event.b;
-        if (mTitleConn) {
-            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(true)  ");
-            mBaseTabBtnConn.setEnabled(true);
-        } else {
-            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(false)  ");
-            mBaseTabBtnConn.setEnabled(false);
-        }
-    }
+//    /**
+//     * 设备title连接状态
+//     *
+//     * @param event
+//     */
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onTitleConnEvent(Event.EventTitleConn event) {
+//        mTitleConn = event.b;
+//        if (mTitleConn) {
+//            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(true)  ");
+//            mBaseTabBtnConn.setEnabled(true);
+//        } else {
+//            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(false)  ");
+//            mBaseTabBtnConn.setEnabled(false);
+//        }
+//    }
 
     /**
      * 是否显示消息提醒
@@ -146,13 +147,37 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
+            @Override
+            public void isNetconnected(boolean isConnected) {
+                if (isConnected) {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(true);
+                } else {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(false);
+                }
+            }
+        });
     }
 
     @Override
     public void onBindViewBefore(View root) {
+
         mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) root.findViewById(R.id.base_tab_conn);
+        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
+            @Override
+            public void isNetconnected(boolean isConnected) {
+                if (isConnected) {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(true);
+                } else {
+                    LogUtils.i(TAG, "isConnected  "+isConnected);
+                    mBaseTabBtnConn.setEnabled(false);
+                }
+            }
+        });
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
 
@@ -169,16 +194,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
 
-        //        UIUtils.runInUIThread(new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                try {
-        //
-        //                } catch (Exception e) {
-        //                    e.printStackTrace();
-        //                }
-        //            }
-        //        }, 500);
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
