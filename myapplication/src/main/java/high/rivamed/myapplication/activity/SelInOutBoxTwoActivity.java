@@ -80,7 +80,19 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
     private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
     int k = 0;
     private LoadingDialog.Builder mLoading;
+    /**
+     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 
+        if (event.isClick){
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        }else {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+        }
+    }
     /**
      * 倒计时结束发起
      *

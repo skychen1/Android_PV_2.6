@@ -398,41 +398,46 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                 LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
                 //先绑定患者
                 if (mRbKey == 3) {
-
+			 String patientName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientName();
+			 boolean create = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).isCreate();
+			 String patientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
+			 String tempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId();
+			 String idNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo();
+			 String operationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
+			 String scheduleDateTime = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getScheduleDateTime();
+			 String operatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperatingRoomNo();
+			 String operatingRoomNoName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getOperatingRoomNoName();
+			 String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
+			 String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getDeptId();
                     for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
-                        tCstInventoryVo.setPatientName(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getPatientName());
-                        tCstInventoryVo.setCreate(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).isCreate());
-                        tCstInventoryVo.setPatientId(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getPatientId());
-                        tCstInventoryVo.setTempPatientId(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getTempPatientId());
-                        tCstInventoryVo.setIdNo(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo());
-                        tCstInventoryVo.setOperationScheduleId(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getOperationScheduleId());
-                        tCstInventoryVo.setScheduleDateTime(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getScheduleDateTime());
-                        tCstInventoryVo.setOperatingRoomNo(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getOperatingRoomNo());
-                        tCstInventoryVo.setOperatingRoomNoName(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-                                        .getOperatingRoomNoName());
-                        tCstInventoryVo.setSex(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex());
-                        tCstInventoryVo.setDeptId(
-                                patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getDeptId());
+
+			     tCstInventoryVo.setPatientName(patientName);
+			     tCstInventoryVo.setCreate(create);
+                        tCstInventoryVo.setPatientId(patientId);
+                        tCstInventoryVo.setTempPatientId(tempPatientId);
+                        tCstInventoryVo.setIdNo(idNo);
+                        tCstInventoryVo.setOperationScheduleId(operationScheduleId);
+                        tCstInventoryVo.setScheduleDateTime(scheduleDateTime);
+                        tCstInventoryVo.setOperatingRoomNo(operatingRoomNo);
+                        tCstInventoryVo.setOperatingRoomNoName(operatingRoomNoName);
+                        tCstInventoryVo.setSex(sex);
+                        tCstInventoryVo.setDeptId(deptId);
 
                     }
-                    cstInventoryDto.setPatientId(mId);
-                    cstInventoryDto.setPatientName(mName);
-                    cstInventoryDto.setOperationScheduleId(mOperationScheduleId);
+			 cstInventoryDto.setPatientName(patientName);
+			 cstInventoryDto.setCreate(create);
+			 cstInventoryDto.setPatientId(patientId);
+			 cstInventoryDto.setTempPatientId(tempPatientId);
+			 cstInventoryDto.setIdNo(idNo);
+			 cstInventoryDto.setOperationScheduleId(operationScheduleId);
+			 cstInventoryDto.setScheduleDateTime(scheduleDateTime);
+			 cstInventoryDto.setOperatingRoomNo(operatingRoomNo);
+			 cstInventoryDto.setOperatingRoomNoName(operatingRoomNoName);
+			 cstInventoryDto.setSex(sex);
+			 cstInventoryDto.setDeptId(deptId);
+//                    cstInventoryDto.setPatientId(mId);
+//                    cstInventoryDto.setPatientName(mName);
+//                    cstInventoryDto.setOperationScheduleId(mOperationScheduleId);
                     cstInventoryDto.setBindType("firstBind");
                     EventBusUtils.postSticky(cstInventoryDto);
 

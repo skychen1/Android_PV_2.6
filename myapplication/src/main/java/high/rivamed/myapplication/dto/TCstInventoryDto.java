@@ -59,6 +59,132 @@ public class TCstInventoryDto {
     private String configType;
     private List<String> errorEpcs; //扫描到的系统里没有数据的epc
 
+    private boolean isSelected;
+    private String scheduleDateTime;//手术时间
+    private String operationSurgeonName;//医生名字
+    private String operatingRoomNoName;//手术间
+    private String deptName;//科室
+    private String operationBeginDateTime;
+    private String updateTime;
+    private String deptId;//科室ID
+    private String operatingRoomNo;//手术间ID
+    private String idNo;//身份证
+    private String sex;//性别
+    private String tempPatientId;
+    private boolean isCreate;
+
+    public String getCstId() {
+        return cstId;
+    }
+
+    public void setCstId(String cstId) {
+        this.cstId = cstId;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public String getScheduleDateTime() {
+        return scheduleDateTime;
+    }
+
+    public void setScheduleDateTime(String scheduleDateTime) {
+        this.scheduleDateTime = scheduleDateTime;
+    }
+
+    public String getOperationSurgeonName() {
+        return operationSurgeonName;
+    }
+
+    public void setOperationSurgeonName(String operationSurgeonName) {
+        this.operationSurgeonName = operationSurgeonName;
+    }
+
+    public String getOperatingRoomNoName() {
+        return operatingRoomNoName;
+    }
+
+    public void setOperatingRoomNoName(String operatingRoomNoName) {
+        this.operatingRoomNoName = operatingRoomNoName;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getOperationBeginDateTime() {
+        return operationBeginDateTime;
+    }
+
+    public void setOperationBeginDateTime(String operationBeginDateTime) {
+        this.operationBeginDateTime = operationBeginDateTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getOperatingRoomNo() {
+        return operatingRoomNo;
+    }
+
+    public void setOperatingRoomNo(String operatingRoomNo) {
+        this.operatingRoomNo = operatingRoomNo;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getTempPatientId() {
+        return tempPatientId;
+    }
+
+    public void setTempPatientId(String tempPatientId) {
+        this.tempPatientId = tempPatientId;
+    }
+
+    public boolean isCreate() {
+        return isCreate;
+    }
+
+    public void setCreate(boolean create) {
+        isCreate = create;
+    }
+
     public List<String> getErrorEpcs() {
         return errorEpcs;
     }

@@ -110,7 +110,19 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     private String mSex;
     private String mDeptId;
     private boolean mIsCreate;
+    /**
+     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 
+        if (event.isClick){
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        }else {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+        }
+    }
     /**
      * 隐藏按钮
      *
@@ -763,9 +775,18 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                 LogUtils.i(TAG, "ff   " + mPatient);
                 if (UIUtils.getConfigType(mContext, CONFIG_010) &&
                         UIUtils.getConfigType(mContext, CONFIG_012)) {
+
                     ff.setPatientName(mTCstInventoryDto.getPatientName());
+                    ff.setCreate(mTCstInventoryDto.isCreate());
                     ff.setPatientId(mTCstInventoryDto.getPatientId());
+                    ff.setTempPatientId(mTCstInventoryDto.getTempPatientId());
+                    ff.setIdNo(mTCstInventoryDto.getIdNo());
                     ff.setOperationScheduleId(mTCstInventoryDto.getOperationScheduleId());
+                    ff.setScheduleDateTime(mTCstInventoryDto.getScheduleDateTime());
+                    ff.setOperatingRoomNo(mTCstInventoryDto.getOperatingRoomNo());
+                    ff.setOperatingRoomNoName(mTCstInventoryDto.getOperatingRoomNoName());
+                    ff.setSex(mTCstInventoryDto.getSex());
+                    ff.setDeptId(mTCstInventoryDto.getDeptId());
                 } else {
                     ff.setPatientName(mPatient);
                     ff.setPatientId(mPatientId);
