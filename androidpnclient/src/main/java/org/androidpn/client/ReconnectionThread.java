@@ -42,6 +42,7 @@ public class ReconnectionThread extends Thread {
                 Log.d(LOGTAG, "Trying to reconnect in " + waiting()
                         + " seconds");
                 Thread.sleep((long)10 * 1000L);
+                xmppManager.connect();
                 xmppManager.getConnection().connect();
                 waiting++;
             }
