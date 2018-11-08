@@ -3,7 +3,6 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -44,10 +42,8 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BillOrderAdapter;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.BillOrderResultBean;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
@@ -55,17 +51,11 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindBillOrderBean;
 import high.rivamed.myapplication.bean.FindInPatientBean;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
-import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
-import high.rivamed.myapplication.bean.OutFromConfirmRequestBean;
 import high.rivamed.myapplication.bean.UseCstOderResultBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -73,7 +63,6 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -82,31 +71,12 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
-import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_ALL_IN;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_FORM_CONFIRM;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_MEAL_BING;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_PATIENT_CONN;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_STOCK_FOUR_DETAILS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_FOUR_DETAILS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_LOSS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_PROFIT;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
-import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
-import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
-import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
@@ -305,6 +275,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 0 + "</big></font>"));
         mTimelyStartBtn.setVisibility(View.VISIBLE);
         mDownBtnOneLL.setVisibility(View.VISIBLE);
+        mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_nor3);
         String[] array;
         if (isShowPatient) {
             array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
@@ -376,6 +347,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 builder.create().show();
                 break;
             case R.id.base_tab_btn_msg:
+                mContext.startActivity(new Intent(this, MessageActivity.class));
+
                 break;
             case R.id.base_tab_back:
                 finish();
@@ -477,9 +450,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 //TODO 10.23 选择要打开的耗材柜弹出框
-//                DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
+                //                DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
                 //TODO 10.24 查看请领单
-//                DialogUtils.showLookUpDetailedListDialog(mContext, false, genData6());
+                //                DialogUtils.showLookUpDetailedListDialog(mContext, false, genData6());
             }
         });
     }
@@ -727,6 +700,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
+        mEPCMapDate.clear();
+        mFindBillOrderBean.getCstInventoryVos().clear();
         mEPCMapDate.putAll(event.epcs);
         for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
             FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();

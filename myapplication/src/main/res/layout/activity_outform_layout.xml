@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="耗材种类："
-                android:textColor="@color/text_color_3"
+                android:textColor="@color/text_color_6"
                 android:textSize="@dimen/x30"
                 android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="0"
                 android:textColor="@color/text_color_3"
-                android:textSize="@dimen/textsize_16"
+                android:textSize="@dimen/x30"
                 android:textStyle="bold"
                 tools:text="2" />
 
@@ -75,7 +75,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/x30"
                 android:text="耗材数量："
-                android:textColor="@color/text_color_3"
+                android:textColor="@color/text_color_6"
                 android:textSize="@dimen/x30"
                 android:textStyle="bold" />
 
@@ -86,7 +86,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="0"
                 android:textColor="@color/text_color_3"
-                android:textSize="@dimen/textsize_16"
+                android:textSize="@dimen/x30"
                 android:textStyle="bold"
                 tools:text="2" />
 

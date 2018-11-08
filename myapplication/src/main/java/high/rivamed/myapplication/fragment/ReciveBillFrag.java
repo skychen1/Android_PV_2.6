@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,23 +36,14 @@ import java.util.List;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.NewOutFormConfirmActivity;
-import high.rivamed.myapplication.activity.NewOutMealBingConfirmActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.adapter.BillStockAdapter;
-import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
-import high.rivamed.myapplication.adapter.StockRightAdapter;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
-import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -60,7 +52,6 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -224,9 +215,15 @@ public class ReciveBillFrag extends SimpleFragment {
                     for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
-                        mTbaseDevices.add(oneDoor);
+                        if (!TextUtils.isEmpty(deviceCode)) {
+                            mTbaseDevices.add(oneDoor);
+                        }
                     }
-                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                    if (mTbaseDevices.size() > 0) {
+                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                    } else {
+                        ToastUtils.showShort("无柜子信息！");
+                    }
                 } else {
                     ToastUtils.showShort("此项已领取！");
                 }

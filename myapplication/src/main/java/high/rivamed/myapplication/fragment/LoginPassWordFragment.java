@@ -36,6 +36,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
@@ -191,6 +192,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 
                     if (loginResultBean.isOperateSuccess()) {
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
                         LogUtils.i("BaseSimpleFragment", "result  " + result);
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
