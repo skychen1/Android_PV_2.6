@@ -31,6 +31,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -123,6 +124,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
                     EventBusUtils.postSticky(new Event.EventAct("all"));
                     EventBusUtils.postSticky(mCstInEpcDto);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.UNCONFIRM_SUC);
                 } else {
                     if (mOutDto.gettCstInventoryVos().size() == 0) {
                         mEthDeviceIdBack.clear();
@@ -778,6 +780,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                         mTCstInventoryDtoFour.getErrorEpcs().size() > 0) {
                     string = StringUtils.listToString(mTCstInventoryDtoFour.getErrorEpcs());
                     ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
                 }
                 if (mVoOutList.size() == 0) {
                     View inflate = LayoutInflater.from(mContext).inflate(R.layout.recy_null, null);
@@ -813,6 +816,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     string = StringUtils.listToString(mCstInEpcDto.getErrorEpcs());
                     ToastUtils.showLong(string);
                     LogUtils.i(TAG, " string   " + string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
                 }
 
                 if (((mVoOutList != null && mVoOutList.size() == 0) || mVoOutList == null) &&
@@ -828,6 +832,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     mTCstInventoryDto.settCstInventoryVos(mCstInEpcDto.gettCstInventoryVos());
                     if (mVoOutList != null) {
                         Toast.makeText(mContext, "出柜完成，请继续入柜操作", Toast.LENGTH_SHORT).show();
+                        MusicPlayer.getInstance().play(MusicPlayer.Type.UNCONFIRM_SUC);
                     }
                     new Handler().postDelayed(new Runnable() {
                         public void run() {

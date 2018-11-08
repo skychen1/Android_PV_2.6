@@ -16,16 +16,6 @@ public class MusicPlayer {
 	private static MusicPlayer sInstance;
 
 	public static class Type {
-		public final static int LOGIN_SUC = 1;//您已登录成功.
-		public final static int LOGOUT_SUC = 2;//您已退出登录.
-		public final static int NOT_NORMAL = 3;//识别到非正常操作耗材，请重新选择.
-		public final static int IN_BOX_SUC = 4;//耗材成功入库.
-		public final static int MOVE_IN_SUC = 5;//耗材成功移入.
-		public final static int RETURN_SUC = 6;//耗材成功退回.
-		public final static int USE_SUC = 7;//耗材成功领用.
-		public final static int MOVE_OUT_SUC = 8;//耗材成功移出.
-		public final static int RETURN_GOOD_SUC = 9;//耗材成功退货.
-		public final static int UNCONFIRM_SUC = 10;//您有入柜耗材尚未确认，请点击确认.
 		public final static int DOOR_OPEN = 11;//柜门已打开.
 		public final static int DOOR_CLOSED = 12;//柜门已关闭.
 	}

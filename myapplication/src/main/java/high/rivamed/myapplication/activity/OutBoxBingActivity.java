@@ -86,30 +86,31 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 
     private static final String TAG = "OutBoxBingActivity";
     private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos;
-    private String                                       mRvEventString;
-    private int                                          mIntentType;
-    private TCstInventoryDto                             mTCstInventoryTwoDto;
-    private LoadingDialog.Builder                        mShowLoading;
-    private String                                       mPatient;
-    private String                                       mPatientId;
-    private String                                       mTempPatientId;
-    private String                                       mOperationScheduleId;
-    private boolean                    mPause   = true;
+    private String mRvEventString;
+    private int mIntentType;
+    private TCstInventoryDto mTCstInventoryTwoDto;
+    private LoadingDialog.Builder mShowLoading;
+    private String mPatient;
+    private String mPatientId;
+    private String mTempPatientId;
+    private String mOperationScheduleId;
+    private boolean mPause = true;
     private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
     ;
     private int mAllPage = 1;
-    private int mRows    = 20;
+    private int mRows = 20;
     int k = 0;
 
     private LoadingDialog.Builder mLoading;
-    private RvDialog.Builder      mAfterBind;
-    private String                mIdNo;
-    private String                mScheduleDateTime;
-    private String                mOperatingRoomNo;
-    private String                mOperatingRoomNoName;
-    private String                mSex;
-    private String                mDeptId;
-    private boolean                mIsCreate;
+    private RvDialog.Builder mAfterBind;
+    private String mIdNo;
+    private String mScheduleDateTime;
+    private String mOperatingRoomNo;
+    private String mOperatingRoomNoName;
+    private String mSex;
+    private String mDeptId;
+    private boolean mIsCreate;
+
     /**
      * 隐藏按钮
      *
@@ -120,6 +121,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
         mOnBtnGone = event.b;
 
     }
+
     /**
      * 倒计时结束发起
      *
@@ -127,7 +129,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOverEvent(Event.EventOverPut event) {
-        if (event.b&&!mOnBtnGone) {
+        if (event.b && !mOnBtnGone) {
             LogUtils.i(TAG, "EventOverPut");
             mIntentType = 2;//2确认并退出
             loadBingFistDate(mIntentType);
@@ -162,7 +164,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCallBackEvent(Event.EventDeviceCallBack event) {
-        LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size()+"    mOnBtnGone    "+mOnBtnGone);
+        LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size() + "    mOnBtnGone    " + mOnBtnGone);
         AllDeviceCallBack.getInstance().initCallBack();
         if (!mOnBtnGone) {
 
@@ -508,7 +510,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                 public void onSucceed(String result) {
                     LogUtils.i(TAG, "result   " + result);
                     startActivity(new Intent(OutBoxBingActivity.this, OutBoxFoutActivity.class));
-                    EventBusUtils.postSticky(new Event.EventDate(true,true));
+                    EventBusUtils.postSticky(new Event.EventDate(true, true));
                     finish();
                 }
             });
@@ -737,6 +739,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                 mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
             string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
             ToastUtils.showLong(string);
+            MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
         } else {
 
             List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
@@ -803,7 +806,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                     }
                 }, 3000);
 
-            }else {
+            } else {
 
                 mTimelyOpenDoor.setEnabled(true);
                 mTimelyStartBtn.setEnabled(true);

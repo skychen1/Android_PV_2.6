@@ -528,6 +528,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                 mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
             string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
             ToastUtils.showLong(string);
+            MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
         } else {
             List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
             List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();

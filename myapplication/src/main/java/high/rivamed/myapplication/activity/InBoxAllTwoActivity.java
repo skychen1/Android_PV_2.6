@@ -30,6 +30,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -367,6 +368,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
                         mTCstInventoryDtoTwo.getErrorEpcs().size() > 0) {
                     string = StringUtils.listToString(mTCstInventoryDtoTwo.getErrorEpcs());
                     ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
                 }
                 if (mTCstInventoryDtoTwo.gettCstInventoryVos() != null &&
                         mTCstInventoryDtoTwo.gettCstInventoryVos().size() != 0) {
