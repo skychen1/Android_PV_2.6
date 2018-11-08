@@ -15,23 +15,18 @@
  */
 package org.androidpn.client;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -84,7 +79,6 @@ public class NotificationService extends Service {
         taskTracker = new TaskTracker(this);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onCreate() {
         Log.d(LOGTAG, "onCreate()...");
@@ -159,37 +153,11 @@ public class NotificationService extends Service {
         return true;
     }
 
-    @SuppressLint("NewApi")
     public static Intent getIntent(Context context) {
         Intent intent = new Intent();
         intent.setAction(SERVICE_NAME);
         intent.setPackage(context.getPackageName());//这里你需要设置你应用的包名
         return intent;
-    }
-
-    public static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
-        // Retrieve all services that can match the given intent
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
-
-        // Make sure only one match was found
-        if (resolveInfo == null || resolveInfo.size() != 1) {
-            return null;
-        }
-
-        // Get component info and create ComponentName
-        ResolveInfo serviceInfo = resolveInfo.get(0);
-        String packageName = serviceInfo.serviceInfo.packageName;
-        String className = serviceInfo.serviceInfo.name;
-        ComponentName component = new ComponentName(packageName, className);
-
-        // Create a new intent. Use the old one for extras and such reuse
-        Intent explicitIntent = new Intent(implicitIntent);
-
-        // Set the component to be explicit
-        explicitIntent.setComponent(component);
-
-        return explicitIntent;
     }
 
     public ExecutorService getExecutorService() {
@@ -277,7 +245,6 @@ public class NotificationService extends Service {
         Log.d(LOGTAG, "stop()...");
         unregisterNotificationReceiver();
         unregisterConnectivityReceiver();
-        AppBroadcastReceiverManager.unregisterNetLinkReceiver(this.getApplication());
         xmppManager.disconnect();
         executorService.shutdown();
     }

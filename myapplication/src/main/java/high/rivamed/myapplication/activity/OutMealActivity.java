@@ -401,7 +401,12 @@ public class OutMealActivity extends BaseSimpleActivity {
                     info.setReceiveNum(item.getTotalCount());
                     info.setNeedNum(item.getTotalCount());
                     info.setPatientName("");
-                    transReceiveOrderDetailVosList.add(info);
+//                    StringBuffer sb = new StringBuffer();
+//                    for (int i = 0; i < item.getDeviceNames().size(); i++) {
+//                        sb.append(item.getDeviceNames().get(i));
+//                    }
+//                    info.setThingName(sb.toString());
+//                    transReceiveOrderDetailVosList.add(info);
                 }
                 EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);

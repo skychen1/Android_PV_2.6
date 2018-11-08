@@ -15,6 +15,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.androidpn.client.Notifier;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -139,21 +140,8 @@ public class PendingTaskFrag extends SimpleFragment {
             @Override
             public void onSucceed(String result) {
                 try {
-                    PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
-                    mMessagesList.clear();
-
-                    for (int i = 0; i < 5; i++) {//todo 假数据
-                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
-                        bean.setType("1");
-                        bean.setTitle("医嘱");
-                        bean.setText("前往领取");
-                        mMessagesList.add(bean);
-                    }
-
-                    if (emergencyBean.getMessages() != null) {
-                        mMessagesList.addAll(emergencyBean.getMessages());
-                        mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
-                    }
+                   EventBusUtils.post(new Notifier.EventIfHaveMessage(true));
+                   //todo 待完成
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
@@ -182,13 +170,13 @@ public class PendingTaskFrag extends SimpleFragment {
                     PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
                     mMessagesList.clear();
 
-                    for (int i = 0; i < 5; i++) {//todo 假数据
-                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
-                        bean.setType("1");
-                        bean.setTitle("医嘱");
-                        bean.setText("前往领取");
-                        mMessagesList.add(bean);
-                    }
+//                    for (int i = 0; i < 5; i++) {//todo 假数据
+//                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
+//                        bean.setType("1");
+//                        bean.setTitle("医嘱");
+//                        bean.setText("前往领取");
+//                        mMessagesList.add(bean);
+//                    }
 
                     if (emergencyBean.getMessages() != null) {
                         mMessagesList.addAll(emergencyBean.getMessages());
@@ -200,7 +188,6 @@ public class PendingTaskFrag extends SimpleFragment {
             }
         });
     }
-
 
     private void initlistener() {
 
