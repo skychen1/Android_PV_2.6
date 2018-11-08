@@ -214,6 +214,21 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 	      LogUtils.i(TAG,"getAllCstDate    "+result);
 	   }
+
+	   @Override
+	   public void onNetFailing(String result) {
+		super.onNetFailing(result);
+		LogUtils.i(TAG,"onNetFailing   "+result);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		if (result.equals("-1")){
+
+		}
+		LogUtils.i(TAG,"onError   "+result.equals("-1"));
+	   }
 	});
    }
 
@@ -644,6 +659,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onNetFailing(String result) {
 		super.onNetFailing(result);
+		LogUtils.i(TAG,"onNetFailing   "+result);
 		loginEnjoin(tCstConfigVos, configType, loginType);
 
 	   }

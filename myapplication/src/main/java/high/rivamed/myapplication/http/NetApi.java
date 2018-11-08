@@ -112,4 +112,6 @@ public interface NetApi {
 
     //本地存储
     String URL_GET_ALLCST = "/rmApi/consumables/tCstInventory/getAllCst";//获取设备中所有的耗材
+    String URL_GET_LIST_ACCOUNT = "/rmApi/login/accountLogin/listAccount";//获取离线账户信息
+    String URL_GET_FIND_OPERATIONROOM = "/rmApi/dept/tBaseOperationRoom/findByAccountId";//获取离线手术间
 }

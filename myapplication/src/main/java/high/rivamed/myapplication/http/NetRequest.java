@@ -627,9 +627,9 @@ public class NetRequest {
      * 获取设备中所有的耗材
      */
     public void getAllCstDate(Object tag,  NetResult netResult) {
-        OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_OPERATETCSTINVENTORY).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_GET_ALLCST).tag(tag)
               .params("thingCode", sThingCode)
-              .execute(new MyCallBack(tag,  netResult, false));
+              .execute(new MyCallBack2(tag,  netResult, false));
     }
 
     private class MyCallBack extends StringCallback {
@@ -668,7 +668,7 @@ public class NetRequest {
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
             if (response.code()==-1){
-                Toast.makeText(UIUtils.getContext(), "网络连接超时，请扫后重试！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UIUtils.getContext(), "网络连接超时，请稍后重试！", Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
             }
