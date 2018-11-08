@@ -102,12 +102,11 @@ public class OutFormConfirmResultBean implements Serializable {
          * receiveNum : 0
          * needNum : 3
          * patientName : 马羊焕
-         * thingCode : 4028829965f9f6e80165fa1a09530000
-         * thingName : //////=
-         * thingStore : null
-         * codeArray : null
+         * deviceCode : 4028829965f9f6e80165fa1a09530000
+         * deviceName : //////=
+         * deviceStore : null
+         * deviceCodes":["4028829366e7fad30166e82a8f860008"]
          */
-
         private String orderDetailId;
         private int isHaveNum;
         private int counts;
@@ -118,10 +117,10 @@ public class OutFormConfirmResultBean implements Serializable {
         private int receiveNum;
         private int needNum;
         private String patientName;
-        private String thingCode;
-        private String thingName;
-        private String thingStore;
-        private List<String> codeArray;
+        private String deviceCode;
+        private String deviceName;
+        private String deviceStore;
+        private List<String> deviceCodes;
 
         public String getOrderDetailId() {
             return orderDetailId;
@@ -204,35 +203,35 @@ public class OutFormConfirmResultBean implements Serializable {
         }
 
         public String getThingCode() {
-            return thingCode;
+            return deviceCode;
         }
 
         public void setThingCode(String thingCode) {
-            this.thingCode = thingCode;
+            this.deviceCode = thingCode;
         }
 
         public String getThingName() {
-            return thingName;
+            return deviceName;
         }
 
         public void setThingName(String thingName) {
-            this.thingName = thingName;
+            this.deviceName = thingName;
         }
 
         public String getThingStore() {
-            return thingStore;
+            return deviceStore;
         }
 
         public void setThingStore(String thingStore) {
-            this.thingStore = thingStore;
+            this.deviceStore = thingStore;
         }
 
         public List<String> getCodeArray() {
-            return codeArray;
+            return deviceCodes;
         }
 
         public void setCodeArray(List<String> codeArray) {
-            this.codeArray = codeArray;
+            this.deviceCodes = codeArray;
         }
     }
 

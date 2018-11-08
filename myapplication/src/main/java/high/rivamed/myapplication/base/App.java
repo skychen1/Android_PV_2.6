@@ -19,6 +19,8 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import org.androidpn.client.ServiceManager;
+import org.androidpn.demoapp.DemoAppActivity;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
@@ -91,17 +93,28 @@ public class App extends Application {
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
+        initMessgeService();
+
     }
+
+    /**
+     * 初始化消息Service
+     */
+    private void initMessgeService() {
+        ServiceManager serviceManager = new ServiceManager(App.this);
+        serviceManager.startService();
+    }
+
 
     public static void InitDeviceService() {
 //        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_RODINBELL, 8010);
 ////        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
 //        DeviceManager.getInstance().StartEth002Service(Eth002ServiceType.Eth002V2, 8012);
 
-        DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_COLU_NETTY,8010);
-        DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_RODINBELL,8014);
-        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V2,8012);
-        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V26,8016);
+        DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
+        DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_RODINBELL, 8014);
+        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V2, 8012);
+        DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V26, 8016);
     }
 
     private void initBugly() {
@@ -197,9 +210,9 @@ public class App extends Application {
      */
     public void addActivity_(Activity activity) {
         // 判断当前集合中不存在该Activity
-        if (!oList.contains(activity)&&!activity.getClass().getName().toString().equals("high.rivamed.myapplication.activity.LoginActivity")) {
+        if (!oList.contains(activity) && !activity.getClass().getName().toString().equals("high.rivamed.myapplication.activity.LoginActivity")) {
             oList.add(activity);//把当前Activity添加到集合中
-            Log.e(TAG, "Activity-------------->"+activity.getClass().getName());
+            Log.e(TAG, "Activity-------------->" + activity.getClass().getName());
         }
     }
 
@@ -227,7 +240,7 @@ public class App extends Application {
     public boolean ifActivityRun(String className) {
         Intent intent = new Intent();
         intent.setClassName(getPackageName(), className);
-        Log.d(TAG, "getPackageName"+getPackageName()+"className:"+className);
+        Log.d(TAG, "getPackageName" + getPackageName() + "className:" + className);
         if (getPackageManager().resolveActivity(intent, 0) != null) {
             // 说明系统中不存在这个activity
             return true;

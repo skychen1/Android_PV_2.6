@@ -179,7 +179,7 @@ public class LookUpDetailedListDialog extends Dialog {
             } else if (mDate.size() < 3) {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y180) * mDate.size() / 2;
             } else {
-                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y95) * mDate.size();
+                lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y80) * mDate.size();
             }
             mRecyclerView.setLayoutParams(lps);
             String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);

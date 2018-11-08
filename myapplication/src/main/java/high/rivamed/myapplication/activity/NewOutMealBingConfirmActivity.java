@@ -722,6 +722,19 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             item.setPatientId(event.id);
             item.setPatientName(event.mString);
         }
+        if (!"virtual".equals(event.id)) {
+            UseCstOrderBean.CstTempPatient cstTempPatient = new UseCstOrderBean.CstTempPatient();
+            cstTempPatient.setOperationScheduleId(event.operationScheduleId);
+            cstTempPatient.setTempPatientName(event.mString);
+            cstTempPatient.setOperatingRoomNoName(event.operatingRoomNoName);
+            cstTempPatient.setOperatingRoomNo(event.operatingRoomNo);
+            cstTempPatient.setIdCard(event.idNo);
+            cstTempPatient.setScheduleDateTime(event.scheduleDateTime);
+            cstTempPatient.setSex(event.sex);
+            mUseCstOrderRequest.setCstTempPatient(cstTempPatient);
+        }
+
+
         initView(true);
         mPublicAdapter.notifyDataSetChanged();
     }

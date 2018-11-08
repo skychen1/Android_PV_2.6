@@ -22,7 +22,7 @@
 				android:id="@+id/stock_search"
 				android:layout_width="@dimen/x700"
 				android:layout_height="@dimen/y70"
-				android:background="@color/bg_f"
+				android:background="@color/bg"
 				android:focusable="true"
 				android:focusableInTouchMode="true"
 				android:orientation="horizontal"

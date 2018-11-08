@@ -82,7 +82,6 @@ public class NotificationService extends Service {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
-        AppBroadcastReceiverManager.registerNetLinkReceiver(this.getApplication());
     }
 
     @SuppressLint("NewApi")
@@ -268,6 +267,7 @@ public class NotificationService extends Service {
         Log.d(LOGTAG, "start()...");
         registerNotificationReceiver();
         registerConnectivityReceiver();
+        AppBroadcastReceiverManager.registerNetLinkReceiver(this);
         // Intent intent = getIntent();
         // startService(intent);
         xmppManager.connect();
