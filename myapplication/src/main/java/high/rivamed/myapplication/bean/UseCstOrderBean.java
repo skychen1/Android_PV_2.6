@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class UseCstOrderBean implements Serializable {
 
-    /**
+    /**" isCreate": false,
      * accountId : 8a80cb8164d9b3940164da1bff760005
      * patientId : 180723msy02497141
      * tCstInventoryVos : [{"count":0,"countActual":0,"countStock":0,"cstId":"106","cstName":"缝线结扎镊","cstSpec":"直平台","deletetatus":0,"deviceCode":"4028829965ea4d840165ea53f8e60001","deviceName":"柜子","epc":"000000002C10201809040035","expiration":"≤11天","expirationTime":"2018-09-30 00:00:00","isDelete":false,"operationStatus":"1","patientId":"180723msy02497141","patientName":"葛晓洋","size":0,"status":"领用","stopFlag":2,"storehouseCode":"ff80818165b1fb680165b35e320d0056"}]
@@ -33,6 +33,7 @@ public class UseCstOrderBean implements Serializable {
 
     private String accountId;
     private String patientId;
+    private boolean isCreate;
     private List<TCstInventoryVosBean> tCstInventoryVos;
     private CstTempPatient cstTempPatient;
 
@@ -42,6 +43,14 @@ public class UseCstOrderBean implements Serializable {
 
     public void setCstTempPatient(CstTempPatient cstTempPatient) {
         this.cstTempPatient = cstTempPatient;
+    }
+
+    public boolean isCreate() {
+        return isCreate;
+    }
+
+    public void setCreate(boolean create) {
+        isCreate = create;
     }
 
     public String getAccountId() {

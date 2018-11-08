@@ -690,11 +690,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRvCheckBindEvent(Event.EventCheckbox event) {
         mUseCstOrderRequest.setPatientId(event.id);
+        mUseCstOrderRequest.setCreate(event.create);
         for (BillOrderResultBean.CstInventoryVosBean item : mBillOrderResultBean.getCstInventoryVos()) {
             item.setPatientId(event.id);
             item.setPatientName(event.mString);
         }
-        if (!"virtual".equals(event.id)) {
+        if ("virtual".equals(event.id)) {
             UseCstOrderBean.CstTempPatient cstTempPatient = new UseCstOrderBean.CstTempPatient();
             cstTempPatient.setOperationScheduleId(event.operationScheduleId);
             cstTempPatient.setTempPatientName(event.mString);
