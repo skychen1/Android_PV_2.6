@@ -46,7 +46,7 @@ public class AppBroadcastReceiverManager {
         }
     }
 
-    public static void unregisterNetLinkReceiver(Application application) {
+    public static void unregisterNetLinkReceiver(Context application) {
         if (mNetLinkReceiver != null) {
             application.unregisterReceiver(mNetLinkReceiver);
             mNetLinkReceiver.removeAllNetLinkListener();

@@ -245,6 +245,7 @@ public class NotificationService extends Service {
         Log.d(LOGTAG, "stop()...");
         unregisterNotificationReceiver();
         unregisterConnectivityReceiver();
+        AppBroadcastReceiverManager.unregisterNetLinkReceiver(this);
         xmppManager.disconnect();
         executorService.shutdown();
     }
