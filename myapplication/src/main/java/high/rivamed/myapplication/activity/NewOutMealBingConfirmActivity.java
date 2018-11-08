@@ -375,6 +375,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 break;
             case R.id.timely_start_btn:
                 mLoadingDialog = DialogUtils.showLoading(mContext);
+                mEPCMapDate.clear();
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
                     LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -484,7 +485,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 根据EPC查询的套组耗材信息
      */
     private void findBillOrder() {
-        mEPCMapDate.clear();
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -690,47 +690,88 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRvCheckBindEvent(Event.EventCheckbox event) {
         mUseCstOrderRequest.setPatientId(event.id);
-        mUseCstOrderRequest.setCreate(event.create);
         for (BillOrderResultBean.CstInventoryVosBean item : mBillOrderResultBean.getCstInventoryVos()) {
             item.setPatientId(event.id);
             item.setPatientName(event.mString);
+            if ("virtual".equals(event.id)) {
+                item.setOperationScheduleId(event.operationScheduleId);
+                item.setOperatingRoomNoName(event.operatingRoomNoName);
+                item.setOperatingRoomNo(event.operatingRoomNo);
+                item.setIdNo(event.idNo);
+                item.setScheduleDateTime(event.scheduleDateTime);
+                item.setSex(event.sex);
+                item.setIsCreate("" + event.create);
+            }
         }
-        if ("virtual".equals(event.id)) {
-            UseCstOrderBean.CstTempPatient cstTempPatient = new UseCstOrderBean.CstTempPatient();
-            cstTempPatient.setOperationScheduleId(event.operationScheduleId);
-            cstTempPatient.setTempPatientName(event.mString);
-            cstTempPatient.setOperatingRoomNoName(event.operatingRoomNoName);
-            cstTempPatient.setOperatingRoomNo(event.operatingRoomNo);
-            cstTempPatient.setIdCard(event.idNo);
-            cstTempPatient.setScheduleDateTime(event.scheduleDateTime);
-            cstTempPatient.setSex(event.sex);
-            mUseCstOrderRequest.setCstTempPatient(cstTempPatient);
-        }
-
-
+//        if ("virtual".equals(event.id)) {
+//            UseCstOrderBean.CstTempPatient cstTempPatient = new UseCstOrderBean.CstTempPatient();
+//            cstTempPatient.setOperationScheduleId(event.operationScheduleId);
+//            cstTempPatient.setTempPatientName(event.mString);
+//            cstTempPatient.setOperatingRoomNoName(event.operatingRoomNoName);
+//            cstTempPatient.setOperatingRoomNo(event.operatingRoomNo);
+//            cstTempPatient.setIdCard(event.idNo);
+//            cstTempPatient.setScheduleDateTime(event.scheduleDateTime);
+//            cstTempPatient.setSex(event.sex);
+//            mUseCstOrderRequest.setCstTempPatient(cstTempPatient);
+//        }
         initView(true);
         mPublicAdapter.notifyDataSetChanged();
     }
 
+    int k = 0;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
-        mEPCMapDate.clear();
         mFindBillOrderBean.getCstInventoryVos().clear();
-        mEPCMapDate.putAll(event.epcs);
-        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
-            FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
-            item.setEpc(v.getKey());
-            mFindBillOrderBean.getCstInventoryVos().add(item);
-        }
-        if (mLoadingDialog != null) {
-            mLoadingDialog.mDialog.dismiss();
-        }
-        if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
-            findBillOrder();
-        } else {
-            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+        AllDeviceCallBack.getInstance().initCallBack();
+        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+                .find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeanss) {
+            String box_id = boxIdBean.getBox_id();
+            if (box_id != null) {
+                List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+                        READER_TYPE).find(BoxIdBean.class);
+                if (boxIdBeansss.size() > 1) {
+                    for (BoxIdBean BoxIdBean : boxIdBeansss) {
+                        LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+                        if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+                            mEPCMapDate.putAll(event.epcs);
+                            k++;
+                            LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
+                        }
+                    }
+                    if (k == boxIdBeansss.size()) {
+                        LogUtils.i(TAG, "mEPCDate  zou l  ");
+                        k = 0;
+                        findBillOrder();
+                    }
+                } else {
+                    LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+                    findBillOrder();
+                }
+
+            }
         }
     }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void scanEPCResult(Event.EventDeviceCallBack event) {
+//        mEPCMapDate.clear();
+//        mFindBillOrderBean.getCstInventoryVos().clear();
+//        mEPCMapDate.putAll(event.epcs);
+//        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+//            FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
+//            item.setEpc(v.getKey());
+//            mFindBillOrderBean.getCstInventoryVos().add(item);
+//        }
+//        if (mLoadingDialog != null) {
+//            mLoadingDialog.mDialog.dismiss();
+//        }
+//        if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
+//            findBillOrder();
+//        } else {
+//            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+//        }
+//    }
 
     /**
      * 重新打开柜门

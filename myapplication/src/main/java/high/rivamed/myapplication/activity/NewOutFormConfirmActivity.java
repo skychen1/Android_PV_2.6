@@ -304,12 +304,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 break;
             case R.id.base_tab_btn_msg:
                 mContext.startActivity(new Intent(this, MessageActivity.class));
-
                 break;
             case R.id.base_tab_back:
                 finish();
                 break;
             case R.id.timely_start_btn:
+                mEPCMapDate.clear();
                 mLoadingDialog = DialogUtils.showLoading(mContext);
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
@@ -364,14 +364,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
-        mEPCMapDate.clear();
         mTransReceiveOrderDetailVosAllList.clear();
         NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
                 outFromConfirmRequestBean.getEpcs().clear();
-                mEPCMapDate.clear();
                 mTransReceiveOrderDetailVosAllList.clear();
                 OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
                 mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
@@ -438,27 +436,86 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
     }
 
+    private int k;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
         }
-        mEPCMapDate.clear();
-        mEPCMapDate.putAll(event.epcs);
+        AllDeviceCallBack.getInstance().initCallBack();
         mOutFromConfirmRequestBean.getEpcs().clear();
-        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
-            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+                .find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeanss) {
+            String box_id = boxIdBean.getBox_id();
+            if (box_id != null) {
+                List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+                        READER_TYPE).find(BoxIdBean.class);
+                if (boxIdBeansss.size() > 1) {
+                    for (BoxIdBean BoxIdBean : boxIdBeansss) {
+                        LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+                        if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+                            mEPCMapDate.putAll(event.epcs);
+                            k++;
+                            LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
+                        }
+                    }
+                    if (k == boxIdBeansss.size()) {
+                        LogUtils.i(TAG, "mEPCDate  zou l  ");
+                        k = 0;
+                        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+                            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                        }
+                        if (mLoadingDialog != null) {
+                            mLoadingDialog.mDialog.dismiss();
+                        }
+                        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+                            getBillStockByEpc(mOutFromConfirmRequestBean);
+                        } else {
+                            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                        }
+                    }
+                } else {
+                    LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+                    for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+                        mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                    }
+                    if (mLoadingDialog != null) {
+                        mLoadingDialog.mDialog.dismiss();
+                    }
+                    if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+                        getBillStockByEpc(mOutFromConfirmRequestBean);
+                    } else {
+                        ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                    }
+                }
+
+            }
         }
-        if (mLoadingDialog != null) {
-            mLoadingDialog.mDialog.dismiss();
-        }
-        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
-            getBillStockByEpc(mOutFromConfirmRequestBean);
-        } else {
-            ToastUtils.showShort("耗材扫描失败，请重新扫描");
-        }
+
     }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void scanEPCResult(Event.EventDeviceCallBack event) {
+//        if (mOutFromConfirmRequestBean == null) {
+//            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+//            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+//        }
+//        mEPCMapDate.putAll(event.epcs);
+//        mOutFromConfirmRequestBean.getEpcs().clear();
+//        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+//            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+//        }
+//        if (mLoadingDialog != null) {
+//            mLoadingDialog.mDialog.dismiss();
+//        }
+//        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+//            getBillStockByEpc(mOutFromConfirmRequestBean);
+//        } else {
+//            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+//        }
+//    }
 
     /**
      * 重新打开柜门
