@@ -66,6 +66,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 
@@ -407,6 +408,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
                 SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
+                SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, "" + mPrePageDate.getId());
                 if (sureReciveOrder.isOperateSuccess()) {
                     if (!sureReciveOrder.getMsg().contains("全部")) {
                         DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", sureReciveOrder.getMsg());
@@ -479,11 +481,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                     }
                 } else {
                     LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-                    for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+                    for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
                         mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
-                    }
-                    if (mLoadingDialog != null) {
-                        mLoadingDialog.mDialog.dismiss();
                     }
                     if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
                         getBillStockByEpc(mOutFromConfirmRequestBean);

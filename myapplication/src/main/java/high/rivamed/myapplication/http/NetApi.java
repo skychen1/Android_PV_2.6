@@ -105,6 +105,7 @@ public interface NetApi {
     String URL_CSTPLAN_FINDCSTLIST = "/rmApi/consumables/cstPlanDetail/findCstList";//查询单个套组的耗材详情
     String URL_CSTPLAN_FINDCSTANDCOMPARETOCSTPLAN = "/rmApi/consumables/cstPlanDetail/findCstAndCompareToCstPlan";//根据EPC查询耗材
     String URL_CSTPLAN_OPERATETCSTINVENTORY= "/rmApi/consumables/tCstInventory/receiveCstByCstPlan";//套组领用
+    String URL_CSTPLAN_SAVERECEIVEORDERMSG= "/rmApi/message/message/saveReceiveOrderMsg";//产生医嘱单的消息
 
     //消息
     String URL_FIND_MESSAGE_BY_ACCOUNTID = "/rmApi/message/message/findMessageByAccountId";//查询待办任务列表

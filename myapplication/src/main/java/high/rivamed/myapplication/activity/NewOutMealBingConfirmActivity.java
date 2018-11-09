@@ -731,6 +731,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             if (box_id != null) {
                 List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
                         READER_TYPE).find(BoxIdBean.class);
+                Log.e("xb","boxIdBeansss.size"+boxIdBeansss.size());
                 if (boxIdBeansss.size() > 1) {
                     for (BoxIdBean BoxIdBean : boxIdBeansss) {
                         LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
@@ -743,11 +744,32 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     if (k == boxIdBeansss.size()) {
                         LogUtils.i(TAG, "mEPCDate  zou l  ");
                         k = 0;
-                        findBillOrder();
+                        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+                            FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
+                            item.setEpc(v.getKey());
+                            mFindBillOrderBean.getCstInventoryVos().add(item);
+                        }
+                        if (mLoadingDialog != null) {
+                            mLoadingDialog.mDialog.dismiss();
+                        }
+                        if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
+                            findBillOrder();
+                        } else {
+                            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                        }
                     }
                 } else {
                     LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-                    findBillOrder();
+                    for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+                        FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
+                        item.setEpc(v.getKey());
+                        mFindBillOrderBean.getCstInventoryVos().add(item);
+                    }
+                    if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
+                        findBillOrder();
+                    }else {
+                        ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                    }
                 }
 
             }
