@@ -239,7 +239,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     private void initView() {
-        mBaseTabBack.setVisibility(View.VISIBLE);
+        mBaseTabBack.setVisibility(View.GONE);
         mBaseTabIconRight.setEnabled(false);
         mBaseTabTvName.setEnabled(false);
         mBaseTabOutLogin.setEnabled(false);

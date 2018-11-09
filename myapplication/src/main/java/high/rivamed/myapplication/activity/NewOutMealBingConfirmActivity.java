@@ -267,7 +267,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 数据加载
      */
     private void initData(boolean isShowPatient) {
-        mBaseTabBack.setVisibility(View.VISIBLE);
+        mBaseTabBack.setVisibility(View.GONE);
         mBaseTabIconRight.setEnabled(false);
         mBaseTabTvName.setEnabled(false);
         mBaseTabOutLogin.setEnabled(false);
