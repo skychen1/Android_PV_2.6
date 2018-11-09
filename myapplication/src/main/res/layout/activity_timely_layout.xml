@@ -32,7 +32,7 @@
 					android:id="@+id/search_et"
 					android:layout_width="match_parent"
 					android:layout_height="match_parent"
-					android:background="@drawable/bg_search"
+					android:background="@drawable/bg_search_w"
 					android:drawableLeft="@mipmap/runwate_search"
 					android:drawablePadding="@dimen/x10"
 					android:hint="请输入患者姓名、患者ID查询"
