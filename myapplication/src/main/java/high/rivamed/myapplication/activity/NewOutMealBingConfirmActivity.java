@@ -237,7 +237,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-
+        Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras().getSerializable("DATA");
+        mPrePageDate = data.orderSheetBean;
+        mTransReceiveOrderDetailVos = data.transReceiveOrderDetailVosList;
+        mTbaseDevices = data.tbaseDevices;
+        mFindBillOrderBean = new FindBillOrderBean();
+        FindBillOrderBean.CstPlanBean cstPlanBean = new FindBillOrderBean.CstPlanBean();
+        cstPlanBean.setId(mPrePageDate.getId());
+        mFindBillOrderBean.setCstPlan(cstPlanBean);
+        mFindBillOrderBean.setCstInventoryVos(new ArrayList<>());
         initData(false);
         if (mPublicAdapter != null && mBillOrderResultBean.getCstInventoryVos() != null) {
             initView(false);
@@ -500,30 +508,30 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void reciveBillOrderDate(Event.EventBillOrder event) {
-        mPrePageDate = event.orderSheetBean;
-        if (mFindBillOrderBean == null) {
-            mFindBillOrderBean = new FindBillOrderBean();
-            FindBillOrderBean.CstPlanBean cstPlanBean = new FindBillOrderBean.CstPlanBean();
-            cstPlanBean.setId(mPrePageDate.getId());
-            mFindBillOrderBean.setCstPlan(cstPlanBean);
-            mFindBillOrderBean.setCstInventoryVos(new ArrayList<>());
-        }
-        if (mUseCstOrderRequest == null) {
-            mUseCstOrderRequest = new UseCstOrderBean();
-            mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-            mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
-        }
-        if (event.tbaseDevices != null) {
-            mTbaseDevices = event.tbaseDevices;
-        }
-        if (event.transReceiveOrderDetailVosList != null) {
-            mTransReceiveOrderDetailVos = event.transReceiveOrderDetailVosList;
-        }
-        //findBillOrder();
-        loadDate();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//    public void reciveBillOrderDate(Event.EventBillOrder event) {
+//        mPrePageDate = event.orderSheetBean;
+//        if (mFindBillOrderBean == null) {
+//            mFindBillOrderBean = new FindBillOrderBean();
+//            FindBillOrderBean.CstPlanBean cstPlanBean = new FindBillOrderBean.CstPlanBean();
+//            cstPlanBean.setId(mPrePageDate.getId());
+//            mFindBillOrderBean.setCstPlan(cstPlanBean);
+//            mFindBillOrderBean.setCstInventoryVos(new ArrayList<>());
+//        }
+//        if (mUseCstOrderRequest == null) {
+//            mUseCstOrderRequest = new UseCstOrderBean();
+//            mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
+//            mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
+//        }
+//        if (event.tbaseDevices != null) {
+//            mTbaseDevices = event.tbaseDevices;
+//        }
+//        if (event.transReceiveOrderDetailVosList != null) {
+//            mTransReceiveOrderDetailVos = event.transReceiveOrderDetailVosList;
+//        }
+//        //findBillOrder();
+//        //loadDate();
+//    }
 
     /**
      * 根据EPC查询的套组耗材信息

@@ -332,8 +332,13 @@ public class ReciveBillFrag extends SimpleFragment {
         if (mIsCanSkipToSurePage) {
             if (!event.isClick) {
                 Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("DATA",new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
-                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+//                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+
+
             }
         }
     }

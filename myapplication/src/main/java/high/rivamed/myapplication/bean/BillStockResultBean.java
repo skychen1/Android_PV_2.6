@@ -306,6 +306,15 @@ public class BillStockResultBean implements Serializable {
         private String deviceName;
         private String deviceStore;
         private List<String> deviceCodes;
+        private List<String> deviceNames;
+
+        public List<String> getDeviceNames() {
+            return deviceNames;
+        }
+
+        public void setDeviceNames(List<String> deviceNames) {
+            this.deviceNames = deviceNames;
+        }
 
         public String getOrderDetailId() {
             return orderDetailId;

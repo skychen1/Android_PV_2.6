@@ -245,7 +245,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                     for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
-                        if (oneDoor != null && oneDoor.getDeviceCode()!=null) {
+                        if (oneDoor != null && oneDoor.getDeviceCode() != null) {
                             mTbaseDevicesFromEvent.add(oneDoor);
                         }
                     }
@@ -334,7 +334,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
                             BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                             oneDoor.setDeviceCode(deviceCode);
-                            if (oneDoor != null && oneDoor.getDeviceCode()!=null) {
+                            if (oneDoor != null && oneDoor.getDeviceCode() != null) {
                                 mTbaseDevicesFromEvent.add(oneDoor);
                             }
                         }
@@ -438,10 +438,13 @@ public class OutMealActivity extends BaseSimpleActivity {
                     info.setReceiveNum(item.getTotalCount());
                     info.setNeedNum(item.getTotalCount());
                     info.setPatientName("");
+                    info.setDeviceNames(item.getDeviceNames());
                     transReceiveOrderDetailVosList.add(info);
                 }
-                EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DATA", new Event.EventBillStock(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         }

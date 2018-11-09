@@ -80,7 +80,11 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getCounts());
-        mSeven_four.setText(item.getDeviceName());
+        StringBuffer deviceNames=new StringBuffer();
+        for (int i = 0; i < item.getDeviceNames().size(); i++) {
+            deviceNames.append(item.getDeviceNames().get(i));
+        }
+        mSeven_four.setText(deviceNames);
     }
 
     private void findId(BaseViewHolder helper) {
