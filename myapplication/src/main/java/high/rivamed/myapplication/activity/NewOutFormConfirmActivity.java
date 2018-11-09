@@ -3,6 +3,7 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -278,7 +279,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
         mLyBingBtn.setText("查看医嘱清单");
-        mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_nor3);
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -402,12 +402,25 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
                 OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
+                boolean isCanUse;
                 if (outFormConfirmResultBean.getTcstInventoryOrderVos() != null) {
+                    isCanUse = true;
                     mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
+                } else {
+                    isCanUse = false;
+                    mDownBtnOne.setEnabled(false);
+                    if (outFormConfirmResultBean.getMsg() != null) {
+                        ToastUtils.showShort(outFormConfirmResultBean.getMsg());
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                finish();
+                            }
+                        }, 3000);
+                    }
                 }
                 mAllOutFormConfirmRequest = outFormConfirmResultBean;
                 mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
-                boolean isCanUse = true;
+
                 //是否可以点击领用按钮
                 for (OutFormConfirmResultBean.TcstInventoryOrderVosBean item : mTransReceiveOrderDetailVosAllList) {
                     if (!item.isIsContain()) {
@@ -420,7 +433,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 } else {
                     mDownBtnOne.setEnabled(false);
                 }
-                initData();
+                if (mPublicAdapter == null) {
+                    initData();
+                } else {
+                    mPublicAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

@@ -3,6 +3,7 @@ package high.rivamed.myapplication.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -258,16 +259,16 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nan)
-                  .error(R.mipmap.hccz_mrtx_nan)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nan)
+                    .error(R.mipmap.hccz_mrtx_nan)
+                    .into(mBaseTabIconRight);
         } else {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nv)
+                    .error(R.mipmap.hccz_mrtx_nv)
+                    .into(mBaseTabIconRight);
         }
 
         if (mUseCstOrderRequest == null) {
@@ -498,15 +499,24 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             @Override
             public void onSucceed(String result) {
                 mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
-                if (mPublicAdapter == null) {
-                    initView(false);
+                if (mBillOrderResultBean.getCstInventoryVos() == null) {
+                    ToastUtils.showShort(mBillOrderResultBean.getMsg());
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            finish();
+                        }
+                    }, 3000);
                 } else {
-                    mPublicAdapter.setNewData(mBillOrderResultBean.getCstInventoryVos());
-                    mPublicAdapter.notifyDataSetChanged();
+                    if (mPublicAdapter == null) {
+                        initView(false);
+                    } else {
+                        mPublicAdapter.setNewData(mBillOrderResultBean.getCstInventoryVos());
+                        mPublicAdapter.notifyDataSetChanged();
+                    }
+                    mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + mBillOrderResultBean.getCountKind() +
+                            "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+                            mBillOrderResultBean.getCountNum() + "</big></font>"));
                 }
-                mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + mBillOrderResultBean.getCountKind() +
-                        "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-                        mBillOrderResultBean.getCountNum() + "</big></font>"));
             }
 
             @Override
