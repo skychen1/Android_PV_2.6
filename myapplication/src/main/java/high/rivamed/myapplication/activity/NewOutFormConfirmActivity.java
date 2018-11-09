@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -58,7 +59,9 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -361,7 +364,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 reOpenDoor();
                 break;
             case R.id.activity_btn_one:
-                sureTransReceiveOrder();
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    sureTransReceiveOrder();
+                }
                 break;
             case R.id.ly_bing_btn:
                 DialogUtils.showLookUpDetailedListDialog(mContext, true, mTransReceiveOrderDetailVosBean, mPrePageDate);
@@ -421,21 +428,26 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
                 OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
+                if (outFormConfirmResultBean.getErrorEpcs() != null &&
+                        outFormConfirmResultBean.getErrorEpcs().size() > 0) {
+                    String string = StringUtils.listToString(outFormConfirmResultBean.getErrorEpcs());
+                    ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+                }
                 boolean isCanUse;
-                if (outFormConfirmResultBean.getTcstInventoryOrderVos() != null) {
+                if (outFormConfirmResultBean.getTcstInventoryOrderVos() != null && outFormConfirmResultBean.getTcstInventoryOrderVos().size() > 0) {
                     isCanUse = true;
                     mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
                 } else {
                     isCanUse = false;
                     mDownBtnOne.setEnabled(false);
-                    if (outFormConfirmResultBean.getMsg() != null) {
-                        ToastUtils.showShort(outFormConfirmResultBean.getMsg());
-                        new Handler().postDelayed(new Runnable() {
-                            public void run() {
-                                finish();
-                            }
-                        }, 3000);
-                    }
+                    Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            Log.e("xb","finish");
+                            finish();
+                        }
+                    }, 3000);
                 }
                 mAllOutFormConfirmRequest = outFormConfirmResultBean;
                 mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
@@ -457,6 +469,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 } else {
                     mPublicAdapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override
@@ -515,6 +528,18 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
             mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
             mIsFirst = false;
+//
+//            if (event.orderSheetBean != null) {
+//                mPrePageDate = event.orderSheetBean;
+//            }
+//            if (event.tbaseDevices != null) {
+//                mTbaseDevices = event.tbaseDevices;
+//            }
+//            if (event.transReceiveOrderDetailVosList != null) {
+//                mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+//                mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
+//            }
+
         }
 
     }

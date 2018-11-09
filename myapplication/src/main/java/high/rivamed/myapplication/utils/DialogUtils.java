@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Display;
 import android.view.Window;
@@ -24,8 +25,10 @@ import cn.rivamed.callback.DeviceCallBack;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -347,6 +350,32 @@ public class DialogUtils {
                 }
             });
         }
+        builder.create().show();
+    }
+
+    public static void showOutFormDialog(Context context, int mType, String title, String msg) {
+        TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
+            builder.setTwoMsg(msg);
+            builder.setMsg(title);
+            builder.setLeft("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int i) {
+                    dialog.dismiss();
+                    if (context instanceof Activity){
+                        ((Activity) context).finish();
+                    }
+                }
+            });
+            builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int i) {
+                    dialog.dismiss();
+                    if (context instanceof Activity){
+                        context.startActivity(new Intent(context, LoginActivity.class));
+                        App.getInstance().removeALLActivity_();
+                    }
+                }
+            });
         builder.create().show();
     }
 

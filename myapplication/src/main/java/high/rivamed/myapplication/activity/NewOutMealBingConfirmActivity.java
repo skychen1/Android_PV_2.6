@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -64,7 +65,9 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -97,7 +100,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
-    private   String TAG = "NewOutMealBingConfirmActivity";
+    private String TAG = "NewOutMealBingConfirmActivity";
     public int my_id;
     public int mSize;
     @BindView(R.id.timely_start_btn)
@@ -397,16 +400,24 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 //		DialogUtils.showRvDialog(this, mContext);
                 break;
             case R.id.timely_start_btn:
-                mEPCMapDate.clear();
-                mFindBillOrderBean.getCstInventoryVos().clear();
-                for (String deviceInventoryVo : mEthDeviceIdBack) {
-                    String deviceCode = deviceInventoryVo;
-                    LogUtils.i(TAG, "deviceCode    " + deviceCode);
-                    startScan(deviceCode);
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    mEPCMapDate.clear();
+                    mFindBillOrderBean.getCstInventoryVos().clear();
+                    for (String deviceInventoryVo : mEthDeviceIdBack) {
+                        String deviceCode = deviceInventoryVo;
+                        LogUtils.i(TAG, "deviceCode    " + deviceCode);
+                        startScan(deviceCode);
+                    }
                 }
                 break;
             case R.id.timely_open_door:
-                reOpenDoor();
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    reOpenDoor();
+                }
                 break;
             case R.id.ly_bing_btn:
                 OrderSheetBean.RowsBean prePageDate = new OrderSheetBean.RowsBean();
@@ -415,7 +426,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos, prePageDate);
                 break;
             case R.id.activity_btn_one:
-                useOrderCst();
+                if (UIUtils.isFastDoubleClick()) {
+                    return;
+                } else {
+                    useOrderCst();
+                }
                 break;
             case R.id.ly_bind_patient:
                 if (UIUtils.getConfigType(mContext, CONFIG_012)) {
@@ -487,7 +502,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void reciveBillOrderDate(Event.EventBillOrder event) {
         mPrePageDate = event.orderSheetBean;
-        mTransReceiveOrderDetailVos = event.transReceiveOrderDetailVosList;
         if (mFindBillOrderBean == null) {
             mFindBillOrderBean = new FindBillOrderBean();
             FindBillOrderBean.CstPlanBean cstPlanBean = new FindBillOrderBean.CstPlanBean();
@@ -500,8 +514,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
             mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
         }
-        mTbaseDevices = event.tbaseDevices;
-        EventBusUtils.removeStickyEvent(Event.EventBillOrder.class);
+        if (event.tbaseDevices != null) {
+            mTbaseDevices = event.tbaseDevices;
+        }
+        if (event.transReceiveOrderDetailVosList != null) {
+            mTransReceiveOrderDetailVos = event.transReceiveOrderDetailVosList;
+        }
         //findBillOrder();
         loadDate();
     }
@@ -510,18 +528,33 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 根据EPC查询的套组耗材信息
      */
     private void findBillOrder() {
+        mFindBillOrderBean.setDeviceCodes(new ArrayList<>());
+        for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+            if (item.getDeviceCode() != null) {
+                mFindBillOrderBean.getDeviceCodes().add(item.getDeviceCode());
+            }
+        }
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
-                if (mBillOrderResultBean.getCstInventoryVos() == null) {
-                    ToastUtils.showShort(mBillOrderResultBean.getMsg());
+                if (mBillOrderResultBean.getErrorEpcs() != null &&
+                        mBillOrderResultBean.getErrorEpcs().size() > 0) {
+                    String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
+                    ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+                }
+                if (mBillOrderResultBean.getCstInventoryVos() == null || mBillOrderResultBean.getCstInventoryVos().size() == 0) {
+                    Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             finish();
                         }
                     }, 3000);
                 } else {
+                    if (mBillOrderResultBean.getMsg() != null) {
+                        ToastUtils.showLong(mBillOrderResultBean.getMsg());
+                    }
                     if (mPublicAdapter == null) {
                         initView(false);
                     } else {

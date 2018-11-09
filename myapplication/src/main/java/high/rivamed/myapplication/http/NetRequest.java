@@ -631,7 +631,7 @@ public class NetRequest {
      * 套组领用-领用套组
      */
     public void useOrderCst(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_SAVERECEIVEORDERMSG).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_OPERATETCSTINVENTORY).tag(tag)
                 .upJson(json)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }

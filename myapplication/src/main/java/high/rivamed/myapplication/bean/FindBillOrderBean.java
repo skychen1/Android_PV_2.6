@@ -20,9 +20,19 @@ public class FindBillOrderBean implements Serializable {
      * cstPlan : {"id":"5"}
      * cstInventoryVos : [{"epc":"000000002C10201809040035"},{"epc":"000012341219201809070163"}]
      */
+    private List<String> deviceCodes;
 
+    public List<String> getDeviceCodes() {
+        return deviceCodes;
+    }
+
+    public void setDeviceCodes(List<String> deviceCodes) {
+        this.deviceCodes = deviceCodes;
+    }
     private CstPlanBean cstPlan;
     private List<CstInventoryVosBean> cstInventoryVos;
+
+
 
     public CstPlanBean getCstPlan() {
         return cstPlan;

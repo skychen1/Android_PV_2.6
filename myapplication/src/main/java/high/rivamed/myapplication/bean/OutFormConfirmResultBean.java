@@ -24,15 +24,36 @@ public class OutFormConfirmResultBean implements Serializable {
      * cstCount : 3
      * cstTypes : 3
      * tcstInventoryOrderVos : [{"cstName":"角巩膜咬切器","cstId":"104","cstSpec":"1.5m","epc":"00021720180412000336","expirationTime":"2020-01-05 00:00:00","thingName":"2号柜","thingCode":"40288293668bfb3601668bfdb3350000","isContain":false},{"cstName":"缝线结扎镊","cstId":"106","cstSpec":"直平台","epc":"00021720180409000045","expirationTime":"2020-01-05 00:00:00","thingName":"1号柜","thingCode":"40288293669e921601669fa48062003f","isContain":false},{"cstName":"虹膜恢复器","cstId":"108","cstSpec":"单头","epc":"00021020180921000002","expirationTime":"2020-01-05 00:00:00","thingName":"1号柜","thingCode":"40288293669e921601669fa48062003f","isContain":false}]
+     * msg
      */
+
+
+
 
     private int id;
     private int cstCount;
     private int cstTypes;
+    private String msg;
     private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
     private List<String> epcs;
     private List<TcstInventoryOrderVosBean> tcstInventoryOrderVos;
     private OrderSheetBean.RowsBean transReceiveOrder;
+    private List<String> errorEpcs;
+    public List<String> getErrorEpcs() {
+        return errorEpcs;
+    }
+
+    public void setErrorEpcs(List<String> errorEpcs) {
+        this.errorEpcs = errorEpcs;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public OrderSheetBean.RowsBean getTransReceiveOrder() {
         return transReceiveOrder;

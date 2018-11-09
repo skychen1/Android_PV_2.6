@@ -112,19 +112,22 @@ public class OutMealActivity extends BaseSimpleActivity {
      * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
      */
     private boolean mIsCanSkipToSurePage = true;
+
     /**
      * (检测没有关门)语音
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHomeNoClick(Event.HomeNoClickEvent event) {
-        if (event.isClick){
+        if (event.isClick) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-        }else {
+        } else {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
         }
         EventBusUtils.removeStickyEvent(getClass());
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
         mMealbing = event.mString;
@@ -162,16 +165,16 @@ public class OutMealActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setText("套餐领用");
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nan)
-                  .error(R.mipmap.hccz_mrtx_nan)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nan)
+                    .error(R.mipmap.hccz_mrtx_nan)
+                    .into(mBaseTabIconRight);
         } else {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nv)
+                    .error(R.mipmap.hccz_mrtx_nv)
+                    .into(mBaseTabIconRight);
         }
         initlistener();
         findOrderCstPlanDate(true);
@@ -242,7 +245,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                     for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
-                        mTbaseDevicesFromEvent.add(oneDoor);
+                        if (oneDoor != null && oneDoor.getDeviceCode()!=null) {
+                            mTbaseDevicesFromEvent.add(oneDoor);
+                        }
                     }
                     AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
 
@@ -329,7 +334,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                         for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
                             BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                             oneDoor.setDeviceCode(deviceCode);
-                            mTbaseDevicesFromEvent.add(oneDoor);
+                            if (oneDoor != null && oneDoor.getDeviceCode()!=null) {
+                                mTbaseDevicesFromEvent.add(oneDoor);
+                            }
                         }
                     }
                     if (mTbaseDevicesFromEvent.size() > 0) {

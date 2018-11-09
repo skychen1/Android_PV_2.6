@@ -221,7 +221,7 @@
 			android:id="@+id/activity_btn_one"
 			android:layout_width="@dimen/x390"
 			android:layout_height="@dimen/x68"
-			android:background="@drawable/bg_btn_gray_sel"
+			android:background="@drawable/bg_btn_gray_sel2"
 			android:gravity="center"
 			android:text="确定领用"
 			android:textColor="@color/bg_f"
