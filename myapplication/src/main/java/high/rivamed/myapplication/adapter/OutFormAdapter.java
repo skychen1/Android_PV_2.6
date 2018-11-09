@@ -12,7 +12,6 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 
 /**
@@ -56,7 +55,7 @@ public class OutFormAdapter extends BaseQuickAdapter<OrderSheetBean.RowsBean, Ba
             mTvOpNumber.setText("");
         }
         if (!TextUtils.isEmpty(item.getCreateTime())) {
-            mTvTime.setText(item.getCreateTime());
+            mTvTime.setText(item.getCreateTime().substring(5, 16));
         } else {
             mTvTime.setText("");
         }

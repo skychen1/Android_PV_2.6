@@ -189,11 +189,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
     List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosBean;
     private OutFormConfirmResultBean mAllOutFormConfirmRequest;
-    private LoadingDialog.Builder mLoadingDialog;
     private int mLayout;
     private View mHeadView;
     private OutFormConfirmAdapter mPublicAdapter;
     public SparseBooleanArray mCheckStates = new SparseBooleanArray();
+    private LoadingDialog.Builder mLoading;
     /**
      * 传输的EPC
      *
@@ -208,10 +208,27 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         return R.layout.activity_timely_layout;
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mLoadingDialog = DialogUtils.showLoading(mContext);
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventLoading(Event.EventLoading event) {
+        if (event.loading) {
+            if (mLoading == null) {
+                LogUtils.i(TAG, "     mLoading  新建 ");
+                mLoading = DialogUtils.showLoading(this);
+            } else {
+                if (!mLoading.mDialog.isShowing()) {
+                    LogUtils.i(TAG, "     mLoading   重新开启");
+                    mLoading.create().show();
+                }
+            }
+        } else {
+            if (mLoading != null) {
+                LogUtils.i(TAG, "     mLoading   关闭");
+                mLoading.mAnimationDrawable.stop();
+                mLoading.mDialog.dismiss();
+                mLoading = null;
+            }
+        }
     }
 
     @Override
@@ -222,7 +239,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     private void initView() {
-        mBaseTabBack.setVisibility(View.GONE);
+        mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabIconRight.setEnabled(false);
         mBaseTabTvName.setEnabled(false);
         mBaseTabOutLogin.setEnabled(false);
@@ -258,7 +275,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             mTransReceiveOrderDetailVosAllList = new ArrayList<>();
         }
         mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
-        mBaseTabTvTitle.setText("套餐领用耗材");
+        mBaseTabTvTitle.setText("请领单领用耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 0 + "</big></font>"));
@@ -334,7 +351,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 mEPCMapDate.clear();
                 mOutFromConfirmRequestBean.getEpcs().clear();
                 mTransReceiveOrderDetailVosAllList.clear();
-                mLoadingDialog = DialogUtils.showLoading(mContext);
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
                     LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -397,6 +413,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
         }
         mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
+
+        LogUtils.i(TAG, "json   " + mGson.toJson(outFromConfirmRequestBean));
+
         NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -498,6 +517,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 }
             }
         }
+        if (mLoading != null) {
+            mLoading.mAnimationDrawable.stop();
+            mLoading.mDialog.dismiss();
+            mLoading = null;
+        }
         AllDeviceCallBack.getInstance().initCallBack();
         List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
                 .find(BoxIdBean.class);
@@ -523,9 +547,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                                 mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
                             }
                         }
-                        if (mLoadingDialog != null) {
-                            mLoadingDialog.mDialog.dismiss();
-                        }
+
                         if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
                             Log.e("xb", "getBillStockByEpc1");
                             getBillStockByEpc(mOutFromConfirmRequestBean);
