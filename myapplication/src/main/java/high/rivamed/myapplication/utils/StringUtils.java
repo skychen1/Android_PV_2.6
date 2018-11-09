@@ -278,7 +278,11 @@ public class StringUtils {
 	String string ="扫描到以下未知耗材：\n";
 	for (int i = 0; i < list.size(); i++) {
 	   String keyString = list.get(i);
-	   string += keyString + "\n";
+	   if (i==list.size()-1){
+		string += keyString;
+	   }else {
+		string += keyString + "\n";
+	   }
 	}
 	return string;
    }

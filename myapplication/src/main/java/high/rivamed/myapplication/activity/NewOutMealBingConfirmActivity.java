@@ -443,6 +443,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 break;
             case R.id.ly_bind_patient:
                 if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+                    EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
                     Intent intent = new Intent(mContext, TemPatientBindActivity.class);
                     intent.putExtra("type", "afterBindTemp");
                     intent.putExtra("position", -1000);
