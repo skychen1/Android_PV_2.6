@@ -36,6 +36,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -205,7 +206,19 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 	});
    }
-
+   /**
+    * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onHomeNoClick(Event.HomeNoClickEvent event) {
+	if (event.isClick){
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	}else {
+	  MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	}
+	EventBusUtils.removeStickyEvent(getClass());
+   }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
 	mActivityType = event.mString;
@@ -1002,7 +1015,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
 	@Override
 	public void onTick(long millisUntilFinished) {// 计时过程显示
-	   //	   LogUtils.i(TAG, "millisUntilFinished     " + millisUntilFinished);
+	   	   LogUtils.i(TAG, "millisUntilFinished     " + millisUntilFinished);
 	   if (millisUntilFinished / 1000 <= 35) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
 	   } else {
@@ -1132,4 +1145,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 	return list;
    }
+
+
 }

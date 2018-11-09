@@ -110,19 +110,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
     private String mSex;
     private String mDeptId;
     private boolean mIsCreate;
-    /**
-     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
-    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 
-        if (event.isClick){
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-        }else {
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-        }
-    }
     /**
      * 隐藏按钮
      *
@@ -521,6 +509,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                 @Override
                 public void onSucceed(String result) {
                     LogUtils.i(TAG, "result   " + result);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
                     startActivity(new Intent(OutBoxBingActivity.this, OutBoxFoutActivity.class));
                     EventBusUtils.postSticky(new Event.EventDate(true, true));
                     finish();
@@ -533,7 +522,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                     LogUtils.i(TAG, "result   " + result);
                     ToastUtils.showShort("操作成功");
                     EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
                     if (mIntentType == 2) {
                         startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
                         App.getInstance().removeALLActivity_();

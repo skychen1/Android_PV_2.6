@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -214,25 +215,30 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        mBaseTabBack.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nan)
-                    .error(R.mipmap.hccz_mrtx_nan)
-                    .into(mBaseTabIconRight);
-        } else {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nv)
-                    .error(R.mipmap.hccz_mrtx_nv)
-                    .into(mBaseTabIconRight);
-        }
+
         initView();
     }
 
     private void initView() {
+        mBaseTabBack.setVisibility(View.GONE);
+        mBaseTabIconRight.setEnabled(false);
+        mBaseTabTvName.setEnabled(false);
+        mBaseTabOutLogin.setEnabled(false);
+        mBaseTabTvTitle.setVisibility(View.VISIBLE);
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
+
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
@@ -250,7 +256,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
             mTransReceiveOrderDetailVosAllList = new ArrayList<>();
         }
         mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
-        mBaseTabTvTitle.setText("识别耗材");
+        mBaseTabTvTitle.setText("套餐领用耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 0 + "</big></font>"));
@@ -369,6 +375,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
         mRecyclerview.setAdapter(mPublicAdapter);
         mLinearLayout.removeView(mHeadView);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
+        mPublicAdapter.setEmptyView(inflate);
         mLinearLayout.addView(mHeadView);
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -405,10 +413,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 }
                 if (isCanUse) {
                     mDownBtnOne.setEnabled(true);
-                    mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_sel);
                 } else {
                     mDownBtnOne.setEnabled(false);
-                    mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_pre);
                 }
                 initData();
             }

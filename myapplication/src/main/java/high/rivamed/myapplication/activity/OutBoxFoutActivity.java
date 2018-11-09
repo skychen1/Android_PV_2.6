@@ -400,6 +400,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result退货   " + result);
+			MusicPlayer.getInstance().play(MusicPlayer.Type.RETURN_GOOD_SUC);
 			ToastUtils.showShort("操作成功");
 			overFinish();
 		   }
@@ -447,11 +448,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
-			if (mDtoLy.gettCstInventoryVos().size()==mOutDto.gettCstInventoryVos().size()){
+			MusicPlayer.getInstance().play(MusicPlayer.Type.MOVE_OUT_SUC);
 
-			}else {
-//			   ToastUtils.showShort("操作成功");
-			}
 			overFinish();
 		   }
 
@@ -699,6 +697,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "result 领用 " + result);
+				MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 				mShowNoDialog = DialogUtils.showNoDialog(mContext, "耗材领用成功！", 2,
 										     "nojump", null);
 				overFinish();

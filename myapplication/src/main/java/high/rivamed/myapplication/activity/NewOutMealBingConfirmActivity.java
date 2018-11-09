@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -85,7 +86,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
  * 创建时间:    2018/7/11 15:34
- * 描述:        TODO:
+ * 描述:        套餐耗材扫描操作界面
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$
@@ -233,21 +234,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        mBaseTabBack.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nan)
-                    .error(R.mipmap.hccz_mrtx_nan)
-                    .into(mBaseTabIconRight);
-        } else {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nv)
-                    .error(R.mipmap.hccz_mrtx_nv)
-                    .into(mBaseTabIconRight);
-        }
+
         initData(false);
         if (mPublicAdapter != null && mBillOrderResultBean.getCstInventoryVos() != null) {
             initView(false);
@@ -264,6 +251,25 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 数据加载
      */
     private void initData(boolean isShowPatient) {
+        mBaseTabBack.setVisibility(View.GONE);
+        mBaseTabIconRight.setEnabled(false);
+        mBaseTabTvName.setEnabled(false);
+        mBaseTabOutLogin.setEnabled(false);
+        mBaseTabTvTitle.setVisibility(View.VISIBLE);
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
+
         if (mUseCstOrderRequest == null) {
             mUseCstOrderRequest = new UseCstOrderBean();
             mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
@@ -447,6 +453,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         mRecyclerview.setAdapter(mPublicAdapter);
         mLinearLayout.removeView(mHeadView);
         mLinearLayout.removeAllViews();
+        View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
+        mPublicAdapter.setEmptyView(inflate);
         mLinearLayout.addView(mHeadView);
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override

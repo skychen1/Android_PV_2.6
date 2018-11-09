@@ -174,25 +174,24 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private boolean               mIsClick;
    private List<TCstInventoryVo> mVoOutList;
    private String mTypeAct;
-   private boolean mOnStart;
+   private boolean mOnStart=false;
 
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	LogUtils.i(TAG, "door   " + event.door);
 	mIsClick = event.isClick;
-	if (!mOnStart){
 	   if (mIsClick){
 		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 		mDoorList.add(event.door);
 	   }else {
 		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   }
-	}
+	   EventBusUtils.removeStickyEvent(ContentConsumeOperateFrag2.class);
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -881,32 +880,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		mRbKey = -1;
 		mPause = false;
 		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-
-		// else if (position == 1){
-		//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
-		//		}else if (position ==2){
-		//		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
-		//		}else if (position == 3){
-		//		   ToastUtils.showShort("按套餐领用-绑定患者！");
-		//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
-		//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
-
-
-		//		} else if (position == 3) {
-		//		   int mType = 3;//1.8调拨
-		//		   showStoreDialog(2, mType);
-		//		} else if (position == 4) {
-		//		   int mType = 2;//1.9.3请领单
-		//		   showTwoDialog(mType);
-		//		} else if (position == 5) {//1.2错误
-		//		   String title = "耗材中包含过期耗材，请查看！";
-		//		   showNoDialog(title, 1);
-		//		} else if (position == 6) {//1.8.1选择患者
-		//		   showRvDialog();
-		//		} else {
-		//		   String title = "柜门已开";
-		//		   showNoDialog(title, 2);
-		//		}
 	   }
 	});
 	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
@@ -1409,6 +1382,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Override
    public void onDestroyView() {
 	super.onDestroyView();
+
 	mOnStart=false;
 	mDoorList.clear();
    }
