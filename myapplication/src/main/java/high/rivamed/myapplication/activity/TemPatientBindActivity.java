@@ -253,6 +253,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         if (mOnBtnGone) {
             mBaseTabOutLogin.setEnabled(false);
             mBaseTabIconRight.setEnabled(false);
+            mBaseTabBtnMsg.setEnabled(false);
             mBaseTabTvName.setEnabled(false);
         }
         mPause = false;

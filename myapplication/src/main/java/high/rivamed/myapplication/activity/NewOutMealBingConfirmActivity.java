@@ -275,6 +275,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         mBaseTabIconRight.setEnabled(false);
         mBaseTabTvName.setEnabled(false);
         mBaseTabOutLogin.setEnabled(false);
+        mBaseTabBtnMsg.setEnabled(false);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
