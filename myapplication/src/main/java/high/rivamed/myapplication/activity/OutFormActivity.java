@@ -14,24 +14,34 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseViewHolder;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutFormAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
+
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -83,7 +93,19 @@ public class OutFormActivity extends BaseSimpleActivity {
      * 总医嘱单数
      */
     private int TOTAL_SIZE;
-
+    /**
+     * (检测没有关门)语音
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+        if (event.isClick){
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        }else {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+        }
+        EventBusUtils.removeStickyEvent(getClass());
+    }
     @Override
     protected int getContentLayoutId() {
         return R.layout.activity_outform_layout;
@@ -95,7 +117,21 @@ public class OutFormActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("术间请领单");
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
         initlistener();
+
         getTopOrderSheetDate(mPageNo, PAGE_SIZE);
     }
 

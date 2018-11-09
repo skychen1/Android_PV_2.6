@@ -80,19 +80,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
     private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
     int k = 0;
     private LoadingDialog.Builder mLoading;
-    /**
-     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
-    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 
-        if (event.isClick){
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-        }else {
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-        }
-    }
     /**
      * 倒计时结束发起
      *
@@ -622,6 +610,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result移出   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {
@@ -702,6 +691,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result退货   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {
@@ -750,6 +740,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result调拨   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {

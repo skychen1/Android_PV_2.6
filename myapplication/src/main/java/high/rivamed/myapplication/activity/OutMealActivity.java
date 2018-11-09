@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -41,13 +42,17 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -107,7 +112,19 @@ public class OutMealActivity extends BaseSimpleActivity {
      * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
      */
     private boolean mIsCanSkipToSurePage = true;
-
+    /**
+     * (检测没有关门)语音
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+        if (event.isClick){
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        }else {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+        }
+        EventBusUtils.removeStickyEvent(getClass());
+    }
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
         mMealbing = event.mString;
@@ -143,6 +160,19 @@ public class OutMealActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("套餐领用");
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
         initlistener();
         findOrderCstPlanDate(true);
     }

@@ -340,6 +340,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "result  " + result);
                 ToastUtils.showShort("操作成功");
+                MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
                 if (mIntentType == 2) {
                     startActivity(new Intent(InBoxAllTwoActivity.this, LoginActivity.class));
                     App.getInstance().removeALLActivity_();

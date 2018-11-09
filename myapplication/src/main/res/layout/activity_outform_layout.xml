@@ -32,7 +32,7 @@
                 android:layout_marginLeft="@dimen/x16"
                 android:text="请选择医嘱单"
                 android:textColor="@color/text_color_3"
-                android:textSize="@dimen/textsize_16"
+                android:textSize="@dimen/textsize_18"
                 android:textStyle="bold" />
         </LinearLayout>
 
