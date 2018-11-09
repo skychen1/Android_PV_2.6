@@ -380,8 +380,10 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
+        LogUtils.i("xb", "getBillStockByEpc----------------");
         mTransReceiveOrderDetailVosAllList.clear();
         for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+           if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode()))
             mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
         }
         mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
