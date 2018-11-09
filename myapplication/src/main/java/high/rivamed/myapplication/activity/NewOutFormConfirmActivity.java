@@ -201,6 +201,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
      */
     private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
 
+    private static boolean mIsFirst = true;
+
     @Override
     protected int getContentLayoutId() {
         return R.layout.activity_timely_layout;
@@ -215,7 +217,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-
         initView();
     }
 
@@ -227,16 +228,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nan)
-                  .error(R.mipmap.hccz_mrtx_nan)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nan)
+                    .error(R.mipmap.hccz_mrtx_nan)
+                    .into(mBaseTabIconRight);
         } else {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nv)
+                    .error(R.mipmap.hccz_mrtx_nv)
+                    .into(mBaseTabIconRight);
         }
 
         if (mOutFromConfirmRequestBean == null) {
@@ -388,11 +389,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     }
 
     private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
-        LogUtils.i("xb", "getBillStockByEpc----------------");
+        Log.e("xb", "********getBillStockByEpc*****");
         mTransReceiveOrderDetailVosAllList.clear();
         for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
-           if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode()))
-            mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+            if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode()))
+                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
         }
         mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
         NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
@@ -456,25 +457,29 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void reciveBillStockDate(Event.EventBillStock event) {
-        if (mTransReceiveOrderDetailVosAllList == null) {
-            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
-        }
-        if (mOutFromConfirmRequestBean == null) {
-            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
-            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
-            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
-            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
-                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+        if (mIsFirst) {
+            if (mTransReceiveOrderDetailVosAllList == null) {
+                mTransReceiveOrderDetailVosAllList = new ArrayList<>();
             }
-        } else {
-            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
-                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+            if (mOutFromConfirmRequestBean == null) {
+                mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+                mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+                mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+                for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+                }
+            } else {
+                for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+                }
             }
+            mPrePageDate = event.orderSheetBean;
+            mTbaseDevices = event.tbaseDevices;
+            mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+            mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
+            mIsFirst = false;
         }
-        mPrePageDate = event.orderSheetBean;
-        mTbaseDevices = event.tbaseDevices;
-        mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
-        mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
+
     }
 
     private int k;
@@ -521,6 +526,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                             mLoadingDialog.mDialog.dismiss();
                         }
                         if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+                            Log.e("xb", "getBillStockByEpc1");
                             getBillStockByEpc(mOutFromConfirmRequestBean);
                         } else {
                             ToastUtils.showShort("耗材扫描失败，请重新扫描");
@@ -534,6 +540,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                         }
                     }
                     if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+                        Log.e("xb", "getBillStockByEpc2");
                         getBillStockByEpc(mOutFromConfirmRequestBean);
                     } else {
                         ToastUtils.showShort("耗材扫描失败，请重新扫描");
