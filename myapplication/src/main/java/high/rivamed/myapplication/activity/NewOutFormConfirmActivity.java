@@ -216,6 +216,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
+        mIsFirst = true;
         EventBusUtils.register(this);
         initView();
     }
