@@ -638,6 +638,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
+	mBaseTabBtnMsg.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
 	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
 	   LogUtils.i(TAG,"CONFIG_009");
@@ -791,6 +792,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	LogUtils.i(TAG, "   DAFFAFAFAFAF");
 	mBaseTabTvTitle.setText("出柜识别耗材");
 	setOutBoxTitles(voList);
+	mBaseTabBtnMsg.setEnabled(false);
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
@@ -854,6 +856,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabBack.setVisibility(View.GONE);
+	mBaseTabBtnMsg.setEnabled(false);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
