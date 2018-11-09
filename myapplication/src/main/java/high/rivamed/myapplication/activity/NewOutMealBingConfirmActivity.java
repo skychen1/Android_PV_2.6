@@ -97,7 +97,7 @@ import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
-    private static final String TAG = "BaseTimelyActivity";
+    private   String TAG = "NewOutMealBingConfirmActivity";
     public int my_id;
     public int mSize;
     @BindView(R.id.timely_start_btn)
@@ -224,8 +224,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * @param event
      */
     private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
-
-    private LoadingDialog.Builder mLoadingDialog;
+    private LoadingDialog.Builder mLoading;
 
     @Override
     protected int getContentLayoutId() {
@@ -242,11 +241,28 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         }
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mLoadingDialog = DialogUtils.showLoading(mContext);
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventLoading(Event.EventLoading event) {
+        if (event.loading) {
+            if (mLoading == null) {
+                LogUtils.i(TAG, "     mLoading  新建 ");
+                mLoading = DialogUtils.showLoading(this);
+            } else {
+                if (!mLoading.mDialog.isShowing()) {
+                    LogUtils.i(TAG, "     mLoading   重新开启");
+                    mLoading.create().show();
+                }
+            }
+        } else {
+            if (mLoading != null) {
+                LogUtils.i(TAG, "     mLoading   关闭");
+                mLoading.mAnimationDrawable.stop();
+                mLoading.mDialog.dismiss();
+                mLoading = null;
+            }
+        }
     }
+
 
     /**
      * 数据加载
@@ -276,7 +292,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
             mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
         }
-        mBaseTabTvTitle.setText("识别耗材");
+        mBaseTabTvTitle.setText("套餐领用识别耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 0 + "</big></font>"));
@@ -301,7 +317,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
-        mLyBingBtn.setText("查看医嘱清单");
+        mLyBingBtn.setText("查看套餐清单");
         if (UIUtils.getConfigType(mContext, CONFIG_007)) {
             mBindPatient.setVisibility(View.VISIBLE);
         } else {
@@ -381,7 +397,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 //		DialogUtils.showRvDialog(this, mContext);
                 break;
             case R.id.timely_start_btn:
-                mLoadingDialog = DialogUtils.showLoading(mContext);
                 mEPCMapDate.clear();
                 mFindBillOrderBean.getCstInventoryVos().clear();
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
@@ -768,9 +783,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                                 mFindBillOrderBean.getCstInventoryVos().add(item);
                             }
                         }
-                        if (mLoadingDialog != null) {
-                            mLoadingDialog.mDialog.dismiss();
-                        }
+
                         if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
                             findBillOrder();
                         } else {
