@@ -558,6 +558,7 @@ public class NetRequest {
     public void findStockByOrderId(String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDBYORDERID).tag(tag)
                 .params("receiveOrderId", Id)
+                .params("thingCode", SPUtils.getString(UIUtils.getContext(), THING_CODE))
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 

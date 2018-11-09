@@ -41,6 +41,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutFormConfirmAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderSheetBean;
@@ -185,6 +186,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
      * 柜子信息
      */
     private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+    List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosBean;
     private OutFormConfirmResultBean mAllOutFormConfirmRequest;
     private LoadingDialog.Builder mLoadingDialog;
     private int mLayout;
@@ -234,8 +236,19 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+
         }
-        mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+        if (mTbaseDevices != null) {
+            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
+                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+                }
+            }
+        }
+        if (mTransReceiveOrderDetailVosAllList == null) {
+            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+        }
         mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
         mBaseTabTvTitle.setText("识别耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
@@ -311,6 +324,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 break;
             case R.id.timely_start_btn:
                 mEPCMapDate.clear();
+                mOutFromConfirmRequestBean.getEpcs().clear();
+                mTransReceiveOrderDetailVosAllList.clear();
                 mLoadingDialog = DialogUtils.showLoading(mContext);
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
@@ -325,7 +340,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 sureTransReceiveOrder();
                 break;
             case R.id.ly_bing_btn:
-                DialogUtils.showLookUpDetailedListDialog(mContext, true, mOutFromConfirmRequestBean.getTransReceiveOrderDetailVos(), mPrePageDate);
+                DialogUtils.showLookUpDetailedListDialog(mContext, true, mTransReceiveOrderDetailVosBean, mPrePageDate);
                 break;
         }
     }
@@ -366,14 +381,18 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
     private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
         mTransReceiveOrderDetailVosAllList.clear();
+        for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+            mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+        }
+        mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
         NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getBillStockByEpc   " + result);
-                outFromConfirmRequestBean.getEpcs().clear();
-                mTransReceiveOrderDetailVosAllList.clear();
                 OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
-                mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
+                if (outFormConfirmResultBean.getTcstInventoryOrderVos() != null) {
+                    mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
+                }
                 mAllOutFormConfirmRequest = outFormConfirmResultBean;
                 mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
                 boolean isCanUse = true;
@@ -429,25 +448,43 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void reciveBillStockDate(Event.EventBillStock event) {
+        if (mTransReceiveOrderDetailVosAllList == null) {
+            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+        }
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+            }
+        } else {
+            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+            }
         }
         mPrePageDate = event.orderSheetBean;
         mTbaseDevices = event.tbaseDevices;
         mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+        mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
     }
 
     private int k;
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
+        Log.e("xb", "scanEPCResult");
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
+                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+                }
+            }
         }
         AllDeviceCallBack.getInstance().initCallBack();
-        mOutFromConfirmRequestBean.getEpcs().clear();
         List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
                 .find(BoxIdBean.class);
         for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -468,7 +505,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                         LogUtils.i(TAG, "mEPCDate  zou l  ");
                         k = 0;
                         for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
-                            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                            if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
+                                mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                            }
                         }
                         if (mLoadingDialog != null) {
                             mLoadingDialog.mDialog.dismiss();
@@ -482,7 +521,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 } else {
                     LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
                     for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
-                        mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                        if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
+                            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+                        }
                     }
                     if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
                         getBillStockByEpc(mOutFromConfirmRequestBean);

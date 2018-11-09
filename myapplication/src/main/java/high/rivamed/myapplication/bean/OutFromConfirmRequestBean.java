@@ -18,6 +18,15 @@ import java.util.List;
 public class OutFromConfirmRequestBean implements Serializable {
     private List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
     private List<String> epcs;
+    private List<String> deviceCodes;
+
+    public List<String> getDeviceCodes() {
+        return deviceCodes;
+    }
+
+    public void setDeviceCodes(List<String> deviceCodes) {
+        this.deviceCodes = deviceCodes;
+    }
 
     public List<BillStockResultBean.TransReceiveOrderDetailVosBean> getTransReceiveOrderDetailVos() {
         return transReceiveOrderDetailVos;

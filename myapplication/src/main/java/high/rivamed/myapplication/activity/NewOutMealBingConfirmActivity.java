@@ -376,6 +376,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             case R.id.timely_start_btn:
                 mLoadingDialog = DialogUtils.showLoading(mContext);
                 mEPCMapDate.clear();
+                mFindBillOrderBean.getCstInventoryVos().clear();
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
                     LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -488,7 +489,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                mFindBillOrderBean.getCstInventoryVos().clear();
                 mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
                 if (mPublicAdapter == null) {
                     initView(false);
@@ -722,7 +722,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
-        mFindBillOrderBean.getCstInventoryVos().clear();
         AllDeviceCallBack.getInstance().initCallBack();
         List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
                 .find(BoxIdBean.class);
@@ -731,7 +730,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             if (box_id != null) {
                 List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
                         READER_TYPE).find(BoxIdBean.class);
-                Log.e("xb","boxIdBeansss.size"+boxIdBeansss.size());
+                Log.e("xb", "boxIdBeansss.size" + boxIdBeansss.size());
                 if (boxIdBeansss.size() > 1) {
                     for (BoxIdBean BoxIdBean : boxIdBeansss) {
                         LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
@@ -747,7 +746,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                         for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
                             FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
                             item.setEpc(v.getKey());
-                            mFindBillOrderBean.getCstInventoryVos().add(item);
+                            if (!mFindBillOrderBean.getCstInventoryVos().contains(item)) {
+                                mFindBillOrderBean.getCstInventoryVos().add(item);
+                            }
                         }
                         if (mLoadingDialog != null) {
                             mLoadingDialog.mDialog.dismiss();
@@ -763,11 +764,13 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
                         FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
                         item.setEpc(v.getKey());
-                        mFindBillOrderBean.getCstInventoryVos().add(item);
+                        if (!mFindBillOrderBean.getCstInventoryVos().contains(item)) {
+                            mFindBillOrderBean.getCstInventoryVos().add(item);
+                        }
                     }
                     if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
                         findBillOrder();
-                    }else {
+                    } else {
                         ToastUtils.showShort("耗材扫描失败，请重新扫描");
                     }
                 }

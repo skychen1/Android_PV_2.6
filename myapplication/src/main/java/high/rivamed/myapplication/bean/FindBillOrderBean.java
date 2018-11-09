@@ -70,5 +70,17 @@ public class FindBillOrderBean implements Serializable {
         public void setEpc(String epc) {
             this.epc = epc;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            } else if (obj instanceof CstInventoryVosBean) {
+                CstInventoryVosBean customString = (CstInventoryVosBean) obj;
+                return customString.epc.equals(epc);
+            } else {
+                return false;
+            }
+        }
     }
 }

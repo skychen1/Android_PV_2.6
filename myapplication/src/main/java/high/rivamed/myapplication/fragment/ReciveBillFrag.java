@@ -174,7 +174,9 @@ public class ReciveBillFrag extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        mTransReceiveOrderDetailVosList = new ArrayList<>();
+        if (mTransReceiveOrderDetailVosList == null) {
+            mTransReceiveOrderDetailVosList = new ArrayList<>();
+        }
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         getStockByOrderId(mPrePageDate.getId());
         initlistener();
@@ -329,9 +331,9 @@ public class ReciveBillFrag extends SimpleFragment {
     public void isDoorClosed(Event.HomeNoClickEvent event) {
         if (mIsCanSkipToSurePage) {
             if (!event.isClick) {
-                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
                 Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
                 mContext.startActivity(intent);
+                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
             }
         }
     }
