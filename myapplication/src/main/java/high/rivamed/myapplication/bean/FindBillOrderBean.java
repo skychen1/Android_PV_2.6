@@ -20,9 +20,19 @@ public class FindBillOrderBean implements Serializable {
      * cstPlan : {"id":"5"}
      * cstInventoryVos : [{"epc":"000000002C10201809040035"},{"epc":"000012341219201809070163"}]
      */
+    private List<String> deviceCodes;
 
+    public List<String> getDeviceCodes() {
+        return deviceCodes;
+    }
+
+    public void setDeviceCodes(List<String> deviceCodes) {
+        this.deviceCodes = deviceCodes;
+    }
     private CstPlanBean cstPlan;
     private List<CstInventoryVosBean> cstInventoryVos;
+
+
 
     public CstPlanBean getCstPlan() {
         return cstPlan;
@@ -69,6 +79,18 @@ public class FindBillOrderBean implements Serializable {
 
         public void setEpc(String epc) {
             this.epc = epc;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            } else if (obj instanceof CstInventoryVosBean) {
+                CstInventoryVosBean customString = (CstInventoryVosBean) obj;
+                return customString.epc.equals(epc);
+            } else {
+                return false;
+            }
         }
     }
 }

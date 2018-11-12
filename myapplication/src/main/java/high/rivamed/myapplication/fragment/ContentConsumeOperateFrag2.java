@@ -174,18 +174,24 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private boolean               mIsClick;
    private List<TCstInventoryVo> mVoOutList;
    private String mTypeAct;
+   private boolean mOnStart=false;
 
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
+	LogUtils.i(TAG, "door   " + event.door);
 	mIsClick = event.isClick;
-	if (mIsClick){
-	   mDoorList.add(event.door);
-	}
+	   if (mIsClick){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+		mDoorList.add(event.door);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   }
+	   EventBusUtils.removeStickyEvent(ContentConsumeOperateFrag2.class);
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -345,7 +351,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOppenDoorEvent(Event.EventOppenDoor event) {
 	mOppenDoor = event.mString;
-
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -474,6 +479,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @Override
    public void onStart() {
 	EventBusUtils.register(this);
+	mOnStart = true;
+	LogUtils.i(TAG, "onStart   ");
 	super.onStart();
    }
 
@@ -484,6 +491,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
+
 	super.onResume();
    }
 
@@ -618,100 +626,102 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	return toJson;
    }
 
-   /**
-    * 快速开柜入柜查询
-    */
-   private void putAllInEPCDate(String json) {
-	NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result sIn   " + result);
-		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		LogUtils.i(TAG, "result size   " + cstInventoryDto.gettCstInventoryVos().size());
-		String string = null;
-		if (cstInventoryDto.getErrorEpcs() != null &&
-		    cstInventoryDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		}
-		if (mVoOutList!=null&&mVoOutList.size()==0&&cstInventoryDto.gettCstInventoryVos() != null &&
-		    cstInventoryDto.gettCstInventoryVos().size() != 0) {
-		   LogUtils.i(TAG, "跳入入柜 " );
-		   mContext.startActivity(new Intent(mContext, InBoxAllTwoActivity.class));
-		   EventBusUtils.postSticky(new Event.EventAct("all"));
-		   EventBusUtils.postSticky(cstInventoryDto);
-		} else {
-		   LogUtils.i(TAG, "显示提示" );
-		   if (cstInventoryDto.gettCstInventoryVos().size()>0){
-		      EventBusUtils.postSticky(new Event.EventOutTitleV(true));
-			LogUtils.i(TAG, "xianshi " );
-		   } else {
-			LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
-		      if (mVoOutList!=null&&mVoOutList.size()==0){
-			   mDoorList.clear();
-			   mEthDeviceIdBack.clear();
-			   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
-			}
-		   }
-		}
-	   }
-	});
-   }
+    /**
+     * 快速开柜入柜查询
+     */
+    private void putAllInEPCDate(String json) {
+        NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogUtils.i(TAG, "result sIn   " + result);
+                TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+                LogUtils.i(TAG, "result size   " + cstInventoryDto.gettCstInventoryVos().size());
+                String string = null;
+                if (cstInventoryDto.getErrorEpcs() != null &&
+                        cstInventoryDto.getErrorEpcs().size() > 0) {
+                    string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+                    ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+                }
+                if (mVoOutList != null && mVoOutList.size() == 0 && cstInventoryDto.gettCstInventoryVos() != null &&
+                        cstInventoryDto.gettCstInventoryVos().size() != 0) {
+                    LogUtils.i(TAG, "跳入入柜 ");
+                    mContext.startActivity(new Intent(mContext, InBoxAllTwoActivity.class));
+                    EventBusUtils.postSticky(new Event.EventAct("all"));
+                    EventBusUtils.postSticky(cstInventoryDto);
+                } else {
+                    LogUtils.i(TAG, "显示提示");
+                    if (cstInventoryDto.gettCstInventoryVos().size() > 0) {
+                        EventBusUtils.postSticky(new Event.EventOutTitleV(true));
+                        LogUtils.i(TAG, "xianshi ");
+                    } else {
+                        LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
+                        if (mVoOutList != null && mVoOutList.size() == 0) {
+                            mDoorList.clear();
+                            mEthDeviceIdBack.clear();
+                            Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-   /**
-    * 选择开柜查询
-    *
-    * @param toJson
-    */
-   public void putEPCDates(String toJson) {
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
-	NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		Log.i(TAG, "result    " + result);
-		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		String string = null;
-		if (cstInventoryDto.getErrorEpcs() != null &&
-		    cstInventoryDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		   return;
-		}
-		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
-		//先绑定患者
-		if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
-		   if (cstInventoryDto.gettCstInventoryVos() != null &&
-			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
-			for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
-			   tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
-			   tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
-			   tCstInventoryVo.setOperationScheduleId(
-				   cstInventoryDto.getOperationScheduleId());
-			}
-			cstInventoryDto.setBindType("firstBind");
-			//                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-			mContext.startActivity(
-				new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName",
-													  cstInventoryDto.getPatientName())
-					.putExtra("patientId", cstInventoryDto.getPatientId())
-					.putExtra("operationScheduleId",
-						    cstInventoryDto.getOperationScheduleId()));
-			EventBusUtils.postSticky(cstInventoryDto);
-		   } else {
-		      mDoorList.clear();
-			mEthDeviceIdBack.clear();
-			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
-			if (mBuilder != null) {
-			   mBuilder.mDialog.dismiss();
-			   mBuilder = null;
-			}
-		   }
-		} else if (UIUtils.getConfigType(mContext, CONFIG_009) && mRbKey == 3) {//后绑定患者
-		   LogUtils.i(TAG,"后绑定患者DDDDDD");
+    /**
+     * 选择开柜查询
+     *
+     * @param toJson
+     */
+    public void putEPCDates(String toJson) {
+        if (mLoading != null) {
+            mLoading.mAnimationDrawable.stop();
+            mLoading.mDialog.dismiss();
+            mLoading = null;
+        }
+        NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                Log.i(TAG, "result    " + result);
+                TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+                String string = null;
+                if (cstInventoryDto.getErrorEpcs() != null &&
+                        cstInventoryDto.getErrorEpcs().size() > 0) {
+                    string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+                    ToastUtils.showLong(string);
+                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+                    return;
+                }
+                LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
+                //先绑定患者
+                if (mFirstBind != null && mFirstBind.equals("firstBind") && mRbKey == 3) {
+                    if (cstInventoryDto.gettCstInventoryVos() != null &&
+                            cstInventoryDto.gettCstInventoryVos().size() != 0) {
+                        for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+                            tCstInventoryVo.setPatientName(cstInventoryDto.getPatientName());
+                            tCstInventoryVo.setPatientId(cstInventoryDto.getPatientId());
+                            tCstInventoryVo.setOperationScheduleId(
+                                    cstInventoryDto.getOperationScheduleId());
+                        }
+                        cstInventoryDto.setBindType("firstBind");
+                        //                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+                        mContext.startActivity(
+                                new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName",
+                                        cstInventoryDto.getPatientName())
+                                        .putExtra("patientId", cstInventoryDto.getPatientId())
+                                        .putExtra("operationScheduleId",
+                                                cstInventoryDto.getOperationScheduleId()));
+                        EventBusUtils.postSticky(cstInventoryDto);
+                    } else {
+                        mDoorList.clear();
+                        mEthDeviceIdBack.clear();
+                        Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+                        if (mBuilder != null) {
+                            mBuilder.mDialog.dismiss();
+                            mBuilder = null;
+                        }
+                    }
+                } else if (UIUtils.getConfigType(mContext, CONFIG_009) && mRbKey == 3) {//后绑定患者
+                    LogUtils.i(TAG, "后绑定患者DDDDDD");
 
 		   if (cstInventoryDto.gettCstInventoryVos() != null &&
 			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
@@ -870,32 +880,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		mRbKey = -1;
 		mPause = false;
 		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-
-		// else if (position == 1){
-		//		   DialogUtils.showNoDialog(mContext, title, 2,"out",null);
-		//		}else if (position ==2){
-		//		   DialogUtils.showNoDialog(mContext, title, 2,"out","bing");
-		//		}else if (position == 3){
-		//		   ToastUtils.showShort("按套餐领用-绑定患者！");
-		//		   mContext.startActivity(new Intent(mContext,OutMealActivity.class));
-		//		   EventBusUtils.postSticky(new Event.EventAct("BING_MEAL"));
-
-
-		//		} else if (position == 3) {
-		//		   int mType = 3;//1.8调拨
-		//		   showStoreDialog(2, mType);
-		//		} else if (position == 4) {
-		//		   int mType = 2;//1.9.3请领单
-		//		   showTwoDialog(mType);
-		//		} else if (position == 5) {//1.2错误
-		//		   String title = "耗材中包含过期耗材，请查看！";
-		//		   showNoDialog(title, 1);
-		//		} else if (position == 6) {//1.8.1选择患者
-		//		   showRvDialog();
-		//		} else {
-		//		   String title = "柜门已开";
-		//		   showNoDialog(title, 2);
-		//		}
 	   }
 	});
 	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
@@ -1106,51 +1090,51 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	super.onPause();
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
-	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
-	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo,R.id.fastopen_title_guanlian})
-   public void onViewClicked(View view) {
-	if (!mIsClick) {
-	   switch (view.getId()) {
-		case R.id.base_tab_icon_right:
-		case R.id.base_tab_tv_name:
-		   mPopupWindow = new SettingPopupWindow(mContext);
-		   mPopupWindow.showPopupWindow(mBaseTabIconRight);
-		   popupClick();
-		   break;
-		case R.id.base_tab_tv_outlogin:
-		   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		   builder.setTwoMsg("您确认要退出登录吗?");
-		   builder.setMsg("温馨提示");
-		   builder.setLeft("取消", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int i) {
-			   dialog.dismiss();
-			}
-		   });
-		   builder.setRight("确认", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int i) {
-			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
-			   dialog.dismiss();
-				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+            R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
+            R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
+            R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo, R.id.fastopen_title_guanlian})
+    public void onViewClicked(View view) {
+        if (!mIsClick) {
+            switch (view.getId()) {
+                case R.id.base_tab_icon_right:
+                case R.id.base_tab_tv_name:
+                    mPopupWindow = new SettingPopupWindow(mContext);
+                    mPopupWindow.showPopupWindow(mBaseTabIconRight);
+                    popupClick();
+                    break;
+                case R.id.base_tab_tv_outlogin:
+                    TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+                    builder.setTwoMsg("您确认要退出登录吗?");
+                    builder.setMsg("温馨提示");
+                    builder.setLeft("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setRight("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                            App.getInstance().removeALLActivity_();
+                            dialog.dismiss();
+                            MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 
-			}
-		   });
-		   builder.create().show();
-		   break;
-		case R.id.base_tab_btn_msg:
-			mContext.startActivity(new Intent(mContext, MessageActivity.class));
-			break;
-		case R.id.function_title_meal://套组
-		   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-			mContext.startActivity(new Intent(mContext, OutMealActivity.class));
-			EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
-		   } else {
-			ToastUtils.showShort("此功能暂未开放");
-		   }
+                        }
+                    });
+                    builder.create().show();
+                    break;
+                case R.id.base_tab_btn_msg:
+                    mContext.startActivity(new Intent(mContext, MessageActivity.class));
+                    break;
+                case R.id.function_title_meal://套组
+                    if (UIUtils.getConfigType(mContext, CONFIG_014)) {
+                        mContext.startActivity(new Intent(mContext, OutMealActivity.class));
+                        EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
+                    } else {
+                        ToastUtils.showShort("此功能暂未开放");
+                    }
 
 		   break;
 		case R.id.fastopen_title_form://医嘱
@@ -1393,5 +1377,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			}
 		   }
 		});
+   }
+
+   @Override
+   public void onDestroyView() {
+	super.onDestroyView();
+
+	mOnStart=false;
+	mDoorList.clear();
    }
 }

@@ -25,11 +25,31 @@ public class BillOrderResultBean implements Serializable {
      * countKind : 3
      */
 
+    private String msg;
+
     private int id;
     private CstPlanBean cstPlan;
     private int countNum;
     private int countKind;
+
+    private List<String> errorEpcs;
     private List<CstInventoryVosBean> cstInventoryVos;
+
+    public List<String> getErrorEpcs() {
+        return errorEpcs;
+    }
+
+    public void setErrorEpcs(List<String> errorEpcs) {
+        this.errorEpcs = errorEpcs;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public int getId() {
         return id;
@@ -71,7 +91,7 @@ public class BillOrderResultBean implements Serializable {
         this.cstInventoryVos = cstInventoryVos;
     }
 
-    public static class CstPlanBean implements Serializable{
+    public static class CstPlanBean implements Serializable {
         /**
          * id : 2
          * createTime : null
@@ -177,7 +197,7 @@ public class BillOrderResultBean implements Serializable {
         }
     }
 
-    public static class CstInventoryVosBean implements Serializable{
+    public static class CstInventoryVosBean implements Serializable {
         /**
          * accountId : null
          * cstName : 真空采血管2

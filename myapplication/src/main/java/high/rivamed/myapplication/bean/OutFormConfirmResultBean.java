@@ -24,15 +24,36 @@ public class OutFormConfirmResultBean implements Serializable {
      * cstCount : 3
      * cstTypes : 3
      * tcstInventoryOrderVos : [{"cstName":"角巩膜咬切器","cstId":"104","cstSpec":"1.5m","epc":"00021720180412000336","expirationTime":"2020-01-05 00:00:00","thingName":"2号柜","thingCode":"40288293668bfb3601668bfdb3350000","isContain":false},{"cstName":"缝线结扎镊","cstId":"106","cstSpec":"直平台","epc":"00021720180409000045","expirationTime":"2020-01-05 00:00:00","thingName":"1号柜","thingCode":"40288293669e921601669fa48062003f","isContain":false},{"cstName":"虹膜恢复器","cstId":"108","cstSpec":"单头","epc":"00021020180921000002","expirationTime":"2020-01-05 00:00:00","thingName":"1号柜","thingCode":"40288293669e921601669fa48062003f","isContain":false}]
+     * msg
      */
+
+
+
 
     private int id;
     private int cstCount;
     private int cstTypes;
+    private String msg;
     private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
     private List<String> epcs;
     private List<TcstInventoryOrderVosBean> tcstInventoryOrderVos;
     private OrderSheetBean.RowsBean transReceiveOrder;
+    private List<String> errorEpcs;
+    public List<String> getErrorEpcs() {
+        return errorEpcs;
+    }
+
+    public void setErrorEpcs(List<String> errorEpcs) {
+        this.errorEpcs = errorEpcs;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public OrderSheetBean.RowsBean getTransReceiveOrder() {
         return transReceiveOrder;
@@ -102,12 +123,11 @@ public class OutFormConfirmResultBean implements Serializable {
          * receiveNum : 0
          * needNum : 3
          * patientName : 马羊焕
-         * thingCode : 4028829965f9f6e80165fa1a09530000
-         * thingName : //////=
-         * thingStore : null
-         * codeArray : null
+         * deviceCode : 4028829965f9f6e80165fa1a09530000
+         * deviceName : //////=
+         * deviceStore : null
+         * deviceCodes":["4028829366e7fad30166e82a8f860008"]
          */
-
         private String orderDetailId;
         private int isHaveNum;
         private int counts;
@@ -118,10 +138,10 @@ public class OutFormConfirmResultBean implements Serializable {
         private int receiveNum;
         private int needNum;
         private String patientName;
-        private String thingCode;
-        private String thingName;
-        private String thingStore;
-        private List<String> codeArray;
+        private String deviceCode;
+        private List<String> deviceName;
+        private String deviceStore;
+        private List<String> deviceCodes;
 
         public String getOrderDetailId() {
             return orderDetailId;
@@ -204,35 +224,35 @@ public class OutFormConfirmResultBean implements Serializable {
         }
 
         public String getThingCode() {
-            return thingCode;
+            return deviceCode;
         }
 
         public void setThingCode(String thingCode) {
-            this.thingCode = thingCode;
+            this.deviceCode = thingCode;
         }
 
-        public String getThingName() {
-            return thingName;
+        public List<String> getThingName() {
+            return deviceName;
         }
 
-        public void setThingName(String thingName) {
-            this.thingName = thingName;
+        public void setThingName(List<String> thingName) {
+            this.deviceName = thingName;
         }
 
         public String getThingStore() {
-            return thingStore;
+            return deviceStore;
         }
 
         public void setThingStore(String thingStore) {
-            this.thingStore = thingStore;
+            this.deviceStore = thingStore;
         }
 
         public List<String> getCodeArray() {
-            return codeArray;
+            return deviceCodes;
         }
 
         public void setCodeArray(List<String> codeArray) {
-            this.codeArray = codeArray;
+            this.deviceCodes = codeArray;
         }
     }
 

@@ -3,6 +3,7 @@
 
     <!-- 选中时候的效果 -->
     <item android:state_checked="false" android:color="@color/text_color_0"></item>
+    <item android:state_pressed="true" android:color="@color/bg_f"></item>
     <item android:state_checked="true" android:color="@color/bg_f"></item>
     <!--<item android:color="@color/text_color_w"></item>-->
     selector_stock_title_text

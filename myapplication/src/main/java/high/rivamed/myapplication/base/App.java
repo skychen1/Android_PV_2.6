@@ -20,6 +20,7 @@ import com.orhanobut.logger.Logger;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidpn.client.ServiceManager;
+import org.androidpn.demoapp.DemoAppActivity;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
@@ -93,7 +94,18 @@ public class App extends Application {
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
+        initMessgeService();
+
     }
+
+    /**
+     * 初始化消息Service
+     */
+    private void initMessgeService() {
+        ServiceManager serviceManager = new ServiceManager(App.this);
+        serviceManager.startService();
+    }
+
 
     public static void InitDeviceService() {
 //        DeviceManager.getInstance().StartUhfReaderService(UhfDeviceType.UHF_READER_RODINBELL, 8010);

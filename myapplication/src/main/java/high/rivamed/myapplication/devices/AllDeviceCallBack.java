@@ -106,7 +106,6 @@ public class AllDeviceCallBack {
 	   public void OnDoorOpened(String deviceIndentify, boolean success) {
 		//目前设备监控开门success有可能出现错误   都设置成true
 		EventBusUtils.post(new Event.EventOppenDoor("true"));
-
 		if (success) {
 		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开"));
 		} else {
@@ -132,7 +131,6 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
 //		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
-
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
 
 		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
@@ -144,11 +142,10 @@ public class AllDeviceCallBack {
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
 
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
+		   EventBusUtils.post(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
 		clossDoorStartScan(deviceIndentify);
-
 	   }
 
 	   @Override

@@ -12,7 +12,7 @@
         android:layout_width="@dimen/x425"
         android:layout_height="@dimen/x230"
         android:clickable="false"
-        app:cardBackgroundColor="@color/bg_color"
+        app:cardBackgroundColor="@color/bg"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">

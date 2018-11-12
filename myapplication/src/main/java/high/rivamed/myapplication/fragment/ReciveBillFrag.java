@@ -174,7 +174,11 @@ public class ReciveBillFrag extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        mTransReceiveOrderDetailVosList = new ArrayList<>();
+        mPublicRl.setVisibility(View.GONE);
+
+        if (mTransReceiveOrderDetailVosList == null) {
+            mTransReceiveOrderDetailVosList = new ArrayList<>();
+        }
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         getStockByOrderId(mPrePageDate.getId());
         initlistener();
@@ -185,7 +189,6 @@ public class ReciveBillFrag extends SimpleFragment {
      */
     private void initData() {
 
-        mPublicRl.setVisibility(View.GONE);
         String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
         titeleList = Arrays.asList(array);
         mSize = array.length;
@@ -212,13 +215,15 @@ public class ReciveBillFrag extends SimpleFragment {
                 String six = mPublicAdapter.getItem(position).getReceivedStatus();
                 if (!six.equals("已领取")) {
                     mTbaseDevices.clear();
-                    for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
+			 List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
+			 for (String deviceCode : deviceCodes) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
                         if (!TextUtils.isEmpty(deviceCode)) {
                             mTbaseDevices.add(oneDoor);
                         }
                     }
+                    LogUtils.i(TAG,"mTbaseDevices   "+mTbaseDevices.size());
                     if (mTbaseDevices.size() > 0) {
                         AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                     } else {
@@ -295,7 +300,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 ToastUtils.showShort("全部开柜");
                 mTbaseDevices.clear();
                 for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
-                    for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
+			 List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceCodes();
+			 for (String deviceCode : deviceCodes) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
                         if (deviceCode != null) {
@@ -329,9 +335,14 @@ public class ReciveBillFrag extends SimpleFragment {
     public void isDoorClosed(Event.HomeNoClickEvent event) {
         if (mIsCanSkipToSurePage) {
             if (!event.isClick) {
-                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
                 Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("DATA",new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
+//                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+
+
             }
         }
     }

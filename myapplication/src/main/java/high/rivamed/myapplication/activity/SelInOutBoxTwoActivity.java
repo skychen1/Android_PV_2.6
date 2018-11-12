@@ -528,6 +528,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                 mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
             string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
             ToastUtils.showLong(string);
+            MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
         } else {
             List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
             List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
@@ -609,6 +610,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result移出   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {
@@ -689,6 +691,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result退货   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {
@@ -737,6 +740,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                     public void onSucceed(String result) {
                         LogUtils.i(TAG, "result调拨   " + result);
                         ToastUtils.showShort("操作成功");
+                        MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
                         if (event.mIntentType == 2) {
                             startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
                         } else {

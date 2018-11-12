@@ -19,6 +19,7 @@ import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -541,6 +542,7 @@ public class NetRequest {
     public void findStockByOrderId(String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDBYORDERID).tag(tag)
                 .params("receiveOrderId", Id)
+                .params("thingCode", SPUtils.getString(UIUtils.getContext(), THING_CODE))
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
@@ -614,6 +616,17 @@ public class NetRequest {
     public void useOrderCst(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_OPERATETCSTINVENTORY).tag(tag)
                 .upJson(json)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
+     * 套组领用-在退出应用前提交套组信息生成消息
+     */
+    public void submitOrderCstInfo(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_CSTPLAN_SAVERECEIVEORDERMSG).tag(tag)
+                .params("accountId", SPUtils.getString(UIUtils.getContext(),KEY_ACCOUNT_ID))
+                .params("receiveOrderId", SPUtils.getString(UIUtils.getContext(), SAVE_RECEIVE_ORDERID))
+                .params("thingCode",  SPUtils.getString(UIUtils.getContext(), THING_CODE))
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 

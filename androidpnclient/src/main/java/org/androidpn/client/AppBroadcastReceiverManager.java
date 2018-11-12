@@ -22,19 +22,12 @@ public class AppBroadcastReceiverManager {
 
     public static final String ACTION_NOTIFICATION_NETSTATE = "org.androidpn.client.NOTIFICATION_NETSTATE";
     public static final String DATE_NETLINKED = "org.androidpn.client.NOTIFICATION_NETLINKED";
-    private static NetLinkReceiver mNetLinkReceiver = null;
+    private static NetLinkReceiver mNetLinkReceiver = new NetLinkReceiver();
 
-    public static void registerNetLinkReceiver(Application application) {
-        if (mNetLinkReceiver == null) {
-            synchronized (AppBroadcastReceiverManager.class) {
-                if (mNetLinkReceiver == null) {
-                    mNetLinkReceiver = new NetLinkReceiver();
-                    IntentFilter filter = new IntentFilter();
-                    filter.addAction(ACTION_NOTIFICATION_NETSTATE);
-                    application.registerReceiver(mNetLinkReceiver, filter);
-                }
-            }
-        }
+    public static void registerNetLinkReceiver(Context application) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_NOTIFICATION_NETSTATE);
+        application.registerReceiver(mNetLinkReceiver, filter);
     }
 
     public static void addNetLinkListener(NetLinkReceiver.NetLinkListener linkListener) {
@@ -53,7 +46,7 @@ public class AppBroadcastReceiverManager {
         }
     }
 
-    public static void unregisterNetLinkReceiver(Application application) {
+    public static void unregisterNetLinkReceiver(Context application) {
         if (mNetLinkReceiver != null) {
             application.unregisterReceiver(mNetLinkReceiver);
             mNetLinkReceiver.removeAllNetLinkListener();

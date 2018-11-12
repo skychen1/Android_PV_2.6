@@ -5,7 +5,6 @@ import android.util.Log;
 import java.net.InetSocketAddress;
 
 import cn.rivamed.DeviceManager;
-import cn.rivamed.Utils.MusicPlayer;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002ClientHandler;
 import cn.rivamed.device.ClientHandler.eth002Handler.Eth002Message;
@@ -169,9 +168,6 @@ public class Eth002Service extends BaseService {
             if (Eth002Service.this.getDeviceManager() != null) {
                 if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
                     Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorClosed(clientHandler.getIdentification(), success);
-                    if (success) {
-                        MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);//播放提示音
-                    }
                 }
             }
         }
@@ -181,9 +177,7 @@ public class Eth002Service extends BaseService {
             if (Eth002Service.this.getDeviceManager() != null) {
                 if (Eth002Service.this.getDeviceManager().getDeviceCallBack() != null) {
                     Eth002Service.this.getDeviceManager().getDeviceCallBack().OnDoorOpened(clientHandler.getIdentification(), opened);
-                    if (opened) {
-                        MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);//播放提示音
-                    }
+
                 }
             }
         }

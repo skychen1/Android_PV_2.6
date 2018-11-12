@@ -57,7 +57,7 @@
 		android:id="@+id/seven_seven"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2"
+		android:layout_weight="2.5"
 		/>
 	<View
 		style="@style/view_title_line_style"/>
@@ -66,6 +66,6 @@
 		android:id="@+id/seven_six"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2.5"
+		android:layout_weight="2"
 		/>
 </LinearLayout>

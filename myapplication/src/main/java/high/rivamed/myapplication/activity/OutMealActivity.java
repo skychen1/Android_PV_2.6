@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -41,13 +42,17 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -108,6 +113,21 @@ public class OutMealActivity extends BaseSimpleActivity {
      */
     private boolean mIsCanSkipToSurePage = true;
 
+    /**
+     * (检测没有关门)语音
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+        if (event.isClick) {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        } else {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+        }
+        EventBusUtils.removeStickyEvent(getClass());
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
         mMealbing = event.mString;
@@ -143,6 +163,19 @@ public class OutMealActivity extends BaseSimpleActivity {
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("套餐领用");
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                    .load(R.mipmap.hccz_mrtx_nan)
+                    .error(R.mipmap.hccz_mrtx_nan)
+                    .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                    .load(R.mipmap.hccz_mrtx_nv)
+                    .error(R.mipmap.hccz_mrtx_nv)
+                    .into(mBaseTabIconRight);
+        }
         initlistener();
         findOrderCstPlanDate(true);
     }
@@ -212,7 +245,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                     for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
-                        mTbaseDevicesFromEvent.add(oneDoor);
+                        if (oneDoor != null && oneDoor.getDeviceCode() != null) {
+                            mTbaseDevicesFromEvent.add(oneDoor);
+                        }
                     }
                     AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
 
@@ -299,7 +334,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                         for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
                             BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                             oneDoor.setDeviceCode(deviceCode);
-                            mTbaseDevicesFromEvent.add(oneDoor);
+                            if (oneDoor != null && oneDoor.getDeviceCode() != null) {
+                                mTbaseDevicesFromEvent.add(oneDoor);
+                            }
                         }
                     }
                     if (mTbaseDevicesFromEvent.size() > 0) {
@@ -401,15 +438,14 @@ public class OutMealActivity extends BaseSimpleActivity {
                     info.setReceiveNum(item.getTotalCount());
                     info.setNeedNum(item.getTotalCount());
                     info.setPatientName("");
-//                    StringBuffer sb = new StringBuffer();
-//                    for (int i = 0; i < item.getDeviceNames().size(); i++) {
-//                        sb.append(item.getDeviceNames().get(i));
-//                    }
-//                    info.setThingName(sb.toString());
-//                    transReceiveOrderDetailVosList.add(info);
+
+                    info.setDeviceName(item.getDeviceNames());
+                    transReceiveOrderDetailVosList.add(info);
                 }
-                EventBusUtils.postSticky(new Event.EventBillOrder(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DATA", new Event.EventBillStock(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         }
