@@ -1,9 +1,7 @@
 package org.androidpn.client;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.telephony.PhoneStateListener;
 import android.util.Log;
 
 /**
