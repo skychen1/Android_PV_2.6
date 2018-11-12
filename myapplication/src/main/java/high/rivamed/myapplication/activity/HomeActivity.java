@@ -153,8 +153,8 @@ public class HomeActivity extends SimpleActivity {
     }
 
     /*
-    * 初始化消息图标显示状态
-    * */
+     * 初始化消息图标显示状态
+     * */
     private void initMessageIcon() {
         NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
             @Override
@@ -162,11 +162,7 @@ public class HomeActivity extends SimpleActivity {
                 try {
                     PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
                     if (emergencyBean.getMessages() != null) {
-                        if (emergencyBean.getMessages().size()>0) {
-                            EventBusUtils.post(new Notifier.EventIfHaveMessage(true));
-                        } else {
-                            EventBusUtils.post(new Notifier.EventIfHaveMessage(false));
-                        }
+                        EventBusUtils.post(new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -179,6 +175,7 @@ public class HomeActivity extends SimpleActivity {
      * 初始化消息推送服务
      */
     private void initPushService() {
+
         if (!NotificationsUtils.isNotificationEnabled(this)) {
             Intent localIntent = new Intent();
             localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -198,8 +195,8 @@ public class HomeActivity extends SimpleActivity {
         }
         // Start the service
         ServiceManager serviceManager = new ServiceManager(this);
-        serviceManager.setNotificationIcon(org.androidpn.demoapp.R.drawable.notification);
         serviceManager.startService();
+
     }
 
     @Override

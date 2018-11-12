@@ -2,6 +2,7 @@ package high.rivamed.myapplication.adapter;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,10 +57,12 @@ public class PendingTaskAdapter
                     String detail = item.getDetail();
                     try {
                         JSONObject jsonObject = new JSONObject(detail);
-                        String orderId = jsonObject.optString("orderId");
+                        String orderId = jsonObject.optString("receiveOrderId");
                         Intent intent = new Intent(mContext, OutFormActivity.class);
-                        intent.putExtra("orderId",orderId);
+                        intent.putExtra("receiveOrderId",orderId);
                         mContext.startActivity(intent);
+
+                        Log.e("PendingTask", orderId);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

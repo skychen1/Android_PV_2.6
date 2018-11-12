@@ -140,8 +140,8 @@ public class PendingTaskFrag extends SimpleFragment {
             @Override
             public void onSucceed(String result) {
                 try {
-                   EventBusUtils.post(new Notifier.EventIfHaveMessage(true));
-                   //todo 待完成
+                    initData();
+                    EventBusUtils.post(new Notifier.EventPushMessageNum(mMessagesList.size() + ""));
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
@@ -169,18 +169,10 @@ public class PendingTaskFrag extends SimpleFragment {
                 try {
                     PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
                     mMessagesList.clear();
-
-//                    for (int i = 0; i < 5; i++) {//todo 假数据
-//                        PendingTaskBean.MessagesBean bean = new PendingTaskBean.MessagesBean();
-//                        bean.setType("1");
-//                        bean.setTitle("医嘱");
-//                        bean.setText("前往领取");
-//                        mMessagesList.add(bean);
-//                    }
-
                     if (emergencyBean.getMessages() != null) {
                         mMessagesList.addAll(emergencyBean.getMessages());
                         mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
+                        mAdapter.notifyDataSetChanged();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
