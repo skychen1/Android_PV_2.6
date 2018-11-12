@@ -438,7 +438,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                     info.setReceiveNum(item.getTotalCount());
                     info.setNeedNum(item.getTotalCount());
                     info.setPatientName("");
-                    info.setDeviceNames(item.getDeviceNames());
+
+                    info.setDeviceName(item.getDeviceNames());
                     transReceiveOrderDetailVosList.add(info);
                 }
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);

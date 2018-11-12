@@ -36,6 +36,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
+import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 /**
@@ -67,6 +68,8 @@ public class HomeActivity extends SimpleActivity {
     RadioButton mContentStockStatus;
     @BindView(R.id.content_timely_check)
     RadioButton mContentTimelyCheck;
+    @BindView(R.id.content_syjl)
+    RadioButton mContentSyjl;
     @BindView(R.id.home_rg)
     RadioGroup mHomeRg;
     @BindView(R.id.rg_gone)
@@ -128,7 +131,11 @@ public class HomeActivity extends SimpleActivity {
         EventBusUtils.register(this);
         LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
         //	EventBusUtils.register(this);
-
+        if (!UIUtils.getConfigType(mContext, CONFIG_007)){
+            mContentSyjl.setVisibility(View.GONE);
+        }else {
+            mContentSyjl.setVisibility(View.VISIBLE);
+        }
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {

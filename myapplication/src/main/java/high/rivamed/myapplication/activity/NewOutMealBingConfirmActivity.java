@@ -240,6 +240,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras().getSerializable("DATA");
         mPrePageDate = data.orderSheetBean;
         mTransReceiveOrderDetailVos = data.transReceiveOrderDetailVosList;
+
         mTbaseDevices = data.tbaseDevices;
         mFindBillOrderBean = new FindBillOrderBean();
         FindBillOrderBean.CstPlanBean cstPlanBean = new FindBillOrderBean.CstPlanBean();
@@ -310,11 +311,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 0 + "</big></font>"));
         mTimelyStartBtn.setVisibility(View.VISIBLE);
         mDownBtnOneLL.setVisibility(View.VISIBLE);
-        mDownBtnOne.setBackgroundResource(R.drawable.bg_btn_gray_nor3);
         String[] array;
-        if (isShowPatient) {
+
+        if (UIUtils.getConfigType(mContext, CONFIG_007)) {
+            mBindPatient.setVisibility(View.VISIBLE);
+            mDownBtnOne.setEnabled(false);
             array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
         } else {
+            mBindPatient.setVisibility(View.GONE);
+            mDownBtnOne.setEnabled(true);
             array = mContext.getResources().getStringArray(R.array.six_ic_arrays);
         }
         titeleList = Arrays.asList(array);
@@ -330,11 +335,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
         mLyBingBtn.setText("查看套餐清单");
-        if (UIUtils.getConfigType(mContext, CONFIG_007)) {
-            mBindPatient.setVisibility(View.VISIBLE);
-        } else {
-            mBindPatient.setVisibility(View.GONE);
-        }
+
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -432,6 +433,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 OrderSheetBean.RowsBean prePageDate = new OrderSheetBean.RowsBean();
                 prePageDate.cstType = "" + mBillOrderResultBean.getCountKind();
                 prePageDate.cstNumber = "" + mBillOrderResultBean.getCountNum();
+                LogUtils.i(TAG,"mTransReceiveOrderDetailVos   "+(mGson.toJson(mTransReceiveOrderDetailVos)));
                 DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos, prePageDate);
                 break;
             case R.id.activity_btn_one:
@@ -458,7 +460,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
     private void initView(boolean isShowPatient) {
         String[] array;
-        if (isShowPatient) {
+
+        if (UIUtils.getConfigType(mContext, CONFIG_007)) {
             array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
             mLayout = R.layout.item_formcon_seven_layout;
             mTitleLayout = R.layout.item_formcon_seven_title_layout;
@@ -467,6 +470,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             mLayout = R.layout.item_formcon_six_layout;
             mTitleLayout = R.layout.item_formcon_six_title_layout;
         }
+
         titeleList = Arrays.asList(array);
         mSize = array.length;
         mHeadView = mContext.getLayoutInflater()
@@ -477,26 +481,31 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
         ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-        if (!isShowPatient) {
+        if (!UIUtils.getConfigType(mContext, CONFIG_007)) {
             ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
         } else {
             ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
             ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
         }
-        mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBillOrderResultBean.getCstInventoryVos());
         mHeadView.setBackgroundResource(R.color.bg_green);
-
-        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        mRefreshLayout.setEnableAutoLoadMore(false);
-        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-        mRecyclerview.setAdapter(mPublicAdapter);
         mLinearLayout.removeView(mHeadView);
-        mLinearLayout.removeAllViews();
-        View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
-        mPublicAdapter.setEmptyView(inflate);
-        mLinearLayout.addView(mHeadView);
+        if (mPublicAdapter!=null){
+            mPublicAdapter.notifyDataSetChanged();
+        }else {
+            mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBillOrderResultBean.getCstInventoryVos());
+
+            mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
+            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+            mRefreshLayout.setEnableAutoLoadMore(false);
+            mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+            mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+            mRecyclerview.setAdapter(mPublicAdapter);
+            mLinearLayout.removeAllViews();
+            View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
+            mPublicAdapter.setEmptyView(inflate);
+            mLinearLayout.addView(mHeadView);
+        }
+
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -555,6 +564,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
                 }
                 if (mBillOrderResultBean.getCstInventoryVos() == null || mBillOrderResultBean.getCstInventoryVos().size() == 0) {
+                    mDownBtnOne.setEnabled(false);
                     Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
@@ -574,6 +584,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + mBillOrderResultBean.getCountKind() +
                             "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                             mBillOrderResultBean.getCountNum() + "</big></font>"));
+                    if (UIUtils.getConfigType(mContext, CONFIG_007)){
+                        mDownBtnOne.setEnabled(false);
+                    }else {
+                        mDownBtnOne.setEnabled(true);
+                    }
                 }
             }
 
@@ -745,23 +760,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     private LoadingDialog.Builder mShowLoading;
     private BoxSizeBean mBoxSizeBean;
 
-    //数据加载
-    private void loadDate() {
-        LogUtils.i(TAG, "loadDate");
-        NetRequest.getInstance().loadBoxSize(mContext, mShowLoading, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                LogUtils.i(TAG, "result  " + result);
-                mTbaseDevices = mBoxSizeBean.getTbaseDevices();
-                if (mTbaseDevices.size() > 1) {
-                    BoxSizeBean.TbaseDevicesBean tbaseDevicesBean = new BoxSizeBean.TbaseDevicesBean();
-                    tbaseDevicesBean.setDeviceName("全部开柜");
-                    mTbaseDevices.add(0, tbaseDevicesBean);
-                }
-            }
-        });
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRvCheckBindEvent(Event.EventCheckbox event) {
@@ -777,6 +775,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 item.setScheduleDateTime(event.scheduleDateTime);
                 item.setSex(event.sex);
                 item.setIsCreate("" + event.create);
+            }
+            if (event.mString!=null){
+                mDownBtnOne.setEnabled(true);
+            }else {
+                mDownBtnOne.setEnabled(false);
             }
         }
 //        if ("virtual".equals(event.id)) {

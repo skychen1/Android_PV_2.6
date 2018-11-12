@@ -139,7 +139,7 @@ public class OutFormConfirmResultBean implements Serializable {
         private int needNum;
         private String patientName;
         private String deviceCode;
-        private String deviceName;
+        private List<String> deviceName;
         private String deviceStore;
         private List<String> deviceCodes;
 
@@ -231,11 +231,11 @@ public class OutFormConfirmResultBean implements Serializable {
             this.deviceCode = thingCode;
         }
 
-        public String getThingName() {
+        public List<String> getThingName() {
             return deviceName;
         }
 
-        public void setThingName(String thingName) {
+        public void setThingName(List<String> thingName) {
             this.deviceName = thingName;
         }
 

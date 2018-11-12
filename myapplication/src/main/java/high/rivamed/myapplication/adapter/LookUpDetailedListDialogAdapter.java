@@ -1,12 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,18 +14,6 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BillStockResultBean;
-import high.rivamed.myapplication.bean.Movie;
-
-import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
-import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM;
-import static high.rivamed.myapplication.cont.Constants.STYPE_FORM_CONF;
-import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
-import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_BING;
-import static high.rivamed.myapplication.cont.Constants.STYPE_MEAL_NOBING;
-import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
-import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
-import static high.rivamed.myapplication.cont.Constants.TYPE_TIMELY;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -81,8 +64,8 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getCounts());
         StringBuffer deviceNames=new StringBuffer();
-        for (int i = 0; i < item.getDeviceNames().size(); i++) {
-            deviceNames.append(item.getDeviceNames().get(i));
+        for (int i = 0; i < item.getDeviceName().size(); i++) {
+            deviceNames.append(item.getDeviceName().get(i));
         }
         mSeven_four.setText(deviceNames);
     }
