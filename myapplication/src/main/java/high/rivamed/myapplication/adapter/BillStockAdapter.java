@@ -79,7 +79,11 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getCounts());
-        mSeven_four.setText(item.getDeviceName());
+        StringBuffer deviceNames = new StringBuffer();
+        for (int i = 0; i < item.getDeviceName().size(); i++) {
+            deviceNames.append(item.getDeviceName().get(i));
+        }
+        mSeven_four.setText(deviceNames.toString());
         mSeven_five.setText(item.getPatientName());
         mSeven_six.setText(item.getReceivedStatus());
         mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));

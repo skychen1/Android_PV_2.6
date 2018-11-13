@@ -36,6 +36,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
+import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 /**
@@ -67,6 +68,8 @@ public class HomeActivity extends SimpleActivity {
     RadioButton mContentStockStatus;
     @BindView(R.id.content_timely_check)
     RadioButton mContentTimelyCheck;
+    @BindView(R.id.content_syjl)
+    RadioButton mContentSyjl;
     @BindView(R.id.home_rg)
     RadioGroup mHomeRg;
     @BindView(R.id.rg_gone)
@@ -128,7 +131,11 @@ public class HomeActivity extends SimpleActivity {
         EventBusUtils.register(this);
         LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
         //	EventBusUtils.register(this);
-
+        if (!UIUtils.getConfigType(mContext, CONFIG_007)){
+            mContentSyjl.setVisibility(View.GONE);
+        }else {
+            mContentSyjl.setVisibility(View.VISIBLE);
+        }
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -146,8 +153,8 @@ public class HomeActivity extends SimpleActivity {
     }
 
     /*
-    * 初始化消息图标显示状态
-    * */
+     * 初始化消息图标显示状态
+     * */
     private void initMessageIcon() {
         NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
             @Override
@@ -155,11 +162,7 @@ public class HomeActivity extends SimpleActivity {
                 try {
                     PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
                     if (emergencyBean.getMessages() != null) {
-                        if (emergencyBean.getMessages().size()>0) {
-                            EventBusUtils.post(new Notifier.EventIfHaveMessage(true));
-                        } else {
-                            EventBusUtils.post(new Notifier.EventIfHaveMessage(false));
-                        }
+                        EventBusUtils.post(new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -172,6 +175,7 @@ public class HomeActivity extends SimpleActivity {
      * 初始化消息推送服务
      */
     private void initPushService() {
+
         if (!NotificationsUtils.isNotificationEnabled(this)) {
             Intent localIntent = new Intent();
             localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -191,8 +195,8 @@ public class HomeActivity extends SimpleActivity {
         }
         // Start the service
         ServiceManager serviceManager = new ServiceManager(this);
-        serviceManager.setNotificationIcon(org.androidpn.demoapp.R.drawable.notification);
         serviceManager.startService();
+
     }
 
     @Override

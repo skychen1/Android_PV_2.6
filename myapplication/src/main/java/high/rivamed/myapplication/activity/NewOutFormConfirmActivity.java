@@ -26,7 +26,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -90,7 +89,7 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
  */
 
 public class NewOutFormConfirmActivity extends BaseSimpleActivity {
-    private static final String TAG = "BaseTimelyActivity";
+    private   String TAG = "NewOutFormConfirmActivity";
     public int mSize;
     //重新扫描
     @BindView(R.id.timely_start_btn)
@@ -292,7 +291,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 0 + "</big></font>"));
         mTimelyStartBtn.setVisibility(View.VISIBLE);
         mDownBtnOneLL.setVisibility(View.VISIBLE);
-        String[] array = mContext.getResources().getStringArray(R.array.six_ic_arrays);
+        String[] array = mContext.getResources().getStringArray(R.array.six_form_arrays);
         titeleList = Arrays.asList(array);
         mSize = array.length;
 
@@ -305,7 +304,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
-        mLyBingBtn.setText("查看医嘱清单");
+        mLyBingBtn.setText("查看术间请领单");
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -378,6 +377,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 }
                 break;
             case R.id.ly_bing_btn:
+                LogUtils.i(TAG,"mTransReceiveOrderDetailVosBean   "+mGson.toJson(mTransReceiveOrderDetailVosBean));
                 DialogUtils.showLookUpDetailedListDialog(mContext, true, mTransReceiveOrderDetailVosBean, mPrePageDate);
                 break;
         }

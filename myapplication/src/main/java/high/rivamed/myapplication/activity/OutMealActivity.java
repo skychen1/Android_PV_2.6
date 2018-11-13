@@ -327,7 +327,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                 }
                 break;
             case R.id.meal_open_btn:
-                if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
+                if (mPublicAdapter!=null && mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
                     ToastUtils.showShort("全部开柜");
                     mTbaseDevicesFromEvent.clear();
                     for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
@@ -438,7 +438,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                     info.setReceiveNum(item.getTotalCount());
                     info.setNeedNum(item.getTotalCount());
                     info.setPatientName("");
-                    info.setDeviceNames(item.getDeviceNames());
+
+                    info.setDeviceName(item.getDeviceNames());
                     transReceiveOrderDetailVosList.add(info);
                 }
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);

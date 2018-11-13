@@ -17,415 +17,142 @@ import java.util.List;
  */
 public class BillStockResultBean implements Serializable {
 
-
     /**
-     * pageModel : {"pageNo":1,"pageSize":10,"rows":[{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"1","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"2","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]}],"total":5}
      * id : 0
-     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]}]
-     * orderId : 40288293667aa53e01667aa5fc610000
-     * cstCount : 7
-     * cstTypes : 3
+     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":1,"cstId":"116","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceCodes":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"117","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceCodes":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"}]
+     * receiveOrderId : 40288293667aa53e01667aa5fc610016
+     * cstCount : 4
+     * cstTypes : 2
+     * thingCode : 4028829366d31b010166d34ac8af000f
      */
 
-    private PageModelBean pageModel;
     private int id;
-    private String orderId;
-    private int cstCount;
-    private int cstTypes;
+    private String                               receiveOrderId;
+    private int                                  cstCount;
+    private int                                  cstTypes;
+    private String                               thingCode;
     private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
 
-    public PageModelBean getPageModel() {
-        return pageModel;
-    }
+    public int getId() { return id;}
 
-    public void setPageModel(PageModelBean pageModel) {
-        this.pageModel = pageModel;
-    }
+    public void setId(int id) { this.id = id;}
 
-    public int getId() {
-        return id;
-    }
+    public String getReceiveOrderId() { return receiveOrderId;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setReceiveOrderId(String receiveOrderId) { this.receiveOrderId = receiveOrderId;}
 
-    public String getOrderId() {
-        return orderId;
-    }
+    public int getCstCount() { return cstCount;}
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
+    public void setCstCount(int cstCount) { this.cstCount = cstCount;}
 
-    public int getCstCount() {
-        return cstCount;
-    }
+    public int getCstTypes() { return cstTypes;}
 
-    public void setCstCount(int cstCount) {
-        this.cstCount = cstCount;
-    }
+    public void setCstTypes(int cstTypes) { this.cstTypes = cstTypes;}
 
-    public int getCstTypes() {
-        return cstTypes;
-    }
+    public String getThingCode() { return thingCode;}
 
-    public void setCstTypes(int cstTypes) {
-        this.cstTypes = cstTypes;
-    }
+    public void setThingCode(String thingCode) { this.thingCode = thingCode;}
 
-    public List<TransReceiveOrderDetailVosBean> getTransReceiveOrderDetailVos() {
-        return transReceiveOrderDetailVos;
-    }
+    public List<TransReceiveOrderDetailVosBean> getTransReceiveOrderDetailVos() { return transReceiveOrderDetailVos;}
 
-    public void setTransReceiveOrderDetailVos(List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos) {
-        this.transReceiveOrderDetailVos = transReceiveOrderDetailVos;
-    }
-
-    public static class PageModelBean implements Serializable {
-        /**
-         * pageNo : 1
-         * pageSize : 10
-         * rows : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":2,"cstId":"106","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":["40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"已领取","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":"3号柜子","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":2,"cstId":"104","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"1","receiveNum":2,"needNum":2,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":2,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"部分领取","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010,40288293669e921601669fa480630040","deviceName":"3号柜子,1柜","deviceStore":"4028829366d31b010166d34ac8af0010:1,40288293669e921601669fa480630040:1","deviceCodes":["4028829366d31b010166d34ac8af0010","40288293669e921601669fa480630040"]},{"orderDetailId":"40288293667aa53e01667aa5fcf30003","isHaveNum":0,"counts":1,"cstId":"108","cstName":"结膜剪","cstSpec":"单头","receivedStatus":"2","receiveNum":1,"needNum":3,"patientName":"马羊焕","deviceCode":"40288293669e921601669fa480630040","deviceName":"1柜","deviceStore":null,"deviceCodes":[]}]
-         * total : 5
-         */
-
-        private int pageNo;
-        private int pageSize;
-        private int total;
-        private List<RowsBean> rows;
-
-        public int getPageNo() {
-            return pageNo;
-        }
-
-        public void setPageNo(int pageNo) {
-            this.pageNo = pageNo;
-        }
-
-        public int getPageSize() {
-            return pageSize;
-        }
-
-        public void setPageSize(int pageSize) {
-            this.pageSize = pageSize;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        public void setTotal(int total) {
-            this.total = total;
-        }
-
-        public List<RowsBean> getRows() {
-            return rows;
-        }
-
-        public void setRows(List<RowsBean> rows) {
-            this.rows = rows;
-        }
-
-        public static class RowsBean implements Serializable{
-            /**
-             * orderDetailId : 40288293667aa53e01667aa5fcf30001
-             * isHaveNum : 1
-             * counts : 2
-             * cstId : 106
-             * cstName : 晶体植入镊
-             * cstSpec : 直平台
-             * receivedStatus : 部分领取
-             * receiveNum : 1
-             * needNum : 2
-             * patientName : 马羊焕
-             * deviceCode : 40288293669e921601669fa480630040
-             * deviceName : 1柜
-             * deviceStore : null
-             * deviceCodes : ["40288293669e921601669fa480630040"]
-             */
-
-            private String orderDetailId;
-            private int isHaveNum;
-            private int counts;
-            private String cstId;
-            private String cstName;
-            private String cstSpec;
-            private String receivedStatus;
-            private int receiveNum;
-            private int needNum;
-            private String patientName;
-            private String deviceCode;
-            private String deviceName;
-            private String deviceStore;
-            private List<String> deviceCodes;
-
-            public String getOrderDetailId() {
-                return orderDetailId;
-            }
-
-            public void setOrderDetailId(String orderDetailId) {
-                this.orderDetailId = orderDetailId;
-            }
-
-            public int getIsHaveNum() {
-                return isHaveNum;
-            }
-
-            public void setIsHaveNum(int isHaveNum) {
-                this.isHaveNum = isHaveNum;
-            }
-
-            public int getCounts() {
-                return counts;
-            }
-
-            public void setCounts(int counts) {
-                this.counts = counts;
-            }
-
-            public String getCstId() {
-                return cstId;
-            }
-
-            public void setCstId(String cstId) {
-                this.cstId = cstId;
-            }
-
-            public String getCstName() {
-                return cstName;
-            }
-
-            public void setCstName(String cstName) {
-                this.cstName = cstName;
-            }
-
-            public String getCstSpec() {
-                return cstSpec;
-            }
-
-            public void setCstSpec(String cstSpec) {
-                this.cstSpec = cstSpec;
-            }
-
-            public String getReceivedStatus() {
-                return receivedStatus;
-            }
-
-            public void setReceivedStatus(String receivedStatus) {
-                this.receivedStatus = receivedStatus;
-            }
-
-            public int getReceiveNum() {
-                return receiveNum;
-            }
-
-            public void setReceiveNum(int receiveNum) {
-                this.receiveNum = receiveNum;
-            }
-
-            public int getNeedNum() {
-                return needNum;
-            }
-
-            public void setNeedNum(int needNum) {
-                this.needNum = needNum;
-            }
-
-            public String getPatientName() {
-                return patientName;
-            }
-
-            public void setPatientName(String patientName) {
-                this.patientName = patientName;
-            }
-
-            public String getDeviceCode() {
-                return deviceCode;
-            }
-
-            public void setDeviceCode(String deviceCode) {
-                this.deviceCode = deviceCode;
-            }
-
-            public String getDeviceName() {
-                return deviceName;
-            }
-
-            public void setDeviceName(String deviceName) {
-                this.deviceName = deviceName;
-            }
-
-            public String getDeviceStore() {
-                return deviceStore;
-            }
-
-            public void setDeviceStore(String deviceStore) {
-                this.deviceStore = deviceStore;
-            }
-
-            public List<String> getDeviceCodes() {
-                return deviceCodes;
-            }
-
-            public void setDeviceCodes(List<String> deviceCodes) {
-                this.deviceCodes = deviceCodes;
-            }
-        }
-    }
+    public void setTransReceiveOrderDetailVos(
+          List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos) { this.transReceiveOrderDetailVos = transReceiveOrderDetailVos;}
 
     public static class TransReceiveOrderDetailVosBean implements Serializable{
+
         /**
          * orderDetailId : 40288293667aa53e01667aa5fcf30001
          * isHaveNum : 1
-         * counts : 2
-         * cstId : 106
+         * counts : 1
+         * cstId : 116
          * cstName : 晶体植入镊
          * cstSpec : 直平台
          * receivedStatus : 部分领取
          * receiveNum : 1
          * needNum : 2
          * patientName : 马羊焕
-         * deviceCode : 40288293669e921601669fa480630040
-         * deviceName : 1柜
+         * deviceCode : 4028829366d31b010166d34ac8af0010
+         * deviceName : ["3号柜子"]
          * deviceStore : null
-         * deviceCodes : ["40288293669e921601669fa480630040"]
+         * deviceCodes : ["4028829366d31b010166d34ac8af0010"]
+         * dname : 3号柜子
          */
 
         private String orderDetailId;
-        private int isHaveNum;
-        private int counts;
-        private String cstId;
-        private String cstName;
-        private String cstSpec;
-        private String receivedStatus;
-        private int receiveNum;
-        private int needNum;
-        private String patientName;
-        private String deviceCode;
-        private String deviceName;
-        private String deviceStore;
+        private int          isHaveNum;
+        private int          counts;
+        private String       cstId;
+        private String       cstName;
+        private String       cstSpec;
+        private String       receivedStatus;
+        private int          receiveNum;
+        private int          needNum;
+        private String       patientName;
+        private String       deviceCode;
+        private Object       deviceStore;
+        private String       dname;
+        private List<String> deviceName;
         private List<String> deviceCodes;
-        private List<String> deviceNames;
 
-        public List<String> getDeviceNames() {
-            return deviceNames;
-        }
+        public String getOrderDetailId() { return orderDetailId;}
 
-        public void setDeviceNames(List<String> deviceNames) {
-            this.deviceNames = deviceNames;
-        }
+        public void setOrderDetailId(String orderDetailId) { this.orderDetailId = orderDetailId;}
 
-        public String getOrderDetailId() {
-            return orderDetailId;
-        }
+        public int getIsHaveNum() { return isHaveNum;}
 
-        public void setOrderDetailId(String orderDetailId) {
-            this.orderDetailId = orderDetailId;
-        }
+        public void setIsHaveNum(int isHaveNum) { this.isHaveNum = isHaveNum;}
 
-        public int getIsHaveNum() {
-            return isHaveNum;
-        }
+        public int getCounts() { return counts;}
 
-        public void setIsHaveNum(int isHaveNum) {
-            this.isHaveNum = isHaveNum;
-        }
+        public void setCounts(int counts) { this.counts = counts;}
 
-        public int getCounts() {
-            return counts;
-        }
+        public String getCstId() { return cstId;}
 
-        public void setCounts(int counts) {
-            this.counts = counts;
-        }
+        public void setCstId(String cstId) { this.cstId = cstId;}
 
-        public String getCstId() {
-            return cstId;
-        }
+        public String getCstName() { return cstName;}
 
-        public void setCstId(String cstId) {
-            this.cstId = cstId;
-        }
+        public void setCstName(String cstName) { this.cstName = cstName;}
 
-        public String getCstName() {
-            return cstName;
-        }
+        public String getCstSpec() { return cstSpec;}
 
-        public void setCstName(String cstName) {
-            this.cstName = cstName;
-        }
+        public void setCstSpec(String cstSpec) { this.cstSpec = cstSpec;}
 
-        public String getCstSpec() {
-            return cstSpec;
-        }
+        public String getReceivedStatus() { return receivedStatus;}
 
-        public void setCstSpec(String cstSpec) {
-            this.cstSpec = cstSpec;
-        }
+        public void setReceivedStatus(
+              String receivedStatus) { this.receivedStatus = receivedStatus;}
 
-        public String getReceivedStatus() {
-            return receivedStatus;
-        }
+        public int getReceiveNum() { return receiveNum;}
 
-        public void setReceivedStatus(String receivedStatus) {
-            this.receivedStatus = receivedStatus;
-        }
+        public void setReceiveNum(int receiveNum) { this.receiveNum = receiveNum;}
 
-        public int getReceiveNum() {
-            return receiveNum;
-        }
+        public int getNeedNum() { return needNum;}
 
-        public void setReceiveNum(int receiveNum) {
-            this.receiveNum = receiveNum;
-        }
+        public void setNeedNum(int needNum) { this.needNum = needNum;}
 
-        public int getNeedNum() {
-            return needNum;
-        }
+        public String getPatientName() { return patientName;}
 
-        public void setNeedNum(int needNum) {
-            this.needNum = needNum;
-        }
+        public void setPatientName(String patientName) { this.patientName = patientName;}
 
-        public String getPatientName() {
-            return patientName;
-        }
+        public String getDeviceCode() { return deviceCode;}
 
-        public void setPatientName(String patientName) {
-            this.patientName = patientName;
-        }
+        public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
 
-        public String getDeviceCode() {
-            return deviceCode;
-        }
+        public Object getDeviceStore() { return deviceStore;}
 
-        public void setDeviceCode(String deviceCode) {
-            this.deviceCode = deviceCode;
-        }
+        public void setDeviceStore(Object deviceStore) { this.deviceStore = deviceStore;}
 
-        public String getDeviceName() {
-            return deviceName;
-        }
+        public String getDname() { return dname;}
 
-        public void setDeviceName(String deviceName) {
-            this.deviceName = deviceName;
-        }
+        public void setDname(String dname) { this.dname = dname;}
 
-        public String getDeviceStore() {
-            return deviceStore;
-        }
+        public List<String> getDeviceName() { return deviceName;}
 
-        public void setDeviceStore(String deviceStore) {
-            this.deviceStore = deviceStore;
-        }
+        public void setDeviceName(List<String> deviceName) { this.deviceName = deviceName;}
 
-        public List<String> getDeviceCodes() {
-            return deviceCodes;
-        }
+        public List<String> getDeviceCodes() { return deviceCodes;}
 
-        public void setDeviceCodes(List<String> deviceCodes) {
-            this.deviceCodes = deviceCodes;
-        }
+        public void setDeviceCodes(List<String> deviceCodes) { this.deviceCodes = deviceCodes;}
     }
 }

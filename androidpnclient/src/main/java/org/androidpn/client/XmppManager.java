@@ -345,7 +345,7 @@ public class XmppManager {
 //                final String newPassword = newRandomUUID();
                 final String newUsername = SPUtils.getString(context, "key_user_name");
                 final String newPassword = "xb";
-
+                Log.e("RegisterTask", "newUsername:"+newUsername);
                 Registration registration = new Registration();
 
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(

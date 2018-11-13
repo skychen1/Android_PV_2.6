@@ -54,11 +54,11 @@ public class Notifier {
     /**
      * 页面顶部的连接状态改变
      */
-    public static class EventIfHaveMessage {
-        public boolean b;
+    public static class EventPushMessageNum {
+        public String num;
 
-        public EventIfHaveMessage(boolean b) {
-            this.b = b;
+        public EventPushMessageNum(String num) {
+            this.num = num;
         }
     }
 
@@ -66,13 +66,14 @@ public class Notifier {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void notify(String notificationId, String apiKey, String title,
                        String message, String uri) {
+
         Log.d(LOGTAG, "notify()...");
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationApiKey=" + apiKey);
         Log.d(LOGTAG, "notificationTitle=" + title);
         Log.d(LOGTAG, "notificationMessage=" + message);
         Log.d(LOGTAG, "notificationUri=" + uri);
-        EventBusUtils.post(new Notifier.EventIfHaveMessage(true));
+        EventBusUtils.post(new EventPushMessageNum(message));
         //注释掉home界面显示提示和跳转Activity
         //        if (isNotificationEnabled()) {
         //            // Show the toast

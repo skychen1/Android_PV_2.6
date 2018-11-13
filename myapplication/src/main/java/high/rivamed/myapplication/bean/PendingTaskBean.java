@@ -12,9 +12,9 @@ public class PendingTaskBean {
 
     /**
      * id : 0
-     * accountId : 1
-     * userId : 1
-     * messages : [{"id":"1","type":"医嘱单未领取耗材","text":"1","detail":"1","createTime":"1","accountId":"1"},{"id":"2","type":"套组未领取耗材","text":"1","detail":"1","createTime":"1","accountId":"1"}]
+     * accountId : 8a80cb8164d9b3940164da1bff760005
+     * userId : 8a80cb8164d9b3940164da1bff760003
+     * messages : [{"id":"4028829366f140c10166f144aaea0000","type":"1","text":"罗丹贝尔-reader,柜子,网络多功能集控设备","detail":"{'receiveOrderId':'40288293667aa53e01667aa5fc610016'}","createTime":"2018-11-08 11:01:41","accountId":"8a80cb8164d9b3940164da1bff760005","title":"医嘱单未领用"},{"id":"4028829366f1d03d0166f1d1bd4c0000","type":"1","text":"罗丹贝尔-reader,柜子,网络多功能集控设备","detail":"{'receiveOrderId':'40288293667aa53e01667aa5fc610016'}","createTime":"2018-11-08 13:35:47","accountId":"8a80cb8164d9b3940164da1bff760005","title":"医嘱单未领用"}]
      */
 
     private int id;
@@ -56,29 +56,22 @@ public class PendingTaskBean {
 
     public static class MessagesBean {
         /**
-         * id : 1
-         * type : 医嘱单未领取耗材
-         * text : 1
-         * detail : 1
-         * createTime : 1
-         * accountId : 1
+         * id : 4028829366f140c10166f144aaea0000
+         * type : 1
+         * text : 罗丹贝尔-reader,柜子,网络多功能集控设备
+         * detail : {'receiveOrderId':'40288293667aa53e01667aa5fc610016'}
+         * createTime : 2018-11-08 11:01:41
+         * accountId : 8a80cb8164d9b3940164da1bff760005
+         * title : 医嘱单未领用
          */
 
-        private String id = "";
-        private String type = "";
-        private String text = "";
-        private String detail = "";
+        private String id;
+        private String type;
+        private String text;
+        private String detail;
         private String createTime;
-        private String accountId = "";
-        private String title = "";
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
+        private String accountId;
+        private String title;
 
         public String getId() {
             return id;
@@ -126,6 +119,14 @@ public class PendingTaskBean {
 
         public void setAccountId(String accountId) {
             this.accountId = accountId;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
     }
 }
