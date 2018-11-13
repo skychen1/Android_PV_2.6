@@ -114,10 +114,14 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
             public void run() {
                 if (Integer.parseInt(event.num) > 0) {
                     LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
-                    mBaseTabBtnMsg.setActivated(true);
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(true);
+                    }
                 } else {
                     LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
-                    mBaseTabBtnMsg.setActivated(false);
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(false);
+                    }
                 }
             }
         });
@@ -163,12 +167,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
 
-        //        String accountData = SPUtils.getString(getActivity(), KEY_ACCOUNT_DATA);
-        //
-        //        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-        //
-        //        LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
     }
 
     protected abstract int getContentLayoutId();
@@ -176,16 +174,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
 
-        //        UIUtils.runInUIThread(new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                try {
-        //
-        //                } catch (Exception e) {
-        //                    e.printStackTrace();
-        //                }
-        //            }
-        //        }, 500);
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,

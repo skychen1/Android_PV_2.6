@@ -345,7 +345,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         ToastUtils.showShort("无耗材柜数据");
                     }
                 } else {
-                    ToastUtils.showShort("无耗材数据");
+                    ToastUtils.showShort("无套组数据，请选择套组");
                 }
                 break;
         }
@@ -365,7 +365,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(OutMealActivity.this, mOutMealSuitList);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该部门暂未套组");
+                        ToastUtils.showShort("该部门暂无套组");
                     }
                 } else {
                     if (mOutMealSuitList.size() > 0) {

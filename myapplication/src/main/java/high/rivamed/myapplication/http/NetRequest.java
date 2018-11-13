@@ -525,7 +525,7 @@ public class NetRequest {
     public void getFindPatientDate(String string, int page, int rows, Object tag, NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_PATIENT).tag(tag)
                 .params("patientNameOrId", string)
-                .params("pageNo", page)
+                .params("page", page)
                 .params("rows", rows)
                 .params("thingCode", sThingCode)
                 .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))

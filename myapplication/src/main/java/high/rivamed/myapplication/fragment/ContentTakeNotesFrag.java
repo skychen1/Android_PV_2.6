@@ -95,6 +95,10 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
       LogUtils.i(TAG,event.type);
 	if (event.type.equals("START5")) {
+	   PAGE = 1;
+	   if (mRows!=null){
+		mRows.clear();
+	   }
 	   initData();
 	}
    }
