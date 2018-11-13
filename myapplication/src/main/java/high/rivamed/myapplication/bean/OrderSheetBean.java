@@ -79,11 +79,11 @@ public class OrderSheetBean implements Serializable {
         private String patientId;
         private String patientName;
         private String operationScheduleId;
-        private String operationRoomNo;
-        private String operationRoomName;
-        private String createTime;
-        public String cstType;
-        public String cstNumber;
+        private String operationRoomNo = "";
+        private String operationRoomName = "";
+        private String createTime = "";
+        public String cstType = "";
+        public String cstNumber = "";
 
         public String getId() {
             return id;

@@ -563,6 +563,15 @@ public class NetRequest {
     }
 
     /**
+     * 医嘱单领用-根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
+     */
+    public void findOrderDetailByOrderId(String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDDETAILBYORDERID).tag(tag)
+                .params("receiveOrderId", Id)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
      * 医嘱单领用-根据EPC获取耗材
      */
     public void findBillStockByEpc(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
