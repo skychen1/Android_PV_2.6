@@ -12,9 +12,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.androidpn.client.AppBroadcastReceiverManager;
-import org.androidpn.client.NetLinkReceiver;
 import org.androidpn.client.Notifier;
+import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -34,6 +33,7 @@ import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.mTitleConn;
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      LiangDanMing
@@ -81,32 +81,19 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     public ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
     public ImageView mBaseTabBtnConn;
-    private boolean mTitleConn;
 
-//    /**
-//     * 设备title连接状态
-//     *
-//     * @param event
-//     */
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onTitleConnEvent(Event.EventTitleConn event) {
-//        mTitleConn = event.b;
-//        LogUtils.i(TAG, "mTitleConn   " + mTitleConn);
-//
-//
-//        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
-//            @Override
-//            public void isNetconnected(boolean isConnected) {
-//                if (isConnected) {
-//                    LogUtils.i(TAG, "isConnected  "+isConnected);
-//                    mBaseTabBtnConn.setEnabled(true);
-//                } else {
-//                    LogUtils.i(TAG, "isConnected  "+isConnected);
-//                    mBaseTabBtnConn.setEnabled(false);
-//                }
-//            }
-//        });
-//    }
+
+    /**
+     * 设备title连接状态
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+        mTitleConn = event.connect;
+        LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
+        selTitleIcon();
+    }
 
     /**
      * 是否显示消息提醒
@@ -131,6 +118,27 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     }
 
     @Override
+    protected void onResume() {
+        selTitleIcon();
+        super.onResume();
+    }
+
+    public void selTitleIcon() {
+        if (mTitleConn) {
+            if (mBaseTabBtnConn != null) {
+                mBaseTabBtnConn.setEnabled(true);
+                LogUtils.i(TAG, "XmmppConnect(true)3  ");
+            }
+        } else {
+            if (mBaseTabBtnConn != null) {
+                mBaseTabBtnConn.setEnabled(false);
+                LogUtils.i(TAG, "XmmppConnect(false)3  ");
+            }
+        }
+
+    }
+
+    @Override
     public int getLayoutId() {
         EventBusUtils.register(this);
 
@@ -147,18 +155,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
         mStub = (ViewStub) findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
-        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
-            @Override
-            public void isNetconnected(boolean isConnected) {
-                if (isConnected) {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(true);
-                } else {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(false);
-                }
-            }
-        });
+
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
 

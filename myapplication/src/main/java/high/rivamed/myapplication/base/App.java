@@ -20,7 +20,6 @@ import com.orhanobut.logger.Logger;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidpn.client.ServiceManager;
-import org.androidpn.demoapp.DemoAppActivity;
 import org.litepal.LitePal;
 
 import java.io.BufferedReader;
@@ -43,6 +42,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 public class App extends Application {
 
@@ -58,7 +58,7 @@ public class App extends Application {
     private static ACache mAppCache;
 
     public static String MAIN_URL = null;
-
+    public static boolean mTitleConn = false;
     public static Handler getHandler() {
         return mHandler;
     }
@@ -85,8 +85,7 @@ public class App extends Application {
         mHandler = new Handler();
         mAppCache = ACache.get(UIUtils.getContext());
         Logger.addLogAdapter(new AndroidLogAdapter());
-        ServiceManager serviceManager = new ServiceManager(this);
-        serviceManager.startService();
+
         initBugly();
 
         initOkGo();
@@ -94,6 +93,7 @@ public class App extends Application {
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
+
         initMessgeService();
 
     }
@@ -102,7 +102,8 @@ public class App extends Application {
      * 初始化消息Service
      */
     private void initMessgeService() {
-        ServiceManager serviceManager = new ServiceManager(App.this);
+
+        ServiceManager serviceManager = new ServiceManager(App.this,SPUtils.getString(this, SAVE_SEVER_IP_TEXT));
         serviceManager.startService();
     }
 

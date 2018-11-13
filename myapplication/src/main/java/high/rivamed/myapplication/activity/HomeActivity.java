@@ -12,7 +12,6 @@ import android.widget.RadioGroup;
 import com.google.gson.JsonSyntaxException;
 
 import org.androidpn.client.Notifier;
-import org.androidpn.client.ServiceManager;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -153,8 +152,8 @@ public class HomeActivity extends SimpleActivity {
     }
 
     /*
-     * 初始化消息图标显示状态
-     * */
+    * 初始化消息图标显示状态
+    * */
     private void initMessageIcon() {
         NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
             @Override
@@ -175,7 +174,6 @@ public class HomeActivity extends SimpleActivity {
      * 初始化消息推送服务
      */
     private void initPushService() {
-
         if (!NotificationsUtils.isNotificationEnabled(this)) {
             Intent localIntent = new Intent();
             localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -193,9 +191,7 @@ public class HomeActivity extends SimpleActivity {
             }
             startActivity(localIntent);
         }
-        // Start the service
-        ServiceManager serviceManager = new ServiceManager(this);
-        serviceManager.startService();
+
 
     }
 

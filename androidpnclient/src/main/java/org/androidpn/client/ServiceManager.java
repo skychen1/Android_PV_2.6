@@ -35,6 +35,7 @@ public final class ServiceManager {
             .makeLogTag(ServiceManager.class);
 
     private Context context;
+    private String url;
 
     private SharedPreferences sharedPrefs;
 
@@ -52,9 +53,9 @@ public final class ServiceManager {
 
     private String callbackActivityClassName;
 
-    public ServiceManager(Context context) {
+    public ServiceManager(Context context,String url) {
         this.context = context;
-
+        this.url=url;
         if (context instanceof Activity) {
             Log.i(LOGTAG, "Callback Activity...");
             Activity callbackActivity = (Activity) context;
@@ -71,8 +72,8 @@ public final class ServiceManager {
 
         props = loadProperties();
         apiKey = props.getProperty("apiKey", "");
-        xmppHost = props.getProperty("xmppHost", "127.0.0.1");
-        xmppPort = props.getProperty("xmppPort", "5222");
+        xmppHost = url;
+        xmppPort = props.getProperty("xmppPort", "5224");
         Log.i(LOGTAG, "apiKey=" + apiKey);
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);

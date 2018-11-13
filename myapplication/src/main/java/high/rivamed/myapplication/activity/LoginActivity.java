@@ -84,6 +84,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -152,6 +153,7 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
 	//清空accountID

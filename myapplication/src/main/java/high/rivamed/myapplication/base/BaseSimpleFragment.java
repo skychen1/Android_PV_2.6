@@ -14,9 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.androidpn.client.AppBroadcastReceiverManager;
-import org.androidpn.client.NetLinkReceiver;
 import org.androidpn.client.Notifier;
+import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -38,7 +37,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
-
+import static high.rivamed.myapplication.base.App.mTitleConn;
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -84,24 +83,18 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public ImageView mBaseTabBtnConn;
     private ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
-    private boolean mTitleConn;
 
-//    /**
-//     * 设备title连接状态
-//     *
-//     * @param event
-//     */
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onTitleConnEvent(Event.EventTitleConn event) {
-//        mTitleConn = event.b;
-//        if (mTitleConn) {
-//            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(true)  ");
-//            mBaseTabBtnConn.setEnabled(true);
-//        } else {
-//            LogUtils.i(TAG, "mBaseTabBtnConn.setEnabled(false)  ");
-//            mBaseTabBtnConn.setEnabled(false);
-//        }
-//    }
+    /**
+     * 设备title连接状态
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+        mTitleConn = event.connect;
+        LogUtils.i(TAG, "Xmmppf  "+mTitleConn);
+        selTitleIcon();
+    }
 
     /**
      * 是否显示消息提醒
@@ -114,15 +107,18 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
             @Override
             public void run() {
                 if (Integer.parseInt(event.num) > 0) {
-                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
                     mBaseTabBtnMsg.setActivated(true);
                 } else {
-                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
                     mBaseTabBtnMsg.setActivated(false);
                 }
             }
         });
+    }
 
+    @Override
+    public void onResume() {
+        selTitleIcon();
+        super.onResume();
     }
 
     @Override
@@ -144,7 +140,20 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
         super.getTitleName();
 
     }
+    public void selTitleIcon() {
+        if (mTitleConn) {
+            if (mBaseTabBtnConn != null) {
+                mBaseTabBtnConn.setEnabled(true);
+                LogUtils.i(TAG, "XmmppConnect(true)3  ");
+            }
+        } else {
+            if (mBaseTabBtnConn != null) {
+                mBaseTabBtnConn.setEnabled(false);
+                LogUtils.i(TAG, "XmmppConnect(false)3  ");
+            }
+        }
 
+    }
     @Override
     public int getLayoutId() {
         EventBusUtils.register(this);
@@ -152,48 +161,12 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
-            @Override
-            public void isNetconnected(boolean isConnected) {
-                if (isConnected) {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(true);
-                } else {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(false);
-                }
-            }
-        });
-    }
-
-    @Override
     public void onBindViewBefore(View root) {
 
         mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) root.findViewById(R.id.base_tab_conn);
-        AppBroadcastReceiverManager.addNetLinkListener(new NetLinkReceiver.NetLinkListener() {
-            @Override
-            public void isNetconnected(boolean isConnected) {
-                if (isConnected) {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(true);
-                } else {
-                    LogUtils.i(TAG, "isConnected  "+isConnected);
-                    mBaseTabBtnConn.setEnabled(false);
-                }
-            }
-        });
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
-
-        //        String accountData = SPUtils.getString(getActivity(), KEY_ACCOUNT_DATA);
-        //
-        //        LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-        //
-        //        LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
     }
 
     protected abstract int getContentLayoutId();

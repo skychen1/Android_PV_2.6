@@ -53,9 +53,9 @@ public final class NetLinkReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOGTAG, "NetLinkReceiver.onReceive()...");
+        Log.i(LOGTAG, "NetLinkReceiver.onReceive()...");
         String action = intent.getAction();
-        Log.d(LOGTAG, "action=" + action);
+        Log.i(LOGTAG, "action=" + action);
         if (ACTION_NOTIFICATION_NETSTATE.equals(action)) {
             for (NetLinkListener netLinkListener : mNetLinkListenerList) {
                 netLinkListener.isNetconnected(intent.getBooleanExtra(DATE_NETLINKED, true));
@@ -63,5 +63,6 @@ public final class NetLinkReceiver extends BroadcastReceiver {
         }
 
     }
+
 
 }

@@ -486,13 +486,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    @Override
    public void onResume() {
+	super.onResume();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 
-	super.onResume();
    }
 
    private void goToPatientConn() {

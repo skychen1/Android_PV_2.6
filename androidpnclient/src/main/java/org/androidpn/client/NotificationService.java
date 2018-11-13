@@ -27,6 +27,9 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import org.androidpn.utils.EventBusUtils;
+import org.androidpn.utils.XmppEvent;
+
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
