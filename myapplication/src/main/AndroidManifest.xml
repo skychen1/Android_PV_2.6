@@ -136,9 +136,6 @@
             <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity
-            android:name="org.androidpn.client.NotificationDetailsActivity"
-            android:label="Notification Details"></activity>
 
         <service
             android:name="org.androidpn.client.NotificationService"

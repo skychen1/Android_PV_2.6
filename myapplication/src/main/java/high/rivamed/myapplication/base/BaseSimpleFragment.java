@@ -3,6 +3,7 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -108,14 +109,20 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventIfHaveMessage(Notifier.EventIfHaveMessage event) {
-        if (event.b) {
-            LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
-            mBaseTabBtnMsg.setActivated(true);
-        } else {
-            LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
-            mBaseTabBtnMsg.setActivated(false);
-        }
+    public void onEventIfHaveMessage(Notifier.EventPushMessageNum event) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (Integer.parseInt(event.num) > 0) {
+                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
+                    mBaseTabBtnMsg.setActivated(true);
+                } else {
+                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
+                    mBaseTabBtnMsg.setActivated(false);
+                }
+            }
+        });
+
     }
 
     @Override
