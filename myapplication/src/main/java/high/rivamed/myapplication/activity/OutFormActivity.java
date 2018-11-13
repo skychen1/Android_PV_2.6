@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import high.rivamed.myapplication.adapter.OutFormAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderSheetBean;
+import high.rivamed.myapplication.bean.OrderSheetFromMsgBean;
 import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -94,18 +96,25 @@ public class OutFormActivity extends BaseSimpleActivity {
      */
     private int TOTAL_SIZE;
     /**
+     * 从消息界面跳转获取的订单号
+     */
+    private String mReceiveOrderId = "";
+
+    /**
      * (检测没有关门)语音
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHomeNoClick(Event.HomeNoClickEvent event) {
-        if (event.isClick){
+        if (event.isClick) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-        }else {
+        } else {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
         }
         EventBusUtils.removeStickyEvent(getClass());
     }
+
     @Override
     protected int getContentLayoutId() {
         return R.layout.activity_outform_layout;
@@ -119,20 +128,51 @@ public class OutFormActivity extends BaseSimpleActivity {
         mBaseTabTvTitle.setText("术间请领单");
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nan)
-                  .error(R.mipmap.hccz_mrtx_nan)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nan)
+                    .error(R.mipmap.hccz_mrtx_nan)
+                    .into(mBaseTabIconRight);
         } else {
             Glide.with(this)
-                  .load(R.mipmap.hccz_mrtx_nv)
-                  .error(R.mipmap.hccz_mrtx_nv)
-                  .into(mBaseTabIconRight);
+                    .load(R.mipmap.hccz_mrtx_nv)
+                    .error(R.mipmap.hccz_mrtx_nv)
+                    .into(mBaseTabIconRight);
         }
         initlistener();
 
-        getTopOrderSheetDate(mPageNo, PAGE_SIZE);
+        mReceiveOrderId = getIntent().getStringExtra("receiveOrderId");
+        if (TextUtils.isEmpty(mReceiveOrderId)) {
+            //不是从消息页面跳转过来
+            getTopOrderSheetDate(mPageNo, PAGE_SIZE);
+        } else {
+            //从消息页面跳转过来
+            initFromMsgDate();
+        }
+
+    }
+
+    /*
+    初始化从消息界面跳转过来的数据
+    * */
+    private void initFromMsgDate() {
+        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, null, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                OrderSheetFromMsgBean orderSheetBean = mGson.fromJson(result, OrderSheetFromMsgBean.class);
+                mAllOrderSheetList.addAll(orderSheetBean.getPageModel().getRows());
+                if (mOutFormAdapter == null) {
+                    initData();
+                } else {
+                    mOutFormAdapter.notifyDataSetChanged();
+                    mPagerAdapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onError(String result) {
+                Log.e(TAG, "Erorr：" + result);
+            }
+        });
     }
 
     private void initData() {

@@ -27,6 +27,7 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -107,9 +108,15 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
             @Override
             public void run() {
                 if (Integer.parseInt(event.num) > 0) {
-                    mBaseTabBtnMsg.setActivated(true);
+                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(true);
+                    }
                 } else {
-                    mBaseTabBtnMsg.setActivated(false);
+                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(false);
+                    }
                 }
             }
         });
@@ -162,7 +169,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 
     @Override
     public void onBindViewBefore(View root) {
-
         mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) root.findViewById(R.id.base_tab_conn);
         mStub.setLayoutResource(getContentLayoutId());

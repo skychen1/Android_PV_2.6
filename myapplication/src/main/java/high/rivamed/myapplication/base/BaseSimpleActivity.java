@@ -107,10 +107,14 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
             public void run() {
                 if (Integer.parseInt(event.num) > 0) {
                     LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
-                    mBaseTabBtnMsg.setActivated(true);
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(true);
+                    }
                 } else {
                     LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
-                    mBaseTabBtnMsg.setActivated(false);
+                    if (mBaseTabBtnMsg!=null){
+                        mBaseTabBtnMsg.setActivated(false);
+                    }
                 }
             }
         });

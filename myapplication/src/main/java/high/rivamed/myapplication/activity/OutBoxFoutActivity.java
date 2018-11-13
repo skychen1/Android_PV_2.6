@@ -486,38 +486,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		  }
 		}
 	   }
-//	   if (mOutDto.gettCstInventoryVos().size() == 0) {
-//		LogUtils.i(TAG, "json s   " + mInJson);
 
-		putAllInEPCDate(mInJson);
-//		putAllInEPCDate(mToJson);
-//	   }
-//	} else {
-//
-//	   for (int i = 0;i<mTCstInventoryDtoFour.gettCstInventoryVos().size();i++) {
-//		if (mTCstInventoryDtoFour.gettCstInventoryVos().get(i).isSelected()) {
-//		   mTCstInventoryDtoFour.gettCstInventoryVos().remove(i);
-//		}
-//	   }
-//	   Log.i(TAG, "在循环size    " + mTCstInventoryDtoFour.gettCstInventoryVos().size());
-//	   if (mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) {
-//		//		String toJson = getEpcDtoString(mEPCDatess);
-//		putAllInEPCDate(mToJson);
-//	   }
-//	}
-
-//	if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
-//	    mCstInEpcDto.gettCstInventoryVos().size() != 0) {
-//	   Toast.makeText(mContext,"出柜完成，请继续入柜操作",Toast.LENGTH_SHORT).show();
-//
-//	   startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
-//	   EventBusUtils.postSticky(new Event.EventAct("all"));
-//	   EventBusUtils.postSticky(mCstInEpcDto);
-//	} else if (mTypeView.mOutBoxAllAdapter.getData().size() == 0 && mCstInEpcDto != null &&
-//		     mCstInEpcDto.gettCstInventoryVos().size() == 0) {
-//	   mEthDeviceIdBack.clear();
-//	   finish();
-//	}
+	   putAllInEPCDate(mInJson);
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	EventBusUtils.postSticky(new Event.EventDate(true));
    }
@@ -862,7 +832,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			EventBusUtils.postSticky(new Event.EventOutTitleV(true));
 		   } else {
 			LogUtils.i(TAG,"mffaffffffffffffffffffffffffafafafaf ");
-			if (mVoOutList != null && mVoOutList.size() == 0) {
+			if ((mVoOutList != null && mVoOutList.size() == 0)||(mOutDto!=null&&mOutDto.gettCstInventoryVos().size()==0)) {
 			   mBtnFourLy.setEnabled(false);
 			   mBtnFourYc.setEnabled(false);
 			   mBtnFourTh.setEnabled(false);

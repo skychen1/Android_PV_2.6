@@ -74,7 +74,7 @@ public class NetRequest {
         Log.e(TAG, TBaseThing);
         Log.e(TAG, NetApi.URL_TEST_REGISTE);
 
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TEST_REGISTE).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TEST_REGISTE).tag(tag)
                 .upJson(TBaseThing)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -84,23 +84,24 @@ public class NetRequest {
      */
     public void setSaveActiveDate(String TBaseThing, Object tag, NetResult netResult) {
 
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TEST_ACTIVE).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TEST_ACTIVE).tag(tag)
                 .upJson(TBaseThing)
                 .execute(new MyCallBack(tag, netResult, true));
     }
+
     /**
      * 版本检测
      */
-    public void checkVer( Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_GET_VER).tag(tag)
-              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+    public void checkVer(Object tag, NetResult netResult) {
+        OkGo.<String>post(MAIN_URL + NetApi.URL_GET_VER).tag(tag)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
 
     /**
      * 用户登录
      */
     public void userLogin(String account, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_LOGIN).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_LOGIN).tag(tag)
                 .upJson(account)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -109,7 +110,7 @@ public class NetRequest {
      * 获取用户信息
      */
     public void findAppAccountInfo(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_GET_INFO).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_GET_INFO).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -118,7 +119,7 @@ public class NetRequest {
      * 绑定指纹
      */
     public void registerFinger(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_REGISTER_FINGER).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_REGISTER_FINGER).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -127,41 +128,44 @@ public class NetRequest {
      * 绑定腕带
      */
     public void registerIdCard(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_REGISTERWAIDAI).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_REGISTERWAIDAI).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
+
     /**
      * 腕带解绑
      */
     public void unRegisterIdCard(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_UNREGISTERWAIDAI).tag(tag)
-              .upJson(json)
-              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_UNREGISTERWAIDAI).tag(tag)
+                .upJson(json)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
 
     /**
      * 指纹登录
      */
     public void validateLoginFinger(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_VALIDATELOGIN_FINGER).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_VALIDATELOGIN_FINGER).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
+
     /**
      * 紧急登录密码修改
      */
     public void emergencySetting(String pwd, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_USER_EMERGENCY_PWD).tag(tag)
-              .params("account.accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
-              .params("account.emergencyPwd", pwd)
-              .execute(new NetRequest.MyCallBack(tag, netResult, false));
+        OkGo.<String>get(MAIN_URL + NetApi.URL_USER_EMERGENCY_PWD).tag(tag)
+                .params("account.accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
+                .params("account.emergencyPwd", pwd)
+                .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
+
     /**
      * IdCard登录
      */
     public void validateLoginIdCard(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_VALIDATELOGINWRIST).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_VALIDATELOGINWRIST).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -170,7 +174,7 @@ public class NetRequest {
      * 重置密码
      */
     public void resetPassword(String json, Object tag, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_USER_RESET_PASSWORD).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_USER_RESET_PASSWORD).tag(tag)
                 .upJson(json)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -182,7 +186,7 @@ public class NetRequest {
                             String deviceCode, String term, String startTime, String endTime, String status, Object tag,
                             NetResult netResult) {
         LogUtils.i(TAG, "startTime  " + startTime + "     endTime   " + endTime);
-        OkGo.<String>get(MAIN_URL+NetApi.URL_HOME_RUNWATE).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_HOME_RUNWATE).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("pageNo", page)
                 .params("pageSize", size)
@@ -199,7 +203,7 @@ public class NetRequest {
      */
     public void loadBoxSize(Object tag, LoadingDialog.Builder dialog,
                             NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_HOME_BOXSIZE).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_HOME_BOXSIZE).tag(tag)
                 .params("thingCode", sThingCode)
                 .execute(new MyCallBack(tag, dialog, netResult, true));
     }
@@ -210,7 +214,7 @@ public class NetRequest {
      */
     public void materialControl(Object tag,
                                 NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_STOCKSTATUS_TOP).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_STOCKSTATUS_TOP).tag(tag)
                 .params("thingCode", sThingCode)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -223,7 +227,7 @@ public class NetRequest {
         Log.i("OkGo", "deviceCode   " + deviceCode);
         Log.i("OkGo", "mStopFlag   " + mStopFlag);
         Log.i("OkGo", "sThingCode   " + sThingCode);
-        OkGo.<String>get(MAIN_URL+NetApi.URL_STOCKSTATUS_DETAILS).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_STOCKSTATUS_DETAILS).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("nameOrSpecQueryCon", nameOrSpecQueryCon)
                 .params("deviceCode", deviceCode)
@@ -235,7 +239,7 @@ public class NetRequest {
      * 未确认耗材
      */
     public void getRightUnconfDate(String deviceCode, String mTrim, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_STOCKUNCON_RIGHT).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_STOCKUNCON_RIGHT).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("deviceCode", deviceCode)
                 .params("nameOrSpecQueryCon", mTrim)
@@ -246,7 +250,7 @@ public class NetRequest {
      * 查询单个耗材
      */
     public void getStockDetailDate(String deviceCode, String cstId, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_STOCK_DETAIL).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_STOCK_DETAIL).tag(tag)
                 .params("cstId", cstId)
                 .params("deviceCode", deviceCode)
                 .params("thingCode", sThingCode)
@@ -258,7 +262,7 @@ public class NetRequest {
      */
     public void getRecoverDate(String sn, Object tag, NetResult netResult) {
         LogUtils.i("fff", "sn  " + sn + "   url   " + NetApi.URL_TEST_SNQUERY);
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_SNQUERY).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_SNQUERY).tag(tag)
                 .params("sn", sn)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -267,7 +271,7 @@ public class NetRequest {
      * 输入医院查询医院信息
      */
     public void getHospNameDate(String hospName, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_FIND_HOSPHOME).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_FIND_HOSPHOME).tag(tag)
                 .params("hospName", hospName)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -276,7 +280,7 @@ public class NetRequest {
      * 根据医院id查询院区信息
      */
     public void getHospBranch(String hospIds, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_FIND_BRANCH).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_FIND_BRANCH).tag(tag)
                 .params("hospIds", hospIds)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -284,8 +288,8 @@ public class NetRequest {
     /**
      * 根据院区编码查询科室信息
      */
-    public void getHospDept(String deptNamePinYin,String branchCode, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_FIND_DEPT).tag(tag)
+    public void getHospDept(String deptNamePinYin, String branchCode, Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_FIND_DEPT).tag(tag)
                 .params("deptNamePinYin", deptNamePinYin)
                 .params("branchCode", branchCode)
                 .execute(new MyCallBack(tag, netResult, true));
@@ -295,7 +299,7 @@ public class NetRequest {
      * 根据科室查询库房情况
      */
     public void getHospBydept(String deptId, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_FIND_BYDEPT).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_FIND_BYDEPT).tag(tag)
                 .params("deptId", deptId)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -304,7 +308,7 @@ public class NetRequest {
      * 根据科室查询手术室信息
      */
     public void getHospRooms(String deptId, Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_TEST_FIND_OPERROOMS).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_TEST_FIND_OPERROOMS).tag(tag)
                 .params("deptId", deptId)
                 .execute(new MyCallBack(tag, netResult, true));
     }
@@ -313,25 +317,25 @@ public class NetRequest {
      * 耗材操作开柜扫描提交数据(快速开柜入柜)
      */
     public void putAllInEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_QUERY_ALL_IN).tag(tag)
-              .upJson(deviceInventoryVos)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_QUERY_ALL_IN).tag(tag)
+                .upJson(deviceInventoryVos)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     /**
      * 耗材操作开柜扫描提交数据(快速开柜出柜)
      */
     public void putAllOutEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_QUERY_ALL_OUT).tag(tag)
-              .upJson(deviceInventoryVos)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_QUERY_ALL_OUT).tag(tag)
+                .upJson(deviceInventoryVos)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     /**
      * 耗材操作开柜扫描提交数据
      */
     public void putEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_OPERATE_QUERY).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_OPERATE_QUERY).tag(tag)
                 .upJson(deviceInventoryVos)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -340,7 +344,7 @@ public class NetRequest {
      * 耗材操作确认操作
      */
     public void putOperateYes(String operateTCstInventory, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_OPERATE_INOUTBOX_YES).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_OPERATE_INOUTBOX_YES).tag(tag)
                 .upJson(operateTCstInventory)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -349,15 +353,16 @@ public class NetRequest {
      * 耗材操作确认操作(快速开柜)
      */
     public void putAllOperateYes(String operateTCstInventory, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_QUERY_ALL_YES).tag(tag)
-              .upJson(operateTCstInventory)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_QUERY_ALL_YES).tag(tag)
+                .upJson(operateTCstInventory)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
+
     /**
      * 根据科室查询库房情况    移出查
      */
     public void getOperateYcDeptYes(String deptId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_OPERATE_YC_YES).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_OPERATE_YC_YES).tag(tag)
                 .params("deptId", deptId)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -366,7 +371,7 @@ public class NetRequest {
      * 查询非本科室的库房    调拨查
      */
     public void getOperateDbDialog(String deptId, String branchCode, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_OPERATE_DB_YES).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_OPERATE_DB_YES).tag(tag)
                 .params("deptId", deptId)
                 .params("branchCode", branchCode)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
@@ -376,7 +381,7 @@ public class NetRequest {
      * 盘点
      */
     public void startTimelyScan(String tCstInventoryDto, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TIMELY_ONE).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TIMELY_ONE).tag(tag)
                 .upJson(tCstInventoryDto)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -385,30 +390,33 @@ public class NetRequest {
      * 盘亏
      */
     public void getLossesDate(String tCstInventoryDto, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TIMELY_LOSSES).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TIMELY_LOSSES).tag(tag)
                 .upJson(tCstInventoryDto)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
+
     /**
      * 盘亏原因
      */
-    public void getLossCauseDate( Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_LOSSES_CAUSE).tag(tag)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+    public void getLossCauseDate(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_LOSSES_CAUSE).tag(tag)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
+
     /**
      * 盘亏数据提交
      */
     public void putLossSDate(String LossDateBean, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_PUT_LOSSES).tag(tag)
-              .upJson(LossDateBean)
-              .execute(new MyCallBack(tag, dialog, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_PUT_LOSSES).tag(tag)
+                .upJson(LossDateBean)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
+
     /**
      * 盘盈
      */
     public void getProfitDate(String tCstInventoryDto, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TIMELY_PROFIT).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TIMELY_PROFIT).tag(tag)
                 .upJson(tCstInventoryDto)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -417,7 +425,7 @@ public class NetRequest {
      * 盘点后的详情
      */
     public void getDetailDate(String tCstInventoryDto, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TIMELY_DETAIL).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TIMELY_DETAIL).tag(tag)
                 .upJson(tCstInventoryDto)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -426,7 +434,7 @@ public class NetRequest {
      * 患者绑定
      */
     public void bingPatientsDate(String tCstInventoryVo, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_BIND_PATIENT).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_BIND_PATIENT).tag(tag)
                 .upJson(tCstInventoryVo)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -435,7 +443,7 @@ public class NetRequest {
      * 创建临时患者信息
      */
     public void saveTempPatient(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_SAVE_TEMP_PATIENT).tag(tag)
+        OkGo.<String>post(MAIN_URL + NetApi.URL_SAVE_TEMP_PATIENT).tag(tag)
                 .upJson(json)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -443,12 +451,12 @@ public class NetRequest {
     /**
      * 查询患者信息（包含临时患者）
      */
-    public void findSchedulesDate(String optienNameOrId, int pageNo, int pageSize,  Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_PATIENTS_FIND).tag(tag)
+    public void findSchedulesDate(String optienNameOrId, int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_PATIENTS_FIND).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("patientNameOrId", optienNameOrId)
-		    .params("page", pageNo)
-		    .params("rows", pageSize)
+                .params("page", pageNo)
+                .params("rows", pageSize)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
@@ -468,29 +476,29 @@ public class NetRequest {
      * 查询所有的未绑定临时患者
      */
     public void findTempPatients(String optienNameOrId, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_TEMP_PATIENTS).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_TEMP_PATIENTS).tag(tag)
                 .params("thingCode", sThingCode)
                 .params("patientNameOrId", optienNameOrId)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
-   /**
+    /**
      * 临时患者与在院患者进行关联
      */
     public void tempPatientConnPatient(String json, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>post(MAIN_URL+NetApi.URL_TEMP_PATIENT_CONN_PATIENT).tag(tag)
-                . upJson(json)
-		  .execute(new MyCallBack(tag, dialog, netResult, false));
+        OkGo.<String>post(MAIN_URL + NetApi.URL_TEMP_PATIENT_CONN_PATIENT).tag(tag)
+                .upJson(json)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     /**
      * 查询所有在院患者信息
      */
     public void findInPatientPage(String patientNameOrId, int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_IN_PATIENT_PAGE).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_IN_PATIENT_PAGE).tag(tag)
                 .params("patientNameOrId", patientNameOrId)
-              .params("page", pageNo)
-              .params("rows", pageSize)
+                .params("page", pageNo)
+                .params("rows", pageSize)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
@@ -498,7 +506,7 @@ public class NetRequest {
      * 查询所有的配置项
      */
     public void findThingConfigDate(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_THING_CONFIG_FIND).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_THING_CONFIG_FIND).tag(tag)
                 .params("thingCode", sThingCode)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
@@ -506,24 +514,24 @@ public class NetRequest {
     /**
      * 使用记录的患者列表
      */
-    public void getFindPatientDate(String string,int page, int rows,Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_PATIENT).tag(tag)
-              .params("patientNameOrId", string)
-              .params("pageNo", page)
-              .params("rows",rows)
-              .params("thingCode",sThingCode)
-              .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
-              .execute(new MyCallBack(tag, netResult, false));
+    public void getFindPatientDate(String string, int page, int rows, Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_PATIENT).tag(tag)
+                .params("patientNameOrId", string)
+                .params("page", page)
+                .params("rows", rows)
+                .params("thingCode", sThingCode)
+                .params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
+                .execute(new MyCallBack(tag, netResult, false));
     }
 
     /**
      * 使用记录详情
      */
-    public void getFindEpcDetails(String patientId, int status,Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_EPC_DETAILS).tag(tag)
-              .params("patientId", patientId)
-              .params("status", status)
-              .execute(new MyCallBack(tag, netResult, false));
+    public void getFindEpcDetails(String patientId, int status, Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_EPC_DETAILS).tag(tag)
+                .params("patientId", patientId)
+                .params("status", status)
+                .execute(new MyCallBack(tag, netResult, false));
     }
 
     /**
@@ -543,6 +551,15 @@ public class NetRequest {
         OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDBYORDERID).tag(tag)
                 .params("receiveOrderId", Id)
                 .params("thingCode", SPUtils.getString(UIUtils.getContext(), THING_CODE))
+                .execute(new MyCallBack(tag, dialog, netResult, false));
+    }
+
+    /**
+     * 医嘱单领用-根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
+     */
+    public void findOrderDetailByOrderId(String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_FINDDETAILBYORDERID).tag(tag)
+                .params("receiveOrderId", Id)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
@@ -591,21 +608,22 @@ public class NetRequest {
                 .upJson(json)
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
+
     /**
      * 消息-查询待办任务列表
      */
     public void getPendingTaskList(Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_FIND_MESSAGE_BY_ACCOUNTID).tag(tag)
+        OkGo.<String>get(MAIN_URL + NetApi.URL_FIND_MESSAGE_BY_ACCOUNTID).tag(tag)
                 .params("accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID))
-                .params("userId",  SPUtils.getString(UIUtils.getContext(), KEY_USER_ID))
+                .params("userId", SPUtils.getString(UIUtils.getContext(), KEY_USER_ID))
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
 
-  /**
+    /**
      * 消息-删除待办任务
      */
-    public void deleteMessageById(String id,Object tag, NetResult netResult) {
-        OkGo.<String>get(MAIN_URL+NetApi.URL_DELETE_MESSAGE_BY_ID).tag(tag)
+    public void deleteMessageById(String id, Object tag, NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_DELETE_MESSAGE_BY_ID).tag(tag)
                 .params("message.id", id)
                 .execute(new NetRequest.MyCallBack(tag, netResult, false));
     }
@@ -633,10 +651,10 @@ public class NetRequest {
     /**
      * 获取设备中所有的耗材
      */
-    public void getAllCstDate(Object tag,  NetResult netResult) {
-        OkGo.<String>get(MAIN_URL + NetApi.URL_GET_ALLCST).tag(tag)
-              .params("thingCode", sThingCode)
-              .execute(new MyCallBack2(tag,  netResult, false));
+    public void getAllCstDate(Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+        OkGo.<String>post(MAIN_URL + NetApi.URL_CSTPLAN_OPERATETCSTINVENTORY).tag(tag)
+                .params("thingCode", sThingCode)
+                .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
     private class MyCallBack extends StringCallback {
@@ -674,9 +692,9 @@ public class NetRequest {
             Log.i("fff", "response.body()    " + response.body());
             Log.i("fff", "response.code()    " + response.code());
             Log.i("fff", "response.message()    " + response.message());
-            if (response.code()==-1){
-                Toast.makeText(UIUtils.getContext(), "网络连接超时，请稍后重试！", Toast.LENGTH_SHORT).show();
-            }else {
+            if (response.code() == -1) {
+                Toast.makeText(UIUtils.getContext(), "网络连接超时，请扫后重试！", Toast.LENGTH_SHORT).show();
+            } else {
                 Toast.makeText(UIUtils.getContext(), "请求失败  (" + response.code() + ")", Toast.LENGTH_SHORT).show();
             }
             if (dialog != null) {
@@ -697,6 +715,7 @@ public class NetRequest {
             Log.i("fff", "response.message()    " + response.message());
         }
     }
+
     private class MyCallBack2 extends StringCallback {
 
 
@@ -706,7 +725,7 @@ public class NetRequest {
         private boolean isGet;//是否是get请求
 
         public MyCallBack2(Object tag, LoadingDialog.Builder dialog, NetResult netResult,
-                          boolean isGet) {
+                           boolean isGet) {
             super();
 
             this.tag = tag;
@@ -716,7 +735,7 @@ public class NetRequest {
         }
 
         public MyCallBack2(Object tag, NetResult netResult,
-                          boolean isGet) {
+                           boolean isGet) {
             super();
 
             this.tag = tag;

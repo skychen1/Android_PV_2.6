@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -319,7 +320,7 @@ public class ReciveBillFrag extends SimpleFragment {
                 ToastUtils.showShort("无耗材数据");
             }
         } else {
-            ToastUtils.showShort("空");
+            Toast.makeText(mContext,"暂无数据！",Toast.LENGTH_SHORT).show();
         }
 
     }

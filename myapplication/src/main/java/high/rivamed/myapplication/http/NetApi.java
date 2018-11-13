@@ -99,6 +99,7 @@ public interface NetApi {
     String URL_RECEIVEORDER_FINDBYORDERID = "/rmApi/order/transReceiveOrderDetail/findByOrderId";//根据医嘱单ID查询单柜耗材的库存
     String URL_RECEIVEORDER_CONTAINORDERCST = "/rmApi/order/transReceiveOrderDetail/containOrderCst";//根据EPC获取耗材
     String URL_RECEIVEORDER_TWOOUTBYRECEIVEORDER = "/rmApi/consumables/tCstInventory/twoOutByReceiveOrder";//确认领用耗材
+    String URL_RECEIVEORDER_FINDDETAILBYORDERID = "/rmApi/order/transReceiveOrderDetail/findOrderAndOrderDetailByOrderId";//根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
 
     //套组领用
     String URL_CSTPLAN_LISTFORPAD = "/rmApi/consumables/cstPlan/cstPlanListForPad";//套组列表-（本科室的套组列表）
