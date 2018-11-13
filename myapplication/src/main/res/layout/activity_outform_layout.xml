@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/x16"
-                android:text="请选择医嘱单"
+                android:text="请选择请领单"
                 android:textColor="@color/text_color_3"
                 android:textSize="@dimen/textsize_18"
                 android:textStyle="bold" />

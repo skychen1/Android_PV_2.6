@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import static android.content.Context.WIFI_SERVICE;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -32,13 +33,13 @@ public class WifiUtils {
 	ConnectivityManager connectMgr = (ConnectivityManager) con
 		.getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo info = connectMgr.getActiveNetworkInfo();
-	if (info == null) {
+	if (info == null||!mTitleConn) {
 	   // 没网
 	   return 0;
 	} else if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-	   return 1;
+	   return 1; //WIFI
 	} else {
-	   return 2;
+	   return 2;//NET
 	}
    }
    //获取wifi本地IP和主机名

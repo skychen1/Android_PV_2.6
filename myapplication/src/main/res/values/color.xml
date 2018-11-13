@@ -21,6 +21,7 @@
 	<color name="bg_f2">#f2f2f2</color>
 	<color name="bg_f6">#f6f6f6</color>
 	<color name="bg_delete">#F5222D</color>
+	<color name="bg_deletes">#d12f2f</color>
 
 	<color name="color_drak_green">#1C6573</color>
 	<!--用于突出按钮文字激活状态的控件-->

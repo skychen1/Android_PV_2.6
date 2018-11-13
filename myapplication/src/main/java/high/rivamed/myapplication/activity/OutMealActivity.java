@@ -162,7 +162,7 @@ public class OutMealActivity extends BaseSimpleActivity {
         EventBusUtils.register(this);
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvTitle.setText("套餐领用");
+        mBaseTabTvTitle.setText("套组领用");
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
         if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
                 SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {

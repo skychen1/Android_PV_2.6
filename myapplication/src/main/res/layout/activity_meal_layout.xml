@@ -62,7 +62,7 @@
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="套餐所含耗材"
+					android:text="套组所含耗材"
 					android:textColor="@color/text_color_3"
 					android:textSize="@dimen/textsize_18"
 					android:textStyle="bold"/>

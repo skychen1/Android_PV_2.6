@@ -83,7 +83,7 @@
 					android:gravity="center"
 					android:paddingLeft="@dimen/x25"
 					android:paddingRight="@dimen/x20"
-					android:text="套餐领用"
+					android:text="套组领用"
 					android:textColor="@color/selector_fastopen_text"
 					android:textSize="@dimen/textsize_18"/>
 

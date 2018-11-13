@@ -27,7 +27,6 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -144,7 +143,6 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
     @Override
     public int getLayoutId() {
-        EventBusUtils.register(this);
 
         return R.layout.fragment_base_title;
     }
