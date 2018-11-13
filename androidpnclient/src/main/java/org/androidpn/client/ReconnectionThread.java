@@ -17,7 +17,7 @@ package org.androidpn.client;
 
 import android.util.Log;
 
-/** 
+/**
  * A thread class for recennecting the server.
  *
  * @author Sehwan Noh (devnoh@gmail.com)
@@ -45,14 +45,17 @@ public class ReconnectionThread extends Thread {
                 xmppManager.connect();
                 xmppManager.getConnection().connect();
                 waiting++;
+                Log.e("xb", "Trying to reconnect in 10 "
+                        + " seconds");
             }
         } catch (final Exception e) {
-            xmppManager.getHandler().post(new Runnable() {
+            Log.e("xb", "e");
+            xmppManager.getHandler().postDelayed(new Runnable() {
                 public void run() {
                     xmppManager.getConnectionListener().connectionClosedOnError(e);
                     xmppManager.getConnectionListener().reconnectionFailed(e);
                 }
-            });
+            },10000);
         }
     }
 

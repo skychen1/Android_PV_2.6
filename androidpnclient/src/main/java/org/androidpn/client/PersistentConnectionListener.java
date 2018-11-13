@@ -46,6 +46,7 @@ public class PersistentConnectionListener implements ConnectionListener {
     @Override
     public void connectionClosed() {
         Log.d(LOGTAG, "connectionClosed()...");
+        xmppManager.startReconnectionThread();
     }
 
     @Override
@@ -66,16 +67,10 @@ public class PersistentConnectionListener implements ConnectionListener {
     @Override
     public void reconnectionFailed(Exception e) {
         Log.d(LOGTAG, "reconnectionFailed()...");
-        Intent myIntent = new Intent(ACTION_NOTIFICATION_NETSTATE);
-        myIntent.putExtra(DATE_NETLINKED,false);
-        xmppManager.getContext().sendBroadcast(myIntent);
     }
 
     @Override
     public void reconnectionSuccessful() {
         Log.d(LOGTAG, "reconnectionSuccessful()...");
-        Intent myIntent = new Intent(ACTION_NOTIFICATION_NETSTATE);
-        myIntent.putExtra(DATE_NETLINKED,true);
-        xmppManager.getContext().sendBroadcast(myIntent);
     }
 }
