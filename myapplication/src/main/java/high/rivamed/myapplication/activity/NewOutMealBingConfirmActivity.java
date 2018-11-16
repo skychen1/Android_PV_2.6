@@ -414,6 +414,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     return;
                 } else {
                     mEPCMapDate.clear();
+
                     mFindBillOrderBean.getCstInventoryVos().clear();
                     for (String deviceInventoryVo : mEthDeviceIdBack) {
                         String deviceCode = deviceInventoryVo;
@@ -553,6 +554,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 mFindBillOrderBean.getDeviceCodes().add(item.getDeviceCode());
             }
         }
+        LogUtils.i(TAG," mGson.toJson(mFindBillOrderBean)  "+mGson.toJson(mFindBillOrderBean));
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -642,8 +644,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         NetRequest.getInstance().useOrderCst(mGson.toJson(mUseCstOrderRequest), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i(TAG,"result  "+result);
                 UseCstOderResultBean info = mGson.fromJson(result, UseCstOderResultBean.class);
-                if (info.isOperateSuccess()) {
+		   List<UseCstOderResultBean.TCstInventoryVosBean> inventoryVos = info.getTCstInventoryVos();
+		   EventBusUtils.post(inventoryVos);//用来判断套组是否已经领取
+
+		   if (info.isOperateSuccess()) {
                     ToastUtils.showShort(info.getMsg());
                     finish();
                 } else {
@@ -854,7 +860,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                         }
                     }
                 } else {
-                    LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+                    LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
                     for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
                         FindBillOrderBean.CstInventoryVosBean item = new FindBillOrderBean.CstInventoryVosBean();
                         item.setEpc(v.getKey());
@@ -896,6 +902,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
      * 重新打开柜门
      */
     private void reOpenDoor() {
+	 if (mFindBillOrderBean!=null){
+           mFindBillOrderBean.getCstInventoryVos().clear();
+	 }
         if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
             AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
         } else {

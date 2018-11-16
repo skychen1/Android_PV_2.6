@@ -2,7 +2,6 @@ package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
-import high.rivamed.myapplication.utils.ToastUtils;
 
 /**
  * @ProjectName: new2.6.3
@@ -91,7 +89,8 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
         mSeven_seven.setText("打开柜门");
         if (!TextUtils.isEmpty(item.getStatus())) {
             if (item.getStatus().equals("已领取")) {
-                mSeven_seven.setText("");
+                mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
+                mSeven_seven.setText("打开柜门");
                 mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                 mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                 mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));

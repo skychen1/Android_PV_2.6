@@ -37,6 +37,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
+import high.rivamed.myapplication.bean.UseCstOderResultBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -113,6 +114,24 @@ public class OutMealActivity extends BaseSimpleActivity {
      */
     private boolean mIsCanSkipToSurePage = true;
 
+    /**
+     * 判断套餐是否已经领取
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getCstDate(List<UseCstOderResultBean.TCstInventoryVosBean> event) {
+        for (UseCstOderResultBean.TCstInventoryVosBean s:event){
+	     String cstId = s.getCstId();
+	     for(OrderCstResultBean.CstPlanVosBean k:movies){
+	        if (k.getCstId().equals(cstId)){
+		     k.setStatus("已领取");
+		  }
+            }
+        }
+        mPublicAdapter.notifyDataSetChanged();
+
+        EventBusUtils.removeStickyEvent(getClass());
+    }
     /**
      * (检测没有关门)语音
      *
