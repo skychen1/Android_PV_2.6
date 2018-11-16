@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +68,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+      Log.e("xxb","SimpleActivity     "+event.connect);
 	mTitleConn = event.connect;
 	hasNetWork(event.connect);
    }
@@ -100,6 +102,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    public void hasNetWork(boolean has) {
 	   if (has) {
+	      Log.e("xxb",(mTipView != null)+"         "+(mTipView.getParent() != null));
 		if (mTipView != null && mTipView.getParent() != null) {
 		   mWindowManager.removeView(mTipView);
 		}

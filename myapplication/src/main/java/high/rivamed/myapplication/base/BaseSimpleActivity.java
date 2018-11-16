@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -89,9 +90,11 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+        Log.e("xxb", "BaseSimpleActivity     " + event.connect);
         mTitleConn = event.connect;
         LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
         selTitleIcon();
+        hasNetWork(event.connect);
     }
 
     /**

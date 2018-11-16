@@ -989,7 +989,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
 			"</big></font>"));
 		mTimelyName.setVisibility(View.VISIBLE);
-		mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    型号规格：" +
+		mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    规格型号：" +
 					  mStockDetailsTopBean.getCstSpec());
 		mTypeView = new TableTypeView(mContext, mContext, titeleList, mSize,
 							mStockDetailsDownList, mLinearLayout, mRecyclerview,

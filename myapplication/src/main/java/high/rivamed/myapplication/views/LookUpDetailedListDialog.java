@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +23,6 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.LookUpDetailedListDialogAdapter;
 import high.rivamed.myapplication.bean.BillStockResultBean;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.utils.DialogUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
@@ -141,7 +137,7 @@ public class LookUpDetailedListDialog extends Dialog {
             mListTag = (LinearLayout) layout.findViewById(R.id.timely_ll);
             mSmartRefreshLayout = (SmartRefreshLayout) layout.findViewById(R.id.refreshLayout);
             mMaterialHeader = (MaterialHeader) layout.findViewById(R.id.header);
-
+            mLeft.setVisibility(View.GONE);
             mTvPatientName.setText(patientName);
             mTvCostType.setText(cstType);
             mTvCostNumber.setText(cstNumber);

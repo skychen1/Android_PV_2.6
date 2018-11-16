@@ -13,10 +13,6 @@ package high.rivamed.myapplication.http;
  */
 
 public interface NetApi {
-    //正式
-    String RELEASED_URL = "http://cc.p5w.net/";
-    //测试
-
 
     //版本检测和下载
     String URL_GET_VER = "/rmApi/app/app/listPage";//获取版本信息

@@ -305,7 +305,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             mUseCstOrderRequest.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
             mUseCstOrderRequest.setTCstInventoryVos(new ArrayList<>());
         }
-        mBaseTabTvTitle.setText("套餐领用识别耗材");
+        mBaseTabTvTitle.setText("套组领用识别耗材");
         mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
                 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
                 0 + "</big></font>"));
@@ -334,7 +334,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
         mTimelyStartBtn.setText("重新扫描");
         mTimelyOpenDoor.setText("打开柜门");
-        mLyBingBtn.setText("查看套餐清单");
+        mLyBingBtn.setText("查看套组清单");
 
     }
 
@@ -556,6 +556,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         NetRequest.getInstance().findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i(TAG,"result   "+result);
                 mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
                 if (mBillOrderResultBean.getErrorEpcs() != null &&
                         mBillOrderResultBean.getErrorEpcs().size() > 0) {
@@ -620,12 +621,24 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
             info.setPatientId(item.getPatientId());
             info.setPatientName(item.getPatientName());
             info.setStorehouseCode(item.getStorehouseCode());
+            if ("virtual".equals(item.getPatientId())) {
+                LogUtils.i(TAG,"EventCheckbox    "+item.getPatientId());
+                info.setOperationScheduleId(item.getOperationScheduleId());
+                info.setOperatingRoomNoName(item.getOperatingRoomNoName());
+                info.setOperatingRoomNo(item.getOperatingRoomNo());
+                info.setIdNo(item.getIdNo());
+                info.setScheduleDateTime(item.getScheduleDateTime());
+                info.setSex(item.getSex());
+                info.setIsCreate("" + item.getIsCreate());
+                info.setTempPatientId(item.getTempPatientId());
+            }
             mUseCstOrderRequest.getTCstInventoryVos().add(info);
         }
         if (mUseCstOrderRequest.getTCstInventoryVos().size() == 0) {
             ToastUtils.showShort("无耗材，无法领用");
             return;
         }
+        LogUtils.i(TAG,"JSON  "+mGson.toJson(mUseCstOrderRequest));
         NetRequest.getInstance().useOrderCst(mGson.toJson(mUseCstOrderRequest), this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
@@ -767,7 +780,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
         for (BillOrderResultBean.CstInventoryVosBean item : mBillOrderResultBean.getCstInventoryVos()) {
             item.setPatientId(event.id);
             item.setPatientName(event.mString);
+            LogUtils.i(TAG,"EventCheckbox    "+event.create);
             if ("virtual".equals(event.id)) {
+		   LogUtils.i(TAG,"EventCheckbox    "+event.id);
                 item.setOperationScheduleId(event.operationScheduleId);
                 item.setOperatingRoomNoName(event.operatingRoomNoName);
                 item.setOperatingRoomNo(event.operatingRoomNo);
@@ -775,6 +790,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                 item.setScheduleDateTime(event.scheduleDateTime);
                 item.setSex(event.sex);
                 item.setIsCreate("" + event.create);
+                item.setTempPatientId(event.mTempPatientId);
+
             }
             if (event.mString!=null){
                 mDownBtnOne.setEnabled(true);

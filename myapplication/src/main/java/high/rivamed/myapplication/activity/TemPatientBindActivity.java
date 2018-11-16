@@ -160,11 +160,13 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
                         if (mId.equals("virtual")) {
                             LogUtils.i(TAG, "JINLAI ");
                             if (mPatientBean == null) {
+                                LogUtils.i(TAG, "mPatientBean ");
                                 EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
                                         mOperationScheduleId,
                                         "afterBindTemp", mPosition,
                                         mTemPTbaseDevices));
                             } else {
+                                LogUtils.i(TAG, "mPatientBean2 ");
                                 String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
                                 String name = mPatientBean.getTTransOperationSchedule().getName();
                                 String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();

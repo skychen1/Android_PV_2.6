@@ -6,11 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
+
+import org.androidpn.utils.XmppEvent;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,6 +26,10 @@ import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
 import high.rivamed.myapplication.fragment.RegisteSelfCheckFrag;
 import high.rivamed.myapplication.fragment.RegisteTestFrag;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.WifiUtils;
+
+import static high.rivamed.myapplication.base.App.mTitleConn;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -36,6 +45,7 @@ import high.rivamed.myapplication.fragment.RegisteTestFrag;
 
 public class RegisteActivity extends SimpleActivity {
 
+   private static final String TAG = "RegisteActivity";
    @BindView(R.id.base_tab_tv_title)
    TextView         mBaseTabTvTitle;
    @BindView(R.id.base_tab_tv_name)
@@ -46,10 +56,35 @@ public class RegisteActivity extends SimpleActivity {
    ImageView        mBaseTabOutLogin;
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;
+   public ImageView mBaseTabBtnConn;
    public static ViewPager mRegisteViewpager;
    private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证", "数据恢复"};
    private RegistePagerAdapter mPagerAdapter;
+   /**
+    * 设备title连接状态
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+	Log.e("xxb", "RegisteActivity     " + event.connect);
+	mTitleConn = event.connect;
+	selTitleIcon();
+   }
+   public void selTitleIcon() {
+	if (mTitleConn) {
+	   if (mBaseTabBtnConn != null) {
+		mBaseTabBtnConn.setEnabled(true);
+		LogUtils.i(TAG, "XmmppConnect(true)3  ");
+	   }
+	} else {
+	   if (mBaseTabBtnConn != null) {
+		mBaseTabBtnConn.setEnabled(false);
+		LogUtils.i(TAG, "XmmppConnect(false)3  ");
+	   }
+	}
 
+   }
    @Override
    public int getLayoutId() {
 	return R.layout.activity_registe_layout;
@@ -58,6 +93,7 @@ public class RegisteActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mRegisteViewpager = mContext.findViewById(R.id.registe_viewpager);
+	mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setVisibility(View.GONE);
 	mBaseTabTvName.setVisibility(View.GONE);
@@ -70,7 +106,10 @@ public class RegisteActivity extends SimpleActivity {
 //	Params.width = 50;
 //	mBaseTabIconRight.setLayoutParams(Params);
 //	mBaseTabIconRight.setImageResource(R.mipmap.gcms_ic_tc);
-
+	if (WifiUtils.isWifi(mContext) == 0) {
+	   hasNetWork(false);
+	   mBaseTabBtnConn.setEnabled(false);
+	}
 	mPagerAdapter = new RegistePagerAdapter(getSupportFragmentManager());
 	mRegisteViewpager.setAdapter(mPagerAdapter);
 	mRegisteViewpager.setCurrentItem(0);

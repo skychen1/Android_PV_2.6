@@ -147,6 +147,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 	this.mDeviceCode = deviceCode;
 
    }
+   @SuppressLint("ValidFragment")
+   public RunWatePagerFrag() {
+   }
 //   public static RunWatePagerFrag newInstance(String deviceCode) {
 //	Bundle args = new Bundle();
 //	RunWatePagerFrag fragment = new RunWatePagerFrag();

@@ -294,8 +294,6 @@ public class ReciveBillFrag extends SimpleFragment {
      * 打开全部柜子
      */
     public void openAllDoor() {
-
-
         if (mPublicAdapter != null) {
             if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
                 ToastUtils.showShort("全部开柜");

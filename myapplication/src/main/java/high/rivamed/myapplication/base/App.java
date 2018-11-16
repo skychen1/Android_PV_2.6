@@ -59,6 +59,8 @@ public class App extends Application {
 
     public static String MAIN_URL = null;
     public static boolean mTitleConn = false;
+    public static ServiceManager mServiceManager=null;
+
     public static Handler getHandler() {
         return mHandler;
     }
@@ -93,8 +95,9 @@ public class App extends Application {
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
         LogcatHelper.getInstance(this).start();
-
-        initMessgeService();
+        if (mServiceManager==null){
+            initMessgeService();
+        }
 
     }
 
@@ -103,8 +106,8 @@ public class App extends Application {
      */
     private void initMessgeService() {
 
-        ServiceManager serviceManager = new ServiceManager(App.this,SPUtils.getString(this, SAVE_SEVER_IP_TEXT));
-        serviceManager.startService();
+        mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT));
+        mServiceManager.startService();
     }
 
 

@@ -135,6 +135,30 @@ public class UseCstOrderBean implements Serializable {
         private String idNo;
         private String scheduleDateTime;
         private String isCreate;
+        private String operatingRoomNoName;
+        private String   operationScheduleId;
+        private String   tempPatientId;
+        public void setTempPatientId(String tempPatientId) {
+            this.tempPatientId = tempPatientId;
+        }
+        public String getTempPatientId() {
+            return tempPatientId;
+        }
+        public String getOperatingRoomNoName() {
+            return operatingRoomNoName;
+        }
+
+        public void setOperatingRoomNoName(String operatingRoomNoName) {
+            this.operatingRoomNoName = operatingRoomNoName;
+        }
+
+        public String getOperationScheduleId() {
+            return operationScheduleId;
+        }
+
+        public void setOperationScheduleId(String operationScheduleId) {
+            this.operationScheduleId = operationScheduleId;
+        }
 
         public String getOperatingRoomNo() {
             return operatingRoomNo;

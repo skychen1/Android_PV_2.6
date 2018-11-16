@@ -73,6 +73,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -431,6 +432,7 @@ public class LoginActivity extends SimpleActivity {
 			//			SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getSex());
 			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 						loginResultBean.getAppAccountInfoVo().getSex());
+			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
@@ -468,6 +470,7 @@ public class LoginActivity extends SimpleActivity {
 			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 						loginResultBean.getAppAccountInfoVo().getSex());
 			//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
