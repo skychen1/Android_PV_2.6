@@ -81,6 +81,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
@@ -930,7 +931,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
             for (BoxIdBean deviceid : deviceBean) {
                 String device_id = deviceid.getDevice_id();
-                int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+                int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
                 LogUtils.i(TAG, "开始扫描了状态    " + i);
             }
         }

@@ -18,6 +18,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 
+import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 
@@ -336,10 +337,10 @@ public class AllDeviceCallBack {
 //	   } else {
 		for (BoxIdBean deviceid : deviceBean) {
 		   String device_id = deviceid.getDevice_id();
-		   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		   int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
 		   if (i==2){
 			DeviceManager.getInstance().StopUhfScan(device_id);
-			DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+			DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
 		   }
 		   LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
 		}

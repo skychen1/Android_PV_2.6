@@ -71,6 +71,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
@@ -687,7 +688,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
             for (BoxIdBean deviceid : deviceBean) {
                 String device_id = deviceid.getDevice_id();
-                int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+                int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
                 LogUtils.i(TAG, "开始扫描了状态    " + i);
             }
         }

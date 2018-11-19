@@ -42,6 +42,7 @@ import high.rivamed.myapplication.views.NoDialog;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -584,7 +585,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
 	}

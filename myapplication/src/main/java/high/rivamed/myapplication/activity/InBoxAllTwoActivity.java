@@ -40,6 +40,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_ALL_IN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -314,7 +315,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
             //	   } else {
             for (BoxIdBean deviceid : deviceBean) {
                 String device_id = deviceid.getDevice_id();
-                int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+                int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
                 LogUtils.i(TAG, "开始扫描了状态    " + i);
             }
             //	   }
