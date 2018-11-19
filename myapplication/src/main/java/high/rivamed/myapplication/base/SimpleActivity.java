@@ -2,7 +2,9 @@ package high.rivamed.myapplication.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -29,6 +31,7 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -49,7 +52,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
  * 更新描述：   ${TODO}
  */
 public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
-	implements IView<P> {
+	implements IView<P>,NetWorkReceiver.IntAction {
 
    private VDelegate    vDelegate;
    private P            p;
@@ -81,6 +84,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	applyNet();
 	mContext = this;
 	mGson = new Gson();
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
@@ -95,7 +99,25 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	initDataAndEvent(savedInstanceState);
 	App.getInstance().addActivity_(this);
    }
+   private void applyNet() {
+	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+	NetWorkReceiver netWorkReceiver = new NetWorkReceiver();
+	registerReceiver(netWorkReceiver, filter);
+	netWorkReceiver.setInteractionListener(this);
 
+   }
+   @Override
+   public void setInt(int k) {
+	if (k != -1) {
+	   if (k == 2) {
+		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+	   } else if (k == 0) {
+		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+	   } else if (k == 1) {
+		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+	   }
+	}
+   }
    /**
     * 判断显示网络异常
     * @param has:true

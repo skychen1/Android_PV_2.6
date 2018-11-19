@@ -1,4 +1,4 @@
-package high.rivamed.myapplication.utils;
+package high.rivamed.myapplication.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +19,7 @@ import android.net.NetworkInfo;
  */
 
 public class NetWorkReceiver extends BroadcastReceiver {
-   public IntAction  intAction;
+   private IntAction  intAction;
    public int NET_ETHERNET = 1;
    public int NET_WIFI = 2;
    public int NET_NOCONNECT = 0;
@@ -32,15 +32,12 @@ public class NetWorkReceiver extends BroadcastReceiver {
 
 	   switch (isNetworkAvailable(context)) {
 		case 1:
-//		   intAction.setText("有线");
 		   intAction.setInt(1);
 		   break;
 		case 2:
-//		   intAction.setText("wifi");
 		   intAction.setInt(2);
 		   break;
 		case 0:
-//		   intAction.setText("无网络");
 		   intAction.setInt(0);
 		   break;
 		default:
@@ -62,7 +59,6 @@ public class NetWorkReceiver extends BroadcastReceiver {
 	}
    }
    public interface IntAction{
-       void setText(String d);
        void setInt(int k);
    }
    public void setInteractionListener(IntAction intAction){

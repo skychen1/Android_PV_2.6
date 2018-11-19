@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.fragment;
 
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,10 +31,10 @@ import high.rivamed.myapplication.bean.TBaseThingDto;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.NetWorkReceiver;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -107,7 +105,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
     private DeviceNameBean mNameBean;
     private List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
     private RegisteReturnBean mSnRecoverBean;
-    private NetWorkReceiver mNetWorkReceiver;
     public static List<TBaseThingDto.TBaseDeviceVo> mDeviceVos = new ArrayList<>();//柜子list
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -234,7 +231,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
-        applyNet();
         mRecyclerview = mContext.findViewById(R.id.recyclerview);
         Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
         mFragRegisteNameEdit.setHint("2.6.1高值柜");
@@ -253,23 +249,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
         initData();
     }
 
-    private void applyNet() {
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        mNetWorkReceiver = new NetWorkReceiver();
-        _mActivity.registerReceiver(mNetWorkReceiver, filter);
-        mNetWorkReceiver.setInteractionListener(this);
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        _mActivity.unregisterReceiver(mNetWorkReceiver);
-    }
-
-    @Override
-    public void setText(String d) {
-
-    }
 
     /**
      * 获取本地和WIFI的IP  显示
