@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -9,7 +10,6 @@ import android.view.View;
 
 import com.flyco.tablayout.SlidingTabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,7 +29,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/14 16:23
- * 描述:        实时盘点主界面
+ * 描述:        实时盘点主界面（备份  需要修改方式数据错乱）
  * 包名:        high.rivamed.myapplication.fragment
  * <p>
  * 更新者：     $$Author$$
@@ -37,7 +37,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
  * 更新描述：   ${TODO}
  */
 
-public class ContentTimelyCheckFrag extends BaseSimpleFragment {
+public class ContentTimelyCheckFrag2 extends BaseSimpleFragment {
 
    @BindView(R.id.cttimecheck_rg)
    SlidingTabLayout mCttimeCheck_Rg;
@@ -53,9 +53,9 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
    private LoadingDialog.Builder              mBuilder;
 
-   public static ContentTimelyCheckFrag newInstance() {
+   public static ContentTimelyCheckFrag2 newInstance() {
 	Bundle args = new Bundle();
-	ContentTimelyCheckFrag fragment = new ContentTimelyCheckFrag();
+	ContentTimelyCheckFrag2 fragment = new ContentTimelyCheckFrag2();
 	fragment.setArguments(args);
 	return fragment;
    }
@@ -77,16 +77,18 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setText("实时盘点");
 	//	mBuilder = DialogUtils.showLoading(mContext);
 	loadTopBoxSize();
-	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					   SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 	}
-	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
+	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
+	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					   SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
 	}
    }
 
-   private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext,null, new BaseResult() {
+   public void loadTopBoxSize() {
+	NetRequest.getInstance().loadBoxSize(mContext, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
@@ -100,16 +102,15 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 			mTbaseDevices.add(0, devicesBean1);
 		   }
 
-		   //		   mBuilder.mDialog.dismiss();
-		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
-			//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
-			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
-		   }
-		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
+		   //		   ArrayList<Fragment> fragments = new ArrayList<>();
+		   //		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
+		   //			fragments.add(TimelyAllFrag.newInstance(devicesBean.getDeviceCode(),mTbaseDevices));
+		   //		   }
+		   //		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
+		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager());
 		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
 		   mCttimecheckViewpager.setCurrentItem(0);
-		   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
+		   mCttimecheckViewpager.setOffscreenPageLimit(0);
 		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
 		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
 		}
@@ -123,33 +124,60 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    }
 
    private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {
-	private List<Fragment> mFragments;
-	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
+
+	public CttimeCheckPagerAdapter(FragmentManager fm) {
 	   super(fm);
-	   this.mFragments = Fragments;
 	}
+
 	@Override
 	public Fragment getItem(int position) {
 
-	   return mFragments.get(position);
+	   String deviceCode = mTbaseDevices.get(position).getDeviceCode();
+	   return TimelyAllFrag2.newInstance(deviceCode, mTbaseDevices);
 
+	   //	private List<Fragment> mFragments;
+	   //	public CttimeCheckPagerAdapter(FragmentManager fm, List<Fragment> Fragments) {
+	   //	   super(fm);
+	   //	   this.mFragments = Fragments;
+	   //	}
+	   //	@Override
+	   //	public Fragment getItem(int position) {
+	   //
+	   //	   return mFragments.get(position);
+	   //
+	   //	}
+	   //
+	   //
+	   //	@Override
+	   //	public CharSequence getPageTitle(int position) {
+	   //	   return mTbaseDevices.get(position).getDeviceName();
+	   //
+	   //	}
+	   //
+	   //	@Override
+	   //	public int getCount() {
+	   //	   return mFragments.size();
+	   //	   //	   if (mTbaseDevices.size()>1) {
+	   //	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
+	   //	   //	   }else {
+	   //	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
+	   //	   //	   }
 	}
 
-
+	@Nullable
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   return mTbaseDevices.get(position).getDeviceName();
 
+	   String deviceName = mTbaseDevices.get(position).getDeviceName();
+
+	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   return mFragments.size();
-	   //	   if (mTbaseDevices.size()>1) {
-	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
-	   //	   }else {
-	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
-	   //	   }
+
+	   return mTbaseDevices == null ? 0 : mTbaseDevices.size();
+
 	}
    }
 

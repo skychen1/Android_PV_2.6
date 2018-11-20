@@ -64,6 +64,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    View mTipView;
    WindowManager mWindowManager;
    WindowManager.LayoutParams mLayoutParams;
+   NetWorkReceiver netWorkReceiver;
+
    /**
     * 设备title连接状态
     *
@@ -101,7 +103,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    }
    private void applyNet() {
 	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-	NetWorkReceiver netWorkReceiver = new NetWorkReceiver();
+	netWorkReceiver = new NetWorkReceiver();
 	registerReceiver(netWorkReceiver, filter);
 	netWorkReceiver.setInteractionListener(this);
 
@@ -219,6 +221,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	p = null;
 	vDelegate = null;
 	unbinder.unbind();
+	unregisterReceiver(netWorkReceiver);
    }
 
    @Override

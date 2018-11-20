@@ -251,7 +251,9 @@ public class OutFormActivity extends BaseSimpleActivity {
 
     @OnClick(R.id.tv_open_all)
     public void onViewClicked() {
-        mCurrentFragment.openAllDoor();
+        if (mCurrentFragment!=null){
+            mCurrentFragment.openAllDoor();
+        }
     }
 
     public void setCstTypeAndNumber(String type, String number) {
