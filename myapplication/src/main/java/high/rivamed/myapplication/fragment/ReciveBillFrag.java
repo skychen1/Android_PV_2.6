@@ -297,7 +297,6 @@ public class ReciveBillFrag extends SimpleFragment {
                         Toast.makeText(mContext, billStockResultBean.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                 }
-                Log.e("xb", "onSucceed: Id-" + Id);
             }
 
             @Override
