@@ -39,6 +39,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -274,6 +275,8 @@ public class OutFormActivity extends BaseSimpleActivity {
     public void onViewClicked() {
         if (mCurrentFragment != null) {
             mCurrentFragment.openAllDoor();
+        }else {
+            ToastUtils.showShort("暂无请领单！");
         }
     }
 

@@ -146,7 +146,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @BindView(R.id.stock_search)
    FrameLayout  mStockSearch;
    @BindView(R.id.ly_creat_temporary_btn)
-   TextView     mLyCreatTemporaryBtn;
+  public TextView     mLyCreatTemporaryBtn;
    @BindView(R.id.dialog_left)
    TextView     mDialogLeft;
    @BindView(R.id.dialog_right)
@@ -805,13 +805,17 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	mSize = array.length;
 
 	//	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
-	//   if (mTypeView==null){
+	   if (mTypeView==null){
+
 	mTypeView = new TableTypeView(this, this, titeleList, mSize, voList, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT);
-	//   }else {
-
+	   }else {
+		mTCstInventoryVos.clear();
+		mTCstInventoryVos.addAll(voList);
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
-	//   }
+
+
+	   }
 
    }
 

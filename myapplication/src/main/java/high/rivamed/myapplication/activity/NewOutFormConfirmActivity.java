@@ -359,9 +359,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 break;
             case R.id.timely_start_btn:
                 mEPCMapDate.clear();
-                mOutFromConfirmRequestBean.getEpcs().clear();
+                if (mOutFromConfirmRequestBean!=null){
+			 mOutFromConfirmRequestBean.getEpcs().clear();
+			 mOutFromConfirmRequestBean=null;
+		    }
                 mTransReceiveOrderDetailVosAllList.clear();
-                mOutFromConfirmRequestBean=null;
 
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
@@ -618,7 +620,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                             Log.e("xb", "getBillStockByEpc1");
                             getBillStockByEpc(mOutFromConfirmRequestBean);
                         } else {
-                            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                            Toast.makeText(mContext,"耗材扫描失败，请重新扫描",Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -630,9 +632,10 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                     }
                     if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
                         Log.e("xb", "getBillStockByEpc2");
+                        mOutFromConfirmRequestBean.getDeviceCodes().add(box_id);
                         getBillStockByEpc(mOutFromConfirmRequestBean);
                     } else {
-                        ToastUtils.showShort("耗材扫描失败，请重新扫描");
+                       Toast.makeText(mContext,"耗材扫描失败，请重新扫描",Toast.LENGTH_SHORT).show();
                     }
                 }
 

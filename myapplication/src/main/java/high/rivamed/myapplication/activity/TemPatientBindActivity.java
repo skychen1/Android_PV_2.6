@@ -142,6 +142,10 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         if (mPosition == -1000) {
             mDownBtnOneLL.setVisibility(View.GONE);
         }
+        //无临时患者
+        if (mPosition==-2){
+            mLyCreatTemporaryBtn.setVisibility(View.GONE);
+        }
         mDialogRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

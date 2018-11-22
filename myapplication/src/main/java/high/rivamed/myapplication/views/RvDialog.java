@@ -176,7 +176,6 @@ public class RvDialog extends Dialog {
             sTableTypeView = new TableTypeView(mContext, mActivity, patientInfos, titeleList, mSize,
                     mLinearLayout, mRecyclerview,
                     mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-
             mSearchEt.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
