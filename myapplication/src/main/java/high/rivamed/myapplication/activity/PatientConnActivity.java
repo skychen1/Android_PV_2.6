@@ -76,6 +76,7 @@ public class PatientConnActivity extends BaseTimelyActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	loadTempBingDate("");
+	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

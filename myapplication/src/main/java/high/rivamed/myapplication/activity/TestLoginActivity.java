@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.devices.TestDevicesActivity;
@@ -61,6 +62,10 @@ public class TestLoginActivity extends SimpleActivity {
 		startActivity(new Intent(TestLoginActivity.this, TestDevicesActivity.class));
 	   }
 	});
+	if (BuildConfig.DEBUG) {
+	   mLoginName.setText("1");
+	   mLoginPassword.setText("1");
+	}
    }
 
    @Override

@@ -415,8 +415,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                     return;
                 } else {
                     mEPCMapDate.clear();
-
                     mFindBillOrderBean.getCstInventoryVos().clear();
+                    mFindBillOrderBean=null;
                     for (String deviceInventoryVo : mEthDeviceIdBack) {
                         String deviceCode = deviceInventoryVo;
                         LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -906,11 +906,16 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	 if (mFindBillOrderBean!=null){
            mFindBillOrderBean.getCstInventoryVos().clear();
 	 }
-        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
-            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-        } else {
-            ToastUtils.showShort("无柜子信息!");
+        for (String deviceInventoryVo : mEthDeviceIdBack) {
+            String deviceCode = deviceInventoryVo;
+            LogUtils.i(TAG, "deviceCode    " + deviceCode);
+            DeviceManager.getInstance().OpenDoor(deviceCode);
         }
+//        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
+//            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+//        } else {
+//            ToastUtils.showShort("无柜子信息!");
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -185,7 +185,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private String           mBindFirstType;
    private int              mOperation;
    private int              mDtoOperation;
-   public  CountDownTimer   mStarts;
+   public static CountDownTimer   mStarts;
    public static boolean mOnBtnGone = false;
    public String mInJson;
 

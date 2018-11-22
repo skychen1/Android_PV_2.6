@@ -90,9 +90,9 @@ public class LoginPassWordFragment extends SimpleFragment {
     public void initDataAndEvent(Bundle savedInstanceState) {
 
         if (BuildConfig.DEBUG) {
-        }
             mLoginName.setText("adminUM");
             mLoginPassword.setText("000000");
+        }
     }
 
     @Override

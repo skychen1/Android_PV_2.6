@@ -63,6 +63,7 @@ import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 import high.rivamed.myapplication.views.WifiDialog;
 
+import static high.rivamed.myapplication.base.BaseTimelyActivity.mStarts;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
@@ -297,6 +298,7 @@ public class DialogUtils {
         builder.setLeft("", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
+                mStarts.start();
                 dialog.dismiss();
             }
         });

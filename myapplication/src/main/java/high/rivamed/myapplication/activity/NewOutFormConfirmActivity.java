@@ -361,6 +361,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
                 mEPCMapDate.clear();
                 mOutFromConfirmRequestBean.getEpcs().clear();
                 mTransReceiveOrderDetailVosAllList.clear();
+                mOutFromConfirmRequestBean=null;
+
                 for (String deviceInventoryVo : mEthDeviceIdBack) {
                     String deviceCode = deviceInventoryVo;
                     LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -569,7 +571,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void scanEPCResult(Event.EventDeviceCallBack event) {
-        Log.e("xb", "scanEPCResult");
+        Log.e("xb", "scanEPCResult   "+event.epcs.size());
         if (mOutFromConfirmRequestBean == null) {
             mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
             mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
@@ -663,11 +665,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
      * 重新打开柜门
      */
     private void reOpenDoor() {
-        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
-            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-        } else {
-            ToastUtils.showShort("无柜子信息!");
+        for (String deviceInventoryVo : mEthDeviceIdBack) {
+            String deviceCode = deviceInventoryVo;
+            LogUtils.i(TAG, "deviceCode    " + deviceCode);
+            DeviceManager.getInstance().OpenDoor(deviceCode);
         }
+//        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
+//            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+//        } else {
+//            ToastUtils.showShort("无柜子信息!");
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

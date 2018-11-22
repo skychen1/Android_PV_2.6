@@ -153,7 +153,7 @@ public class PublicTimelyFrag extends SimpleFragment {
    private int                        mStopFlag;
    private TCstInventoryDto           mTCstInventoryDto;
    private List<TCstInventoryVo>      mTCstInventoryVos;
-   private StockLeftDownAdapter       mDownAdapter;
+   public StockLeftDownAdapter       mDownAdapter;
    private String                     mTrim;
    private List<TCstInventoryVo>      mTCstStockRightList;
    private StockRightAdapter          mRightAdapter;
@@ -232,7 +232,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 		mStockTimelyLl.setVisibility(View.VISIBLE);
 		mRightTop.setVisibility(View.GONE);
 		Log.i("ccc", "ssfsfsf:  " + mDeviceCode);
-
+		mStockLeftRg.check(R.id.stock_left_all);
 		getMiddleDate(mDeviceCode, mSearchEt);
 
 	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {

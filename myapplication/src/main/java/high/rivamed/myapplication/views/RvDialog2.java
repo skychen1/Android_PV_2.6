@@ -152,7 +152,7 @@ public class RvDialog2 extends Dialog {
             layoutParams.width = DevicesUtils.getScreenWidth(mContext);
             mLlMain.setLayoutParams(layoutParams);
 
-            mSearchEt.setHint("请输入患者姓名、患者ID、手术间查询");
+            mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
             List<String> titeleList = new ArrayList<String>();
             titeleList.add(0, "选择");
             titeleList.add(1, "患者姓名");

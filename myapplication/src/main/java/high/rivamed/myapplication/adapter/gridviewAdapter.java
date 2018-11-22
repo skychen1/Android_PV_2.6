@@ -85,7 +85,7 @@ public class gridviewAdapter extends BaseAdapter {
 
    private void disposalView(int position, ViewHolder holder) {
       if (selected == position) {
-         holder.textView.setBackgroundResource(R.drawable.bg_btn_gray_nor);
+         holder.textView.setBackgroundResource(R.drawable.bg_btn_gray_nor4);
          holder.textView.setTextColor(mContext.getResources().getColor(R.color.bg_f));
       } else {
          holder.textView.setBackgroundResource(R.drawable.bg_btn_line_nor);

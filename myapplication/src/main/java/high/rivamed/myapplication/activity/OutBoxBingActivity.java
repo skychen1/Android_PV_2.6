@@ -561,7 +561,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                                     data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
                                     data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
                                     patientInfos.add(data);
-
+//                                    sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
                                 }
                                 if (mAfterBind != null && mAfterBind.mDialog.isShowing()) {
                                     if (patientInfos != null && patientInfos.size() > 0) {
