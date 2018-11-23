@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -57,16 +56,7 @@ public class HomeActivity extends SimpleActivity {
     // 再点一次退出程序时间设置
     public static final long WAIT_TIME = 2000L;
     public static final String JUMP_ID = "jump_id";
-    @BindView(R.id.home_logo)
-    ImageView mHomeLogo;
-    @BindView(R.id.content_consume_operate)
-    RadioButton mContentConsumeOperate;
-    @BindView(R.id.content_running_wate)
-    RadioButton mContentRunningWate;
-    @BindView(R.id.content_stock_status)
-    RadioButton mContentStockStatus;
-    @BindView(R.id.content_timely_check)
-    RadioButton mContentTimelyCheck;
+
     @BindView(R.id.content_syjl)
     RadioButton mContentSyjl;
     @BindView(R.id.home_rg)
@@ -129,7 +119,6 @@ public class HomeActivity extends SimpleActivity {
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
         LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
-        //	EventBusUtils.register(this);
         if (!UIUtils.getConfigType(mContext, CONFIG_007)){
             mContentSyjl.setVisibility(View.GONE);
         }else {

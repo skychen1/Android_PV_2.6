@@ -115,8 +115,6 @@ public class LoginActivity extends SimpleActivity {
    private static final String TAG = "LoginActivity";
    @BindView(R.id.login_logo)
    ImageView       mLoginLogo;
-   @BindView(R.id.login_password)
-   RadioButton     mLoginPassword;
    @BindView(R.id.login_pass)
    RadioButton     mLoginPass;
    @BindView(R.id.login_radiogroup)
@@ -131,7 +129,6 @@ public class LoginActivity extends SimpleActivity {
    TextView        mTextGuo;
    @BindView(R.id.left_jin_text)
    TextView        mTextJin;
-   //   @BindView(R.id.login_gone)
    public static View mLoginGone;
 
    private ArrayList<Fragment> mFragments = new ArrayList<>();
@@ -157,10 +154,7 @@ public class LoginActivity extends SimpleActivity {
 	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
-	//清空accountID
-	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
-	//	mDownText.setText("Rivamed  智能耗材管理柜:   V " + UIUtils.getVersionName(mContext));
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
 	//-----检测分辨率---------------------------------------
 	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 	DisplayMetrics dm = new DisplayMetrics();
