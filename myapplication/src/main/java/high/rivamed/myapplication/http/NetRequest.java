@@ -460,18 +460,6 @@ public class NetRequest {
                 .execute(new MyCallBack(tag, dialog, netResult, false));
     }
 
-//    /**
-//     * 查询本科室下24小时的手术预约患者（不包含临时患者）
-//     */
-//    public void findSchedulesDateNoTemp(String optienNameOrId, int pageNo, int pageSize,  Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
-//        OkGo.<String>get(NetApi.URL_PATIENTS_FIND_NO_TEMP).tag(tag)
-//                .params("thingCode", sThingCode)
-//                .params("patientNameOrId", optienNameOrId)
-//              .params("page", pageNo)
-//              .params("rows", pageSize)
-//                .execute(new MyCallBack(tag, dialog, netResult, false));
-//    }
-
     /**
      * 查询所有的未绑定临时患者
      */
@@ -657,6 +645,15 @@ public class NetRequest {
                 .execute(new MyCallBack(tag,  netResult, false));
     }
 
+    /**
+     * 获取账号权限菜单（左侧、选择操作）
+     */
+    public void getAuthorityMenu(Object tag,  NetResult netResult) {
+        OkGo.<String>get(MAIN_URL + NetApi.URL_AUTHORITY_MENU).tag(tag)
+              .params("account.accountId", SPUtils.getString(UIUtils.getContext(),KEY_ACCOUNT_ID))
+              .params("systemType", 2)//固定值
+              .execute(new MyCallBack(tag,  netResult, false));
+    }
     private class MyCallBack extends StringCallback {
 
 

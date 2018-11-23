@@ -69,11 +69,27 @@ public class Constants {
     public static final String CONFIG_017 = "017";//是否启用紧急登录
     public static final String CONFIG_019 = "019";//是否启选择操作
 
+    public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
+    public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水
+    public static final String LEFT_MENU_KCZT = "库存状态";//库存状态
+    public static final String LEFT_MENU_SSPD = "实时盘点";//实时盘点
+    public static final String LEFT_MENU_SYJL = "使用记录";//使用记录
+
+    public static final String DOWN_MENU_LY = "领用";//领用
+    public static final String DOWN_MENU_RK = "入库";//入库
+    public static final String DOWN_MENU_YC = "移出";//移出
+    public static final String DOWN_MENU_DB = "调拨";//调拨
+    public static final String DOWN_MENU_YR = "移入";//移入
+    public static final String DOWN_MENU_THUI = "退回";//退回
+    public static final String DOWN_MENU_THUO = "退货";//退货
+
     //sp存入的key
     public static final String SAVE_SEVER_IP = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
     public static final String SAVE_SEVER_IP_TEXT = "SAVE_SEVER_IP_TEXT";//存入服务器IP
     public static final String SAVE_SEVER_CODE = "SAVE_SEVER_CODE";//存入服务器端口
     public static final String SAVE_CONFIG_STRING = "SAVE_CONFIG_STRING";//配置项存入
+    public static final String SAVE_MENU_LEFT_TYPE = "SAVE_MENU_LEFT_TYPE";//权限配置项存入主按钮
+    public static final String SAVE_MENU_DOWN_TYPE = "SAVE_MENU_DOWN_TYPE";//权限配置项存入耗材操作选择操作
     public static final String READER_TYPE = "2";//reader的type
     public static final String UHF_TYPE = "1";//串口服务器的type
     public static final String SN_NUMBER = "sn_number";

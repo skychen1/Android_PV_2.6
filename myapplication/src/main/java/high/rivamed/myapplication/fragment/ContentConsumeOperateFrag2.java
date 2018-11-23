@@ -82,6 +82,13 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_RK;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_THUI;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_THUO;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YC;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
@@ -473,8 +480,50 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	if (mEPCDate!=null){
 	   mEPCDate.clear();
 	}
+	setDownType();//设置选择操作的权限
 	initData();
 
+   }
+
+   /**
+    * 设置选择操作的权限
+    */
+   private void setDownType() {
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_LY)){//领用
+	   mContentRbLy.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbLy.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_RK)){//入库
+	   mContentRbRk.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbRk.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_YC)){//移出
+	   mContentRbYc.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbYc.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_YR)){//移入
+	   mContentRbYr.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbYr.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_DB)){//调拨
+	   mContentRbTb.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbTb.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_THUI)){//退回
+	   mContentRbTuihui.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbTuihui.setVisibility(View.INVISIBLE);
+	}
+	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_THUO)){//退货
+	   mContentRbTuihuo.setVisibility(View.VISIBLE);
+	}else {
+	   mContentRbTuihuo.setVisibility(View.INVISIBLE);
+	}
    }
 
    @Override

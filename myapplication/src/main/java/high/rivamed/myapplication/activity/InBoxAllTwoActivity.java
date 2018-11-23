@@ -364,7 +364,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "result s   " + result);
                 mTCstInventoryDtoTwo = mGson.fromJson(result, TCstInventoryDto.class);
-                LogUtils.i(TAG, "result size   " + mTCstInventoryDtoTwo.gettCstInventoryVos().size());
+
                 String string = null;
                 if (mTCstInventoryDtoTwo.getErrorEpcs() != null &&
                         mTCstInventoryDtoTwo.getErrorEpcs().size() > 0) {

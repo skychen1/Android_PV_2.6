@@ -13,14 +13,18 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -236,5 +240,45 @@ public class UIUtils {
 	   }
 	}
 	return "1";
+   }
+   /**
+    * 获取权限配置主按钮
+    * @param context
+    * @param title
+    * @return
+    */
+   public static boolean getMenuLeftType(Context context,String title) {
+	Gson gson = new Gson();
+	String string = SPUtils.getString(context, SAVE_MENU_LEFT_TYPE);
+	List<HomeAuthorityMenuBean> fromJson = gson.fromJson(string,new TypeToken<List<HomeAuthorityMenuBean>>() {}
+											.getType());
+	if (fromJson!=null&&fromJson.size()>0){
+	   for (HomeAuthorityMenuBean mType :fromJson) {
+		if (title.equals(mType.getTitle())){
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
+   /**
+    * 获取权限配置主按钮
+    * @param context
+    * @param title
+    * @return
+    */
+   public static boolean getMenuDownType(Context context,String title) {
+	Gson gson = new Gson();
+	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
+	List<HomeAuthorityMenuBean.ChildrenBeanX> fromJson = gson.fromJson(string,new TypeToken<List<HomeAuthorityMenuBean.ChildrenBeanX>>() {}
+		.getType());
+	if (fromJson!=null&&fromJson.size()>0){
+	   for (HomeAuthorityMenuBean.ChildrenBeanX mType :fromJson) {
+		if (title.equals(mType.getTitle())){
+		   return true;
+		}
+	   }
+	}
+	return false;
    }
 }
