@@ -133,6 +133,5 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstIn
             }
             textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
-
     }
 }

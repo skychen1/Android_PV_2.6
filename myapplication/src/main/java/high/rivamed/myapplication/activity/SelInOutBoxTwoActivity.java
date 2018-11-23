@@ -111,6 +111,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
         } else {//调拨
             putDbDates(event);
         }
+        mStarts.start();
         LogUtils.i(TAG, "TAG    " + event.context);
 
     }
@@ -395,6 +396,8 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
     private void setThDate(int mIntentType) {
         mType = 2;//1.7退货
         DialogUtils.showStoreDialog(mContext, 2, mType, null, mIntentType);
+        mStarts.cancel();
+        mTimelyRight.setText("确认并退出登录");
     }
 
     /**
@@ -413,7 +416,8 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
                 LogUtils.i(TAG, "8调拨   " + result);
                 HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
                 DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
-                //		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
+                mStarts.cancel();
+                mTimelyRight.setText("确认并退出登录");
 
             }
         });
@@ -433,7 +437,8 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 
                 HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
                 DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
-
+                mStarts.cancel();
+                mTimelyRight.setText("确认并退出登录");
             }
         });
 

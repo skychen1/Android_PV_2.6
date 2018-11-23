@@ -15,7 +15,7 @@ package high.rivamed.myapplication.cont;
 public class Constants {
 
     public static final long COUNTDOWN_TIME = 40000;     //默认无操作自动退出
-    public static final int READER_TIME = 3500;     //扫描时间
+    public static final int READER_TIME = 3000;     //扫描时间
     public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
     public static final String TYPE_TIMELY = "timely";
     public static final String TYPE_RUNWATE = "runwate";

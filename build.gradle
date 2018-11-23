@@ -24,7 +24,9 @@ allprojects {
         maven { url 'http://repo1.maven.org/maven2' }
     }
 }
-
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

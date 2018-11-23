@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -68,10 +67,11 @@ public class StoreRoomDialog extends Dialog {
 	private int          mRightTextColor;
 	private int          mIntentType;
 	private HospNameBean mHospNameBean;
-	private String mName;
-	private String mCode;
+	private String       mName;
+	private String       mCode;
 
-	public Builder(Context context, int NumColumn, int mType, HospNameBean hospNameBean,int mIntentType) {
+	public Builder(
+		Context context, int NumColumn, int mType, HospNameBean hospNameBean, int mIntentType) {
 	   this.mContext = context;
 	   this.mNumColumn = NumColumn;
 	   this.mType = mType;
@@ -124,20 +124,22 @@ public class StoreRoomDialog extends Dialog {
 	   mLeft = (ImageView) layout.findViewById(R.id.dialog_closs);
 	   mRigtht = (TextView) layout.findViewById(R.id.dialog_sure);
 	   mTitle = (TextView) layout.findViewById(R.id.storeroom_title);
-	   dialog.addContentView(layout,
-					 new ViewGroup.LayoutParams(
-						 UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x680),
-						 ViewGroup.LayoutParams.WRAP_CONTENT));
+	   dialog.addContentView(layout, new ViewGroup.LayoutParams(
+		   UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x800),
+		   ViewGroup.LayoutParams.WRAP_CONTENT));
 	   sGridView = (GridView) layout.findViewById(R.id.storeroom_view);
 	   sGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
 	   List<DialogBean> list = new ArrayList<>();
 	   mTitle.setText(mMsgTitle);
 	   sGridView.setNumColumns(2);
 
-	   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-		   LinearLayout.LayoutParams.FILL_PARENT, 80);
-	   lp.setMargins(80, 40, 80, 40);
-	   mRigtht.setLayoutParams(lp);
+//	   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//		   LinearLayout.LayoutParams.MATCH_PARENT, mContext.getResources().getDimensionPixelSize(R.dimen.y80));
+//	   lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.x80),
+//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80),
+//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80),
+//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80));
+//	   mRigtht.setLayoutParams(lp);
 	   if (mType == 2) {////1.7和1.8退货
 		String one;
 		for (int i = 1; i < 7; i++) {
@@ -182,11 +184,13 @@ public class StoreRoomDialog extends Dialog {
 
 	   ViewGroup.LayoutParams lps = sGridView.getLayoutParams();
 	   if (list.size() >= 8) {
-		lps.height =  UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y450);
-	   } else if (list.size()<3){
-		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * list.size();
-	   }else {
-		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * list.size() / 2;
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y450);
+	   } else if (list.size() < 3) {
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) *
+				 list.size();
+	   } else {
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) *
+				 list.size() / 2;
 	   }
 	   sGridView.setLayoutParams(lps);
 	   sAdapter = new gridviewAdapter(mContext, R.layout.item_tag, list);
@@ -195,22 +199,22 @@ public class StoreRoomDialog extends Dialog {
 	   /*
 	    * 选中
 	    */
-	   if (list.size()>0){
-		mCode =list.get(0).getCode();
-		mName =list.get(0).getName();
+	   if (list.size() > 0) {
+		mCode = list.get(0).getCode();
+		mName = list.get(0).getName();
 	   }
 
-	   LogUtils.i("OutBoxFoutActivity","默认mName  "+mName+"   mCode "+mCode);
+	   LogUtils.i("OutBoxFoutActivity", "默认mName  " + mName + "   mCode " + mCode);
 	   sGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		   sAdapter.setSelected(position);
 		   sAdapter.notifyDataSetChanged();
-		   TextView textView = (TextView)view.findViewById(R.id.tag);
-		   TextView goneText = (TextView)view.findViewById(R.id.gone_tag);
+		   TextView textView = (TextView) view.findViewById(R.id.tag);
+		   TextView goneText = (TextView) view.findViewById(R.id.gone_tag);
 		   mName = textView.getText().toString();
 		   mCode = goneText.getText().toString();
-		   LogUtils.i("OutBoxFoutActivity","mName  "+mName+"   mCode "+mCode);
+		   LogUtils.i("OutBoxFoutActivity", "mName  " + mName + "   mCode " + mCode);
 		}
 	   });
 
@@ -227,12 +231,12 @@ public class StoreRoomDialog extends Dialog {
 	   mRigtht.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   if (mType==1){
-			EventBusUtils.post(new Event.outBoxEvent("x",mCode,dialog,mIntentType));
-		   }else if (mType==2){
-			EventBusUtils.post(new Event.outBoxEvent("2",mName,dialog,mIntentType));
-		   }else {
-			EventBusUtils.post(new Event.outBoxEvent("3",mCode,dialog,mIntentType));
+		   if (mType == 1) {
+			EventBusUtils.post(new Event.outBoxEvent("x", mCode, dialog, mIntentType));
+		   } else if (mType == 2) {
+			EventBusUtils.post(new Event.outBoxEvent("2", mName, dialog, mIntentType));
+		   } else {
+			EventBusUtils.post(new Event.outBoxEvent("3", mCode, dialog, mIntentType));
 		   }
 		}
 	   });

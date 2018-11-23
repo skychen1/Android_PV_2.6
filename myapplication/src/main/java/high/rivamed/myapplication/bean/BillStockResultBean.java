@@ -31,7 +31,25 @@ public class BillStockResultBean implements Serializable {
     private int                                  cstCount;
     private int                                  cstTypes;
     private String                               thingCode;
+    private boolean                               operateSuccess;
+    private String                               msg;
     private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
+
+   public boolean isOperateSuccess() {
+	return operateSuccess;
+   }
+
+   public void setOperateSuccess(boolean operateSuccess) {
+	this.operateSuccess = operateSuccess;
+   }
+
+   public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public int getId() { return id;}
 

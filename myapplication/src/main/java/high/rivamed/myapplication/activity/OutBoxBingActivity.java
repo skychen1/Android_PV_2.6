@@ -437,8 +437,9 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                     if (UIUtils.getConfigType(mContext, CONFIG_012)) {//创建临时患者
                         goToFirstBindAC(-1);
                     } else {
+                        goToFirstBindAC(-2);
                         //不绑定临时患者，弹框
-                        loadBingDate("");
+//                        loadBingDate("");
                     }
                 }
                 break;
@@ -561,8 +562,11 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                                     data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
                                     data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
                                     patientInfos.add(data);
-
+                                    if (sTableTypeView!=null&&sTableTypeView.mBingOutAdapter!=null){
+                                        sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
+                                    }
                                 }
+
                                 if (mAfterBind != null && mAfterBind.mDialog.isShowing()) {
                                     if (patientInfos != null && patientInfos.size() > 0) {
                                         patientInfos.get(0).setSelected(true);
@@ -608,8 +612,14 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
                                     data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
                                     mPatientInfos.add(data);
                                 }
+
                                 mAfterBind = DialogUtils.showRvDialog(OutBoxBingActivity.this, mContext,
                                         patientInfos, "afterBind", -1, null);
+                                if (mAfterBind != null && mAfterBind.mDialog.isShowing()) {
+                                    if (patientInfos != null && patientInfos.size() > 0) {
+                                        patientInfos.get(0).setSelected(true);
+                                    }
+                                }
                                 mAfterBind.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
                                     @Override
                                     public void onRefresh(RefreshLayout refreshLayout) {

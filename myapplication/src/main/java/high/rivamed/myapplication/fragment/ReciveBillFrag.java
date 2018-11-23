@@ -67,6 +67,7 @@ import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
  */
 
 public class ReciveBillFrag extends SimpleFragment {
+
     @BindView(R.id.timely_start_btn)
     TextView mTimelyStartBtn;
     @BindView(R.id.timely_book)
@@ -120,7 +121,7 @@ public class ReciveBillFrag extends SimpleFragment {
     private int mLayout;
     List<String> titeleList = null;
     //上个界面-医嘱单顶部数据
-    private OrderSheetBean.RowsBean mPrePageDate;
+    public OrderSheetBean.RowsBean mPrePageDate;
     private static final String TAG = "ReciveBillFrag";
 
     /**
@@ -157,12 +158,14 @@ public class ReciveBillFrag extends SimpleFragment {
         return fragment;
     }
 
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mPublicAdapter == null && mPrePageDate != null) {
-            getStockByOrderId(mPrePageDate.getId());
+            if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+                getStockByOrderId(mPrePageDate.getId());
+            }
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -181,9 +184,12 @@ public class ReciveBillFrag extends SimpleFragment {
             mTransReceiveOrderDetailVosList = new ArrayList<>();
         }
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
-        getStockByOrderId(mPrePageDate.getId());
+        if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+            getStockByOrderId(mPrePageDate.getId());
+        }
         initlistener();
     }
+
 
     /**
      * 数据加载
@@ -216,15 +222,15 @@ public class ReciveBillFrag extends SimpleFragment {
                 String six = mPublicAdapter.getItem(position).getReceivedStatus();
                 if (!six.equals("已领取")) {
                     mTbaseDevices.clear();
-			 List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
-			 for (String deviceCode : deviceCodes) {
+                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
+                    for (String deviceCode : deviceCodes) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
                         if (!TextUtils.isEmpty(deviceCode)) {
                             mTbaseDevices.add(oneDoor);
                         }
                     }
-                    LogUtils.i(TAG,"mTbaseDevices   "+mTbaseDevices.size());
+                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
                     if (mTbaseDevices.size() > 0) {
                         AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                     } else {
@@ -241,6 +247,8 @@ public class ReciveBillFrag extends SimpleFragment {
         mRefreshLayout.setEnableAutoLoadMore(false);
         mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
         mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+        View inflate = LayoutInflater.from(mContext).inflate(R.layout.recy_null, null);
+        mPublicAdapter.setEmptyView(inflate);
         mRecyclerview.setAdapter(mPublicAdapter);
         mLinearLayout.addView(mHeadView);
     }
@@ -270,17 +278,25 @@ public class ReciveBillFrag extends SimpleFragment {
 
     }
 
-    private void getStockByOrderId(String Id) {
+    public void getStockByOrderId(String Id) {
         NetRequest.getInstance().findStockByOrderId(Id, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getStockByOrderId   " + result);
-                BillStockResultBean billStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
-                mTransReceiveOrderDetailVosList.addAll(billStockResultBean.getTransReceiveOrderDetailVos());
-                ((OutFormActivity) getActivity()).setCstTypeAndNumber("" + billStockResultBean.getCstTypes(), "" + billStockResultBean.getCstCount());
+                BillStockResultBean billStockResultBean = mGson.fromJson(result,
+                        BillStockResultBean.class);
+                mTransReceiveOrderDetailVosList.addAll(
+                        billStockResultBean.getTransReceiveOrderDetailVos());
+                ((OutFormActivity) getActivity()).setCstTypeAndNumber(
+                        "" + billStockResultBean.getCstTypes(), "" + billStockResultBean.getCstCount());
                 mPrePageDate.cstType = "" + billStockResultBean.getCstTypes();
                 mPrePageDate.cstNumber = "" + billStockResultBean.getCstCount();
                 initData();
+                if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+                    if (!billStockResultBean.isOperateSuccess()) {
+                        Toast.makeText(mContext, billStockResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
             @Override
@@ -299,8 +315,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 ToastUtils.showShort("全部开柜");
                 mTbaseDevices.clear();
                 for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
-			 List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceCodes();
-			 for (String deviceCode : deviceCodes) {
+                    List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceCodes();
+                    for (String deviceCode : deviceCodes) {
                         BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
                         oneDoor.setDeviceCode(deviceCode);
                         if (deviceCode != null) {
@@ -318,7 +334,7 @@ public class ReciveBillFrag extends SimpleFragment {
                 ToastUtils.showShort("无耗材数据");
             }
         } else {
-            Toast.makeText(mContext,"暂无数据！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "暂无数据！", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -335,12 +351,13 @@ public class ReciveBillFrag extends SimpleFragment {
         if (mIsCanSkipToSurePage) {
             if (!event.isClick) {
                 Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("DATA",new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DATA", new Event.EventBillStock(mPrePageDate,
+                        mTransReceiveOrderDetailVosList,
+                        mTbaseDevices));
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
-//                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
-
+                //                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
 
             }
         }
@@ -350,7 +367,9 @@ public class ReciveBillFrag extends SimpleFragment {
     public void onResume() {
         super.onResume();
         mIsCanSkipToSurePage = true;
-
+        if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+            getStockByOrderId(mPrePageDate.getId());
+        }
     }
 
     @Override

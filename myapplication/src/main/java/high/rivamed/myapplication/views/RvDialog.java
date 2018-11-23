@@ -152,7 +152,7 @@ public class RvDialog extends Dialog {
             ViewGroup.LayoutParams layoutParams = mLlMain.getLayoutParams();
             layoutParams.width = DevicesUtils.getScreenWidth(mContext);
             mLlMain.setLayoutParams(layoutParams);
-            mSearchEt.setHint("请输入患者姓名、患者ID、手术间查询");
+            mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
             List<String> titeleList = new ArrayList<String>();
             titeleList.add(0, "选择");
             titeleList.add(1, "患者姓名");
@@ -176,7 +176,6 @@ public class RvDialog extends Dialog {
             sTableTypeView = new TableTypeView(mContext, mActivity, patientInfos, titeleList, mSize,
                     mLinearLayout, mRecyclerview,
                     mRefreshLayout, ACTIVITY, STYPE_DIALOG);
-
             mSearchEt.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

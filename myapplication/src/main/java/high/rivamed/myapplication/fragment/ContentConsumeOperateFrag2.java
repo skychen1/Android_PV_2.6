@@ -90,6 +90,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -164,7 +165,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private String                             mOperationScheduleId;
    private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String> mEPCDatess = new TreeMap<>();
-   private List<String> mDoorList = 	   new ArrayList<>();
+//   private List<String> mDoorList = 	   new ArrayList<>();
 
    int k = 0;
    private int mAllPage   = 1;
@@ -187,7 +188,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	mIsClick = event.isClick;
 	   if (mIsClick){
 		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-		mDoorList.add(event.door);
+//		mDoorList.add(event.door);
 	   }else {
 		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   }
@@ -252,9 +253,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 									   UHF_TYPE).find(BoxIdBean.class);
 		for (BoxIdBean BoxIdBean : boxIdDoor) {
 		   String device_id = BoxIdBean.getDevice_id();
-		   for (int x = 0;x<mDoorList.size();x++){
-			if (device_id.equals(mDoorList.get(x))){
-			   mDoorList.remove(x);
+		   for (int x = 0;x<mEthDeviceIdBack2.size();x++){
+			if (device_id.equals(mEthDeviceIdBack2.get(x))){
+			   mEthDeviceIdBack2.remove(x);
 			}
 		   }
 		}
@@ -301,9 +302,9 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		   }
 		}
 	   }
-	   LogUtils.i(TAG, "mDoorList.size()   " + mDoorList.size());
+	   LogUtils.i(TAG, "mEthDeviceIdBack2.size()   " + mEthDeviceIdBack2.size());
 	   LogUtils.i(TAG, "mIsClick   " + mIsClick);
-	   if (mIsClick||mDoorList.size()!=0) {
+	   if (mIsClick||mEthDeviceIdBack2.size()!=0) {
 		return;
 	   }
 	   LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
@@ -403,7 +404,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-      mDoorList.clear();
+	mEthDeviceIdBack2.clear();
 	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
 
@@ -591,6 +592,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		    cstInventoryDto.getErrorEpcs().size() > 0) {
 		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
 		   ToastUtils.showLong(string);
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 		}
 		if (mVoOutList != null && mVoOutList.size() != 0) {
 		   LogUtils.i(TAG, "跳出柜" +toJson);
@@ -635,7 +637,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "result sIn   " + result);
                 TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-                LogUtils.i(TAG, "result size   " + cstInventoryDto.gettCstInventoryVos().size());
                 String string = null;
                 if (cstInventoryDto.getErrorEpcs() != null &&
                         cstInventoryDto.getErrorEpcs().size() > 0) {
@@ -657,7 +658,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
                     } else {
                         LogUtils.i(TAG, "mVoOutList 2s   " + mVoOutList.size());
                         if (mVoOutList != null && mVoOutList.size() == 0) {
-                            mDoorList.clear();
+				   mEthDeviceIdBack2.clear();
                             mEthDeviceIdBack.clear();
                             Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
                         }
@@ -712,7 +713,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
                                                 cstInventoryDto.getOperationScheduleId()));
                         EventBusUtils.postSticky(cstInventoryDto);
                     } else {
-                        mDoorList.clear();
+			     mEthDeviceIdBack2.clear();
                         mEthDeviceIdBack.clear();
                         Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
                         if (mBuilder != null) {
@@ -736,7 +737,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			EventBusUtils.postSticky(cstInventoryDto);
 		   } else {
-			mDoorList.clear();
+			mEthDeviceIdBack2.clear();
 			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
@@ -1083,7 +1084,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	mDoorList.clear();
+	mEthDeviceIdBack2.clear();
 	mEPCDate.clear();
 	mEPCDatess.clear();
 	EventBusUtils.unregister(this);
@@ -1384,6 +1385,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	super.onDestroyView();
 
 	mOnStart=false;
-	mDoorList.clear();
+	mEthDeviceIdBack2.clear();
    }
 }

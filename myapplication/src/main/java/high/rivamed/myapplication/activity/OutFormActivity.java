@@ -39,6 +39,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -85,7 +86,7 @@ public class OutFormActivity extends BaseSimpleActivity {
     /**
      * 当前所显示页面
      */
-    private ReciveBillFrag mCurrentFragment;
+    public ReciveBillFrag mCurrentFragment;
     /**
      * 医嘱单页码
      */
@@ -168,6 +169,7 @@ public class OutFormActivity extends BaseSimpleActivity {
                     mPagerAdapter.notifyDataSetChanged();
                 }
             }
+
             @Override
             public void onError(String result) {
                 Log.e(TAG, "Erorr：" + result);
@@ -213,6 +215,26 @@ public class OutFormActivity extends BaseSimpleActivity {
                 }
             }
         });
+
+        mCttimecheckViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mCurrentFragment.getTypeAndNumber() != null) {
+                    mCurrentFragment.getStockByOrderId(mCurrentFragment.mPrePageDate.getId());
+                    setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void getTopOrderSheetDate(int pageNo, int PageSize) {
@@ -251,7 +273,11 @@ public class OutFormActivity extends BaseSimpleActivity {
 
     @OnClick(R.id.tv_open_all)
     public void onViewClicked() {
-        mCurrentFragment.openAllDoor();
+        if (mCurrentFragment != null) {
+            mCurrentFragment.openAllDoor();
+        }else {
+            ToastUtils.showShort("暂无请领单！");
+        }
     }
 
     public void setCstTypeAndNumber(String type, String number) {
@@ -275,9 +301,6 @@ public class OutFormActivity extends BaseSimpleActivity {
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             mCurrentFragment = (ReciveBillFrag) object;
             super.setPrimaryItem(container, position, object);
-            if (mCurrentFragment.getTypeAndNumber() != null) {
-                setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
-            }
         }
 
         @Override
