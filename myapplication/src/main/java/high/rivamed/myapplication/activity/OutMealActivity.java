@@ -339,7 +339,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(this, mOutMealSuitList);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该部门暂未套组");
+                        ToastUtils.showShort("该部门暂无套组");
                     }
                 } else {
                     findOrderCstPlanDate(false);

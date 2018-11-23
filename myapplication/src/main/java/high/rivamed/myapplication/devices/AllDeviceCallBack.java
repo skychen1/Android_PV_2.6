@@ -311,7 +311,7 @@ public class AllDeviceCallBack {
     * @param deviceIndentify
     */
    private void startScan(String deviceIndentify) {
-
+	LogUtils.i(TAG,"startScan   ");
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	EventBusUtils.postSticky(new Event.EventLoading(true));

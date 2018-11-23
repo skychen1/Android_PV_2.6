@@ -225,6 +225,7 @@ public class OutFormActivity extends BaseSimpleActivity {
             @Override
             public void onPageSelected(int position) {
                 if (mCurrentFragment.getTypeAndNumber() != null) {
+
                     mCurrentFragment.getStockByOrderId(mCurrentFragment.mPrePageDate.getId());
                     setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
                 }

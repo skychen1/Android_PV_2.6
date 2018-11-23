@@ -247,7 +247,14 @@ public class ToastUtils {
    public static void showShort(@NonNull final CharSequence text) {
 	show(text, Toast.LENGTH_SHORT);
    }
-
+   /**
+    * 显示短时吐司
+    *
+    * @param text 文本
+    */
+   public static void showShort2(Context context,@NonNull final CharSequence text) {
+	show2(context,text, Toast.LENGTH_SHORT);
+   }
    /**
     * 显示短时吐司
     *
@@ -468,7 +475,43 @@ public class ToastUtils {
 	sToast.setGravity(gravity, xOffset, yOffset);
 	sToast.show();
    }
-
+   /**
+    * 显示吐司
+    *
+    * @param text     文本
+    * @param duration 显示时长
+    */
+   private static void show2(Context context,final CharSequence text, final int duration) {
+	cancel();
+	boolean isCustom = false;
+	if (sViewWeakReference != null) {
+	   final View view = sViewWeakReference.get();
+	   if (view != null) {
+		sToast = new Toast(context);
+		sToast.setView(view);
+		sToast.setDuration(duration);
+		isCustom = true;
+	   }
+	}
+	if (!isCustom) {
+	   if (messageColor != DEFAULT_COLOR) {
+		SpannableString spannableString = new SpannableString(text);
+		ForegroundColorSpan colorSpan = new ForegroundColorSpan(messageColor);
+		spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		sToast = Toast.makeText(context, spannableString, duration);
+	   } else {
+		sToast = Toast.makeText(context, text, duration);
+	   }
+	}
+	View view = sToast.getView();
+	if (bgResource != -1) {
+	   view.setBackgroundResource(bgResource);
+	} else if (backgroundColor != DEFAULT_COLOR) {
+	   view.setBackgroundColor(backgroundColor);
+	}
+	sToast.setGravity(gravity, xOffset, yOffset);
+	sToast.show();
+   }
    /**
     * 取消吐司显示
     */

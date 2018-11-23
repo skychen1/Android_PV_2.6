@@ -379,7 +379,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	}
 
 	mTimelyName.setVisibility(View.VISIBLE);
-	mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    型号规格：" + mDto.getCstSpec());
+	mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    规格型号：" + mDto.getCstSpec());
 	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;

@@ -90,618 +90,637 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
  */
 
 public class NewOutFormConfirmActivity extends BaseSimpleActivity {
-    private   String TAG = "NewOutFormConfirmActivity";
-    public int mSize;
-    //重新扫描
-    @BindView(R.id.timely_start_btn)
-    public TextView mTimelyStartBtn;
-    //打开柜门
-    @BindView(R.id.timely_open_door)
-    public TextView mTimelyOpenDoor;
-    //查看医嘱清单
-    @BindView(R.id.ly_bing_btn)
-    TextView mLyBingBtn;
-    @BindView(R.id.timely_left)
-    public TextView mTimelyLeft;
-    @BindView(R.id.timely_right)
-    public TextView mTimelyRight;
-    @BindView(R.id.activity_down_btnll)
-    LinearLayout mActivityDownBtnTwoll;
-    @BindView(R.id.btn_four_ly)
-    public TextView mBtnFourLy;
-    @BindView(R.id.btn_four_yc)
-    public TextView mBtnFourYc;
-    @BindView(R.id.btn_four_tb)
-    public TextView mBtnFourTb;
-    @BindView(R.id.btn_four_th)
-    public TextView mBtnFourTh;
-    @BindView(R.id.activity_down_btn_four_ll)
-    LinearLayout mActivityDownBtnFourLl;
-    @BindView(R.id.activity_down_btn_one_ll)
-    LinearLayout mDownBtnOneLL;
-    @BindView(R.id.activity_btn_one)
-    TextView mDownBtnOne;
-    @BindView(R.id.timely_name)
-    TextView mTimelyName;
-    @BindView(R.id.timely_number)
-    public TextView mTimelyNumber;
-    @BindView(R.id.timely_ll)
-    LinearLayout mLinearLayout;
-    @BindView(R.id.recyclerview)
-    RecyclerView mRecyclerview;
-    @BindView(R.id.refreshLayout)
-    public SmartRefreshLayout mRefreshLayout;
-    @BindView(R.id.timely_rl_title)
-    RelativeLayout mRelativeLayout;
-    @BindView(R.id.timely_ll_gone)
-    LinearLayout mTimelyLlGone;
-    @BindView(R.id.timely_number_left)
-    TextView mTimelyNumberLeft;
-    @BindView(R.id.timely_start_btn_right)
-    public TextView mTimelyStartBtnRight;
-    @BindView(R.id.timely_open_door_right)
-    public TextView mTimelyOpenDoorRight;
-    @BindView(R.id.ly_bing_btn_right)
-    TextView mLyBingBtnRight;
-    @BindView(R.id.timely_ll_gone_right)
-    LinearLayout mTimelyLlGoneRight;
-    @BindView(R.id.search_et)
-    EditText mSearchEt;
-    @BindView(R.id.search_iv_delete)
-    ImageView mSearchIvDelete;
-    @BindView(R.id.stock_search)
-    FrameLayout mStockSearch;
-    @BindView(R.id.ly_creat_temporary_btn)
-    TextView mLyCreatTemporaryBtn;
-    @BindView(R.id.dialog_left)
-    TextView mDialogLeft;
-    @BindView(R.id.dialog_right)
-    public TextView mDialogRight;
-    @BindView(R.id.activity_down_btn_seven_ll)
-    LinearLayout mActivityDownBtnSevenLl;
-    @BindView(R.id.timely_rl)
-    LinearLayout mTimelyRl;
-    @BindView(R.id.header)
-    MaterialHeader mHeader;
-    @BindView(R.id.public_ll)
-    LinearLayout mPublicLl;
-    @BindView(R.id.tv_patient_conn)
-    TextView mTvPatientConn;
-    @BindView(R.id.activity_down_patient_conn)
-    LinearLayout mActivityDownPatientConn;
-    @BindView(R.id.all_out_text)
-    public TextView mAllOutText;
-    public TableTypeView mTypeView;
-    List<String> titeleList = null;
 
-    public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
-    /**
-     * 根据EPC请求网络参数
-     */
-    public OutFromConfirmRequestBean mOutFromConfirmRequestBean;
-    /**
-     * 确认领用使用参数
-     */
-    private OrderSheetBean.RowsBean mPrePageDate;
+   private String TAG = "NewOutFormConfirmActivity";
+   public int      mSize;
+   //重新扫描
+   @BindView(R.id.timely_start_btn)
+   public TextView mTimelyStartBtn;
+   //打开柜门
+   @BindView(R.id.timely_open_door)
+   public TextView mTimelyOpenDoor;
+   //查看医嘱清单
+   @BindView(R.id.ly_bing_btn)
+   TextView mLyBingBtn;
+   @BindView(R.id.timely_left)
+   public TextView mTimelyLeft;
+   @BindView(R.id.timely_right)
+   public TextView mTimelyRight;
+   @BindView(R.id.activity_down_btnll)
+   LinearLayout mActivityDownBtnTwoll;
+   @BindView(R.id.btn_four_ly)
+   public TextView mBtnFourLy;
+   @BindView(R.id.btn_four_yc)
+   public TextView mBtnFourYc;
+   @BindView(R.id.btn_four_tb)
+   public TextView mBtnFourTb;
+   @BindView(R.id.btn_four_th)
+   public TextView mBtnFourTh;
+   @BindView(R.id.activity_down_btn_four_ll)
+   LinearLayout mActivityDownBtnFourLl;
+   @BindView(R.id.activity_down_btn_one_ll)
+   LinearLayout mDownBtnOneLL;
+   @BindView(R.id.activity_btn_one)
+   TextView     mDownBtnOne;
+   @BindView(R.id.timely_name)
+   TextView     mTimelyName;
+   @BindView(R.id.timely_number)
+   public TextView mTimelyNumber;
+   @BindView(R.id.timely_ll)
+   LinearLayout mLinearLayout;
+   @BindView(R.id.recyclerview)
+   RecyclerView mRecyclerview;
+   @BindView(R.id.refreshLayout)
+   public SmartRefreshLayout mRefreshLayout;
+   @BindView(R.id.timely_rl_title)
+   RelativeLayout mRelativeLayout;
+   @BindView(R.id.timely_ll_gone)
+   LinearLayout   mTimelyLlGone;
+   @BindView(R.id.timely_number_left)
+   TextView       mTimelyNumberLeft;
+   @BindView(R.id.timely_start_btn_right)
+   public TextView mTimelyStartBtnRight;
+   @BindView(R.id.timely_open_door_right)
+   public TextView mTimelyOpenDoorRight;
+   @BindView(R.id.ly_bing_btn_right)
+   TextView     mLyBingBtnRight;
+   @BindView(R.id.timely_ll_gone_right)
+   LinearLayout mTimelyLlGoneRight;
+   @BindView(R.id.search_et)
+   EditText     mSearchEt;
+   @BindView(R.id.search_iv_delete)
+   ImageView    mSearchIvDelete;
+   @BindView(R.id.stock_search)
+   FrameLayout  mStockSearch;
+   @BindView(R.id.ly_creat_temporary_btn)
+   TextView     mLyCreatTemporaryBtn;
+   @BindView(R.id.dialog_left)
+   TextView     mDialogLeft;
+   @BindView(R.id.dialog_right)
+   public TextView mDialogRight;
+   @BindView(R.id.activity_down_btn_seven_ll)
+   LinearLayout   mActivityDownBtnSevenLl;
+   @BindView(R.id.timely_rl)
+   LinearLayout   mTimelyRl;
+   @BindView(R.id.header)
+   MaterialHeader mHeader;
+   @BindView(R.id.public_ll)
+   LinearLayout   mPublicLl;
+   @BindView(R.id.tv_patient_conn)
+   TextView       mTvPatientConn;
+   @BindView(R.id.activity_down_patient_conn)
+   LinearLayout   mActivityDownPatientConn;
+   @BindView(R.id.all_out_text)
+   public TextView      mAllOutText;
+   public TableTypeView mTypeView;
+   List<String> titeleList = null;
 
-    /**
-     * 所有耗材列表
-     */
-    private List<OutFormConfirmResultBean.TcstInventoryOrderVosBean> mTransReceiveOrderDetailVosAllList;
-    /**
-     * 柜子信息
-     */
-    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
-    List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosBean;
-    private OutFormConfirmResultBean mAllOutFormConfirmRequest;
-    private int mLayout;
-    private View mHeadView;
-    private OutFormConfirmAdapter mPublicAdapter;
-    public SparseBooleanArray mCheckStates = new SparseBooleanArray();
-    private LoadingDialog.Builder mLoading;
-    /**
-     * 传输的EPC
-     *
-     * @param event
-     */
-    private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
+   public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   /**
+    * 根据EPC请求网络参数
+    */
+   public  OutFromConfirmRequestBean mOutFromConfirmRequestBean;
+   /**
+    * 确认领用使用参数
+    */
+   private OrderSheetBean.RowsBean   mPrePageDate;
 
-    private static boolean mIsFirst = true;
+   /**
+    * 所有耗材列表
+    */
+   private List<OutFormConfirmResultBean.TcstInventoryOrderVosBean> mTransReceiveOrderDetailVosAllList;
+   /**
+    * 柜子信息
+    */
+   private List<BoxSizeBean.TbaseDevicesBean>                       mTbaseDevices;
+   List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosBean;
+   private OutFormConfirmResultBean mAllOutFormConfirmRequest;
+   private int                      mLayout;
+   private View                     mHeadView;
+   private OutFormConfirmAdapter    mPublicAdapter;
+   public SparseBooleanArray mCheckStates = new SparseBooleanArray();
+   private LoadingDialog.Builder mLoading;
+   /**
+    * 传输的EPC
+    *
+    * @param event
+    */
+   private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
 
-    @Override
-    protected int getContentLayoutId() {
-        return R.layout.activity_timely_layout;
-    }
+   private static boolean mIsFirst = true;
+
+   @Override
+   protected int getContentLayoutId() {
+	return R.layout.activity_timely_layout;
+   }
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		LogUtils.i(TAG, "     mLoading  新建 ");
+		mLoading = DialogUtils.showLoading(this);
+	   } else {
+		if (!mLoading.mDialog.isShowing()) {
+		   LogUtils.i(TAG, "     mLoading   重新开启");
+		   mLoading.create().show();
+		}
+	   }
+	} else {
+	   if (mLoading != null) {
+		LogUtils.i(TAG, "     mLoading   关闭");
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
+	}
+   }
+
+   @Override
+   public void initDataAndEvent(Bundle savedInstanceState) {
+	EventBusUtils.register(this);
+	EventBusUtils.postSticky(new Event.EventLoading(true));
+	mIsFirst = true;
+	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
+		.getSerializable("DATA");
+	mPrePageDate = data.orderSheetBean;
+	mTransReceiveOrderDetailVosBean = data.transReceiveOrderDetailVosList;
+	mTbaseDevices = data.tbaseDevices;
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEventLoading(Event.EventLoading event) {
-        if (event.loading) {
-            if (mLoading == null) {
-                LogUtils.i(TAG, "     mLoading  新建 ");
-                mLoading = DialogUtils.showLoading(this);
-            } else {
-                if (!mLoading.mDialog.isShowing()) {
-                    LogUtils.i(TAG, "     mLoading   重新开启");
-                    mLoading.create().show();
-                }
-            }
-        } else {
-            if (mLoading != null) {
-                LogUtils.i(TAG, "     mLoading   关闭");
-                mLoading.mAnimationDrawable.stop();
-                mLoading.mDialog.dismiss();
-                mLoading = null;
-            }
-        }
-    }
+	initView();
+   }
 
-    @Override
-    public void initDataAndEvent(Bundle savedInstanceState) {
-        mIsFirst = true;
-        Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras().getSerializable("DATA");
-        mPrePageDate = data.orderSheetBean;
-        mTransReceiveOrderDetailVosBean = data.transReceiveOrderDetailVosList;
-        mTbaseDevices = data.tbaseDevices;
+   private void initView() {
+	mBaseTabBack.setVisibility(View.GONE);
+	mBaseTabIconRight.setEnabled(false);
+	mBaseTabTvName.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
+	mBaseTabBtnMsg.setEnabled(false);
+	mBaseTabTvTitle.setVisibility(View.VISIBLE);
+	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+	   Glide.with(this)
+		   .load(R.mipmap.hccz_mrtx_nan)
+		   .error(R.mipmap.hccz_mrtx_nan)
+		   .into(mBaseTabIconRight);
+	} else {
+	   Glide.with(this)
+		   .load(R.mipmap.hccz_mrtx_nv)
+		   .error(R.mipmap.hccz_mrtx_nv)
+		   .into(mBaseTabIconRight);
+	}
 
-        EventBusUtils.register(this);
-        initView();
-    }
+	if (mOutFromConfirmRequestBean == null) {
+	   mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+	   mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+	   mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
 
-    private void initView() {
-        mBaseTabBack.setVisibility(View.GONE);
-        mBaseTabIconRight.setEnabled(false);
-        mBaseTabTvName.setEnabled(false);
-        mBaseTabOutLogin.setEnabled(false);
-        mBaseTabBtnMsg.setEnabled(false);
-        mBaseTabTvTitle.setVisibility(View.VISIBLE);
-        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-                SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nan)
-                    .error(R.mipmap.hccz_mrtx_nan)
-                    .into(mBaseTabIconRight);
-        } else {
-            Glide.with(this)
-                    .load(R.mipmap.hccz_mrtx_nv)
-                    .error(R.mipmap.hccz_mrtx_nv)
-                    .into(mBaseTabIconRight);
-        }
+	}
+	//        if (mTbaseDevices != null) {
+	//            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+	//                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
+	//                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+	//                }
+	//            }
+	//        }
+	if (mTransReceiveOrderDetailVosAllList == null) {
+	   mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+	}
+	mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
+	mBaseTabTvTitle.setText("请领单领用耗材");
+	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
+							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + 0 +
+							"</big></font>"));
+	mTimelyStartBtn.setVisibility(View.VISIBLE);
+	mDownBtnOneLL.setVisibility(View.VISIBLE);
+	String[] array = mContext.getResources().getStringArray(R.array.six_form_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
 
-        if (mOutFromConfirmRequestBean == null) {
-            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
-            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
-            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+	//重新扫描
+	mTimelyStartBtn.setVisibility(View.VISIBLE);
+	//打开柜门
+	mTimelyOpenDoor.setVisibility(View.VISIBLE);
+	//查看医嘱清单
+	mLyBingBtn.setVisibility(View.VISIBLE);
 
-        }
-        if (mTbaseDevices != null) {
-            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
-                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
-                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
-                }
-            }
-        }
-        if (mTransReceiveOrderDetailVosAllList == null) {
-            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
-        }
-        mAllOutFormConfirmRequest = new OutFormConfirmResultBean();
-        mBaseTabTvTitle.setText("请领单领用耗材");
-        mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
-                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-                0 + "</big></font>"));
-        mTimelyStartBtn.setVisibility(View.VISIBLE);
-        mDownBtnOneLL.setVisibility(View.VISIBLE);
-        String[] array = mContext.getResources().getStringArray(R.array.six_form_arrays);
-        titeleList = Arrays.asList(array);
-        mSize = array.length;
+	mTimelyStartBtn.setText("重新扫描");
+	mTimelyOpenDoor.setText("打开柜门");
+	mLyBingBtn.setText("查看术间请领单");
+   }
 
-        //重新扫描
-        mTimelyStartBtn.setVisibility(View.VISIBLE);
-        //打开柜门
-        mTimelyOpenDoor.setVisibility(View.VISIBLE);
-        //查看医嘱清单
-        mLyBingBtn.setVisibility(View.VISIBLE);
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one,
+	   R.id.ly_bing_btn, R.id.timely_open_door})
+   public void onViewClicked(View view) {
+	switch (view.getId()) {
+	   case R.id.base_tab_icon_right:
+	   case R.id.base_tab_tv_name:
+		mPopupWindow = new SettingPopupWindow(mContext);
+		mPopupWindow.showPopupWindow(view);
+		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
+		   @Override
+		   public void onItemClick(int position) {
+			switch (position) {
+			   case 0:
+				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
+				break;
+			   case 1:
+				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+				break;
 
-        mTimelyStartBtn.setText("重新扫描");
-        mTimelyOpenDoor.setText("打开柜门");
-        mLyBingBtn.setText("查看术间请领单");
-    }
+			}
+		   }
+		});
+		break;
+	   case R.id.base_tab_tv_outlogin:
+		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+		builder.setTwoMsg("您确认要退出登录吗?");
+		builder.setMsg("温馨提示");
+		builder.setLeft("取消", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			dialog.dismiss();
+		   }
+		});
+		builder.setRight("确认", new DialogInterface.OnClickListener() {
+		   @Override
+		   public void onClick(DialogInterface dialog, int i) {
+			mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			dialog.dismiss();
+		   }
+		});
+		builder.create().show();
+		break;
+	   case R.id.base_tab_btn_msg:
+		mContext.startActivity(new Intent(this, MessageActivity.class));
+		break;
+	   case R.id.base_tab_back:
+		finish();
+		break;
+	   case R.id.timely_start_btn:
+		mEPCMapDate.clear();
+		if (mOutFromConfirmRequestBean != null) {
+		   mOutFromConfirmRequestBean.getEpcs().clear();
+		   mOutFromConfirmRequestBean = null;
+		}
+		mTransReceiveOrderDetailVosAllList.clear();
 
-    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-            R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_start_btn, R.id.activity_btn_one, R.id.ly_bing_btn, R.id.timely_open_door})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.base_tab_icon_right:
-            case R.id.base_tab_tv_name:
-                mPopupWindow = new SettingPopupWindow(mContext);
-                mPopupWindow.showPopupWindow(view);
-                mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        switch (position) {
-                            case 0:
-                                mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-                                break;
-                            case 1:
-                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-                                break;
+		for (String deviceInventoryVo : mEthDeviceIdBack) {
+		   String deviceCode = deviceInventoryVo;
+		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+		   startScan(deviceCode);
+		}
+		break;
+	   case R.id.timely_open_door:
+		reOpenDoor();
+		break;
+	   case R.id.activity_btn_one:
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   sureTransReceiveOrder();
+		}
+		break;
+	   case R.id.ly_bing_btn:
+		LogUtils.i(TAG, "mTransReceiveOrderDetailVosBean   " +
+				    mGson.toJson(mTransReceiveOrderDetailVosBean));
+		DialogUtils.showLookUpDetailedListDialog(mContext, true,
+								     mTransReceiveOrderDetailVosBean, mPrePageDate);
+		break;
+	}
+   }
 
-                        }
-                    }
-                });
-                break;
-            case R.id.base_tab_tv_outlogin:
-                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-                builder.setTwoMsg("您确认要退出登录吗?");
-                builder.setMsg("温馨提示");
-                builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setRight("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
-                break;
-            case R.id.base_tab_btn_msg:
-                mContext.startActivity(new Intent(this, MessageActivity.class));
-                break;
-            case R.id.base_tab_back:
-                finish();
-                break;
-            case R.id.timely_start_btn:
-                mEPCMapDate.clear();
-                if (mOutFromConfirmRequestBean!=null){
-			 mOutFromConfirmRequestBean.getEpcs().clear();
-			 mOutFromConfirmRequestBean=null;
-		    }
-                mTransReceiveOrderDetailVosAllList.clear();
+   private void initData() {
+	mTimelyNumber.setText(Html.fromHtml(
+		"耗材种类：<font color='#262626'><big>" + mAllOutFormConfirmRequest.getCstTypes() +
+		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+		mAllOutFormConfirmRequest.getCstCount() + "</big></font>"));
+	mLayout = R.layout.item_formcon_six_layout;
+	mHeadView = mContext.getLayoutInflater()
+		.inflate(R.layout.item_formcon_six_title_layout, (ViewGroup) mLinearLayout.getParent(),
+			   false);
+	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	mPublicAdapter = new OutFormConfirmAdapter(mLayout, mTransReceiveOrderDetailVosAllList);
+	mHeadView.setBackgroundResource(R.color.bg_green);
 
-                for (String deviceInventoryVo : mEthDeviceIdBack) {
-                    String deviceCode = deviceInventoryVo;
-                    LogUtils.i(TAG, "deviceCode    " + deviceCode);
-                    startScan(deviceCode);
-                }
-                break;
-            case R.id.timely_open_door:
-                reOpenDoor();
-                break;
-            case R.id.activity_btn_one:
-                if (UIUtils.isFastDoubleClick()) {
-                    return;
-                } else {
-                    sureTransReceiveOrder();
-                }
-                break;
-            case R.id.ly_bing_btn:
-                LogUtils.i(TAG,"mTransReceiveOrderDetailVosBean   "+mGson.toJson(mTransReceiveOrderDetailVosBean));
-                DialogUtils.showLookUpDetailedListDialog(mContext, true, mTransReceiveOrderDetailVosBean, mPrePageDate);
-                break;
-        }
-    }
+	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	mRefreshLayout.setEnableAutoLoadMore(false);
+	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	mRecyclerview.setAdapter(mPublicAdapter);
+	mLinearLayout.removeView(mHeadView);
+	View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
+	mPublicAdapter.setEmptyView(inflate);
+	mLinearLayout.addView(mHeadView);
+	mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		//TODO 10.23 选择要打开的耗材柜弹出框
+		// DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
+	   }
+	});
+   }
 
-    private void initData() {
-        mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + mAllOutFormConfirmRequest.getCstTypes() +
-                "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-                mAllOutFormConfirmRequest.getCstCount() + "</big></font>"));
-        mLayout = R.layout.item_formcon_six_layout;
-        mHeadView = mContext.getLayoutInflater()
-                .inflate(R.layout.item_formcon_six_title_layout,
-                        (ViewGroup) mLinearLayout.getParent(), false);
-        ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-        ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-        ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-        ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-        ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-        ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-        mPublicAdapter = new OutFormConfirmAdapter(mLayout, mTransReceiveOrderDetailVosAllList);
-        mHeadView.setBackgroundResource(R.color.bg_green);
+   private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
+	Log.e("xb", "********getBillStockByEpc*****");
+	mTransReceiveOrderDetailVosAllList.clear();
+	//        for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+	//            if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode()))
+	//                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+	//        }
+	outFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
 
-        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        mRefreshLayout.setEnableAutoLoadMore(false);
-        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-        mRecyclerview.setAdapter(mPublicAdapter);
-        mLinearLayout.removeView(mHeadView);
-        View inflate = LayoutInflater.from(this).inflate(R.layout.recy_null, null);
-        mPublicAdapter.setEmptyView(inflate);
-        mLinearLayout.addView(mHeadView);
-        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                //TODO 10.23 选择要打开的耗材柜弹出框
-                // DialogUtils.showSelectOpenCabinetDialog(mContext, genData6());
-            }
-        });
-    }
+	LogUtils.i(TAG, "json   " + mGson.toJson(outFromConfirmRequestBean));
 
-    private void getBillStockByEpc(OutFromConfirmRequestBean outFromConfirmRequestBean) {
-        Log.e("xb", "********getBillStockByEpc*****");
-        mTransReceiveOrderDetailVosAllList.clear();
-        for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
-            if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode()))
-                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
-        }
-        mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
+	NetRequest.getInstance()
+		.findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null,
+					  new BaseResult() {
+					     @Override
+					     public void onSucceed(String result) {
+						  LogUtils.i(TAG, "getBillStockByEpc   " + result);
+						  OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(
+							  result, OutFormConfirmResultBean.class);
+						  if (outFormConfirmResultBean.getErrorEpcs() != null &&
+							outFormConfirmResultBean.getErrorEpcs().size() > 0) {
+						     String string = StringUtils.listToString(
+							     outFormConfirmResultBean.getErrorEpcs());
+						     ToastUtils.showLong(string);
+						     MusicPlayer.getInstance()
+							     .play(MusicPlayer.Type.NOT_NORMAL);
+						  }
+						  boolean isCanUse;
+						  if (outFormConfirmResultBean.getTcstInventoryOrderVos() !=
+							null &&
+							outFormConfirmResultBean.getTcstInventoryOrderVos()
+								.size() > 0) {
+						     isCanUse = true;
+						     mTransReceiveOrderDetailVosAllList.addAll(
+							     outFormConfirmResultBean.getTcstInventoryOrderVos());
+						  } else {
+						     isCanUse = false;
+						     mDownBtnOne.setEnabled(false);
+						     Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作",
+									  Toast.LENGTH_SHORT).show();
+						     new Handler().postDelayed(new Runnable() {
+							  public void run() {
+							     Log.e("xb", "finish");
+							     finish();
+							  }
+						     }, 3000);
+						  }
+						  mAllOutFormConfirmRequest = outFormConfirmResultBean;
+						  mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
 
-        LogUtils.i(TAG, "json   " + mGson.toJson(outFromConfirmRequestBean));
+						  //是否可以点击领用按钮
+						  for (OutFormConfirmResultBean.TcstInventoryOrderVosBean item : mTransReceiveOrderDetailVosAllList) {
+						     if (!item.isIsContain()) {
+							  isCanUse = false;
+							  break;
+						     }
+						  }
+						  if (isCanUse) {
+						     mDownBtnOne.setEnabled(true);
+						  } else {
+						     mDownBtnOne.setEnabled(false);
+						  }
+						  if (mPublicAdapter == null) {
+						     initData();
+						  } else {
+						     mPublicAdapter.notifyDataSetChanged();
+						  }
 
-        NetRequest.getInstance().findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG, "getBillStockByEpc   " + result);
-                OutFormConfirmResultBean outFormConfirmResultBean = mGson.fromJson(result, OutFormConfirmResultBean.class);
-                if (outFormConfirmResultBean.getErrorEpcs() != null &&
-                        outFormConfirmResultBean.getErrorEpcs().size() > 0) {
-                    String string = StringUtils.listToString(outFormConfirmResultBean.getErrorEpcs());
-                    ToastUtils.showLong(string);
-                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-                }
-                boolean isCanUse;
-                if (outFormConfirmResultBean.getTcstInventoryOrderVos() != null && outFormConfirmResultBean.getTcstInventoryOrderVos().size() > 0) {
-                    isCanUse = true;
-                    mTransReceiveOrderDetailVosAllList.addAll(outFormConfirmResultBean.getTcstInventoryOrderVos());
-                } else {
-                    isCanUse = false;
-                    mDownBtnOne.setEnabled(false);
-                    Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            Log.e("xb", "finish");
-                            finish();
-                        }
-                    }, 3000);
-                }
-                mAllOutFormConfirmRequest = outFormConfirmResultBean;
-                mAllOutFormConfirmRequest.setTransReceiveOrder(mPrePageDate);
+					     }
 
-                //是否可以点击领用按钮
-                for (OutFormConfirmResultBean.TcstInventoryOrderVosBean item : mTransReceiveOrderDetailVosAllList) {
-                    if (!item.isIsContain()) {
-                        isCanUse = false;
-                        break;
-                    }
-                }
-                if (isCanUse) {
-                    mDownBtnOne.setEnabled(true);
-                } else {
-                    mDownBtnOne.setEnabled(false);
-                }
-                if (mPublicAdapter == null) {
-                    initData();
-                } else {
-                    mPublicAdapter.notifyDataSetChanged();
-                }
+					     @Override
+					     public void onError(String result) {
+						  Log.e(TAG, "Erorr：" + result);
+					     }
+					  });
+   }
 
-            }
+   private void sureTransReceiveOrder() {
+	LogUtils.i(TAG, "mAllOutFormConfirmRequest   " + mGson.toJson(mAllOutFormConfirmRequest));
+	NetRequest.getInstance()
+		.sureReceiveOrder(mGson.toJson(mAllOutFormConfirmRequest), this, null,
+					new BaseResult() {
+					   @Override
+					   public void onSucceed(String result) {
+						LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
+						SureReciveOrder sureReciveOrder = mGson.fromJson(result,
+														 SureReciveOrder.class);
+						SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID,
+									"" + mPrePageDate.getId());
+						if (sureReciveOrder.isOperateSuccess()) {
+						   if (!sureReciveOrder.getMsg().contains("全部")) {
+							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
+											  sureReciveOrder.getMsg());
+						   } else {
+							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
+											  sureReciveOrder.getMsg());
+						   }
+						} else {
+						   ToastUtils.showShort(sureReciveOrder.getMsg());
+						}
+					   }
 
-            @Override
-            public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
-            }
-        });
-    }
+					   @Override
+					   public void onError(String result) {
+						Log.e(TAG, "Erorr：" + result);
+					   }
+					});
+   }
 
-    private void sureTransReceiveOrder() {
+   //   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   //    public void reciveBillStockDate(Event.EventBillStock event) {
+   ////        if (mIsFirst) {
+   //        if (mTransReceiveOrderDetailVosAllList == null) {
+   //            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
+   //        }
+   //        if (mOutFromConfirmRequestBean == null) {
+   //            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+   //            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+   //            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+   //            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+   //                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+   //            }
+   //        } else {
+   //            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
+   //                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+   //            }
+   //        }
+   //        //        mPrePageDate = event.orderSheetBean;
+   //        //           mTbaseDevices = event.tbaseDevices;
+   ////            mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+   ////            mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
+   //        if (event.tbaseDevices != null) {
+   //            Log.e("xb", "柜子" + event.tbaseDevices.size());
+   //        } else {
+   //            Log.e("xb", "柜子 null");
+   //        }
+   //        if (event.transReceiveOrderDetailVosList != null) {
+   //            Log.e("xb", "耗材" + event.transReceiveOrderDetailVosList.size());
+   //        } else {
+   //            Log.e("xb", "耗材 null");
+   //        }
+   //
+   //        if (event.orderSheetBean != null && event.orderSheetBean.getId() != null && mPrePageDate == null) {
+   //            mPrePageDate = event.orderSheetBean;
+   //        }
+   //        if (event.tbaseDevices != null && event.tbaseDevices.size() > 0 && mTbaseDevices == null) {
+   //            mTbaseDevices = event.tbaseDevices;
+   //            Log.e("xb", "柜子 赋值");
+   //        }
+   //        if (event.transReceiveOrderDetailVosList != null && event.transReceiveOrderDetailVosList.size() > 0 && mTransReceiveOrderDetailVosBean == null) {
+   //            mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
+   //            mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
+   //            Log.e("xb", "耗材 赋值");
+   //        }
+   ////        mIsFirst = false;
+   ////        }
+   //        Log.e("xb", "Date--mTransReceiveOrderDetailVosBean: " + mTransReceiveOrderDetailVosBean);
+   //        Log.e("xb", "Date--mTbaseDevices: " + mTbaseDevices);
+   //        Log.e("xb", "Date--orderSheetBean: " + mPrePageDate);
+   //    }
 
-        NetRequest.getInstance().sureReceiveOrder(mGson.toJson(mAllOutFormConfirmRequest), this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG, "getBillStockByEpc   " + result);
-                SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
-                SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, "" + mPrePageDate.getId());
-                if (sureReciveOrder.isOperateSuccess()) {
-                    if (!sureReciveOrder.getMsg().contains("全部")) {
-                        DialogUtils.showTwoDialog(mContext, 2, "耗材领用成功", sureReciveOrder.getMsg());
-                    } else {
-                        DialogUtils.showTwoDialog(mContext, 1, "耗材领用成功", sureReciveOrder.getMsg());
-                    }
-                } else {
-                    ToastUtils.showShort(sureReciveOrder.getMsg());
-                }
-            }
+   private int k;
 
-            @Override
-            public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
-            }
-        });
-    }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void scanEPCResult(Event.EventDeviceCallBack event) {
+	Log.e("xb", "scanEPCResult   " + event.epcs.size());
+	if (mOutFromConfirmRequestBean == null) {
+	   mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+	   mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+	   mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
+	   //            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
+	   //                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
+	   //                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
+	   //                }
+	   //            }
+	   Log.e("xb", "scanEPCResult init");
+	}
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	AllDeviceCallBack.getInstance().initCallBack();
+	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
+		.find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeanss) {
+	   String box_id = boxIdBean.getBox_id();
+	   if (box_id != null) {
+		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
+									   READER_TYPE).find(BoxIdBean.class);
+		if (boxIdBeansss.size() > 1) {
+		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
+			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
+			   mEPCMapDate.putAll(event.epcs);
+			   k++;
+			   LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
+			}
+		   }
+		   if (k == boxIdBeansss.size()) {
+			LogUtils.i(TAG, "mEPCDate  zou l  ");
+			k = 0;
+			for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+			   if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
+				mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+			   }
+			}
+			mOutFromConfirmRequestBean.getDeviceCodes().add(box_id);
+			getBillStockByEpc(mOutFromConfirmRequestBean);
 
- //   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-//    public void reciveBillStockDate(Event.EventBillStock event) {
-////        if (mIsFirst) {
-//        if (mTransReceiveOrderDetailVosAllList == null) {
-//            mTransReceiveOrderDetailVosAllList = new ArrayList<>();
-//        }
-//        if (mOutFromConfirmRequestBean == null) {
-//            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
-//            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
-//            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
-//            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
-//                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
-//            }
-//        } else {
-//            for (BoxSizeBean.TbaseDevicesBean item : event.tbaseDevices) {
-//                mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
-//            }
-//        }
-//        //        mPrePageDate = event.orderSheetBean;
-//        //           mTbaseDevices = event.tbaseDevices;
-////            mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
-////            mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
-//        if (event.tbaseDevices != null) {
-//            Log.e("xb", "柜子" + event.tbaseDevices.size());
-//        } else {
-//            Log.e("xb", "柜子 null");
-//        }
-//        if (event.transReceiveOrderDetailVosList != null) {
-//            Log.e("xb", "耗材" + event.transReceiveOrderDetailVosList.size());
-//        } else {
-//            Log.e("xb", "耗材 null");
-//        }
-//
-//        if (event.orderSheetBean != null && event.orderSheetBean.getId() != null && mPrePageDate == null) {
-//            mPrePageDate = event.orderSheetBean;
-//        }
-//        if (event.tbaseDevices != null && event.tbaseDevices.size() > 0 && mTbaseDevices == null) {
-//            mTbaseDevices = event.tbaseDevices;
-//            Log.e("xb", "柜子 赋值");
-//        }
-//        if (event.transReceiveOrderDetailVosList != null && event.transReceiveOrderDetailVosList.size() > 0 && mTransReceiveOrderDetailVosBean == null) {
-//            mOutFromConfirmRequestBean.setTransReceiveOrderDetailVos(event.transReceiveOrderDetailVosList);
-//            mTransReceiveOrderDetailVosBean = event.transReceiveOrderDetailVosList;
-//            Log.e("xb", "耗材 赋值");
-//        }
-////        mIsFirst = false;
-////        }
-//        Log.e("xb", "Date--mTransReceiveOrderDetailVosBean: " + mTransReceiveOrderDetailVosBean);
-//        Log.e("xb", "Date--mTbaseDevices: " + mTbaseDevices);
-//        Log.e("xb", "Date--orderSheetBean: " + mPrePageDate);
-//    }
+		   }
+		} else {
+		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
+		   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+			if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
+			   mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+			}
+		   }
+		   mOutFromConfirmRequestBean.getDeviceCodes().add(box_id);
+		   getBillStockByEpc(mOutFromConfirmRequestBean);
+		}
 
-    private int k;
+	   }
+	}
+   }
+   //    @Subscribe(threadMode = ThreadMode.MAIN)
+   //    public void scanEPCResult(Event.EventDeviceCallBack event) {
+   //        if (mOutFromConfirmRequestBean == null) {
+   //            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
+   //            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
+   //        }
+   //        mEPCMapDate.putAll(event.epcs);
+   //        mOutFromConfirmRequestBean.getEpcs().clear();
+   //        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+   //            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
+   //        }
+   //        if (mLoadingDialog != null) {
+   //            mLoadingDialog.mDialog.dismiss();
+   //        }
+   //        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
+   //            getBillStockByEpc(mOutFromConfirmRequestBean);
+   //        } else {
+   //            ToastUtils.showShort("耗材扫描失败，请重新扫描");
+   //        }
+   //    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void scanEPCResult(Event.EventDeviceCallBack event) {
-        Log.e("xb", "scanEPCResult   "+event.epcs.size());
-        if (mOutFromConfirmRequestBean == null) {
-            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
-            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
-            mOutFromConfirmRequestBean.setDeviceCodes(new ArrayList<>());
-            for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
-                if (!mOutFromConfirmRequestBean.getDeviceCodes().contains(item.getDeviceCode())) {
-                    mOutFromConfirmRequestBean.getDeviceCodes().add(item.getDeviceCode());
-                }
-            }
-            Log.e("xb", "scanEPCResult init");
-        }
-        if (mLoading != null) {
-            mLoading.mAnimationDrawable.stop();
-            mLoading.mDialog.dismiss();
-            mLoading = null;
-        }
-        AllDeviceCallBack.getInstance().initCallBack();
-        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-                .find(BoxIdBean.class);
-        for (BoxIdBean boxIdBean : boxIdBeanss) {
-            String box_id = boxIdBean.getBox_id();
-            if (box_id != null) {
-                List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-                        READER_TYPE).find(BoxIdBean.class);
-                if (boxIdBeansss.size() > 1) {
-                    for (BoxIdBean BoxIdBean : boxIdBeansss) {
-                        LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-                        if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-                            mEPCMapDate.putAll(event.epcs);
-                            k++;
-                            LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
-                        }
-                    }
-                    if (k == boxIdBeansss.size()) {
-                        LogUtils.i(TAG, "mEPCDate  zou l  ");
-                        k = 0;
-                        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
-                            if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
-                                mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
-                            }
-                        }
+   /**
+    * 重新打开柜门
+    */
+   private void reOpenDoor() {
+	for (String deviceInventoryVo : mEthDeviceIdBack) {
+	   String deviceCode = deviceInventoryVo;
+	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+	   DeviceManager.getInstance().OpenDoor(deviceCode);
+	}
+	//        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
+	//            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+	//        } else {
+	//            ToastUtils.showShort("无柜子信息!");
+	//        }
+   }
 
-                        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
-                            Log.e("xb", "getBillStockByEpc1");
-                            getBillStockByEpc(mOutFromConfirmRequestBean);
-                        } else {
-                            Toast.makeText(mContext,"耗材扫描失败，请重新扫描",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } else {
-                    LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-                    for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
-                        if (!mOutFromConfirmRequestBean.getEpcs().equals(v.getKey())) {
-                            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
-                        }
-                    }
-                    if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
-                        Log.e("xb", "getBillStockByEpc2");
-                        mOutFromConfirmRequestBean.getDeviceCodes().add(box_id);
-                        getBillStockByEpc(mOutFromConfirmRequestBean);
-                    } else {
-                       Toast.makeText(mContext,"耗材扫描失败，请重新扫描",Toast.LENGTH_SHORT).show();
-                    }
-                }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void isDoorOpened(Event.HomeNoClickEvent event) {
+	if (event.isClick) {
+	   DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+	}
+   }
 
-            }
-        }
+   private void startScan(String deviceIndentify) {
+	if (mOutFromConfirmRequestBean != null) {
+	   mOutFromConfirmRequestBean.getDeviceCodes().clear();
+	   mOutFromConfirmRequestBean.getEpcs().clear();
+	   mOutFromConfirmRequestBean = null;
+	   mTransReceiveOrderDetailVosAllList.clear();
+	}
+	EventBusUtils.postSticky(new Event.EventLoading(true));
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+								 UHF_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   String box_id = boxIdBean.getBox_id();
+	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+		   .find(BoxIdBean.class);
 
-    }
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void scanEPCResult(Event.EventDeviceCallBack event) {
-//        if (mOutFromConfirmRequestBean == null) {
-//            mOutFromConfirmRequestBean = new OutFromConfirmRequestBean();
-//            mOutFromConfirmRequestBean.setEpcs(new ArrayList<>());
-//        }
-//        mEPCMapDate.putAll(event.epcs);
-//        mOutFromConfirmRequestBean.getEpcs().clear();
-//        for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
-//            mOutFromConfirmRequestBean.getEpcs().add(v.getKey());
-//        }
-//        if (mLoadingDialog != null) {
-//            mLoadingDialog.mDialog.dismiss();
-//        }
-//        if (mOutFromConfirmRequestBean.getEpcs().size() > 0) {
-//            getBillStockByEpc(mOutFromConfirmRequestBean);
-//        } else {
-//            ToastUtils.showShort("耗材扫描失败，请重新扫描");
-//        }
-//    }
-
-    /**
-     * 重新打开柜门
-     */
-    private void reOpenDoor() {
-        for (String deviceInventoryVo : mEthDeviceIdBack) {
-            String deviceCode = deviceInventoryVo;
-            LogUtils.i(TAG, "deviceCode    " + deviceCode);
-            DeviceManager.getInstance().OpenDoor(deviceCode);
-        }
-//        if (mTbaseDevices != null && mTbaseDevices.size() > 0) {
-//            AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-//        } else {
-//            ToastUtils.showShort("无柜子信息!");
-//        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void isDoorOpened(Event.HomeNoClickEvent event) {
-        if (event.isClick) {
-            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
-        }
-    }
-
-    private void startScan(String deviceIndentify) {
-        EventBusUtils.postSticky(new Event.EventLoading(true));
-        List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-                UHF_TYPE).find(BoxIdBean.class);
-        for (BoxIdBean boxIdBean : boxIdBeans) {
-            String box_id = boxIdBean.getBox_id();
-            List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-                    .find(BoxIdBean.class);
-
-            for (BoxIdBean deviceid : deviceBean) {
-                String device_id = deviceid.getDevice_id();
-                int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-                LogUtils.i(TAG, "开始扫描了状态    " + i);
-            }
-        }
-    }
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+		LogUtils.i(TAG, "开始扫描了状态    " + i);
+	   }
+	}
+   }
 
 }
