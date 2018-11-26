@@ -270,10 +270,10 @@ public class UIUtils {
    public static boolean getMenuDownType(Context context,String title) {
 	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
-	List<HomeAuthorityMenuBean.ChildrenBeanX> fromJson = gson.fromJson(string,new TypeToken<List<HomeAuthorityMenuBean.ChildrenBeanX>>() {}
+	List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> fromJson = gson.fromJson(string,new TypeToken<List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean>>() {}
 		.getType());
 	if (fromJson!=null&&fromJson.size()>0){
-	   for (HomeAuthorityMenuBean.ChildrenBeanX mType :fromJson) {
+	   for (HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean mType :fromJson) {
 		if (title.equals(mType.getTitle())){
 		   return true;
 		}

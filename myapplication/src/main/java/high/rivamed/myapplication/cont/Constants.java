@@ -90,6 +90,7 @@ public class Constants {
     public static final String SAVE_CONFIG_STRING = "SAVE_CONFIG_STRING";//配置项存入
     public static final String SAVE_MENU_LEFT_TYPE = "SAVE_MENU_LEFT_TYPE";//权限配置项存入主按钮
     public static final String SAVE_MENU_DOWN_TYPE = "SAVE_MENU_DOWN_TYPE";//权限配置项存入耗材操作选择操作
+    public static final String SAVE_MENU_DOWN_TYPE_ALL ="SAVE_MENU_DOWN_TYPE_ALL";//权限配置项存入耗材操作选择操作是否有数据
     public static final String READER_TYPE = "2";//reader的type
     public static final String UHF_TYPE = "1";//串口服务器的type
     public static final String SN_NUMBER = "sn_number";

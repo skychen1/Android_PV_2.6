@@ -20,8 +20,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/selector_f_3_text</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">@dimen/y218</item>
         <item name="android:paddingTop">@dimen/y50</item>
         <item name="android:paddingRight">@dimen/x20</item>
         <item name="android:paddingBottom">@dimen/y10</item>
@@ -188,11 +187,10 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">@color/selector_f_3_text</item>
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">@dimen/x188</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:padding">@dimen/y17</item>
-        <item name="android:layout_marginRight">@dimen/x30</item>
+        <item name="android:layout_marginRight">@dimen/x25</item>
         <item name="android:layout_marginLeft">@dimen/x30</item>
         <item name="android:textSize">@dimen/textsize_18</item>
     </style>

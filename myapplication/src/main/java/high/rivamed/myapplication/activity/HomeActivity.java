@@ -45,6 +45,7 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 
 /**
@@ -65,7 +66,6 @@ public class HomeActivity extends SimpleActivity {
    public              long   TOUCH_TIME = 0;
    // 再点一次退出程序时间设置
    public static final long   WAIT_TIME  = 2000L;
-   public static final String JUMP_ID    = "jump_id";
 
    @BindView(R.id.content_syjl)
    RadioButton mContentSyjl;
@@ -134,16 +134,7 @@ public class HomeActivity extends SimpleActivity {
 	EventBusUtils.register(this);
 	getAuthorityMenu();
 
-	Intent intent = getIntent();
-	Bundle extras = intent.getExtras();
-	if (extras != null) {
-	   String type = extras.getString("type");
-	   int number = extras.getInt("number");
-	   mHomeRg.check(R.id.content_stock_status);
-	   LastId = 2;
-
-	}
-	setMenu();
+//	setMenu();
 	initData();
 	initListener();
 	initPushService();
@@ -157,27 +148,27 @@ public class HomeActivity extends SimpleActivity {
 	if (UIUtils.getMenuLeftType(this,LEFT_MENU_HCCZ)){//耗材操作
 	   mContentConsumeOperate.setVisibility(View.VISIBLE);
 	}else {
-	   mContentConsumeOperate.setVisibility(View.INVISIBLE);
+	   mContentConsumeOperate.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuLeftType(this,LEFT_MENU_HCLS)){//耗材流水
 	   mContentRunningWate.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRunningWate.setVisibility(View.INVISIBLE);
+	   mContentRunningWate.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuLeftType(this,LEFT_MENU_KCZT)){//库存状态
 	   mContentStockStatus.setVisibility(View.VISIBLE);
 	}else {
-	   mContentStockStatus.setVisibility(View.INVISIBLE);
+	   mContentStockStatus.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SSPD)){//实时盘点
 	   mContentTimelyCheck.setVisibility(View.VISIBLE);
 	}else {
-	   mContentTimelyCheck.setVisibility(View.INVISIBLE);
+	   mContentTimelyCheck.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SYJL)&&UIUtils.getConfigType(mContext, CONFIG_007)){//使用记录
 	   mContentSyjl.setVisibility(View.VISIBLE);
 	}else {
-	   mContentSyjl.setVisibility(View.INVISIBLE);
+	   mContentSyjl.setVisibility(View.GONE);
 	}
    }
 
@@ -332,11 +323,17 @@ public class HomeActivity extends SimpleActivity {
 		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
 											new TypeToken<List<HomeAuthorityMenuBean>>() {}
 												.getType());
-		if (fromJson.size() > 0) {
-		   HomeAuthorityMenuBean menuBean = fromJson.get(0);
-		   List<HomeAuthorityMenuBean.ChildrenBeanX> children = menuBean.getChildren();
+		if (fromJson.get(0).getChildren().size()>0) {
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
+		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
+			   .getChildren()
+			   .get(0)
+			   .getChildren();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
+		}else {
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
 		}
+		setMenu();
 	   }
 
 	   @Override

@@ -81,7 +81,6 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_RK;
@@ -91,6 +90,7 @@ import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YC;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
@@ -480,7 +480,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	if (mEPCDate!=null){
 	   mEPCDate.clear();
 	}
-	setDownType();//设置选择操作的权限
+
 	initData();
 
    }
@@ -492,37 +492,37 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_LY)){//领用
 	   mContentRbLy.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbLy.setVisibility(View.INVISIBLE);
+	   mContentRbLy.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_RK)){//入库
 	   mContentRbRk.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbRk.setVisibility(View.INVISIBLE);
+	   mContentRbRk.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_YC)){//移出
 	   mContentRbYc.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbYc.setVisibility(View.INVISIBLE);
+	   mContentRbYc.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_YR)){//移入
 	   mContentRbYr.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbYr.setVisibility(View.INVISIBLE);
+	   mContentRbYr.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_DB)){//调拨
 	   mContentRbTb.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbTb.setVisibility(View.INVISIBLE);
+	   mContentRbTb.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_THUI)){//退回
 	   mContentRbTuihui.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbTuihui.setVisibility(View.INVISIBLE);
+	   mContentRbTuihui.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuDownType(mContext,DOWN_MENU_THUO)){//退货
 	   mContentRbTuihuo.setVisibility(View.VISIBLE);
 	}else {
-	   mContentRbTuihuo.setVisibility(View.INVISIBLE);
+	   mContentRbTuihuo.setVisibility(View.GONE);
 	}
    }
 
@@ -530,7 +530,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void onStart() {
 	EventBusUtils.register(this);
 	mOnStart = true;
-	LogUtils.i(TAG, "onStart   ");
+
 	super.onStart();
    }
 
@@ -842,12 +842,12 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
 	}
-	//是否启用选择操作
-	if (UIUtils.getConfigType(mContext, CONFIG_019)){
-	   mConsumeDown.setVisibility(View.VISIBLE);
-	}else {
-	   mConsumeDown.setVisibility(View.GONE);
-	}
+//	//是否启用选择操作
+//	if (UIUtils.getConfigType(mContext, CONFIG_019)){
+//	   mConsumeDown.setVisibility(View.VISIBLE);
+//	}else {
+//	   mConsumeDown.setVisibility(View.GONE);
+//	}
 	//是否启用功能开柜
 	if (UIUtils.getConfigType(mContext, CONFIG_016)) {
 	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
@@ -881,7 +881,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    //数据加载
    private void loadDate() {
-	LogUtils.i(TAG, "loadDate");
+
 	NetRequest.getInstance().loadBoxSize(mContext, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -900,6 +900,15 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    //赋值
    private void onSucceedDate() {
+	LogUtils.i(TAG, "loadDate   "+SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL));
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL)){
+	   setDownType();//设置选择操作的权限
+	}else {
+	   mConsumeDown.setVisibility(View.GONE);
+	   mConsumeDownRv.setVisibility(View.GONE);
+	}
+	LogUtils.i(TAG, "loadDate   "+SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL));
+
 	mContentRg.setVisibility(View.VISIBLE);
 
 	LogUtils.i(TAG, "onSucceedDate");

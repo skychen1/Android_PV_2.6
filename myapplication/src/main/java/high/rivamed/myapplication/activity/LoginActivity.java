@@ -94,6 +94,9 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -237,7 +240,9 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
-
+	SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
+	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, "");
+	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
    }
