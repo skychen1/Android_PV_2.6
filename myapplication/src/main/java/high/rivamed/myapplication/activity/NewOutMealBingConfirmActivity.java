@@ -854,11 +854,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                             }
                         }
 
-                        if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
+
                             findBillOrder();
-                        } else {
-                            ToastUtils.showShort("耗材扫描失败，请重新扫描");
-                        }
+
                     }
                 } else {
                     LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
@@ -869,11 +867,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
                             mFindBillOrderBean.getCstInventoryVos().add(item);
                         }
                     }
-                    if (mFindBillOrderBean.getCstInventoryVos().size() > 0) {
                         findBillOrder();
-                    } else {
-                        ToastUtils.showShort("耗材扫描失败，请重新扫描");
-                    }
+
                 }
 
             }

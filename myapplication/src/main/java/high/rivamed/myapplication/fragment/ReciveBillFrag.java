@@ -125,11 +125,6 @@ public class ReciveBillFrag extends SimpleFragment {
     private static final String TAG = "ReciveBillFrag";
 
     /**
-     * 柜内所用耗材
-     */
-    private List<BillStockResultBean.TransReceiveOrderDetailVosBean> mTransReceiveOrderDetailVosList;
-
-    /**
      * 柜子信息
      */
     private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices = new ArrayList<>();
@@ -137,6 +132,7 @@ public class ReciveBillFrag extends SimpleFragment {
      * 是否可以触发事件跳转界面
      */
     private boolean mIsCanSkipToSurePage = true;
+    private BillStockResultBean mBillStockResultBean;
 
     /**
      * 重新加载数据
@@ -180,11 +176,9 @@ public class ReciveBillFrag extends SimpleFragment {
         EventBusUtils.register(this);
         mPublicRl.setVisibility(View.GONE);
 
-        if (mTransReceiveOrderDetailVosList == null) {
-            mTransReceiveOrderDetailVosList = new ArrayList<>();
-        }
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+
             getStockByOrderId(mPrePageDate.getId());
         }
         initlistener();
@@ -214,12 +208,26 @@ public class ReciveBillFrag extends SimpleFragment {
         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
         ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
         ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-
-        mPublicAdapter = new BillStockAdapter(mLayout, mTransReceiveOrderDetailVosList);
+        if (mPublicAdapter!=null){
+            mPublicAdapter.notifyDataSetChanged();
+        }else {
+            mPublicAdapter = new BillStockAdapter(mLayout, mBillStockResultBean.getTransReceiveOrderDetailVos());
+            mHeadView.setBackgroundResource(R.color.bg_green);
+            mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+            mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+            mRefreshLayout.setEnableAutoLoadMore(false);
+            mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+            mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+            View inflate = LayoutInflater.from(mContext).inflate(R.layout.recy_null, null);
+            mPublicAdapter.setEmptyView(inflate);
+            mRecyclerview.setAdapter(mPublicAdapter);
+            mLinearLayout.addView(mHeadView);
+        }
         mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 String six = mPublicAdapter.getItem(position).getReceivedStatus();
+
                 if (!six.equals("已领取")) {
                     mTbaseDevices.clear();
                     List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
@@ -241,16 +249,7 @@ public class ReciveBillFrag extends SimpleFragment {
                 }
             }
         });
-        mHeadView.setBackgroundResource(R.color.bg_green);
-        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        mRefreshLayout.setEnableAutoLoadMore(false);
-        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-        View inflate = LayoutInflater.from(mContext).inflate(R.layout.recy_null, null);
-        mPublicAdapter.setEmptyView(inflate);
-        mRecyclerview.setAdapter(mPublicAdapter);
-        mLinearLayout.addView(mHeadView);
+
     }
 
     private void initlistener() {
@@ -283,18 +282,17 @@ public class ReciveBillFrag extends SimpleFragment {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getStockByOrderId   " + result);
-                BillStockResultBean billStockResultBean = mGson.fromJson(result,
-                        BillStockResultBean.class);
-                mTransReceiveOrderDetailVosList.addAll(
-                        billStockResultBean.getTransReceiveOrderDetailVos());
+                mBillStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
+
                 ((OutFormActivity) getActivity()).setCstTypeAndNumber(
-                        "" + billStockResultBean.getCstTypes(), "" + billStockResultBean.getCstCount());
-                mPrePageDate.cstType = "" + billStockResultBean.getCstTypes();
-                mPrePageDate.cstNumber = "" + billStockResultBean.getCstCount();
+                      "" + mBillStockResultBean.getCstTypes(), "" + mBillStockResultBean.getCstCount());
+                mPrePageDate.cstType = "" + mBillStockResultBean.getCstTypes();
+                mPrePageDate.cstNumber = "" + mBillStockResultBean.getCstCount();
+
                 initData();
                 if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-                    if (!billStockResultBean.isOperateSuccess()) {
-                        Toast.makeText(mContext, billStockResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+                    if (!mBillStockResultBean.isOperateSuccess()) {
+                        ToastUtils.showShort2(mContext,mBillStockResultBean.getMsg());
                     }
                 }
             }
@@ -341,32 +339,35 @@ public class ReciveBillFrag extends SimpleFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void isDoorOpened(Event.HomeNoClickEvent event) {
-        if (event.isClick) {
-            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
-        }
-    }
+        if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
+            LogUtils.i(TAG,"isDoorOpened   "+event.isClick);
+            if (event.isClick) {
+                DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+            }else {
+                if (mIsCanSkipToSurePage) {
+                    if (!event.isClick) {
+                        Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("DATA", new Event.EventBillStock(mPrePageDate,
+                                                                                mBillStockResultBean.getTransReceiveOrderDetailVos(),
+                                                                                mTbaseDevices));
+                        intent.putExtras(bundle);
+                        mContext.startActivity(intent);
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void isDoorClosed(Event.HomeNoClickEvent event) {
-        if (mIsCanSkipToSurePage) {
-            if (!event.isClick) {
-                Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("DATA", new Event.EventBillStock(mPrePageDate,
-                        mTransReceiveOrderDetailVosList,
-                        mTbaseDevices));
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-                //                EventBusUtils.postSticky(new Event.EventBillStock(mPrePageDate, mTransReceiveOrderDetailVosList, mTbaseDevices));
-
+                    }
+                }
             }
         }
+
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
+        LogUtils.i(TAG,"onResume");
         mIsCanSkipToSurePage = true;
+
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
             getStockByOrderId(mPrePageDate.getId());
         }

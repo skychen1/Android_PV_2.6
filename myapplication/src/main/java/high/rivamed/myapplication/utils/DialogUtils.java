@@ -319,7 +319,7 @@ public class DialogUtils {
         builder.create().show();
     }
 
-    public static void showTwoDialog(Context context, int mType, String title, String msg) {
+    public static void showTwoDialog(Activity activity,Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {
             builder.setTwoMsg(msg);
@@ -328,12 +328,14 @@ public class DialogUtils {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
+                    activity.finish();
                 }
             });
             builder.setRight("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
+                    activity.finish();
                 }
             });
         } else {
@@ -343,12 +345,17 @@ public class DialogUtils {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
+                    activity.finish();
                 }
             });
             builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
+                    if (context instanceof Activity){
+                        context.startActivity(new Intent(context, LoginActivity.class));
+                        App.getInstance().removeALLActivity_();
+                    }
                 }
             });
         }
