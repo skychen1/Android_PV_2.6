@@ -97,6 +97,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 	}
    }
 
+
    /**
     * dialog操作数据
     *
@@ -326,6 +327,7 @@ public class SelInOutBoxTwoActivity extends BaseTimelyActivity {
 		   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
 		   mTCstInventoryDto.gettCstInventoryVos().clear();
 		   deviceInventoryVos.clear();
+		   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			LogUtils.i(TAG, "deviceCode    " + deviceCode);

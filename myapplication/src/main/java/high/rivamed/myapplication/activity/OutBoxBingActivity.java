@@ -409,6 +409,7 @@ public class OutBoxBingActivity extends BaseTimelyActivity {
 		   TimelyAllFrag.mPauseS = true;
 		   mPatient = null;
 		   mPatientId = null;
+		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			LogUtils.i(TAG, "deviceCode    " + deviceCode);

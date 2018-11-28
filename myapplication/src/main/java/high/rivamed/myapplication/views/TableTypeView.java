@@ -414,6 +414,8 @@ public class TableTypeView extends LinearLayout {
                             mRefreshLayout.setEnableAutoLoadMore(false);
                             mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
                             mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                            View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
+                            mInBoxAllAdapter.setEmptyView(inflate);
                             mRecyclerview.setAdapter(mInBoxAllAdapter);
                             mLinearLayout.addView(mHeadView);
                         }
