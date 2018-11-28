@@ -27,6 +27,18 @@ public class Event {
     /**
      * 耗材的明细数据
      */
+    public static class EventTestIdAndPower {
+        public String readerId;
+        public  String readerPower;
+
+        public EventTestIdAndPower(String readerId, String readerPower) {
+            this.readerId = readerId;
+            this.readerPower = readerPower;
+        }
+    }
+    /**
+     * 耗材的明细数据
+     */
     public static class EventPatientId {
         public String patientId;
         public int status;

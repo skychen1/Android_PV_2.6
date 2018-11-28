@@ -292,7 +292,7 @@ public class ReciveBillFrag extends SimpleFragment {
                 initData();
                 if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
                     if (!mBillStockResultBean.isOperateSuccess()) {
-                        ToastUtils.showShort2(mContext,mBillStockResultBean.getMsg());
+                        Toast.makeText(mContext,mBillStockResultBean.getMsg(),Toast.LENGTH_SHORT).show();
                     }
                 }
             }

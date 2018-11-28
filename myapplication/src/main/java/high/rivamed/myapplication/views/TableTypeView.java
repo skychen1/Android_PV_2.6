@@ -451,14 +451,13 @@ public class TableTypeView extends LinearLayout {
                         mOutBoxAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                LogUtils.i("Out", " position    " + position + "     mDataVo.get(position).isSelected()   " + mTCstInventoryVos.get(position).isSelected());
-                                if (mTCstInventoryVos.get(position).isSelected()) {
-                                    mTCstInventoryVos.get(position).setSelected(false);
+                                LogUtils.i("table","table     "+position);
+                                if (mOutBoxAllAdapter.getData().get(position).isSelected()) {
+                                    mOutBoxAllAdapter.getData().get(position).setSelected(false);
                                 } else {
-                                    mTCstInventoryVos.get(position).setSelected(true);
+                                    mOutBoxAllAdapter.getData().get(position).setSelected(true);
                                 }
-                                BaseTimelyActivity.mOutDto.settCstInventoryVos(mTCstInventoryVos);
-                                LogUtils.i("Out", " position    " + position + "     mDataVo.get(position).isSelected()   " + mTCstInventoryVos.get(position).isSelected());
+                                BaseTimelyActivity.mOutDto.settCstInventoryVos(mOutBoxAllAdapter.getData());
                                 mOutBoxAllAdapter.notifyDataSetChanged();
                             }
                         });

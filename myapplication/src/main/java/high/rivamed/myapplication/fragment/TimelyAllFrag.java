@@ -64,6 +64,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -532,7 +533,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		ToastUtils.showShort("reader未启动，请稍后重新扫描");
 	   }
 	   for (String readerCode : mReaderDeviceId) {
-		DeviceManager.getInstance().StartUhfScan(readerCode);
+		DeviceManager.getInstance().StartUhfScan(readerCode,READER_TIME);
 	   }
 	} else {
 	   mBoxIdListss = new ArrayList<String>();
@@ -550,7 +551,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
-			DeviceManager.getInstance().StartUhfScan(device_id);
+			DeviceManager.getInstance().StartUhfScan(device_id,READER_TIME);
 		   }
 		}
 	   }

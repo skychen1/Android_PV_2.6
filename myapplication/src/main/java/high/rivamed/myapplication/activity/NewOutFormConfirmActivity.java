@@ -69,9 +69,9 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
-import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
@@ -522,10 +522,10 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 									"" + mPrePageDate.getId());
 						if (sureReciveOrder.isOperateSuccess()) {
 						   if (!sureReciveOrder.getMsg().contains("全部")) {
-							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
+							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
 											  sureReciveOrder.getMsg());
 						   } else {
-							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
+							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
 											  sureReciveOrder.getMsg());
 						   }
 						} else {

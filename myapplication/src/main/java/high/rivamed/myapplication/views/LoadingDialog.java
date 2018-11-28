@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import high.rivamed.myapplication.R;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
+
 /**
  * 项目名称:    Rivamed_High_2.6
  * 创建者:      LiangDanMing
@@ -61,7 +63,7 @@ public class LoadingDialog extends Dialog {
 		   mAnimationDrawable.stop();
 		   mDialog.dismiss();
 		}
-	   }, 4000);
+	   }, READER_TIME);
 	   return mDialog;
 	}
 

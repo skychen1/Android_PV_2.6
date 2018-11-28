@@ -41,6 +41,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
+import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
@@ -49,7 +50,7 @@ public class App extends Application {
     private List<Activity> oList;//用于存放所有启动的Activity的集合
 
     public static final String TAG = "BaseApplication";
-
+    public static  int READER_TIME = 3000;     //扫描时间
     private static App instance;
     private static Handler mHandler;
     /**
@@ -94,6 +95,7 @@ public class App extends Application {
 
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	 READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
         LogcatHelper.getInstance(this).start();
         if (mServiceManager==null){
             initMessgeService();

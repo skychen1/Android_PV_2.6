@@ -36,7 +36,6 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -188,6 +187,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    public static CountDownTimer   mStarts;
    public static boolean mOnBtnGone = false;
    public String mInJson;
+   public  boolean mIsClick;
 
    /**
     * 看关门后是否需要设置按钮为可以点击
@@ -210,14 +210,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+	mIsClick = event.isClick;
+	LogUtils.i(TAG, "  mIsClick    " + mIsClick);
 	if (event.isClick){
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+//	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	}else {
-	  MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+//	  MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
-	EventBusUtils.removeStickyEvent(getClass());
    }
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEvent(Event.EventAct event) {
