@@ -126,25 +126,25 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    TextView     mFunctionTitleMeal;
 
    @BindView(R.id.fastopen_title_form)
-   TextView     mFastopenTitleForm;
+   TextView       mFastopenTitleForm;
    @BindView(R.id.consume_openall_middle)
-   LinearLayout mConsumeOpenallMiddle;
+   RelativeLayout mConsumeOpenallMiddle;
    @BindView(R.id.content_rb_ly)
-   RadioButton  mContentRbLy;
+   RadioButton    mContentRbLy;
    @BindView(R.id.content_rb_rk)
-   RadioButton  mContentRbRk;
+   RadioButton    mContentRbRk;
    @BindView(R.id.content_rb_yc)
-   RadioButton  mContentRbYc;
+   RadioButton    mContentRbYc;
    @BindView(R.id.content_rb_tb)
-   RadioButton  mContentRbTb;
+   RadioButton    mContentRbTb;
    @BindView(R.id.content_rb_yr)
-   RadioButton  mContentRbYr;
+   RadioButton    mContentRbYr;
    @BindView(R.id.content_rb_tuihui)
-   RadioButton  mContentRbTuihui;
+   RadioButton    mContentRbTuihui;
    @BindView(R.id.content_rb_tuihuo)
-   RadioButton  mContentRbTuihuo;
+   RadioButton    mContentRbTuihuo;
    @BindView(R.id.content_rg)
-   RadioGroup   mContentRg;
+   RadioGroup     mContentRg;
    @BindView(R.id.consume_down_rv)
    RecyclerView mConsumeDownRv;
    @BindView(R.id.consume_down)
@@ -157,7 +157,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    View           mRgMiddleGone;
    @BindView(R.id.rg_down_gone)
    View           mRgDownGone;
-   private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
 
@@ -181,7 +180,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    private String                             mOperationScheduleId;
    private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String> mEPCDatess = new TreeMap<>();
-//   private List<String> mDoorList = 	   new ArrayList<>();
 
    int k = 0;
    private int mAllPage   = 1;
@@ -895,7 +893,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    //数据加载
    private void loadDate() {
 	LogUtils.i(TAG, "loadDate");
-	NetRequest.getInstance().loadBoxSize(mContext, mShowLoading, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		mBoxSizeBean = mGson.fromJson(result, BoxSizeBean.class);

@@ -53,20 +53,8 @@ public class StockMiddleInforFrag extends SimpleFragment {
    RecyclerView mStockLeftRv;
    @BindView(R.id.stock_left_alltop)
    LinearLayout mStockLeftAlltop;
-   private List<Integer> mList;
-   private       int TOTAL_SIZE = 26;
-   private final int PAGE_SIZE  = 6;
-   private       int mCount     = 0;
    public  StockMiddlePagerAdapter mPagerAdapter;
-   private List<String>          mTitles;
-   private String[]              mKeys;
    public  int                   mStockNumber=5;//列表的列数
-   public  int                   mStockType;//列表的类型
-   private StockLeftAdapter      mLeftAdapter;
-   private List                  mDates;
-   public  SocketLeftTopBean     mLeftTopBean;
-   private SocketLeftDownBean    mMiddleDateBean;
-   private LoadingDialog.Builder mBuilder;
    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
    /**
     * 重新加载数据
@@ -92,7 +80,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
    }
 
    public void getMiddleDate() {
-	NetRequest.getInstance().loadBoxSize(mContext, mBuilder,new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 //		mBuilder.mDialog.dismiss();
@@ -101,10 +89,6 @@ public class StockMiddleInforFrag extends SimpleFragment {
 		if (mTbaseDevices != null) {
 		   onSucceedDate();
 		}
-	   }
-	   @Override
-	   public void onError(String result) {
-//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }
@@ -147,11 +131,8 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	   }else {
 		deviceCode = mTbaseDevices.get(position).getDeviceCode();
 	   }
-
 	   mStockLeftAlltop.setVisibility(View.GONE);
-//	   mBuilder.mDialog.dismiss();
 	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE,deviceCode);
-
 	}
 
 	@Override
@@ -165,7 +146,6 @@ public class StockMiddleInforFrag extends SimpleFragment {
 		}
 	   }else {
 		deviceName = mTbaseDevices.get(position).getDeviceName();
-
 	   }
 	   return deviceName;
 	}

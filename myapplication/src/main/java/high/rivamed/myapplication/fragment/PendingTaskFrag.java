@@ -141,7 +141,7 @@ public class PendingTaskFrag extends SimpleFragment {
             public void onSucceed(String result) {
                 try {
                     initData();
-                    EventBusUtils.post(new Notifier.EventPushMessageNum(mMessagesList.size() + ""));
+                    EventBusUtils.postSticky(new Notifier.EventPushMessageNum(mMessagesList.size() + ""));
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }

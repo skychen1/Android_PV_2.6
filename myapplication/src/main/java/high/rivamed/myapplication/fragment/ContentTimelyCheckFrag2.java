@@ -88,7 +88,7 @@ public class ContentTimelyCheckFrag2 extends BaseSimpleFragment {
    }
 
    public void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext, null, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);

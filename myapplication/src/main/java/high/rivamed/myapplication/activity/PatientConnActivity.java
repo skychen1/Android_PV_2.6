@@ -84,7 +84,6 @@ public class PatientConnActivity extends BaseSimpleActivity {
 
    @Override
    protected void onResume() {
-	LogUtils.i(TAG, "onResume   ");
 	loadTempBingDate("");
 	initDate();
 	super.onResume();

@@ -63,7 +63,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
     }
 
     public void getRightDate() {
-        NetRequest.getInstance().loadBoxSize(mContext, null, new BaseResult() {
+        NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 //            mBuilder.mDialog.dismiss();

@@ -621,7 +621,7 @@ public class TimelyAllFrag2 extends SimpleFragment {
 
    private void setTimelyDate(String mToJson, String deviceId, int epcs) {
 	mEPCDate.clear();
-	NetRequest.getInstance().startTimelyScan(mToJson, _mActivity, mBuilder, new BaseResult() {
+	NetRequest.getInstance().startTimelyScan(mToJson, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);

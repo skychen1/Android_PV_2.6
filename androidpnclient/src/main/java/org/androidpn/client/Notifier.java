@@ -73,7 +73,7 @@ public class Notifier {
         Log.d(LOGTAG, "notificationTitle=" + title);
         Log.d(LOGTAG, "notificationMessage=" + message);
         Log.d(LOGTAG, "notificationUri=" + uri);
-        EventBusUtils.post(new EventPushMessageNum(message));
+        EventBusUtils.postSticky(new EventPushMessageNum(message));
         //注释掉home界面显示提示和跳转Activity
         //        if (isNotificationEnabled()) {
         //            // Show the toast

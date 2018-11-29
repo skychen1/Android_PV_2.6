@@ -65,14 +65,14 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
+import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -174,6 +174,55 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
         mPatientId = mTCstInventoryDto.getPatientId();
         mOperationScheduleId = mTCstInventoryDto.getOperationScheduleId();
     }
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventButton(Event.EventButton event) {
+      if (event.type) {
+         if (event.bing) {//绑定的按钮转换
+            for (TCstInventoryVo b : mTCstInventoryVos) {
+               ArrayList<String> strings = new ArrayList<>();
+               strings.add(b.getCstCode());
+               LogUtils.i(TAG, "fffffafafafafafa" +
+                               (b.getPatientName() == null || b.getPatientName().equals("")));
+               if (UIUtils.getConfigType(mContext, CONFIG_009) &&
+                   ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+                    (b.getPatientName() == null || b.getPatientName().equals("")))) {
+                  mTimelyLeft.setEnabled(false);
+                  mTimelyRight.setEnabled(false);
+                  LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
+                  if (mStarts != null) {
+                     mStarts.cancel();
+                     mTimelyRight.setText("确认并退出登录");
+                  }
+                  return;
+               }
+               if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+                   (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+                    b.getStopFlag() == 0) ||
+                   (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
+                  mTimelyLeft.setEnabled(false);
+                  mTimelyRight.setEnabled(false);
+                  LogUtils.i(TAG, "OutBoxBingActivity   cancel");
+                  if (mStarts != null) {
+                     mStarts.cancel();
+                     mTimelyRight.setText("确认并退出登录");
+                  }
+                  return;
+               } else {
+                  LogUtils.i(TAG, "OutBoxBingActivity   start");
+                  mTimelyLeft.setEnabled(true);
+                  mTimelyRight.setEnabled(true);
+                  if (mStarts != null) {
+                     LogUtils.i(TAG, "OutBoxBingActivity   ssss");
+                     mStarts.cancel();
+                     mStarts.start();
+                  }
+               }
+            }
+         }
+      }
+   }
+
     /**
      * 隐藏按钮
      * @param event
@@ -293,6 +342,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
             mLoading.mDialog.dismiss();
             mLoading = null;
         }
+       if (mStarts == null) {
+          mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+          mStarts.cancel();
+       }
         setAfterBing();
 //        Intent intent = getIntent();
 //        int type = intent.getIntExtra("type", 0);
@@ -848,7 +901,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
             mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
             mTCstInventoryTwoDto.setDeviceInventoryVos(c);
             //
-            EventBusUtils.postSticky(mTCstInventoryTwoDto);
+//            EventBusUtils.postSticky(mTCstInventoryTwoDto);
+            EventBusUtils.postSticky(new Event.EventOutBoxBingDto(mTCstInventoryTwoDto));
             String toJson = mGson.toJson(mTCstInventoryTwoDto);
             LogUtils.i(TAG, "dddddddd    " + toJson);
             if (mTCstInventoryTwoDto.getErrorEpcs() == null &&

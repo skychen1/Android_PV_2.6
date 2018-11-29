@@ -10,6 +10,7 @@ import java.util.Map;
 
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -24,8 +25,18 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
  */
 
 public class Event {
+
     /**
-     * 选择操作的数据传递
+     * 耗材详情
+     */
+    public static class EventStockDetailVo {
+        public TCstInventoryVo vosBean;
+        public EventStockDetailVo(TCstInventoryVo dto) {
+            this.vosBean = dto;
+        }
+    }
+    /**
+     * 选择操作的数据传递需要绑定患者的
      */
     public static class EventOutBoxBingDto {
         public TCstInventoryDto mTCstInventoryDto;

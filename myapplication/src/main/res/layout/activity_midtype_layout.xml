@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:id="@+id/timely_rl"
+<LinearLayout android:id="@+id/timely_rl"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
 			  android:background="@color/bg"
@@ -14,112 +14,6 @@
 		android:paddingLeft="@dimen/x40"
 		android:paddingRight="@dimen/x40">
 
-		<RelativeLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
-
-			<FrameLayout
-				android:id="@+id/stock_search"
-				android:layout_width="@dimen/x700"
-				android:layout_height="@dimen/y70"
-				android:background="@color/bg"
-				android:focusable="true"
-				android:focusableInTouchMode="true"
-				android:orientation="horizontal"
-				android:visibility="gone">
-
-				<EditText
-					android:id="@+id/search_et"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:background="@drawable/bg_search_w"
-					android:drawableLeft="@mipmap/runwate_search"
-					android:drawablePadding="@dimen/x10"
-					android:hint="请输入患者姓名、患者ID查询"
-					android:imeOptions="actionSearch"
-					android:paddingLeft="@dimen/x30"
-					android:singleLine="true"
-					android:textColorHint="@color/text_color_9"
-					android:textSize="@dimen/textsize_15" />
-
-				<ImageView
-					android:id="@+id/search_iv_delete"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="right|center_vertical"
-					android:layout_marginRight="@dimen/x20"
-					android:src="@mipmap/runwate_del"
-					android:visibility="gone" />
-
-			</FrameLayout>
-
-			<LinearLayout
-				android:id="@+id/timely_ll_gone"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				>
-
-				<TextView
-					android:id="@+id/timely_start_btn"
-					style="@style/btn_style_sel"
-					android:layout_marginLeft="0dp"
-					android:text="重新扫描"
-					android:visibility="gone"
-					/>
-				<TextView
-					android:id="@+id/all_out_text"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="@dimen/textsize_20"
-					android:textColor="@color/color_red"
-					android:layout_marginLeft="@dimen/x50"
-					android:text="注意：请完成操作后,进行下一步入柜耗材确认！"
-					android:visibility="gone"
-					android:textStyle="bold"
-					/>
-				<TextView
-					android:id="@+id/timely_open_door"
-					style="@style/btn_style_sel"
-					android:text="重新开柜"
-					android:visibility="gone"
-					android:layout_marginLeft="@dimen/x25"
-
-					/>
-				<TextView
-					android:id="@+id/ly_bing_btn"
-					style="@style/btn_style_sel"
-					android:layout_width="wrap_content"
-					android:layout_marginLeft="@dimen/x30"
-					android:paddingLeft="@dimen/x30"
-					android:paddingRight="@dimen/x30"
-					android:visibility="gone"
-					android:text="请选择患者绑定"
-					/>
-				<TextView
-					android:id="@+id/ly_bind_patient"
-					style="@style/btn_style_sel"
-					android:layout_width="wrap_content"
-					android:layout_marginLeft="@dimen/x30"
-					android:paddingLeft="@dimen/x30"
-					android:paddingRight="@dimen/x30"
-					android:visibility="gone"
-					android:text="请选择患者绑定"
-					/>
-			</LinearLayout>
-
-			<TextView
-				android:id="@+id/timely_number_left"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingTop="@dimen/x10"
-				android:text="耗材名称"
-				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_17"
-				android:textStyle="bold"
-				android:visibility="gone" />
-		</RelativeLayout>
-
 
 		<TextView
 			android:id="@+id/timely_name"
@@ -130,67 +24,19 @@
 			android:textColor="@color/text_color_3"
 			android:textSize="@dimen/textsize_17"
 			android:textStyle="bold"
-			android:visibility="gone" />
+			android:visibility="gone"/>
 
-		<RelativeLayout
-			android:layout_width="wrap_content"
+		<TextView
+			android:id="@+id/timely_number"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true">
+			android:layout_alignParentRight="true"
+			android:gravity="right"
+			android:paddingTop="@dimen/x10"
+			android:text=""
+			android:textColor="@color/text_color_26"
+			android:textSize="@dimen/textsize_17"/>
 
-			<LinearLayout
-				android:id="@+id/timely_ll_gone_right"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:visibility="gone"
-				>
-
-				<TextView
-					android:id="@+id/timely_start_btn_right"
-					style="@style/btn_style_sel"
-					android:layout_marginLeft="0dp"
-					android:text="重新扫描"
-					/>
-				<TextView
-					android:id="@+id/timely_open_door_right"
-					style="@style/btn_style_sel"
-					android:text="重新开柜"
-					android:layout_marginLeft="@dimen/x25"/>
-				<TextView
-					android:id="@+id/ly_bing_btn_right"
-					style="@style/btn_style_sel"
-					android:layout_width="wrap_content"
-					android:layout_marginLeft="@dimen/x30"
-					android:paddingLeft="@dimen/x30"
-					android:paddingRight="@dimen/x30"
-					android:text="请选择患者绑定"
-					/>
-			</LinearLayout>
-
-			<TextView
-				android:id="@+id/timely_number"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_alignParentRight="true"
-				android:gravity="right"
-				android:paddingTop="@dimen/x10"
-				android:text=""
-				android:textColor="@color/text_color_26"
-				android:textSize="@dimen/textsize_17" />
-
-			<TextView
-				android:id="@+id/ly_creat_temporary_btn"
-				style="@style/btn_style_sel"
-				android:layout_width="wrap_content"
-				android:layout_alignParentRight="true"
-				android:layout_centerVertical="true"
-				android:layout_marginRight="@dimen/x40"
-				android:gravity="center"
-				android:paddingLeft="@dimen/x30"
-				android:paddingRight="@dimen/x30"
-				android:text="创建临时患者"
-				android:visibility="gone" />
-		</RelativeLayout>
 
 	</RelativeLayout>
 
@@ -201,180 +47,11 @@
 		android:layout_marginLeft="@dimen/x40"
 		android:layout_marginRight="@dimen/x40"
 		android:layout_marginTop="@dimen/x30"
-		android:layout_weight="1" />
+		android:layout_weight="1"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="2px"
-		android:background="@color/bg_e" />
-
-	<LinearLayout
-		android:id="@+id/activity_down_btn_one_ll"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x128"
-		android:background="@color/bg_f"
-		android:gravity="center"
-		android:orientation="horizontal"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/activity_btn_one"
-			android:layout_width="@dimen/x390"
-			android:layout_height="@dimen/x68"
-			android:background="@drawable/bg_btn_gray_sel2"
-			android:gravity="center"
-			android:text="确定领用"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/activity_down_btnll"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x128"
-		android:background="@color/bg_f"
-		android:gravity="center"
-		android:orientation="horizontal"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/timely_left"
-			android:layout_width="@dimen/x390"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel2"
-			android:gravity="center"
-			android:text="确定"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_19" />
-
-		<TextView
-			android:id="@+id/timely_right"
-			android:layout_width="@dimen/x390"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel2"
-			android:gravity="center"
-			android:text="确认并退出登录"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_19" />
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/activity_down_patient_conn"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x128"
-		android:background="@color/bg_f"
-		android:gravity="center"
-		android:orientation="horizontal"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/tv_patient_conn"
-			android:layout_width="@dimen/x390"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel"
-			android:gravity="center"
-			android:text="选择患者关联"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/activity_down_btn_seven_ll"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x128"
-		android:background="@color/bg_f"
-		android:gravity="center"
-		android:orientation="horizontal"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/dialog_left"
-			android:layout_width="wrap_content"
-			android:layout_height="@dimen/x68"
-			android:background="@drawable/bg_btn_line_nor"
-			android:gravity="center"
-			android:paddingBottom="@dimen/x10"
-			android:paddingLeft="@dimen/x50"
-			android:paddingRight="@dimen/x50"
-			android:paddingTop="@dimen/x10"
-			android:text="取消"
-			android:textColor="@color/text_color_58"
-			android:textSize="@dimen/textsize_17" />
-
-		<TextView
-			android:id="@+id/dialog_right"
-			android:layout_width="wrap_content"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x30"
-			android:background="@drawable/bg_btn_line_pre"
-			android:gravity="center"
-			android:paddingBottom="@dimen/x10"
-			android:paddingLeft="@dimen/x50"
-			android:paddingRight="@dimen/x50"
-			android:paddingTop="@dimen/x10"
-			android:text="确定"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/activity_down_btn_four_ll"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/x128"
-		android:background="@color/bg_f"
-		android:gravity="center"
-		android:orientation="horizontal"
-		android:visibility="gone">
-
-		<TextView
-			android:id="@+id/btn_four_ly"
-			android:layout_width="@dimen/x260"
-			android:layout_height="@dimen/x68"
-			android:background="@drawable/bg_btn_gray_sel"
-			android:gravity="center"
-			android:text="领用"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-		<TextView
-			android:id="@+id/btn_four_yc"
-			android:layout_width="@dimen/x260"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel"
-			android:gravity="center"
-			android:text="移出"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-		<TextView
-			android:id="@+id/btn_four_tb"
-			android:layout_width="@dimen/x260"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel"
-			android:gravity="center"
-			android:text="调拨"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-		<TextView
-			android:id="@+id/btn_four_th"
-			android:layout_width="@dimen/x260"
-			android:layout_height="@dimen/x68"
-			android:layout_marginLeft="@dimen/x40"
-			android:background="@drawable/bg_btn_gray_sel"
-			android:gravity="center"
-			android:text="退货"
-			android:textColor="@color/bg_f"
-			android:textSize="@dimen/textsize_17" />
-
-
-	</LinearLayout>
+		android:background="@color/bg_e"/>
 
 </LinearLayout>

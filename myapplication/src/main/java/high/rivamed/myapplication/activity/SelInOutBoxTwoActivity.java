@@ -57,12 +57,11 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
-import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_IN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -73,7 +72,6 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 
 /**
  * 项目名称:    Rivamed_High_2.5

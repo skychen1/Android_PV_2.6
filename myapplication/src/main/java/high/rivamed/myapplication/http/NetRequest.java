@@ -201,11 +201,10 @@ public class NetRequest {
     /**
      * 获取柜子个数
      */
-    public void loadBoxSize(Object tag, LoadingDialog.Builder dialog,
-                            NetResult netResult) {
+    public void loadBoxSize(Object tag, NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_HOME_BOXSIZE).tag(tag)
                 .params("thingCode", sThingCode)
-                .execute(new MyCallBack(tag, dialog, netResult, true));
+                .execute(new MyCallBack(tag, netResult, true));
     }
 
 
@@ -380,10 +379,10 @@ public class NetRequest {
     /**
      * 盘点
      */
-    public void startTimelyScan(String tCstInventoryDto, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void startTimelyScan(String tCstInventoryDto, Object tag, NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_TIMELY_ONE).tag(tag)
                 .upJson(tCstInventoryDto)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+                .execute(new MyCallBack(tag,  netResult, false));
     }
 
     /**

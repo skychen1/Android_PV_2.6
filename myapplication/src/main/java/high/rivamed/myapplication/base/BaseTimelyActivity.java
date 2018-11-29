@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -30,8 +29,6 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
 import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -41,27 +38,14 @@ import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_ALL_IN;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_RECEIVE;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_BING;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_STOCK_FOUR_DETAILS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TEMPORARY_BING;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_FOUR_DETAILS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_LOSS;
-import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_TIMELY_PROFIT;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
-import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
-import static high.rivamed.myapplication.cont.Constants.STYPE_LOSS_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
-import static high.rivamed.myapplication.cont.Constants.STYPE_PROFIT_TYPE;
-import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -310,81 +294,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 
    }
 
-   /**
-    * 获取盘亏数据
-    */
-   private void loadTimelyLossesDate() {
-	//	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);//盘亏界面修改
-	//	mTimelyLeft.setText("盘亏原因");//盘亏界面修改
-	//	mTimelyRight.setText("确认提交");//盘亏界面修改
-	mBaseTabTvTitle.setText("盘亏耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 
-	mTimelyNumber.setText(
-		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-
-	mTypeView = new TableTypeView(this, this,(Object) tCstInventoryVos, titeleList, mSize,  mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_LOSS_TYPE,-10);
-
-   }
-
-   /**
-    * 获取盘盈数据
-    */
-   private void loadTimelyProfitDate() {
-
-	mBaseTabTvTitle.setText("盘盈耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
-	mTimelyNumber.setText(
-		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTypeView = new TableTypeView(this, this,tCstInventoryVos, titeleList, mSize,  mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_PROFIT_TYPE,-10);
-   }
-
-   /**
-    * 获取耗材盘点详情
-    */
-   private void loadTimelyDetailsDate() {
-	mBaseTabTvTitle.setText("耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
-	int number = 0;
-	int Actual = 0;
-	for (TCstInventoryVo TCstInventoryVo : tCstInventoryVos) {
-	   number += TCstInventoryVo.getCountStock();
-	   Actual += TCstInventoryVo.getCountActual();
-	   Log.i(TAG, " TCstInventoryVo.getCountStock()   " + TCstInventoryVo.getCountStock());
-	   Log.i(TAG, " TCstInventoryVo.getCountActual()   " + TCstInventoryVo.getCountActual());
-	}
-	if (Actual == number) {
-	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#262626'><big>" + Actual +
-							   "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
-							   number + "</big></font>"));
-	} else {
-	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + Actual +
-							   "</big>&emsp</font>账面库存数：<font color='#262626'><big>" +
-							   number + "</big></font>"));
-	}
-
-	mTimelyName.setVisibility(View.VISIBLE);
-	mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    规格型号：" + mDto.getCstSpec());
-	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTypeView = new TableTypeView(this, this,  tCstInventoryVos,titeleList, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY,
-						STYPE_TIMELY_FOUR_DETAILS,-10);
-   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onMidTypeEvent(TCstInventoryVo event) {
 	mStockDetailsTopBean = event;
-
    }
 
    /**
@@ -436,9 +350,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   mTCstInventoryVos.clear();
 	   mOperation = event.getOperation();
 	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
-	   if (my_id == ACT_TYPE_HCCZ_BING) {
-		setAfterBing();
-	   }  else if (my_id == ACT_TYPE_ALL_IN) {
+	 if (my_id == ACT_TYPE_ALL_IN) {
 		mTimelyOpenDoor.setVisibility(View.GONE);
 		setInBoxDate();
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
@@ -496,48 +408,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    private void initData() {
 
-	if (my_id == ACT_TYPE_TIMELY_LOSS) {
-	   loadTimelyLossesDate();
-
-	} else if (my_id == ACT_TYPE_TIMELY_PROFIT) {
-
-	   loadTimelyProfitDate();
-	} else if (my_id == ACT_TYPE_STOCK_FOUR_DETAILS) {
-
-	   loadStockDetails();
-	}  else if (my_id == ACT_TYPE_HCCZ_BING) {//绑定
-	   setAfterBing();
-	} else if (my_id == ACT_TYPE_ALL_IN) {//快速开柜入柜
+	 if (my_id == ACT_TYPE_ALL_IN) {//快速开柜入柜
 	   LogUtils.i(TAG, "ACT_TYPE_ALL_IN ");
 	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 
 	   setOutBoxDate(mOutDto.gettCstInventoryVos());
-	} else if (my_id == ACT_TYPE_CONFIRM_RECEIVE) {//确认领用耗材
-	   mBaseTabTvTitle.setText("识别耗材");
-	   ArrayList<String> strings = new ArrayList<>();
-	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-		strings.add(vosBean.getCstCode());
-	   }
-	   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-
-	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-								 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-								 mTCstInventoryVos.size() + "</big></font>"));
-
-	   mTimelyStartBtn.setVisibility(View.VISIBLE);
-	   mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	   String[] array = mContext.getResources()
-		   .getStringArray(R.array.six_confirm_receive_arrays);
-	   titeleList = Arrays.asList(array);
-	   mSize = array.length;
-	   mTypeView = new TableTypeView(this, this, mTCstInventoryVos, titeleList, mSize,
-						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						   ACT_TYPE_CONFIRM_HAOCAI,-10);
-	} else if (my_id == ACT_TYPE_TIMELY_FOUR_DETAILS) {
-	   loadTimelyDetailsDate();
-	}  else if (my_id == ACT_TYPE_TEMPORARY_BING) {//患者列表
-	   setTemporaryBing();
 	}
 //	else if (my_id == ACT_TYPE_PATIENT_CONN) {//选择临时患者,患者关联
 //	   selectTempPatient();
@@ -557,138 +433,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	//				mRefreshLayout, ACTIVITY);
    }
 
-   /**
-    * 绑定患者
-    */
-   private void setAfterBing() {
-	mBaseTabTvTitle.setText("耗材领用");
-	mTimelyStartBtn.setVisibility(View.GONE);
-	mLyBingBtn.setVisibility(View.GONE);
-	mTimelyNumber.setVisibility(View.GONE);
-	//	if (mOnBtnGone) {
-	//	   mBaseTabBack.setVisibility(View.VISIBLE);
-	//	} else {
-	mBaseTabBack.setVisibility(View.GONE);
-	//	}
-	mTimelyNumberLeft.setVisibility(View.VISIBLE);
-	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mBaseTabIconRight.setEnabled(false);
-	mBaseTabTvName.setEnabled(false);
-	mBaseTabBtnMsg.setEnabled(false);
-	mBaseTabOutLogin.setEnabled(false);
-	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
-	   LogUtils.i(TAG,"CONFIG_009");
-	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	   mTimelyLeft.setEnabled(false);
-	   mTimelyRight.setEnabled(false);
-	   if (mStarts != null) {
-		mStarts.cancel();
-		mTimelyRight.setText("确认并退出登录");
-	   }
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	} else if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定
-	   LogUtils.i(TAG,"CONFIG_010");
-	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	   mLyBingBtnRight.setVisibility(View.GONE);
-	   mTimelyLeft.setEnabled(true);
-	   mTimelyRight.setEnabled(true);
-	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-		//		if (!vosBean.getStatus().equals("禁止操作")) {
-		if ((vosBean.getIsErrorOperation() == 0 && vosBean.getStopFlag() != 0) ||
-		    (vosBean.getIsErrorOperation() == 1 && vosBean.getDeleteCount() != 0 &&
-		     vosBean.getStopFlag() == 0)) {
-		   mTimelyLeft.setEnabled(true);
-		   mTimelyRight.setEnabled(true);
-		} else {
-		   LogUtils.i(TAG, "我走了falsesss");
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mTimelyRight.setText("确认并退出登录");
-		   }
-		   break;
-		}
-	   }
-	} else {//hua
-	   LogUtils.i(TAG,"CXXXXX0");
-	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyLeft.setEnabled(false);
-	   mTimelyRight.setEnabled(false);
-	   if (mStarts != null) {
-		mStarts.cancel();
-		mTimelyRight.setText("确认并退出登录");
-	   }
-	}
-
-	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-	   strings.add(vosBean.getCstCode());
-	   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-		 ((vosBean.getPatientId() == null || vosBean.getPatientId().equals("")) ||
-		  (vosBean.getPatientName() == null || vosBean.getPatientName().equals("")))) {
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		if (mStarts != null) {
-		   mStarts.cancel();
-		   mTimelyRight.setText("确认并退出登录");
-		}
-		break;
-	   }
-	}
-
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	//	LogUtils.i(TAG, "list.size()  " + list.size() + "      " + mTCstInventoryVos.size());
-	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							    mTCstInventoryVos.size() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_title_bing_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	int operation = mTCstInventoryDto.getOperation();
-	if (mTypeView == null) {
-	   mTypeView = new TableTypeView(this, this, mTCstInventoryVos, titeleList, mSize,
-						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						   ACT_TYPE_CONFIRM_HAOCAI, operation);
-	}
-	setTimeStart();
-   }
-
-   /**
-    * 患者列表
-    */
-   private void setTemporaryBing() {
-	mBaseTabTvTitle.setText("患者列表");
-	mTimelyStartBtn.setVisibility(View.GONE);
-	mLyBingBtn.setVisibility(View.GONE);
-	mTimelyNumber.setVisibility(View.GONE);
-	mStockSearch.setVisibility(View.VISIBLE);
-	mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
-	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-
-	mTimelyLeft.setEnabled(false);
-	mTimelyRight.setEnabled(false);
-	if (mStarts != null) {
-	   mStarts.cancel();
-	   mTimelyRight.setText("确认并退出登录");
-	}
-	ArrayList<String> strings = new ArrayList<>();
-	if (null != mTCstInventoryVos) {
-	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
-		strings.add(vosBean.getCstCode());
-	   }
-	}
-
-	String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = titeleList.size();
-
-	mTypeView = new TableTypeView(mContext, this, (Object) patientInfos, titeleList, mSize, mLinearLayout,
-						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_DIALOG,-10);
-
-   }
 
    /**
     * 快速开柜拿出数据
@@ -875,37 +619,6 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
 		"</big></font>"));
 	setTimeStart();
-   }
-
-   /**
-    * 耗材详情
-    */
-   private void loadStockDetails() {
-	mBaseTabTvTitle.setText("耗材详情");
-	String deviceCode = mStockDetailsTopBean.getDeviceCode();
-	String cstId = mStockDetailsTopBean.getCstCode();
-	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	NetRequest.getInstance().getStockDetailDate(deviceCode, cstId, mContext, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-
-		LogUtils.i(TAG, "result  " + result);
-		TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
-		mTimelyNumber.setText(Html.fromHtml(
-			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
-			"</big></font>"));
-		mTimelyName.setVisibility(View.VISIBLE);
-		mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    规格型号：" +
-					  mStockDetailsTopBean.getCstSpec());
-		mTypeView = new TableTypeView(mContext, mContext,mStockDetailsDownList, titeleList, mSize,
-							 mLinearLayout, mRecyclerview,
-							mRefreshLayout, ACTIVITY,null,-10);
-	   }
-	});
-
    }
 
    /* 定义一个倒计时的内部类 */

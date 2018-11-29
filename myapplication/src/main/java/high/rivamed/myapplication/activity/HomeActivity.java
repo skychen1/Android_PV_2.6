@@ -182,7 +182,7 @@ public class HomeActivity extends SimpleActivity {
 		try {
 		   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
 		   if (emergencyBean.getMessages() != null) {
-			EventBusUtils.post(
+			EventBusUtils.postSticky(
 				new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
 		   }
 		} catch (JsonSyntaxException e) {

@@ -37,18 +37,8 @@ public class Constants {
     public static final int FRAGMENT = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI = "act_type_confirm_haocai";//确认耗材领用界面
 
-    public static final int ACT_TYPE_TIMELY_LOSS = 0;
-    public static final int ACT_TYPE_TIMELY_PROFIT = 1;
-    public static final int ACT_TYPE_STOCK_FOUR_DETAILS = 2;
-    public static final int ACT_TYPE_HCCZ_IN = 3;
     public static final int ACT_TYPE_HCCZ_OUT = 4;
-    public static final int ACT_TYPE_HCCZ_BING = 5;
-    public static final int ACT_TYPE_FORM_CONFIRM = 6;
-    public static final int ACT_TYPE_TIMELY_FOUR_DETAILS = 7;//实时盘点item详情
-    public static final int ACT_TYPE_MEAL_BING = 8;//套餐绑定患者
     public static final int ACT_TYPE_TEMPORARY_BING = 9;//创建临时患者
-    public static final int ACT_TYPE_CONFIRM_RECEIVE = 10;//确认领用耗材
-    public static final int ACT_TYPE_PATIENT_CONN = 11;//选择临时患者
     public static final int ACT_TYPE_ALL_IN = 12;//入柜 快速开柜
 
     //配置项的code

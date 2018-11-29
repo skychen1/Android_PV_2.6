@@ -103,7 +103,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      *
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onEventIfHaveMessage(Notifier.EventPushMessageNum event) {
         new Handler().post(new Runnable() {
             @Override

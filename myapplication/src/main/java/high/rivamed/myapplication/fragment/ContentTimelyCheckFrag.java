@@ -43,15 +43,8 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    SlidingTabLayout mCttimeCheck_Rg;
    @BindView(R.id.cttimecheck_viewpager)
    ViewPager        mCttimecheckViewpager;
-   private List<Integer> mList;
-   private       int TOTAL_SIZE = 26;
-   private final int PAGE_SIZE  = 20;
-   private       int mCount     = 0;
    private CttimeCheckPagerAdapter            mPagerAdapter;
-   private List<String>                       mTitles;
-   private String[]                           mKeys;
    public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
-   private LoadingDialog.Builder              mBuilder;
 
    public static ContentTimelyCheckFrag newInstance() {
 	Bundle args = new Bundle();
@@ -75,7 +68,6 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("实时盘点");
-	//	mBuilder = DialogUtils.showLoading(mContext);
 	loadTopBoxSize();
 	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME)!=null){
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
@@ -86,21 +78,18 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext,null, new BaseResult() {
+	NetRequest.getInstance().loadBoxSize(mContext,new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
 		mTbaseDevices = boxSizeBean.getTbaseDevices();
 		if (mTbaseDevices != null) {
 		   if (mTbaseDevices.size() > 1) {
-			//			mBuilder.mDialog.dismiss();
 			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
 			devicesBean1.setDeviceName("全部");
 			devicesBean1.setDeviceCode("");
 			mTbaseDevices.add(0, devicesBean1);
 		   }
-
-		   //		   mBuilder.mDialog.dismiss();
 		   ArrayList<Fragment> fragments = new ArrayList<>();
 		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
 			//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
@@ -111,13 +100,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 		   mCttimecheckViewpager.setCurrentItem(0);
 		   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
 		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
-		   mCttimecheckViewpager.addOnPageChangeListener(new PageChangeListener());
 		}
-	   }
-
-	   @Override
-	   public void onError(String result) {
-		//		mBuilder.mDialog.dismiss();
 	   }
 	});
    }
@@ -130,9 +113,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	}
 	@Override
 	public Fragment getItem(int position) {
-
 	   return mFragments.get(position);
-
 	}
 
 
@@ -145,28 +126,6 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	@Override
 	public int getCount() {
 	   return mFragments.size();
-	   //	   if (mTbaseDevices.size()>1) {
-	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size()+1 ;
-	   //	   }else {
-	   //		return mTbaseDevices == null ? 0 : mTbaseDevices.size() ;
-	   //	   }
-	}
-   }
-
-   private class PageChangeListener implements ViewPager.OnPageChangeListener {
-
-	@Override
-	public void onPageScrolled(
-		int position, float offsetPerc, int offsetPixel) {
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-
 	}
    }
 }

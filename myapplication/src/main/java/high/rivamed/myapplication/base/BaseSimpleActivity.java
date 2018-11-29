@@ -88,7 +88,15 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     public SettingPopupWindow mPopupWindow;
     public ImageView mBaseTabBtnConn;
     public  CountDownTimer mStarts;
-
+    public  boolean mIsClick;
+    /**
+     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+        mIsClick = event.isClick;
+    }
     /**
      * 设备title连接状态
      *
@@ -108,7 +116,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      *
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onEventIfHaveMessage(Notifier.EventPushMessageNum event) {
         new Handler().post(new Runnable() {
             @Override

@@ -525,7 +525,7 @@ public class PublicTimelyFrag extends SimpleFragment {
 				   BaseQuickAdapter adapter, View view, int position) {
 				mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
 				TCstInventoryVo vosBean = mInventoryVos.get(position);
-				EventBusUtils.postSticky(vosBean);
+				EventBusUtils.postSticky(new Event.EventStockDetailVo(vosBean));
 			   }
 			});
 
@@ -647,11 +647,11 @@ public class PublicTimelyFrag extends SimpleFragment {
 					   @Override
 					   public void onItemClick(
 						   BaseQuickAdapter adapter, View view, int position) {
-						mContext.startActivity(
-							new Intent(mContext, StockMidTypeActivity.class));
+						mContext.startActivity(new Intent(mContext, StockMidTypeActivity.class));
 						TCstInventoryVo tCstInventoryVo = mTCstInventoryVos.get(
 							position);
-						EventBusUtils.postSticky(tCstInventoryVo);
+//						EventBusUtils.postSticky(tCstInventoryVo);
+						EventBusUtils.postSticky(new Event.EventStockDetailVo(tCstInventoryVo));
 					   }
 					});
 				mHeadView.setBackgroundResource(R.color.bg_green);
