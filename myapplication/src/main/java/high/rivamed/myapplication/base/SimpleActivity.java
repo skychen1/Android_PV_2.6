@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -180,7 +181,14 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
    }
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	   return true;
+	}
+	return super.onKeyDown(keyCode, event);
 
+   }
    @Override
    protected void onResume() {
 	super.onResume();

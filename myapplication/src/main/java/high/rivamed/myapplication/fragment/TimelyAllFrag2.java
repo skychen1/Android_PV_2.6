@@ -478,7 +478,7 @@ public class TimelyAllFrag2 extends SimpleFragment {
 		   if (mToJson == null) {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
-			LogUtils.i(TAG, "盘盈 s   " + mToJson);
+			LogUtils.i(TAG, "盘盈 mObject   " + mToJson);
 
 			NetRequest.getInstance().getProfitDate(mToJson, this, null, new BaseResult() {
 			   @Override
@@ -507,7 +507,7 @@ public class TimelyAllFrag2 extends SimpleFragment {
 		   if (mToJson == null) {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
-			LogUtils.i(TAG, "盘亏 s   " + mToJson);
+			LogUtils.i(TAG, "盘亏 mObject   " + mToJson);
 			NetRequest.getInstance().getLossesDate(mToJson, this, null, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {

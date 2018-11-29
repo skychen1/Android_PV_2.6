@@ -72,16 +72,14 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    TextView     mSettingPassSetting;
    @BindView(R.id.setting_pass_ll)
    LinearLayout mSettingPassLL;
-//   @BindView(R.id.setting_ic_card_edit)
-  public static TextView  mSettingIcCardEdit;
-//   @BindView(R.id.setting_ic_card_bind)
-   public static TextView  mSettingIcCardBind;
+   public static TextView mSettingIcCardEdit;
+   public static TextView mSettingIcCardBind;
    @BindView(R.id.top_icon)
    ImageView mTopIcon;
    private LoadingDialog.Builder mBuilder;
    private String mUserId = "";
-   private LoginResultBean.AppAccountInfoVoBean mAppAccountInfoVo;
-   public static int mIsWaidai;
+   private       LoginResultBean.AppAccountInfoVoBean mAppAccountInfoVo;
+   public static int                                  mIsWaidai;
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
@@ -104,7 +102,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   .error(R.mipmap.hccz_mrtx_nv)
 		   .into(mBaseTabIconRight);
 	}
-
 	initData();
    }
 
@@ -117,13 +114,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    private void initData() {
 	try {
 	   String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-	   LogUtils.i(TAG, "accountData    " + accountData);
 	   LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-
 	   mAppAccountInfoVo = data.getAppAccountInfoVo();
-
 	   mUserId = mAppAccountInfoVo.getUserId();
-	   mIsWaidai=mAppAccountInfoVo.getIsWaidai();
+	   mIsWaidai = mAppAccountInfoVo.getIsWaidai();
 	   if (mAppAccountInfoVo.getIsFinger() == 0) {
 		//指纹未绑定
 		mSettingFingerprintEdit.setText("未绑定");
@@ -163,7 +157,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			.error(R.mipmap.hccz_mrtx_nv)
 			.into(mTopIcon);
 	   }
-
 	} catch (Exception e) {
 	   e.printStackTrace();
 	}
@@ -176,7 +169,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right,
 	   R.id.base_tab_tv_outlogin, R.id.base_tab_btn_msg, R.id.base_tab_back,
-	   R.id.setting_revise_password, R.id.setting_fingerprint_bind,R.id.setting_pass_setting})
+	   R.id.setting_revise_password, R.id.setting_fingerprint_bind, R.id.setting_pass_setting})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_icon_right:
@@ -193,7 +186,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			   case 1:
 				startActivity(new Intent(LoginInfoActivity.this, LoginInfoActivity.class));
 				break;
-
 			}
 		   }
 		});
@@ -213,9 +205,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
 			startActivity(new Intent(mContext, LoginActivity.class));
-//			App.getInstance().removeALLActivity_();
 			finish();
-			   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 		   }
 		});
 		builder.create().show();
@@ -242,7 +233,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		});
 		break;
 	   case R.id.setting_ic_card_bind:
-		if (mIsWaidai == 0){
+		if (mIsWaidai == 0) {
 		   DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
 			@Override
 			public void OnBindIdCard(String idCard) {
@@ -253,16 +244,14 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			   }
 			}
 		   });
-		}else {
+		} else {
 		   RegisterWandaiDto dto = new RegisterWandaiDto();
 		   RegisterWandaiDto.UserFeatureInfoBean bean = new RegisterWandaiDto.UserFeatureInfoBean();
 		   bean.setUserId(mUserId);
 		   bean.setType("2");
 		   dto.setUserFeatureInfo(bean);
-
-		   DialogUtils.showUnRegistDialog(this,"解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto));
+		   DialogUtils.showUnRegistDialog(this, "解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto));
 		}
-
 		break;
 	}
    }
@@ -281,7 +270,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().registerIdCard(mGson.toJson(dto), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-	      LogUtils.i(TAG,"result   "+result);
+		LogUtils.i(TAG, "result   " + result);
 		try {
 		   RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
 		   if (data.isOperateSuccess()) {
@@ -289,7 +278,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			//指纹未绑定
 			mSettingIcCardEdit.setText("已绑定");
 			mSettingIcCardBind.setText("解除绑定");
-
 			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA,
 									   "");
 			LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
@@ -299,12 +287,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   } else {
 			ToastUtils.showShort(data.getMsg());
 		   }
-
 		} catch (Exception e) {
 		   e.printStackTrace();
 		   ToastUtils.showShort("绑定失败");
 		}
-
 		mBuilder.mDialog.dismiss();
 	   }
 
@@ -358,7 +344,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   e.printStackTrace();
 		   ToastUtils.showShort("绑定失败");
 		}
-
 		mBuilder.mDialog.dismiss();
 	   }
 

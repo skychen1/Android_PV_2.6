@@ -1,12 +1,9 @@
 package high.rivamed.myapplication.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,10 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -81,7 +75,6 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
-import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -139,8 +132,6 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   private SQLiteDatabase        mDb;
-   private LoadingDialog.Builder mBuilder;
    private int                   mConfigType;
    private String                mDesc;
 
@@ -158,35 +149,9 @@ public class LoginActivity extends SimpleActivity {
 	}
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
-	//-----检测分辨率---------------------------------------
-	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-	DisplayMetrics dm = new DisplayMetrics();
-	wm.getDefaultDisplay().getMetrics(dm);
-	Point size = new Point();
-	size.x = dm.widthPixels;
-	size.y = dm.heightPixels;
-
-	Log.d(TAG, size.x + " , " + size.y + " , ");
-
-	getWindowManager().getDefaultDisplay().getMetrics(dm);
-	int heightPixels = dm.heightPixels;
-	int widthPixels = dm.widthPixels;
-	float density = dm.density;
-	float heightDP = heightPixels / density;
-	float widthDP = widthPixels / density;
-	float smallestWidthDP;
-	if(widthDP < heightDP) {
-	   smallestWidthDP = widthDP;
-	}else {
-	   smallestWidthDP = heightDP;
-	}
-
-	LogUtils.i(TAG, smallestWidthDP +"    我是dp单位     "+density);
-	//---------------------------------------------------
 
 	//创建数据库表
-	mDb = LitePal.getDatabase();
-	Log.i("dss", SPUtils.getString(mContext, THING_CODE) + "");
+	LitePal.getDatabase();
 
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
@@ -200,36 +165,7 @@ public class LoginActivity extends SimpleActivity {
 
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
-	   getAllCstDate();
 	}
-
-   }
-
-   /**
-    * 所有耗材数据的获取（用于本地）
-    */
-   private void getAllCstDate() {
-	NetRequest.getInstance().getAllCstDate(this,new BaseResult(){
-	   @Override
-	   public void onSucceed(String result) {
-	      LogUtils.i(TAG,"getAllCstDate    "+result);
-	   }
-
-	   @Override
-	   public void onNetFailing(String result) {
-		super.onNetFailing(result);
-		LogUtils.i(TAG,"onNetFailing   "+result);
-	   }
-
-	   @Override
-	   public void onError(String result) {
-		super.onError(result);
-		if (result.equals("-1")){
-
-		}
-		LogUtils.i(TAG,"onError   "+result.equals("-1"));
-	   }
-	});
    }
 
    @Override
@@ -268,7 +204,7 @@ public class LoginActivity extends SimpleActivity {
 	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
-		   LogUtils.i(TAG, "findThingConfigDate   " + result);
+		   LogUtils.i(TAG, "result   " + result);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
@@ -335,7 +271,6 @@ public class LoginActivity extends SimpleActivity {
 
 	   @Override
 	   public void OnIDCard(String deviceId, String idCard) {
-		Log.e("fff", idCard);
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
@@ -428,7 +363,6 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getUserName());
 			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
 						loginResultBean.getAppAccountInfoVo().getAccountId());
-			//			SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getSex());
 			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 						loginResultBean.getAppAccountInfoVo().getSex());
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
@@ -500,7 +434,6 @@ public class LoginActivity extends SimpleActivity {
 		if (leftTopBean.getCstExpirationVos() != null &&
 		    leftTopBean.getCstExpirationVos().size() > 0) {
 		   setLeftDate(leftTopBean);
-		   //		   setOperationDate(leftTopBean);//柱状图
 		}
 	   }
 	});
@@ -527,7 +460,7 @@ public class LoginActivity extends SimpleActivity {
 	mLoginLogo.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		continuousClick(COUNTS, DURATION);
+		continuousClick();
 	   }
 	});
 	mLoginGone.setOnClickListener(new View.OnClickListener() {
@@ -540,7 +473,7 @@ public class LoginActivity extends SimpleActivity {
 	});
    }
 
-   private void continuousClick(int count, long time) {
+   private void continuousClick() {
 	//每次点击时，数组向前移动一位
 	System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
 	//为数组最后一位赋值
@@ -579,54 +512,10 @@ public class LoginActivity extends SimpleActivity {
 			case R.id.login_password:
 			   mLoginViewpager.setCurrentItem(0);
 			   break;
-
 		   }
 		}
-
 	   }
 	});
-
-   }
-
-   private void setOperationDate(SocketLeftTopBean leftTopBean) {
-	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = leftTopBean.getCstExpirationVos();
-	List<String> xAxisValue = new ArrayList<>();
-	if (cstExpirationVos.size() < 6) {
-	   for (int i = 1; i < 6; i++) {
-		if (cstExpirationVos.size() >= i) {
-		   xAxisValue.add(i + "号柜");
-		} else {
-		   xAxisValue.add("");
-		}
-	   }
-	} else {
-	   for (int i = 1; i < cstExpirationVos.size() + 1; i++) {
-		xAxisValue.add(i + "号柜");
-	   }
-	}
-
-	//Y轴过期
-	List<Float> yAxisValue1 = new ArrayList<>();
-	for (int i = 0; i < cstExpirationVos.size(); i++) {
-	   LogUtils.i(TAG, "(float) cstExpirationVos.get(i).getExpireCount()   " +
-				 (float) cstExpirationVos.get(i).getExpireCount());
-	   yAxisValue1.add((float) cstExpirationVos.get(i).getExpireCount());
-
-	}
-	//Y轴近效期
-	List<Float> yAxisValue2 = new ArrayList<>();
-	for (int i = 0; i < cstExpirationVos.size(); i++) {
-	   LogUtils.i(TAG, "(float) cstExpirationVos.get(i).getNearExpireCount()   " +
-				 (float) cstExpirationVos.get(i).getNearExpireCount());
-	   yAxisValue2.add((float) cstExpirationVos.get(i).getNearExpireCount());
-
-	}
-
-	setTwoBarChart(mChart, xAxisValue, yAxisValue1, yAxisValue2, "", "");
-
-	mChart.setPinchZoom(true);
-	mChart.setTouchEnabled(false);
-	mChart.invalidate();
    }
 
    /**
@@ -644,8 +533,6 @@ public class LoginActivity extends SimpleActivity {
 		String localVersion = PackageUtils.getVersionName(mContext);
 		// 网络版本
 		String netVersion = versionBean.getVersion();
-		// 比对LogUtils.i(TAG, "localVersion   " + localVersion);
-//		LogUtils.i(TAG, "比较   " + StringUtils.compareVersion(netVersion, localVersion));
 		if (netVersion!=null) {
 		   int i = StringUtils.compareVersion(netVersion, localVersion);
 		   if (i == 1) {
@@ -663,9 +550,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onNetFailing(String result) {
 		super.onNetFailing(result);
-		LogUtils.i(TAG,"onNetFailing   "+result);
 		loginEnjoin(tCstConfigVos, configType, loginType);
-
 	   }
 	});
    }
@@ -676,7 +561,6 @@ public class LoginActivity extends SimpleActivity {
    private void showUpdateDialog(
 	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	UpDateDialog.Builder builder = new UpDateDialog.Builder(this);
-
 	builder.setTitle(UIUtils.getString(R.string.ver_title));
 	builder.setMsg(mDesc);
 	builder.setLeft(UIUtils.getString(R.string.ver_cancel),
@@ -715,8 +599,6 @@ public class LoginActivity extends SimpleActivity {
    private void loadUpDataVersion(
 	   final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
-	LogUtils.i(TAG, "apkUri " + FileUtils.getDiskCacheDir(mContext));
-	LogUtils.i(TAG, "apkUrL " +URL_UPDATE);
 	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
@@ -777,7 +659,6 @@ public class LoginActivity extends SimpleActivity {
 		   case 0:
 			mLoginRadiogroup.check(R.id.login_password);
 			break;
-
 		   case 1:
 			mLoginRadiogroup.check(R.id.login_pass);
 			break;
@@ -789,7 +670,6 @@ public class LoginActivity extends SimpleActivity {
 			break;
 		}
 	   }
-
 	}
 
 	@Override
@@ -818,146 +698,5 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public Object newP() {
 	return null;
-   }
-
-   public static void setTwoBarChart(
-	   BarChart barChart, List<String> xAxisValue, List<Float> yAxisValue1,
-	   List<Float> yAxisValue2, String bartilte1, String bartitle2) {
-	barChart.getDescription().setEnabled(false);//设置描述
-	//	barChart.setPinchZoom(true);//设置按比例放缩柱状图
-	barChart.setExtraBottomOffset(20);
-	barChart.setExtraTopOffset(30);
-	barChart.setScaleEnabled(true);
-
-	//x坐标轴设置
-	XAxis xAxis = barChart.getXAxis();
-	xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-	xAxis.setDrawGridLines(false);
-	xAxis.setDrawLabels(true);
-	xAxis.setGranularity(1);
-	xAxis.setLabelCount(xAxisValue.size());
-	xAxis.setCenterAxisLabels(true);//设置标签居中
-	xAxis.setDrawAxisLine(true);
-	xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisValue));
-	xAxis.setTextSize(
-		UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
-	xAxis.setAxisMaximum(1);
-	xAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-	xAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-
-	//y轴设置
-	YAxis leftAxis = barChart.getAxisLeft();
-	leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-	leftAxis.setDrawAxisLine(true);
-	leftAxis.setDrawZeroLine(true);
-	leftAxis.setGridColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-	leftAxis.setAxisLineColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-	leftAxis.setValueFormatter(new MyValueFormatter());
-	leftAxis.setGranularity(1f); // interval 1
-	leftAxis.setTextSize(
-		UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_14));
-	leftAxis.setTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-	// start at zero
-
-	//	leftAxis.setAxisMaximum(yMax);
-	//	//设置坐标轴最大最小值
-	Float yMin1 = Collections.min(yAxisValue1);
-	Float yMin2 = Collections.min(yAxisValue2);
-	Float yMax1 = Collections.max(yAxisValue1);
-	Float yMax2 = Collections.max(yAxisValue2);
-
-	Float yMin = Double.valueOf((yMin1 < yMin2 ? yMin1 : yMin2) * 0.1).floatValue();
-	Float yMax = Double.valueOf((yMax1 > yMax2 ? yMax1 : yMax2) * 1.1).floatValue();
-
-	leftAxis.setAxisMaximum(yMax);
-	leftAxis.setAxisMinimum(yMin);
-	barChart.getAxisRight().setEnabled(false);
-
-	//图例设置
-	Legend legend = barChart.getLegend();
-	legend.setEnabled(false);
-
-	legend.setForm(Legend.LegendForm.EMPTY);
-
-	//设置柱状图数据
-	setTwoBarChartData(barChart, xAxisValue, yAxisValue1, yAxisValue2, bartilte1, bartitle2);
-
-	barChart.animateX(500);//数据显示动画，从左往右依次显示
-	barChart.invalidate();
-   }
-
-   /**
-    * 设置柱状图数据源
-    */
-   private static void setTwoBarChartData(
-	   BarChart barChart, List<String> xAxisValue, List<Float> yAxisValue1,
-	   List<Float> yAxisValue2, String bartilte1, String bartitle2) {
-	float groupSpace = 0.1f;
-	float barSpace = 0.05f;
-	float barWidth = 0.40f;
-	// (0.45 + 0.03) * 2 + 0.04 = 1，即一个间隔为一组，包含两个柱图 -> interval per "group"
-
-	ArrayList<BarEntry> entries1 = new ArrayList<>();
-	ArrayList<BarEntry> entries2 = new ArrayList<>();
-	for (int i = 0; i < yAxisValue1.size(); ++i) {
-	   entries1.add(new BarEntry(i, yAxisValue1.get(i)));
-	}
-	for (int x = 0; x < yAxisValue2.size(); ++x) {
-	   entries2.add(new BarEntry(x, yAxisValue2.get(x)));
-	}
-
-	BarDataSet dataset1, dataset2;
-
-	if (barChart.getData() != null && barChart.getData().getDataSetCount() > 0) {
-	   dataset1 = (BarDataSet) barChart.getData().getDataSetByIndex(0);
-	   dataset2 = (BarDataSet) barChart.getData().getDataSetByIndex(0);
-	   dataset1.setValues(entries1);
-	   dataset2.setValues(entries2);
-	   barChart.getData().notifyDataChanged();
-	   barChart.notifyDataSetChanged();
-	} else {
-	   dataset1 = new BarDataSet(entries1, bartilte1);
-	   dataset2 = new BarDataSet(entries2, bartitle2);
-
-	   dataset2.setColor(Color.rgb(252, 206, 95));
-	   dataset1.setColor(Color.rgb(244, 110, 86));
-
-	   ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-	   dataSets.clear();
-	   dataSets.add(dataset1);
-	   dataSets.add(dataset2);
-
-	   BarData data = new BarData(dataSets);
-	   data.setValueTextSize(
-		   UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.textsize_12));
-	   data.setValueTextColor(UIUtils.getContext().getResources().getColor(R.color.bg_f));
-	   data.setBarWidth(0.9f);
-	   data.setValueFormatter(new IValueFormatter() {
-		@Override
-		public String getFormattedValue(
-			float value, Entry entry, int i, ViewPortHandler viewPortHandler) {
-		   int value1 = (int) value;
-		   String s;
-		   if (i % 2 == 0) {
-			s = "过期\n" + String.valueOf(value1);
-		   } else {
-			s = "近期\n" + String.valueOf(value1);
-		   }
-		   return s;
-		}
-	   });
-
-	   barChart.setData(data);
-	}
-
-	barChart.getBarData().setBarWidth(barWidth);
-	barChart.getXAxis().setAxisMinimum(0);
-	// barData.getGroupWith(...) is a helper that calculates the width each group needs based on the provided parameters
-	barChart.getXAxis()
-		.setAxisMaximum(
-			barChart.getBarData().getGroupWidth(groupSpace, barSpace) * xAxisValue.size() +
-			0);
-	barChart.groupBars(0, groupSpace, barSpace);
-
    }
 }

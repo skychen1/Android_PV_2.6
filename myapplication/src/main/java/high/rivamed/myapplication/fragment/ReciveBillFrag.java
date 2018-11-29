@@ -175,10 +175,8 @@ public class ReciveBillFrag extends SimpleFragment {
     public void initDataAndEvent(Bundle savedInstanceState) {
         EventBusUtils.register(this);
         mPublicRl.setVisibility(View.GONE);
-
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-
             getStockByOrderId(mPrePageDate.getId());
         }
         initlistener();
@@ -258,8 +256,6 @@ public class ReciveBillFrag extends SimpleFragment {
             @Override
             public void onRefresh(RefreshLayout refreshLayout) {
                 mRefreshLayout.setNoMoreData(false);
-                Log.i("BaseQuickAdapter", "点击即将单独的的的的的");
-
                 refreshLayout.finishRefresh();
             }
         });
@@ -292,14 +288,9 @@ public class ReciveBillFrag extends SimpleFragment {
                 initData();
                 if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
                     if (!mBillStockResultBean.isOperateSuccess()) {
-                        ToastUtils.showShort2(mContext,mBillStockResultBean.getMsg());
+                       Toast.makeText(mContext,mBillStockResultBean.getMsg(),Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
-
-            @Override
-            public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
             }
         });
     }
@@ -358,7 +349,6 @@ public class ReciveBillFrag extends SimpleFragment {
                 }
             }
         }
-
     }
 
 

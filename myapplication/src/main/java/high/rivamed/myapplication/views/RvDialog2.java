@@ -165,9 +165,9 @@ public class RvDialog2 extends Dialog {
             //	   titeleList = Arrays.asList(array);
             mSize = titeleList.size();
 
-            sTableTypeView2 = new TableTypeView(mContext, mActivity, patientInfos, titeleList, mSize,
+            sTableTypeView2 = new TableTypeView(mContext, mActivity, (Object) patientInfos, titeleList, mSize,
                     mLinearLayout, mRecyclerview,
-                    mRefreshLayout, ACTIVITY, STYPE_DIALOG2);
+                    mRefreshLayout, ACTIVITY, STYPE_DIALOG2,-10);
 
             mSearchEt.addTextChangedListener(new TextWatcher() {
                 @Override

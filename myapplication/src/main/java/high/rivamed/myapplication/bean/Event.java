@@ -25,6 +25,36 @@ import high.rivamed.myapplication.dto.TCstInventoryDto;
 
 public class Event {
     /**
+     * 选择操作的数据传递
+     */
+    public static class EventOutBoxBingDto {
+        public TCstInventoryDto mTCstInventoryDto;
+        public EventOutBoxBingDto(TCstInventoryDto dto) {
+            this.mTCstInventoryDto = dto;
+        }
+    }
+    /**
+     * 选择操作的数据传递
+     */
+    public static class EventSelInOutBoxDto {
+        public TCstInventoryDto mTCstInventoryDto;
+        public EventSelInOutBoxDto(TCstInventoryDto dto) {
+            this.mTCstInventoryDto = dto;
+        }
+    }
+    /**
+     * 耗材的明细数据
+     */
+    public static class EventTestIdAndPower {
+        public String readerId;
+        public  String readerPower;
+
+        public EventTestIdAndPower(String readerId, String readerPower) {
+            this.readerId = readerId;
+            this.readerPower = readerPower;
+        }
+    }
+    /**
      * 耗材的明细数据
      */
     public static class EventPatientId {

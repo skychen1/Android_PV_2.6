@@ -98,14 +98,14 @@ public class AddAndSubView extends LinearLayout implements View.OnClickListener,
 		amount--;
 		String s = amount + "";
 		etAmount.setText(s);
-//		etAmount.setSelection(s.length());
+//		etAmount.setSelection(mObject.length());
 	   }
 	} else if (i == R.id.btn_add) {
 	   if (amount < goods_storage) {
 		amount++;
 		String s = amount + "";
 		etAmount.setText(s);
-//		etAmount.setSelection(s.length());
+//		etAmount.setSelection(mObject.length());
 	   }
 	}
 

@@ -3,6 +3,7 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -13,12 +14,12 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import org.androidpn.client.Notifier;
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -28,12 +29,19 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      LiangDanMing
@@ -76,12 +84,10 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     @BindView(R.id.base_tab_rlayout)
     public RelativeLayout mBaseTabRlayout;
 
-    public List<String> mReaderDeviceId;
-    public List<String> eth002DeviceIdList;
     public ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
     public ImageView mBaseTabBtnConn;
-
+    public  CountDownTimer mStarts;
 
     /**
      * 设备title连接状态
@@ -125,11 +131,25 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
     @Override
     protected void onResume() {
-        selTitleIcon();
         super.onResume();
+        selTitleIcon();
     }
 
     public void selTitleIcon() {
+        mBaseTabTvTitle.setVisibility(View.VISIBLE);
+        mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+        if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
+            SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nan)
+                  .into(mBaseTabIconRight);
+        } else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }
         if (mTitleConn) {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(true);
@@ -153,6 +173,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
 
+
     }
 
     @Override
@@ -160,7 +181,6 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
         mStub = (ViewStub) findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
-
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
 
@@ -226,5 +246,37 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     public Object newP() {
         return null;
     }
+    /**
+     * 分发触摸事件给所有注册了MyTouchListener的接口
+     */
 
+
+    /* 定义一个倒计时的内部类 */
+    protected class TimeCount extends CountDownTimer {
+
+        TextView textView;
+
+        public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
+
+            super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+            this.textView = textView;
+        }
+
+        @Override
+        public void onFinish() {// 计时完毕时触发
+            LogUtils.i(TAG, "onFinish     " );
+            EventBusUtils.post(new Event.EventOverPut(true));
+
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {// 计时过程显示
+            LogUtils.i(TAG, "millisUntilFinished     " + millisUntilFinished);
+            if (millisUntilFinished / 1000 <= 35) {
+                textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
+            } else {
+                textView.setText("确认并退出登录");
+            }
+        }
+    }
 }

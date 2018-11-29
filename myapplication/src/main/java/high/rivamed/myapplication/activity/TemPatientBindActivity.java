@@ -389,7 +389,7 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
         String toJson = mGson.toJson(tCstInventoryDto);
         LogUtils.i(TAG, "toJson    " + toJson);
         mEPCDate.clear();
-        NetRequest.getInstance().putEPCDate(toJson, this, null, new BaseResult() {
+        NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 Log.i(TAG, "result    " + result);
@@ -446,16 +446,16 @@ public class TemPatientBindActivity extends BaseTimelyActivity {
 //                    cstInventoryDto.setPatientName(mName);
 //                    cstInventoryDto.setOperationScheduleId(mOperationScheduleId);
                     cstInventoryDto.setBindType("firstBind");
-                    EventBusUtils.postSticky(cstInventoryDto);
-
+//                    EventBusUtils.postSticky(cstInventoryDto);
+                    EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
                     if (cstInventoryDto.gettCstInventoryVos() != null &&
                             cstInventoryDto.gettCstInventoryVos().size() != 0) {
                         EventBusUtils.post(new Event.EventButton(true, true));
-                        mContext.startActivity(
-                                new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName",
-                                        mName)
-                                        .putExtra("patientId", mId)
-                                        .putExtra("operationScheduleId", mOperationScheduleId));
+                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+//                              .putExtra("patientName",
+//                                        mName)
+//                                        .putExtra("patientId", mId)
+//                                        .putExtra("operationScheduleId", mOperationScheduleId));
                         finish();
                     } else {
                         Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();

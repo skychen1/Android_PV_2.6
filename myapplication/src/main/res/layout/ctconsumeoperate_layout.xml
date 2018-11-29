@@ -30,18 +30,28 @@
 			android:gravity="center_vertical"
 			android:textSize="@dimen/textsize_20"
 			android:textStyle="bold"/>
-
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/consume_openall_rv"
+		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="@dimen/y130"
-			android:layout_marginTop="@dimen/y25"
-			android:overScrollMode="never"
-			>
-		</android.support.v7.widget.RecyclerView>
+			android:layout_height="@dimen/y155">
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/consume_openall_rv"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/y130"
+				android:layout_marginTop="@dimen/y25"
+				android:overScrollMode="never"
+				>
+			</android.support.v7.widget.RecyclerView>
+			<View
+				android:id="@+id/rg_top_gone"
+				android:visibility="gone"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/y130">
+			</View>
+		</RelativeLayout>
+
 	</LinearLayout>
 
-	<LinearLayout
+	<RelativeLayout
 		android:id="@+id/consume_openall_middle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -53,6 +63,7 @@
 		>
 
 		<TextView
+			android:id="@+id/middle_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawableLeft="@mipmap/home_title_gn_icon"
@@ -65,6 +76,7 @@
 			android:textStyle="bold"/>
 
 		<LinearLayout
+			android:layout_below="@+id/middle_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
@@ -123,97 +135,112 @@
 					android:text="关联患者"
 					android:textColor="@color/selector_fastopen_text"
 					android:textSize="@dimen/textsize_18"/>
-
-
 		</LinearLayout>
-	</LinearLayout>
+		<View
+			android:id="@+id/rg_middle_gone"
+			android:visibility="gone"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/y235">
+		</View>
+	</RelativeLayout>
 <LinearLayout
 	android:layout_width="match_parent"
 	android:layout_height="0dp"
 	android:layout_weight="1"
 	android:orientation="vertical">
-	<LinearLayout
-		android:id="@+id/consume_down"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/y30"
-		android:background="@color/bg_f"
-		android:orientation="vertical"
-		android:paddingBottom="@dimen/y38"
-		android:paddingLeft="@dimen/x20"
-		android:paddingTop="@dimen/y30"
-		android:paddingRight="@dimen/x30"
-		>
-
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:drawableLeft="@mipmap/home_title_xz_icon"
-			android:drawablePadding="@dimen/x20"
-			android:gravity="center_vertical"
-			android:paddingLeft="@dimen/x30"
-			android:text="选择操作："
-			android:textColor="@color/text_color_3"
-			android:textSize="@dimen/textsize_20"
-			android:textStyle="bold"/>
-
-		<RadioGroup
-			android:id="@+id/content_rg"
+		android:layout_height="wrap_content">
+		<LinearLayout
+			android:id="@+id/consume_down"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingTop="@dimen/y25"
-			android:orientation="horizontal">
+			android:layout_marginTop="@dimen/y30"
+			android:background="@color/bg_f"
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/y38"
+			android:paddingLeft="@dimen/x20"
+			android:paddingTop="@dimen/y30"
+			android:paddingRight="@dimen/x30"
+			>
 
-			<RadioButton
-				android:id="@+id/content_rb_ly"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_ly_sel"
-				android:text="领用"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableLeft="@mipmap/home_title_xz_icon"
+				android:drawablePadding="@dimen/x20"
+				android:gravity="center_vertical"
+				android:paddingLeft="@dimen/x30"
+				android:text="选择操作："
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_20"
+				android:textStyle="bold"/>
 
-			<RadioButton
-				android:id="@+id/content_rb_rk"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_rk_sel"
-				android:text="入库"/>
+			<RadioGroup
+				android:id="@+id/content_rg"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/y25"
+				android:orientation="horizontal">
 
-			<RadioButton
-				android:id="@+id/content_rb_yc"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_yc_sel"
-				android:text="移出"/>
-			<RadioButton
-				android:id="@+id/content_rb_tb"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_tb_sel"
-				android:text="调拨"/>
-			<RadioButton
-				android:id="@+id/content_rb_yr"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_yr_sel"
-				android:text="移入"/>
+				<RadioButton
+					android:id="@+id/content_rb_ly"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_ly_sel"
+					android:text="领用"/>
 
-			<RadioButton
-				android:id="@+id/content_rb_tuihui"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_tuihui_sel"
-				android:text="退回"/>
+				<RadioButton
+					android:id="@+id/content_rb_rk"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_rk_sel"
+					android:text="入库"/>
 
-			<RadioButton
-				android:id="@+id/content_rb_tuihuo"
-				style="@style/consume_rb_style"
-				android:drawablePadding="@dimen/x15"
-				android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
-				android:text="退货"/>
+				<RadioButton
+					android:id="@+id/content_rb_yc"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_yc_sel"
+					android:text="移出"/>
+				<RadioButton
+					android:id="@+id/content_rb_tb"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_tb_sel"
+					android:text="调拨"/>
+				<RadioButton
+					android:id="@+id/content_rb_yr"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_yr_sel"
+					android:text="移入"/>
 
-		</RadioGroup>
+				<RadioButton
+					android:id="@+id/content_rb_tuihui"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_tuihui_sel"
+					android:text="退回"/>
 
-	</LinearLayout>
+				<RadioButton
+					android:id="@+id/content_rb_tuihuo"
+					style="@style/consume_rb_style"
+					android:drawablePadding="@dimen/x15"
+					android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
+					android:text="退货"/>
+
+			</RadioGroup>
+
+		</LinearLayout>
+		<View
+			android:id="@+id/rg_down_gone"
+			android:visibility="gone"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/y370">
+		</View>
+	</RelativeLayout>
+
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/consume_down_rv"
 		android:layout_width="match_parent"

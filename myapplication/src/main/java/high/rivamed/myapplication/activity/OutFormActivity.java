@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -41,7 +40,6 @@ import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -76,11 +74,8 @@ public class OutFormActivity extends BaseSimpleActivity {
     @BindView(R.id.stock_left_alltop)
     LinearLayout stockLeftAlltop;
 
-    private TableTypeView mTypeView;
     private OutFormAdapter mOutFormAdapter;
-    private List<String> mTiteleList;
     private OutFormPagerAdapter mPagerAdapter;
-
     //顶部全部医嘱单列表
     private List<OrderSheetBean.RowsBean> mAllOrderSheetList;
     /**
@@ -123,6 +118,7 @@ public class OutFormActivity extends BaseSimpleActivity {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
+        super.initDataAndEvent(savedInstanceState);
         mAllOrderSheetList = new ArrayList<>();
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
@@ -140,8 +136,6 @@ public class OutFormActivity extends BaseSimpleActivity {
                     .error(R.mipmap.hccz_mrtx_nv)
                     .into(mBaseTabIconRight);
         }
-        initlistener();
-
         mReceiveOrderId = getIntent().getStringExtra("receiveOrderId");
         if (TextUtils.isEmpty(mReceiveOrderId)) {
             //不是从消息页面跳转过来
@@ -150,7 +144,6 @@ public class OutFormActivity extends BaseSimpleActivity {
             //从消息页面跳转过来
             initFromMsgDate();
         }
-
     }
 
     /*
@@ -168,11 +161,6 @@ public class OutFormActivity extends BaseSimpleActivity {
                     mOutFormAdapter.notifyDataSetChanged();
                     mPagerAdapter.notifyDataSetChanged();
                 }
-            }
-
-            @Override
-            public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
             }
         });
     }
@@ -225,7 +213,6 @@ public class OutFormActivity extends BaseSimpleActivity {
             @Override
             public void onPageSelected(int position) {
                 if (mCurrentFragment.getTypeAndNumber() != null) {
-
                     mCurrentFragment.getStockByOrderId(mCurrentFragment.mPrePageDate.getId());
                     setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
                 }
@@ -239,7 +226,7 @@ public class OutFormActivity extends BaseSimpleActivity {
     }
 
     private void getTopOrderSheetDate(int pageNo, int PageSize) {
-        NetRequest.getInstance().findPatientOrderSheetDate(pageNo, PageSize, this, null, new BaseResult() {
+        NetRequest.getInstance().findPatientOrderSheetDate(pageNo, PageSize, this,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);
@@ -256,21 +243,8 @@ public class OutFormActivity extends BaseSimpleActivity {
                     mPageNo++;
                 }
             }
-
-            @Override
-            public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
-            }
         });
     }
-
-    /**
-     * 上拉下拉刷新
-     */
-    private void initlistener() {
-
-    }
-
 
     @OnClick(R.id.tv_open_all)
     public void onViewClicked() {
@@ -285,7 +259,6 @@ public class OutFormActivity extends BaseSimpleActivity {
         tvMaterialType.setText(type);
         tvMaterialNumber.setText(number);
     }
-
 
     private class OutFormPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -310,10 +283,8 @@ public class OutFormActivity extends BaseSimpleActivity {
         }
     }
 
-
     //横向滑动加载更多
     public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
-
         // 用来标记是否正在向左滑动
         private boolean isSlidingToLeft = false;
 
@@ -326,7 +297,6 @@ public class OutFormActivity extends BaseSimpleActivity {
                 // 获取最后一个完全显示的itemPosition
                 int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
                 int itemCount = manager.getItemCount();
-
                 // 判断是否滑动到了最后一个item，并且是向左滑动
                 if (lastItemPosition == (itemCount - 1) && isSlidingToLeft) {
                     // 加载更多

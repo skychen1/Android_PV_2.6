@@ -39,10 +39,10 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.NoDialog;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_HCCZ_OUT;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -66,12 +66,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
    private static final String TAG = "OutBoxFoutActivity";
    int mType;
-   private LoadingDialog.Builder mShowLoading;
    private TCstInventoryDto      mTCstInventoryDtoFour;
-   private String                uhfDeviceId;
-   private TCstInventoryDto      mDtoLyFour;
    private TCstInventoryDto mDtoLy = new TCstInventoryDto();
-   public  TCstInventoryDto      mNewDtos;
    private int                   mIntentType;
    private LoadingDialog.Builder mLoading;
    public  ArrayList<String>          mDoorList  = new ArrayList<>();
@@ -353,7 +349,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	LogUtils.i(TAG, "调拨   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putAllOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putAllOperateYes(mTCstInventoryDtoJsons, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result调拨   " + result);
@@ -397,7 +393,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putAllOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putAllOperateYes(mTCstInventoryDtoJsons, this,  new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result退货   " + result);
@@ -445,7 +441,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance()
-		.putAllOperateYes(mTCstInventoryDtoJsons, this, mShowLoading, new BaseResult() {
+		.putAllOperateYes(mTCstInventoryDtoJsons, this,new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result移出   " + result);
@@ -465,11 +461,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
     * 完成操作后看是否还有耗材，无耗材跳转入柜界面或者直接退出
     */
    private void overFinish() {
-//	if (mTCstInventoryDtoFour == null) {
-
-//	   LogUtils.i(TAG,"xxxxxx  "+mOutDto.gettCstInventoryVos().size());
 	   mMTCstInventoryVoss = new ArrayList<>();
-
 	   for (int i = 0;i<mOutDto.gettCstInventoryVos().size();i++) {
 		if (mOutDto.gettCstInventoryVos().get(i).isSelected()) {
 		   mMTCstInventoryVoss.add(mOutDto.gettCstInventoryVos().get(i));
@@ -487,7 +479,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		  }
 		}
 	   }
-
 	   putAllInEPCDate(mInJson);
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 	EventBusUtils.postSticky(new Event.EventDate(true));
@@ -498,7 +489,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   R.id.btn_four_yc, R.id.btn_four_tb, R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
-
 	   case R.id.base_tab_btn_msg:
 		break;
 	   case R.id.base_tab_back:
@@ -517,13 +507,12 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		mIntentType = 1;
 		mSelType = 1;
 
-		setLyDate(mIntentType);
+		setLyDate();
 		break;
 	   case R.id.btn_four_yc://移出
 		//确认
 		mIntentType = 1;
 		mSelType = 2;
-
 		setYcDate(mIntentType);
 		break;
 	   //	   case R.id.btn_four_tb://调拨
@@ -582,7 +571,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
@@ -613,11 +601,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "8调拨   " + result);
 		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
 		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
-		//		List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
-
 	   }
 	});
-
    }
 
    /**
@@ -632,7 +617,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		LogUtils.i(TAG, "库房   " + result);
 		HospNameBean hospNameBean = mGson.fromJson(result, HospNameBean.class);
 		DialogUtils.showStoreDialog(mContext, 2, mType, hospNameBean, mIntentType);
-
 	   }
 	});
 
@@ -641,16 +625,10 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
    /**
     * 耗材领用区分 0 绑定患者；1直接领用
     */
-   private void setLyDate(int mIntentType) {
+   private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
-//	if (mTCstInventoryDtoFour == null) {
 	   mOutDto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	   mTCstInventoryDtoJson = setNewDate(mOutDto);
-//	} else {
-//	   mTCstInventoryDtoFour.setStorehouseCode(
-//		   SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-//	   mTCstInventoryDtoJson = setNewDate(mTCstInventoryDtoFour);
-//	}
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	TCstInventoryDto tCstInventoryDtos = mGson.fromJson(mTCstInventoryDtoJson,
 									    TCstInventoryDto.class);
@@ -662,9 +640,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
 	   } else {
-
 		NetRequest.getInstance()
-			.putAllOperateYes(mTCstInventoryDtoJson, this, null, new BaseResult() {
+			.putAllOperateYes(mTCstInventoryDtoJson, this, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "result 领用 " + result);
@@ -673,7 +650,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 										     "nojump", null);
 				overFinish();
 			   }
-
 			   @Override
 			   public void onError(String result) {
 				mShowNoDialog2 = DialogUtils.showNoDialog(mContext, "耗材领用失败，请重试！",
@@ -681,7 +657,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 			   }
 			});
 	   }
-
 	} else {//绑定患者
 	   if (mDtoLy != null && mDtoLy.gettCstInventoryVos().size() == 0) {
 		ToastUtils.showShort("未选择耗材");
@@ -702,21 +677,16 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 		for (TCstInventoryVo c:mOutDto.gettCstInventoryVos()){
 		  c.setSelected(true);
 		}
-
-
 		tCstInventoryDto.setBindType("afterBind");
 		EventBusUtils.postSticky(new Event.EventButGone(true));
-
 		startActivity(new Intent(OutBoxFoutActivity.this, OutBoxBingActivity.class));
-		EventBusUtils.postSticky(tCstInventoryDto);
-
+		EventBusUtils.postSticky(new Event.EventOutBoxBingDto(tCstInventoryDto));
 	   }
 	}
    }
 
    /**
     * 给选择后的数据赋值
-    *
     * @param tCstInventoryDto
     */
    private String setNewDate(TCstInventoryDto tCstInventoryDto) {
@@ -733,7 +703,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	}
 	mDtoLy.settCstInventoryVos(tCstInventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-
 	String mTCstInventoryDtoJson = mGson.toJson(mDtoLy);
 	return mTCstInventoryDtoJson;
    }
@@ -747,7 +716,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
         NetRequest.getInstance().putAllOutEPCDate(mToJson, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i(TAG, "result s   " + result);
+                LogUtils.i(TAG, "result mObject   " + result);
                 mTCstInventoryDtoFour = mGson.fromJson(result, TCstInventoryDto.class);
                 mVoOutList = mTCstInventoryDtoFour.gettCstInventoryVos();
                 for (int i = 0; i < mVoOutList.size(); i++) {
@@ -766,8 +735,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     mTypeView.mOutBoxAllAdapter.setEmptyView(inflate);
                     mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
                     putAllInEPCDate(mToJson);
-
-		   //	ToastUtils.showShort("未扫描到操作的耗材");
 		} else {
 		   LogUtils.i(TAG,"重新来了");
 		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
@@ -785,7 +752,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
         NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i(TAG, "result s   " + result);
+                LogUtils.i(TAG, "result mObject   " + result);
                 mCstInEpcDto = mGson.fromJson(result, TCstInventoryDto.class);
                 String string = null;
                 if (mAllOutText != null && mCstInEpcDto.gettCstInventoryVos().size() == 0) {
@@ -794,10 +761,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                 if (mCstInEpcDto.getErrorEpcs() != null && mCstInEpcDto.getErrorEpcs().size() > 0) {
                     string = StringUtils.listToString(mCstInEpcDto.getErrorEpcs());
                     ToastUtils.showLong(string);
-                    LogUtils.i(TAG, " string   " + string);
                     MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
                 }
-
                 if (((mVoOutList != null && mVoOutList.size() == 0) || mVoOutList == null) &&
                         ((mTCstInventoryDtoFour != null &&
                                 mTCstInventoryDtoFour.gettCstInventoryVos().size() == 0) ||
@@ -816,7 +781,6 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             EventBusUtils.postSticky(mCstInEpcDto);
-                            //			   LogUtils.i(TAG,"mTCstInventoryDto   "+mCstInEpcDto.gettCstInventoryVos().size());
                             EventBusUtils.postSticky(new Event.EventAct("all"));
                             EventBusUtils.postSticky(new Event.EventDoorList(mDoorList));
                             startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
@@ -825,14 +789,10 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     }, 2000);
 
 		} else {
-			 LogUtils.i(TAG,"mffafafafafaf ");
-
-			 //		   LogUtils.i(TAG,"mCstInEpcDto.gettCstInventoryVos().size()    "+mCstInEpcDto.gettCstInventoryVos().size());
 		   if (mCstInEpcDto.gettCstInventoryVos().size() > 0) {
 			LogUtils.i(TAG, "请重新操作");
 			EventBusUtils.postSticky(new Event.EventOutTitleV(true));
 		   } else {
-			LogUtils.i(TAG,"mffaffffffffffffffffffffffffafafafaf ");
 			if ((mVoOutList != null && mVoOutList.size() == 0)||(mOutDto!=null&&mOutDto.gettCstInventoryVos().size()==0)) {
 			   mBtnFourLy.setEnabled(false);
 			   mBtnFourYc.setEnabled(false);
@@ -870,7 +830,7 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
 	allOutBean.setTCstInventoryVos(epcList);
 	allOutBean.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	String toJson = mGson.toJson(allOutBean);
-	LogUtils.i(TAG, "toJson s   " + toJson);
+	LogUtils.i(TAG, "toJson mObject   " + toJson);
 	return toJson;
    }
 

@@ -37,10 +37,10 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_ALL_IN;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -336,7 +336,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
         String s = mGson.toJson(dto);
         LogUtils.i(TAG, "返回  " + s);
-        NetRequest.getInstance().putAllOperateYes(s, this, null, new BaseResult() {
+        NetRequest.getInstance().putAllOperateYes(s, this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "result  " + result);
@@ -362,7 +362,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
         NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i(TAG, "result s   " + result);
+                LogUtils.i(TAG, "result mObject   " + result);
                 mTCstInventoryDtoTwo = mGson.fromJson(result, TCstInventoryDto.class);
 
                 String string = null;
@@ -447,7 +447,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
         allOutBean.setTCstInventoryVos(epcList);
         allOutBean.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
         String toJson = mGson.toJson(allOutBean);
-        LogUtils.i(TAG, "toJson s   " + toJson);
+        LogUtils.i(TAG, "toJson mObject   " + toJson);
         return toJson;
     }
 

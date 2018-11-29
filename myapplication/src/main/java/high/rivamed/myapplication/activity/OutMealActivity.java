@@ -178,6 +178,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
+        super.initDataAndEvent(savedInstanceState);
         EventBusUtils.register(this);
         mBaseTabBack.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setVisibility(View.VISIBLE);

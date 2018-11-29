@@ -48,8 +48,6 @@ public class MyInfoActivity extends BaseSimpleActivity {
     @BindView(R.id.top_icon)
     ImageView mTopIcon;
 
-    private LoadingDialog.Builder mBuilder;
-
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         mBaseTabBack.setVisibility(View.VISIBLE);
@@ -78,9 +76,7 @@ public class MyInfoActivity extends BaseSimpleActivity {
             String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
             LogUtils.i(TAG,"accountData   "+accountData);
             LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-
             LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-
 	     List<LoginResultBean.AppAccountInfoVoBean.RolesBean> roles = appAccountInfoVo.getRoles();
 	     String roleName = "";
             for (int i = 0; i < roles.size(); i++) {

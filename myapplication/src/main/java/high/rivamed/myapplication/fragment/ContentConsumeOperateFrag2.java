@@ -10,10 +10,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -51,6 +53,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.TCstInventoryDto;
@@ -90,7 +93,7 @@ import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YC;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
-import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
@@ -147,7 +150,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    @BindView(R.id.consume_down)
    LinearLayout mConsumeDown;
    @BindView(R.id.fastopen_title_guanlian)
-   TextView     mFastopenTitleGuanlian;
+   TextView       mFastopenTitleGuanlian;
+   @BindView(R.id.rg_top_gone)
+   View           mRgTopGone;
+   @BindView(R.id.rg_middle_gone)
+   View           mRgMiddleGone;
+   @BindView(R.id.rg_down_gone)
+   View           mRgDownGone;
    private LoadingDialog.Builder mShowLoading;
    private HomeFastOpenAdapter   mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter   mHomeFastOpenDownAdapter;
@@ -193,13 +202,15 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	LogUtils.i(TAG, "door   " + event.door);
 	mIsClick = event.isClick;
-	   if (mIsClick){
-		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-//		mDoorList.add(event.door);
-	   }else {
-		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   }
-	   EventBusUtils.removeStickyEvent(ContentConsumeOperateFrag2.class);
+	if (mIsClick) {
+	   mRgTopGone.setVisibility(View.VISIBLE);
+	   mRgMiddleGone.setVisibility(View.VISIBLE);
+	   mRgDownGone.setVisibility(View.VISIBLE);
+	} else {
+	   mRgTopGone.setVisibility(View.GONE);
+	   mRgMiddleGone.setVisibility(View.GONE);
+	   mRgDownGone.setVisibility(View.GONE);
+	}
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -476,11 +487,11 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	//	initCallBack();
 	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
+	mContentRbTb.setVisibility(View.GONE);
 	mContentRg.setVisibility(View.GONE);
 	if (mEPCDate!=null){
 	   mEPCDate.clear();
 	}
-
 	initData();
 
    }
@@ -530,7 +541,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
    public void onStart() {
 	EventBusUtils.register(this);
 	mOnStart = true;
-
+	LogUtils.i(TAG, "onStart   ");
 	super.onStart();
    }
 
@@ -627,13 +638,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	NetRequest.getInstance().putAllOutEPCDate(toJson, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "result s   " + result);
+		LogUtils.i(TAG, "result mObject   " + result);
 		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
 		mVoOutList = cstInventoryDto.gettCstInventoryVos();
 		for (int i = 0; i < mVoOutList.size(); i++) {
 		   mVoOutList.get(i).setSelected(true);
 		}
-		LogUtils.i(TAG, "mVoOutList s   " + mVoOutList.size());
+		LogUtils.i(TAG, "mVoOutList mObject   " + mVoOutList.size());
 //		putAllInEPCDate(toJson);//用于判断出柜提示显示
 
 		String string = null;
@@ -673,7 +684,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 	allOutBean.setTCstInventoryVos(epcList);
 	allOutBean.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	String toJson = mGson.toJson(allOutBean);
-	LogUtils.i(TAG, "toJson s   " + toJson);
+	LogUtils.i(TAG, "toJson mObject   " + toJson);
 	return toJson;
    }
 
@@ -728,7 +739,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
             mLoading.mDialog.dismiss();
             mLoading = null;
         }
-        NetRequest.getInstance().putEPCDate(toJson, _mActivity, mShowLoading, new BaseResult() {
+        NetRequest.getInstance().putEPCDate(toJson, _mActivity,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 Log.i(TAG, "result    " + result);
@@ -754,13 +765,13 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
                         }
                         cstInventoryDto.setBindType("firstBind");
                         //                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-                        mContext.startActivity(
-                                new Intent(mContext, OutBoxBingActivity.class).putExtra("patientName",
-                                        cstInventoryDto.getPatientName())
-                                        .putExtra("patientId", cstInventoryDto.getPatientId())
-                                        .putExtra("operationScheduleId",
-                                                cstInventoryDto.getOperationScheduleId()));
-                        EventBusUtils.postSticky(cstInventoryDto);
+                        mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+//					.putExtra("patientName",
+//                                        cstInventoryDto.getPatientName())
+//                                        .putExtra("patientId", cstInventoryDto.getPatientId())
+//                                        .putExtra("operationScheduleId",
+//                                                cstInventoryDto.getOperationScheduleId()));
+                        EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
                     } else {
 			     mEthDeviceIdBack2.clear();
                         mEthDeviceIdBack.clear();
@@ -784,7 +795,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 			cstInventoryDto.setOperation(mRbKey);
 			cstInventoryDto.setBindType("afterBind");
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-			EventBusUtils.postSticky(cstInventoryDto);
+			EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
 		   } else {
 			mEthDeviceIdBack2.clear();
 			mEthDeviceIdBack.clear();
@@ -813,7 +824,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 				mContext.startActivity(intent2);
 				EventBusUtils.postSticky(new Event.EventAct("inout"));
 				cstInventoryDto.setOperation(mRbKey);
-				EventBusUtils.postSticky(cstInventoryDto);
+//				EventBusUtils.postSticky(cstInventoryDto);
+				EventBusUtils.postSticky(new Event.EventSelInOutBoxDto(cstInventoryDto));
 			   }
 			} else {//拿出
 			   if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
@@ -822,7 +834,8 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 				mContext.startActivity(intent2);
 				EventBusUtils.postSticky(new Event.EventAct("inout"));
 				cstInventoryDto.setOperation(mRbKey);
-				EventBusUtils.postSticky(cstInventoryDto);
+//				EventBusUtils.postSticky(cstInventoryDto);
+				EventBusUtils.postSticky(new Event.EventSelInOutBoxDto(cstInventoryDto));
 			   }
 			}
 		   }
@@ -881,7 +894,7 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    //数据加载
    private void loadDate() {
-
+	LogUtils.i(TAG, "loadDate");
 	NetRequest.getInstance().loadBoxSize(mContext, mShowLoading, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -900,15 +913,6 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 
    //赋值
    private void onSucceedDate() {
-	LogUtils.i(TAG, "loadDate   "+SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL));
-	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL)){
-	   setDownType();//设置选择操作的权限
-	}else {
-	   mConsumeDown.setVisibility(View.GONE);
-	   mConsumeDownRv.setVisibility(View.GONE);
-	}
-	LogUtils.i(TAG, "loadDate   "+SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL));
-
 	mContentRg.setVisibility(View.VISIBLE);
 
 	LogUtils.i(TAG, "onSucceedDate");
@@ -967,7 +971,17 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		}
 	   }
 	});
+	String string = SPUtils.getString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE);
+	List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(string,
+										new TypeToken<List<HomeAuthorityMenuBean>>() {}
+											.getType());
+	if (fromJson.get(0).getChildren().size()>0) {
+		setDownType();//设置选择操作的权限
+	   } else {
+		mConsumeDown.setVisibility(View.GONE);
+		mConsumeDownRv.setVisibility(View.GONE);
 
+	}
    }
 
    /*
@@ -1207,16 +1221,18 @@ public class ContentConsumeOperateFrag2 extends BaseSimpleFragment {
 		case R.id.fastopen_title_guanlian://患者关联
 		   if (UIUtils.isFastDoubleClick()) {
 			return;
+		   }else {
+			goToPatientConn();//患者关联
 		   }
-		   goToPatientConn();//患者关联
 		   break;
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
+		}else {
+		   doSelectOption(0, view.getId());
 		}
-		doSelectOption(0, view.getId());
 	   }
 	} else {
 	   ToastUtils.showShort("请关闭柜门再进行操作");

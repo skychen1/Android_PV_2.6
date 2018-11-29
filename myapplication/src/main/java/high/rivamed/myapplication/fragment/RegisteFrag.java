@@ -132,7 +132,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   }
 	   LitePal.deleteAll(BoxIdBean.class);
 	   //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
-	   //	   setSaveRegister(s, true);
+	   //	   setSaveRegister(mObject, true);
 	   setSaveActive(s);
 	}
 
@@ -225,7 +225,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	LitePal.deleteAll(BoxIdBean.class);
 	RegisteReturnBean returnBean = mGson.fromJson(s, RegisteReturnBean.class);
 	setRegiestDate(s);
-	//	setSaveRegister(s, true);
+	//	setSaveRegister(mObject, true);
 	setSaveActive(s);
 
    }

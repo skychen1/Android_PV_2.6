@@ -142,10 +142,10 @@ public class TimelyLossActivity extends BaseTimelyActivity{
 //	   lossDates.add(cstStockJournalsBean);
 //	}
 //	lossDateBean.setCstStockJournals(lossDates);
-//	String s = mGson.toJson(lossDateBean);
-//	LogUtils.i(TAG,"s    "+s);
+//	String mObject = mGson.toJson(lossDateBean);
+//	LogUtils.i(TAG,"mObject    "+mObject);
 //
-//	NetRequest.getInstance().putLossSDate(s,this,null,new BaseResult(){
+//	NetRequest.getInstance().putLossSDate(mObject,this,null,new BaseResult(){
 //	   @Override
 //	   public void onSucceed(String result) {
 //		LogUtils.i(TAG,"result   "+result);

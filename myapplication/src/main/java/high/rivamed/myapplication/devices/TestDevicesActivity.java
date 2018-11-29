@@ -29,7 +29,7 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static cn.rivamed.DeviceManager.getInstance;
-
+import static high.rivamed.myapplication.base.App.READER_TIME;
 
 public class TestDevicesActivity extends SimpleActivity {
 
@@ -270,7 +270,7 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_startScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int scanTime = 3;
+                int scanTime = READER_TIME;
                 try {
                     scanTime = Integer.parseInt(txt_scantime.getText().toString());
                 } catch (Throwable e) {
@@ -278,7 +278,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 }
                 for (Map.Entry<String, DeviceHandler> device : DeviceManager.getInstance().getConnetedDevices().entrySet()) {
                     if (device.getValue().getDeviceType() == DeviceType.UHFREADER) {
-                        int ret = getInstance().StartUhfScan(uhfDeviceId, scanTime * 1000);
+                        int ret = getInstance().StartUhfScan(uhfDeviceId, scanTime);
                         AppendLog("启动持续扫描,设备ID=" + device.getKey() + "，扫描时间为" + scanTime + "s ;RET=" + ret);
                     }
                 }

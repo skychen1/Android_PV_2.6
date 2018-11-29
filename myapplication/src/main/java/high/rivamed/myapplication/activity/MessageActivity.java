@@ -19,6 +19,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
+/**
+ * 消息界面
+ */
 public class MessageActivity extends BaseSimpleActivity {
     @BindView(R.id.home_stock_viewpager)
     public ViewPager mMsgViewpager;

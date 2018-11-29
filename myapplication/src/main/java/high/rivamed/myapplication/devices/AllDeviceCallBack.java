@@ -18,7 +18,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 
-import static high.rivamed.myapplication.cont.Constants.READER_TIME;
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 
@@ -143,7 +143,7 @@ public class AllDeviceCallBack {
 		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
 
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.post(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
+		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
 		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
 		}
 		clossDoorStartScan(deviceIndentify);

@@ -334,28 +334,28 @@ public class NetRequest {
     /**
      * 耗材操作开柜扫描提交数据
      */
-    public void putEPCDate(String deviceInventoryVos, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void putEPCDate(String deviceInventoryVos, Object tag,NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_OPERATE_QUERY).tag(tag)
                 .upJson(deviceInventoryVos)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+                .execute(new MyCallBack(tag, netResult, false));
     }
 
     /**
      * 耗材操作确认操作
      */
-    public void putOperateYes(String operateTCstInventory, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void putOperateYes(String operateTCstInventory, Object tag, NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_OPERATE_INOUTBOX_YES).tag(tag)
                 .upJson(operateTCstInventory)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+                .execute(new MyCallBack(tag,  netResult, false));
     }
 
     /**
      * 耗材操作确认操作(快速开柜)
      */
-    public void putAllOperateYes(String operateTCstInventory, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void putAllOperateYes(String operateTCstInventory, Object tag,  NetResult netResult) {
         OkGo.<String>post(MAIN_URL + NetApi.URL_QUERY_ALL_YES).tag(tag)
                 .upJson(operateTCstInventory)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+                .execute(new MyCallBack(tag, netResult, false));
     }
 
     /**
@@ -525,11 +525,11 @@ public class NetRequest {
     /**
      * 医嘱单领用-顶部医嘱单列表
      */
-    public void findPatientOrderSheetDate(int pageNo, int pageSize, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+    public void findPatientOrderSheetDate(int pageNo, int pageSize, Object tag,  NetResult netResult) {
         OkGo.<String>get(MAIN_URL + NetApi.URL_RECEIVEORDER_LISTALL).tag(tag)
                 .params("pageNo", pageNo)
                 .params("rows", pageSize)
-                .execute(new MyCallBack(tag, dialog, netResult, false));
+                .execute(new MyCallBack(tag,netResult, false));
     }
 
     /**

@@ -95,7 +95,7 @@ public class LogcatHelper {
 
 	   /**
 	    *
-	    * 日志等级：*:v , *:d , *:w , *:e , *:f , *:s
+	    * 日志等级：*:v , *:d , *:w , *:e , *:f , *:mObject
 	    *
 	    * 显示当前mPID程序的 E和W等级的日志.
 	    *
@@ -103,7 +103,7 @@ public class LogcatHelper {
 
 	   //	    cmds = "logcat *:e *:w | grep \"(" + mPID + ")\"";
 	   // cmds = "logcat  | grep \"(" + mPID + ")\"";//打印所有日志信息
-	   // cmds = "logcat -s way";//打印标签过滤信息
+	   // cmds = "logcat -mObject way";//打印标签过滤信息
 	   cmds = "logcat *:i  | grep PRETTY_LOGGER";
 //	   cmds = "logcat *:i ";
 

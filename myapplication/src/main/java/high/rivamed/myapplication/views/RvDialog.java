@@ -173,9 +173,9 @@ public class RvDialog extends Dialog {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) * patientInfos.size() / 2;
             }
             mRecyclerview.setLayoutParams(lps);
-            sTableTypeView = new TableTypeView(mContext, mActivity, patientInfos, titeleList, mSize,
+            sTableTypeView = new TableTypeView(mContext, mActivity, (Object) patientInfos, titeleList, mSize,
                     mLinearLayout, mRecyclerview,
-                    mRefreshLayout, ACTIVITY, STYPE_DIALOG);
+                    mRefreshLayout, ACTIVITY, STYPE_DIALOG,-10);
             mSearchEt.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
