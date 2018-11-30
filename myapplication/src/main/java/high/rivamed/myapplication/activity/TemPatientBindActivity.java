@@ -681,5 +681,4 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   }
 		});
    }
-
 }

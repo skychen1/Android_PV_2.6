@@ -104,7 +104,6 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
    private       String                                      mHeadName;
    public static List<DeviceManager.DeviceInfo>              mDeviceInfos;
    private       List<TBaseDevices>                          mBaseDevices;
-   private       int                                         dateType;
    private       DeviceNameBean                              mNameBean;
    private       List<DeviceNameBean.TBaseDeviceDictVosBean> mNameList;
    private       RegisteReturnBean                           mSnRecoverBean;
@@ -131,8 +130,6 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 		mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 	   }
 	   LitePal.deleteAll(BoxIdBean.class);
-	   //	   SPUtils.putString(UIUtils.getContext(),SAVE_SEVER_IP,);
-	   //	   setSaveRegister(mObject, true);
 	   setSaveActive(s);
 	}
 
@@ -157,9 +154,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 		LogUtils.i(TAG, "result   " + result);
 		RegisteReturnBean registeReturnBean = mGson.fromJson(result, RegisteReturnBean.class);
 		if (registeReturnBean.isOperateSuccess()) {
-
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
-
 		   ToastUtils.showShort("设备已激活！");
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
@@ -233,9 +228,6 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
    public static RegisteFrag newInstance() {
 	Bundle args = new Bundle();
 	RegisteFrag fragment = new RegisteFrag();
-	//	args.putInt(TYPE_SIZE, param);
-	//	args.putString(TYPE_PAGE, type);
-	//	fragment.setArguments(args);
 	return fragment;
    }
 
@@ -555,42 +547,6 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	tBaseThing.setThingCode(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.settBaseThing(tBaseThing);
 	LogUtils.i(TAG, " i  ffffff     " + i);
-	//	for (int i = 0; i < mRecyclerview.getChildCount(); i++) {
-	//	   TBaseThingDto.TBaseDeviceVo tBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
-	//	   mHeadName = ((EditText) mRecyclerview.getChildAt(i)
-	//		   .findViewById(R.id.head_left_name)).getText().toString().trim();
-	//	   String boxCode = ((TextView) mRecyclerview.getChildAt(i)
-	//		   .findViewById(R.id.gone_box_code)).getText().toString().trim();
-	//	   tBaseThingVoBean.setDeviceName(mHeadName);
-	//	   tBaseThingVoBean.setDeviceCode(boxCode);
-	//	   RecyclerView mRecyclerView2 = mRecyclerview.getChildAt(i).findViewById(R.id.recyclerview2);
-	//	   List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice = new ArrayList<>();//柜子内部的设备list
-	//	   for (int x = 0; x < mRecyclerView2.getChildCount() - 1; x++) {
-	//		TBaseThingDto.TBaseDeviceVo.TBaseDevice device = new TBaseThingDto.TBaseDeviceVo.TBaseDevice();
-	//		mFootNameStr = ((TextView) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.foot_name)).getText().toString().trim();
-	//		mFootMacStr = ((TextView) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.foot_mac)).getText().toString().trim();
-	//		mFootIpStr = ((EditText) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.foot_ip)).getText().toString().trim();
-	//		String gone_dictid = ((TextView) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.gone_dictid)).getText().toString().trim();
-	//		String gone_devicetype = ((TextView) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.gone_devicetype)).getText().toString().trim();
-	//		String gone_deviceCode = ((TextView) mRecyclerView2.getChildAt(x + 1)
-	//			.findViewById(R.id.gone_device_code)).getText().toString().trim();
-	//		LogUtils.i(TAG,
-	//			     "gone_dictid   " + gone_dictid + "   gone_devicetype   " + gone_devicetype +
-	//			     "    gone_deviceCode   " + gone_deviceCode);
-	//		device.setDictId(gone_dictid);
-	//		device.setDeviceType(gone_devicetype);
-	//		device.setDeviceCode(gone_deviceCode);
-	//		device.setDeviceName(mFootNameStr);
-	//		device.setIdentification(mFootMacStr);
-	//		device.setIp(mFootIpStr);
-	//		tBaseDevice.add(device);
-	//	   }
-	//	   tBaseThingVoBean.settBaseDevices(tBaseDevice);
 
 	if (mRecyclerview.getAdapter().getItemCount() != mDeviceVos.size()) {
 	   RecyclerView.LayoutManager layoutManager = mRecyclerview.getLayoutManager();
@@ -601,12 +557,9 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   LogUtils.i(TAG, " i  firstVisibleItemPosition     " + firstVisibleItemPosition);
 	   mDeviceVos.add(getDeviceVos(lastItemPosition - firstVisibleItemPosition));
 	}
-	//	}
 	TBaseThingDto.settBaseDeviceVos(mDeviceVos);
-
 	return TBaseThingDto;
    }
-
    private void initListener() {
 
    }

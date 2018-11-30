@@ -54,6 +54,9 @@ public class RegisteActivity extends SimpleActivity {
    CircleImageView  mBaseTabIconRight;
    @BindView(R.id.base_tab_tv_outlogin)
    ImageView        mBaseTabOutLogin;
+   @BindView(R.id.base_tab_btn_msg)
+   ImageView        mBaseTabBtnMsg;
+
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;
    public ImageView mBaseTabBtnConn;
@@ -95,6 +98,7 @@ public class RegisteActivity extends SimpleActivity {
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setVisibility(View.GONE);
 	mBaseTabTvName.setVisibility(View.GONE);
+	mBaseTabBtnMsg.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("工程模式");
 
 	if (WifiUtils.isWifi(mContext) == 0) {
