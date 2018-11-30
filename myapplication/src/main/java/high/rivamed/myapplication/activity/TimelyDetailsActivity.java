@@ -77,6 +77,7 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
     * 获取耗材盘点详情
     */
    private void loadTimelyDetailsDate() {
+	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材详情");
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 	int number = 0;

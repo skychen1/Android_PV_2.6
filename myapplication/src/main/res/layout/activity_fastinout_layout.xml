@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:tl="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:background="@color/bg"
+			  android:orientation="vertical">
+
+	<com.flyco.tablayout.SlidingTabLayout
+		android:id="@+id/fast_tl"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/y65"
+		android:layout_below="@+id/appbar"
+		android:layout_marginLeft="@dimen/x40"
+		android:layout_marginRight="@dimen/x40"
+		android:layout_marginTop="@dimen/y18"
+		android:background="@color/bg"
+
+		tl:tl_indicator_color="@color/bg_f"
+		tl:tl_indicator_corner_radius="0dp"
+		tl:tl_indicator_height="@dimen/y65"
+		tl:tl_indicator_style="NORMAL"
+		tl:tl_tab_padding="@dimen/x55"
+		tl:tl_textBold="SELECT"
+		tl:tl_textSelectColor="@color/text_color_0"
+		tl:tl_textUnselectColor="@color/text_color_3"
+		tl:tl_textsize="@dimen/textsize_18"/>
+
+
+	<android.support.v4.view.ViewPager
+		android:id="@+id/fast_viewpager"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/appbar"
+		android:background="@color/bg"
+		android:overScrollMode="never"
+		>
+	</android.support.v4.view.ViewPager>
+</LinearLayout>

@@ -57,7 +57,6 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private static final String TAG = "TakeNotesDetailsActivity";
    @BindView(R.id.tag)
    TextView           mTag;
-
    @BindView(R.id.take_left_ly)
    RadioButton        mTakeLeftLy;
    @BindView(R.id.take_left_tu)

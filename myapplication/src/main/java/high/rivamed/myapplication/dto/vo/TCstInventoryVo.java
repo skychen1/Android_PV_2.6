@@ -52,6 +52,15 @@ public class TCstInventoryVo implements Serializable {
     private String scheduleDateTime;//手术时间
     private String sex;//性别
     private boolean isSelected;
+   private String bindType;
+
+   public String getBindType() {
+      return bindType;
+   }
+
+   public void setBindType(String bindType) {
+      this.bindType = bindType;
+   }
 
    public String getTempPatientId() {
 	return tempPatientId;

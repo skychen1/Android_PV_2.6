@@ -25,7 +25,30 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
  */
 
 public class Event {
+    /**
+     * 快速入柜的数据
+     */
+    public static class EventInDto {
+        public TCstInventoryDto outDto;
+        public TCstInventoryDto inDto;
 
+        public EventInDto(TCstInventoryDto outDto,TCstInventoryDto inDto) {
+            this.outDto = outDto;
+            this.inDto = inDto;
+        }
+    }
+    /**
+     * 快速开柜的数据
+     */
+    public static class EventOutDto {
+        public TCstInventoryDto cstInventoryDto;
+        public String json;
+
+        public EventOutDto(TCstInventoryDto cstInventoryDto, String json) {
+            this.cstInventoryDto = cstInventoryDto;
+            this.json = json;
+        }
+    }
     /**
      * 耗材详情
      */
@@ -40,8 +63,13 @@ public class Event {
      */
     public static class EventOutBoxBingDto {
         public TCstInventoryDto mTCstInventoryDto;
+        public TCstInventoryDto mPatientDto;
         public EventOutBoxBingDto(TCstInventoryDto dto) {
             this.mTCstInventoryDto = dto;
+        }
+        public EventOutBoxBingDto(TCstInventoryDto dto,TCstInventoryDto patientdto) {
+            this.mTCstInventoryDto = dto;
+            this.mPatientDto = patientdto;
         }
     }
     /**
@@ -89,22 +117,7 @@ public class Event {
         }
     }
 
-    /**
-     * 快速开柜的数据
-     */
-    public static class EventOutDto {
-        public TCstInventoryDto cstInventoryDto;
-        public String json;
 
-        public EventOutDto(TCstInventoryDto cstInventoryDto) {
-            this.cstInventoryDto = cstInventoryDto;
-        }
-
-        public EventOutDto(TCstInventoryDto cstInventoryDto, String json) {
-            this.cstInventoryDto = cstInventoryDto;
-            this.json = json;
-        }
-    }
 
     /**
      * 页面顶部的连接状态改变

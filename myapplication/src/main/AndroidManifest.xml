@@ -67,6 +67,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
+            android:name=".activity.FastInOutBoxActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape" />
+        <activity
             android:name=".activity.OutBoxFoutActivity"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />

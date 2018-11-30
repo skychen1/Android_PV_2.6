@@ -33,19 +33,13 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
     private TextView mSeven_six;
     private TextView mSeven_seven;
     private TextView mSeven_one;
-    int      mOperation;
     LinearLayout mLl;
     public RecogHaocaiAdapter(
             int layoutResId, List<TCstInventoryVo> data) {
         super(layoutResId, data);
     }
 
-    public RecogHaocaiAdapter(
-            int layout, List<TCstInventoryVo> tCstInventoryVos, int operation) {
-        super(layout, tCstInventoryVos);
-        this.mOperation = operation;
 
-    }
 
     @Override
     protected void convert(

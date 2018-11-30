@@ -27,7 +27,6 @@ import high.rivamed.myapplication.fragment.RegisteReaderFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
 import high.rivamed.myapplication.fragment.RegisteSelfCheckFrag;
 import high.rivamed.myapplication.fragment.RegisteTestFrag;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -76,12 +75,10 @@ public class RegisteActivity extends SimpleActivity {
 	if (mTitleConn) {
 	   if (mBaseTabBtnConn != null) {
 		mBaseTabBtnConn.setEnabled(true);
-		LogUtils.i(TAG, "XmmppConnect(true)3  ");
 	   }
 	} else {
 	   if (mBaseTabBtnConn != null) {
 		mBaseTabBtnConn.setEnabled(false);
-		LogUtils.i(TAG, "XmmppConnect(false)3  ");
 	   }
 	}
 
@@ -99,14 +96,7 @@ public class RegisteActivity extends SimpleActivity {
 	mBaseTabIconRight.setVisibility(View.GONE);
 	mBaseTabTvName.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("工程模式");
-//	mBaseTabTvName.setText("退出  ");
-//	mBaseTabTvName.setTextSize(18);
-//	mBaseTabTvName.setTextColor(getResources().getColor(R.color.color_drak_green));
-//	ViewGroup.LayoutParams Params = (ViewGroup.LayoutParams) mBaseTabIconRight.getLayoutParams();
-//	Params.height = 50;
-//	Params.width = 50;
-//	mBaseTabIconRight.setLayoutParams(Params);
-//	mBaseTabIconRight.setImageResource(R.mipmap.gcms_ic_tc);
+
 	if (WifiUtils.isWifi(mContext) == 0) {
 	   hasNetWork(false);
 	   mBaseTabBtnConn.setEnabled(false);

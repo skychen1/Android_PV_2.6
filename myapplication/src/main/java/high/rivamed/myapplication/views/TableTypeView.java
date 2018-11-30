@@ -427,7 +427,7 @@ public class TableTypeView extends LinearLayout {
                         if (mRecogHaocaiAdapter != null) {
                             mRecogHaocaiAdapter.notifyDataSetChanged();
                         } else {
-                            mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mTCstInventoryVos, mOperation);
+                            mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mTCstInventoryVos);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));

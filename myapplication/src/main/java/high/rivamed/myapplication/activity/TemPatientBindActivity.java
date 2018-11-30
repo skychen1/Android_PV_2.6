@@ -105,6 +105,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String  mId    = "";
    private boolean mPause = true;
    private String  mType  = "";
+   private String  mGoneType  = "";
    private String mOperationScheduleId;
    private String mTempPatientId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
@@ -147,10 +148,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mLoading = null;
 	}
 	AllDeviceCallBack.getInstance().initCallBack();
-	mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra(
-		"mTemPTbaseDevices");
+	mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
 	mPosition = getIntent().getIntExtra("position", -1);
 	mType = getIntent().getStringExtra("type");
+	mGoneType = getIntent().getStringExtra("GoneType");
 	if (null != mType && mType.equals("afterBindTemp")){
 	   mBaseTabOutLogin.setEnabled(false);
 	   mBaseTabIconRight.setEnabled(false);
@@ -169,8 +170,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mDownBtnOneLL.setVisibility(View.GONE);
 	}
 	//无临时患者
-	if (mPosition == -2) {
+	if (mGoneType==null ||mGoneType.equals("GONE")) {
 	   mLyCreatTemporaryBtn.setVisibility(View.GONE);
+	}else {
+	   mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
 	}
 
 	loadBingDate("");
@@ -188,27 +191,20 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     */
    private void setTemporaryBing() {
 	mBaseTabTvTitle.setText("患者列表");
-
 	mStockSearch.setVisibility(View.VISIBLE);
-	mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-
-
 	String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = titeleList.size();
-
 	mTypeView = new TableTypeView(mContext, this, (Object) patientInfos, titeleList, mSize,
 						mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						STYPE_DIALOG, -10);
-
    }
 
    private void initListener() {
 	mDialogRight.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View view) {
-
 		if (patientInfos != null && patientInfos.size() > 0) {
 		   mPause = false;
 		   mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -221,12 +217,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
 			if (mId.equals("virtual")) {
-			   LogUtils.i(TAG, "JINLAI ");
 			   if (mPatientBean == null) {
 				LogUtils.i(TAG, "mPatientBean ");
 				EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
 												 mOperationScheduleId,
-												 "afterBindTemp", mPosition,
+												 mType, mPosition,
 												 mTemPTbaseDevices));
 			   } else {
 				LogUtils.i(TAG, "mPatientBean2 ");
@@ -244,16 +239,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				EventBusUtils.postSticky(
 					new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
 									operatingRoomNo, operatingRoomNoName, sex,
-									deptId, create, "afterBindTemp", mPosition,
+									deptId, create, mType, mPosition,
 									mTemPTbaseDevices));
 			   }
-
 			} else {
 			   EventBusUtils.postSticky(
 				   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
-								   "afterBindTemp", mPosition, mTemPTbaseDevices));
+								   mType, mPosition, mTemPTbaseDevices));
 			}
-
 			finish();
 		   } else {
 			//先绑定患者
@@ -263,7 +256,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		} else {
 		   ToastUtils.showShort("暂无数据，请创建后再试！");
 		}
-
 	   }
 	});
 	mSearchEt.addTextChangedListener(new TextWatcher() {
@@ -339,7 +331,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
 		if (boxIdBeansss.size() > 1) {
-
 		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
 			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
@@ -354,7 +345,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   getDeviceDate(event.deviceId, mEPCDate);
 			}
 		   }
-
 		} else {
 		   if (!mPause) {
 			LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
@@ -407,7 +397,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	if (mRbKey == 3) {
 	   if (patientInfos != null) {
 		mPause = false;
-
 		mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientName();
 		mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
 		mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -471,19 +460,21 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			tCstInventoryVo.setDeptId(deptId);
 
 		   }
-		   cstInventoryDto.setPatientName(patientName);
-		   cstInventoryDto.setCreate(create);
-		   cstInventoryDto.setPatientId(patientId);
-		   cstInventoryDto.setTempPatientId(tempPatientId);
-		   cstInventoryDto.setIdNo(idNo);
-		   cstInventoryDto.setOperationScheduleId(operationScheduleId);
-		   cstInventoryDto.setScheduleDateTime(scheduleDateTime);
-		   cstInventoryDto.setOperatingRoomNo(operatingRoomNo);
-		   cstInventoryDto.setOperatingRoomNoName(operatingRoomNoName);
-		   cstInventoryDto.setSex(sex);
-		   cstInventoryDto.setDeptId(deptId);
-		   cstInventoryDto.setBindType("firstBind");
-		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
+		   TCstInventoryDto dto = new TCstInventoryDto();
+		   dto.setPatientName(patientName);
+		   dto.setCreate(create);
+		   dto.setPatientId(patientId);
+		   dto.setTempPatientId(tempPatientId);
+		   dto.setIdNo(idNo);
+		   dto.setOperationScheduleId(operationScheduleId);
+		   dto.setScheduleDateTime(scheduleDateTime);
+		   dto.setOperatingRoomNo(operatingRoomNo);
+		   dto.setOperatingRoomNoName(operatingRoomNoName);
+		   dto.setSex(sex);
+		   dto.setDeptId(deptId);
+		   dto.setBindType("firstBind");
+		   dto.setOperation(mRbKey);
+		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto,dto));
 		   if (cstInventoryDto.gettCstInventoryVos() != null &&
 			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
 			EventBusUtils.post(new Event.EventButton(true, true));
@@ -514,14 +505,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   @Override
 			   public void onItemClick(int position) {
 				switch (position) {
-
 				   case 0:
 					mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
 					break;
 				   case 1:
 					mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
 					break;
-
 				}
 			   }
 			});
@@ -579,7 +568,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-
 		   DialogUtils.showCreatTempPatientDialog(mContext, TemPatientBindActivity.this,
 									new TempPatientDialog.Builder.SettingListener() {
 									   @Override
@@ -617,7 +605,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     * 创建临时患者
     * */
    private void creatTemPatient(Event.tempPatientEvent event) {
-	Log.e(TAG, "creatTemPatient");
 	mPatientBean = new CreatTempPatientBean();
 	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
 	bean.setName(event.userName);
@@ -640,7 +627,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   data2.setOperatingRoomNoName(event.roomNum);
 	   data2.setSex(event.userSex);
 	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
-
 	   patientInfos.add(0, data2);
 	   ToastUtils.showShort("创建成功");
 	   event.dialog.dismiss();
@@ -664,7 +650,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
-
 			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
 			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
 			   boolean isClear;
@@ -673,7 +658,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   } else {
 				isClear = false;
 			   }
-
 			   for (int i = 0; i < bean.getRows().size(); i++) {
 				BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
 				data.setPatientId(bean.getRows().get(i).getPatientId());

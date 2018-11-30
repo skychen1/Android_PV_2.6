@@ -3,6 +3,7 @@ package high.rivamed.myapplication.activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -77,7 +78,7 @@ public class TimelyLossActivity extends BaseSimpleActivity {
     * 获取盘亏数据
     */
    private void loadTimelyLossesDate() {
-
+	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("盘亏耗材详情");
 	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
 

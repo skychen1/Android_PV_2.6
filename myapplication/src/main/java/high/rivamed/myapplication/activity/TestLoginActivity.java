@@ -97,7 +97,6 @@ public class TestLoginActivity extends SimpleActivity {
 			Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
 		   }
 		}
-
 		break;
 	   case R.id.login_all:
 		mLoginName.clearFocus();

@@ -427,7 +427,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
-		   if (mIsClick) {
+		   if (!mIsClick) {
 		   mStarts.cancel();
 		   mTimelyRight.setText("确认并退出登录");
 		   moreStartScan();
@@ -560,8 +560,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mType = 3;//1.8调拨
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
 	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
-	LogUtils.i(TAG, "8调拨branchCode   " + branchCode);
-	LogUtils.i(TAG, "8调拨deptId  " + deptId);
 	NetRequest.getInstance().getOperateDbDialog(deptId, branchCode, this, null, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -798,7 +796,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		   if (mStarts != null) {
-			LogUtils.i(TAG, "true  ssssssfafafa mObject ss mObject ");
 			mStarts.cancel();
 			mStarts.start();
 		   }
@@ -812,11 +809,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   return;
 		}
 	   } else {
-		LogUtils.i(TAG, "我走了false");
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
 		if (mStarts != null) {
-		   LogUtils.i(TAG, "true  mObject mObject ss mObject ");
 		   mStarts.cancel();
 		   mStarts.start();
 		}

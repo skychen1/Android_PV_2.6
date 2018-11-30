@@ -123,7 +123,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     Toast.makeText(mContext, "出柜完成，请继续入柜操作", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));
                     EventBusUtils.postSticky(new Event.EventAct("all"));
-                    EventBusUtils.postSticky(mCstInEpcDto);
+//                    EventBusUtils.postSticky(mCstInEpcDto);
+//			 EventBusUtils.postSticky(new Event.EventInDto(mCstInEpcDto));
                     MusicPlayer.getInstance().play(MusicPlayer.Type.UNCONFIRM_SUC);
                 } else {
                     if (mOutDto.gettCstInventoryVos().size() == 0) {
@@ -780,7 +781,8 @@ public class OutBoxFoutActivity extends BaseTimelyActivity {
                     }
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            EventBusUtils.postSticky(mCstInEpcDto);
+//                            EventBusUtils.postSticky(mCstInEpcDto);
+//				   EventBusUtils.postSticky(new Event.EventInDto(mCstInEpcDto));
                             EventBusUtils.postSticky(new Event.EventAct("all"));
                             EventBusUtils.postSticky(new Event.EventDoorList(mDoorList));
                             startActivity(new Intent(OutBoxFoutActivity.this, InBoxAllTwoActivity.class));

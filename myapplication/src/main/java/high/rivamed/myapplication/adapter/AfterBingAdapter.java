@@ -28,7 +28,6 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
 
-   SparseBooleanArray checkStates1;
    private TextView mSeven_two;
    private TextView mSeven_three;
    private TextView mSeven_four;
@@ -57,7 +56,6 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 
-	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	LinearLayout mCheckBoxLl = ((LinearLayout) helper.getView(R.id.seven_one_ll));
 
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
@@ -67,8 +65,6 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-	//	mCheckBox.setChecked(checkStates1.get(helper.getAdapterPosition()));
-
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
@@ -76,13 +72,6 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_six.setText(item.getDeviceName());
 	if (mOperation != 3) {
 	   mCheckBoxLl.setVisibility(View.VISIBLE);
-	   //	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
-	   //		mSeven_seven.setText("");
-	   //	   } else {
-	   //		if (mCheckBox.isChecked()&&mSeven_seven.getText().toString().trim().equals("")) {
-	   //		   mSeven_seven.setText(item.getPatientName() + " / " + item.getPatientId());
-	   //		}
-	   //	   }
 	} else {
 	   mCheckBoxLl.setVisibility(View.GONE);
 	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
