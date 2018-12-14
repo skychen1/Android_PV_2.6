@@ -19,16 +19,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.StockLeftAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.SocketLeftDownBean;
-import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_MIDDLE;
 
@@ -55,7 +51,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
    LinearLayout mStockLeftAlltop;
    public  StockMiddlePagerAdapter mPagerAdapter;
    public  int                   mStockNumber=5;//列表的列数
-   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private List<BoxSizeBean.DevicesBean> mTbaseDevices;
    /**
     * 重新加载数据
     *
@@ -85,7 +81,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	   public void onSucceed(String result) {
 //		mBuilder.mDialog.dismiss();
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getTbaseDevices();
+		mTbaseDevices = boxSizeBean.getDevices();
 		if (mTbaseDevices != null) {
 		   onSucceedDate();
 		}
@@ -126,13 +122,13 @@ public class StockMiddleInforFrag extends SimpleFragment {
 		if (position == 0) {
 		   deviceCode = null;
 		} else {
-		   deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+		   deviceCode = mTbaseDevices.get(position - 1).getDeviceId();
 		}
 	   }else {
-		deviceCode = mTbaseDevices.get(position).getDeviceCode();
+		deviceCode = mTbaseDevices.get(position).getDeviceId();
 	   }
 	   mStockLeftAlltop.setVisibility(View.GONE);
-	   return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE,deviceCode);
+	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE, deviceCode);
 	}
 
 	@Override

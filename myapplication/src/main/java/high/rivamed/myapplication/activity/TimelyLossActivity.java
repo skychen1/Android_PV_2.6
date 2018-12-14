@@ -19,8 +19,8 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -51,8 +51,8 @@ public class TimelyLossActivity extends BaseSimpleActivity {
 
    TableTypeView mTypeView;
    List<String> titeleList = null;
-   public int              mSize;
-   public TCstInventoryDto mDto;
+   public int          mSize;
+   public InventoryDto mDto;
 
    /**
     * 盘点详情、盘亏、盘盈
@@ -61,7 +61,7 @@ public class TimelyLossActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTimelyEvent(Event.timelyDate event) {
 	String s = event.type;
-	mDto = event.tCstInventoryDto;
+	mDto = event.mInventoryDto;
    }
    @Override
    protected int getContentLayoutId() {
@@ -80,7 +80,7 @@ public class TimelyLossActivity extends BaseSimpleActivity {
    private void loadTimelyLossesDate() {
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("盘亏耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+	List<InventoryVo> inventoryVos = mDto.getInventoryVos();
 
 	mTimelyNumber.setText(
 		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
@@ -88,7 +88,7 @@ public class TimelyLossActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 
-	mTypeView = new TableTypeView(this, this, (Object) tCstInventoryVos, titeleList, mSize,
+	mTypeView = new TableTypeView(this, this, (Object) inventoryVos, titeleList, mSize,
 						mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						STYPE_LOSS_TYPE, -10);
 

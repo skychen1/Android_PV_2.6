@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,30 +25,30 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class StockDetailsAdapter extends
-	BaseQuickAdapter<TCstInventoryVo , BaseViewHolder> {
+	BaseQuickAdapter<InventoryVo, BaseViewHolder> {
    private TextView mSeven_one;
    private TextView mSeven_two;
    private TextView mSeven_three;
    private TextView mSeven_four;
    public StockDetailsAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo>  data) {
+	   int layoutResId, @Nullable List<InventoryVo>  data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 	findId(helper);
-	int four = item.getStopFlag();
+	int four = item.getExpireStatus();
 	mSeven_one.setText(item.getEpc());
-	mSeven_two.setText(item.getLastUpdateDate());
+	mSeven_two.setText(item.getUpdateTime());
 	mSeven_three.setText(item.getStatus());
-	mSeven_four.setText(item.getExpiration());
+	mSeven_four.setText(item.getExpirationText());
 	UIUtils.initTermOfValidity(mContext,helper, four, mSeven_four);
 
    }

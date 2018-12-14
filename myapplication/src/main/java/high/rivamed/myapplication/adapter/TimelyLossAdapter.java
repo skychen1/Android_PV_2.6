@@ -13,7 +13,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -28,18 +28,18 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class TimelyLossAdapter
-	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
-   private CheckBox mCheckBox;
-   private TextView mSeven_two;
-   private TextView mSeven_three;
-   private TextView mSeven_four;
-   private TextView mSeven_five;
-   private TextView mSeven_six;
-   private TextView mSeven_seven;
-   public int mSelectedPos;
-   public  List<TCstInventoryVo> mLossData;
+	extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
+   private CheckBox          mCheckBox;
+   private TextView          mSeven_two;
+   private TextView          mSeven_three;
+   private TextView          mSeven_four;
+   private TextView          mSeven_five;
+   private TextView          mSeven_six;
+   private TextView          mSeven_seven;
+   public int                mSelectedPos;
+   public  List<InventoryVo> mLossData;
    public TimelyLossAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
+	   int layoutResId, @Nullable List<InventoryVo> data) {
 	super(layoutResId, data);
 	this.mLossData =data;
 
@@ -47,7 +47,7 @@ public class TimelyLossAdapter
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -72,7 +72,7 @@ public class TimelyLossAdapter
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpiration());
+	mSeven_five.setText(item.getExpirationText());
 	mSeven_six.setText(item.getDeviceName());
 	if (item.getRemark()==null||item.getRemark().equals("")){
 	   mSeven_seven.setText("");
@@ -116,7 +116,7 @@ public class TimelyLossAdapter
 	});
 
 
-	int StopFlag = item.getStopFlag();
+	int StopFlag = item.getExpireStatus();
 	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_five);
    }
 }

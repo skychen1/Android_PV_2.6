@@ -69,7 +69,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
-
+	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getBoxname());
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   mLeftName.setText(item.getBoxname());
 	   mLeftCode.setText(item.getBoxCode());

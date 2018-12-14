@@ -55,6 +55,8 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
+import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
@@ -90,7 +92,7 @@ public class LoginPassWordFragment extends SimpleFragment {
     public void initDataAndEvent(Bundle savedInstanceState) {
 
         if (BuildConfig.DEBUG) {
-            mLoginName.setText("adminUM");
+            mLoginName.setText("admin");
             mLoginPassword.setText("000000");
         }
     }
@@ -118,12 +120,12 @@ public class LoginPassWordFragment extends SimpleFragment {
      */
     public void getConfigDate() {
         if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-            NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
+            NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
                 @Override
                 public void onSucceed(String result) {
                     SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
                     ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-                    List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+                    List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
                     getUpDateVer(tCstConfigVos);
                 }
             });
@@ -135,7 +137,7 @@ public class LoginPassWordFragment extends SimpleFragment {
      *
      * @param tCstConfigVos
      */
-    private void loginEnjoin(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+    private void loginEnjoin(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         if (getConfigTrue(tCstConfigVos)) {
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
             ToastUtils.showShort("正在维护，请到管理端启用");
@@ -145,8 +147,8 @@ public class LoginPassWordFragment extends SimpleFragment {
         }
     }
 
-    private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
-        for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
+    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
+        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 
             if (s.getCode().equals(CONFIG_013)) {
                 return true;
@@ -183,62 +185,56 @@ public class LoginPassWordFragment extends SimpleFragment {
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
         userLoginDto.setSystemType("2");
-        userLoginDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+        userLoginDto.setThingId(SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                LogUtils.i("BaseSimpleFragment", "result  " + result);
                 try {
                     LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
-
                     if (loginResultBean.isOperateSuccess()) {
                         MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-                        LogUtils.i("BaseSimpleFragment", "result  " + result);
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
                         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
-                        //                        SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, loginResultBean.getAppAccountInfoVo().getSex());
                         SPUtils.putString(UIUtils.getContext(), KEY_USER_ID, loginResultBean.getAppAccountInfoVo().getUserId());
-
+                        SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
+                        SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
                         mContext.finish();
                     } else {
-
-                        Toast.makeText(mContext, "登录失败！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
-                //                mBuilder.mDialog.dismiss();
             }
 
             @Override
             public void onError(String result) {
                 LogUtils.i("BaseSimpleFragment", "登录失败  " + result);
                 Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
-                //                mBuilder.mDialog.dismiss();
             }
         });
     }
 
-    public void getUpDateVer(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+    public void getUpDateVer(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         NetRequest.getInstance().checkVer(this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i("Login", "checkVer:" + result);
-
                 VersionBean versionBean = mGson.fromJson(result, VersionBean.class);
                 // 本地版本号
                 String localVersion = PackageUtils.getVersionName(mContext);
                 // 网络版本
-                String netVersion = versionBean.getVersion();
-                // 比对LogUtils.i(TAG, "localVersion   " + localVersion);
+                String netVersion = versionBean.getSystemVersion().getVersion();
                 if (netVersion != null) {
                     int i = StringUtils.compareVersion(netVersion, localVersion);
                     if (i == 1) {
-                        mDesc = versionBean.getDesc();
+                        mDesc = versionBean.getSystemVersion().getDescription();
                         showUpdateDialog(tCstConfigVos);
                     } else {
                         // 不需要更新
@@ -247,15 +243,12 @@ public class LoginPassWordFragment extends SimpleFragment {
                 } else {
                     loginEnjoin(tCstConfigVos);
                 }
-
-
             }
 
             @Override
             public void onNetFailing(String result) {
                 super.onNetFailing(result);
                 loginEnjoin(tCstConfigVos);
-
             }
         });
     }
@@ -263,7 +256,7 @@ public class LoginPassWordFragment extends SimpleFragment {
     /**
      * 展现更新的dialog
      */
-    private void showUpdateDialog(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+    private void showUpdateDialog(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         UpDateDialog.Builder builder = new UpDateDialog.Builder(mContext);
 
         builder.setTitle(UIUtils.getString(R.string.ver_title));
@@ -287,7 +280,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     }
 
-    private void downloadNewVersion(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+    private void downloadNewVersion(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         // 1.显示进度的dialog
         ProgressDialog mDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
         mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -299,7 +292,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     }
 
-    private void loadUpDataVersion(final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+    private void loadUpDataVersion(final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(this)//
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
                     @Override
@@ -332,12 +325,9 @@ public class LoginPassWordFragment extends SimpleFragment {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
-            //	   Uri apkUri = getUriForFile(getApplicationContext(),
-            //								 "wetg.p5w.net.fileprovider", file);
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-
         } else {
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
             LogUtils.i("Login", "apkUri " + Uri.fromFile(file));

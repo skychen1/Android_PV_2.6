@@ -125,7 +125,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   } else {
 		//已绑定
 		mSettingFingerprintEdit.setText("已绑定");
-		mSettingFingerprintBind.setText("绑定");
+		mSettingFingerprintBind.setText("重新绑定");
 	   }
 	   if (mAppAccountInfoVo.getIsEmergency() == 0) {
 		//紧急登录未绑定
@@ -326,18 +326,17 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		try {
 		   RegisterFingerBean data = mGson.fromJson(result, RegisterFingerBean.class);
 		   if (data.isOperateSuccess()) {
-			ToastUtils.showShort("绑定成功");
+			ToastUtils.showShort(data.getMsg());
 			//指纹未绑定
 			mSettingFingerprintEdit.setText("已绑定");
-			mSettingFingerprintBind.setText("绑定");
+			mSettingFingerprintBind.setText("重新绑定");
 
-			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA,
-									   "");
+			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
 			LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);
 			data2.getAppAccountInfoVo().setIsFinger(1);
 			SPUtils.putString(getApplicationContext(), KEY_ACCOUNT_DATA, mGson.toJson(data2));
 		   } else {
-			ToastUtils.showShort("绑定失败");
+			ToastUtils.showShort(data.getMsg());
 		   }
 
 		} catch (Exception e) {

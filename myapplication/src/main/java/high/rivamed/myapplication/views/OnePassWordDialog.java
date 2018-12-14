@@ -19,7 +19,6 @@ import high.rivamed.myapplication.bean.ResetPassBean;
 import high.rivamed.myapplication.dto.ResetPasswordDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -40,7 +39,6 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 public class OnePassWordDialog extends Dialog {
 
-    private static LoadingDialog.Builder mBuilder;
     private static Gson mGson;
 
     public OnePassWordDialog(Context context) {
@@ -170,7 +168,6 @@ public class OnePassWordDialog extends Dialog {
 
             String accountName = appAccountInfoVo.getAccountName();
 
-            mBuilder = DialogUtils.showLoading(mContext);
             ResetPasswordDto dto = new ResetPasswordDto();
             ResetPasswordDto.AccountBean bean = new ResetPasswordDto.AccountBean();
             bean.setAccountName(accountName);
@@ -182,14 +179,13 @@ public class OnePassWordDialog extends Dialog {
             NetRequest.getInstance().resetPassword(mGson.toJson(dto), mContext, new BaseResult() {
                 @Override
                 public void onSucceed(String result) {
-                    mBuilder.mDialog.dismiss();
                     try {
                         ResetPassBean resultBean = mGson.fromJson(result, ResetPassBean.class);
                         if (resultBean.isOperateSuccess()) {
-                            ToastUtils.showShort("设置成功");
+                            ToastUtils.showShort(resultBean.getMsg());
                             dialog.dismiss();
                         } else {
-                            ToastUtils.showShort("设置失败");
+                            ToastUtils.showShort(resultBean.getMsg());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -199,7 +195,6 @@ public class OnePassWordDialog extends Dialog {
                 @Override
                 public void onError(String result) {
                     super.onError(result);
-                    mBuilder.mDialog.dismiss();
                     ToastUtils.showShort("设置失败");
                 }
             });

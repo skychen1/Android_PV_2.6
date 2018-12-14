@@ -27,8 +27,8 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -148,19 +148,19 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    private String        mMovie;
    List<String> titeleList = null;
 
-   private TCstInventoryVo       mStockDetailsTopBean;
-   private List<TCstInventoryVo> mStockDetailsDownList;
-   public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   private InventoryVo       mStockDetailsTopBean;
+   private List<InventoryVo> mStockDetailsDownList;
+   public List<InventoryVo> mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
 
-   public        TCstInventoryDto mTCstInventoryDto;
-   public static TCstInventoryDto mOutDto;
-   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
+   public        InventoryDto mInventoryDto;
+   public static InventoryDto mOutDto;
+   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
 
-   public  TCstInventoryDto mDto;
-   private String           mBindFirstType;
-   private int              mOperation;
-   private int              mDtoOperation;
-   public static CountDownTimer   mStarts;
+   public        InventoryDto   mDto;
+   private       String         mBindFirstType;
+   private       int            mOperation;
+   private       int            mDtoOperation;
+//   public static CountDownTimer mStarts;
    public static boolean mOnBtnGone = false;
    public String mInJson;
    public  boolean mIsClick;
@@ -209,7 +209,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	LogUtils.i(TAG, "fffffafafafafafa");
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
-		for (TCstInventoryVo b : mTCstInventoryVos) {
+		for (InventoryVo b : mInventoryVos) {
 		   ArrayList<String> strings = new ArrayList<>();
 		   strings.add(b.getCstCode());
 		   LogUtils.i(TAG, "fffffafafafafafa" +
@@ -228,11 +228,11 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   }
 		   LogUtils.i(TAG, "b.getIsErrorOperation() " + b.getIsErrorOperation());
 		   LogUtils.i(TAG, "b.getDeleteCount() " + b.getDeleteCount());
-		   LogUtils.i(TAG, "b.getStopFlag() " + b.getStopFlag());
+		   LogUtils.i(TAG, "b.getExpireStatus() " + b.getExpireStatus());
 		   LogUtils.i(TAG, "b.getPatientName() " + b.getPatientName());
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getStopFlag() == 0) ||
+			  b.getExpireStatus() == 0) ||
 			 (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
@@ -254,9 +254,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 		   }
 		}
 	   } else {
-		for (TCstInventoryVo b : mTCstInventoryVos) {
+		for (InventoryVo b : mInventoryVos) {
 		   LogUtils.i(TAG, "mOperation   cancel" + mOperation);
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag()!=0)) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8)||(b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&& b.getExpireStatus() != 0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
@@ -290,14 +290,14 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTimelyEvent(Event.timelyDate event) {
 	String s = event.type;
-	mDto = event.tCstInventoryDto;
+	mDto = event.mInventoryDto;
 
    }
 
 
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onMidTypeEvent(TCstInventoryVo event) {
+   public void onMidTypeEvent(InventoryVo event) {
 	mStockDetailsTopBean = event;
    }
 
@@ -308,28 +308,28 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
-	LogUtils.i(TAG, " mInJsonS     " + event.json);
-	if (mOutDto != null) {
-	   mOutDto.settCstInventoryVos(event.cstInventoryDto.gettCstInventoryVos());
-	   mOperation = event.cstInventoryDto.getOperation();
-	   mInJson = event.json;
-	} else {
-	   mOutDto = event.cstInventoryDto;
-	   mOperation = event.cstInventoryDto.getOperation();
-	   mTCstInventoryVos = mOutDto.gettCstInventoryVos();
-	   mInJson = event.json;
-	}
-	for (int i = 0; i < mOutDto.gettCstInventoryVos().size(); i++) {
-	   mOutDto.gettCstInventoryVos().get(i).setSelected(true);
-	}
-	List<TCstInventoryVo> voList = mOutDto.gettCstInventoryVos();
-	for (int i = 0; i < voList.size(); i++) {
-	   voList.get(i).setSelected(true);
-	}
-	//	initData();
-	if (mBaseTabTvTitle != null) {
-	   setOutBoxDate(voList);
-	}
+//	LogUtils.i(TAG, " mInJsonS     " + event.json);
+//	if (mOutDto != null) {
+//	   mOutDto.setInventoryVos(event.cstInventoryDto.getInventoryVos());
+//	   mOperation = event.cstInventoryDto.getOperation();
+//	   mInJson = event.json;
+//	} else {
+//	   mOutDto = event.cstInventoryDto;
+//	   mOperation = event.cstInventoryDto.getOperation();
+//	   mInventoryVos = mOutDto.getInventoryVos();
+//	   mInJson = event.json;
+//	}
+//	for (int i = 0; i < mOutDto.getInventoryVos().size(); i++) {
+//	   mOutDto.getInventoryVos().get(i).setSelected(true);
+//	}
+//	List<InventoryVo> voList = mOutDto.getInventoryVos();
+//	for (int i = 0; i < voList.size(); i++) {
+//	   voList.get(i).setSelected(true);
+//	}
+//	//	initData();
+//	if (mBaseTabTvTitle != null) {
+//	   setOutBoxDate(voList);
+//	}
 	//	}
 
 	//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
@@ -341,15 +341,15 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onInBoxEvent(TCstInventoryDto event) {
+   public void onInBoxEvent(InventoryDto event) {
 
 	LogUtils.i(TAG, "event  " + (event == null));
-	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
-	   mTCstInventoryDto = event;
-	   List<TCstInventoryVo> tCstInventoryVos = event.gettCstInventoryVos();
-	   mTCstInventoryVos.clear();
+	if (mInventoryDto != null && mInventoryVos != null) {
+	   mInventoryDto = event;
+	   List<InventoryVo> inventoryVos = event.getInventoryVos();
+	   mInventoryVos.clear();
 	   mOperation = event.getOperation();
-	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
+	   mInventoryVos.addAll(inventoryVos);//选择开柜
 	 if (my_id == ACT_TYPE_ALL_IN) {
 		mTimelyOpenDoor.setVisibility(View.GONE);
 		setInBoxDate();
@@ -357,10 +357,10 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   }
 
 	} else {
-	   mTCstInventoryDto = event;
-	   mTCstInventoryVos = event.gettCstInventoryVos();//选择开柜
+	   mInventoryDto = event;
+	   mInventoryVos = event.getInventoryVos();//选择开柜
 	}
-	mDtoOperation = mTCstInventoryDto.getOperation();
+	mDtoOperation = mInventoryDto.getOperation();
    }
 
    @Override
@@ -413,7 +413,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	   setInBoxDate();
 	} else if (my_id == ACT_TYPE_HCCZ_OUT) {//首页耗材操作单个或者全部柜子的详情界面   拿出
 
-	   setOutBoxDate(mOutDto.gettCstInventoryVos());
+	   setOutBoxDate(mOutDto.getInventoryVos());
 	}
 //	else if (my_id == ACT_TYPE_PATIENT_CONN) {//选择临时患者,患者关联
 //	   selectTempPatient();
@@ -437,7 +437,7 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    /**
     * 快速开柜拿出数据
     */
-   private void setOutBoxDate(List<TCstInventoryVo> voList) {
+   private void setOutBoxDate(List<InventoryVo> voList) {
 	LogUtils.i(TAG, "   DAFFAFAFAFAF");
 	mBaseTabTvTitle.setText("出柜识别耗材");
 	setOutBoxTitles(voList);
@@ -452,15 +452,12 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-
-	//	LogUtils.i(TAG," voList.size()   "+ voList.size()+"    "+voList.get(0).getEpc());
 	   if (mTypeView==null){
-
 	mTypeView = new TableTypeView(this, this, voList, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_OUT,-10);
 	   }else {
-		mTCstInventoryVos.clear();
-		mTCstInventoryVos.addAll(voList);
+		mInventoryVos.clear();
+		mInventoryVos.addAll(voList);
 	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
 
 
@@ -471,9 +468,9 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    /**
     * 取出耗材 重新扫描后增减的数据  title显示
     */
-   private void setOutBoxTitles(List<TCstInventoryVo> voList) {
+   private void setOutBoxTitles(List<InventoryVo> voList) {
 	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : voList) {
+	for (InventoryVo vosBean : voList) {
 	   strings.add(vosBean.getCstCode());
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
@@ -521,33 +518,33 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	//LogUtils.i(TAG,"mTCstInventoryVos   "+tCstInventoryVos.size());
+	//LogUtils.i(TAG,"mInventoryVos   "+tCstInventoryVos.size());
 	if (my_id == ACT_TYPE_ALL_IN) {
 	   mTimelyOpenDoor.setVisibility(View.GONE);
 	   setInBoxTitles();
 	   if (mTypeView != null) {
 
 	   } else {
-		mTypeView = new TableTypeView(this, this,mTCstInventoryVos, titeleList, mSize,
+		mTypeView = new TableTypeView(this, this, mInventoryVos, titeleList, mSize,
 							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-							STYPE_IN,-10);
+							STYPE_IN, -10);
 		mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	   }
 	} else {
 	   mTimelyOpenDoor.setVisibility(View.VISIBLE);
 	   ArrayList<String> strings = new ArrayList<>();
-	   for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+	   for (InventoryVo vosBean : mInventoryVos) {
 		strings.add(vosBean.getCstCode());
 	   }
 	   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							   mTCstInventoryVos.size() + "</big></font>"));
+							   mInventoryVos.size() + "</big></font>"));
 
-	   mOperation = mTCstInventoryDto.getOperation();
+	   mOperation = mInventoryDto.getOperation();
 	   LogUtils.i(TAG, "operation  " + mOperation);
 	   if (mTypeView == null) {
-		mTypeView = new TableTypeView(this, this,mTCstInventoryVos, titeleList, mSize,
+		mTypeView = new TableTypeView(this, this, mInventoryVos, titeleList, mSize,
 							mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 							STYPE_IN, mOperation);
 	   }
@@ -556,19 +553,19 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
    }
 
    private void setTimeStart() {
-	for (TCstInventoryVo b : mTCstInventoryVos) {
+	for (InventoryVo b : mInventoryVos) {
 	   String status = b.getStatus();
 	   LogUtils.i(TAG, "b.getPatientName()    " + (b.getPatientName() == null)+mDtoOperation);
-//	   if (((b.getIsErrorOperation() == 0 && b.getStopFlag() != 0) &&
+//	   if (((b.getIsErrorOperation() == 0 && b.getExpireStatus() != 0) &&
 //		  (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) &&
 //		   b.getPatientName() != null)) ||
-//		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0 && b.getStopFlag() != 0) ||
-//		 (b.getStopFlag() == 0 && mDtoOperation == 8)) {
-	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0)||
+//		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() != 0 && b.getExpireStatus() != 0) ||
+//		 (b.getExpireStatus() == 0 && mDtoOperation == 8)) {
+	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		  b.getStopFlag() == 0&&mDtoOperation!=8) ||
+		  b.getExpireStatus() == 0 && mDtoOperation != 8) ||
 		 (mDtoOperation == 3 &&UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)){
-	      if (mDtoOperation==8&&b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&&b.getStopFlag() == 0){
+	      if (mDtoOperation==8&&b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0&& b.getExpireStatus() == 0){
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		   if (mStarts != null) {
@@ -606,17 +603,17 @@ public class BaseTimelyActivity extends BaseSimpleActivity {
     */
    private void setInBoxTitles() {
 	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+	for (InventoryVo vosBean : mInventoryVos) {
 	   strings.add(vosBean.getCstCode());
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml(
-		"入库：<font color='#262626'><big>" + mTCstInventoryDto.getCountTwoin() +
+		"入库：<font color='#262626'><big>" + mInventoryDto.getCountTwoin() +
 		"</big>&emsp</font>移入：<font color='#262626'><big>" +
-		mTCstInventoryDto.getCountMoveIn() +
-		"</big>&emsp</font>退回：<font color='#262626'><big>" + mTCstInventoryDto.getCountBack() +
+		mInventoryDto.getCountMoveIn() +
+		"</big>&emsp</font>退回：<font color='#262626'><big>" + mInventoryDto.getCountBack() +
 		"</big>&emsp</font>耗材种类：<font color='#262626'><big>" + list.size() +
-		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mTCstInventoryVos.size() +
+		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + mInventoryVos.size() +
 		"</big></font>"));
 	setTimeStart();
    }

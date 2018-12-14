@@ -26,14 +26,9 @@ import butterknife.BindView;
 import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.PendingTaskAdapter;
-import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
-import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.PendingTaskBean;
-import high.rivamed.myapplication.bean.RunWateBean;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -52,15 +47,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 
 public class PendingTaskFrag extends SimpleFragment {
 
-    private static final String TYPE_SIZE = "TYPE_SIZE";
-    private static final String TYPE_PAGE = "TYPE_PAGE";
-    private static final String DEVICECODE = "DEVICECODE";
-    private static final String TYPE_LIST = "list";
-    private static final int FIVE = 5;
-    private static final int SIX = 6;
-    private static final int SEVEN = 7;
-    private static final int EIGHT = 8;
-    private static final String TAG = "PublicTimelyFrag";
+    private static final String TAG = "PublicStockFrag";
     @BindView(R.id.tv_task_num)
     TextView mTvTaskNum;
     @BindView(R.id.timely_ll)
@@ -76,23 +63,7 @@ public class PendingTaskFrag extends SimpleFragment {
     Unbinder unbinder;
 
 
-    private int mParam;
-    private TimelyPublicAdapter mPublicAdapter;
-    private int mSize; //假数据 举例6个横向格子
-    private View mHeadView;
-    private int mLayout;
-    private TCstInventoryDto mLeftDownBean;
-    List<String> titeleList = null;
-    private int mStopFlag;
-    private TCstInventoryDto mTCstInventoryDto;
-    private List<TCstInventoryVo> mTCstInventoryVos;
-    private StockLeftDownAdapter mDownAdapter;
-    private String mTrim;
-    private List<TCstInventoryVo> mTCstStockRightList;
     private PendingTaskAdapter mAdapter;
-    private List<RunWateBean.RowsBean> mWateBeanRows;
-    private StockLeftDownAdapter mStockLeftAdapter;
-    private List<TCstInventoryVo> mInventoryVos;
     private List<PendingTaskBean.MessagesBean> mMessagesList = new ArrayList<>();
 
     /**

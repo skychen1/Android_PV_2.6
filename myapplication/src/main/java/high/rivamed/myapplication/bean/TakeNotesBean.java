@@ -19,7 +19,7 @@ public class TakeNotesBean implements Serializable {
    /**
     * pageNo : 1
     * pageSize : 20
-    * rows : [{"patientId":"4028829366c2ad720166c2e1787d0009","cstNo":null,"patientName":"啦啦啦啦啦啦啦","sex":"未知","deptName":null,"operationSurgeonName":"","operationSurgeonCode":null,"createDate":"2018-11-02 18:17:09","operationName":null,"operatingRoomNoName":"","operationBeginDateTime":"2018-10-30 10:55:00","status":null,"loperPatsId":null}]
+    * rows : [{"patientId":"4028829366c2ad720166c2e1787d0009","cstNo":null,"patientName":"啦啦啦啦啦啦啦","gender":"未知","deptName":null,"doctorName":"","operationSurgeonCode":null,"scheduleTime":"2018-11-02 18:17:09","operationName":null,"roomName":"","operationBeginDateTime":"2018-10-30 10:55:00","status":null,"loperPatsId":null}]
     * total : 1
     */
 
@@ -50,13 +50,13 @@ public class TakeNotesBean implements Serializable {
 	 * patientId : 4028829366c2ad720166c2e1787d0009
 	 * cstNo : null
 	 * patientName : 啦啦啦啦啦啦啦
-	 * sex : 未知
+	 * gender : 未知
 	 * deptName : null
-	 * operationSurgeonName :
+	 * doctorName :
 	 * operationSurgeonCode : null
-	 * createDate : 2018-11-02 18:17:09
+	 * scheduleTime : 2018-11-02 18:17:09
 	 * operationName : null
-	 * operatingRoomNoName :
+	 * roomName :
 	 * operationBeginDateTime : 2018-10-30 10:55:00
 	 * status : null
 	 * loperPatsId : null
@@ -65,13 +65,13 @@ public class TakeNotesBean implements Serializable {
 	private String patientId;
 	private Object cstNo;
 	private String patientName;
-	private String sex;
+	private String gender;
 	private Object deptName;
-	private String operationSurgeonName;
+	private String doctorName;
 	private Object operationSurgeonCode;
-	private String createDate;
+	private String scheduleTime;
 	private Object operationName;
-	private String operatingRoomNoName;
+	private String roomName;
 	private String operationBeginDateTime;
 	private Object status;
 	private Object loperPatsId;
@@ -88,36 +88,36 @@ public class TakeNotesBean implements Serializable {
 
 	public void setPatientName(String patientName) { this.patientName = patientName;}
 
-	public String getSex() { return sex;}
+	public String getGender() { return gender;}
 
-	public void setSex(String sex) { this.sex = sex;}
+	public void setGender(String gender) { this.gender = gender;}
 
 	public Object getDeptName() { return deptName;}
 
 	public void setDeptName(Object deptName) { this.deptName = deptName;}
 
-	public String getOperationSurgeonName() { return operationSurgeonName;}
+	public String getDoctorName() { return doctorName;}
 
-	public void setOperationSurgeonName(
-		String operationSurgeonName) { this.operationSurgeonName = operationSurgeonName;}
+	public void setDoctorName(
+		String doctorName) { this.doctorName = doctorName;}
 
 	public Object getOperationSurgeonCode() { return operationSurgeonCode;}
 
 	public void setOperationSurgeonCode(
 		Object operationSurgeonCode) { this.operationSurgeonCode = operationSurgeonCode;}
 
-	public String getCreateDate() { return createDate;}
+	public String getScheduleTime() { return scheduleTime;}
 
-	public void setCreateDate(String createDate) { this.createDate = createDate;}
+	public void setScheduleTime(String scheduleTime) { this.scheduleTime = scheduleTime;}
 
 	public Object getOperationName() { return operationName;}
 
 	public void setOperationName(Object operationName) { this.operationName = operationName;}
 
-	public String getOperatingRoomNoName() { return operatingRoomNoName;}
+	public String getRoomName() { return roomName;}
 
-	public void setOperatingRoomNoName(
-		String operatingRoomNoName) { this.operatingRoomNoName = operatingRoomNoName;}
+	public void setRoomName(
+		String roomName) { this.roomName = roomName;}
 
 	public String getOperationBeginDateTime() { return operationBeginDateTime;}
 

@@ -8,21 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.HospPopAdapter;
-import high.rivamed.myapplication.adapter.HospPopFiveAdapter;
 import high.rivamed.myapplication.adapter.HospPopFourAdapter;
 import high.rivamed.myapplication.adapter.HospPopThreeAdapter;
 import high.rivamed.myapplication.adapter.HospPopTwoAdapter;
 import high.rivamed.myapplication.bean.HospNameBean;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
@@ -45,50 +42,32 @@ public class hospitalPopupWindow extends PopupWindow {
 
    private final RecyclerView mRecyclerView;
    private final View         mView;
-  TextView mGoneView;
 
    private String TAG = "SettingPopupWindow";
-   private       OnClickListener                       mItemClickListener;
-   public        HospPopAdapter                        mHospPopAdar;
-   public  HospPopTwoAdapter mHospPopTwoAdapter;
+   public HospPopTwoAdapter   mHospPopTwoAdapter;
    public HospPopThreeAdapter mThreeAdapter;
-   public  HospPopFourAdapter mFourAdapter;
-   public  HospPopFiveAdapter mFiveAdapter;
+   public HospPopFourAdapter  mFourAdapter;
 
    public hospitalPopupWindow(Context context, HospNameBean hospNameBean,int type) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
-
-	if (type == 1) {
-	   List<HospNameBean.TbaseHospitalsBean> tbaseHospitals = hospNameBean.getTbaseHospitals();
-	   mHospPopAdar = new HospPopAdapter(R.layout.item_mac_single, tbaseHospitals);
-	   mRecyclerView.setAdapter(mHospPopAdar);
-	   heightMeth(tbaseHospitals.size());
-	}else if (type==2){
-	   List<HospNameBean.TbaseInfoBean> tbaseInfo = hospNameBean.getTbaseInfo();
-	   mHospPopTwoAdapter = new HospPopTwoAdapter(R.layout.item_mac_single,
-								    tbaseInfo);
+	if (type==2){
+	   List<HospNameBean.DeptVosBean> tbaseInfo = hospNameBean.getDeptVos();
+	   mHospPopTwoAdapter = new HospPopTwoAdapter(R.layout.item_mac_single, tbaseInfo);
 	   mRecyclerView.setAdapter(mHospPopTwoAdapter);
+	   LogUtils.i("RegisteDialog", "tbaseInfo.size()    "+tbaseInfo.size());
 	   heightMeth(tbaseInfo.size());
 	}else if (type ==3){
-	   List<HospNameBean.TbaseInfoBean> tbaseInfo = hospNameBean.getTbaseInfo();
-	   mThreeAdapter = new HospPopThreeAdapter(R.layout.item_mac_single,
-								 tbaseInfo);
-
+	   List<HospNameBean.DeptVosBean> tbaseInfo = hospNameBean.getDeptVos();
+	   mThreeAdapter = new HospPopThreeAdapter(R.layout.item_mac_single, tbaseInfo);
 	   mRecyclerView.setAdapter(mThreeAdapter);
 	   heightMeth(tbaseInfo.size());
 	}else if (type ==4){
-	   List<HospNameBean.TcstBaseStorehousesBean> baseStorehouses = hospNameBean.getTcstBaseStorehouses();
+	   List<HospNameBean.StoreHousesBean> baseStorehouses = hospNameBean.getStorehouses();
 	   mFourAdapter = new HospPopFourAdapter(R.layout.item_mac_single,
 							     baseStorehouses);
 	   mRecyclerView.setAdapter(mFourAdapter);
 	   heightMeth(baseStorehouses.size());
-	}else {
-	   List<HospNameBean.TbaseOperationRoomsBean> operationRooms = hospNameBean.getTbaseOperationRooms();
-	   mFiveAdapter = new HospPopFiveAdapter(R.layout.item_mac_single,
-							     operationRooms);
-	   mRecyclerView.setAdapter(mFiveAdapter);
-	   heightMeth(operationRooms.size());
 	}
 	mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 	mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));

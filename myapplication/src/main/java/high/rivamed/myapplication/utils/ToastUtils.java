@@ -15,9 +15,15 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+
+import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.base.App;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -43,10 +49,107 @@ public class ToastUtils {
    private static int backgroundColor = DEFAULT_COLOR;
    private static int bgResource      = -1;
    private static int messageColor    = DEFAULT_COLOR;
-
+   private static Toast    mToast;
+   private static TextView   btn;
+   private static TextView textMsg;
    private ToastUtils() {
 	throw new UnsupportedOperationException("u can't instantiate me...");
    }
+   private static Toast toast;//实现不管我们触发多少次Toast调用，都只会持续一次Toast显示的时长
+
+   /**
+    * 短时间显示Toast【居下】
+    * @param msg 显示的内容-字符串*/
+   public static void showShortToast(String msg) {
+	if(App.getAppContext() != null){
+	   if (toast == null) {
+		toast = Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_SHORT);
+	   } else {
+		toast.setText(msg);
+	   }
+	   //1、setGravity方法必须放到这里，否则会出现toast始终按照第一次显示的位置进行显示（比如第一次是在底部显示，那么即使设置setGravity在中间，也不管用）
+	   //2、虽然默认是在底部显示，但是，因为这个工具类实现了中间显示，所以需要还原，还原方式如下：
+	   toast.show();
+	}
+   }
+
+   public static void showClickToast (final Context context,String msg, int duration){
+
+	if(mToast == null){
+	   LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	   //自定义布局
+	   View view = inflater.inflate(R.layout.toast_mytoast, null);
+	   textMsg= view.findViewById(R.id.text_mag);
+	   textMsg.setText(msg);
+	   btn= view.findViewById(R.id.text_click);
+	   btn.setOnClickListener(new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+
+//		   File file = new File(Environment.getExternalStorageDirectory() + "/Rivamed_logs");
+//		   Intent intent = new Intent("android.intent.action.VIEW");
+//		   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		   intent.addCategory("android.intent.category.DEFAULT");
+//		   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+//			StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//			StrictMode.setVmPolicy(builder.build());
+//			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//		   } else {
+//			intent.setDataAndType(Uri.fromFile(file), "*/*");
+//		   }
+//		   LogUtils.i("TAS"," FFF    "+Uri.fromFile(file));
+//		   context.startActivity(intent);
+		}
+	   });
+
+	   mToast = Toast.makeText(context.getApplicationContext(), "", duration);
+	   mToast.setView(view);
+	}
+
+	try {
+	   Object mTN ;
+	   mTN = getField(mToast, "mTN");
+	   if (mTN != null) {
+		Object mParams = getField(mTN, "mParams");
+		if (mParams != null
+		    && mParams instanceof WindowManager.LayoutParams) {
+		   WindowManager.LayoutParams params = (WindowManager.LayoutParams) mParams;
+		   //显示与隐藏动画
+		   params.windowAnimations = R.style.mToast;
+		   //Toast可点击
+		   params.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+					| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+
+		   //设置viewgroup宽高
+		   params.width = WindowManager.LayoutParams.WRAP_CONTENT; //设置Toast宽度为屏幕宽度
+		   params.height = WindowManager.LayoutParams.WRAP_CONTENT; //设置高度
+		}
+	   }
+	} catch (Exception e) {
+	   e.printStackTrace();
+	}
+
+	mToast.show();
+   }
+
+   /**
+    * 反射字段
+    * @param object 要反射的对象
+    * @param fieldName 要反射的字段名称
+    */
+   private static Object getField(Object object, String fieldName)
+	   throws NoSuchFieldException, IllegalAccessException {
+	Field field = object.getClass().getDeclaredField(fieldName);
+	if (field != null) {
+	   field.setAccessible(true);
+	   return field.get(object);
+	}
+	return null;
+   }
+
+
+
+
 
    /**
     * 设置吐司位置

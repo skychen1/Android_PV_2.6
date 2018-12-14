@@ -78,16 +78,16 @@ public class RvDialog extends Dialog {
         private TextView mRigtht;
         private TextView mLeft;
         private int mLeftTextColor = -1;
-        private int mRightTextColor;
-        private String mType;
-        private TextView mDialogMsg;
-        private TextView mDialogRed;
-        private Activity mActivity;
-        private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
-        public RvDialog mDialog;
-        private LinearLayout mLlMain;
+        private int                                        mRightTextColor;
+        private String                                     mType;
+        private TextView                                   mDialogMsg;
+        private TextView                                   mDialogRed;
+        private Activity                                   mActivity;
+        private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
+        public RvDialog                                    mDialog;
+        private LinearLayout                               mLlMain;
 
-        public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+        public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
             this.mContext = context;
             this.mActivity = mActivity;
             this.patientInfos = patientInfos;

@@ -4,7 +4,7 @@ package high.rivamed.myapplication.cont;
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
  * 创建时间:    2018/6/22 14:22
- * 描述:        TODO:
+ * 描述:        系统常量
  * 包名:        high.rivamed.myapplication.cont
  * <p>
  * 更新者：     $$Author$$
@@ -17,7 +17,6 @@ public class Constants {
     public static final long COUNTDOWN_TIME = 40000;     //默认无操作自动退出
     public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
     public static final String TYPE_TIMELY = "timely";
-    public static final String TYPE_RUNWATE = "runwate";
     public static final String STYPE_STOCK_LEFT = "stock_left";
     public static final String STYPE_STOCK_MIDDLE = "stock_middle";
     public static final String STYPE_STOCK_RIGHT = "stock_right";
@@ -42,11 +41,7 @@ public class Constants {
     public static final int ACT_TYPE_ALL_IN = 12;//入柜 快速开柜
 
     //配置项的code
-    public static final String CONFIG_000 = "000";//reader类型val(1鸿陆 2罗丹贝尔 3芯联)
-    public static final String CONFIG_005 = "005";//是否启用患者来源于门诊
-    public static final String CONFIG_006 = "006";//是否启用患者来源于手术室
     public static final String CONFIG_007 = "007";//是否启用绑定患者领用耗材
-    public static final String CONFIG_008 = "008";//是否允许耗材同入同出
     public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
     public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
     public static final String CONFIG_011 = "011";//是否允许快速开柜
@@ -101,5 +96,12 @@ public class Constants {
     public static final String SAVE_OPERATION_ROOM_NONAME = "save_operation_room_noname";//手术间名字
     public static final String SAVE_RECEIVE_ORDERID = "save_receive_orderid";//医嘱单ID
     public static final String SAVE_READER_TIME = "SAVE_READER_TIME";//READER扫描时长
+
+    public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
+    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN
+
+    public static final String ERROR_1010 = "1010";//系统异常
+    public static final String ERROR_1001 = "1001";//刷新Token过期
+    public static final String ERROR_1000 = "1000";//Token过期
 
 }

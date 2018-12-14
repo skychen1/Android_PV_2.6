@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class RunWateBean implements Serializable{
 //````````````````````````````
- private String deviceCode;
+ private String deviceId;
  private String term;
  private String startTime;
  private String endTime;
@@ -24,12 +24,12 @@ public class RunWateBean implements Serializable{
 
    private String userName;
 
-   public String getDeviceCode() {
-	return deviceCode;
+   public String getDeviceId() {
+	return deviceId;
    }
 
-   public void setDeviceCode(String deviceCode) {
-	this.deviceCode = deviceCode;
+   public void setDeviceId(String deviceId) {
+	this.deviceId = deviceId;
    }
 
    public String getTerm() {
@@ -67,7 +67,7 @@ public class RunWateBean implements Serializable{
    /**
     * pageNo : 1
     * pageSize : 10
-    * rows : [{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2013-12-06 18:15:43","expiration":"已过期","deviceName":"2号柜","deviceCode":"22222","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":0,"count":null,"epc":"95564564566457"},{"status":"0","cstName":"手术刀","cstSpec":"把","expirationTime":"2019-11-01 18:15:43","expiration":"2019-11-01","deviceName":"5号柜","deviceCode":"55555","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":4,"count":null,"epc":"95564564566456"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2019-11-06 18:15:43","expiration":"2019-11-06","deviceName":"2号柜","deviceCode":"22222","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":4,"count":null,"epc":"955645645665464"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2018-10-06 18:15:43","expiration":"≤90","deviceName":"2号柜","deviceCode":"22222","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":2,"count":null,"epc":"955645645632"},{"status":"0","cstName":"电动腔直线型血管切割吻合器和钉仓","cstSpec":"支","expirationTime":"2018-03-23 18:15:43","expiration":"已过期","deviceName":"4号柜","deviceCode":"44444","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":0,"count":null,"epc":"95564564567645"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2018-01-24 18:15:43","expiration":"已过期","deviceName":"2号柜","deviceCode":"22222","optionDate":"2018-07-25 15:59:33","optionName":"adminUM","type":0,"count":null,"epc":"95564564565354"}]
+    * rows : [{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2013-12-06 18:15:43","expiration":"已过期","deviceName":"2号柜","deviceId":"22222","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":0,"count":null,"epc":"95564564566457"},{"status":"0","cstName":"手术刀","cstSpec":"把","expirationTime":"2019-11-01 18:15:43","expiration":"2019-11-01","deviceName":"5号柜","deviceId":"55555","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":4,"count":null,"epc":"95564564566456"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2019-11-06 18:15:43","expiration":"2019-11-06","deviceName":"2号柜","deviceId":"22222","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":4,"count":null,"epc":"955645645665464"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2018-10-06 18:15:43","expiration":"≤90","deviceName":"2号柜","deviceId":"22222","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":2,"count":null,"epc":"955645645632"},{"status":"0","cstName":"电动腔直线型血管切割吻合器和钉仓","cstSpec":"支","expirationTime":"2018-03-23 18:15:43","expiration":"已过期","deviceName":"4号柜","deviceId":"44444","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":0,"count":null,"epc":"95564564567645"},{"status":"0","cstName":"弯型和直型腔内吻合器","cstSpec":"支","expirationTime":"2018-01-24 18:15:43","expiration":"已过期","deviceName":"2号柜","deviceId":"22222","operationTime":"2018-07-25 15:59:33","name":"adminUM","type":0,"count":null,"epc":"95564564565354"}]
     * total : 6
     */
 
@@ -101,12 +101,12 @@ public class RunWateBean implements Serializable{
 	 * expirationTime : 2013-12-06 18:15:43
 	 * expiration : 已过期
 	 * deviceName : 2号柜
-	 * deviceCode : 22222
-	 * optionDate : 2018-07-25 15:59:33
-	 * optionName : adminUM
+	 * deviceId : 22222
+	 * operationTime : 2018-07-25 15:59:33
+	 * name : adminUM
 	 * type : 0
 	 * count : null
-	 * patientNameAndId
+	 * patientName
 	 * epc : 95564564566457
 	 */
 
@@ -116,20 +116,20 @@ public class RunWateBean implements Serializable{
 	private String expirationTime;
 	private String expiration;
 	private String deviceName;
-	private String deviceCode;
-	private String optionDate;
-	private String optionName;
+	private String deviceId;
+	private String operationTime;
+	private String name;
 	private int    stopFlag;
 	private Object count;
 	private String epc;
-	private String patientNameAndId;
+	private String patientName;
 
-	public String getPatientNameAndId() {
-	   return patientNameAndId;
+	public String getPatientName() {
+	   return patientName;
 	}
 
-	public void setPatientNameAndId(String patientNameAndId) {
-	   this.patientNameAndId = patientNameAndId;
+	public void setPatientName(String patientName) {
+	   this.patientName = patientName;
 	}
 
 	public String getStatus() { return status;}
@@ -156,17 +156,17 @@ public class RunWateBean implements Serializable{
 
 	public void setDeviceName(String deviceName) { this.deviceName = deviceName;}
 
-	public String getDeviceCode() { return deviceCode;}
+	public String getDeviceId() { return deviceId;}
 
-	public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
+	public void setDeviceId(String deviceId) { this.deviceId = deviceId;}
 
-	public String getOptionDate() { return optionDate;}
+	public String getOperationTime() { return operationTime;}
 
-	public void setOptionDate(String optionDate) { this.optionDate = optionDate;}
+	public void setOperationTime(String operationTime) { this.operationTime = operationTime;}
 
-	public String getOptionName() { return optionName;}
+	public String getName() { return name;}
 
-	public void setOptionName(String optionName) { this.optionName = optionName;}
+	public void setName(String name) { this.name = name;}
 
 	public int getStopFlag() { return stopFlag;}
 

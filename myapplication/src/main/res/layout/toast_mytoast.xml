@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="wrap_content"
+			  android:layout_height="match_parent"
+			  android:layout_gravity="center"
+			  android:orientation="horizontal"
+
+	android:paddingTop="@dimen/y15"
+	android:paddingBottom="@dimen/y15"
+	android:paddingLeft="@dimen/x30"
+	android:paddingRight="@dimen/x30"
+	android:background="@drawable/toast_frame">
+
+	<TextView
+		android:id="@+id/text_mag"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="@color/white"
+		android:textSize="@dimen/textsize_22"
+		/>
+
+	<TextView
+		android:id="@+id/text_click"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="@color/toast_text"
+		android:textSize="@dimen/textsize_22"
+		android:text="【点击查看】"
+		/>
+</LinearLayout>

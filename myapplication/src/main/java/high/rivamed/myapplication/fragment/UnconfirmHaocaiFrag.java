@@ -30,14 +30,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
 import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.adapter.UnconfirmHaocaiAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.RunWateBean;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -59,15 +57,7 @@ import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
 public class UnconfirmHaocaiFrag extends SimpleFragment {
 
-    private static final String TYPE_SIZE = "TYPE_SIZE";
-    private static final String TYPE_PAGE = "TYPE_PAGE";
-    private static final String DEVICECODE = "DEVICECODE";
-    private static final String TYPE_LIST = "list";
-    private static final int FIVE = 5;
-    private static final int SIX = 6;
-    private static final int SEVEN = 7;
-    private static final int EIGHT = 8;
-    private static final String TAG = "PublicTimelyFrag";
+    private static final String TAG = "PublicStockFrag";
     @BindView(R.id.timely_start_btn)
     TextView mTimelyStartBtn;
     @BindView(R.id.timely_book)
@@ -123,18 +113,9 @@ public class UnconfirmHaocaiFrag extends SimpleFragment {
     private int mSize; //假数据 举例6个横向格子
     private View mHeadView;
     private int mLayout;
-    private TCstInventoryDto mLeftDownBean;
     List<String> titeleList = null;
-    private int mStopFlag;
-    private TCstInventoryDto mTCstInventoryDto;
-    private List<TCstInventoryVo> mTCstInventoryVos;
-    private StockLeftDownAdapter mDownAdapter;
-    private String mTrim;
-    private List<TCstInventoryVo> mTCstStockRightList;
+    private List<InventoryVo>      mTCstStockRightList;
     private UnconfirmHaocaiAdapter mRightAdapter;
-    private List<RunWateBean.RowsBean> mWateBeanRows;
-    private StockLeftDownAdapter mStockLeftAdapter;
-    private List<TCstInventoryVo> mInventoryVos;
 
     /**
      * 重新加载数据
@@ -184,31 +165,7 @@ public class UnconfirmHaocaiFrag extends SimpleFragment {
         mSearchEt.setVisibility(View.GONE);
         loadStockRightDate("", "");//todo 待完成 调用接口
 
-        //	   mLayout = R.layout.item_runwate_eight_layout;
-        //	   mHeadView = getLayoutInflater().inflate(R.layout.item_runwate_eight_title_layout,
-        //								 (ViewGroup) mLinearLayout.getParent(), false);
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-        //	   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
-        //	   //	   if (mType_page.equals(STYPE_STOCK_RIGHT)) {
-        //	   //		mPublicAdapter = new TimelyPublicAdapter(mLayout, genData82(), mSize,
-        //	   //								     STYPE_STOCK_RIGHT);
-        //	   //	   } else {
-        //	   mPublicAdapter = new TimelyPublicAdapter(mLayout, genData8(), mSize);
-        //	   //	   }
-        //	   mHeadView.setBackgroundResource(R.color.bg_green);
-        //	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-        //	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-        //	   mRefreshLayout.setEnableAutoLoadMore(true);
-        //	   mRecyclerview.setAdapter(mPublicAdapter);
-        //	   mLinearLayout.addView(mHeadView);
-        //表格的title区分和一部分数据
-        //	mLoadingView.setVisibility(View.VISIBLE);
+
     }
 
 
@@ -250,14 +207,14 @@ public class UnconfirmHaocaiFrag extends SimpleFragment {
                 Log.i("ffa", "result   " + result);
                 if (mTCstStockRightList != null) {
                     mTCstStockRightList.clear();
-                    TCstInventoryDto socketRightBean = mGson.fromJson(result, TCstInventoryDto.class);
-                    List<TCstInventoryVo> tCstInventoryVos = socketRightBean.gettCstInventoryVos();
-                    mTCstStockRightList.addAll(tCstInventoryVos);
+                    InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
+                    List<InventoryVo> inventoryVos = socketRightBean.getInventoryVos();
+                    mTCstStockRightList.addAll(inventoryVos);
                     mRightAdapter.notifyDataSetChanged();
 
                 } else {
-                    TCstInventoryDto socketRightBean = mGson.fromJson(result, TCstInventoryDto.class);
-                    mTCstStockRightList = socketRightBean.gettCstInventoryVos();
+                    InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
+                    mTCstStockRightList = socketRightBean.getInventoryVos();
                     mLayout = R.layout.item_runwate_eight_layout;
                     mHeadView = LayoutInflater.from(_mActivity)
                             .inflate(R.layout.item_runwate_eight_title_layout,

@@ -47,17 +47,19 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -82,12 +84,12 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 @SuppressLint("ValidFragment")
 public class TimelyAllFrag extends SimpleFragment {
 
-   private List<BoxSizeBean.TbaseDevicesBean> mBoxList = new ArrayList<>();
+   private List<BoxSizeBean.DevicesBean> mBoxList = new ArrayList<>();
    private List<DeviceInventoryVo> mDeviceInventoryVos;
-   private TCstInventoryDto  mInventoryDto = new TCstInventoryDto();
+   private InventoryDto mInventoryDto = new InventoryDto();
    private ArrayList<String> mBoxIdListss;
    private List<DeviceInventoryVo> mDeviceList = new ArrayList<>();
-   private List<TCstInventory> mEpcList;
+   private List<Inventory> mEpcList;
    private int                   mEpcsNumber = 0;
 
    /**
@@ -165,12 +167,12 @@ public class TimelyAllFrag extends SimpleFragment {
    List<String> titeleList = null;
    private View mHeadView;
    private int  mLayout;
-   List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
-   private       List<TCstInventoryVo> mTCstInventoryVos;
-   private       TCstInventoryDto      mCstInventoryDto;
-   private       TimelyAllAdapter      mTimelyAllAdapter;
-   private       String                mToJson;
+   private List<InventoryVo> mInventoryVos;
+   private InventoryDto      mCstInventoryDto;
+   private TimelyAllAdapter  mTimelyAllAdapter;
+   private String            mToJson;
    public static boolean                    mPauseS  = true;
    private       Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
@@ -258,7 +260,7 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    @SuppressLint("ValidFragment")
-   public TimelyAllFrag(String deviceCode, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+   public TimelyAllFrag(String deviceCode, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
 	super();
 	this.mDeviceCode = deviceCode;
 	this.mTbaseDevices = mTbaseDevices;
@@ -344,7 +346,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
 	}
 
-	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mTCstInventoryVos);
+	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mInventoryVos);
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	mRefreshLayout.setEnableAutoLoadMore(false);
@@ -359,21 +361,21 @@ public class TimelyAllFrag extends SimpleFragment {
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
 		LogUtils.i(TAG, "详情 position   " + position);
-		String cstId = mTCstInventoryVos.get(position).getCstCode();
+		String cstId = mInventoryVos.get(position).getCstCode();
 		LogUtils.i(TAG, "mToJson  " + mToJson);
-		TCstInventoryDto tCstInventoryDto = mGson.fromJson(mToJson, TCstInventoryDto.class);
-		tCstInventoryDto.setCstCode(cstId);
-		String deviceCode1 = mTCstInventoryVos.get(position).getDeviceCode();
+		InventoryDto inventoryDto = mGson.fromJson(mToJson, InventoryDto.class);
+		inventoryDto.setCstCode(cstId);
+		String deviceCode1 = mInventoryVos.get(position).getDeviceId();
 
-		TCstInventoryDto dto = new TCstInventoryDto();
+		InventoryDto dto = new InventoryDto();
 		dto.setCstCode(cstId);
 		String xxx = "";
 		if (mDeviceCode == null || mDeviceCode.equals("")) {//全部的柜子详情
-		   dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-		   List<DeviceInventoryVo> deviceInventoryVos = tCstInventoryDto.getDeviceInventoryVos();
+		   dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+		   List<DeviceInventoryVo> deviceInventoryVos = inventoryDto.getDeviceInventoryVos();
 		   List<DeviceInventoryVo> devo = new ArrayList<>();
 		   for (int i = 0; i < deviceInventoryVos.size(); i++) {
-			String deviceCode = deviceInventoryVos.get(i).getDeviceCode();
+			String deviceCode = deviceInventoryVos.get(i).getDeviceId();
 			if (deviceCode.equals(deviceCode1)) {
 			   devo.add(deviceInventoryVos.get(i));
 			}
@@ -381,20 +383,20 @@ public class TimelyAllFrag extends SimpleFragment {
 		   dto.setDeviceInventoryVos(devo);
 		   xxx = mGson.toJson(dto);
 		} else {//单柜
-		   dto = tCstInventoryDto;
+		   dto = inventoryDto;
 		   xxx = mGson.toJson(dto);
 		}
 		LogUtils.i(TAG, "详情 xxx   " + xxx);
-		NetRequest.getInstance().getDetailDate(xxx, this, null, new BaseResult() {
+		NetRequest.getInstance().getDetailDate(xxx, this,  new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "详情 result   " + result);
-			TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
-											   TCstInventoryDto.class);
-			tCstInventoryDto.setEpcName(mTCstInventoryVos.get(position).getCstName());
-			tCstInventoryDto.setCstSpec(mTCstInventoryVos.get(position).getCstSpec());
+			InventoryDto inventoryDto = mGson.fromJson(result,
+										 InventoryDto.class);
+			inventoryDto.setEpcName(mInventoryVos.get(position).getCstName());
+			inventoryDto.setCstSpec(mInventoryVos.get(position).getCstSpec());
 			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
-			EventBusUtils.postSticky(new Event.timelyDate("详情", tCstInventoryDto));
+			EventBusUtils.postSticky(new Event.timelyDate("详情", inventoryDto));
 		   }
 		});
 	   }
@@ -415,8 +417,8 @@ public class TimelyAllFrag extends SimpleFragment {
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
 
-		   if (mTCstInventoryVos != null) {
-			mTCstInventoryVos.clear();
+		   if (mInventoryVos != null) {
+			mInventoryVos.clear();
 			mDeviceInventoryVos.clear();
 			mEpcList.clear();
 			mDeviceList.clear();
@@ -425,8 +427,8 @@ public class TimelyAllFrag extends SimpleFragment {
 			mEpcsNumber = 0;
 		   }
 		   mTimelyAllAdapter.notifyDataSetChanged();
-		   ContentConsumeOperateFrag2.mPause = true;
-		   openDoor();
+		   ContentConsumeOperateFrag.mPause = true;
+		   startScan();
 		}
 		break;
 	   case R.id.timely_profit://盘盈
@@ -437,17 +439,22 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
 			LogUtils.i(TAG, "盘盈 mObject   " + mToJson);
-			NetRequest.getInstance().getProfitDate(mToJson, this, null, new BaseResult() {
+			NetRequest.getInstance().getProfitDate(mToJson, this,  new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘盈 result   " + result);
-				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
-												   TCstInventoryDto.class);
-				if (tCstInventoryDto.gettCstInventoryVos() != null &&
-				    tCstInventoryDto.gettCstInventoryVos().size() > 0) {
+				InventoryDto inventoryDto = mGson.fromJson(result,
+											 InventoryDto.class);
+				if (inventoryDto.getErrorEpcs() != null && inventoryDto.getErrorEpcs().size() > 0) {
+				String   string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+				   ToastUtils.showLong(string);
+				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+				}
+				if (inventoryDto.getInventoryVos() != null &&
+				    inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
-				   //				   tCstInventoryDto.setAdd(mCstInventoryDto.getAdd());
-				   EventBusUtils.postSticky(new Event.timelyDate("盘盈", tCstInventoryDto));
+				   //				   inventoryDto.setAdd(mCstInventoryDto.getAdd());
+				   EventBusUtils.postSticky(new Event.timelyDate("盘盈", inventoryDto));
 				} else {
 				   ToastUtils.showShort("暂无详情数据");
 				}
@@ -464,15 +471,20 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
 			LogUtils.i(TAG, "盘亏 mObject   " + mToJson);
-			NetRequest.getInstance().getLossesDate(mToJson, this, null, new BaseResult() {
+			NetRequest.getInstance().getLossesDate(mToJson, this, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘亏 result   " + result);
-				TCstInventoryDto tCstInventoryDto = mGson.fromJson(result,
-												   TCstInventoryDto.class);
-				if (tCstInventoryDto.gettCstInventoryVos().size() > 0) {
+				InventoryDto inventoryDto = mGson.fromJson(result,
+											 InventoryDto.class);
+				if (inventoryDto.getErrorEpcs() != null && inventoryDto.getErrorEpcs().size() > 0) {
+				   String   string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+				   ToastUtils.showLong(string);
+				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+				}
+				if (inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
-				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", tCstInventoryDto));
+				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", inventoryDto));
 				} else {
 				   ToastUtils.showShort("暂无详情数据");
 				}
@@ -486,14 +498,14 @@ public class TimelyAllFrag extends SimpleFragment {
 
    private void getBoxIdList() {
 	mBoxIdListss = new ArrayList<String>();
-	for (BoxSizeBean.TbaseDevicesBean s : mTbaseDevices) {
-	   if (s.getDeviceCode() != null && !s.getDeviceCode().equals("")) {
-		mBoxIdListss.add(s.getDeviceCode());
+	for (BoxSizeBean.DevicesBean s : mTbaseDevices) {
+	   if (s.getDeviceId() != null && !s.getDeviceId().equals("")) {
+		mBoxIdListss.add(s.getDeviceId());
 	   }
 	}
    }
 
-   private void openDoor() {
+   private void startScan() {
 	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<String> mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 
@@ -546,19 +558,19 @@ public class TimelyAllFrag extends SimpleFragment {
 			mEpcList = new ArrayList<>();
 			mEpcsNumber += epcs.size();
 			for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-			   TCstInventory tCstInventory = new TCstInventory();
-			   tCstInventory.setEpc(v.getKey());
-			   mEpcList.add(tCstInventory);
+			   Inventory inventory = new Inventory();
+			   inventory.setEpc(v.getKey());
+			   mEpcList.add(inventory);
 			}
-			deviceInventoryVo.setDeviceCode(box_id);
-			deviceInventoryVo.settCstInventories(mEpcList);
+			deviceInventoryVo.setDeviceId(box_id);
+			deviceInventoryVo.setInventories(mEpcList);
 			mDeviceList.add(deviceInventoryVo);
 			mBoxIdListss.remove(s);
 		   }
 		}
 	   }
 	   mInventoryDto.setDeviceInventoryVos(mDeviceList);
-	   mInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	   mInventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
 
 	   if (mBoxIdListss.size() == 0) {
 		mToJson = mGson.toJson(mInventoryDto);
@@ -584,13 +596,13 @@ public class TimelyAllFrag extends SimpleFragment {
 		   for (BoxIdBean boxIdBean : boxIdBeans) {
 			String box_id = boxIdBean.getBox_id();
 			if (mDeviceCode.equals(box_id)) {
-			   if (mTCstInventoryVos == null) {//第一次盘点的数据
-				mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-				mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+			   if (mInventoryVos == null) {//第一次盘点的数据
+				mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
+				mInventoryVos = mCstInventoryDto.getInventoryVos();
 				mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 				int number = 0;
-				for (high.rivamed.myapplication.dto.vo.TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
-				   number += TCstInventoryVo.getCountStock();
+				for (InventoryVo InventoryVo : mInventoryVos) {
+				   number += InventoryVo.getCountStock();
 				}
 				int Reduce = 0;
 				int Add = 0;
@@ -602,17 +614,17 @@ public class TimelyAllFrag extends SimpleFragment {
 				initDate(epcs, mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(),
 					   number);
 			   } else {//重新刷新的数据
-				mTCstInventoryVos.clear();
+				mInventoryVos.clear();
 				mDeviceInventoryVos.clear();
-				TCstInventoryDto mCstInventoryDto = mGson.fromJson(result,
-												   TCstInventoryDto.class);
-				List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+				InventoryDto mCstInventoryDto = mGson.fromJson(result,
+											     InventoryDto.class);
+				List<InventoryVo> inventoryVos = mCstInventoryDto.getInventoryVos();
 				List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
-				mTCstInventoryVos.addAll(tCstInventoryVos);
+				mInventoryVos.addAll(inventoryVos);
 				mDeviceInventoryVos.addAll(deviceInventoryVos);
 				int number = 0;
-				for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
-				   number += TCstInventoryVo.getCountStock();
+				for (InventoryVo InventoryVo : mInventoryVos) {
+				   number += InventoryVo.getCountStock();
 				}
 				int Reduce = 0;
 				int Add = 0;
@@ -671,27 +683,27 @@ public class TimelyAllFrag extends SimpleFragment {
     * @param deviceId
     */
    private void moreScanTimely(String result, int epcs, String deviceId) {
-	if (mTCstInventoryVos == null) {  //第一次扫描
-	   mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-	   mTCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+	if (mInventoryVos == null) {  //第一次扫描
+	   mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
+	   mInventoryVos = mCstInventoryDto.getInventoryVos();
 	   mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 	   int number = 0;
-	   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
-		number += TCstInventoryVo.getCountStock();
+	   for (InventoryVo InventoryVo : mInventoryVos) {
+		number += InventoryVo.getCountStock();
 	   }
 	   LogUtils.i(TAG, "第二次");
 	   initDate(epcs, mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(), number);
 	} else {//扫描后数据更新
-	   mTCstInventoryVos.clear();
+	   mInventoryVos.clear();
 	   mDeviceInventoryVos.clear();
-	   TCstInventoryDto mCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-	   List<TCstInventoryVo> tCstInventoryVos = mCstInventoryDto.gettCstInventoryVos();
+	   InventoryDto mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
+	   List<InventoryVo> inventoryVos = mCstInventoryDto.getInventoryVos();
 	   List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
-	   mTCstInventoryVos.addAll(tCstInventoryVos);
+	   mInventoryVos.addAll(inventoryVos);
 	   mDeviceInventoryVos.addAll(deviceInventoryVos);
 	   int number = 0;
-	   for (TCstInventoryVo TCstInventoryVo : mTCstInventoryVos) {
-		number += TCstInventoryVo.getCountStock();
+	   for (InventoryVo InventoryVo : mInventoryVos) {
+		number += InventoryVo.getCountStock();
 	   }
 	   if (epcs == number) {
 		mTimelyReality.setText(

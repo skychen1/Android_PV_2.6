@@ -23,7 +23,7 @@ import high.rivamed.myapplication.bean.TakeNotesDetailsBean;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean, BaseViewHolder> {
+public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.JournalUseRecordDetailVos, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -35,13 +35,13 @@ public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.T
     private TextView mSeven_eight;
 
     public TakeNotesEpcAdapter(
-            int layoutResId, @Nullable List<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean> data) {
+            int layoutResId, @Nullable List<TakeNotesDetailsBean.JournalUseRecordDetailVos> data) {
         super(layoutResId, data);
     }
 
     @Override
     protected void convert(
-            BaseViewHolder helper, TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean item) {
+            BaseViewHolder helper, TakeNotesDetailsBean.JournalUseRecordDetailVos item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
@@ -51,7 +51,7 @@ public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.T
         mSeven_one.setText(item.getEpc());
         mSeven_two.setText(item.getCstName());
         mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getCreateDate());
+        mSeven_four.setText(item.getOperationTime());
         mSeven_five.setText(item.getUserName());
         mSeven_six.setText(item.getStatus());
 

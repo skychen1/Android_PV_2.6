@@ -26,7 +26,7 @@ import high.rivamed.myapplication.timeutil.PowerDateUtils;
 public class LogcatHelper {
 
    private static LogcatHelper INSTANCE = null;
-   private static String PATH_LOGCAT;
+   public static String PATH_LOGCAT;
    private LogDumper mLogDumper = null;
    private int mPId;
 
@@ -41,6 +41,7 @@ public class LogcatHelper {
 	} else {// 如果SD卡不存在，就保存到本应用的目录下
 	   PATH_LOGCAT = context.getFilesDir().getAbsolutePath() + File.separator + "Rivamed_logs";
 	}
+	LogUtils.i("TAS",PATH_LOGCAT);
 	File file = new File(PATH_LOGCAT);
 	if (!file.exists()) {
 	   file.mkdirs();
@@ -88,6 +89,7 @@ public class LogcatHelper {
 	   try {
 		out = new FileOutputStream(
 			new File(dir, "Setp-" + PowerDateUtils.getNowDateString3() + ".log"));
+
 	   } catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

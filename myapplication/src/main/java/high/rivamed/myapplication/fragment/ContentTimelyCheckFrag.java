@@ -19,7 +19,6 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
@@ -44,7 +43,7 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    @BindView(R.id.cttimecheck_viewpager)
    ViewPager        mCttimecheckViewpager;
    private CttimeCheckPagerAdapter            mPagerAdapter;
-   public  List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   public  List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
    public static ContentTimelyCheckFrag newInstance() {
 	Bundle args = new Bundle();
@@ -82,18 +81,18 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getTbaseDevices();
+		mTbaseDevices = boxSizeBean.getDevices();
 		if (mTbaseDevices != null) {
 		   if (mTbaseDevices.size() > 1) {
-			BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+			BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
 			devicesBean1.setDeviceName("全部");
-			devicesBean1.setDeviceCode("");
+			devicesBean1.setDeviceId("");
 			mTbaseDevices.add(0, devicesBean1);
 		   }
 		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
-			//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
-			fragments.add(new TimelyAllFrag(devicesBean.getDeviceCode(),mTbaseDevices));
+		   for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
+			//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(),mTbaseDevices));
+			fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(),mTbaseDevices));
 		   }
 		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
 		   mCttimecheckViewpager.setAdapter(mPagerAdapter);

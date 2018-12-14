@@ -13,7 +13,7 @@ public class FindInPatientBean {
     /**
      * pageNo : 1
      * pageSize : 10
-     * rows : [{"patientId":"180810sl02256931","patientName":"陈桂英","deptName":"120急救","operatingRoomNoName":null,"operationSurgeonName":null,"operationBeginDateTime":null,"updateTime":null,"loperPatsId":null},{"patientId":"180813lia0334681","patientName":"鲍亚靖","deptName":null,"operatingRoomNoName":"骨科手术室","operationSurgeonName":"张凯","operationBeginDateTime":null,"updateTime":null,"loperPatsId":"1"},{"patientId":"180802zyh0827273","patientName":"李彦佳","deptName":"120急救","operatingRoomNoName":null,"operationSurgeonName":null,"operationBeginDateTime":null,"updateTime":null,"loperPatsId":"40288299657a150301657a19df440003"},{"patientId":"180723msy0249714","patientName":"苗淑女","deptName":"120急救","operatingRoomNoName":null,"operationSurgeonName":null,"operationBeginDateTime":null,"updateTime":null,"loperPatsId":"40288299657a150301657a1b8e960004"}]
+     * rows : [{"patientId":"180810sl02256931","patientName":"陈桂英","deptName":"120急救","roomName":null,"doctorName":null,"operationBeginDateTime":null,"updateTime":null,"surgeryId":null},{"patientId":"180813lia0334681","patientName":"鲍亚靖","deptName":null,"roomName":"骨科手术室","doctorName":"张凯","operationBeginDateTime":null,"updateTime":null,"surgeryId":"1"},{"patientId":"180802zyh0827273","patientName":"李彦佳","deptName":"120急救","roomName":null,"doctorName":null,"operationBeginDateTime":null,"updateTime":null,"surgeryId":"40288299657a150301657a19df440003"},{"patientId":"180723msy0249714","patientName":"苗淑女","deptName":"120急救","roomName":null,"doctorName":null,"operationBeginDateTime":null,"updateTime":null,"surgeryId":"40288299657a150301657a1b8e960004"}]
      * total : 4
      */
 
@@ -60,23 +60,23 @@ public class FindInPatientBean {
          * patientName : 陈桂英
          * deptName : 120急救
          * tempPatientId:
-         * operatingRoomNoName : null
-         * operationSurgeonName : null
+         * roomName : null
+         * doctorName : null
          * operationBeginDateTime : null
          * updateTime : null
-         * loperPatsId : null
+         * surgeryId : null
          */
 
-        private String patientId = "";
-        private String patientName = "";
-        private String deptName = "";
-        private String operatingRoomNoName = "";
-        private String operationSurgeonName = "";
+        private String patientId              = "";
+        private String patientName            = "";
+        private String deptName               = "";
+        private String roomName               = "";
+        private String doctorName             = "";
         private String operationBeginDateTime = "";
-        private String updateTime = "";
-        private String loperPatsId = "";
-        private String scheduleDateTime = "";
-        private String tempPatientId = "";
+        private String updateTime             = "";
+        private String surgeryId              = "";
+        private String surgeryTime            = "";
+        private String tempPatientId          = "";
         private boolean isSelected;
 
         public String getTempPatientId() {
@@ -87,12 +87,12 @@ public class FindInPatientBean {
             this.tempPatientId = tempPatientId;
         }
 
-        public String getScheduleDateTime() {
-            return scheduleDateTime;
+        public String getSurgeryTime() {
+            return surgeryTime;
         }
 
-        public void setScheduleDateTime(String scheduleDateTime) {
-            this.scheduleDateTime = scheduleDateTime;
+        public void setSurgeryTime(String surgeryTime) {
+            this.surgeryTime = surgeryTime;
         }
 
         public String getLpatsInId() {
@@ -129,20 +129,20 @@ public class FindInPatientBean {
             this.deptName = deptName;
         }
 
-        public String getOperatingRoomNoName() {
-            return operatingRoomNoName;
+        public String getRoomName() {
+            return roomName;
         }
 
-        public void setOperatingRoomNoName(String operatingRoomNoName) {
-            this.operatingRoomNoName = operatingRoomNoName;
+        public void setRoomName(String roomName) {
+            this.roomName = roomName;
         }
 
-        public String getOperationSurgeonName() {
-            return operationSurgeonName;
+        public String getDoctorName() {
+            return doctorName;
         }
 
-        public void setOperationSurgeonName(String operationSurgeonName) {
-            this.operationSurgeonName = operationSurgeonName;
+        public void setDoctorName(String doctorName) {
+            this.doctorName = doctorName;
         }
 
         public String getOperationBeginDateTime() {
@@ -161,12 +161,12 @@ public class FindInPatientBean {
             this.updateTime = updateTime;
         }
 
-        public String getLoperPatsId() {
-            return loperPatsId;
+        public String getSurgeryId() {
+            return surgeryId;
         }
 
-        public void setLoperPatsId(String loperPatsId) {
-            this.loperPatsId = loperPatsId;
+        public void setSurgeryId(String surgeryId) {
+            this.surgeryId = surgeryId;
         }
 
         public boolean isSelected() {

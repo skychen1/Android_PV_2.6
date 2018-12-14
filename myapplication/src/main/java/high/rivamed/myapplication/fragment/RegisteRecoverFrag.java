@@ -11,7 +11,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
-import high.rivamed.myapplication.bean.RegisteReturnBean;
+import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -69,10 +69,10 @@ public class RegisteRecoverFrag extends SimpleFragment {
 	NetRequest.getInstance().getRecoverDate(sn, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		RegisteReturnBean snRecoverBean = mGson.fromJson(result, RegisteReturnBean.class);
 		Log.i("RegisteFrag","sn    "+result);
-		mRegisteViewpager.setCurrentItem(0);
+		ThingDto snRecoverBean = mGson.fromJson(result, ThingDto.class);
 		EventBusUtils.postSticky(snRecoverBean);
+		mRegisteViewpager.setCurrentItem(0);
 	   }
 	});
    }

@@ -57,29 +57,7 @@ public class AddAndSubView extends LinearLayout implements View.OnClickListener,
 
 	TypedArray obtainStyledAttributes = getContext().obtainStyledAttributes(attrs,
 													R.styleable.AddAndSubView);
-//	int btnWidth = obtainStyledAttributes.getDimensionPixelSize(
-//		R.styleable.AddAndSubView_btnWidth, LayoutParams.WRAP_CONTENT);
-//	int tvWidth = obtainStyledAttributes.getDimensionPixelSize(R.styleable.AddAndSubView_tvWidth,
-//										     80);
-//	int tvTextSize = obtainStyledAttributes.getDimensionPixelSize(
-//		R.styleable.AddAndSubView_tvTextSize, 0);
-//	int btnTextSize = obtainStyledAttributes.getDimensionPixelSize(
-//		R.styleable.AddAndSubView_btnTextSize, 0);
 	obtainStyledAttributes.recycle();
-
-//	LayoutParams btnParams = new LayoutParams(btnWidth, LayoutParams.MATCH_PARENT);
-//	mBtnSub.setLayoutParams(btnParams);
-//	mBtnAdd.setLayoutParams(btnParams);
-//	if (btnTextSize != 0) {
-//	   mBtnSub.setTextSize(TypedValue.COMPLEX_UNIT_PX, btnTextSize);
-//	   mBtnAdd.setTextSize(TypedValue.COMPLEX_UNIT_PX, btnTextSize);
-//	}
-//
-//	LayoutParams textParams = new LayoutParams(tvWidth, LayoutParams.MATCH_PARENT);
-//	etAmount.setLayoutParams(textParams);
-//	if (tvTextSize != 0) {
-//	   etAmount.setTextSize(tvTextSize);
-//	}
    }
 
    public void setOnAmountChangeListener(OnAmountChangeListener onAmountChangeListener) {
@@ -98,14 +76,12 @@ public class AddAndSubView extends LinearLayout implements View.OnClickListener,
 		amount--;
 		String s = amount + "";
 		etAmount.setText(s);
-//		etAmount.setSelection(mObject.length());
 	   }
 	} else if (i == R.id.btn_add) {
 	   if (amount < goods_storage) {
 		amount++;
 		String s = amount + "";
 		etAmount.setText(s);
-//		etAmount.setSelection(mObject.length());
 	   }
 	}
 
@@ -138,7 +114,6 @@ public class AddAndSubView extends LinearLayout implements View.OnClickListener,
 	if (amount > goods_storage) {
 	   String s1 = goods_storage + "";
 	   etAmount.setText(s1);
-//	   etAmount.setSelection(s1.length());
 	   return;
 	}
 

@@ -126,34 +126,8 @@ public class NoDialog extends Dialog {
 		   @Override
 		   public void run() {
 			mDialog.dismiss();
-//			ToastUtils.showShort("mNojump"+mNojump+mBing);
-//			Log.i("FF",mNojump+"   "+mBing);
-//			if(mNojump.equals("out")){
-//			   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
-//			   if (mBing==null){  //没有绑定病人
-//				mContext.startActivity(new Intent(mContext, OutBoxFoutActivity.class));
-//			   }else {
-//				mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-//
-//			   }
-//			}else if (mNojump.equals("in")){
-//			   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
-//			   EventBusUtils.postSticky(new Event.EventAct("all"));
-//			   Intent intent2 = new Intent(mContext, InOutBoxTwoActivity.class);
-//			   mContext.startActivity(intent2);
-//			}else if (mNojump.equals("form")){
-//			   Log.i("FF","  DDDD   "+mNojump+"   "+mBing);
-//			   if (mBing!=null&&mBing .equals("BING_MEAL")){//绑定患者的套餐
-//				mContext.startActivity(new Intent(mContext, OutMealBingConfirmActivity.class));
-//
-//			   }else {
-//				mContext.startActivity(new Intent(mContext, OutFormConfirmActivity.class));
-//			   }
-//			}
 		   }
 		}, 3000);
-
-
 	   }
 
 	   mDialogMsg.setText(mMsgText);

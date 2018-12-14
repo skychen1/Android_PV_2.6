@@ -57,7 +57,7 @@ import high.rivamed.myapplication.bean.UseCstOderResultBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -181,8 +181,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public TextView mAllOutText;
    public String   mData;
    List<String> titeleList = null;
-   public List<TCstInventoryVo>                        mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
-   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos      = new ArrayList<>();
+   public List<InventoryVo>                          mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos  = new ArrayList<>();
    private int                                                      mLayout;
    private int                                                      mTitleLayout;
    private View                                                     mHeadView;
@@ -211,8 +211,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private int mNoTemPage = 1;
    private int mRows      = 20;
    private RvDialog.Builder mShowRvDialog2;
-   private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
-   private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+   private List<BingFindSchedulesBean.PatientInfoVos> mPatientInfos = new ArrayList<>();
+   private List<BoxSizeBean.DevicesBean> mTbaseDevices;
    /**
     * 传输的EPC
     *
@@ -475,9 +475,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     */
    private void findBillOrder() {
 	mFindBillOrderBean.setDeviceCodes(new ArrayList<>());
-	for (BoxSizeBean.TbaseDevicesBean item : mTbaseDevices) {
-	   if (item.getDeviceCode() != null) {
-		mFindBillOrderBean.getDeviceCodes().add(item.getDeviceCode());
+	for (BoxSizeBean.DevicesBean item : mTbaseDevices) {
+	   if (item.getDeviceId() != null) {
+		mFindBillOrderBean.getDeviceCodes().add(item.getDeviceId());
 	   }
 	}
 	NetRequest.getInstance()
@@ -566,7 +566,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	}
 	LogUtils.i(TAG, "JSON  " + mGson.toJson(mUseCstOrderRequest));
 	NetRequest.getInstance()
-		.useOrderCst(mGson.toJson(mUseCstOrderRequest), this, null, new BaseResult() {
+		.useOrderCst(mGson.toJson(mUseCstOrderRequest), this,  new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result  " + result);
@@ -588,10 +588,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     * 获取需要绑定的患者（不包含临时患者）
     */
    private void loadBingDateNoTemp(
-	   String optienNameOrId, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   String optienNameOrId, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
 	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
 	NetRequest.getInstance()
-		.findSchedulesDate(optienNameOrId, mNoTemPage, mRows, this, null, new BaseResult() {
+		.findSchedulesDate(optienNameOrId, mNoTemPage, mRows, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
@@ -599,18 +599,17 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
 			   if (mPatientInfos != null) {
 				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setPatientName(bean.getRows().get(i).getPatientName());
 				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setOperationSurgeonName(
-					   bean.getRows().get(i).getOperationSurgeonName());
-				   data.setOperatingRoomNoName(
-					   bean.getRows().get(i).getOperatingRoomNoName());
-				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setDoctorName(
+					   bean.getRows().get(i).getDoctorName());
+				   data.setRoomName(
+					   bean.getRows().get(i).getRoomName());
+				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
-				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   mPatientInfos.add(data);
 				}
 				if (mShowRvDialog2 != null && mShowRvDialog2.mDialog.isShowing()) {
@@ -642,18 +641,17 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 				}
 			   } else {
 				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setPatientName(bean.getRows().get(i).getPatientName());
 				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setOperationSurgeonName(
-					   bean.getRows().get(i).getOperationSurgeonName());
-				   data.setOperatingRoomNoName(
-					   bean.getRows().get(i).getOperatingRoomNoName());
-				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setDoctorName(
+					   bean.getRows().get(i).getDoctorName());
+				   data.setRoomName(
+					   bean.getRows().get(i).getRoomName());
+				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
-				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   mPatientInfos.add(data);
 				}
 				mShowRvDialog2 = DialogUtils.showRvDialog(mContext, mContext, mPatientInfos,

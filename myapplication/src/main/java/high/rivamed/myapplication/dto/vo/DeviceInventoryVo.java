@@ -2,19 +2,19 @@ package high.rivamed.myapplication.dto.vo;
 
 import java.util.List;
 
-import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.entity.Inventory;
 
 public class DeviceInventoryVo {
 
 	//盘点 耗材详情 cstId
-	private String              cstId;
-	private String              deviceCode;
-	private String              deviceName;
-	private List<TCstInventory> tCstInventories;
+	private String          cstId;
+	private String          deviceId;
+	private String          deviceName;
+	private List<Inventory> inventories;
 	
-	private List<TCstInventoryVo>  tCstInventoryVos;
-   private int add;	// 库存情况
-   private int reduce;	// 扫描出来的库存
+	private List<InventoryVo> inventoryVos;
+   private int                  add;	// 库存情况
+   private int                  reduce;	// 扫描出来的库存
 
    public int getAdd() {
 	return add;
@@ -40,12 +40,12 @@ public class DeviceInventoryVo {
 	this.cstId = cstId;
    }
 
-   public String getDeviceCode() {
-	return deviceCode;
+   public String getDeviceId() {
+	return deviceId;
    }
 
-   public void setDeviceCode(String deviceCode) {
-	this.deviceCode = deviceCode;
+   public void setDeviceId(String deviceId) {
+	this.deviceId = deviceId;
    }
 
    public String getDeviceName() {
@@ -56,21 +56,21 @@ public class DeviceInventoryVo {
 	this.deviceName = deviceName;
    }
 
-   public List<TCstInventory> gettCstInventories() {
-	return tCstInventories;
+   public List<Inventory> getInventories() {
+	return inventories;
    }
 
-   public void settCstInventories(
-	   List<TCstInventory> tCstInventories) {
-	this.tCstInventories = tCstInventories;
+   public void setInventories(
+	   List<Inventory> inventories) {
+	this.inventories = inventories;
    }
 
-   public List<TCstInventoryVo> gettCstInventoryVos() {
-	return tCstInventoryVos;
+   public List<InventoryVo> getInventoryVos() {
+	return inventoryVos;
    }
 
-   public void settCstInventoryVos(
-	   List<TCstInventoryVo> tCstInventoryVos) {
-	this.tCstInventoryVos = tCstInventoryVos;
+   public void setInventoryVos(
+	   List<InventoryVo> inventoryVos) {
+	this.inventoryVos = inventoryVos;
    }
 }

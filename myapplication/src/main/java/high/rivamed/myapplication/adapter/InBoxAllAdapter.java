@@ -14,9 +14,8 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -31,7 +30,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 
-public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
    int      mOperation;
    TextView mSeven_one;
@@ -44,19 +43,19 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
    ImageView mdeleteIv;
    LinearLayout mLl;
    public InBoxAllAdapter(
-	   int layoutResId, List<TCstInventoryVo> data) {
+	   int layoutResId, List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    public InBoxAllAdapter(
-	   int layoutResId, List<TCstInventoryVo> data, int operation) {
+	   int layoutResId, List<InventoryVo> data, int operation) {
 	super(layoutResId, data);
 	this.mOperation = operation;
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 
 	 mLl=((LinearLayout) helper.getView(R.id.seven_ll));
 	if (helper.getAdapterPosition() % 2 == 0) {
@@ -91,13 +90,13 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
 	mSeven_three.setText(item.getCstSpec());
-	mSeven_four.setText(item.getExpiration());
+	mSeven_four.setText(item.getExpirationText());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(status);
 	delete.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View view) {
-		TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
+		InventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
 		if (inventoryVo.getDeleteCount()>0){
 		   inventoryVo.setDelete(false);
 		   inventoryVo.setDeleteCount(0);
@@ -115,7 +114,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   }
 	});
 
-	if ((item.getIsErrorOperation()==1&&item.getDeleteCount()==0)||(item.getIsErrorOperation()==1&&item.getDeleteCount()==0&&item.getStopFlag()!=0&&mOperation!=8)){
+	if ((item.getIsErrorOperation()==1&&item.getDeleteCount()==0)||(item.getIsErrorOperation()==1 &&item.getDeleteCount()==0 && item.getExpireStatus() != 0 && mOperation != 8)){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -137,7 +136,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 
-	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
+	UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_four);
 
 	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
 	if (item.getDeleteCount()>0){
@@ -149,12 +148,12 @@ public class InBoxAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewH
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mLl.setBackgroundResource(R.color.bg_color);
-	}else if (item.getStopFlag()==0&&mOperation!=8){
+	}else if (item.getExpireStatus() == 0 && mOperation != 8){
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	}else if (item.getStopFlag()==0&&mOperation==8){
+	}else if (item.getExpireStatus() == 0 && mOperation == 8){
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));

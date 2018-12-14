@@ -50,10 +50,10 @@ public class TakeNotesAdapter extends BaseQuickAdapter<TakeNotesBean.RowsBean, B
         findId(helper);
         mSeven_one.setText(item.getPatientName());
         mSeven_two.setText(item.getPatientId());
-        mSeven_three.setText(item.getSex());
-        mSeven_four.setText(item.getCreateDate());
-        mSeven_five.setText(item.getOperationSurgeonName());
-        mSeven_six.setText(item.getOperatingRoomNoName());
+        mSeven_three.setText(item.getGender());
+        mSeven_four.setText(item.getScheduleTime());
+        mSeven_five.setText(item.getDoctorName());
+        mSeven_six.setText(item.getRoomName());
         mSeven_seven.setText("耗材明细");
         mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.bg_green));
 

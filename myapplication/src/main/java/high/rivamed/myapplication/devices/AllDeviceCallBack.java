@@ -251,12 +251,12 @@ public class AllDeviceCallBack {
     * @param mTbaseDevices
     */
    public void openDoor(
-	   int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+	   int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 
-	BoxSizeBean.TbaseDevicesBean devicesBean = mTbaseDevices.get(position);
-	String mDeviceCode = devicesBean.getDeviceCode();
+	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
+	String mDeviceCode = devicesBean.getDeviceId();
 
 	if (mReaderIdList != null) {
 	   mReaderIdList.clear();

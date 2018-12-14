@@ -152,7 +152,7 @@ public class TempPatientVo implements Serializable {
 
 
    //
-   //	public TCstInventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
+   //	public InventoryVo(String cstName, String epc, String cstSpec, Date expirationTime, String deviceName,
    //			String status) {
    //		super();
    //		this.cstName = cstName;

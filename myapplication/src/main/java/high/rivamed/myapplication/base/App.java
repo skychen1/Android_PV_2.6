@@ -36,6 +36,7 @@ import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.CrashHandler;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -61,7 +62,7 @@ public class App extends Application {
     public static String MAIN_URL = null;
     public static boolean mTitleConn = false;
     public static ServiceManager mServiceManager=null;
-
+    private static Context mAppContext;
     public static Handler getHandler() {
         return mHandler;
     }
@@ -69,7 +70,11 @@ public class App extends Application {
     public static synchronized App getInstance() {
         return instance;
     }
-
+    /**获取系统上下文：用于ToastUtil类*/
+    public static Context getAppContext()
+    {
+        return mAppContext;
+    }
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -80,7 +85,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         oList = new ArrayList<Activity>();
-
+        mAppContext = getApplicationContext();
+        CrashHandler.getInstance().init(this);
         SPUtils.putString(this, "TestLoginName", "1");
         SPUtils.putString(this, "TestLoginPass", "1");
         LitePal.initialize(this);//数据库初始化
@@ -95,7 +101,11 @@ public class App extends Application {
 
         InitDeviceService();
         MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	 READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
+        if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME)==-1){
+            READER_TIME =3000 ;
+        }else {
+            READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
+        }
         LogcatHelper.getInstance(this).start();
         if (mServiceManager==null){
             initMessgeService();
@@ -154,10 +164,8 @@ public class App extends Application {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         //log相关
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("OkGo");
-        loggingInterceptor.setPrintLevel(
-                HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
-        loggingInterceptor.setColorLevel(
-                Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
+        loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
+        loggingInterceptor.setColorLevel(Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
         builder.addInterceptor(loggingInterceptor);                                 //添加OkGo默认debug日志
         //第三方的开源库，使用通知显示当前请求的log，不过在做文件下载的时候，这个库好像有问题，对文件判断不准确
         //builder.addInterceptor(new ChuckInterceptor(this));

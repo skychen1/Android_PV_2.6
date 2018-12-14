@@ -1,13 +1,11 @@
 package high.rivamed.myapplication.dto;
 
-import android.accounts.Account;
-
 import java.util.List;
 
-import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.CstExpirationVo;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 /**
  * 描述: TODO<br/>
@@ -18,60 +16,80 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
  * @version V1.0
  * @date 2018-07-12 12:14:19
  */
-public class TCstInventoryDto {
+public class InventoryDto {
 
     private static final long serialVersionUID = 1L;
     int id;
-    private TCstInventory tCstInventory;
-    private List<TCstInventory> tCstInventorys;
+    private Inventory               inventory;
+    private List<Inventory>         inventorys;
     private List<DeviceInventoryVo> deviceInventoryVos;
-    private List<TCstInventoryVo> tCstInventoryVos;
-    private List<InventorysBean> inventorys;
+    private List<InventoryVo>       inventoryVos;
+    private List<InventoryVo>       inInventoryVos;
+    private List<InventoryVo>       outInventoryVos;
+
     //效期数量监控
-    private List<CstExpirationVo> cstExpirationVos;
-    private String configPatientCollar;
-    private String thingCode;
-    private String deviceCode;
-    private int operation;
+    private List<CstExpirationVo>   cstExpirationVos;
+    private String                  configPatientCollar;
+    private String                  thingId;
+    private String                  deviceId;
+    private int    operation;
     private String requestResult;
-    private int type;    //0 放入 1取出
+    private int    type;    //0 放入 1取出
     private String cstSpec;
-    private Account account;
+    private int    account;
     //名称及规格查询条件
     private String nameOrSpecQueryCon;
-    private int add;    // 库存情况
-    private int reduce;    // 扫描出来的库存
+    private int    add;    // 库存情况
+    private int    reduce;    // 扫描出来的库存
     private String cstId;
     private String remark;    //退货备注
-    private String storehouseRemark;    //移出备注
-    private String storehouseCode;        //调拨库房
-    private int stopFlag;        //效期情况 0过期 1-3近效期 4正常
-    private int countTwoin;
-    private int countMoveIn;
-    private int countBack;
-    private int countTempopary;
+    private String toSthId;    //移出备注
+    private String sthId;        //调拨库房
+    private int    stopFlag;        //效期情况 0过期 1-3近效期 4正常
+    private int    countTwoin;
+    private int    countMoveIn;
+    private int    countBack;
+    private int    countTempopary;
     private String epcName;
     private String patientId;
     private String patientName;
     private String accountId;
     private String operationScheduleId;
     private String bindType;
-    private String configType;
+    private String       configType;
     private List<String> errorEpcs; //扫描到的系统里没有数据的epc
 
     private boolean isSelected;
-    private String scheduleDateTime;//手术时间
-    private String operationSurgeonName;//医生名字
-    private String operatingRoomNoName;//手术间
-    private String deptName;//科室
-    private String operationBeginDateTime;
-    private String updateTime;
-    private String deptId;//科室ID
-    private String operatingRoomNo;//手术间ID
-    private String idNo;//身份证
-    private String sex;//性别
-    private String tempPatientId;
+    private String  surgeryTime;//手术时间
+    private String  operationSurgeonName;//医生名字
+    private String  operatingRoomNoName;//手术间
+    private String  deptName;//科室
+    private String  operationBeginDateTime;
+    private String  updateTime;
+    private String  deptId;//科室ID
+    private String  operatingRoomNo;//手术间ID
+    private String  idNo;//身份证
+    private String  sex;//性别
+    private String  tempPatientId;
     private boolean isCreate;
+
+    public List<InventoryVo> getInInventoryVos() {
+        return inInventoryVos;
+    }
+
+    public void setInInventoryVos(
+          List<InventoryVo> inInventoryVos) {
+        this.inInventoryVos = inInventoryVos;
+    }
+
+    public List<InventoryVo> getOutInventoryVos() {
+        return outInventoryVos;
+    }
+
+    public void setOutInventoryVos(
+          List<InventoryVo> outInventoryVos) {
+        this.outInventoryVos = outInventoryVos;
+    }
 
     public String getCstId() {
         return cstId;
@@ -89,12 +107,12 @@ public class TCstInventoryDto {
         isSelected = selected;
     }
 
-    public String getScheduleDateTime() {
-        return scheduleDateTime;
+    public String getSurgeryTime() {
+        return surgeryTime;
     }
 
-    public void setScheduleDateTime(String scheduleDateTime) {
-        this.scheduleDateTime = scheduleDateTime;
+    public void setSurgeryTime(String surgeryTime) {
+        this.surgeryTime = surgeryTime;
     }
 
     public String getOperationSurgeonName() {
@@ -249,14 +267,6 @@ public class TCstInventoryDto {
         this.patientName = patientName;
     }
 
-    public List<InventorysBean> getInventorys() {
-        return inventorys;
-    }
-
-    public void setInventorys(
-            List<InventorysBean> inventorys) {
-        this.inventorys = inventorys;
-    }
 
     public String getEpcName() {
         return epcName;
@@ -319,20 +329,20 @@ public class TCstInventoryDto {
     }
 
 
-    public String getStorehouseRemark() {
-        return storehouseRemark;
+    public String getToSthId() {
+        return toSthId;
     }
 
-    public void setStorehouseRemark(String storehouseRemark) {
-        this.storehouseRemark = storehouseRemark;
+    public void setToSthId(String toSthId) {
+        this.toSthId = toSthId;
     }
 
-    public String getStorehouseCode() {
-        return storehouseCode;
+    public String getSthId() {
+        return sthId;
     }
 
-    public void setStorehouseCode(String storehouseCode) {
-        this.storehouseCode = storehouseCode;
+    public void setSthId(String sthId) {
+        this.sthId = sthId;
     }
 
     public int getOperation() {
@@ -343,36 +353,36 @@ public class TCstInventoryDto {
         this.operation = operation;
     }
 
-    public TCstInventory getTCstInventory() {
-        return tCstInventory;
+    public Inventory getTCstInventory() {
+        return inventory;
     }
 
-    public void setTCstInventory(TCstInventory tCstInventory) {
-        this.tCstInventory = tCstInventory;
+    public void setTCstInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
-    public List<TCstInventory> getTCstInventorys() {
-        return tCstInventorys;
+    public List<Inventory> getTCstInventorys() {
+        return inventorys;
     }
 
-    public void setTCstInventorys(List<TCstInventory> tCstInventorys) {
-        this.tCstInventorys = tCstInventorys;
+    public void setTCstInventorys(List<Inventory> inventories) {
+        this.inventorys = inventories;
     }
 
-    public String getThingCode() {
-        return this.thingCode;
+    public String getThingId() {
+        return this.thingId;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
-    public List<TCstInventoryVo> gettCstInventoryVos() {
-        return tCstInventoryVos;
+    public List<InventoryVo> getInventoryVos() {
+        return inventoryVos;
     }
 
-    public void settCstInventoryVos(List<TCstInventoryVo> tCstInventoryVos) {
-        this.tCstInventoryVos = tCstInventoryVos;
+    public void setInventoryVos(List<InventoryVo> inventoryVos) {
+        this.inventoryVos = inventoryVos;
     }
 
     public String getRequestResult() {
@@ -391,12 +401,12 @@ public class TCstInventoryDto {
         this.type = type;
     }
 
-    public TCstInventory gettCstInventory() {
-        return tCstInventory;
+    public Inventory getInventory() {
+        return inventory;
     }
 
-    public void settCstInventory(TCstInventory tCstInventory) {
-        this.tCstInventory = tCstInventory;
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
 
@@ -448,28 +458,28 @@ public class TCstInventoryDto {
         this.deviceInventoryVos = deviceInventoryVos;
     }
 
-    public List<TCstInventory> gettCstInventorys() {
-        return tCstInventorys;
+    public List<Inventory> getInventorys() {
+        return inventorys;
     }
 
-    public void settCstInventorys(List<TCstInventory> tCstInventorys) {
-        this.tCstInventorys = tCstInventorys;
+    public void setInventorys(List<Inventory> inventorys) {
+        this.inventorys = inventorys;
     }
 
-    public Account getAccount() {
+    public int getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(int account) {
         this.account = account;
     }
 
-    public String getDeviceCode() {
-        return deviceCode;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceCode(String deviceCode) {
-        this.deviceCode = deviceCode;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getCstCode() {

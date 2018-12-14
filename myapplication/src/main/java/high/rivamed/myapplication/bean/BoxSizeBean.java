@@ -18,82 +18,73 @@ public class BoxSizeBean implements Serializable {
 
    /**
     * id : 0
-    * thingCode : 23233
-    * tbaseDevices : [{"baudrate":null,"com":"ip","deviceCode":"243242","deviceName":"柜子01","deviceType":9,"identification":1,"ip":"127.0.0.1","parent":"","remark":null,"stopFlag":0,"thingCode":"23233"}]
+    * thingId : 40288297677830f50167783478140000
+    * devices : [{"deviceId":"40288297677830f50167783478510001","deviceName":"1柜","deviceType":"10","identification":null,"ip":null,"parent":"-1","remark":null,"status":0,"thingId":"40288297677830f50167783478140000","operationTime":"2018-12-04","dictId":null},{"deviceId":"40288297677830f50167783478ca0004","deviceName":"2柜","deviceType":"10","identification":null,"ip":null,"parent":"-1","remark":null,"status":0,"thingId":"40288297677830f50167783478140000","operationTime":"2018-12-04","dictId":null}]
     */
 
    private int id;
-   private String thingCode;
-   private List<TbaseDevicesBean> tbaseDevices;
+   private String            thingId;
+   private List<DevicesBean> devices;
 
    public int getId() { return id;}
 
    public void setId(int id) { this.id = id;}
 
-   public String getThingCode() { return thingCode;}
+   public String getThingId() { return thingId;}
 
-   public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+   public void setThingId(String thingId) { this.thingId = thingId;}
 
-   public List<TbaseDevicesBean> getTbaseDevices() { return tbaseDevices;}
+   public List<DevicesBean> getDevices() { return devices;}
 
-   public void setTbaseDevices(
-	   List<TbaseDevicesBean> tbaseDevices) { this.tbaseDevices = tbaseDevices;}
+   public void setDevices(List<DevicesBean> devices) { this.devices = devices;}
 
-   public static class TbaseDevicesBean implements Serializable{
+   public static class DevicesBean {
 
 	/**
-	 * baudrate : null
-	 * com : ip
-	 * deviceCode : 243242
-	 * deviceName : 柜子01
-	 * deviceType : 9
-	 * identification : 1
-	 * ip : 127.0.0.1
-	 * parent :
+	 * deviceId : 40288297677830f50167783478510001
+	 * deviceName : 1柜
+	 * deviceType : 10
+	 * identification : null
+	 * ip : null
+	 * parent : -1
 	 * remark : null
-	 * stopFlag : 0
-	 * thingCode : 23233
+	 * status : 0
+	 * thingId : 40288297677830f50167783478140000
+	 * operationTime : 2018-12-04
+	 * dictId : null
 	 */
 
-	private Object baudrate;
-	private String com;
-	private String deviceCode;
+	private String deviceId;
 	private String deviceName;
-	private int    deviceType;
-	private int    identification;
-	private String ip;
+	private String deviceType;
+	private Object identification;
+	private Object ip;
 	private String parent;
 	private Object remark;
-	private int    stopFlag;
-	private String thingCode;
+	private int    status;
+	private String thingId;
+	private String operationTime;
+	private Object dictId;
 
-	public Object getBaudrate() { return baudrate;}
+	public String getDeviceId() { return deviceId;}
 
-	public void setBaudrate(Object baudrate) { this.baudrate = baudrate;}
-
-	public String getCom() { return com;}
-
-	public void setCom(String com) { this.com = com;}
-
-	public String getDeviceCode() { return deviceCode;}
-
-	public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
+	public void setDeviceId(String deviceId) { this.deviceId = deviceId;}
 
 	public String getDeviceName() { return deviceName;}
 
 	public void setDeviceName(String deviceName) { this.deviceName = deviceName;}
 
-	public int getDeviceType() { return deviceType;}
+	public String getDeviceType() { return deviceType;}
 
-	public void setDeviceType(int deviceType) { this.deviceType = deviceType;}
+	public void setDeviceType(String deviceType) { this.deviceType = deviceType;}
 
-	public int getIdentification() { return identification;}
+	public Object getIdentification() { return identification;}
 
-	public void setIdentification(int identification) { this.identification = identification;}
+	public void setIdentification(Object identification) { this.identification = identification;}
 
-	public String getIp() { return ip;}
+	public Object getIp() { return ip;}
 
-	public void setIp(String ip) { this.ip = ip;}
+	public void setIp(Object ip) { this.ip = ip;}
 
 	public String getParent() { return parent;}
 
@@ -103,12 +94,20 @@ public class BoxSizeBean implements Serializable {
 
 	public void setRemark(Object remark) { this.remark = remark;}
 
-	public int getStopFlag() { return stopFlag;}
+	public int getStatus() { return status;}
 
-	public void setStopFlag(int stopFlag) { this.stopFlag = stopFlag;}
+	public void setStatus(int status) { this.status = status;}
 
-	public String getThingCode() { return thingCode;}
+	public String getThingId() { return thingId;}
 
-	public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+	public void setThingId(String thingId) { this.thingId = thingId;}
+
+	public String getOperationTime() { return operationTime;}
+
+	public void setOperationTime(String operationTime) { this.operationTime = operationTime;}
+
+	public Object getDictId() { return dictId;}
+
+	public void setDictId(Object dictId) { this.dictId = dictId;}
    }
 }

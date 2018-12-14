@@ -18,55 +18,61 @@ public class ConfigBean implements Serializable{
 
    /**
     * id : 0
-    * tCstConfigVos : [{"dictId":null,"name":"耗材近效期1","value":"30","code":"001"},{"dictId":null,"name":"耗材近效期2","value":"90","code":"002"},{"dictId":null,"name":"耗材近效期3","value":"120","code":"003"},{"dictId":null,"name":"未确认耗材时间设置（小时）","value":"2","code":"004"},{"dictId":null,"name":"是否启用患者来源于门诊","value":"1","code":"005"},{"dictId":null,"name":"是否启用患者来源于手术室","value":"1","code":"006"},{"dictId":null,"name":"是否启用绑定患者领用耗材","value":"1","code":"007"},{"dictId":null,"name":"是否允许耗材同入同出","value":"1","code":"008"},{"dictId":null,"name":"是否先开柜门后绑定患者","value":"1","code":"009"},{"dictId":null,"name":"是否先绑定患者后开柜门","value":"1","code":"010"}]
-    * thingCode : ff808181650e151b01650ec14d070010
+    * thingId : 40288297677830f50167783478140000
+    * thingConfigVos : [{"code":"009","configId":null,"configName":"是否先开柜门后绑定患者","thingId":"40288297677830f50167783478140000","value":"1"},{"code":"012","configId":null,"configName":"是否启用绑定临时患者领用耗材","thingId":"40288297677830f50167783478140000","value":"2"},{"code":"016","configId":null,"configName":"是否开启功能开柜","thingId":"40288297677830f50167783478140000","value":"3"}]
     */
 
    private int id;
-   private String thingCode;
-   private List<TCstConfigVosBean> tCstConfigVos;
+   private String thingId;
+   private List<ThingConfigVosBean> thingConfigVos;
 
    public int getId() { return id;}
 
    public void setId(int id) { this.id = id;}
 
-   public String getThingCode() { return thingCode;}
+   public String getThingId() { return thingId;}
 
-   public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+   public void setThingId(String thingId) { this.thingId = thingId;}
 
-   public List<TCstConfigVosBean> getTCstConfigVos() { return tCstConfigVos;}
+   public List<ThingConfigVosBean> getThingConfigVos() { return thingConfigVos;}
 
-   public void setTCstConfigVos(
-	   List<TCstConfigVosBean> tCstConfigVos) { this.tCstConfigVos = tCstConfigVos;}
+   public void setThingConfigVos(
+	   List<ThingConfigVosBean> thingConfigVos) { this.thingConfigVos = thingConfigVos;}
 
-   public static class TCstConfigVosBean {
+   public static class ThingConfigVosBean {
 
 	/**
-	 * dictId : null
-	 * name : 耗材近效期1
-	 * value : 30
-	 * code : 001
+	 * code : 009
+	 * configId : null
+	 * configName : 是否先开柜门后绑定患者
+	 * thingId : 40288297677830f50167783478140000
+	 * value : 1
 	 */
 
-	private Object dictId;
-	private String name;
-	private String val;
 	private String code;
-
-	public Object getDictId() { return dictId;}
-
-	public void setDictId(Object dictId) { this.dictId = dictId;}
-
-	public String getName() { return name;}
-
-	public void setName(String name) { this.name = name;}
-
-	public String getValue() { return val;}
-
-	public void setValue(String val) { this.val = val;}
+	private Object configId;
+	private String configName;
+	private String thingId;
+	private String value;
 
 	public String getCode() { return code;}
 
 	public void setCode(String code) { this.code = code;}
+
+	public Object getConfigId() { return configId;}
+
+	public void setConfigId(Object configId) { this.configId = configId;}
+
+	public String getConfigName() { return configName;}
+
+	public void setConfigName(String configName) { this.configName = configName;}
+
+	public String getThingId() { return thingId;}
+
+	public void setThingId(String thingId) { this.thingId = thingId;}
+
+	public String getValue() { return value;}
+
+	public void setValue(String value) { this.value = value;}
    }
 }

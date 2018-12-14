@@ -38,7 +38,7 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
+import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -63,7 +63,7 @@ import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 import high.rivamed.myapplication.views.WifiDialog;
 
-import static high.rivamed.myapplication.base.BaseTimelyActivity.mStarts;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
@@ -119,9 +119,9 @@ public class DialogUtils {
     }
 
     public static RvDialog.Builder showRvDialog(
-            Activity activity, final Context context,
-            List<BingFindSchedulesBean.PatientInfosBean> patientInfos, String type, int position,
-            List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+          Activity activity, final Context context,
+          List<BingFindSchedulesBean.PatientInfoVos> patientInfos, String type, int position,
+          List<BoxSizeBean.DevicesBean> mTbaseDevices) {
         RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
         builder.setMsg("耗材中包含过期耗材，请查看！");
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -140,7 +140,7 @@ public class DialogUtils {
                     if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
                         Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
                     } else {
-                        ContentConsumeOperateFrag2.mPause = false;
+                        ContentConsumeOperateFrag.mPause = false;
                         String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
                         String id = patientInfos.get(checkedPosition).getPatientId();
                         String name = patientInfos.get(checkedPosition).getPatientName();
@@ -249,34 +249,7 @@ public class DialogUtils {
         builder.setLeft("", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-
                 dialog.dismiss();
-
-                //		Log.i("TT", " nojump  " +nojump);
-                //	      if(nojump.equals("out")){
-                //		   //TODO:换成关门后触发跳转柜子的扫描界面。拿出
-                //		   if (bing==null){  //没有绑定病人
-                //			context.startActivity(new Intent(context, OutBoxFoutActivity.class));
-                //		   }else {
-                //			context.startActivity(new Intent(context, OutBoxBingActivity.class));
-                //
-                //		   }
-                //		}else if (nojump.equals("in")){
-                //		   Log.i("TT", " EventAct  " );
-                //		   //TODO:换成关门后触发跳转柜子的扫描界面。拿入
-                ////		   EventBusUtils.postSticky(new Event.EventAct("all"));
-                ////		   Intent intent2 = new Intent(context, SelInOutBoxTwoActivity.class);
-                ////		   context.startActivity(intent2);
-                //
-                //		}else if (nojump.equals("form")){
-                //		   if (bing ==null){
-                //			context.startActivity(new Intent(context, OutFormConfirmActivity.class));
-                //		   }else {//绑定患者的套餐
-                //			context.startActivity(new Intent(context, OutMealBingConfirmActivity.class));
-                //		   }
-                //
-                //		}
-
             }
         });
 
@@ -687,6 +660,11 @@ public class DialogUtils {
 
     }
 
+    /**
+     * 激活医院信息的
+     * @param context
+     * @param activity
+     */
     public static void showRegisteDialog(final Context context, Activity activity) {
 
         RegisteDialog.Builder builder = new RegisteDialog.Builder(context, activity);
@@ -700,16 +678,13 @@ public class DialogUtils {
         builder.setOnSettingListener(new RegisteDialog.Builder.SettingListener() {
             @Override
             public void getDialogDate(
-                    String deptName, String branchCode, String deptId, String storehouseCode,
-                    String operationRoomNo, Dialog dialog) {
+                    String deptName, String branchCode, String deptId, String storehouseCode, Dialog dialog) {
                 LogUtils.i("RegisteDialog", "deptName  " + deptName);
                 LogUtils.i("RegisteDialog", "branchCode  " + branchCode);
                 LogUtils.i("RegisteDialog", "deptId  " + deptId);
                 LogUtils.i("RegisteDialog", "storehouseCode  " + storehouseCode);
-                LogUtils.i("RegisteDialog", "operationRoomNo  " + operationRoomNo);
                 EventBusUtils.postSticky(
-                        new Event.dialogEvent(deptName, branchCode, deptId, storehouseCode,
-                                operationRoomNo, dialog));
+                        new Event.dialogEvent(deptName, branchCode, deptId, storehouseCode,dialog));
             }
         });
 
@@ -741,7 +716,7 @@ public class DialogUtils {
      * @param patientInfos
      * @param onClickBackListener
      */
-    public static RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
+    public static RvDialog2.Builder showRvDialog2(Activity activity, final Context context, List<BingFindSchedulesBean.PatientInfoVos> patientInfos, PatientConnActivity.OnClickBackListener onClickBackListener) {
         RvDialog2.Builder builder = new RvDialog2.Builder(activity, context, patientInfos);
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -766,6 +741,7 @@ public class DialogUtils {
         Window window = rvDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.width = (int) (display.getWidth()); //设置宽度
+        lp.height = (int) (display.getHeight()); //设置宽度
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setAttributes(lp);
         return builder;

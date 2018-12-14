@@ -88,7 +88,6 @@ public class TempPatientDialog extends Dialog {
         List<Movie> mMovies1 = new ArrayList<>();
         private CreatTempPopupWindow mPopWindow;
         private TextView mGoneOneType;
-        private List<HospNameBean.TbaseHospitalsBean> mHospitalsName;
         private TextView mGoneFiveType;
         private TextView mGoneFourType;
         private TextView mGoneThreeType;
@@ -247,10 +246,10 @@ public class TempPatientDialog extends Dialog {
                     LogUtils.i(TAG, "result getHospRooms   " + result);
 
                     List<SelectBean> list = new ArrayList<>();
-                    List<HospNameBean.TbaseOperationRoomsBean> tbaseOperationRooms = hospNameBean.getTbaseOperationRooms();
+                    List<HospNameBean.OperationRooms> tbaseOperationRooms = hospNameBean.getOperationRooms();
                     for (int i = 0; i < tbaseOperationRooms.size(); i++) {
 
-                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomNoName(),tbaseOperationRooms.get(i).getRoomNo()));
+                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomName(), tbaseOperationRooms.get(i).getRoomNo()));
                     }
                     setAdapterDate(list, mAddressTwo, mGoneTwoType);
                 }

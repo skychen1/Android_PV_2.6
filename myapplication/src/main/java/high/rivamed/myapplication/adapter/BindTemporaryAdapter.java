@@ -18,7 +18,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 /**
  * 创建临时患者
  */
-public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfosBean, BaseViewHolder> {
+public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfoVos, BaseViewHolder> {
     private TextView mSeven_two;
     private TextView mSeven_three;
     private TextView mSeven_four;
@@ -26,18 +26,18 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     private TextView mSeven_six;
     private TextView mSeven_seven;
     public int mSelectedPos;
-    private List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
+    private List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
 
 
     public BindTemporaryAdapter(
-            int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+            int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
         super(layout, patientInfos);
         this.patientInfos = patientInfos;
     }
 
     @Override
     protected void convert(
-            BaseViewHolder helper, BingFindSchedulesBean.PatientInfosBean item) {
+            BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
@@ -65,9 +65,9 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         }else {
             mSeven_two.setText(item.getPatientName());
         }
-        mSeven_four.setText(item.getScheduleDateTime());
-        mSeven_five.setText(item.getOperationSurgeonName());
-        mSeven_six.setText(item.getOperatingRoomNoName());
+        mSeven_four.setText(item.getSurgeryTime());
+        mSeven_five.setText(item.getDoctorName());
+        mSeven_six.setText(item.getRoomName());
 
 	 if (item.getPatientId().equals("virtual")) {
 	     mSeven_three.setText("");

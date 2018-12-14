@@ -7,16 +7,16 @@ package high.rivamed.myapplication.bean;
  */
 public class PatientConnBean {
     /**
-     * lPatsInId : 180810sl02256931
+     * patientId : 180810sl02256931
      * operationScheduleId : 40288299657a150301657a24dbdb0009
      * accountId : 8a80cb8164d9b3940164da1bff760005
-     * thingCode : 8a80cb8164d9b3940164da1bff760005
+     * thingId : 8a80cb8164d9b3940164da1bff760005
      */
 
-    private String lPatsInId;
+    private String patientId;
     private String operationScheduleId;
     private String accountId;
-    private String thingCode;
+    private String thingId;
     private String tempPatientId;
 
     public String getTempPatientId() {
@@ -27,20 +27,20 @@ public class PatientConnBean {
         this.tempPatientId = tempPatientId;
     }
 
-    public String getThingCode() {
-        return thingCode;
+    public String getThingId() {
+        return thingId;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
-    public String getLPatsInId() {
-        return lPatsInId;
+    public String getPatientId() {
+        return patientId;
     }
 
-    public void setLPatsInId(String lPatsInId) {
-        this.lPatsInId = lPatsInId;
+    public void setPatientId(String lPatsInId) {
+        this.patientId = lPatsInId;
     }
 
     public String getOperationScheduleId() {

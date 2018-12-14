@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -27,7 +27,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 
-public class StockLeftDownAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
    private TextView mSeven_one;
    private TextView mSeven_two;
@@ -45,7 +45,7 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<TCstInventoryVo, Base
    private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
    public CheckBox mMCheckBox;
 
-   public StockLeftDownAdapter(int layout, List<TCstInventoryVo> inventoryVos, int size) {
+   public StockLeftDownAdapter(int layout, List<InventoryVo> inventoryVos, int size) {
 	super(layout, inventoryVos);
 	this.mSize = size;
 	this.mData = inventoryVos;
@@ -64,7 +64,7 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<TCstInventoryVo, Base
    }
 
    @Override
-   protected void convert(final BaseViewHolder helper, TCstInventoryVo item) {
+   protected void convert(final BaseViewHolder helper, InventoryVo item) {
 	Log.i("xxx", "xxxxxxxxxxxxxxxxxx");
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
@@ -72,12 +72,12 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<TCstInventoryVo, Base
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 	   findId(helper, mSize);
-	   int five = item.getStopFlag();
+	   int five = item.getExpireStatus();
 	   mSeven_one.setText(item.getCstName());
 	   mSeven_two.setText(item.getCstSpec());
 	   mSeven_three.setText(item.getCount()+"");
 	   mSeven_four.setText(item.getDeviceName());
-	   mSeven_five.setText(item.getExpiration());
+	   mSeven_five.setText(item.getExpirationText());
 	   UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);
 
    }

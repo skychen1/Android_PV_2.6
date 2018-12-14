@@ -40,7 +40,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
-import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.RvDialog2;
@@ -49,9 +48,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
-import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /*
  * 选择临时患者页面
@@ -73,14 +70,14 @@ public class PatientConnActivity extends BaseSimpleActivity {
    RecyclerView mRecyclerview;
    @BindView(R.id.refreshLayout)
    public SmartRefreshLayout mRefreshLayout;
-   private List<BingFindSchedulesBean.PatientInfosBean> mPatientInfos = new ArrayList<>();
+   private List<BingFindSchedulesBean.PatientInfoVos> mPatientInfos = new ArrayList<>();
    private RvDialog2.Builder mBuilder;
    private int    page    = 1;
    private String mString = "";
    List<String> titeleList = null;
    public int           mSize;
    public TableTypeView mTypeView;
-   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
+   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
 
    @Override
    protected void onResume() {
@@ -96,6 +93,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
 	mBaseTabTvTitle.setText("选择临时患者");
 	mStockSearch.setVisibility(View.VISIBLE);
+	mBaseTabBack.setVisibility(View.VISIBLE);
 	initlistener();
    }
 
@@ -204,15 +202,15 @@ public class PatientConnActivity extends BaseSimpleActivity {
     * 获取所有未绑定临时患者
     */
    private void loadTempBingDate(String optienNameOrId) {
-	NetRequest.getInstance().findTempPatients(optienNameOrId, this, null, new BaseResult() {
+	NetRequest.getInstance().findTempPatients(optienNameOrId, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
 		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
 												 BingFindSchedulesBean.class);
-		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfos() != null) {
+		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfoVos() != null) {
 		   patientInfos.clear();
-		   patientInfos.addAll(bingFindSchedulesBean.getPatientInfos());
+		   patientInfos.addAll(bingFindSchedulesBean.getPatientInfoVos());
 		   if (patientInfos.size() > 0) {
 			patientInfos.get(0).setSelected(true);
 		   }
@@ -255,18 +253,17 @@ public class PatientConnActivity extends BaseSimpleActivity {
 			   }
 			   if (mPatientInfos != null) {
 				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setPatientName(bean.getRows().get(i).getPatientName());
 				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setOperationSurgeonName(
-					   bean.getRows().get(i).getOperationSurgeonName());
-				   data.setOperatingRoomNoName(
-					   bean.getRows().get(i).getOperatingRoomNoName());
-				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setDoctorName(
+					   bean.getRows().get(i).getDoctorName());
+				   data.setRoomName(
+					   bean.getRows().get(i).getRoomName());
+				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
-				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -317,18 +314,18 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				}
 			   } else {
 				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setPatientName(bean.getRows().get(i).getPatientName());
 				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setOperationSurgeonName(
-					   bean.getRows().get(i).getOperationSurgeonName());
-				   data.setOperatingRoomNoName(
-					   bean.getRows().get(i).getOperatingRoomNoName());
-				   data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				   data.setDoctorName(
+					   bean.getRows().get(i).getDoctorName());
+				   data.setRoomName(
+					   bean.getRows().get(i).getRoomName());
+				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
-				   data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -380,14 +377,12 @@ public class PatientConnActivity extends BaseSimpleActivity {
    //进行患者关联
    private void connPatient(int position, DialogInterface dialog) {
 	PatientConnBean bean = new PatientConnBean();
-	bean.setLPatsInId(mPatientInfos.get(position).getLpatsInId());
+	bean.setPatientId(mPatientInfos.get(position).getPatientId());
 	bean.setTempPatientId(
 		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
-	bean.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-	bean.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	LogUtils.i(TAG, "mGson.toJson(bean)   " + mGson.toJson(bean));
 	NetRequest.getInstance()
-		.tempPatientConnPatient(mGson.toJson(bean), this, null, new BaseResult() {
+		.tempPatientConnPatient(mGson.toJson(bean), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
@@ -395,10 +390,10 @@ public class PatientConnActivity extends BaseSimpleActivity {
 			   PatientConnResultBean bean = mGson.fromJson(result,
 										     PatientConnResultBean.class);
 			   if (bean.isOperateSuccess()) {
-				DialogUtils.showNoDialog(mContext, "关联患者成功", 2, "form", null);
+				DialogUtils.showNoDialog(mContext, bean.getMsg(), 2, "form", null);
 				loadTempBingDate("");
 			   } else {
-				ToastUtils.showShort("关联患者失败");
+				ToastUtils.showShort(bean.getMsg());
 			   }
 			} catch (Exception e) {
 			   ToastUtils.showShort("关联患者失败");

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.rivamed.model.TagInfo;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -26,13 +26,31 @@ import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
 
 public class Event {
     /**
+     * 快速开柜重新扫描
+     */
+    public static class EventFastTimeStart {
+        public boolean b;
+        public EventFastTimeStart(boolean b) {
+            this.b = b;
+        }
+    }
+    /**
+     * 快速开柜重新扫描
+     */
+    public static class EventFastMoreScan {
+        public boolean b;
+        public EventFastMoreScan(boolean b) {
+            this.b = b;
+        }
+    }
+    /**
      * 快速入柜的数据
      */
     public static class EventInDto {
-        public TCstInventoryDto outDto;
-        public TCstInventoryDto inDto;
+        public InventoryDto outDto;
+        public InventoryDto inDto;
 
-        public EventInDto(TCstInventoryDto outDto,TCstInventoryDto inDto) {
+        public EventInDto(InventoryDto outDto, InventoryDto inDto) {
             this.outDto = outDto;
             this.inDto = inDto;
         }
@@ -41,20 +59,29 @@ public class Event {
      * 快速开柜的数据
      */
     public static class EventOutDto {
-        public TCstInventoryDto cstInventoryDto;
-        public String json;
+        public InventoryDto inventoryDto;
+        public int       inSize;
+        public int       outSize;
+        public String       type;
 
-        public EventOutDto(TCstInventoryDto cstInventoryDto, String json) {
-            this.cstInventoryDto = cstInventoryDto;
-            this.json = json;
+        public EventOutDto(InventoryDto inventoryDto, int inSize,int outSize) {
+            this.inventoryDto = inventoryDto;
+            this.inSize = inSize;
+            this.outSize = outSize;
+        }
+        public EventOutDto(InventoryDto inventoryDto, int inSize,int outSize,String type) {
+            this.inventoryDto = inventoryDto;
+            this.inSize = inSize;
+            this.outSize = outSize;
+            this.type = type;
         }
     }
     /**
      * 耗材详情
      */
     public static class EventStockDetailVo {
-        public TCstInventoryVo vosBean;
-        public EventStockDetailVo(TCstInventoryVo dto) {
+        public InventoryVo vosBean;
+        public EventStockDetailVo(InventoryVo dto) {
             this.vosBean = dto;
         }
     }
@@ -62,13 +89,13 @@ public class Event {
      * 选择操作的数据传递需要绑定患者的
      */
     public static class EventOutBoxBingDto {
-        public TCstInventoryDto mTCstInventoryDto;
-        public TCstInventoryDto mPatientDto;
-        public EventOutBoxBingDto(TCstInventoryDto dto) {
-            this.mTCstInventoryDto = dto;
+        public InventoryDto mInventoryDto;
+        public InventoryDto mPatientDto;
+        public EventOutBoxBingDto(InventoryDto dto) {
+            this.mInventoryDto = dto;
         }
-        public EventOutBoxBingDto(TCstInventoryDto dto,TCstInventoryDto patientdto) {
-            this.mTCstInventoryDto = dto;
+        public EventOutBoxBingDto(InventoryDto dto, InventoryDto patientdto) {
+            this.mInventoryDto = dto;
             this.mPatientDto = patientdto;
         }
     }
@@ -76,9 +103,9 @@ public class Event {
      * 选择操作的数据传递
      */
     public static class EventSelInOutBoxDto {
-        public TCstInventoryDto mTCstInventoryDto;
-        public EventSelInOutBoxDto(TCstInventoryDto dto) {
-            this.mTCstInventoryDto = dto;
+        public InventoryDto mInventoryDto;
+        public EventSelInOutBoxDto(InventoryDto dto) {
+            this.mInventoryDto = dto;
         }
     }
     /**
@@ -271,9 +298,9 @@ public class Event {
         public String operationScheduleId;
         public int position;
         public boolean create;
-        public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+        public List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
-        public EventCheckbox(String name, String mId, String idNo, String scheduleDateTime, String operatingRoomNo, String operatingRoomNoName, String sex, String deptId, boolean create, String type, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+        public EventCheckbox(String name, String mId, String idNo, String scheduleDateTime, String operatingRoomNo, String operatingRoomNoName, String sex, String deptId, boolean create, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
             this.deptId = deptId;
             this.id = mId;
             this.mString = name;
@@ -288,7 +315,7 @@ public class Event {
             this.mTbaseDevices = mTbaseDevices;
         }
 
-        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices) {
+        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
             this.mString = name;
             this.id = id;
             this.mTempPatientId = mTempPatientId;
@@ -348,13 +375,12 @@ public class Event {
         public String branchCode;
         public String deptName;
 
-        public dialogEvent(String deptName, String branchCode, String deptId, String storehouseCode, String operationRoomNo, Dialog dialog) {
+        public dialogEvent(String deptName, String branchCode, String deptId, String storehouseCode,  Dialog dialog) {
 
             this.deptId = deptId;
             this.deptName = deptName;
             this.storehouseCode = storehouseCode;
             this.dialog = dialog;
-            this.operationRoomNo = operationRoomNo;
             this.branchCode = branchCode;
         }
     }
@@ -376,13 +402,13 @@ public class Event {
     }
 
     public static class timelyDate {
-        public String type;
-        public TCstInventoryDto tCstInventoryDto;
+        public String       type;
+        public InventoryDto mInventoryDto;
 
-        public timelyDate(String type, TCstInventoryDto tCstInventoryDto) {
+        public timelyDate(String type, InventoryDto inventoryDto) {
 
             this.type = type;
-            this.tCstInventoryDto = tCstInventoryDto;
+            this.mInventoryDto = inventoryDto;
 
         }
     }
@@ -495,9 +521,9 @@ public class Event {
     public static class EventBillStock implements Serializable {
         public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
         public OrderSheetBean.RowsBean orderSheetBean;
-        public List<BoxSizeBean.TbaseDevicesBean> tbaseDevices;
+        public List<BoxSizeBean.DevicesBean> tbaseDevices;
 
-        public EventBillStock(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.TbaseDevicesBean> tbaseDevices) {
+        public EventBillStock(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
             this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
             this.orderSheetBean = orderSheetBean;
             this.tbaseDevices = tbaseDevices;
@@ -523,9 +549,9 @@ public class Event {
     public static class EventBillOrder {
         public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
         public OrderSheetBean.RowsBean orderSheetBean;
-        public List<BoxSizeBean.TbaseDevicesBean> tbaseDevices;
+        public List<BoxSizeBean.DevicesBean> tbaseDevices;
 
-        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.TbaseDevicesBean> tbaseDevices) {
+        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
             this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
             this.orderSheetBean = orderSheetBean;
             this.tbaseDevices = tbaseDevices;

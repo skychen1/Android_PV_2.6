@@ -23,16 +23,16 @@ public class SocketLeftTopBean implements Serializable{
     */
 
    private int id;
-   private String thingCode;
+   private String thingId;
    private List<CstExpirationVosBean> cstExpirationVos;
 
    public int getId() { return id;}
 
    public void setId(int id) { this.id = id;}
 
-   public String getThingCode() { return thingCode;}
+   public String getThingId() { return thingId;}
 
-   public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+   public void setThingId(String thingId) { this.thingId = thingId;}
 
    public List<CstExpirationVosBean> getCstExpirationVos() { return cstExpirationVos;}
 
@@ -48,14 +48,14 @@ public class SocketLeftTopBean implements Serializable{
 	 * nearExpireCount : 0
 	 */
 
-	private String deviceCode;
+	private String deviceId;
 	private String deviceName;
 	private int    expireCount;
 	private int    nearExpireCount;
 
-	public String getDeviceCode() { return deviceCode;}
+	public String getDeviceId() { return deviceId;}
 
-	public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
+	public void setDeviceId(String deviceId) { this.deviceId = deviceId;}
 
 	public String getDeviceName() { return deviceName;}
 

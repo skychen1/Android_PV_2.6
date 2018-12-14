@@ -19,8 +19,8 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -39,7 +39,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAIL
  */
 
 public class TimelyDetailsActivity extends BaseSimpleActivity {
-   public TCstInventoryDto mDto;
+   public InventoryDto mDto;
    @BindView(R.id.timely_name)
    TextView           mTimelyName;
    @BindView(R.id.timely_number)
@@ -61,7 +61,7 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTimelyEvent(Event.timelyDate event) {
 	String s = event.type;
-	mDto = event.tCstInventoryDto;
+	mDto = event.mInventoryDto;
    }
    @Override
    protected int getContentLayoutId() {
@@ -79,12 +79,12 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
    private void loadTimelyDetailsDate() {
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+	List<InventoryVo> inventoryVos = mDto.getInventoryVos();
 	int number = 0;
 	int Actual = 0;
-	for (TCstInventoryVo TCstInventoryVo : tCstInventoryVos) {
-	   number += TCstInventoryVo.getCountStock();
-	   Actual += TCstInventoryVo.getCountActual();
+	for (InventoryVo InventoryVo : inventoryVos) {
+	   number += InventoryVo.getCountStock();
+	   Actual += InventoryVo.getCountActual();
 	}
 	if (Actual == number) {
 	   mTimelyNumber.setText(Html.fromHtml("实际扫描数：<font color='#262626'><big>" + Actual +
@@ -101,7 +101,7 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, tCstInventoryVos, titeleList, mSize, mLinearLayout,
+	mTypeView = new TableTypeView(this, this, inventoryVos, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY,
 						STYPE_TIMELY_FOUR_DETAILS, -10);
    }

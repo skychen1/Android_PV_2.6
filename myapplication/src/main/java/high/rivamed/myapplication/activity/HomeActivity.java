@@ -23,7 +23,7 @@ import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag2;
+import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
@@ -224,9 +224,9 @@ public class HomeActivity extends SimpleActivity {
     * 填充右边fragment
     */
    public void initData() {
-	SupportFragment firstFragment = findFragment(ContentConsumeOperateFrag2.class);
+	SupportFragment firstFragment = findFragment(ContentConsumeOperateFrag.class);
 	if (firstFragment == null) {
-	   mFragments[CONSUME] = ContentConsumeOperateFrag2.newInstance();
+	   mFragments[CONSUME] = ContentConsumeOperateFrag.newInstance();
 	   mFragments[RUNWATE] = ContentRunWateFrag.newInstance();
 	   mFragments[STOCK] = ContentStockStatusFrag.newInstance();
 	   mFragments[CHECK] = ContentTimelyCheckFrag.newInstance();

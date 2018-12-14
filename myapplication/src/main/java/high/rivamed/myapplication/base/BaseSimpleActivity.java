@@ -87,7 +87,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     public ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
     public ImageView mBaseTabBtnConn;
-    public  CountDownTimer mStarts;
+    public static CountDownTimer mStarts;
     public  boolean mIsClick;
     /**
      * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)

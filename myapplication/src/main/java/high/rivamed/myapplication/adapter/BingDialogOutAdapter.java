@@ -27,7 +27,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
  * 更新描述：   ${TODO}
  */
 public class BingDialogOutAdapter
-	extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfosBean, BaseViewHolder> {
+	extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfoVos, BaseViewHolder> {
    SparseBooleanArray mCheckStates;
    private TextView mSeven_two;
    private TextView mSeven_three;
@@ -35,9 +35,9 @@ public class BingDialogOutAdapter
    private TextView mSeven_five;
    private TextView mSeven_six;
    private int mSelectedPos = 0;
-   private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
+   private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
    public BingDialogOutAdapter(
-	   int layout, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+	   int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
       super(layout, patientInfos);
       this.patientInfos=patientInfos;
    }
@@ -46,7 +46,7 @@ public class BingDialogOutAdapter
    }
    @Override
    protected void convert(
-	   BaseViewHolder helper, BingFindSchedulesBean.PatientInfosBean item) {
+	   BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
       if (mSelectedPos==0){
 	   patientInfos.get(mSelectedPos).setSelected(true);
 	}
@@ -69,9 +69,9 @@ public class BingDialogOutAdapter
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_two.setText(item.getPatientName());
 	mSeven_three.setText(item.getPatientId());
-	mSeven_four.setText(item.getScheduleDateTime());
-	mSeven_five.setText(item.getOperationSurgeonName());
-	mSeven_six.setText(item.getOperatingRoomNoName());
+	mSeven_four.setText(item.getSurgeryTime());
+	mSeven_five.setText(item.getDoctorName());
+	mSeven_six.setText(item.getRoomName());
 	mCheckBox.setOnCheckedChangeListener(null);
 	int position = helper.getAdapterPosition();
 	mCheckBox.setChecked(item.isSelected());

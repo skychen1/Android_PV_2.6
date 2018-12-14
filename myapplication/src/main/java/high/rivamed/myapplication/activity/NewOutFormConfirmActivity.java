@@ -52,7 +52,7 @@ import high.rivamed.myapplication.bean.OutFromConfirmRequestBean;
 import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -174,7 +174,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    public TableTypeView mTypeView;
    List<String> titeleList = null;
 
-   public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   public List<InventoryVo> mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
    /**
     * 根据EPC请求网络参数
     */
@@ -421,7 +421,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	outFromConfirmRequestBean.setTransReceiveOrderDetailVos(mTransReceiveOrderDetailVosBean);
 	LogUtils.i(TAG, "json   " + mGson.toJson(outFromConfirmRequestBean));
 	NetRequest.getInstance()
-		.findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this, null,
+		.findBillStockByEpc(mGson.toJson(outFromConfirmRequestBean), this,
 					  new BaseResult() {
 					     @Override
 					     public void onSucceed(String result) {
@@ -482,7 +482,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    private void sureTransReceiveOrder() {
 	LogUtils.i(TAG, "mAllOutFormConfirmRequest   " + mGson.toJson(mAllOutFormConfirmRequest));
 	NetRequest.getInstance()
-		.sureReceiveOrder(mGson.toJson(mAllOutFormConfirmRequest), this, null,
+		.sureReceiveOrder(mGson.toJson(mAllOutFormConfirmRequest), this,
 					new BaseResult() {
 					   @Override
 					   public void onSucceed(String result) {

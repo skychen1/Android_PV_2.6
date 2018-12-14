@@ -1,10 +1,8 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -24,7 +22,7 @@ import high.rivamed.myapplication.base.BaseTimelyActivity;
 import high.rivamed.myapplication.bean.AllOutBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
+import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -32,7 +30,6 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -68,7 +65,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
     private LoadingDialog.Builder mLoading;
     public ArrayList<String> mDoorList = new ArrayList<>();
     private Map<String, String> mEPCDatess = new TreeMap<>();
-    private TCstInventoryDto mTCstInventoryDtoTwo;
+    private InventoryDto mInventoryDtoTwo;
 
     /**
      * 倒计时结束发起
@@ -83,7 +80,6 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
     /**
      * 倒计时结束发起
-     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -169,7 +165,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
         }
         LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
         String toJson = getEpcDtoString(mEPCDatess);
-        putAllInEPCDate(toJson);
+//        putAllInEPCDate(toJson);
 
     }
 
@@ -238,7 +234,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
                 } else {
                     //确认
                     mIntentType = 1;
-                    if (mTCstInventoryVos != null) {
+                    if (mInventoryVos != null) {
                         setDate(mIntentType);
                     } else {
                         ToastUtils.showShort("数据异常");
@@ -252,7 +248,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
                     return;
                 } else {
                     mIntentType = 2;
-                    if (mTCstInventoryVos != null) {
+                    if (mInventoryVos != null) {
                         setDate(mIntentType);
                     } else {
                         ToastUtils.showShort("数据异常");
@@ -262,8 +258,8 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
             //	   case R.id.timely_open_door:
             //		mStarts.cancel();
             //
-            //		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-            //		mTCstInventoryDto.gettCstInventoryVos().clear();
+            //		List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
+            //		mInventoryDto.getInventoryVos().clear();
             //		deviceInventoryVos.clear();
             //		for (String deviceInventoryVo : mEthDeviceIdBack) {
             //		   String deviceCode = deviceInventoryVo;
@@ -279,7 +275,7 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
 
         mEPCDate.clear();
         mEPCDatess.clear();
-        mTCstInventoryDto.gettCstInventoryVos().clear();
+        mInventoryDto.getInventoryVos().clear();
 
         for (String deviceInventoryVo : mEthDeviceIdBack) {
             String deviceCode = deviceInventoryVo;
@@ -327,12 +323,12 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
      */
     private void setDate(int mIntentType) {
 
-        TCstInventoryDto dto = new TCstInventoryDto();
-        dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-        dto.settCstInventoryVos(mTCstInventoryVos);
-        //	dto.setOperation(mTCstInventoryDto.getOperation());
+        InventoryDto dto = new InventoryDto();
+        dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+        dto.setInventoryVos(mInventoryVos);
+        //	dto.setOperation(mInventoryDto.getOperation());
         dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-        dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+        dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 
         String s = mGson.toJson(dto);
         LogUtils.i(TAG, "返回  " + s);
@@ -355,45 +351,45 @@ public class InBoxAllTwoActivity extends BaseTimelyActivity {
         });
     }
 
-    /**
-     * 快速开柜入柜查询
-     */
-    private void putAllInEPCDate(String json) {
-        NetRequest.getInstance().putAllInEPCDate(json, this, null, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i(TAG, "result mObject   " + result);
-                mTCstInventoryDtoTwo = mGson.fromJson(result, TCstInventoryDto.class);
-
-                String string = null;
-                if (mTCstInventoryDtoTwo.getErrorEpcs() != null &&
-                        mTCstInventoryDtoTwo.getErrorEpcs().size() > 0) {
-                    string = StringUtils.listToString(mTCstInventoryDtoTwo.getErrorEpcs());
-                    ToastUtils.showLong(string);
-                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-                }
-                if (mTCstInventoryDtoTwo.gettCstInventoryVos() != null &&
-                        mTCstInventoryDtoTwo.gettCstInventoryVos().size() != 0) {
-                    //		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
-                    EventBusUtils.postSticky(mTCstInventoryDtoTwo);
-                } else {
-                    if (mTimelyLeft != null && mTimelyRight != null) {
-                        mTimelyLeft.setEnabled(false);
-                        mTimelyRight.setEnabled(false);
-                        mStarts.cancel();
-                        mTimelyRight.setText("确认并退出登录");
-                    }
-                    Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            EventBusUtils.postSticky(new Event.EventFrag("START1"));
-                            finish();
-                        }
-                    }, 3000);
-                }
-            }
-        });
-    }
+//    /**
+//     * 快速开柜入柜查询
+//     */
+//    private void putAllInEPCDate(String json) {
+//        NetRequest.getInstance().putAllInEPCDate(json, this,  new BaseResult() {
+//            @Override
+//            public void onSucceed(String result) {
+//                LogUtils.i(TAG, "result mObject   " + result);
+//                mInventoryDtoTwo = mGson.fromJson(result, InventoryDto.class);
+//
+//                String string = null;
+//                if (mInventoryDtoTwo.getErrorEpcs() != null &&
+//                        mInventoryDtoTwo.getErrorEpcs().size() > 0) {
+//                    string = StringUtils.listToString(mInventoryDtoTwo.getErrorEpcs());
+//                    ToastUtils.showLong(string);
+//                    MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//                }
+//                if (mInventoryDtoTwo.getInventoryVos() != null &&
+//                    mInventoryDtoTwo.getInventoryVos().size() != 0) {
+//                    //		   EventBusUtils.postSticky(new Event.EventAct(mActivityType));
+//                    EventBusUtils.postSticky(mInventoryDtoTwo);
+//                } else {
+//                    if (mTimelyLeft != null && mTimelyRight != null) {
+//                        mTimelyLeft.setEnabled(false);
+//                        mTimelyRight.setEnabled(false);
+//                        mStarts.cancel();
+//                        mTimelyRight.setText("确认并退出登录");
+//                    }
+//                    Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+//                    new Handler().postDelayed(new Runnable() {
+//                        public void run() {
+//                            EventBusUtils.postSticky(new Event.EventFrag("START1"));
+//                            finish();
+//                        }
+//                    }, 3000);
+//                }
+//            }
+//        });
+//    }
 
     @Override
     protected void onDestroy() {

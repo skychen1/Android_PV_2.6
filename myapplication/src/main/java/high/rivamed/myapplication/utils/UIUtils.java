@@ -22,6 +22,7 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 
+import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
@@ -211,8 +212,8 @@ public class UIUtils {
 //	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
 	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
 	if (configBean!=null){
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-	   for (ConfigBean.TCstConfigVosBean configType :tCstConfigVos) {
+	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+	   for (ConfigBean.ThingConfigVosBean configType :tCstConfigVos) {
 		if (code.equals(configType.getCode())){
 		   return true;
 		}
@@ -220,27 +221,7 @@ public class UIUtils {
 	}
 	return false;
    }
-   /**
-    * 获取配置项reader的val
-    * @param context
-    * @param code
-    * @return
-    */
-   public static String getConfigReaderType(Context context,String code) {
-	Gson gson = new Gson();
-	String string = SPUtils.getString(context, SAVE_CONFIG_STRING);
-//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
-	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
-	if (configBean!=null){
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
-	   for (ConfigBean.TCstConfigVosBean configType :tCstConfigVos) {
-		if (code.equals(configType.getCode())){
-		   return configType.getValue();
-		}
-	   }
-	}
-	return "1";
-   }
+
    /**
     * 获取权限配置主按钮
     * @param context
@@ -280,5 +261,9 @@ public class UIUtils {
 	   }
 	}
 	return false;
+   }
+   public static String getRefreshToken(){
+	String RefreshToken = SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN);
+      return RefreshToken;
    }
 }

@@ -19,8 +19,8 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -56,9 +56,9 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 
    TableTypeView mTypeView;
    List<String> titeleList = null;
-   public  int                   mSize;
-   private List<TCstInventoryVo> mStockDetailsDownList;
-   private TCstInventoryVo       mStockDetailsTopBean;
+   public  int               mSize;
+   private List<InventoryVo> mStockDetailsDownList;
+   private InventoryVo       mStockDetailsTopBean;
 
    /**
     * 拿到耗材详情的数据
@@ -85,7 +85,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
    private void loadStockDetails() {
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材详情");
-	String deviceCode = mStockDetailsTopBean.getDeviceCode();
+	String deviceCode = mStockDetailsTopBean.getDeviceId();
 	String cstId = mStockDetailsTopBean.getCstCode();
 	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
 	titeleList = Arrays.asList(array);
@@ -95,8 +95,8 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 	   public void onSucceed(String result) {
 
 		LogUtils.i(TAG, "result  " + result);
-		TCstInventoryDto tCstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
-		mStockDetailsDownList = tCstInventoryDto.gettCstInventoryVos();
+		InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
+		mStockDetailsDownList = inventoryDto.getInventoryVos();
 		mTimelyNumber.setText(Html.fromHtml(
 			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
 			"</big></font>"));

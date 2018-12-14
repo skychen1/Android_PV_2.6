@@ -127,7 +127,7 @@ public class ReciveBillFrag extends SimpleFragment {
     /**
      * 柜子信息
      */
-    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices = new ArrayList<>();
+    private List<BoxSizeBean.DevicesBean> mTbaseDevices = new ArrayList<>();
     /**
      * 是否可以触发事件跳转界面
      */
@@ -230,8 +230,8 @@ public class ReciveBillFrag extends SimpleFragment {
                     mTbaseDevices.clear();
                     List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
                     for (String deviceCode : deviceCodes) {
-                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
-                        oneDoor.setDeviceCode(deviceCode);
+                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                        oneDoor.setDeviceId(deviceCode);
                         if (!TextUtils.isEmpty(deviceCode)) {
                             mTbaseDevices.add(oneDoor);
                         }
@@ -274,7 +274,7 @@ public class ReciveBillFrag extends SimpleFragment {
     }
 
     public void getStockByOrderId(String Id) {
-        NetRequest.getInstance().findStockByOrderId(Id, this, null, new BaseResult() {
+        NetRequest.getInstance().findStockByOrderId(Id, this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "getStockByOrderId   " + result);
@@ -306,8 +306,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
                     List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceCodes();
                     for (String deviceCode : deviceCodes) {
-                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
-                        oneDoor.setDeviceCode(deviceCode);
+                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                        oneDoor.setDeviceId(deviceCode);
                         if (deviceCode != null) {
                             mTbaseDevices.add(oneDoor);
                         }

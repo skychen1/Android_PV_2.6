@@ -19,8 +19,8 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -51,8 +51,8 @@ public class TimelyProfitActivity extends BaseSimpleActivity{
 
    TableTypeView mTypeView;
    List<String> titeleList = null;
-   public  int                   mSize;
-   public TCstInventoryDto mDto;
+   public int          mSize;
+   public InventoryDto mDto;
 
    /**
     * 盘点详情、盘亏、盘盈
@@ -61,7 +61,7 @@ public class TimelyProfitActivity extends BaseSimpleActivity{
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTimelyEvent(Event.timelyDate event) {
 	String s = event.type;
-	mDto = event.tCstInventoryDto;
+	mDto = event.mInventoryDto;
    }
    @Override
    protected int getContentLayoutId() {
@@ -79,13 +79,13 @@ public class TimelyProfitActivity extends BaseSimpleActivity{
    private void loadTimelyProfitDate() {
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("盘盈耗材详情");
-	List<TCstInventoryVo> tCstInventoryVos = mDto.gettCstInventoryVos();
+	List<InventoryVo> inventoryVos = mDto.getInventoryVos();
 	mTimelyNumber.setText(
 		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
 	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	mTypeView = new TableTypeView(this, this, tCstInventoryVos, titeleList, mSize, mLinearLayout,
+	mTypeView = new TableTypeView(this, this, inventoryVos, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY, STYPE_PROFIT_TYPE, -10);
    }
 }

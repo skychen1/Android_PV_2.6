@@ -163,21 +163,21 @@ public class StoreRoomDialog extends Dialog {
 		}
 
 	   } else if (mType == 1) {//1.6移出
-		List<HospNameBean.TcstBaseStorehousesBean> storehouses = mHospNameBean.getTcstBaseStorehouses();
+		List<HospNameBean.StoreHousesBean> storehouses = mHospNameBean.getStorehouses();
 
 		for (int i = 0; i < storehouses.size(); i++) {
 		   DialogBean dialogBean = new DialogBean();
-		   dialogBean.setCode(storehouses.get(i).getStorehouseCode());
-		   dialogBean.setName(storehouses.get(i).getName());
+		   dialogBean.setCode(storehouses.get(i).getSthId());
+		   dialogBean.setName(storehouses.get(i).getSthName());
 		   list.add(dialogBean);
 		}
 
 	   } else {//调拨
-		List<HospNameBean.StoreHousesBean> storeHouses = mHospNameBean.getStoreHouses();
+		List<HospNameBean.StoreHousesBean> storeHouses = mHospNameBean.getStorehouses();
 		for (int i = 0; i < storeHouses.size(); i++) {
 		   DialogBean dialogBean = new DialogBean();
-		   dialogBean.setCode(storeHouses.get(i).getStorehouseCode());
-		   dialogBean.setName(storeHouses.get(i).getDeptNamesStr());
+		   dialogBean.setCode(storeHouses.get(i).getSthId());
+		   dialogBean.setName(storeHouses.get(i).getSthName());
 		   list.add(dialogBean);
 		}
 	   }
@@ -186,10 +186,10 @@ public class StoreRoomDialog extends Dialog {
 	   if (list.size() >= 8) {
 		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y450);
 	   } else if (list.size() < 3) {
-		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) *
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y160) *
 				 list.size();
 	   } else {
-		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y140) *
+		lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y160) *
 				 list.size() / 2;
 	   }
 	   sGridView.setLayoutParams(lps);

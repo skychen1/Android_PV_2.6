@@ -3,7 +3,6 @@ package high.rivamed.myapplication.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,17 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.gson.JsonSyntaxException;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
@@ -43,7 +31,6 @@ import org.litepal.LitePal;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +55,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
-import high.rivamed.myapplication.utils.MyValueFormatter;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
@@ -93,6 +79,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
+import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
+import static high.rivamed.myapplication.http.NetApi.URL_AUTHORITY_MENU;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
@@ -179,15 +168,18 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
 	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, "");
 	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
+	SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, "");
+	SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
+	SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
    }
 
-   private boolean getConfigTrue(List<ConfigBean.TCstConfigVosBean> tCstConfigVos) {
+   private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
       if (tCstConfigVos.size()==0){
 	   return false;
 	}else {
-	   for (ConfigBean.TCstConfigVosBean s : tCstConfigVos) {
+	   for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 		if (s.getCode().equals(CONFIG_013)) {
 		   return true;
 		}
@@ -201,13 +193,13 @@ public class LoginActivity extends SimpleActivity {
     */
    public void getConfigDate(int configType, String loginType) {
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), null, new BaseResult() {
+	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-		   List<ConfigBean.TCstConfigVosBean> tCstConfigVos = configBean.getTCstConfigVos();
+		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 			getUpDateVer(tCstConfigVos, configType, loginType);
 		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 			mLoginPass.setVisibility(View.VISIBLE);
@@ -229,7 +221,7 @@ public class LoginActivity extends SimpleActivity {
     * @param loginType
     */
    private void loginEnjoin(
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	if (getConfigTrue(tCstConfigVos)) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
@@ -349,7 +341,8 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(idCard);
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
-	data.setThingCode(SPUtils.getString(mContext, THING_CODE));
+	data.setThingId(SPUtils.getString(mContext, THING_CODE));
+	data.setSystemType("2");
 	LogUtils.i(TAG, "mGson.toJson(data)   " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
@@ -365,12 +358,14 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getAccountId());
 			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 						loginResultBean.getAppAccountInfoVo().getSex());
+			SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
+			SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, "登录失败！", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -386,7 +381,7 @@ public class LoginActivity extends SimpleActivity {
 	FingerLoginDto.UserFeatureInfoBean bean = new FingerLoginDto.UserFeatureInfoBean();
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
-	data.setThingCode(thingCode);
+	data.setThingId(thingCode);
 	LogUtils.i("Login", "THING_CODE validateLoginFinger  " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
 	   @Override
@@ -402,13 +397,15 @@ public class LoginActivity extends SimpleActivity {
 						loginResultBean.getAppAccountInfoVo().getAccountId());
 			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 						loginResultBean.getAppAccountInfoVo().getSex());
+			SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
+			SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
 			//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 			Intent intent = new Intent(mContext, HomeActivity.class);
 			mContext.startActivity(intent);
 			mContext.finish();
 		   } else {
-			Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 		   }
 		} catch (JsonSyntaxException e) {
 		   e.printStackTrace();
@@ -522,7 +519,7 @@ public class LoginActivity extends SimpleActivity {
     * 版本检测
     */
    public void getUpDateVer(
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	NetRequest.getInstance().checkVer(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -532,11 +529,11 @@ public class LoginActivity extends SimpleActivity {
 		// 本地版本号
 		String localVersion = PackageUtils.getVersionName(mContext);
 		// 网络版本
-		String netVersion = versionBean.getVersion();
+		String netVersion = versionBean.getSystemVersion().getVersion();
 		if (netVersion!=null) {
 		   int i = StringUtils.compareVersion(netVersion, localVersion);
 		   if (i == 1) {
-			mDesc = versionBean.getDesc();
+			mDesc = versionBean.getSystemVersion().getDescription();
 			showUpdateDialog(tCstConfigVos, configType, loginType);
 		   } else {
 			// 不需要更新
@@ -559,7 +556,7 @@ public class LoginActivity extends SimpleActivity {
     * 展现更新的dialog
     */
    private void showUpdateDialog(
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	UpDateDialog.Builder builder = new UpDateDialog.Builder(this);
 	builder.setTitle(UIUtils.getString(R.string.ver_title));
 	builder.setMsg(mDesc);
@@ -584,7 +581,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void downloadNewVersion(
-	   List<ConfigBean.TCstConfigVosBean> tCstConfigVos, int configType, String loginType) {
+	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
 	// 1.显示进度的dialog
 	ProgressDialog mDialog = new ProgressDialog(this, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
 	mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -597,7 +594,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void loadUpDataVersion(
-	   final ProgressDialog mDialog, List<ConfigBean.TCstConfigVosBean> tCstConfigVos,
+	   final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
 	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),

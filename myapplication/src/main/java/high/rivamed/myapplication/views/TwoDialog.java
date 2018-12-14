@@ -12,15 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.DialogUtils;
-import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
-
-import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -153,7 +146,7 @@ public class TwoDialog extends Dialog {
                 @Override
                 public void onClick(View view) {
                     if (mMsgTwo.contains("退出登录")) {
-                        NetRequest.getInstance().submitOrderCstInfo(this, null, new BaseResult() {
+                        NetRequest.getInstance().submitOrderCstInfo(this,  new BaseResult() {
                             @Override
                             public void onSucceed(String result) {
                                 Log.e("twoDialog", "result：receiveOrderId上传成功");

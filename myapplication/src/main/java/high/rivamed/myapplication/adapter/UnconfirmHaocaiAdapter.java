@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,7 +25,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class UnconfirmHaocaiAdapter
-	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+	extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
    private TextView mSeven_one;
    private TextView mSeven_two;
@@ -37,27 +37,27 @@ public class UnconfirmHaocaiAdapter
    private TextView mSeven_eight;
 
    public UnconfirmHaocaiAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo>  data) {
+	   int layoutResId, @Nullable List<InventoryVo>  data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	}
 	findId(helper);
-	int five = item.getStopFlag();
+	int five = item.getExpireStatus();
 	mSeven_one.setText("未使用");
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpiration());
+	mSeven_five.setText(item.getExpirationText());
 	mSeven_six.setText(item.getDeviceName());
-	mSeven_seven.setText(item.getLastUpdateDate());
+	mSeven_seven.setText(item.getUpdateTime());
 	mSeven_eight.setText(item.getUserName());
 
 	UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);

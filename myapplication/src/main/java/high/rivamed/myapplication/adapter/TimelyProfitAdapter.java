@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,7 +25,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新描述：   ${TODO}
  */
 public class TimelyProfitAdapter
-	extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+	extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
    private TextView mSeven_one;
    private TextView mSeven_two;
    private TextView mSeven_three;
@@ -34,13 +34,13 @@ public class TimelyProfitAdapter
    private TextView mSeven_six;
    private TextView mSeven_seven;
    public TimelyProfitAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
+	   int layoutResId, @Nullable List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -59,7 +59,7 @@ public class TimelyProfitAdapter
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
 	mSeven_three.setText(item.getCstSpec());
-	mSeven_four.setText(item.getExpiration());
+	mSeven_four.setText(item.getExpirationText());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(six+"");
 	mSeven_seven.setText(seven+"");
@@ -68,7 +68,7 @@ public class TimelyProfitAdapter
 	} else {
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-	int StopFlag = item.getStopFlag();
+	int StopFlag = item.getExpireStatus();
 	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_four);
    }
 }

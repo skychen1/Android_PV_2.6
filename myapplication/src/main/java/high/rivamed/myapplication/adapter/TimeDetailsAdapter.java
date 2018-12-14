@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -24,19 +24,19 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class TimeDetailsAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class TimeDetailsAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
    private TextView mSeven_one;
    private TextView mSeven_two;
    private TextView mSeven_three;
    private TextView mSeven_four;
    public TimeDetailsAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
+	   int layoutResId, @Nullable List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	findId(helper);
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
@@ -47,7 +47,7 @@ public class TimeDetailsAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
 	int Actual = item.getCountActual();
 
 	mSeven_one.setText(item.getEpc());
-	mSeven_two.setText(item.getExpiration());
+	mSeven_two.setText(item.getExpirationText());
 	mSeven_three.setText(Actual+"");
 	mSeven_four.setText(Stock+"");
 	if (Stock!=Actual) {
@@ -56,7 +56,7 @@ public class TimeDetailsAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 
-	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getStopFlag(), mSeven_two);
+	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getExpireStatus(), mSeven_two);
 
    }
    private void findId(BaseViewHolder helper) {

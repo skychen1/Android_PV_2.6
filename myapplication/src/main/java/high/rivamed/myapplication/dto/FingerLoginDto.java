@@ -13,7 +13,7 @@ public class FingerLoginDto {
      */
 
     private UserFeatureInfoBean userFeatureInfo;
-    private String thingCode;
+    private String thingId;
 
     public UserFeatureInfoBean getUserFeatureInfo() {
         return userFeatureInfo;
@@ -23,12 +23,12 @@ public class FingerLoginDto {
         this.userFeatureInfo = userFeatureInfo;
     }
 
-    public String getThingCode() {
-        return thingCode;
+    public String getThingId() {
+        return thingId;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
     public static class UserFeatureInfoBean {

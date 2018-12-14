@@ -19,13 +19,13 @@ public class BingFindSchedulesBean implements Serializable {
 
     /**
      * id : 0
-     * thingCode : 402882a064f9ab850164f9ad0a470000
-     * patientInfos : [{"patientName":"李四","patientId":"3213123","scheduleDateTime":"","operationSurgeonName":"","operatingRoomNoName":""},{"patientName":"张三","scheduleDateTime":"2018-08-03 11:54:46","operationSurgeonName":"王医生","operatingRoomNoName":"312312","patientId":"3231232"}]
+     * thingId : 402882a064f9ab850164f9ad0a470000
+     * patientInfos : [{"patientName":"李四","patientId":"3213123","surgeryTime":"","doctorName":"","roomName":""},{"patientName":"张三","surgeryTime":"2018-08-03 11:54:46","doctorName":"王医生","roomName":"312312","patientId":"3231232"}]
      */
 
-    private int id;
-    private String thingCode;
-    private List<PatientInfosBean> patientInfos = new ArrayList<>();
+    private int    id;
+    private String thingId;
+    private List<PatientInfoVos> patientInfoVos = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -35,47 +35,47 @@ public class BingFindSchedulesBean implements Serializable {
         this.id = id;
     }
 
-    public String getThingCode() {
-        return thingCode;
+    public String getThingId() {
+        return thingId;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
-    public List<PatientInfosBean> getPatientInfos() {
-        return patientInfos;
+    public List<PatientInfoVos> getPatientInfoVos() {
+        return patientInfoVos;
     }
 
-    public void setPatientInfos(
-            List<PatientInfosBean> patientInfos) {
-        this.patientInfos = patientInfos;
+    public void setPatientInfoVos(
+            List<PatientInfoVos> patientInfoVos) {
+        this.patientInfoVos = patientInfoVos;
     }
 
-    public static class PatientInfosBean {
+    public static class PatientInfoVos {
 
         /**
          * patientName : 李四
          * patientId : 3213123
-         * scheduleDateTime :
-         * operationSurgeonName :
-         * operatingRoomNoName :
+         * surgeryTime :
+         * doctorName :
+         * roomName :
          * tempPatientId
          */
         private boolean isSelected;
-        private String patientName;//名字
-        private String patientId;//id
-        private String scheduleDateTime;//手术时间
-        private String operationSurgeonName;//医生名字
-        private String operatingRoomNoName;//手术间
-        private String deptName;//科室
-        private String operationBeginDateTime;
-        private String updateTime;
-        private String deptId;//科室ID
-        private String operatingRoomNo;//手术间ID
-        private String idNo;//身份证
-        private String sex;//性别
-        private String tempPatientId;
+        private String  patientName;//名字
+        private String  patientId;//id
+        private String  surgeryTime;//手术时间
+        private String  doctorName;//医生名字
+        private String  roomName;//手术间
+        private String  deptName;//科室
+        private String  operationBeginDateTime;
+        private String  updateTime;
+        private String  deptId;//科室ID
+        private String  operatingRoomNo;//手术间ID
+        private String  idNo;//身份证
+        private String  sex;//性别
+        private String  tempPatientId;
         private boolean isCreate;
 
         public boolean isCreate() {
@@ -126,23 +126,15 @@ public class BingFindSchedulesBean implements Serializable {
             this.sex = sex;
         }
 
-        public String getScheduleDateTime() {
-            return scheduleDateTime;
+        public String getSurgeryTime() {
+            return surgeryTime;
         }
 
-        public void setScheduleDateTime(String scheduleDateTime) {
-            this.scheduleDateTime = scheduleDateTime;
+        public void setSurgeryTime(String surgeryTime) {
+            this.surgeryTime = surgeryTime;
         }
 
-        public String getLpatsInId() {
-            return lpatsInId;
-        }
 
-        public void setLpatsInId(String lpatsInId) {
-            this.lpatsInId = lpatsInId;
-        }
-
-        private String lpatsInId;
 
         public String getDeptName() {
             return deptName;
@@ -168,15 +160,15 @@ public class BingFindSchedulesBean implements Serializable {
             this.updateTime = updateTime;
         }
 
-        public String getLoperPatsId() {
-            return loperPatsId;
+        public String getSurgeryId() {
+            return surgeryId;
         }
 
-        public void setLoperPatsId(String loperPatsId) {
-            this.loperPatsId = loperPatsId;
+        public void setSurgeryId(String surgeryId) {
+            this.surgeryId = surgeryId;
         }
 
-        private String loperPatsId;
+        private String surgeryId;
 
         public String getOperationScheduleId() {
             return operationScheduleId;
@@ -213,22 +205,22 @@ public class BingFindSchedulesBean implements Serializable {
         }
 
 
-        public String getOperationSurgeonName() {
-            return operationSurgeonName;
+        public String getDoctorName() {
+            return doctorName;
         }
 
-        public void setOperationSurgeonName(
-                String operationSurgeonName) {
-            this.operationSurgeonName = operationSurgeonName;
+        public void setDoctorName(
+                String doctorName) {
+            this.doctorName = doctorName;
         }
 
-        public String getOperatingRoomNoName() {
-            return operatingRoomNoName;
+        public String getRoomName() {
+            return roomName;
         }
 
-        public void setOperatingRoomNoName(
-                String operatingRoomNoName) {
-            this.operatingRoomNoName = operatingRoomNoName;
+        public void setRoomName(
+                String roomName) {
+            this.roomName = roomName;
         }
     }
 }

@@ -9,7 +9,7 @@ public class CreatTempPatientBean {
 
 
     /**
-     * tTransOperationSchedule : {"idNo":"133232324444","name":"刘得到","operatingDeptCode":"245","operatingRoomNo":"1号","scheduleDateTime":"2018-08-26","sex":"男"}
+     * tTransOperationSchedule : {"idNo":"133232324444","name":"刘得到","operatingDeptCode":"245","operatingRoomNo":"1号","surgeryTime":"2018-08-26","sex":"男"}
      */
 
     private TTransOperationScheduleBean tTransOperationSchedule;
@@ -28,12 +28,18 @@ public class CreatTempPatientBean {
          * name : 刘得到
          * operatingDeptCode : 245
          * operatingRoomNo : 1号
-         * scheduleDateTime : 2018-08-26
+         * surgeryTime : 2018-08-26
          * sex : 男
          */
 
-        private String idNo;
-        private String name;
+        private String  idNo;
+        private String  name;
+        private String  deptId;
+        private String  operatingRoomNo;
+        private String  operatingRoomNoName;
+        private String  surgeryTime;
+        private String  sex;
+        private boolean isCreate;
 
         public String getDeptId() {
             return deptId;
@@ -42,14 +48,6 @@ public class CreatTempPatientBean {
         public void setDeptId(String deptId) {
             this.deptId = deptId;
         }
-
-        private String deptId;
-        private String operatingRoomNo;
-        private String operatingRoomNoName;
-        private String scheduleDateTime;
-        private String sex;
-        private boolean isCreate;
-
         public boolean isCreate() {
             return isCreate;
         }
@@ -91,12 +89,12 @@ public class CreatTempPatientBean {
             this.operatingRoomNo = operatingRoomNo;
         }
 
-        public String getScheduleDateTime() {
-            return scheduleDateTime;
+        public String getSurgeryTime() {
+            return surgeryTime;
         }
 
-        public void setScheduleDateTime(String scheduleDateTime) {
-            this.scheduleDateTime = scheduleDateTime;
+        public void setSurgeryTime(String surgeryTime) {
+            this.surgeryTime = surgeryTime;
         }
 
         public String getSex() {

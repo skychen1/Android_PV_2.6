@@ -77,16 +77,16 @@ public class RvDialog2 extends Dialog {
         private TextView mRigtht;
         private TextView mLeft;
         private int mLeftTextColor = -1;
-        private int mRightTextColor;
-        private String mType;
-        private TextView mDialogMsg;
-        private TextView mDialogRed;
-        private Activity mActivity;
-        private List<BingFindSchedulesBean.PatientInfosBean> patientInfos;
-        public RvDialog2 mDialog;
-        private LinearLayout mLlMain;
+        private int                                        mRightTextColor;
+        private String                                     mType;
+        private TextView                                   mDialogMsg;
+        private TextView                                   mDialogRed;
+        private Activity                                   mActivity;
+        private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
+        public RvDialog2                                   mDialog;
+        private LinearLayout                               mLlMain;
 
-        public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfosBean> patientInfos) {
+        public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
             this.mContext = context;
             this.mActivity = mActivity;
             this.patientInfos = patientInfos;
@@ -136,8 +136,8 @@ public class RvDialog2 extends Dialog {
             mDialog.setCancelable(false);
             View layout = inflater.inflate(R.layout.dialog_rv_layout, null);
             mDialog.addContentView(layout,
-                    new ViewGroup.LayoutParams(1536,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
 
             mSearchEt = (EditText) layout.findViewById(R.id.search_et);
             mSearchIvDelete = (ImageView) layout.findViewById(R.id.search_iv_delete);

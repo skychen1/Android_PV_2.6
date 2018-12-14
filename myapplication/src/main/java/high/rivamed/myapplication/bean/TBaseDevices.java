@@ -9,7 +9,7 @@ import java.util.List;
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
  * 创建时间:    2018/7/13 10:13
- * 描述:        TODO:
+ * 描述:        柜子
  * 包名:        high.rivamed.myapplication.bean
  * <p>
  * 更新者：     $$Author$$

@@ -49,7 +49,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
     public StockMiddlePagerAdapter mPagerAdapter;
 
     private LoadingDialog.Builder mBuilder;
-    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+    private List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
     @Override
     public int getLayoutId() {
@@ -68,7 +68,7 @@ public class StockRightUnconfFrag extends SimpleFragment {
             public void onSucceed(String result) {
                 //            mBuilder.mDialog.dismiss();
                 BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                mTbaseDevices = boxSizeBean.getTbaseDevices();
+                mTbaseDevices = boxSizeBean.getDevices();
                 if (mTbaseDevices != null) {
                     onSucceedDate();
                 }
@@ -107,14 +107,14 @@ public class StockRightUnconfFrag extends SimpleFragment {
                 if (position == 0) {
                     deviceCode = null;
                 } else {
-                    deviceCode = mTbaseDevices.get(position - 1).getDeviceCode();
+                    deviceCode = mTbaseDevices.get(position - 1).getDeviceId();
                 }
             } else {
-                deviceCode = mTbaseDevices.get(position).getDeviceCode();
+                deviceCode = mTbaseDevices.get(position).getDeviceId();
             }
 
             mStockLeftAlltop.setVisibility(View.GONE);
-            return PublicTimelyFrag.newInstance(mStockNumber, STYPE_STOCK_RIGHT, deviceCode);
+            return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_RIGHT, deviceCode);
         }
 
         @Override

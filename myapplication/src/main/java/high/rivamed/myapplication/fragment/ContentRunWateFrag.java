@@ -31,12 +31,10 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.RunWateBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -100,17 +98,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     RadioButton mSearchTypeThzc;
 
     public RunWatePagerAdapter mPagerAdapter;
-    private int TOTAL_SIZE = 26;
-    private final int PAGE_SIZE = 20;
-    private int mCount = 0;
-    private LoadingDialog.Builder mBuilder;
-    private String mStatus;
-    private String mTrim;
-    private String mStartTime;
-    private String mEndTime;
-    private List<RunWateBean.RowsBean> mWateBeanRows;
-    private String mDeviceCode;
-    public List<BoxSizeBean.TbaseDevicesBean> mTbaseDevices;
+    public List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
     public static ContentRunWateFrag newInstance() {
         Bundle args = new Bundle();
@@ -126,7 +114,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        //	mBuilder = DialogUtils.showLoading(mContext);
         initData();
 
     }
@@ -165,21 +152,17 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
             @Override
             public void onSucceed(String result) {
                 BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                mTbaseDevices = boxSizeBean.getTbaseDevices();
+                mTbaseDevices = boxSizeBean.getDevices();
                 if (mTbaseDevices != null) {
                     if (mTbaseDevices.size() > 1) {
-                        BoxSizeBean.TbaseDevicesBean devicesBean1 = new BoxSizeBean.TbaseDevicesBean();
+                        BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
                         devicesBean1.setDeviceName("全部");
-                        devicesBean1.setDeviceCode("");
+                        devicesBean1.setDeviceId("");
                         mTbaseDevices.add(0, devicesBean1);
                     }
-
-                    //		   mBuilder.mDialog.dismiss();
                     ArrayList<Fragment> fragments = new ArrayList<>();
-                    for (BoxSizeBean.TbaseDevicesBean devicesBean : mTbaseDevices) {
-
-                        //		      fragments.add(RunWatePagerFrag.newInstance(devicesBean.getDeviceCode()));
-                        fragments.add(new RunWatePagerFrag(devicesBean.getDeviceCode()));
+                    for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
+                        fragments.add(new RunWatePagerFrag(devicesBean.getDeviceId()));
                     }
                     mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
                     mHomeRunWateViewpager.setAdapter(mPagerAdapter);
@@ -278,7 +261,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
 
         @Override
         public void onPageSelected(int position) {
-            //	   mSearchTimeRg.check(R.id.search_time_all);
             mSearchTypeRg.check(R.id.search_type_all);
         }
 

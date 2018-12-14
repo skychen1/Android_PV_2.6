@@ -14,7 +14,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -25,7 +25,7 @@ import static high.rivamed.myapplication.base.BaseTimelyActivity.mOnBtnGone;
 /**
  * 识别耗材页面adapter
  */
-public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
     private TextView mSeven_two;
     private TextView mSeven_three;
     private TextView mSeven_four;
@@ -35,7 +35,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
     private TextView mSeven_one;
     LinearLayout mLl;
     public RecogHaocaiAdapter(
-            int layoutResId, List<TCstInventoryVo> data) {
+            int layoutResId, List<InventoryVo> data) {
         super(layoutResId, data);
     }
 
@@ -43,7 +43,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
 
     @Override
     protected void convert(
-            BaseViewHolder helper, TCstInventoryVo item) {
+            BaseViewHolder helper, InventoryVo item) {
         mLl=((LinearLayout) helper.getView(R.id.seven_ll));
         if (helper.getAdapterPosition() % 2 == 0) {
             mLl.setBackgroundResource(R.color.bg_color);
@@ -85,7 +85,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TCstInventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
+                InventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
                 if (inventoryVo.getDeleteCount()>0){
                     inventoryVo.setDelete(false);
                     inventoryVo.setDeleteCount(0);
@@ -108,7 +108,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getEpc());
         mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getExpiration());
+        mSeven_four.setText(item.getExpirationText());
         mSeven_five.setText(item.getDeviceName());
 //        if (status.equals("2")){
 //            mSeven_seven.setText("领用");
@@ -155,7 +155,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseVi
                 mSeven_six.setText(item.getPatientName()+" / "+item.getPatientId());
             }
         }
-        UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_four);
+        UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_four);
 
         setDeleteView(item.isDelete(),swipe);
         if (item.getDeleteCount()>0){

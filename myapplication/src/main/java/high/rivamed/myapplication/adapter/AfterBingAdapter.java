@@ -1,8 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
-import android.util.SparseBooleanArray;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -26,7 +24,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class AfterBingAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
    private TextView mSeven_two;
    private TextView mSeven_three;
@@ -37,19 +35,19 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
    public  int      mOperation;
 
    public AfterBingAdapter(
-	   int layoutResId, List<TCstInventoryVo> data) {
+	   int layoutResId, List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    public AfterBingAdapter(
-	   int layoutResId, List<TCstInventoryVo> data, int operation) {
+	   int layoutResId, List<InventoryVo> data, int operation) {
 	super(layoutResId, data);
 	this.mOperation = operation;
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 	} else {
@@ -68,7 +66,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpiration());
+	mSeven_five.setText(item.getExpirationText());
 	mSeven_six.setText(item.getDeviceName());
 	if (mOperation != 3) {
 	   mCheckBoxLl.setVisibility(View.VISIBLE);
@@ -86,6 +84,6 @@ public class AfterBingAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	   }
 	}
 
-	UIUtils.initTermOfValidity(mContext, helper, item.getStopFlag(), mSeven_five);
+	UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_five);
    }
 }

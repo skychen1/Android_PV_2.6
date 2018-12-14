@@ -22,20 +22,20 @@ import high.rivamed.myapplication.bean.HospNameBean;
  * 更新描述：   ${TODO}
  */
 
-public class HospPopFourAdapter extends BaseQuickAdapter<HospNameBean.TcstBaseStorehousesBean, BaseViewHolder> {
+public class HospPopFourAdapter extends BaseQuickAdapter<HospNameBean.StoreHousesBean, BaseViewHolder> {
 
    TextView mMeal;
    TextView mGoneMeal;
 
-   public HospPopFourAdapter(int layout, List<HospNameBean.TcstBaseStorehousesBean> data) {
+   public HospPopFourAdapter(int layout, List<HospNameBean.StoreHousesBean> data) {
       super(layout, data);
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, HospNameBean.TcstBaseStorehousesBean item) {
+   protected void convert(BaseViewHolder helper, HospNameBean.StoreHousesBean item) {
       findId(helper);
-      mMeal.setText(item.getName());
-      mGoneMeal.setText(item.getStorehouseCode());
+      mMeal.setText(item.getSthName());
+      mGoneMeal.setText(item.getSthId());
    }
 
    private void findId(BaseViewHolder helper) {

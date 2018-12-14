@@ -43,10 +43,10 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -99,7 +99,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    TextView           mLyCreatTemporaryBtn;
    @BindView(R.id.activity_down_btn_seven_ll)
    LinearLayout       mActivityDownBtnSevenLl;
-   public List<BoxSizeBean.TbaseDevicesBean> mTemPTbaseDevices = new ArrayList<>();
+   public List<BoxSizeBean.DevicesBean> mTemPTbaseDevices = new ArrayList<>();
    private int mPosition;
    private String  mName  = "";
    private String  mId    = "";
@@ -116,7 +116,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String mTrim    = "";
    private CreatTempPatientBean mPatientBean;
    public  TableTypeView        mTypeView;
-   public List<BingFindSchedulesBean.PatientInfosBean> patientInfos = new ArrayList<>();
+   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
    List<String> titeleList = null;
    public int mSize;
 
@@ -148,7 +148,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mLoading = null;
 	}
 	AllDeviceCallBack.getInstance().initCallBack();
-	mTemPTbaseDevices = (List<BoxSizeBean.TbaseDevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
+	mTemPTbaseDevices = (List<BoxSizeBean.DevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
 	mPosition = getIntent().getIntExtra("position", -1);
 	mType = getIntent().getStringExtra("type");
 	mGoneType = getIntent().getStringExtra("GoneType");
@@ -157,7 +157,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mBaseTabIconRight.setEnabled(false);
 	   mBaseTabBtnMsg.setEnabled(false);
 	   mBaseTabTvName.setEnabled(false);
-	   mBaseTabBack.setVisibility(View.GONE);
+	   mBaseTabBack.setVisibility(View.VISIBLE);
 	}else {
 	   mBaseTabOutLogin.setEnabled(true);
 	   mBaseTabIconRight.setEnabled(true);
@@ -229,7 +229,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				String name = mPatientBean.getTTransOperationSchedule().getName();
 				String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
 				String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
-					.getScheduleDateTime();
+					.getSurgeryTime();
 				String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
 					.getOperatingRoomNo();
 				String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
@@ -366,12 +366,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     * 扫描后传值
     */
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
-	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
-	List<TCstInventory> epcList = new ArrayList<>();
+	InventoryDto inventoryDto = new InventoryDto();
+	List<Inventory> epcList = new ArrayList<>();
 	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-	   TCstInventory tCstInventory = new TCstInventory();
-	   tCstInventory.setEpc(v.getKey());
-	   epcList.add(tCstInventory);
+	   Inventory inventory = new Inventory();
+	   inventory.setEpc(v.getKey());
+	   epcList.add(inventory);
 	}
 	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
 	List<DeviceInventoryVo> deviceList = new ArrayList<>();
@@ -380,19 +380,19 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
 	   if (box_id != null) {
-		deviceInventoryVo.setDeviceCode(box_id);
+		deviceInventoryVo.setDeviceId(box_id);
 	   }
 	}
-	deviceInventoryVo.settCstInventories(epcList);
+	deviceInventoryVo.setInventories(epcList);
 	deviceList.add(deviceInventoryVo);
-	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
-	tCstInventoryDto.setDeviceInventoryVos(deviceList);
-	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	inventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
+	inventoryDto.setDeviceInventoryVos(deviceList);
+	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
 	    mRbKey == 7 || mRbKey == 8) {
-	   tCstInventoryDto.setOperation(mRbKey);
+	   inventoryDto.setOperation(mRbKey);
 	} else {
-	   tCstInventoryDto.setOperation(mRbKey);
+	   inventoryDto.setOperation(mRbKey);
 	}
 	if (mRbKey == 3) {
 	   if (patientInfos != null) {
@@ -402,18 +402,18 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			.getOperationScheduleId();
 	   }
-	   tCstInventoryDto.setPatientName(mName);
-	   tCstInventoryDto.setPatientId(mId);
-	   tCstInventoryDto.setOperationScheduleId(mOperationScheduleId);
+	   inventoryDto.setPatientName(mName);
+	   inventoryDto.setPatientId(mId);
+	   inventoryDto.setOperationScheduleId(mOperationScheduleId);
 	}
-	String toJson = mGson.toJson(tCstInventoryDto);
+	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
-		TCstInventoryDto cstInventoryDto = mGson.fromJson(result, TCstInventoryDto.class);
+		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		String string = null;
 		if (cstInventoryDto.getErrorEpcs() != null &&
 		    cstInventoryDto.getErrorEpcs().size() > 0) {
@@ -422,7 +422,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 		   return;
 		}
-		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.gettCstInventoryVos() == null));
+		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.getInventoryVos() == null));
 		//先绑定患者
 		if (mRbKey == 3) {
 		   String patientName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -437,37 +437,37 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   String operationScheduleId = patientInfos.get(
 			   mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
 		   String scheduleDateTime = patientInfos.get(
-			   mTypeView.mTempPatientAdapter.mSelectedPos).getScheduleDateTime();
+			   mTypeView.mTempPatientAdapter.mSelectedPos).getSurgeryTime();
 		   String operatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getOperatingRoomNo();
 		   String operatingRoomNoName = patientInfos.get(
-			   mTypeView.mTempPatientAdapter.mSelectedPos).getOperatingRoomNoName();
+			   mTypeView.mTempPatientAdapter.mSelectedPos).getRoomName();
 		   String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
 		   String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getDeptId();
-		   for (TCstInventoryVo tCstInventoryVo : cstInventoryDto.gettCstInventoryVos()) {
+		   for (InventoryVo inventoryVo : cstInventoryDto.getInventoryVos()) {
 
-			tCstInventoryVo.setPatientName(patientName);
-			tCstInventoryVo.setCreate(create);
-			tCstInventoryVo.setPatientId(patientId);
-			tCstInventoryVo.setTempPatientId(tempPatientId);
-			tCstInventoryVo.setIdNo(idNo);
-			tCstInventoryVo.setOperationScheduleId(operationScheduleId);
-			tCstInventoryVo.setScheduleDateTime(scheduleDateTime);
-			tCstInventoryVo.setOperatingRoomNo(operatingRoomNo);
-			tCstInventoryVo.setOperatingRoomNoName(operatingRoomNoName);
-			tCstInventoryVo.setSex(sex);
-			tCstInventoryVo.setDeptId(deptId);
+			inventoryVo.setPatientName(patientName);
+			inventoryVo.setCreate(create);
+			inventoryVo.setPatientId(patientId);
+			inventoryVo.setTempPatientId(tempPatientId);
+			inventoryVo.setIdNo(idNo);
+			inventoryVo.setOperationScheduleId(operationScheduleId);
+			inventoryVo.setSurgeryTime(scheduleDateTime);
+			inventoryVo.setOperatingRoomNo(operatingRoomNo);
+			inventoryVo.setOperatingRoomName(operatingRoomNoName);
+			inventoryVo.setSex(sex);
+			inventoryVo.setDeptId(deptId);
 
 		   }
-		   TCstInventoryDto dto = new TCstInventoryDto();
+		   InventoryDto dto = new InventoryDto();
 		   dto.setPatientName(patientName);
 		   dto.setCreate(create);
 		   dto.setPatientId(patientId);
 		   dto.setTempPatientId(tempPatientId);
 		   dto.setIdNo(idNo);
 		   dto.setOperationScheduleId(operationScheduleId);
-		   dto.setScheduleDateTime(scheduleDateTime);
+		   dto.setSurgeryTime(scheduleDateTime);
 		   dto.setOperatingRoomNo(operatingRoomNo);
 		   dto.setOperatingRoomNoName(operatingRoomNoName);
 		   dto.setSex(sex);
@@ -475,8 +475,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   dto.setBindType("firstBind");
 		   dto.setOperation(mRbKey);
 		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto,dto));
-		   if (cstInventoryDto.gettCstInventoryVos() != null &&
-			 cstInventoryDto.gettCstInventoryVos().size() != 0) {
+		   if (cstInventoryDto.getInventoryVos() != null &&
+			 cstInventoryDto.getInventoryVos().size() != 0) {
 			EventBusUtils.post(new Event.EventButton(true, true));
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			finish();
@@ -609,7 +609,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
 	bean.setName(event.userName);
 	bean.setIdNo(event.idCard);//身份证
-	bean.setScheduleDateTime(event.time);
+	bean.setSurgeryTime(event.time);
 	bean.setOperatingRoomNo(event.operatingRoomNo);
 	bean.setOperatingRoomNoName(event.roomNum);
 	bean.setSex(event.userSex);
@@ -617,20 +617,20 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
-	   BingFindSchedulesBean.PatientInfosBean data2 = new BingFindSchedulesBean.PatientInfosBean();
+	   BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
 	   data2.setPatientId("virtual");
 	   data2.setPatientName(event.userName);
 	   data2.setCreate(true);
 	   data2.setIdNo(event.idCard);//身份证
-	   data2.setScheduleDateTime(event.time);
+	   data2.setSurgeryTime(event.time);
 	   data2.setOperatingRoomNo(event.operatingRoomNo);
-	   data2.setOperatingRoomNoName(event.roomNum);
+	   data2.setRoomName(event.roomNum);
 	   data2.setSex(event.userSex);
 	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	   patientInfos.add(0, data2);
 	   ToastUtils.showShort("创建成功");
 	   event.dialog.dismiss();
-	   for (BingFindSchedulesBean.PatientInfosBean s : patientInfos) {
+	   for (BingFindSchedulesBean.PatientInfoVos s : patientInfos) {
 		s.setSelected(false);
 	   }
 	   patientInfos.get(0).setSelected(true);
@@ -646,7 +646,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private void loadBingDate(String optienNameOrId) {
 
 	NetRequest.getInstance()
-		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, null, new BaseResult() {
+		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
@@ -659,18 +659,17 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				isClear = false;
 			   }
 			   for (int i = 0; i < bean.getRows().size(); i++) {
-				BingFindSchedulesBean.PatientInfosBean data = new BingFindSchedulesBean.PatientInfosBean();
+				BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
 				data.setPatientId(bean.getRows().get(i).getPatientId());
 				data.setTempPatientId(bean.getRows().get(i).getTempPatientId());
 				data.setPatientName(bean.getRows().get(i).getPatientName());
 				data.setDeptName(bean.getRows().get(i).getDeptName());
-				data.setOperationSurgeonName(
-					bean.getRows().get(i).getOperationSurgeonName());
-				data.setOperatingRoomNoName(bean.getRows().get(i).getOperatingRoomNoName());
-				data.setScheduleDateTime(bean.getRows().get(i).getScheduleDateTime());
+				data.setDoctorName(
+					bean.getRows().get(i).getDoctorName());
+				data.setRoomName(bean.getRows().get(i).getRoomName());
+				data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				data.setLoperPatsId(bean.getRows().get(i).getLoperPatsId());
-				data.setLpatsInId(bean.getRows().get(i).getLpatsInId());
+				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				patientInfos.add(data);
 			   }
 			   if (isClear && patientInfos.size() > 0) {

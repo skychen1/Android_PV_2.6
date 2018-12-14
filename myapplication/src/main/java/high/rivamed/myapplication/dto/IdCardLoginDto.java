@@ -12,14 +12,23 @@ public class IdCardLoginDto {
      */
 
     private UserFeatureInfoBean userFeatureInfo;
-    private String thingCode;
+    private String thingId;
+    private String               systemType;
 
-    public String getThingCode() {
-        return thingCode;
+    public String getSystemType() {
+        return systemType;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
+    }
+
+    public String getThingId() {
+        return thingId;
+    }
+
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
     public UserFeatureInfoBean getUserFeatureInfo() {

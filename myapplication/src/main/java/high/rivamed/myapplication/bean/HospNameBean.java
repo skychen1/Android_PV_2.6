@@ -18,96 +18,40 @@ public class HospNameBean extends Movie implements Serializable {
 
    /**
     * id : 0
-    * hospName : 协和
-    * tbaseHospitals : [{"hospId":"1","address":null,"authorizeStatus":null,"bedNum":0,"businessNature":null,"creditCode":null,"displayOrder":0,"hospAliasName":null,"hospBitMap":null,"hospName":"北京协和医院","hospType":null,"level1":null,"level2":null,"licenseExpire":null,"licenseNo":null,"location":null,"reserve":null,"status":null,"tenantId":null,"verifyUnit":null}]
+    * hospIds : []
+    * deptVos : [{"branchAlias":"院区1","branchCode":"111"},{"branchAlias":"院区2","branchCode":"222"}]
     */
 
-   private List<TbaseHospitalsBean> tbaseHospitals;
-   private List<StoreHousesBean> storeHouses;
+   private int id;
+   private List<String>           hospIds;
+   private List<DeptVosBean> deptVos;
+   private List<StoreHousesBean> storehouses;
 
    public HospNameBean(String one) {
 	super(one);
    }
 
-   public List<TbaseHospitalsBean> getTbaseHospitals() { return tbaseHospitals;}
+   public int getId() { return id;}
 
-   public void setTbaseHospitals(
-	   List<TbaseHospitalsBean> tbaseHospitals) { this.tbaseHospitals = tbaseHospitals;}
-
-   public List<StoreHousesBean> getStoreHouses() { return storeHouses;}
-
-   public void setStoreHouses(List<StoreHousesBean> storeHouses) { this.storeHouses = storeHouses;}
-
-
-
-   public static class TbaseHospitalsBean extends Movie{
-
-	/**
-	 * hospId : 1
-	 * address : null
-	 * authorizeStatus : null
-	 * bedNum : 0
-	 * businessNature : null
-	 * creditCode : null
-	 * displayOrder : 0
-	 * hospAliasName : null
-	 * hospBitMap : null
-	 * hospName : 北京协和医院
-	 * hospType : null
-	 * level1 : null
-	 * level2 : null
-	 * licenseExpire : null
-	 * licenseNo : null
-	 * location : null
-	 * reserve : null
-	 * status : null
-	 * tenantId : null
-	 * verifyUnit : null
-	 */
-
-	private String hospId;
-	private String hospName;
-
-	public TbaseHospitalsBean(String one) {
-	   super(one);
-	}
-
-	public String getHospId() { return hospId;}
-
-	public void setHospId(String hospId) { this.hospId = hospId;}
-
-	public String getHospName() { return hospName;}
-
-	public void setHospName(String hospName) { this.hospName = hospName;}
-   }
-
-
-
-   /**
-    * id : 0
-    * tbaseInfo : [{"branchAlias":"骨科院区","branchCode":"22","deptName":null,"deptId":null},{"branchAlias":"脑科院区","branchCode":"233","deptName":null,"deptId":null}]
-    * hospIds : ["1"]
-    */
-
-
-   private List<TbaseInfoBean> tbaseInfo;
-   private List<String>                   hospIds;
-
-   public List<TbaseInfoBean> getTbaseInfo() { return tbaseInfo;}
-
-   public void setTbaseInfo(List<TbaseInfoBean> tbaseInfo) { this.tbaseInfo = tbaseInfo;}
+   public void setId(int id) { this.id = id;}
 
    public List<String> getHospIds() { return hospIds;}
 
    public void setHospIds(List<String> hospIds) { this.hospIds = hospIds;}
 
-   public static class TbaseInfoBean extends Movie{
+   public List<DeptVosBean> getDeptVos() { return deptVos;}
+
+   public void setDeptVos(List<DeptVosBean> deptVos) { this.deptVos = deptVos;}
+
+
+
+   public static class DeptVosBean {
 
 	/**
-	 * branchAlias : 骨科院区
-	 * branchCode : 22
-	 * deptName : null
-	 * deptId : null
+	 * branchAlias : 院区1
+	 * branchCode : 111
+	 * deptName:
+	 * deptId:
 	 */
 
 	private String branchAlias;
@@ -115,17 +59,21 @@ public class HospNameBean extends Movie implements Serializable {
 	private String deptName;
 	private String deptId;
 
-	public TbaseInfoBean(String one) {
-	   super(one);
+	public String getDeptName() {
+	   return deptName;
 	}
 
-	public String getDeptName() { return deptName;}
+	public void setDeptName(String deptName) {
+	   this.deptName = deptName;
+	}
 
-	public void setDeptName(String deptName) { this.deptName = deptName;}
+	public String getDeptId() {
+	   return deptId;
+	}
 
-	public String getDeptCode() { return deptId;}
-
-	public void setDeptCode(String deptId) { this.deptId = deptId;}
+	public void setDeptId(String deptId) {
+	   this.deptId = deptId;
+	}
 
 	public String getBranchAlias() { return branchAlias;}
 
@@ -136,43 +84,80 @@ public class HospNameBean extends Movie implements Serializable {
 	public void setBranchCode(String branchCode) { this.branchCode = branchCode;}
    }
 
-   /**
-    * id : 0
-    * tbaseInfo : [{"branchAlias":null,"branchCode":null,"deptName":"骨科","deptId":"22"},{"branchAlias":null,"branchCode":null,"deptName":"谷志科 ","deptId":"44"},{"branchAlias":null,"branchCode":null,"deptName":"骨外科","deptId":"55"}]
-    * branchCode : 22
-    */
 
-   private String                        branchCode;
+
+   public List<StoreHousesBean> getStorehouses() {
+	return storehouses;
+   }
+
+   public void setStorehouses(
+	   List<StoreHousesBean> storehouses) {
+	this.storehouses = storehouses;
+   }
+
+   public String getDeptId() {
+	return deptId;
+   }
+
+   public void setDeptId(String deptId) {
+	this.deptId = deptId;
+   }
+
+   public static class StoreHousesBean {
+
+	/**
+	 * sthId : 40288b5f6710d706016710f3a65b0001
+	 * sthLevel : 2
+	 * sthName : 高值库房
+	 */
+
+	private String sthId;
+	private String sthLevel;
+	private String sthName;
+
+	public String getSthId() { return sthId;}
+
+	public void setSthId(String sthId) { this.sthId = sthId;}
+
+	public String getSthLevel() { return sthLevel;}
+
+	public void setSthLevel(String sthLevel) { this.sthLevel = sthLevel;}
+
+	public String getSthName() { return sthName;}
+
+	public void setSthName(String sthName) { this.sthName = sthName;}
+   }
+
+
+
+
+//------------------------------------------------------------------------------------------
    /**
     * id : 0
     * deptId : 22
-    * tbaseOperationRooms : [{"createDateTime":"2018-07-22 11:12:59","roomNo":"1","status":0,"roomNoName":"骨科手术间1","updateDateTime":"2018-07-22 11:13:02","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:20","roomNo":"2","status":0,"roomNoName":"骨科手术间2","updateDateTime":"2018-07-22 11:14:23","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:46","roomNo":"3","status":0,"roomNoName":"脑科","updateDateTime":"2018-07-25 17:25:04","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null}]
+    * operationRooms : [{"createDateTime":"2018-07-22 11:12:59","roomNo":"1","status":0,"roomName":"骨科手术间1","updateDateTime":"2018-07-22 11:13:02","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:20","roomNo":"2","status":0,"roomName":"骨科手术间2","updateDateTime":"2018-07-22 11:14:23","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null},{"createDateTime":"2018-07-22 11:14:46","roomNo":"3","status":0,"roomName":"脑科","updateDateTime":"2018-07-25 17:25:04","accountId":null,"deptNamesStr":null,"depts":[],"accountName":null}]
     */
 
-   private int                           id;
-   private String                        deptId;
-   private List<TbaseOperationRoomsBean> tbaseOperationRooms;
+   private String               deptId;
+   private List<OperationRooms> operationRooms;
 
-   public int getId() { return id;}
-
-   public void setId(int id) { this.id = id;}
 
    public String getDeptCode() { return deptId;}
 
    public void setDeptCode(String deptId) { this.deptId = deptId;}
 
-   public List<TbaseOperationRoomsBean> getTbaseOperationRooms() { return tbaseOperationRooms;}
+   public List<OperationRooms> getOperationRooms() { return operationRooms;}
 
-   public void setTbaseOperationRooms(
-	   List<TbaseOperationRoomsBean> tbaseOperationRooms) { this.tbaseOperationRooms = tbaseOperationRooms;}
+   public void setOperationRooms(
+	   List<OperationRooms> operationRooms) { this.operationRooms = operationRooms;}
 
-   public static class TbaseOperationRoomsBean extends Movie{
+   public static class OperationRooms extends Movie{
 
 	/**
 	 * createDateTime : 2018-07-22 11:12:59
 	 * roomNo : 1
 	 * status : 0
-	 * roomNoName : 骨科手术间1
+	 * roomName : 骨科手术间1
 	 * updateDateTime : 2018-07-22 11:13:02
 	 * accountId : null
 	 * deptNamesStr : null
@@ -183,9 +168,9 @@ public class HospNameBean extends Movie implements Serializable {
 	private String createDateTime;
 	private String roomNo;
 	private int    status;
-	private String roomNoName;
+	private String roomName;
 
-	public TbaseOperationRoomsBean(String one) {
+	public OperationRooms(String one) {
 	   super(one);
 	}
 
@@ -201,9 +186,9 @@ public class HospNameBean extends Movie implements Serializable {
 
 	public void setStatus(int status) { this.status = status;}
 
-	public String getRoomNoName() { return roomNoName;}
+	public String getRoomName() { return roomName;}
 
-	public void setRoomNoName(String roomNoName) { this.roomNoName = roomNoName;}
+	public void setRoomName(String roomName) { this.roomName = roomName;}
    }
 
    /**
@@ -250,22 +235,7 @@ public class HospNameBean extends Movie implements Serializable {
 	public void setName(String name) { this.name = name;}
    }
 
-   public static class StoreHousesBean {
 
-	/**
-	 * deptNamesStr : 谷志科 胸外科库房
-	 * storehouseCode : 24
-	 */
 
-	private String deptNamesStr;
-	private String storehouseCode;
 
-	public String getDeptNamesStr() { return deptNamesStr;}
-
-	public void setDeptNamesStr(String deptNamesStr) { this.deptNamesStr = deptNamesStr;}
-
-	public String getStorehouseCode() { return storehouseCode;}
-
-	public void setStorehouseCode(String storehouseCode) { this.storehouseCode = storehouseCode;}
-   }
 }

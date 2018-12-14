@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 
  */
 /**
-* <p>标题: TCstInventory.java</p>
+* <p>标题: Inventory.java</p>
 * <p>业务描述:耗材库存信息 </p>
 * <p>公司:北京瑞华康源科技有限公司</p>
 * <p>版权:rivamed-2018</p>
@@ -17,66 +17,7 @@ import java.io.Serializable;
 * @version V1.0 
 */
 
-public class TCstInventory implements Serializable {
-
-
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 状态:一级库出库(目前北肿有此状态)
-	 */
-	public static final int STATUS_ONEOUT = 1;
-	/**
-	 * 状态： 二级库入库
-	 */
-	public static final int STATUS_TWOIN = 2;
-	/**
-	 * 状态： 领用
-	 */
-	public static final int STATUS_TWOOUT = 3;
-
-	/**
-	 * 状态： 已使用
-	 */
-	public static final int STATUS_USE = 4;
-
-	/**
-	 * 状态： 已计费
-	 */
-	public static final int STATUS_CHARG_SUCCESS = 5;
-
-	/**
-	 * 状态： 作废
-	 */
-	public static final int STATUS_CANCEL = 6;
-	/**
-	 * 状态 ： 退回  (与病人解除绑定, 目前就流水记录此状态, 未改变耗材状态, 执行此操作时,
-	 * 耗材状态为领用)
-	 * 低值为二级库退回出库
-	 */
-	public static final int STATUS_BACK = 7;
-	/**
-	 * 状态： 退货
-	 */
-	public static final int STATUS_RECALL = 8;
-	/***
-	 * 移出状态
-	 */
-	public static final int MOVE_OUT = 9;
-
-	/***
-	 * 移入状态
-	 */
-	public static final int MOVE_IN = 10;
-	/**
-	 * 调拨
-	 */
-	public static final int STATUS_ALLOCAT = 11;
-	/**
-	 * 退货暂存
-	 */
-	public static final int STATUS_TEMPORARY = 12;
-
+public class Inventory implements Serializable {
 
 
 	private String id;
@@ -108,7 +49,7 @@ public class TCstInventory implements Serializable {
 	private String status;
 
 	//库房编码
-	private String storehouseCode;
+	private String sthId;
 	
 	private String createDate;
 	
@@ -122,57 +63,7 @@ public class TCstInventory implements Serializable {
 	
 	private String patientId;
 
-   public static long getSerialVersionUID() {
-	return serialVersionUID;
-   }
 
-   public static int getStatusOneout() {
-	return STATUS_ONEOUT;
-   }
-
-   public static int getStatusTwoin() {
-	return STATUS_TWOIN;
-   }
-
-   public static int getStatusTwoout() {
-	return STATUS_TWOOUT;
-   }
-
-   public static int getStatusUse() {
-	return STATUS_USE;
-   }
-
-   public static int getStatusChargSuccess() {
-	return STATUS_CHARG_SUCCESS;
-   }
-
-   public static int getStatusCancel() {
-	return STATUS_CANCEL;
-   }
-
-   public static int getStatusBack() {
-	return STATUS_BACK;
-   }
-
-   public static int getStatusRecall() {
-	return STATUS_RECALL;
-   }
-
-   public static int getMoveOut() {
-	return MOVE_OUT;
-   }
-
-   public static int getMoveIn() {
-	return MOVE_IN;
-   }
-
-   public static int getStatusAllocat() {
-	return STATUS_ALLOCAT;
-   }
-
-   public static int getStatusTemporary() {
-	return STATUS_TEMPORARY;
-   }
 
    public String getId() {
 	return id;
@@ -254,12 +145,12 @@ public class TCstInventory implements Serializable {
 	this.status = status;
    }
 
-   public String getStorehouseCode() {
-	return storehouseCode;
+   public String getSthId() {
+	return sthId;
    }
 
-   public void setStorehouseCode(String storehouseCode) {
-	this.storehouseCode = storehouseCode;
+   public void setSthId(String sthId) {
+	this.sthId = sthId;
    }
 
    public String getCreateDate() {

@@ -107,7 +107,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     /**
      * 开门柜子列表
      */
-    private List<BoxSizeBean.TbaseDevicesBean> mTbaseDevicesFromEvent = new ArrayList<>();
+    private List<BoxSizeBean.DevicesBean> mTbaseDevicesFromEvent = new ArrayList<>();
 
     /**
      * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
@@ -263,9 +263,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                 if (mPublicAdapter.getItem(position).getDeviceCodes() != null && mPublicAdapter.getItem(position).getDeviceCodes().size() > 0) {
                     mTbaseDevicesFromEvent.clear();
                     for (String deviceCode : mPublicAdapter.getItem(position).getDeviceCodes()) {
-                        BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
-                        oneDoor.setDeviceCode(deviceCode);
-                        if (oneDoor != null && oneDoor.getDeviceCode() != null) {
+                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                        oneDoor.setDeviceId(deviceCode);
+                        if (oneDoor != null && oneDoor.getDeviceId() != null) {
                             mTbaseDevicesFromEvent.add(oneDoor);
                         }
                     }
@@ -352,9 +352,9 @@ public class OutMealActivity extends BaseSimpleActivity {
                     mTbaseDevicesFromEvent.clear();
                     for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
                         for (String deviceCode : mPublicAdapter.getItem(i).getDeviceCodes()) {
-                            BoxSizeBean.TbaseDevicesBean oneDoor = new BoxSizeBean.TbaseDevicesBean();
-                            oneDoor.setDeviceCode(deviceCode);
-                            if (oneDoor != null && oneDoor.getDeviceCode() != null) {
+                            BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                            oneDoor.setDeviceId(deviceCode);
+                            if (oneDoor != null && oneDoor.getDeviceId() != null) {
                                 mTbaseDevicesFromEvent.add(oneDoor);
                             }
                         }
@@ -375,7 +375,7 @@ public class OutMealActivity extends BaseSimpleActivity {
      * 获取套餐列表
      */
     private void findOrderCstPlanDate(boolean isDefulat) {
-        NetRequest.getInstance().findOrderCstPlanDate(SPUtils.getString(mContext, SAVE_DEPT_CODE), this, null, new BaseResult() {
+        NetRequest.getInstance().findOrderCstPlanDate(SPUtils.getString(mContext, SAVE_DEPT_CODE), this,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 mOutMealSuitList = mGson.fromJson(result, new TypeToken<List<OutMealSuitBeanResult>>() {
@@ -409,7 +409,7 @@ public class OutMealActivity extends BaseSimpleActivity {
      * 获取套餐包含耗材
      */
     private void findOrderCstListDate(String cstPlanId, String thingCode) {
-        NetRequest.getInstance().findOrderCstListById(cstPlanId, thingCode, this, null, new BaseResult() {
+        NetRequest.getInstance().findOrderCstListById(cstPlanId, thingCode, this,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 mOrderCstResult = mGson.fromJson(result, OrderCstResultBean.class);

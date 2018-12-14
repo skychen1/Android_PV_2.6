@@ -11,7 +11,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -25,7 +25,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseViewHolder> {
+public class TimelyAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
    private TextView mSeven_one;
    private TextView mSeven_two;
@@ -35,13 +35,13 @@ public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
    private TextView mSeven_six;
 
    public TimelyAllAdapter(
-	   int layoutResId, @Nullable List<TCstInventoryVo> data) {
+	   int layoutResId, @Nullable List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    @Override
    protected void convert(
-	   BaseViewHolder helper, TCstInventoryVo item) {
+	   BaseViewHolder helper, InventoryVo item) {
 	findId(helper);
 	if (helper.getAdapterPosition() % 2 == 0) {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
@@ -53,7 +53,7 @@ public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	int five = item.getCountActual();
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getCstSpec());
-	mSeven_three.setText(item.getExpiration());
+	mSeven_three.setText(item.getExpirationText());
 	mSeven_four.setText(item.getDeviceName());
 	mSeven_five.setText(five+"");
 	mSeven_six.setText(six+"");
@@ -62,7 +62,7 @@ public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	} else {
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getStopFlag(), mSeven_three);
+	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getExpireStatus(), mSeven_three);
    }
 
    private void findId(BaseViewHolder helper) {
@@ -72,6 +72,5 @@ public class TimelyAllAdapter extends BaseQuickAdapter<TCstInventoryVo, BaseView
 	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
 	mSeven_five = ((TextView) helper.getView(R.id.seven_five));
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-
    }
 }

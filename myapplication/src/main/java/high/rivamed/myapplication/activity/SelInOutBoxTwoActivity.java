@@ -38,10 +38,10 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.TCstInventoryDto;
-import high.rivamed.myapplication.dto.entity.TCstInventory;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.TCstInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -89,8 +89,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    private static final String TAG = "SelInOutBoxTwoActivity";
    int mType;
-   private TCstInventoryDto mTCstInventoryTwoDto;
-   private TCstInventoryDto mDtoLy = new TCstInventoryDto();
+   private InventoryDto mTCstInventoryTwoDto;
+   private InventoryDto mDtoLy = new InventoryDto();
    private int mIntentType;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
@@ -117,16 +117,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public        TableTypeView  mTypeView;
    private       int            mDtoOperation;
    List<String> titeleList = null;
-   public int              mSize;
-   public TCstInventoryDto mTCstInventoryDto;
-   public List<TCstInventoryVo> mTCstInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   public int          mSize;
+   public InventoryDto mInventoryDto;
+   public List<InventoryVo> mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
    private int mOperation;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
-		for (TCstInventoryVo b : mTCstInventoryVos) {
+		for (InventoryVo b : mInventoryVos) {
 		   ArrayList<String> strings = new ArrayList<>();
 		   strings.add(b.getCstCode());
 		   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
@@ -143,7 +143,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getStopFlag() == 0) ||
+			  b.getExpireStatus() == 0) ||
 			 (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
@@ -165,10 +165,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		}
 	   } else {
-		for (TCstInventoryVo b : mTCstInventoryVos) {
+		for (InventoryVo b : mInventoryVos) {
 		   LogUtils.i(TAG, "mOperation   cancel" + mOperation);
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getStopFlag() != 0)) {
+			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() != 0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
@@ -247,20 +247,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onSelInOutBoxEvent(Event.EventSelInOutBoxDto event) {
-	if (mTCstInventoryDto != null && mTCstInventoryVos != null) {
-	   mTCstInventoryDto = event.mTCstInventoryDto;
-	   List<TCstInventoryVo> tCstInventoryVos = event.mTCstInventoryDto.gettCstInventoryVos();
-	   mTCstInventoryVos.clear();
-	   mOperation = event.mTCstInventoryDto.getOperation();
-	   mTCstInventoryVos.addAll(tCstInventoryVos);//选择开柜
+	if (mInventoryDto != null && mInventoryVos != null) {
+	   mInventoryDto = event.mInventoryDto;
+	   List<InventoryVo> inventoryVos = event.mInventoryDto.getInventoryVos();
+	   mInventoryVos.clear();
+	   mOperation = event.mInventoryDto.getOperation();
+	   mInventoryVos.addAll(inventoryVos);//选择开柜
 	   setInBoxDate();
 	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 
 	} else {
-	   mTCstInventoryDto = event.mTCstInventoryDto;
-	   mTCstInventoryVos = event.mTCstInventoryDto.gettCstInventoryVos();//选择开柜
+	   mInventoryDto = event.mInventoryDto;
+	   mInventoryVos = event.mInventoryDto.getInventoryVos();//选择开柜
 	}
-	mDtoOperation = mTCstInventoryDto.getOperation();
+	mDtoOperation = mInventoryDto.getOperation();
    }
 
    /**
@@ -268,7 +268,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
 	AllDeviceCallBack.getInstance().initCallBack();
@@ -353,17 +353,17 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	ArrayList<String> strings = new ArrayList<>();
-	for (TCstInventoryVo vosBean : mTCstInventoryVos) {
+	for (InventoryVo vosBean : mInventoryVos) {
 	   strings.add(vosBean.getCstCode());
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							mTCstInventoryVos.size() + "</big></font>"));
+							mInventoryVos.size() + "</big></font>"));
 
-	mOperation = mTCstInventoryDto.getOperation();
+	mOperation = mInventoryDto.getOperation();
 	if (mTypeView == null) {
-	   mTypeView = new TableTypeView(this, this, mTCstInventoryVos, titeleList, mSize,
+	   mTypeView = new TableTypeView(this, this, mInventoryVos, titeleList, mSize,
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_IN, mOperation);
 	}
@@ -443,12 +443,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   //确认
 		   if (!mIsClick) {
 		   mIntentType = 1;
-		   if (mTCstInventoryVos != null) {
-			if (mTCstInventoryDto.getOperation() == 9) {//移出
+		   if (mInventoryVos != null) {
+			if (mInventoryDto.getOperation() == 9) {//移出
 			   setYcDate(mIntentType);
-			} else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+			} else if (mInventoryDto.getOperation() == 11) {//调拨
 			   setDbDate(mIntentType);
-			} else if (mTCstInventoryDto.getOperation() == 8) {//退货
+			} else if (mInventoryDto.getOperation() == 8) {//退货
 			   setThDate(mIntentType);
 			} else {//其他操作
 			   setDate(mIntentType);
@@ -467,7 +467,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		} else {
 		   if (!mIsClick) {
 		   mIntentType = 2;
-		   if (mTCstInventoryVos != null) {
+		   if (mInventoryVos != null) {
 			putDateOutLogin(mIntentType);
 		   } else {
 			ToastUtils.showShort("数据异常");
@@ -480,8 +480,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   case R.id.timely_open_door:
 		if (!mIsClick) {
 		mStarts.cancel();
-		List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-		mTCstInventoryDto.gettCstInventoryVos().clear();
+		List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
+		mInventoryDto.getInventoryVos().clear();
 		deviceInventoryVos.clear();
 		for (String deviceInventoryVo : mEthDeviceIdBack) {
 		   String deviceCode = deviceInventoryVo;
@@ -499,11 +499,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 提交并退出登录
     */
    private void putDateOutLogin(int mIntentType) {
-	if (mTCstInventoryDto.getOperation() == 9) {//移出
+	if (mInventoryDto.getOperation() == 9) {//移出
 	   setYcDate(mIntentType);
-	} else if (mTCstInventoryDto.getOperation() == 11) {//调拨
+	} else if (mInventoryDto.getOperation() == 11) {//调拨
 	   setDbDate(mIntentType);
-	} else if (mTCstInventoryDto.getOperation() == 8) {//退货
+	} else if (mInventoryDto.getOperation() == 8) {//退货
 	   setThDate(mIntentType);
 	} else {//其他操作
 	   setDate(mIntentType);
@@ -517,8 +517,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mTimelyLeft.setEnabled(true);
 	mTimelyRight.setEnabled(true);
 	mEPCDate.clear();
-	List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-	mTCstInventoryDto.gettCstInventoryVos().clear();
+	List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
+	mInventoryDto.getInventoryVos().clear();
 	deviceInventoryVos.clear();
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
@@ -549,7 +549,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     private void setThDate(int mIntentType) {
         mType = 2;//1.7退货
         DialogUtils.showStoreDialog(mContext, 2, mType, null, mIntentType);
-        mStarts.cancel();
+	 mStarts.cancel();
         mTimelyRight.setText("确认并退出登录");
     }
 
@@ -560,7 +560,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mType = 3;//1.8调拨
 	String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
 	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
-	NetRequest.getInstance().getOperateDbDialog(deptId, branchCode, this, null, new BaseResult() {
+	NetRequest.getInstance().getOperateDbDialog(deptId, branchCode, this,  new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "8调拨   " + result);
@@ -578,7 +578,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void setYcDate(int mIntentType) {
 	mType = 1;//1.6移出
 	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
-	NetRequest.getInstance().getOperateYcDeptYes(deptId, this, null, new BaseResult() {
+	NetRequest.getInstance().getHospBydept(deptId, this,  new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "库房   " + result);
@@ -594,12 +594,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 设置提交值
     */
    private void setDate(int mIntentType) {
-	TCstInventoryDto dto = new TCstInventoryDto();
-	dto.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	dto.settCstInventoryVos(mTCstInventoryVos);
-	dto.setOperation(mTCstInventoryDto.getOperation());
-	dto.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-	dto.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	InventoryDto dto = new InventoryDto();
+	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	dto.setInventoryVos(mInventoryVos);
+	dto.setOperation(mInventoryDto.getOperation());
+	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	String s = mGson.toJson(dto);
 	LogUtils.i(TAG, "返回  " + s);
 	NetRequest.getInstance().putOperateYes(s, this,  new BaseResult() {
@@ -607,7 +606,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
 		ToastUtils.showShort("操作成功");
-		MusicPlayer.playSoundByOperation(mTCstInventoryDto.getOperation());//播放操作成功提示音
+		MusicPlayer.playSoundByOperation(mInventoryDto.getOperation());//播放操作成功提示音
 		if (mIntentType == 2) {
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
@@ -623,12 +622,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 扫描后传值
     */
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
-	TCstInventoryDto tCstInventoryDto = new TCstInventoryDto();
-	List<TCstInventory> epcList = new ArrayList<>();
+	InventoryDto inventoryDto = new InventoryDto();
+	List<Inventory> epcList = new ArrayList<>();
 	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
-	   TCstInventory tCstInventory = new TCstInventory();
-	   tCstInventory.setEpc(v.getKey());
-	   epcList.add(tCstInventory);
+	   Inventory inventory = new Inventory();
+	   inventory.setEpc(v.getKey());
+	   epcList.add(inventory);
 	}
 	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
 	List<DeviceInventoryVo> deviceList = new ArrayList<>();
@@ -636,22 +635,22 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   Log.i(TAG, "device_id   " + box_id);
-	   deviceInventoryVo.setDeviceCode(box_id);
+	   deviceInventoryVo.setDeviceId(box_id);
 	}
-	deviceInventoryVo.settCstInventories(epcList);
+	deviceInventoryVo.setInventories(epcList);
 	deviceList.add(deviceInventoryVo);
-	tCstInventoryDto.setThingCode(SPUtils.getString(mContext, THING_CODE));
-	tCstInventoryDto.setOperation(mTCstInventoryDto.getOperation());
-	tCstInventoryDto.setDeviceInventoryVos(deviceList);
-	tCstInventoryDto.setStorehouseCode(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-	String toJson = mGson.toJson(tCstInventoryDto);
+	inventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
+	inventoryDto.setOperation(mInventoryDto.getOperation());
+	inventoryDto.setDeviceInventoryVos(deviceList);
+	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
-		mTCstInventoryTwoDto = mGson.fromJson(result, TCstInventoryDto.class);
+		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
 		setDateEpc();
 	   }
 	});
@@ -673,23 +672,23 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   ToastUtils.showLong(string);
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 	} else {
-	   List<TCstInventoryVo> tCstInventoryVos = mTCstInventoryDto.gettCstInventoryVos();
-	   List<DeviceInventoryVo> deviceInventoryVos = mTCstInventoryDto.getDeviceInventoryVos();
-	   List<TCstInventoryVo> tCstInventoryVos1 = mTCstInventoryTwoDto.gettCstInventoryVos();
+	   List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
+	   List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
+	   List<InventoryVo> inventoryVos1 = mTCstInventoryTwoDto.getInventoryVos();
 	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
 	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
 	   set.addAll(deviceInventoryVos);
 	   set.addAll(deviceInventoryVos1);
 	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
-	   tCstInventoryVos1.addAll(tCstInventoryVos);
-	   tCstInventoryVos1.removeAll(tCstInventoryVos);
-	   tCstInventoryVos1.addAll(tCstInventoryVos);
-	   mTCstInventoryTwoDto.settCstInventoryVos(tCstInventoryVos1);
+	   inventoryVos1.addAll(inventoryVos);
+	   inventoryVos1.removeAll(inventoryVos);
+	   inventoryVos1.addAll(inventoryVos);
+	   mTCstInventoryTwoDto.setInventoryVos(inventoryVos1);
 	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
 	   EventBusUtils.postSticky(new Event.EventSelInOutBoxDto(mTCstInventoryTwoDto));
 	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
-		 (mTCstInventoryTwoDto.gettCstInventoryVos() == null ||
-		  mTCstInventoryTwoDto.gettCstInventoryVos().size() < 1) &&
+		 (mTCstInventoryTwoDto.getInventoryVos() == null ||
+		  mTCstInventoryTwoDto.getInventoryVos().size() < 1) &&
 		 mEthDeviceIdBack.size() == 1) {
 
 		if (mTimelyLeft != null && mTimelyRight != null) {
@@ -723,20 +722,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(9);
-	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	mDtoLy.setStorehouseRemark(event.context);
-	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setToSthId(event.context);
+	List<InventoryVo> inventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+	   for (int i = 0; i < mInventoryDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mInventoryDto.getInventoryVos().get(i));
 	   }
 	} else {
-	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+	   for (int i = 0; i < mTCstInventoryTwoDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mTCstInventoryTwoDto.getInventoryVos().get(i));
 	   }
 	}
-	mDtoLy.settCstInventoryVos(tCstInventoryVos);
-	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	mDtoLy.setInventoryVos(inventoryVos);
+	mDtoLy.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "移出   " + mTCstInventoryDtoJsons);
@@ -785,14 +784,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    }
 
    private void setTimeStart() {
-	for (TCstInventoryVo b : mTCstInventoryVos) {
+	for (InventoryVo b : mInventoryVos) {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getStopFlag() == 0 &&
+		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
 		  mDtoOperation != 8) ||
 		 (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) &&
 		  b.getPatientName() == null)) {
 		if (mDtoOperation == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		    b.getStopFlag() == 0) {
+		    b.getExpireStatus() == 0) {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		   if (mStarts != null) {
@@ -837,22 +836,22 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
-	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
-	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
-	if (mTCstInventoryTwoDto == null && mTCstInventoryDto.gettCstInventoryVos() != null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+	List<InventoryVo> inventoryVos = new ArrayList<>();
+	if (mTCstInventoryTwoDto == null && mInventoryDto.getInventoryVos() != null) {
+	   for (int i = 0; i < mInventoryDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mInventoryDto.getInventoryVos().get(i));
 	   }
 	} else {
-	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+	   for (int i = 0; i < mTCstInventoryTwoDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mTCstInventoryTwoDto.getInventoryVos().get(i));
 	   }
 	}
-	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	mDtoLy.setInventoryVos(inventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	mDtoLy.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance().putOperateYes(mTCstInventoryDtoJsons, this, new BaseResult() {
@@ -881,22 +880,22 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void putDbDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
-	mDtoLy.setStorehouseCode(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(11);
-	mDtoLy.setStorehouseCode(event.context);
-	List<TCstInventoryVo> tCstInventoryVos = new ArrayList<>();
+	mDtoLy.setSthId(event.context);
+	List<InventoryVo> inventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
-	   for (int i = 0; i < mTCstInventoryDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryDto.gettCstInventoryVos().get(i));
+	   for (int i = 0; i < mInventoryDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mInventoryDto.getInventoryVos().get(i));
 	   }
 	} else {
-	   for (int i = 0; i < mTCstInventoryTwoDto.gettCstInventoryVos().size(); i++) {
-		tCstInventoryVos.add(mTCstInventoryTwoDto.gettCstInventoryVos().get(i));
+	   for (int i = 0; i < mTCstInventoryTwoDto.getInventoryVos().size(); i++) {
+		inventoryVos.add(mTCstInventoryTwoDto.getInventoryVos().get(i));
 	   }
 	}
-	mDtoLy.settCstInventoryVos(tCstInventoryVos);
+	mDtoLy.setInventoryVos(inventoryVos);
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-	mDtoLy.setThingCode(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	mDtoLy.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 	LogUtils.i(TAG, "调拨   " + mTCstInventoryDtoJsons);
 	NetRequest.getInstance().putOperateYes(mTCstInventoryDtoJsons, this, new BaseResult() {

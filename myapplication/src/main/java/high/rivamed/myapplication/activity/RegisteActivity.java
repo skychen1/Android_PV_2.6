@@ -25,8 +25,6 @@ import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteReaderFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
-import high.rivamed.myapplication.fragment.RegisteSelfCheckFrag;
-import high.rivamed.myapplication.fragment.RegisteTestFrag;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -61,7 +59,7 @@ public class RegisteActivity extends SimpleActivity {
    SlidingTabLayout mRegisteTl;
    public ImageView mBaseTabBtnConn;
    public static ViewPager mRegisteViewpager;
-   private String[] mKeys = {"设备注册/激活", "设备自检", "功能验证", "数据恢复","Reader功率设置"};
+   private String[] mKeys = {"设备注册/激活", "数据恢复","Reader功率设置"};
    private RegistePagerAdapter mPagerAdapter;
    /**
     * 设备title连接状态
@@ -108,6 +106,7 @@ public class RegisteActivity extends SimpleActivity {
 	mPagerAdapter = new RegistePagerAdapter(getSupportFragmentManager());
 	mRegisteViewpager.setAdapter(mPagerAdapter);
 	mRegisteViewpager.setCurrentItem(0);
+	mRegisteViewpager.setOffscreenPageLimit(3);
 	mRegisteTl.setViewPager(mRegisteViewpager, mKeys);
 
    }
@@ -142,11 +141,13 @@ public class RegisteActivity extends SimpleActivity {
 	public Fragment getItem(int position) {
 	   if (position == 0) {
 		return RegisteFrag.newInstance();
-	   } else if (position == 1) {
-		return RegisteSelfCheckFrag.newInstance();
-	   } else if (position == 2) {
-		return RegisteTestFrag.newInstance();
-	   } else if (position == 3){
+	   }
+//	   else if (position == 1) {
+//		return RegisteSelfCheckFrag.newInstance();
+//	   } else if (position == 2) {
+//		return RegisteTestFrag.newInstance();
+//	   }
+	   else if (position == 1){
 		return RegisteRecoverFrag.newInstance();
 	   }else {
 		return RegisteReaderFrag.newInstance();

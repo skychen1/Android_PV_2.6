@@ -79,7 +79,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private TakeNotesEpcAdapter mNotesEpcAdapter;
    private String mPatientId;
    private int mStatus;
-   private List<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean> mDetailVos =new ArrayList<>();
+   private List<TakeNotesDetailsBean.JournalUseRecordDetailVos> mDetailVos =new ArrayList<>();
 
    /**
     * 接收id和status
@@ -104,7 +104,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		mDetailVos.clear();
 		TakeNotesDetailsBean takeNotesDetailsBean = mGson.fromJson(result, TakeNotesDetailsBean.class);
-		List<TakeNotesDetailsBean.TTransInPatientInfoUseDetailVosBean> detailVos = takeNotesDetailsBean.getTTransInPatientInfoUseDetailVos();
+		List<TakeNotesDetailsBean.JournalUseRecordDetailVos> detailVos = takeNotesDetailsBean.getJournalUseRecordDetailVos();
 		mDetailVos.addAll(detailVos);
 		setAdapterDates();
 	   }

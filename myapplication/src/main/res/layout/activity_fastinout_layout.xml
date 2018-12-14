@@ -13,7 +13,7 @@
 		android:layout_below="@+id/appbar"
 		android:layout_marginLeft="@dimen/x40"
 		android:layout_marginRight="@dimen/x40"
-		android:layout_marginTop="@dimen/y18"
+		android:layout_marginTop="@dimen/y30"
 		android:background="@color/bg"
 
 		tl:tl_indicator_color="@color/bg_f"

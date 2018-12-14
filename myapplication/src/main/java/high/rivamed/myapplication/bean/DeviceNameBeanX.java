@@ -14,17 +14,17 @@ import java.util.List;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class DeviceNameBean implements Serializable{
+public class DeviceNameBeanX implements Serializable{
 
    /**
     * id : 0
     * deviceTypes : ["UHFREADER","Eth002"]
-    * tBaseDeviceDictVos : [{"dictId":"14","name":"罗丹贝尔-reader","deviceType":"UHFREADER"},{"dictId":"15","name":"红陆-reader","deviceType":"UHFREADER"},{"dictId":"16","name":"串口服务器","deviceType":"Eth002"}]
+    * deviceDictVos : [{"dictId":"14","name":"罗丹贝尔-reader","deviceType":"UHFREADER"},{"dictId":"15","name":"红陆-reader","deviceType":"UHFREADER"},{"dictId":"16","name":"串口服务器","deviceType":"Eth002"}]
     */
 
-   private int id;
-   private List<String> deviceTypes;
-   private List<TBaseDeviceDictVosBean> tBaseDeviceDictVos;
+   private int                 id;
+   private List<String>        deviceTypes;
+   private List<DeviceDictVos> deviceDictVos;
 
    public int getId() { return id;}
 
@@ -34,12 +34,12 @@ public class DeviceNameBean implements Serializable{
 
    public void setDeviceTypes(List<String> deviceTypes) { this.deviceTypes = deviceTypes;}
 
-   public List<TBaseDeviceDictVosBean> getTBaseDeviceDictVos() { return tBaseDeviceDictVos;}
+   public List<DeviceDictVos> getDeviceDictVos() { return deviceDictVos;}
 
-   public void setTBaseDeviceDictVos(
-	   List<TBaseDeviceDictVosBean> tBaseDeviceDictVos) { this.tBaseDeviceDictVos = tBaseDeviceDictVos;}
+   public void setDeviceDictVos(
+	   List<DeviceDictVos> tBaseDeviceDictVos) { this.deviceDictVos = tBaseDeviceDictVos;}
 
-   public static class TBaseDeviceDictVosBean {
+   public static class DeviceDictVos {
 
 	/**
 	 * dictId : 14

@@ -9,20 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.CreatTempAdapter;
-import high.rivamed.myapplication.adapter.HospPopFiveAdapter;
-import high.rivamed.myapplication.adapter.HospPopFourAdapter;
-import high.rivamed.myapplication.adapter.HospPopThreeAdapter;
-import high.rivamed.myapplication.adapter.HospPopTwoAdapter;
 import high.rivamed.myapplication.bean.SelectBean;
 
 import static android.widget.LinearLayout.VERTICAL;
@@ -37,15 +31,10 @@ public class CreatTempPopupWindow extends PopupWindow {
 
     private final RecyclerView mRecyclerView;
     private final View mView;
-    TextView mGoneView;
 
     private String TAG = "SettingPopupWindow";
-    private OnClickListener mItemClickListener;
     public CreatTempAdapter mAdar;
-    public HospPopTwoAdapter mHospPopTwoAdapter;
-    public HospPopThreeAdapter mThreeAdapter;
-    public HospPopFourAdapter mFourAdapter;
-    public HospPopFiveAdapter mFiveAdapter;
+
 
     public CreatTempPopupWindow(Context context, List<SelectBean>  list) {
         mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
@@ -55,17 +44,6 @@ public class CreatTempPopupWindow extends PopupWindow {
         heightMeth(list.size());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(context, VERTICAL));
-
-        //	mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-        //	   @Override
-        //	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        //		TextView textView = (TextView) view.findViewById(R.id.item_meal);
-        //		String trim = textView.getText().toString().trim();
-        //		//		mEditText.setText(trim);
-        //		EventBusUtils.postSticky(new Event.PopupEvent(true, trim));
-        //	   }
-        //	});
-
 
     }
 
