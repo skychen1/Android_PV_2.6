@@ -8,8 +8,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
+import high.rivamed.myapplication.bean.OutMealBean;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -23,18 +22,18 @@ import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
  * 更新描述：   ${TODO}
  */
 
-public class MealPopAdapter extends BaseQuickAdapter<OutMealSuitBeanResult, BaseViewHolder> {
+public class MealPopAdapter extends BaseQuickAdapter<OutMealBean.SuitesBean, BaseViewHolder> {
 
     TextView mMeal;
 
-    public MealPopAdapter(int layout, List<OutMealSuitBeanResult> data) {
+    public MealPopAdapter(int layout, List<OutMealBean.SuitesBean> data) {
         super(layout, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, OutMealSuitBeanResult item) {
+    protected void convert(BaseViewHolder helper, OutMealBean.SuitesBean item) {
         findId(helper);
-        mMeal.setText(item.getPlanName());
+        mMeal.setText(item.getSuiteName());
     }
 
     private void findId(BaseViewHolder helper) {

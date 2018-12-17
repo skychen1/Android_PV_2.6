@@ -19,19 +19,19 @@ public class BillStockResultBean implements Serializable {
 
     /**
      * id : 0
-     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":1,"cstId":"116","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceCodes":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"117","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceCode":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceCodes":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"}]
+     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":1,"cstId":"116","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"117","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"}]
      * receiveOrderId : 40288293667aa53e01667aa5fc610016
      * cstCount : 4
      * cstTypes : 2
-     * thingCode : 4028829366d31b010166d34ac8af000f
+     * thingId : 4028829366d31b010166d34ac8af000f
      */
 
-    private int id;
+    private int                                  id;
     private String                               receiveOrderId;
     private int                                  cstCount;
     private int                                  cstTypes;
-    private String                               thingCode;
-    private boolean                               operateSuccess;
+    private String                               thingId;
+    private boolean                              operateSuccess;
     private String                               msg;
     private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
 
@@ -67,9 +67,9 @@ public class BillStockResultBean implements Serializable {
 
     public void setCstTypes(int cstTypes) { this.cstTypes = cstTypes;}
 
-    public String getThingCode() { return thingCode;}
+    public String getThingId() { return thingId;}
 
-    public void setThingCode(String thingCode) { this.thingCode = thingCode;}
+    public void setThingId(String thingId) { this.thingId = thingId;}
 
     public List<TransReceiveOrderDetailVosBean> getTransReceiveOrderDetailVos() { return transReceiveOrderDetailVos;}
 
@@ -89,14 +89,14 @@ public class BillStockResultBean implements Serializable {
          * receiveNum : 1
          * needNum : 2
          * patientName : 马羊焕
-         * deviceCode : 4028829366d31b010166d34ac8af0010
+         * deviceId : 4028829366d31b010166d34ac8af0010
          * deviceName : ["3号柜子"]
          * deviceStore : null
-         * deviceCodes : ["4028829366d31b010166d34ac8af0010"]
+         * deviceIds : ["4028829366d31b010166d34ac8af0010"]
          * dname : 3号柜子
          */
 
-        private String orderDetailId;
+        private String       orderDetailId;
         private int          isHaveNum;
         private int          counts;
         private String       cstId;
@@ -106,11 +106,11 @@ public class BillStockResultBean implements Serializable {
         private int          receiveNum;
         private int          needNum;
         private String       patientName;
-        private String       deviceCode;
+        private String       deviceId;
         private Object       deviceStore;
         private String       dname;
         private List<String> deviceName;
-        private List<String> deviceCodes;
+        private List<String> deviceIds;
 
         public String getOrderDetailId() { return orderDetailId;}
 
@@ -153,9 +153,9 @@ public class BillStockResultBean implements Serializable {
 
         public void setPatientName(String patientName) { this.patientName = patientName;}
 
-        public String getDeviceCode() { return deviceCode;}
+        public String getDeviceId() { return deviceId;}
 
-        public void setDeviceCode(String deviceCode) { this.deviceCode = deviceCode;}
+        public void setDeviceId(String deviceId) { this.deviceId = deviceId;}
 
         public Object getDeviceStore() { return deviceStore;}
 
@@ -169,8 +169,8 @@ public class BillStockResultBean implements Serializable {
 
         public void setDeviceName(List<String> deviceName) { this.deviceName = deviceName;}
 
-        public List<String> getDeviceCodes() { return deviceCodes;}
+        public List<String> getDeviceIds() { return deviceIds;}
 
-        public void setDeviceCodes(List<String> deviceCodes) { this.deviceCodes = deviceCodes;}
+        public void setDeviceIds(List<String> deviceIds) { this.deviceIds = deviceIds;}
     }
 }

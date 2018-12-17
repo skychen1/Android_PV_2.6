@@ -534,10 +534,10 @@ public class Event {
      * 套组领用-选择套组后传递数据给获取耗材使用
      */
     public static class EventOutMealSuit {
-        public OutMealSuitBeanResult mOutMealSuitBeanResult;
+        public OutMealBean.SuitesBean mOutMealSuitBeanResult;
         public boolean isMute;
 
-        public EventOutMealSuit(boolean isMute, OutMealSuitBeanResult outMealSuitBeanResult) {
+        public EventOutMealSuit(boolean isMute, OutMealBean.SuitesBean outMealSuitBeanResult) {
             this.mOutMealSuitBeanResult = outMealSuitBeanResult;
             this.isMute = isMute;
         }

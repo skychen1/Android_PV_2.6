@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
@@ -25,8 +24,7 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.MealPopAdapter;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.OutMealSuitBeanResult;
+import high.rivamed.myapplication.bean.OutMealBean;
 import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
@@ -54,10 +52,10 @@ public class MealPopupWindow extends PopupWindow {
     private String TAG = "SettingPopupWindow";
     private OnClickListener mItemClickListener;
     private MealPopAdapter mMealPopAdapter;
-    private final List<OutMealSuitBeanResult> mMovies;
-    private final List<OutMealSuitBeanResult> mMovies1;
+    private final List<OutMealBean.SuitesBean> mMovies;
+    private final List<OutMealBean.SuitesBean> mMovies1;
 
-    public MealPopupWindow(Context context, List<OutMealSuitBeanResult> movies) {
+    public MealPopupWindow(Context context, List<OutMealBean.SuitesBean> movies) {
         mView = LayoutInflater.from(context).inflate(R.layout.meal_popupwindow, null);
         mEditText = (EditText) mView.findViewById(R.id.search_et);
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
@@ -90,7 +88,7 @@ public class MealPopupWindow extends PopupWindow {
                 mMovies1.clear();
 
                 for (int i = 0; i < mMovies.size() - 1; i++) {
-                    String string = mMovies.get(i).getPlanName();
+                    String string = mMovies.get(i).getSuiteName();
                     if (string.contains(trim)) {
                         mMovies1.add(mMovies.get(i));
                     }

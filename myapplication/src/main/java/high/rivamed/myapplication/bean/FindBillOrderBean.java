@@ -18,55 +18,38 @@ import java.util.List;
 public class FindBillOrderBean implements Serializable {
     /**
      * cstPlan : {"id":"5"}
-     * cstInventoryVos : [{"epc":"000000002C10201809040035"},{"epc":"000012341219201809070163"}]
+     * inventoryVos : [{"epc":"000000002C10201809040035"},{"epc":"000012341219201809070163"}]
      */
-    private List<String> deviceCodes;
+    private List<String>       deviceIds;
+    private List<InventoryVos> inventoryVos;
+    public List<String> getDeviceIds() {
+        return deviceIds;
+    }
+    private String suiteId;
 
-    public List<String> getDeviceCodes() {
-        return deviceCodes;
+    public String getSuiteId() {
+        return suiteId;
     }
 
-    public void setDeviceCodes(List<String> deviceCodes) {
-        this.deviceCodes = deviceCodes;
-    }
-    private CstPlanBean cstPlan;
-    private List<CstInventoryVosBean> cstInventoryVos;
-
-
-
-    public CstPlanBean getCstPlan() {
-        return cstPlan;
+    public void setSuiteId(String suiteId) {
+        this.suiteId = suiteId;
     }
 
-    public void setCstPlan(CstPlanBean cstPlan) {
-        this.cstPlan = cstPlan;
+    public void setDeviceIds(List<String> deviceIds) {
+        this.deviceIds = deviceIds;
     }
 
-    public List<CstInventoryVosBean> getCstInventoryVos() {
-        return cstInventoryVos;
+
+
+    public List<InventoryVos> getInventoryVos() {
+        return inventoryVos;
     }
 
-    public void setCstInventoryVos(List<CstInventoryVosBean> cstInventoryVos) {
-        this.cstInventoryVos = cstInventoryVos;
+    public void setInventoryVos(List<InventoryVos> inventoryVos) {
+        this.inventoryVos = inventoryVos;
     }
 
-    public static class CstPlanBean {
-        /**
-         * id : 5
-         */
-
-        private String id;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-    }
-
-    public static class CstInventoryVosBean implements Serializable {
+    public static class InventoryVos implements Serializable {
         /**
          * epc : 000000002C10201809040035
          */
@@ -85,8 +68,8 @@ public class FindBillOrderBean implements Serializable {
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
-            } else if (obj instanceof CstInventoryVosBean) {
-                CstInventoryVosBean customString = (CstInventoryVosBean) obj;
+            } else if (obj instanceof InventoryVos) {
+                InventoryVos customString = (InventoryVos) obj;
                 return customString.epc.equals(epc);
             } else {
                 return false;

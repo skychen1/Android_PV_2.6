@@ -38,7 +38,7 @@ public class BoxSizeBean implements Serializable {
 
    public void setDevices(List<DevicesBean> devices) { this.devices = devices;}
 
-   public static class DevicesBean {
+   public static class DevicesBean implements Serializable{
 
 	/**
 	 * deviceId : 40288297677830f50167783478510001

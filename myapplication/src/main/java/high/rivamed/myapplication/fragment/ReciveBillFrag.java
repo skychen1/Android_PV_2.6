@@ -160,7 +160,7 @@ public class ReciveBillFrag extends SimpleFragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mPublicAdapter == null && mPrePageDate != null) {
             if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-                getStockByOrderId(mPrePageDate.getId());
+                getStockByOrderId(mPrePageDate.getSuiteId());
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -177,7 +177,7 @@ public class ReciveBillFrag extends SimpleFragment {
         mPublicRl.setVisibility(View.GONE);
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-            getStockByOrderId(mPrePageDate.getId());
+            getStockByOrderId(mPrePageDate.getSuiteId());
         }
         initlistener();
     }
@@ -228,7 +228,7 @@ public class ReciveBillFrag extends SimpleFragment {
 
                 if (!six.equals("已领取")) {
                     mTbaseDevices.clear();
-                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceCodes();
+                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceIds();
                     for (String deviceCode : deviceCodes) {
                         BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
                         oneDoor.setDeviceId(deviceCode);
@@ -304,7 +304,7 @@ public class ReciveBillFrag extends SimpleFragment {
                 ToastUtils.showShort("全部开柜");
                 mTbaseDevices.clear();
                 for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
-                    List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceCodes();
+                    List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceIds();
                     for (String deviceCode : deviceCodes) {
                         BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
                         oneDoor.setDeviceId(deviceCode);
@@ -359,7 +359,7 @@ public class ReciveBillFrag extends SimpleFragment {
         mIsCanSkipToSurePage = true;
 
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-            getStockByOrderId(mPrePageDate.getId());
+            getStockByOrderId(mPrePageDate.getSuiteId());
         }
     }
 

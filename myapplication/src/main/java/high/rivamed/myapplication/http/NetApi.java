@@ -81,18 +81,19 @@ public interface NetApi {
     String URL_FIND_EPC_DETAILS = "/consumables/inventoryJournal/padFindCstDetailByPatient";//使用耗材的详情    新
 
     //医嘱请领单领用
-    String URL_RECEIVEORDER_LISTALL = "/rmApi/order/transReceiveOrder/listAll";//顶部医嘱单列表
-    String URL_RECEIVEORDER_FINDBYORDERID = "/rmApi/order/transReceiveOrderDetail/findByOrderId";//根据医嘱单ID查询单柜耗材的库存
-    String URL_RECEIVEORDER_CONTAINORDERCST = "/rmApi/order/transReceiveOrderDetail/containOrderCst";//根据EPC获取耗材
+    String URL_RECEIVEORDER_LISTALL = "/order/order/listAl";//顶部医嘱单列表    新
+    String URL_RECEIVEORDER_FINDBYORDERID        = "/order/orderDetail/findByOrderId";//根据医嘱单ID查询单柜耗材的库存    新
+    String URL_RECEIVEORDER_CONTAINORDERCST      = "/order/orderDetail/containOrderCst";//根据EPC获取耗材判断是否属于请领单的耗材   新
     String URL_RECEIVEORDER_TWOOUTBYRECEIVEORDER = "/rmApi/consumables/tCstInventory/twoOutByReceiveOrder";//确认领用耗材
-    String URL_RECEIVEORDER_FINDDETAILBYORDERID = "/rmApi/order/transReceiveOrderDetail/findOrderAndOrderDetailByOrderId";//根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
+    String URL_RECEIVEORDER_FINDDETAILBYORDERID  = "/rmApi/order/transReceiveOrderDetail/findOrderAndOrderDetailByOrderId";//根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
+    String URL_RECEIVEORDER_SAVERECEIVEORDERMSG  = "/dhccApi/message/message/saveReceiveOrderMsg";//产生医嘱单的消息    新
 
     //套组领用
     String URL_CSTPLAN_LISTFORPAD = "/consumables/suite/getSuites";//套组列表-（本科室的套组列表）   新
-    String URL_CSTPLAN_FINDCSTLIST = "/rmApi/consumables/cstPlanDetail/findCstList";//查询单个套组的耗材详情
-    String URL_CSTPLAN_FINDCSTANDCOMPARETOCSTPLAN = "/rmApi/consumables/cstPlanDetail/findCstAndCompareToCstPlan";//根据EPC查询耗材
-    String URL_CSTPLAN_OPERATETCSTINVENTORY= "/rmApi/consumables/tCstInventory/receiveCstByCstPlan";//套组领用
-    String URL_CSTPLAN_SAVERECEIVEORDERMSG= "/rmApi/message/message/saveReceiveOrderMsg";//产生医嘱单的消息
+    String URL_CSTPLAN_FINDCSTLIST = "/consumables/suiteDetail/getCstList";//查询单个套组的耗材详情    新
+    String URL_CSTPLAN_FINDCSTANDCOMPARETOCSTPLAN = "/consumables/suiteDetail/findCstAndCompareToSuite";//根据EPC查询耗材对比   新
+    String URL_CSTPLAN_OPERATETCSTINVENTORY= "/consumables/inventory/receiveCstBySuit";//套组领用    新
+
 
     //消息
     String URL_FIND_MESSAGE_BY_ACCOUNTID = "/rmApi/message/message/findMessageByAccountId";//查询待办任务列表

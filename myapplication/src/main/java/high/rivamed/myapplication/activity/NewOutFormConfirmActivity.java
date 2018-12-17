@@ -490,7 +490,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						SureReciveOrder sureReciveOrder = mGson.fromJson(result,
 														 SureReciveOrder.class);
 						SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID,
-									"" + mPrePageDate.getId());
+									"" + mPrePageDate.getSuiteId());
 						if (sureReciveOrder.isOperateSuccess()) {
 						   if (!sureReciveOrder.getMsg().contains("全部")) {
 							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",

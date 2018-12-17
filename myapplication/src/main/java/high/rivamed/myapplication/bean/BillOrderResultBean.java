@@ -19,21 +19,38 @@ public class BillOrderResultBean implements Serializable {
 
     /**
      * id : 0
-     * cstInventoryVos : [{"accountId":null,"cstName":"真空采血管2","cstCode":null,"cstId":"117","cstSpec":"3ML(454334) 蓝管","epc":"00021720180412000350","expirationTime":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingCode":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceCode":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"真空采血管2","cstCode":null,"cstId":"117","cstSpec":"3ML(454334) 蓝管","epc":"00021720180412000351","expirationTime":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingCode":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceCode":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"真空采血管1","cstCode":null,"cstId":"116","cstSpec":"4ml(454204) 红管","epc":"00021720180412000345","expirationTime":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingCode":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceCode":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"开睑器","cstCode":null,"cstId":"100","cstSpec":"钢丝","epc":"00021720180412000333","expirationTime":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"1柜","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingCode":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceCode":"40288293669e921601669fa480630040","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":null,"statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null}]
+     * inventoryVos : [{"accountId":null,"cstName":"真空采血管2","cstCode":null,"cstId":"117","cstSpec":"3ML(454334) 蓝管","epc":"00021720180412000350","expiryDate":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingId":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceId":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"真空采血管2","cstCode":null,"cstId":"117","cstSpec":"3ML(454334) 蓝管","epc":"00021720180412000351","expiryDate":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingId":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceId":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"真空采血管1","cstCode":null,"cstId":"116","cstSpec":"4ml(454204) 红管","epc":"00021720180412000345","expiryDate":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"3号柜子","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingId":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceId":"4028829366d31b010166d34ac8af0010","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":"1","statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null},{"accountId":null,"cstName":"开睑器","cstCode":null,"cstId":"100","cstSpec":"钢丝","epc":"00021720180412000333","expiryDate":"2020-01-05 00:00:00","productionDate":null,"expiration":null,"deviceName":"1柜","status":"3","jounalStatus":null,"deptId":null,"deptName":null,"thingName":null,"thingId":null,"alias":null,"batchNumber":null,"vendorCode":null,"vendorName":null,"manuFactory":null,"days":null,"barcode":null,"sheetId":null,"stopFlag":1,"storehouseCode":"ff80818165b1fb680165b35e320d0056","storehouseName":null,"deviceId":"40288293669e921601669fa480630040","operation":null,"storehouseRemark":null,"countStock":0,"countActual":0,"operationStatus":0,"count":0,"lastUpdateDate":null,"userName":null,"remark":null,"statusStr":null,"unit":null,"isErrorOperation":0,"patientId":null,"patientName":null,"tempPatientId":null,"operationScheduleId":null,"operationBeginDateTime":null,"operatingRoomNoName":null,"operatingRoomNo":null,"name":null,"patientType":null,"idNo":null,"deleteCount":0,"scheduleDateTime":null,"sex":null,"isCreate":null}]
      * cstPlan : {"id":2,"createTime":null,"creatorId":null,"creatorName":null,"deptId":null,"planName":null,"pym":null,"remark":null,"status":null,"updateTime":null}
      * countNum : 4
-     * countKind : 3
+     * kindsOfCst : 3
      */
 
     private String msg;
+    private String suiteId;
 
     private int id;
-    private CstPlanBean cstPlan;
     private int countNum;
-    private int countKind;
+    private int kindsOfCst;
 
-    private List<String> errorEpcs;
-    private List<CstInventoryVosBean> cstInventoryVos;
+    private List<String>       errorEpcs;
+    private List<String>       deviceIds;
+    private List<InventoryVos> inventoryVos;
+
+    public List<String> getDeviceIds() {
+        return deviceIds;
+    }
+
+    public void setDeviceIds(List<String> deviceIds) {
+        this.deviceIds = deviceIds;
+    }
+
+    public String getSuiteId() {
+        return suiteId;
+    }
+
+    public void setSuiteId(String suiteId) {
+        this.suiteId = suiteId;
+    }
 
     public List<String> getErrorEpcs() {
         return errorEpcs;
@@ -59,13 +76,6 @@ public class BillOrderResultBean implements Serializable {
         this.id = id;
     }
 
-    public CstPlanBean getCstPlan() {
-        return cstPlan;
-    }
-
-    public void setCstPlan(CstPlanBean cstPlan) {
-        this.cstPlan = cstPlan;
-    }
 
     public int getCountNum() {
         return countNum;
@@ -75,20 +85,20 @@ public class BillOrderResultBean implements Serializable {
         this.countNum = countNum;
     }
 
-    public int getCountKind() {
-        return countKind;
+    public int getKindsOfCst() {
+        return kindsOfCst;
     }
 
-    public void setCountKind(int countKind) {
-        this.countKind = countKind;
+    public void setKindsOfCst(int kindsOfCst) {
+        this.kindsOfCst = kindsOfCst;
     }
 
-    public List<CstInventoryVosBean> getCstInventoryVos() {
-        return cstInventoryVos;
+    public List<InventoryVos> getInventoryVos() {
+        return inventoryVos;
     }
 
-    public void setCstInventoryVos(List<CstInventoryVosBean> cstInventoryVos) {
-        this.cstInventoryVos = cstInventoryVos;
+    public void setInventoryVos(List<InventoryVos> inventoryVos) {
+        this.inventoryVos = inventoryVos;
     }
 
     public static class CstPlanBean implements Serializable {
@@ -197,7 +207,7 @@ public class BillOrderResultBean implements Serializable {
         }
     }
 
-    public static class CstInventoryVosBean implements Serializable {
+    public static class InventoryVos implements Serializable {
         /**
          * accountId : null
          * cstName : 真空采血管2
@@ -205,7 +215,7 @@ public class BillOrderResultBean implements Serializable {
          * cstId : 117
          * cstSpec : 3ML(454334) 蓝管
          * epc : 00021720180412000350
-         * expirationTime : 2020-01-05 00:00:00
+         * expiryDate : 2020-01-05 00:00:00
          * productionDate : null
          * expiration : null
          * deviceName : 3号柜子
@@ -214,7 +224,7 @@ public class BillOrderResultBean implements Serializable {
          * deptId : null
          * deptName : null
          * thingName : null
-         * thingCode : null
+         * thingId : null
          * alias : null
          * batchNumber : null
          * vendorCode : null
@@ -226,7 +236,7 @@ public class BillOrderResultBean implements Serializable {
          * stopFlag : 1
          * storehouseCode : ff80818165b1fb680165b35e320d0056
          * storehouseName : null
-         * deviceCode : 4028829366d31b010166d34ac8af0010
+         * deviceId : 4028829366d31b010166d34ac8af0010
          * operation : null
          * storehouseRemark : null
          * countStock : 0
@@ -261,7 +271,7 @@ public class BillOrderResultBean implements Serializable {
         private String cstId;
         private String cstSpec;
         private String epc;
-        private String expirationTime;
+        private String expiryDate;
         private String productionDate;
         private String expiration;
         private String deviceName;
@@ -270,7 +280,7 @@ public class BillOrderResultBean implements Serializable {
         private String deptId;
         private String deptName;
         private String thingName;
-        private String thingCode;
+        private String thingId;
         private String alias;
         private String batchNumber;
         private String vendorCode;
@@ -279,22 +289,22 @@ public class BillOrderResultBean implements Serializable {
         private String days;
         private String barcode;
         private String sheetId;
-        private int stopFlag;
+        private int    stopFlag;
         private String storehouseCode;
         private String storehouseName;
-        private String deviceCode;
+        private String deviceId;
         private String operation;
         private String storehouseRemark;
-        private int countStock;
-        private int countActual;
-        private int operationStatus;
-        private int count;
+        private int    countStock;
+        private int    countActual;
+        private int    operationStatus;
+        private int    count;
         private String lastUpdateDate;
         private String userName;
         private String remark;
         private String statusStr;
         private String unit;
-        private int isErrorOperation;
+        private int    isErrorOperation;
         private String patientId;
         private String patientName;
         private String tempPatientId;
@@ -309,6 +319,15 @@ public class BillOrderResultBean implements Serializable {
         private String scheduleDateTime;
         private String sex;
         private String isCreate;
+        private Integer expireStatus;
+
+        public Integer getExpireStatus() {
+            return expireStatus;
+        }
+
+        public void setExpireStatus(Integer expireStatus) {
+            this.expireStatus = expireStatus;
+        }
 
         public String getAccountId() {
             return accountId;
@@ -358,12 +377,12 @@ public class BillOrderResultBean implements Serializable {
             this.epc = epc;
         }
 
-        public String getExpirationTime() {
-            return expirationTime;
+        public String getExpiryDate() {
+            return expiryDate;
         }
 
-        public void setExpirationTime(String expirationTime) {
-            this.expirationTime = expirationTime;
+        public void setExpiryDate(String expiryDate) {
+            this.expiryDate = expiryDate;
         }
 
         public String getProductionDate() {
@@ -430,12 +449,12 @@ public class BillOrderResultBean implements Serializable {
             this.thingName = thingName;
         }
 
-        public String getThingCode() {
-            return thingCode;
+        public String getThingId() {
+            return thingId;
         }
 
-        public void setThingCode(String thingCode) {
-            this.thingCode = thingCode;
+        public void setThingId(String thingId) {
+            this.thingId = thingId;
         }
 
         public String getAlias() {
@@ -526,12 +545,12 @@ public class BillOrderResultBean implements Serializable {
             this.storehouseName = storehouseName;
         }
 
-        public String getDeviceCode() {
-            return deviceCode;
+        public String getDeviceId() {
+            return deviceId;
         }
 
-        public void setDeviceCode(String deviceCode) {
-            this.deviceCode = deviceCode;
+        public void setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
         }
 
         public String getOperation() {

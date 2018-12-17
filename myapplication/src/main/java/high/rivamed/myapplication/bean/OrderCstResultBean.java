@@ -21,18 +21,45 @@ public class OrderCstResultBean implements Serializable {
     /**
      * id : 0
      * cstPlan : {"id":5,"createTime":null,"creatorId":null,"creatorName":null,"deptId":null,"planName":null,"pym":null,"remark":null,"status":null,"updateTime":null}
-     * thingCode : ff80818165cdf1810165d0e4a8fe082b
-     * cstPlanVos : [{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff25019e","cstName":"颅内支架系统(LVIS)","cstSpec":"213041-CAS","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuFactory":"法国 MicroVention Europe","vendorName":null,"planNum":2,"thingCode":null,"deviceCode":null,"deviceCodes":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false},{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff25019d","cstName":"一次性针灸针","cstSpec":"0.25*40","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuFactory":"北京中研太和医疗器械公司","vendorName":null,"planNum":5,"thingCode":null,"deviceCode":null,"deviceCodes":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false},{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff2501bf","cstName":"一次性针灸针","cstSpec":"0.35*100","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuFactory":"北京中研太和医疗器械公司","vendorName":null,"planNum":2,"thingCode":null,"deviceCode":null,"deviceCodes":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false}]
+     * thingId : ff80818165cdf1810165d0e4a8fe082b
+     * suiteVos : [{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff25019e","cstName":"颅内支架系统(LVIS)","cstSpec":"213041-CAS","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuName":"法国 MicroVention Europe","vendorName":null,"suiteNum":2,"thingId":null,"deviceId":null,"deviceIds":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false},{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff25019d","cstName":"一次性针灸针","cstSpec":"0.25*40","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuName":"北京中研太和医疗器械公司","vendorName":null,"suiteNum":5,"thingId":null,"deviceId":null,"deviceIds":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false},{"id":null,"deptId":null,"deptName":null,"planName":null,"status":null,"updateTime":null,"createTime":null,"cstId":"4028829265f49c6d0165f4a7ff2501bf","cstName":"一次性针灸针","cstSpec":"0.35*100","udiCode":"要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，","manuName":"北京中研太和医疗器械公司","vendorName":null,"suiteNum":2,"thingId":null,"deviceId":null,"deviceIds":[],"deviceName":null,"deviceNames":[],"oneDeviceCount":null,"totalCount":0,"inventoryEnough":false}]
      * countNum : 9
-     * countKind : 3
+     * kindsOfCst : 3
      */
 
-    private int id;
-    private CstPlanBean cstPlan;
-    private String thingCode;
-    private int countNum;
-    private int countKind;
-    private List<CstPlanVosBean> cstPlanVos;
+    private int                id;
+    private CstPlanBean        cstPlan;
+    private String             msg;
+    private String             suiteId;
+    private String             thingId;
+    private int                countNum;
+    private int                kindsOfCst;
+    private boolean            operateSuccess;
+    private List<SuiteVosBean> suiteVos;
+
+    public String getSuiteId() {
+        return suiteId;
+    }
+
+    public void setSuiteId(String suiteId) {
+        this.suiteId = suiteId;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public boolean isOperateSuccess() {
+        return operateSuccess;
+    }
+
+    public void setOperateSuccess(boolean operateSuccess) {
+        this.operateSuccess = operateSuccess;
+    }
 
     public int getId() {
         return id;
@@ -50,12 +77,12 @@ public class OrderCstResultBean implements Serializable {
         this.cstPlan = cstPlan;
     }
 
-    public String getThingCode() {
-        return thingCode;
+    public String getThingId() {
+        return thingId;
     }
 
-    public void setThingCode(String thingCode) {
-        this.thingCode = thingCode;
+    public void setThingId(String thingId) {
+        this.thingId = thingId;
     }
 
     public int getCountNum() {
@@ -66,20 +93,20 @@ public class OrderCstResultBean implements Serializable {
         this.countNum = countNum;
     }
 
-    public int getCountKind() {
-        return countKind;
+    public int getKindsOfCst() {
+        return kindsOfCst;
     }
 
-    public void setCountKind(int countKind) {
-        this.countKind = countKind;
+    public void setKindsOfCst(int kindsOfCst) {
+        this.kindsOfCst = kindsOfCst;
     }
 
-    public List<CstPlanVosBean> getCstPlanVos() {
-        return cstPlanVos;
+    public List<SuiteVosBean> getSuiteVos() {
+        return suiteVos;
     }
 
-    public void setCstPlanVos(List<CstPlanVosBean> cstPlanVos) {
-        this.cstPlanVos = cstPlanVos;
+    public void setSuiteVos(List<SuiteVosBean> suiteVos) {
+        this.suiteVos = suiteVos;
     }
 
     public static class CstPlanBean {
@@ -188,7 +215,7 @@ public class OrderCstResultBean implements Serializable {
         }
     }
 
-    public static class CstPlanVosBean {
+    public static class SuiteVosBean {
         /**
          * id : null
          * deptId : null
@@ -201,12 +228,12 @@ public class OrderCstResultBean implements Serializable {
          * cstName : 颅内支架系统(LVIS)
          * cstSpec : 213041-CAS
          * udiCode : 要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，要得就是长，
-         * manuFactory : 法国 MicroVention Europe
+         * manuName : 法国 MicroVention Europe
          * vendorName : null
-         * planNum : 2
-         * thingCode : null
-         * deviceCode : null
-         * deviceCodes : []
+         * suiteNum : 2
+         * thingId : null
+         * deviceId : null
+         * deviceIds : []
          * deviceName : null
          * deviceNames : []
          * oneDeviceCount : null
@@ -214,27 +241,27 @@ public class OrderCstResultBean implements Serializable {
          * inventoryEnough : false
          */
 
-        private String id;
-        private String deptId;
-        private String deptName;
-        private String planName;
-        private String status;
-        private String updateTime;
-        private String createTime;
-        private String cstId;
-        private String cstName;
-        private String cstSpec;
-        private String udiCode;
-        private String manuFactory;
-        private String vendorName;
-        private int planNum;
-        private String thingCode;
-        private String deviceCode;
-        private String deviceName;
-        private String oneDeviceCount;
-        private int totalCount;
-        private boolean inventoryEnough;
-        private List<String> deviceCodes;
+        private String       id;
+        private String       deptId;
+        private String       deptName;
+        private String       planName;
+        private String       status;
+        private String       updateTime;
+        private String       createTime;
+        private String       cstId;
+        private String       cstName;
+        private String       cstSpec;
+        private String       udiCode;
+        private String       manuName;
+        private String       vendorName;
+        private int          suiteNum;
+        private String       thingId;
+        private String       deviceId;
+        private String       deviceName;
+        private String       oneDeviceCount;
+        private int          totalCount;
+        private boolean      inventoryEnough;
+        private List<String> deviceIds;
         private List<String> deviceNames;
 
         public String getId() {
@@ -325,12 +352,12 @@ public class OrderCstResultBean implements Serializable {
             this.udiCode = udiCode;
         }
 
-        public String getManuFactory() {
-            return manuFactory;
+        public String getManuName() {
+            return manuName;
         }
 
-        public void setManuFactory(String manuFactory) {
-            this.manuFactory = manuFactory;
+        public void setManuName(String manuName) {
+            this.manuName = manuName;
         }
 
         public String getVendorName() {
@@ -341,28 +368,28 @@ public class OrderCstResultBean implements Serializable {
             this.vendorName = vendorName;
         }
 
-        public int getPlanNum() {
-            return planNum;
+        public int getSuiteNum() {
+            return suiteNum;
         }
 
-        public void setPlanNum(int planNum) {
-            this.planNum = planNum;
+        public void setSuiteNum(int suiteNum) {
+            this.suiteNum = suiteNum;
         }
 
-        public String getThingCode() {
-            return thingCode;
+        public String getThingId() {
+            return thingId;
         }
 
-        public void setThingCode(String thingCode) {
-            this.thingCode = thingCode;
+        public void setThingId(String thingId) {
+            this.thingId = thingId;
         }
 
-        public String getDeviceCode() {
-            return deviceCode;
+        public String getDeviceId() {
+            return deviceId;
         }
 
-        public void setDeviceCode(String deviceCode) {
-            this.deviceCode = deviceCode;
+        public void setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
         }
 
         public String getDeviceName() {
@@ -397,12 +424,12 @@ public class OrderCstResultBean implements Serializable {
             this.inventoryEnough = inventoryEnough;
         }
 
-        public List<String> getDeviceCodes() {
-            return deviceCodes;
+        public List<String> getDeviceIds() {
+            return deviceIds;
         }
 
-        public void setDeviceCodes(List<String> deviceCodes) {
-            this.deviceCodes = deviceCodes;
+        public void setDeviceIds(List<String> deviceIds) {
+            this.deviceIds = deviceIds;
         }
 
         public List<String> getDeviceNames() {

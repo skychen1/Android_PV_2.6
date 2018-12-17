@@ -29,7 +29,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -240,16 +239,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-		mStartTimes = s.toString().trim();
-		LogUtils.i(TAG, "mStartTimes     "+   mStartTimes+":00");
-		try {
-		   long aLong = PowerDateUtils.stringParserLong(mStartTimes+":00");
-		   mStartTime= String.valueOf(aLong);
-		   LogUtils.i(TAG, "aLong     "+   mStartTime);
-		} catch (ParseException e) {
-		   LogUtils.i(TAG, "aLong e    "+   e);
-		}
+		mStartTimes = s.toString().trim()+":00";
+		LogUtils.i(TAG, "mStartTimes     "+   mStartTimes);
 	   }
 
 	   @Override
@@ -267,15 +258,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-		String mTimeEnds = s.toString().trim();
-		try {
-		   long aLong = PowerDateUtils.stringParserLong(mTimeEnds+":00");
-		   mEndTime= String.valueOf(aLong);
-		   LogUtils.i(TAG, "aLong     "+   mEndTime);
-		} catch (ParseException e) {
-		   LogUtils.i(TAG, "aLong e    "+   e);
-		}
-
+		mEndTime = s.toString().trim()+":00";
 	   }
 
 	   @Override

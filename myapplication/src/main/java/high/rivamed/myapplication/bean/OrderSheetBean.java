@@ -73,7 +73,7 @@ public class OrderSheetBean implements Serializable {
          * createTime : 2018-10-16 10:13:10
          */
 
-        private String id;
+        private String suiteId;
         private String userName;
         private String accountId;
         private String patientId;
@@ -85,12 +85,12 @@ public class OrderSheetBean implements Serializable {
         public String cstType = "";
         public String cstNumber = "";
 
-        public String getId() {
-            return id;
+        public String getSuiteId() {
+            return suiteId;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setSuiteId(String suiteId) {
+            this.suiteId = suiteId;
         }
 
         public String getUserName() {

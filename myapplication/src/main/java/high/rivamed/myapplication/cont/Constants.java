@@ -100,6 +100,7 @@ public class Constants {
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN
 
+    public static final String ERROR_200 = "200";//请求正常
     public static final String ERROR_1010 = "1010";//系统异常
     public static final String ERROR_1001 = "1001";//刷新Token过期
     public static final String ERROR_1000 = "1000";//Token过期

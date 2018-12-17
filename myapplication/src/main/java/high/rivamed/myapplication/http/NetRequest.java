@@ -30,6 +30,7 @@ import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1001;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
+import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -294,7 +295,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_STOCK_DETAIL;
 	Map<String, String> map = new HashMap<>();
 	map.put("cstId", cstId);
-	map.put("deviceI", deviceCode);
+	map.put("deviceId", deviceCode);
 	map.put("thingId", sThingCode);
 	GetTokenRequest(urls, map, tag, netResult);
    }
@@ -545,7 +546,7 @@ public class NetRequest {
 	   String Id, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_FINDBYORDERID;
 	Map<String, String> map = new HashMap<>();
-	map.put("receiveOrderId", Id);
+	map.put("orderId", Id);
 	map.put("thingId", SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	GetTokenRequest(urls, map, tag, netResult);
    }
@@ -554,7 +555,7 @@ public class NetRequest {
     * 医嘱单领用-根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
     */
    public void findOrderDetailByOrderId(
-	   String Id, Object tag, LoadingDialog.Builder dialog, NetResult netResult) {
+	   String Id, Object tag,  NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_FINDDETAILBYORDERID;
 	Map<String, String> map = new HashMap<>();
 	map.put("receiveOrderId", Id);
@@ -583,12 +584,10 @@ public class NetRequest {
    /**
     * 套组领用-套组列表
     */
-   public void findOrderCstPlanDate(
-	   String deptCode, Object tag,NetResult netResult) {
+   public void findOrderCstPlanDate(Object tag,NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_CSTPLAN_LISTFORPAD;
 	Map<String, String> map = new HashMap<>();
-	map.put("deptId", deptCode);
-	map.put("suite.suiteName", deptCode);
+	map.put("deptId",  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -599,7 +598,7 @@ public class NetRequest {
 	   String cstPlanId, String thingId, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_CSTPLAN_FINDCSTLIST;
 	Map<String, String> map = new HashMap<>();
-	map.put("cstPlan.id", cstPlanId);
+	map.put("suiteId", cstPlanId);
 	map.put("thingId", thingId);
 	GetTokenRequest(urls, map, tag, netResult);
    }
@@ -643,7 +642,7 @@ public class NetRequest {
     * 套组领用-在退出应用前提交套组信息生成消息
     */
    public void submitOrderCstInfo(Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_CSTPLAN_SAVERECEIVEORDERMSG;
+	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_SAVERECEIVEORDERMSG;
 	Map<String, String> map = new HashMap<>();
 	map.put("accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 	map.put("receiveOrderId", SPUtils.getString(UIUtils.getContext(), SAVE_RECEIVE_ORDERID));
@@ -711,7 +710,7 @@ public class NetRequest {
 	public void onSuccess(Response<String> response) {
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
-		if (null == jsonObject.getString("opFlg")) {//正常
+		if (null == jsonObject.getString("opFlg") || jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 		   if (netResult != null) {
 			Log.i("fff", "opFlg    无");
 			netResult.onSucceed(response.body());

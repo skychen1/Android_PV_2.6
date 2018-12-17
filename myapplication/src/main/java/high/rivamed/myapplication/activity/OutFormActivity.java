@@ -150,7 +150,7 @@ public class OutFormActivity extends BaseSimpleActivity {
     初始化从消息界面跳转过来的数据
     * */
     private void initFromMsgDate() {
-        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, null, new BaseResult() {
+        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 OrderSheetFromMsgBean orderSheetBean = mGson.fromJson(result, OrderSheetFromMsgBean.class);
@@ -213,7 +213,7 @@ public class OutFormActivity extends BaseSimpleActivity {
             @Override
             public void onPageSelected(int position) {
                 if (mCurrentFragment.getTypeAndNumber() != null) {
-                    mCurrentFragment.getStockByOrderId(mCurrentFragment.mPrePageDate.getId());
+                    mCurrentFragment.getStockByOrderId(mCurrentFragment.mPrePageDate.getSuiteId());
                     setCstTypeAndNumber(mCurrentFragment.getTypeAndNumber().cstType, mCurrentFragment.getTypeAndNumber().cstNumber);
                 }
             }

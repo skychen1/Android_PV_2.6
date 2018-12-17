@@ -15,6 +15,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BillOrderResultBean;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -28,7 +29,7 @@ import high.rivamed.myapplication.bean.BillOrderResultBean;
  * 更新描述：   ${TODO}
  */
 
-public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstInventoryVosBean, BaseViewHolder> {
+public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.InventoryVos, BaseViewHolder> {
     private TextView mSeven_one;
     private TextView mSeven_two;
     private TextView mSeven_three;
@@ -46,7 +47,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstIn
 
 
     public BillOrderAdapter(
-            int layout, int type, List<BillOrderResultBean.CstInventoryVosBean> data) {
+            int layout, int type, List<BillOrderResultBean.InventoryVos> data) {
         super(layout, data);
         this.mType = "" + type;
     }
@@ -63,7 +64,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstIn
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, BillOrderResultBean.CstInventoryVosBean item) {
+    protected void convert(final BaseViewHolder helper, BillOrderResultBean.InventoryVos item) {
 //        if (helper.getAdapterPosition() % 2 == 0) {
 //            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 //        } else {
@@ -95,13 +96,10 @@ public class BillOrderAdapter extends BaseQuickAdapter<BillOrderResultBean.CstIn
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getEpc());
         mSeven_three.setText(item.getCstSpec());
-        if (!TextUtils.isEmpty(item.getExpirationTime())&&item.getExpirationTime().length()>10) {
-            mSeven_four.setText(item.getExpirationTime().substring(0, 10));
-        }else{
-            mSeven_four.setText(item.getExpirationTime());
-        }
+        mSeven_four.setText(item.getExpiryDate());
         mSeven_five.setText(item.getDeviceName());
-        initTermOfValidity(helper, item.getExpirationTime(), mSeven_four);
+//        initTermOfValidity(helper, item.getExpiryDate(), mSeven_four);
+        UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_four);
     }
 
     /**

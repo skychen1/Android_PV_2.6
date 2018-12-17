@@ -28,7 +28,7 @@ import high.rivamed.myapplication.bean.OrderCstResultBean;
  * @UpdateRemark: 更新说明
  * @Version: 1.0
  */
-public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.CstPlanVosBean, BaseViewHolder> {
+public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.SuiteVosBean, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -45,7 +45,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
     private SparseBooleanArray mCheckStates;
     private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
 
-    public OutMealTopSuitAdapter(int layout, List<OrderCstResultBean.CstPlanVosBean> data) {
+    public OutMealTopSuitAdapter(int layout, List<OrderCstResultBean.SuiteVosBean> data) {
         super(layout, data);
         this.mData = data;
     }
@@ -63,7 +63,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, OrderCstResultBean.CstPlanVosBean item) {
+    protected void convert(final BaseViewHolder helper, OrderCstResultBean.SuiteVosBean item) {
         if (helper.getAdapterPosition() % 2 == 0) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
         } else {
@@ -73,7 +73,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.C
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
-        mSeven_three.setText(""+item.getPlanNum());
+        mSeven_three.setText(""+item.getSuiteNum());
         mSeven_four.setVisibility(View.GONE);
         StringBuffer deviceNames = new StringBuffer();
         for (int i = 0; i < item.getDeviceNames().size(); i++) {
