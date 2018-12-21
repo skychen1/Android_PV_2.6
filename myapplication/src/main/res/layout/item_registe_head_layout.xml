@@ -26,7 +26,7 @@
 			android:background="@color/bg_green"
 			android:maxLength="5"
 			android:hint="请输入柜体名称"
-			android:maxLines="1"
+			android:maxLines="1" android:singleLine="true"
 			android:paddingLeft="@dimen/x20"
 			android:textColor="@color/bg_f"
 			android:textColorHint="@color/bg_f"

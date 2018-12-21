@@ -73,6 +73,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
@@ -382,6 +383,8 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
 	data.setThingId(thingCode);
+	data.setSystemType("2");
+	data.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	LogUtils.i("Login", "THING_CODE validateLoginFinger  " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {
 	   @Override

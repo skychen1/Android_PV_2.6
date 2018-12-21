@@ -719,6 +719,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   inventoryVo.setPatientName(cstInventoryDto.getPatientName());
 			   inventoryVo.setPatientId(cstInventoryDto.getPatientId());
 			   inventoryVo.setOperationScheduleId(cstInventoryDto.getOperationScheduleId());
+			   inventoryVo.setMedicalId(cstInventoryDto.getMedicalId());
+			   inventoryVo.setSurgeryId(cstInventoryDto.getSurgeryId());
 			}
 			cstInventoryDto.setOperation(mRbKey);
 			cstInventoryDto.setBindType("afterBind");

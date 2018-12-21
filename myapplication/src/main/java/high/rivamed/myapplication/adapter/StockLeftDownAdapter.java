@@ -75,7 +75,7 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseView
 	   int five = item.getExpireStatus();
 	   mSeven_one.setText(item.getCstName());
 	   mSeven_two.setText(item.getCstSpec());
-	   mSeven_three.setText(item.getCount()+"");
+	   mSeven_three.setText(item.getCountStock()+"");
 	   mSeven_four.setText(item.getDeviceName());
 	   mSeven_five.setText(item.getExpirationText());
 	   UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);

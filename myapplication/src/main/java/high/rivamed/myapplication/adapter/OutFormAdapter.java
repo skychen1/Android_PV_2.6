@@ -49,18 +49,18 @@ public class OutFormAdapter extends BaseQuickAdapter<OrderSheetBean.RowsBean, Ba
         } else {
             setView(false);
         }
-        if (!TextUtils.isEmpty(item.getOperationRoomName())) {
-            mTvOpNumber.setText(item.getOperationRoomName());
+        if (!TextUtils.isEmpty(item.getRoomName())) {
+            mTvOpNumber.setText(item.getRoomName());
         } else {
             mTvOpNumber.setText("");
         }
         if (!TextUtils.isEmpty(item.getCreateTime())) {
-            mTvTime.setText(item.getCreateTime().substring(5, 16));
+            mTvTime.setText(item.getCreateTime());
         } else {
             mTvTime.setText("");
         }
-        if (!TextUtils.isEmpty(item.getUserName())) {
-            mTvRequestName.setText(item.getUserName());
+        if (!TextUtils.isEmpty(item.getCreatorName())) {
+            mTvRequestName.setText(item.getCreatorName());
         } else {
             mTvRequestName.setText("");
         }

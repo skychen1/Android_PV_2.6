@@ -205,6 +205,7 @@
         <item name="android:layout_marginTop">@dimen/x12</item>
         <item name="android:drawablePadding">@dimen/x12</item>
         <item name="android:background">@null</item>
+        <item name="android:singleLine">true</item>
         <item name="android:drawableBottom">@drawable/bg_register_lines</item>
     </style>
 

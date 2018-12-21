@@ -27,7 +27,7 @@ import high.rivamed.myapplication.bean.BillStockResultBean;
  * 更新描述：   ${TODO}
  */
 
-public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockResultBean.TransReceiveOrderDetailVosBean, BaseViewHolder> {
+public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockResultBean.OrderDetailVo, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -35,7 +35,7 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
     private TextView mSeven_four;
     private SparseBooleanArray mCheckStates;
 
-    public LookUpDetailedListDialogAdapter(List<BillStockResultBean.TransReceiveOrderDetailVosBean> data) {
+    public LookUpDetailedListDialogAdapter(List<BillStockResultBean.OrderDetailVo> data) {
         super(R.layout.item_form_four_layout, data);
         if (mData == null) {
             mData = new ArrayList<>();
@@ -52,7 +52,7 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, BillStockResultBean.TransReceiveOrderDetailVosBean item) {
+    protected void convert(final BaseViewHolder helper, BillStockResultBean.OrderDetailVo item) {
 //        if (helper.getAdapterPosition() % 2 == 0) {
 //            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
 //        } else {
@@ -64,8 +64,8 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getCounts());
         StringBuffer deviceNames=new StringBuffer();
-        for (int i = 0; i < item.getDeviceName().size(); i++) {
-            deviceNames.append(item.getDeviceName().get(i));
+        for (int i = 0; i < item.getDeviceNames().size(); i++) {
+            deviceNames.append(item.getDeviceNames().get(i));
         }
         mSeven_four.setText(deviceNames);
     }

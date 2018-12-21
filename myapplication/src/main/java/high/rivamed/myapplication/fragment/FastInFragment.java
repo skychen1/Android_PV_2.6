@@ -130,6 +130,7 @@ public class FastInFragment extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
 	LogUtils.i(TAG, "event   " + event.outSize);
+	LogUtils.i(TAG, "type   " + event.type);
 	if (mInOutDto != null) {
 	   mInOutDto.setInInventoryVos(event.inventoryDto.getInInventoryVos());
 	   mInSize = event.inSize;

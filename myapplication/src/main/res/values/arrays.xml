@@ -173,7 +173,8 @@
 	<string-array name="seven_outform_arrays">
 		<item>名称</item>
 		<item>规格型号</item>
-		<item>数量</item>
+		<item>请领数量</item>
+		<item>库存数量</item>
 		<item>柜号</item>
 		<item>患者</item>
 		<item>状态</item>

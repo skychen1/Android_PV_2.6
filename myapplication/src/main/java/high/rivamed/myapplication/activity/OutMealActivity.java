@@ -36,8 +36,8 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealBean;
-import high.rivamed.myapplication.bean.UseCstOderResultBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -118,8 +118,8 @@ public class OutMealActivity extends BaseSimpleActivity {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCstDate(List<UseCstOderResultBean.TCstInventoryVosBean> event) {
-        for (UseCstOderResultBean.TCstInventoryVosBean s:event){
+    public void getCstDate(Event.EventMealType event) {
+        for (InventoryVo s:event.inventoryVos){
 	     String cstId = s.getCstId();
 	     for(OrderCstResultBean.SuiteVosBean k:movies){
 	        if (k.getCstId().equals(cstId)){
@@ -451,15 +451,15 @@ public class OutMealActivity extends BaseSimpleActivity {
                 // 统一数据格式
                 OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
                 orderSheetBean.setSuiteId("" + mOrderCstResult.getSuiteId());
-                List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList = new ArrayList<>();
+                List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList = new ArrayList<>();
                 for (OrderCstResultBean.SuiteVosBean item : mOrderCstResult.getSuiteVos()) {
-                    BillStockResultBean.TransReceiveOrderDetailVosBean info = new BillStockResultBean.TransReceiveOrderDetailVosBean();
+                    BillStockResultBean.OrderDetailVo info = new BillStockResultBean.OrderDetailVo();
                     info.setCounts(item.getSuiteNum());
                     info.setCstId(item.getCstId());
                     info.setCstName(item.getCstName());
                     info.setCstSpec(item.getCstSpec());
                     info.setPatientName("");
-                    info.setDeviceName(item.getDeviceNames());
+                    info.setDeviceNames(item.getDeviceNames());
                     transReceiveOrderDetailVosList.add(info);
                 }
                 Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);

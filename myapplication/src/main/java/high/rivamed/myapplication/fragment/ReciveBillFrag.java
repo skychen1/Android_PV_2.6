@@ -160,7 +160,7 @@ public class ReciveBillFrag extends SimpleFragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mPublicAdapter == null && mPrePageDate != null) {
             if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-                getStockByOrderId(mPrePageDate.getSuiteId());
+                getStockByOrderId(mPrePageDate.getOrderId());
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -177,7 +177,7 @@ public class ReciveBillFrag extends SimpleFragment {
         mPublicRl.setVisibility(View.GONE);
         mPrePageDate = (OrderSheetBean.RowsBean) getArguments().getSerializable("OrderSheet");
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-            getStockByOrderId(mPrePageDate.getSuiteId());
+            getStockByOrderId(mPrePageDate.getOrderId());
         }
         initlistener();
     }
@@ -196,8 +196,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.setMargins(0, 0, 0, 0);
         mPublicLl.setLayoutParams(lp);
-        mLayout = R.layout.item_form_seven_layout;
-        mHeadView = getLayoutInflater().inflate(R.layout.item_form_seven_title_layout,
+        mLayout = R.layout.item_form_eight_layout;
+        mHeadView = getLayoutInflater().inflate(R.layout.item_form_eight_title_layout,
                 (ViewGroup) mLinearLayout.getParent(), false);
         ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
         ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -206,10 +206,11 @@ public class ReciveBillFrag extends SimpleFragment {
         ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
         ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
         ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+        ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
         if (mPublicAdapter!=null){
             mPublicAdapter.notifyDataSetChanged();
         }else {
-            mPublicAdapter = new BillStockAdapter(mLayout, mBillStockResultBean.getTransReceiveOrderDetailVos());
+            mPublicAdapter = new BillStockAdapter(mLayout, mBillStockResultBean.getOrderDetailVos());
             mHeadView.setBackgroundResource(R.color.bg_green);
             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -281,9 +282,9 @@ public class ReciveBillFrag extends SimpleFragment {
                 mBillStockResultBean = mGson.fromJson(result, BillStockResultBean.class);
 
                 ((OutFormActivity) getActivity()).setCstTypeAndNumber(
-                      "" + mBillStockResultBean.getCstTypes(), "" + mBillStockResultBean.getCstCount());
-                mPrePageDate.cstType = "" + mBillStockResultBean.getCstTypes();
-                mPrePageDate.cstNumber = "" + mBillStockResultBean.getCstCount();
+                      "" + mBillStockResultBean.getKindsOfCst(), "" + mBillStockResultBean.getCountNum());
+                mPrePageDate.cstType = "" + mBillStockResultBean.getKindsOfCst();
+                mPrePageDate.cstNumber = "" + mBillStockResultBean.getCountNum();
 
                 initData();
                 if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
@@ -340,7 +341,7 @@ public class ReciveBillFrag extends SimpleFragment {
                         Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("DATA", new Event.EventBillStock(mPrePageDate,
-                                                                                mBillStockResultBean.getTransReceiveOrderDetailVos(),
+                                                                                mBillStockResultBean.getOrderDetailVos(),
                                                                                 mTbaseDevices));
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
@@ -359,7 +360,7 @@ public class ReciveBillFrag extends SimpleFragment {
         mIsCanSkipToSurePage = true;
 
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-            getStockByOrderId(mPrePageDate.getSuiteId());
+            getStockByOrderId(mPrePageDate.getOrderId());
         }
     }
 

@@ -164,6 +164,33 @@ public class UIUtils {
 
    }
 
+   /**
+    * 底色不同
+    * @param mContext
+    * @param helper
+    * @param type
+    * @param textview
+    */
+   public static void initTermOfValidity2(Context mContext,BaseViewHolder helper, int type, TextView textview) {
+
+	if (type==0) {
+	   textview.setBackgroundResource(R.drawable.bg_text_red);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	} else if (type==3) {
+	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	} else if (type==2) {
+	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	} else if (type==1) {
+	   textview.setBackgroundResource(R.drawable.bg_text_orange);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	} else {
+	   textview.setBackgroundResource(R.color.bg_f);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	}
+
+   }
 	private static InputFilter filter = new InputFilter() {
 		@Override
 		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {

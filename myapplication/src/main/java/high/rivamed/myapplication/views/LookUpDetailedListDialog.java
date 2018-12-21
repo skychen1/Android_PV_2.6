@@ -75,7 +75,7 @@ public class LookUpDetailedListDialog extends Dialog {
 
         private RecyclerView mRecyclerView;
 
-        private List<BillStockResultBean.TransReceiveOrderDetailVosBean> mDate;
+        private List<BillStockResultBean.OrderDetailVo> mDate;
         private List<String> titeleList = null;
 
         private boolean mIsShowLeftTopView = true;
@@ -84,7 +84,7 @@ public class LookUpDetailedListDialog extends Dialog {
             this.mContext = context;
         }
 
-        public Builder setDate(List<BillStockResultBean.TransReceiveOrderDetailVosBean> list) {
+        public Builder setDate(List<BillStockResultBean.OrderDetailVo> list) {
             this.mDate = list;
             return this;
         }

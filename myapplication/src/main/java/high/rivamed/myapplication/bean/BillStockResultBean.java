@@ -19,21 +19,29 @@ public class BillStockResultBean implements Serializable {
 
     /**
      * id : 0
-     * transReceiveOrderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":1,"cstId":"116","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"117","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"}]
+     * orderDetailVos : [{"orderDetailId":"40288293667aa53e01667aa5fcf30001","isHaveNum":1,"counts":1,"cstId":"116","cstName":"晶体植入镊","cstSpec":"直平台","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"},{"orderDetailId":"40288293667aa53e01667aa5fcf30002","isHaveNum":1,"counts":1,"cstId":"117","cstName":"角膜剪","cstSpec":"1.5m","receivedStatus":"部分领取","receiveNum":1,"needNum":2,"patientName":"马羊焕","deviceId":"4028829366d31b010166d34ac8af0010","deviceName":["3号柜子"],"deviceStore":null,"deviceIds":["4028829366d31b010166d34ac8af0010"],"dname":"3号柜子"}]
      * receiveOrderId : 40288293667aa53e01667aa5fc610016
-     * cstCount : 4
-     * cstTypes : 2
+     * countNum : 4
+     * kindsOfCst : 2
      * thingId : 4028829366d31b010166d34ac8af000f
      */
+    private int                 id;
+    private String              receiveOrderId;
+    private String              opFlg;
+    private int                 countNum;
+    private int                 kindsOfCst;
+    private String              thingId;
+    private boolean             operateSuccess;
+    private String              msg;
+    private List<OrderDetailVo> orderDetailVos;
 
-    private int                                  id;
-    private String                               receiveOrderId;
-    private int                                  cstCount;
-    private int                                  cstTypes;
-    private String                               thingId;
-    private boolean                              operateSuccess;
-    private String                               msg;
-    private List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos;
+   public String getOpFlg() {
+      return opFlg;
+   }
+
+   public void setOpFlg(String opFlg) {
+      this.opFlg = opFlg;
+   }
 
    public boolean isOperateSuccess() {
 	return operateSuccess;
@@ -59,24 +67,24 @@ public class BillStockResultBean implements Serializable {
 
     public void setReceiveOrderId(String receiveOrderId) { this.receiveOrderId = receiveOrderId;}
 
-    public int getCstCount() { return cstCount;}
+    public int getCountNum() { return countNum;}
 
-    public void setCstCount(int cstCount) { this.cstCount = cstCount;}
+    public void setCountNum(int countNum) { this.countNum = countNum;}
 
-    public int getCstTypes() { return cstTypes;}
+    public int getKindsOfCst() { return kindsOfCst;}
 
-    public void setCstTypes(int cstTypes) { this.cstTypes = cstTypes;}
+    public void setKindsOfCst(int kindsOfCst) { this.kindsOfCst = kindsOfCst;}
 
     public String getThingId() { return thingId;}
 
     public void setThingId(String thingId) { this.thingId = thingId;}
 
-    public List<TransReceiveOrderDetailVosBean> getTransReceiveOrderDetailVos() { return transReceiveOrderDetailVos;}
+    public List<OrderDetailVo> getOrderDetailVos() { return orderDetailVos;}
 
-    public void setTransReceiveOrderDetailVos(
-          List<TransReceiveOrderDetailVosBean> transReceiveOrderDetailVos) { this.transReceiveOrderDetailVos = transReceiveOrderDetailVos;}
+    public void setOrderDetailVos(
+          List<OrderDetailVo> orderDetailVos) { this.orderDetailVos = orderDetailVos;}
 
-    public static class TransReceiveOrderDetailVosBean implements Serializable{
+    public static class OrderDetailVo implements Serializable{
 
         /**
          * orderDetailId : 40288293667aa53e01667aa5fcf30001
@@ -109,7 +117,7 @@ public class BillStockResultBean implements Serializable {
         private String       deviceId;
         private Object       deviceStore;
         private String       dname;
-        private List<String> deviceName;
+        private List<String> deviceNames;
         private List<String> deviceIds;
 
         public String getOrderDetailId() { return orderDetailId;}
@@ -165,9 +173,9 @@ public class BillStockResultBean implements Serializable {
 
         public void setDname(String dname) { this.dname = dname;}
 
-        public List<String> getDeviceName() { return deviceName;}
+        public List<String> getDeviceNames() { return deviceNames;}
 
-        public void setDeviceName(List<String> deviceName) { this.deviceName = deviceName;}
+        public void setDeviceNames(List<String> deviceNames) { this.deviceNames = deviceNames;}
 
         public List<String> getDeviceIds() { return deviceIds;}
 

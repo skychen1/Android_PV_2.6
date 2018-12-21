@@ -28,6 +28,15 @@ public class Event {
     /**
      * 快速开柜重新扫描
      */
+    public static class EventMealType {
+        public List<InventoryVo> inventoryVos;
+        public EventMealType(List<InventoryVo> inventoryVos) {
+            this.inventoryVos = inventoryVos;
+        }
+    }
+    /**
+     * 快速开柜重新扫描
+     */
     public static class EventFastTimeStart {
         public boolean b;
         public EventFastTimeStart(boolean b) {
@@ -296,11 +305,13 @@ public class Event {
         public String type;
         public String mTempPatientId;
         public String operationScheduleId;
+        public String mMedicalId;
+        public String mSurgeryId;
         public int position;
         public boolean create;
         public List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
-        public EventCheckbox(String name, String mId, String idNo, String scheduleDateTime, String operatingRoomNo, String operatingRoomNoName, String sex, String deptId, boolean create, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
+        public EventCheckbox(String name, String mId, String idNo, String scheduleDateTime, String operatingRoomNo, String operatingRoomNoName, String sex, String deptId, boolean create, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String medicalId) {
             this.deptId = deptId;
             this.id = mId;
             this.mString = name;
@@ -313,9 +324,10 @@ public class Event {
             this.position = position;
             this.create = create;
             this.mTbaseDevices = mTbaseDevices;
+            this.mMedicalId = medicalId;
         }
 
-        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
+        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String mMedicalId,String mSurgeryId) {
             this.mString = name;
             this.id = id;
             this.mTempPatientId = mTempPatientId;
@@ -323,6 +335,8 @@ public class Event {
             this.position = position;
             this.mTbaseDevices = mTbaseDevices;
             this.operationScheduleId = operationScheduleId;
+            this.mMedicalId = mMedicalId;
+            this.mSurgeryId = mSurgeryId;
         }
     }
 
@@ -508,10 +522,16 @@ public class Event {
     public static class EventButton {
         public boolean type;
         public boolean bing;
+        public boolean mRemark;
 
         public EventButton(boolean type, boolean bing) {
             this.type = type;
             this.bing = bing;
+        }
+        public EventButton(boolean type, boolean bing,boolean mRemark) {
+            this.type = type;
+            this.bing = bing;
+            this.mRemark = mRemark;
         }
     }
 
@@ -519,11 +539,11 @@ public class Event {
      * 医嘱单领用--确认领用请求所需耗材信息
      */
     public static class EventBillStock implements Serializable {
-        public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
-        public OrderSheetBean.RowsBean orderSheetBean;
-        public List<BoxSizeBean.DevicesBean> tbaseDevices;
+        public List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList;
+        public OrderSheetBean.RowsBean                 orderSheetBean;
+        public List<BoxSizeBean.DevicesBean>           tbaseDevices;
 
-        public EventBillStock(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
+        public EventBillStock(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
             this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
             this.orderSheetBean = orderSheetBean;
             this.tbaseDevices = tbaseDevices;
@@ -547,11 +567,11 @@ public class Event {
      * 套组领用--确认领用请求所需耗材信息
      */
     public static class EventBillOrder {
-        public List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList;
-        public OrderSheetBean.RowsBean orderSheetBean;
-        public List<BoxSizeBean.DevicesBean> tbaseDevices;
+        public List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList;
+        public OrderSheetBean.RowsBean                 orderSheetBean;
+        public List<BoxSizeBean.DevicesBean>           tbaseDevices;
 
-        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.TransReceiveOrderDetailVosBean> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
+        public EventBillOrder(OrderSheetBean.RowsBean orderSheetBean, List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList, List<BoxSizeBean.DevicesBean> tbaseDevices) {
             this.transReceiveOrderDetailVosList = transReceiveOrderDetailVosList;
             this.orderSheetBean = orderSheetBean;
             this.tbaseDevices = tbaseDevices;

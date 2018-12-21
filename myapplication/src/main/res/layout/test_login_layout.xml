@@ -32,7 +32,7 @@
 			style="@style/login_edittext"
 			android:layout_marginLeft="@dimen/x118"
 			android:layout_marginRight="@dimen/x118"
-			android:layout_marginTop="@dimen/x80"
+			android:layout_marginTop="@dimen/x80" android:singleLine="true"
 			android:drawableLeft="@mipmap/login_name"
 			android:drawablePadding="@dimen/x20"
 			android:hint="请输入用户名"/>
@@ -45,7 +45,7 @@
 			android:layout_marginTop="@dimen/x60"
 			android:drawableLeft="@mipmap/login_password"
 			android:drawablePadding="@dimen/x20"
-			android:hint="请输入密码"
+			android:hint="请输入密码" android:singleLine="true"
 			android:inputType="textPassword"/>
 
 		<LinearLayout

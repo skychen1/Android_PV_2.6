@@ -44,7 +44,6 @@ import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -150,6 +149,7 @@ public class FastOutFragment extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
 	LogUtils.i(TAG, "event   " + event.outSize);
+	LogUtils.i(TAG, "type   " + event.type);
 	if (mInOutDto != null) {
 	   mInOutDto.setOutInventoryVos(event.inventoryDto.getOutInventoryVos());
 	   mInSize = event.inSize;
@@ -172,7 +172,8 @@ public class FastOutFragment extends SimpleFragment {
 	} else {
 	   mAllOutText.setText("");
 	}
-	if (event.type.equals("moreScan")){
+	if (event.type!=null&&event.type.equals("moreScan")){
+	   LogUtils.i(TAG, "setOutBoxDate    " + 1);
 	   setOutBoxDate(mInOutDto.getOutInventoryVos());
 	}
    }
@@ -194,16 +195,21 @@ public class FastOutFragment extends SimpleFragment {
       EventBusUtils.register(this);
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
-
+	LogUtils.i(TAG, "setOutBoxDate    " + 2);
 	setOutBoxDate(mInOutDto.getOutInventoryVos());
 
    }
 
    private void setOutBoxDate(List<InventoryVo> voList) {
-	if (mOutSize==0){
+	LogUtils.i(TAG, "voList.size()    " + voList.size());
+	if (voList.size()==0){
 	   mBtnFourLy.setEnabled(false);
 	   mBtnFourTh.setEnabled(false);
 	   mBtnFourYc.setEnabled(false);
+	}else {
+	   mBtnFourLy.setEnabled(true);
+	   mBtnFourTh.setEnabled(true);
+	   mBtnFourYc.setEnabled(true);
 	}
 	setOutBoxTitles(voList);
 	String[] array = mContext.getResources().getStringArray(R.array.six_outbox_arrays);
@@ -248,6 +254,7 @@ public class FastOutFragment extends SimpleFragment {
 
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(9);
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mDtoLy.setToSthId(event.context);
 	List<InventoryVo> inventoryVos = new ArrayList<>();
 	for (int i = 0; i < mInOutDto.getOutInventoryVos().size(); i++) {
@@ -473,7 +480,6 @@ public class FastOutFragment extends SimpleFragment {
 	   }
 	}
 	mDtoLy.setInventoryVos(inventoryVos);
-	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	String mTCstInventoryDtoJson = mGson.toJson(mDtoLy);
 	return mTCstInventoryDtoJson;
    }
@@ -494,6 +500,7 @@ public class FastOutFragment extends SimpleFragment {
 	   }
 	}
 	mDtoLy.setInventoryVos(inventoryVos);
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 
 	LogUtils.i(TAG, "退货   " + mTCstInventoryDtoJsons);
@@ -531,7 +538,6 @@ public class FastOutFragment extends SimpleFragment {
 	}
 
 	mDtoLy.setInventoryVos(inventoryVos);
-	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 
 	LogUtils.i(TAG, "调拨   " + mTCstInventoryDtoJsons);

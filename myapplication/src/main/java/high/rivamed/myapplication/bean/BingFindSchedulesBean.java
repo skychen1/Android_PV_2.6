@@ -77,6 +77,15 @@ public class BingFindSchedulesBean implements Serializable {
         private String  sex;//性别
         private String  tempPatientId;
         private boolean isCreate;
+        private String medicalId;
+
+        public String getMedicalId() {
+            return medicalId;
+        }
+
+        public void setMedicalId(String medicalId) {
+            this.medicalId = medicalId;
+        }
 
         public boolean isCreate() {
             return isCreate;

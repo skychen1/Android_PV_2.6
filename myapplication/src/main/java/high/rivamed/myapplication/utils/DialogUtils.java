@@ -145,6 +145,8 @@ public class DialogUtils {
                         String id = patientInfos.get(checkedPosition).getPatientId();
                         String name = patientInfos.get(checkedPosition).getPatientName();
                         String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
+                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
+                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
                         LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
@@ -153,7 +155,7 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices,mMedicalId,mSurgeryId));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -170,8 +172,10 @@ public class DialogUtils {
                         String id = patientInfos.get(checkedPosition).getPatientId();
                         String name = patientInfos.get(checkedPosition).getPatientName();
                         String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
+                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
+                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
@@ -797,7 +801,7 @@ public class DialogUtils {
     /**
      * 医嘱领用-确认-查看请领单
      */
-    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.TransReceiveOrderDetailVosBean> list, OrderSheetBean.RowsBean prePageDate) {
+    public static void showLookUpDetailedListDialog(Context context, boolean isShowLeftTopView, List<BillStockResultBean.OrderDetailVo> list, OrderSheetBean.RowsBean prePageDate) {
         LookUpDetailedListDialog.Builder builder = new LookUpDetailedListDialog.Builder(context);
         builder.setDate(list);
         builder.setCstNumber(prePageDate.cstNumber);

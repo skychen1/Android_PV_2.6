@@ -19,7 +19,7 @@ public class OrderSheetBean implements Serializable {
     /**
      * pageNo : 1
      * pageSize : 5
-     * rows : [{"id":"40288293667aa53e01667aa5fc610000","userName":"adminUM","accountId":null,"patientId":null,"patientName":"573076/马羊焕","operationScheduleId":null,"operationRoomNo":null,"operationRoomNoName":null,"createTime":"2018-10-16 10:13:10"}]
+     * rows : [{"id":"40288293667aa53e01667aa5fc610000","creatorName":"adminUM","accountId":null,"patientId":null,"patientName":"573076/马羊焕","operationScheduleId":null,"operationRoomNo":null,"operationRoomNoName":null,"createTime":"2018-10-16 10:13:10"}]
      * total : 1
      */
 
@@ -63,7 +63,7 @@ public class OrderSheetBean implements Serializable {
     public static class RowsBean implements Serializable {
         /**
          * id : 40288293667aa53e01667aa5fc610000
-         * userName : adminUM
+         * creatorName : adminUM
          * accountId : null
          * patientId : null
          * patientName : 573076/马羊焕
@@ -74,16 +74,59 @@ public class OrderSheetBean implements Serializable {
          */
 
         private String suiteId;
-        private String userName;
+        private String orderId;
+        private String creatorName;
         private String accountId;
         private String patientId;
         private String patientName;
         private String operationScheduleId;
         private String operationRoomNo = "";
-        private String operationRoomName = "";
-        private String createTime = "";
-        public String cstType = "";
-        public String cstNumber = "";
+        private String roomName        = "";
+        private String createTime      = "";
+        public String  cstType         = "";
+        public String  cstNumber       = "";
+        public String  surgeryId       = "";
+        public String  medicalId       = "";
+
+        public String getCstType() {
+            return cstType;
+        }
+
+        public void setCstType(String cstType) {
+            this.cstType = cstType;
+        }
+
+        public String getCstNumber() {
+            return cstNumber;
+        }
+
+        public void setCstNumber(String cstNumber) {
+            this.cstNumber = cstNumber;
+        }
+
+        public String getSurgeryId() {
+            return surgeryId;
+        }
+
+        public void setSurgeryId(String surgeryId) {
+            this.surgeryId = surgeryId;
+        }
+
+        public String getMedicalId() {
+            return medicalId;
+        }
+
+        public void setMedicalId(String medicalId) {
+            this.medicalId = medicalId;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
 
         public String getSuiteId() {
             return suiteId;
@@ -93,12 +136,12 @@ public class OrderSheetBean implements Serializable {
             this.suiteId = suiteId;
         }
 
-        public String getUserName() {
-            return userName;
+        public String getCreatorName() {
+            return creatorName;
         }
 
-        public void setUserName(String userName) {
-            this.userName = userName;
+        public void setCreatorName(String creatorName) {
+            this.creatorName = creatorName;
         }
 
         public String getAccountId() {
@@ -141,12 +184,12 @@ public class OrderSheetBean implements Serializable {
             this.operationRoomNo = operationRoomNo;
         }
 
-        public String getOperationRoomName() {
-            return operationRoomName;
+        public String getRoomName() {
+            return roomName;
         }
 
-        public void setOperationRoomName(String operationRoomName) {
-            this.operationRoomName = operationRoomName;
+        public void setRoomName(String roomName) {
+            this.roomName = roomName;
         }
 
         public String getCreateTime() {

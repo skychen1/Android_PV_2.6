@@ -34,7 +34,7 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
     private TextView mSeven_seven;
     private TextView mSeven_eight;
 
-    public RunWatePageAdapter(
+    public  RunWatePageAdapter(
             int layoutResId, @Nullable List<RunWateBean.RowsBean> data) {
         super(layoutResId, data);
     }

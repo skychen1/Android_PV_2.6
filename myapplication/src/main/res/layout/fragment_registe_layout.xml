@@ -68,7 +68,7 @@
 					android:paddingRight="@dimen/x10"
 					android:textSize="@dimen/textsize_17"
 					android:layout_alignParentRight="true"
-					android:hint="请输入"
+					android:hint="请输入" android:singleLine="true"
 					android:textColor="@color/text_color_58"
 					android:background="@drawable/bg_password_line_nor"
 					/>
@@ -107,7 +107,7 @@
 					android:paddingRight="@dimen/x10"
 					android:textSize="@dimen/textsize_17"
 					android:layout_alignParentRight="true"
-					android:hint="请输入"
+					android:hint="请输入" android:singleLine="true"
 					android:textColor="@color/text_color_58"
 					android:background="@drawable/bg_password_line_nor"
 					/>
@@ -148,7 +148,7 @@
 					android:paddingRight="@dimen/x10"
 					android:textColor="@color/text_color_58"
 					android:hint="请输入"
-					android:textSize="@dimen/textsize_17"
+					android:textSize="@dimen/textsize_17" android:singleLine="true"
 					android:background="@drawable/bg_password_line_nor"
 					/>
 			</RelativeLayout>
@@ -189,7 +189,7 @@
 					android:layout_alignParentRight="true"
 					android:textSize="@dimen/textsize_17"
 					android:textColor="@color/text_color_58"
-					android:hint="请输入"
+					android:hint="请输入" android:singleLine="true"
 					android:background="@drawable/bg_password_line_nor"
 					/>
 			</RelativeLayout>
@@ -224,7 +224,7 @@
 					android:layout_marginLeft="@dimen/x20"
 					android:layout_alignParentRight="true"
 					android:paddingLeft="@dimen/x10"
-					android:paddingRight="@dimen/x10"
+					android:paddingRight="@dimen/x10" android:singleLine="true"
 					android:textColor="@color/text_color_58"
 					android:textSize="@dimen/textsize_17"
 					android:hint="请输入"
@@ -263,7 +263,7 @@
 					android:layout_marginLeft="@dimen/x85"
 					android:paddingLeft="@dimen/x10"
 					android:paddingRight="@dimen/x10"
-					android:textSize="@dimen/textsize_17"
+					android:textSize="@dimen/textsize_17" android:singleLine="true"
 					android:textColor="@color/text_color_58"
 					android:layout_alignParentRight="true"
 					android:hint="请输入"

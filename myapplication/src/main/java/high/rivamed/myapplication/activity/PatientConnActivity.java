@@ -81,9 +81,9 @@ public class PatientConnActivity extends BaseSimpleActivity {
 
    @Override
    protected void onResume() {
+	super.onResume();
 	loadTempBingDate("");
 	initDate();
-	super.onResume();
    }
 
    @Override
@@ -264,6 +264,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -326,6 +327,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
+				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -378,6 +380,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
    private void connPatient(int position, DialogInterface dialog) {
 	PatientConnBean bean = new PatientConnBean();
 	bean.setPatientId(mPatientInfos.get(position).getPatientId());
+	bean.setMedicalId(mPatientInfos.get(position).getMedicalId());
 	bean.setTempPatientId(
 		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
 	LogUtils.i(TAG, "mGson.toJson(bean)   " + mGson.toJson(bean));

@@ -40,7 +40,15 @@ public class CreatTempPatientBean {
         private String  surgeryTime;
         private String  sex;
         private boolean isCreate;
+        private String medicalId;
 
+        public String getMedicalId() {
+            return medicalId;
+        }
+
+        public void setMedicalId(String medicalId) {
+            this.medicalId = medicalId;
+        }
         public String getDeptId() {
             return deptId;
         }

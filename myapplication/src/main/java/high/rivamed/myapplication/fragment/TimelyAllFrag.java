@@ -206,7 +206,7 @@ public class TimelyAllFrag extends SimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	if (!mPauseS) {
 	   if (mLoading != null) {
@@ -235,9 +235,8 @@ public class TimelyAllFrag extends SimpleFragment {
 			   k = 0;
 			   if (!mPauseS) {
 				LogUtils.i(TAG, "mEPCDate  zou l  ");
-
-				getDeviceDate(event.deviceId, mEPCDate);
 				AllDeviceCallBack.getInstance().initCallBack();
+				getDeviceDate(event.deviceId, mEPCDate);
 			   }
 			}
 
@@ -544,7 +543,6 @@ public class TimelyAllFrag extends SimpleFragment {
     */
 
    private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
-
 	if (mBoxIdListss != null) {
 	   for (String s : mBoxIdListss) {
 		LogUtils.i(TAG, "mBoxIdListss   " + s);
@@ -688,8 +686,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mInventoryVos = mCstInventoryDto.getInventoryVos();
 	   mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 	   int number = 0;
-	   for (InventoryVo InventoryVo : mInventoryVos) {
-		number += InventoryVo.getCountStock();
+	   for (InventoryVo inventoryVo : mInventoryVos) {
+		number += inventoryVo.getCountStock();
 	   }
 	   LogUtils.i(TAG, "第二次");
 	   initDate(epcs, mCstInventoryDto.getReduce(), mCstInventoryDto.getAdd(), number);
@@ -702,8 +700,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mInventoryVos.addAll(inventoryVos);
 	   mDeviceInventoryVos.addAll(deviceInventoryVos);
 	   int number = 0;
-	   for (InventoryVo InventoryVo : mInventoryVos) {
-		number += InventoryVo.getCountStock();
+	   for (InventoryVo inventoryVo : mInventoryVos) {
+		number += inventoryVo.getCountStock();
 	   }
 	   if (epcs == number) {
 		mTimelyReality.setText(

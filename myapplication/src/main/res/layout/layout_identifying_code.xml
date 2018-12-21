@@ -19,7 +19,7 @@
 		android:layout_height="match_parent"
 		android:background="@android:color/transparent"
 		android:inputType="number"
-		android:focusable="false"
+		android:focusable="false" android:singleLine="true"
 		android:focusableInTouchMode="true"/>
 
 </RelativeLayout>

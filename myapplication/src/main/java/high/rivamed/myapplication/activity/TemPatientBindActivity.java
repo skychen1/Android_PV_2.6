@@ -107,6 +107,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String  mType  = "";
    private String  mGoneType  = "";
    private String mOperationScheduleId;
+   private String mMedicalId;
+   private String mSurgeryId;
    private String mTempPatientId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
@@ -214,6 +216,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   .getOperationScheduleId();
 		   mTempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getTempPatientId();
+		   mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getMedicalId();
+		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getSurgeryId()!=null){
+			mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+				.getSurgeryId();
+		   }
+
 		   if (null != mType && mType.equals("afterBindTemp")) {
 			//后绑定患者
 			if (mId.equals("virtual")) {
@@ -222,7 +232,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
 												 mOperationScheduleId,
 												 mType, mPosition,
-												 mTemPTbaseDevices));
+												 mTemPTbaseDevices,mMedicalId,null));
 			   } else {
 				LogUtils.i(TAG, "mPatientBean2 ");
 				String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
@@ -235,17 +245,18 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
 					.getOperatingRoomNoName();
 				String sex = mPatientBean.getTTransOperationSchedule().getSex();
+				String medicalId = mPatientBean.getTTransOperationSchedule().getMedicalId();
 				boolean create = mPatientBean.getTTransOperationSchedule().isCreate();
 				EventBusUtils.postSticky(
 					new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
 									operatingRoomNo, operatingRoomNoName, sex,
 									deptId, create, mType, mPosition,
-									mTemPTbaseDevices));
+									mTemPTbaseDevices,medicalId));
 			   }
 			} else {
 			   EventBusUtils.postSticky(
 				   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
-								   mType, mPosition, mTemPTbaseDevices));
+								   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId));
 			}
 			finish();
 		   } else {
@@ -401,10 +412,16 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
 		mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			.getOperationScheduleId();
+		mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			.getMedicalId();
+		mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			.getSurgeryId();
 	   }
 	   inventoryDto.setPatientName(mName);
 	   inventoryDto.setPatientId(mId);
 	   inventoryDto.setOperationScheduleId(mOperationScheduleId);
+	   inventoryDto.setMedicalId(mMedicalId);
+	   inventoryDto.setSurgeryId(mMedicalId);
 	}
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
@@ -445,6 +462,15 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
 		   String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getDeptId();
+		   String medicalId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getMedicalId();
+		   String surgeryId=null;
+		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getSurgeryId()!=null){
+			 surgeryId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+				.getSurgeryId();
+		   }
+
 		   for (InventoryVo inventoryVo : cstInventoryDto.getInventoryVos()) {
 
 			inventoryVo.setPatientName(patientName);
@@ -458,7 +484,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			inventoryVo.setOperatingRoomName(operatingRoomNoName);
 			inventoryVo.setSex(sex);
 			inventoryVo.setDeptId(deptId);
-
+			inventoryVo.setMedicalId(medicalId);
+			inventoryVo.setSurgeryId(surgeryId);
 		   }
 		   InventoryDto dto = new InventoryDto();
 		   dto.setPatientName(patientName);
@@ -474,6 +501,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   dto.setDeptId(deptId);
 		   dto.setBindType("firstBind");
 		   dto.setOperation(mRbKey);
+		   dto.setMedicalId(medicalId);
+		   dto.setSurgeryId(surgeryId);
 		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto,dto));
 		   if (cstInventoryDto.getInventoryVos() != null &&
 			 cstInventoryDto.getInventoryVos().size() != 0) {
@@ -615,6 +644,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	bean.setSex(event.userSex);
 	bean.setCreate(true);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
+	bean.setMedicalId("virtual");
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
 	   BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
@@ -626,6 +656,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   data2.setOperatingRoomNo(event.operatingRoomNo);
 	   data2.setRoomName(event.roomNum);
 	   data2.setSex(event.userSex);
+	   data2.setMedicalId("virtual");
 	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	   patientInfos.add(0, data2);
 	   ToastUtils.showShort("创建成功");
@@ -670,6 +701,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				data.setMedicalId(bean.getRows().get(i).getMedicalId());
+				if (bean.getRows().get(i).getSurgeryId()!=null){
+				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				}
 				patientInfos.add(data);
 			   }
 			   if (isClear && patientInfos.size() > 0) {

@@ -31,7 +31,6 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1001;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
@@ -535,7 +534,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_LISTALL;
 	Map<String, String> map = new HashMap<>();
 	map.put("pageNo", pageNo+"");
-	map.put("rows", pageSize+"");
+	map.put("pageSize", pageSize+"");
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -644,8 +643,7 @@ public class NetRequest {
    public void submitOrderCstInfo(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_SAVERECEIVEORDERMSG;
 	Map<String, String> map = new HashMap<>();
-	map.put("accountId", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-	map.put("receiveOrderId", SPUtils.getString(UIUtils.getContext(), SAVE_RECEIVE_ORDERID));
+	map.put("orderId", SPUtils.getString(UIUtils.getContext(), SAVE_RECEIVE_ORDERID));
 	map.put("thingId", SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	GetTokenRequest(urls, map, tag, netResult);
    }

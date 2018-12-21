@@ -59,6 +59,7 @@ public class InventoryDto {
     private String       configType;
     private List<String> errorEpcs; //扫描到的系统里没有数据的epc
 
+    private boolean operateSuccess;
     private boolean isSelected;
     private String  surgeryTime;//手术时间
     private String  operationSurgeonName;//医生名字
@@ -71,7 +72,50 @@ public class InventoryDto {
     private String  idNo;//身份证
     private String  sex;//性别
     private String  tempPatientId;
+    private String  msg;
     private boolean isCreate;
+    private String opFlg;
+    private String medicalId;
+    private String surgeryId;
+
+    public String getSurgeryId() {
+        return surgeryId;
+    }
+
+    public void setSurgeryId(String surgeryId) {
+        this.surgeryId = surgeryId;
+    }
+
+    public String getMedicalId() {
+        return medicalId;
+    }
+
+    public void setMedicalId(String medicalId) {
+        this.medicalId = medicalId;
+    }
+    public String getOpFlg() {
+        return opFlg;
+    }
+
+    public void setOpFlg(String opFlg) {
+        this.opFlg = opFlg;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public boolean isOperateSuccess() {
+        return operateSuccess;
+    }
+
+    public void setOperateSuccess(boolean operateSuccess) {
+        this.operateSuccess = operateSuccess;
+    }
 
     public List<InventoryVo> getInInventoryVos() {
         return inInventoryVos;

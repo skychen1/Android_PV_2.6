@@ -98,6 +98,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String                                       mPatientId="";
    private String                                       mTempPatientId="";
    private String                                       mOperationScheduleId="";
+   private String                                       mMedicalId="";
+   private String                                       mSurgeryId="";
    private boolean                    mPause   = true;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private int                        mAllPage = 1;
@@ -168,6 +170,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mDtoOperation = mInventoryDto.getOperation();
 	mPatient = mInventoryDto.getPatientName();
 	mPatientId = mInventoryDto.getPatientId();
+	mMedicalId =mInventoryDto.getMedicalId();
+	mSurgeryId =mInventoryDto.getSurgeryId();
 	mPatientDto =event.mPatientDto;
 	if (mPatientDto!=null){
 	   mDtoOperation = mPatientDto.getOperation();
@@ -182,6 +186,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mOperatingRoomNo =   mPatientDto.getOperatingRoomNo();
 	   mSex =  mPatientDto.getSex();
 	   mDeptId = mPatientDto.getDeptId();
+	   mMedicalId = mPatientDto.getMedicalId();
 	}
    }
 
@@ -385,6 +390,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mDeptId = event.deptId;
 	mIsCreate = event.create;
 	mBingType = event.type;
+	mMedicalId = event.mMedicalId;
+	mSurgeryId =event.mSurgeryId;
 	Log.i(TAG, "mMovie  " + mPatient);
 	LogUtils.i(TAG, "mOperatingRoomNoName  " + mOperatingRoomNoName);
 	if (mBingType != null && mBingType.equals("afterBindTemp")) {
@@ -402,6 +409,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mInventoryVos.get(i).setSex(mSex);
 		   mInventoryVos.get(i).setDeptId(mDeptId);
 		   mInventoryVos.get(i).setCreate(mIsCreate);
+		   mInventoryVos.get(i).setMedicalId(mMedicalId);
+		   mInventoryVos.get(i).setSurgeryId(mSurgeryId);
 		}
 		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
@@ -732,7 +741,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	inventoryDto.setPatientName(mInventoryDto.getPatientName());
 	inventoryDto.setPatientId(mInventoryDto.getPatientId());
-
+	inventoryDto.setMedicalId(mInventoryDto.getMedicalId());
+	inventoryDto.setSurgeryId(mInventoryDto.getSurgeryId());
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
@@ -794,6 +804,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   ff.setOperatingRoomName(mOperatingRoomNoName);
 		   ff.setSex(mSex);
 		   ff.setDeptId(mDeptId);
+		   ff.setMedicalId(mMedicalId);
+		   ff.setSurgeryId(mSurgeryId);
 		} else {
 		   if (mPatientId!=null&&mPatientId.equals("virtual")){
 		      LogUtils.i(TAG,"virtual   "+mTempPatientId);
@@ -808,11 +820,16 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			ff.setOperatingRoomName(mOperatingRoomNoName);
 			ff.setSex(mSex);
 			ff.setDeptId(mDeptId);
+			ff.setMedicalId(mMedicalId);
+			ff.setSurgeryId(mSurgeryId);
+
 		   }else {
 			LogUtils.i(TAG,"ZHENGSHI   ");
 			ff.setPatientName(mPatient);
 			ff.setPatientId(mPatientId);
 			ff.setOperationScheduleId(mOperationScheduleId);
+			ff.setMedicalId(mMedicalId);
+			ff.setSurgeryId(mSurgeryId);
 		   }
 		}
 	   }

@@ -68,7 +68,7 @@
 				android:paddingLeft="@dimen/x20"
 				android:paddingRight="@dimen/x10"
 				android:textSize="@dimen/textsize_17"
-				android:hint="请输入"
+				android:hint="请输入" android:singleLine="true"
 				android:textColor="@color/text_color_3"
 				android:background="@drawable/bg_password_line_nor"
 				/>
@@ -190,7 +190,7 @@
 				android:paddingLeft="@dimen/x20"
 				android:paddingRight="@dimen/x10"
 				android:textSize="@dimen/textsize_17"
-				android:hint="请输入"
+				android:hint="请输入" android:singleLine="true"
 				android:textColor="@color/text_color_3"
 				android:background="@drawable/bg_password_line_nor"
 				/>

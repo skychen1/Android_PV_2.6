@@ -28,7 +28,7 @@ import high.rivamed.myapplication.bean.BillStockResultBean;
  * 更新描述：   ${TODO}
  */
 
-public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.TransReceiveOrderDetailVosBean, BaseViewHolder> {
+public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.OrderDetailVo, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
@@ -46,7 +46,7 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
     public CheckBox mMCheckBox;
 
 
-    public BillStockAdapter(int layout, List<BillStockResultBean.TransReceiveOrderDetailVosBean> data) {
+    public BillStockAdapter(int layout, List<BillStockResultBean.OrderDetailVo> data) {
         super(layout, data);
         if (mData == null) {
             mData = new ArrayList<>();
@@ -67,7 +67,7 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, BillStockResultBean.TransReceiveOrderDetailVosBean item) {
+    protected void convert(final BaseViewHolder helper, BillStockResultBean.OrderDetailVo item) {
         if (item.getReceivedStatus().equals("已领取")) {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
         } else {
@@ -79,23 +79,25 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
         mSeven_three.setText("" + item.getNeedNum());
+        mSeven_four.setText(item.getCounts()+"");
+
         StringBuffer deviceNames = new StringBuffer();
-        for (int i = 0; i < item.getDeviceName().size(); i++) {
-            deviceNames.append(item.getDeviceName().get(i));
+        for (int i = 0; i < item.getDeviceNames().size(); i++) {
+            deviceNames.append(item.getDeviceNames().get(i));
         }
-        mSeven_four.setText(deviceNames.toString());
-        mSeven_five.setText(item.getPatientName());
-        mSeven_six.setText(item.getReceivedStatus());
-        mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
-        mSeven_seven.setText("打开柜门");
+        mSeven_five.setText(deviceNames.toString());
+        mSeven_six.setText(item.getPatientName());
+        mSeven_seven.setText(item.getReceivedStatus());
+        mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
+        mSeven_eight.setText("打开柜门");
         if (item.getReceivedStatus().equals("已领取")) {
-            mSeven_seven.setText("");
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
         }else{
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
@@ -103,42 +105,13 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
             mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.color_green));
-            mSeven_seven.setText("打开柜门");
+            mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
+            mSeven_eight.setText("打开柜门");
         }
     }
 
-    /**
-     * 设置某个效期的背景
-     *
-     * @param helper
-     * @param text
-     * @param textview
-     */
-    private void initTermOfValidity(BaseViewHolder helper, String text, TextView textview) {
 
-        if (text.equals("已过期")) {
-            textview.setBackgroundResource(R.drawable.bg_text_red);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤100天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_yellow1);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤70天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_yellow2);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤28天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_orange);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else {
-            if (helper.getAdapterPosition() % 2 == 0) {
-                textview.setBackgroundResource(R.color.bg_color);
-            } else {
-                textview.setBackgroundResource(R.color.bg_f);
-            }
-            textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-        }
-
-    }
 
     private void findId(BaseViewHolder helper) {
         mSeven_one = ((TextView) helper.getView(R.id.seven_one));
@@ -148,6 +121,7 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Trans
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
+        mSeven_eight = ((TextView) helper.getView(R.id.seven_eight));
     }
 
     public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {

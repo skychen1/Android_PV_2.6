@@ -14,6 +14,24 @@ public class FingerLoginDto {
 
     private UserFeatureInfoBean userFeatureInfo;
     private String thingId;
+    private String deptId;
+    private String  systemType;
+
+    public String getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
 
     public UserFeatureInfoBean getUserFeatureInfo() {
         return userFeatureInfo;

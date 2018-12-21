@@ -1,11 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,12 +10,16 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.daimajia.swipe.SwipeLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.Movie;
-import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.UIUtils;
+
+import static android.view.View.GONE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -33,124 +33,131 @@ import high.rivamed.myapplication.bean.OutFormConfirmResultBean;
  * 更新描述：   ${TODO}
  */
 
-public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResultBean.TcstInventoryOrderVosBean, BaseViewHolder> {
+public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolder> {
 
     private TextView mSeven_one;
     private TextView mSeven_two;
     private TextView mSeven_three;
     private TextView mSeven_four;
     private TextView mSeven_five;
-    private TextView mSeven_six;
-    private TextView mSeven_seven;
-    private TextView mSeven_eight;
-    public String TAG = "TimelyPublicAdapter";
+    LinearLayout mLl;
+
+    public String TAG = "OutFormConfirmAdapter";
     public int mSize;
     public String mType;
-    public String mMealBing;
-    private SparseBooleanArray mCheckStates;
-    private SparseBooleanArray mCheckStates2 = new SparseBooleanArray();
-    public CheckBox mMCheckBox;
-
+    private boolean mRemark;
 
     public OutFormConfirmAdapter(
-            int layout, List<OutFormConfirmResultBean.TcstInventoryOrderVosBean> data) {
+            int layout, List<InventoryVo> data) {
         super(layout, data);
         this.mData = data;
     }
 
     public void clear() {
-        if (mCheckStates != null) {
-            mCheckStates.clear();
-        }
-        if (mCheckStates2 != null) {
-            mCheckStates2.clear();
-        }
+
         mData.clear();
         notifyDataSetChanged();
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, OutFormConfirmResultBean.TcstInventoryOrderVosBean item) {
-//        if (!item.isIsContain()) {
-//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//        } else {
-//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//        }
-        ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+    protected void convert(final BaseViewHolder helper,InventoryVo item) {
+
+        mLl=((LinearLayout) helper.getView(R.id.seven_ll));
+
         mSeven_one = ((TextView) helper.getView(R.id.seven_one));
         mSeven_two = ((TextView) helper.getView(R.id.seven_two));
         mSeven_three = ((TextView) helper.getView(R.id.seven_three));
         mSeven_four = ((TextView) helper.getView(R.id.seven_four));
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
         ImageView view = (ImageView) helper.getView(R.id.seven_six);
-        if (item.isIsContain()) {
-            view.setVisibility(View.VISIBLE);
+
+        if (item.getRemark() != null) {
+            if (item.getRemark().equals("1")) {
+                mRemark = true;
+                view.setVisibility(View.VISIBLE);
+            } else {
+                mRemark = false;
+                view.setVisibility(View.INVISIBLE);
+            }
         } else {
+            mRemark = false;
             view.setVisibility(View.INVISIBLE);
         }
+
+        SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
+        swipe.setShowMode(SwipeLayout.ShowMode.LayDown);
+        LinearLayout  delete = (LinearLayout) helper.getView(R.id.ll_delete);
+        TextView mdeleteTv = (TextView) helper.getView(R.id.tv_delete);
+        ImageView mdeleteIv = (ImageView) helper.getView(R.id.iv_delete);
+
+        if (item.getDeleteCount()>0){
+            LogUtils.i("InBox", "解除移除");
+            mdeleteTv.setText("取消移除");
+            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
+            mdeleteIv.setVisibility(GONE);
+        }else {
+            LogUtils.i("InBox","移除");
+            mdeleteTv.setText("移除");
+            delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_delete));
+            mdeleteIv.setVisibility(View.VISIBLE);
+        }
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InventoryVo inventoryVo = mData.get(helper.getAdapterPosition());
+                if (inventoryVo.getDeleteCount()>0){
+                    inventoryVo.setDelete(false);
+                    inventoryVo.setDeleteCount(0);
+                    mData.remove(helper.getAdapterPosition());
+                    mData.add(inventoryVo);
+                }else {
+                    inventoryVo.setDelete(true);
+                    inventoryVo.setDeleteCount(inventoryVo.getDeleteCount()+1);
+                    mData.remove(helper.getAdapterPosition());
+                    mData.add(inventoryVo);
+                }
+
+                EventBusUtils.post(new Event.EventButton(true, true));
+                notifyDataSetChanged();
+            }
+        });
+
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getEpc());
         mSeven_three.setText(item.getCstSpec());
-        if (!TextUtils.isEmpty(item.getExpirationTime()) && item.getExpirationTime().length() > 10) {
-            mSeven_four.setText(item.getExpirationTime().substring(0, 10));
-        } else {
-            mSeven_four.setText(item.getExpirationTime());
-        }
+        mSeven_four.setText(item.getExpirationText());
         mSeven_five.setText(item.getDeviceName());
-        initTermOfValidity(helper, item.getExpirationTime(), mSeven_four);
-    }
+        UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
 
-    /**
-     * 设置某个效期的背景
-     *
-     * @param helper
-     * @param text
-     * @param textview
-     */
-    private void initTermOfValidity(BaseViewHolder helper, String text, TextView textview) {
 
-        if (text.equals("已过期")) {
-            textview.setBackgroundResource(R.drawable.bg_text_red);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤100天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_yellow1);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤70天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_yellow2);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else if (text.equals("≤28天")) {
-            textview.setBackgroundResource(R.drawable.bg_text_orange);
-            textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-        } else {
-            if (helper.getAdapterPosition() % 2 == 0) {
-                textview.setBackgroundResource(R.color.bg_f);
-            } else {
-                textview.setBackgroundResource(R.color.bg_f);
+        if ((item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) ||
+            (item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0 && item.getExpireStatus() == 1 )){
+            mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            if (item.getExpireStatus() != 0 ){
+                mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             }
-            textview.setBackgroundResource(R.color.bg_f);
-            textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+        }else if (item.getIsErrorOperation() == 1){
+            mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            if (item.getExpireStatus() != 0 ){
+                mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            }
+        }else {
+            mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            mLl.setBackgroundResource(R.color.bg_f);
         }
-
+        setDeleteView(item.isDelete(),swipe);
     }
 
-    private void findId(BaseViewHolder helper, int size) {
-        mSeven_one = ((TextView) helper.getView(R.id.seven_one));
-        mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-        mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-        mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-        mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-        if (size == 6) {
-            mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-        } else if (size == 7) {
-            mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-            mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-        } else if (size == 8) {
-            mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-            mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-            mSeven_eight = ((TextView) helper.getView(R.id.seven_eight));
-        }
-
-    }
 
     public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {
         if (isDeleteView) {
@@ -158,16 +165,17 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<OutFormConfirmResult
             mSeven_two.setTextColor(Color.parseColor("#999999"));
             mSeven_three.setTextColor(Color.parseColor("#999999"));
             mSeven_four.setTextColor(Color.parseColor("#999999"));
+            mSeven_four.setBackgroundResource(R.color.bg_color);
             mSeven_five.setTextColor(Color.parseColor("#999999"));
-            mSeven_six.setTextColor(Color.parseColor("#999999"));
-            swipe.setSwipeEnabled(false);
+            mLl.setBackgroundResource(R.color.bg_color);
+            swipe.setSwipeEnabled(true);
         } else {
             mSeven_one.setTextColor(Color.parseColor("#333333"));
             mSeven_two.setTextColor(Color.parseColor("#333333"));
             mSeven_three.setTextColor(Color.parseColor("#333333"));
             mSeven_four.setTextColor(Color.parseColor("#333333"));
             mSeven_five.setTextColor(Color.parseColor("#333333"));
-            mSeven_six.setTextColor(Color.parseColor("#333333"));
+            mLl.setBackgroundResource(R.color.bg_f);
             swipe.setSwipeEnabled(true);
         }
     }

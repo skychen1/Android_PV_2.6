@@ -56,7 +56,7 @@
 				android:paddingRight="@dimen/x10"
 				android:layout_marginLeft="@dimen/x20"
 				android:hint="请输入"
-				android:textSize="@dimen/textsize_17"
+				android:textSize="@dimen/textsize_17" android:singleLine="true"
 				android:background="@drawable/bg_password_line_nor"
 				/>
 		</LinearLayout>
