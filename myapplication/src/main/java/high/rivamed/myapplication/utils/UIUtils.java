@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -21,11 +22,15 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 
+import static high.rivamed.myapplication.base.App.mPushFormDateBean;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -153,13 +158,16 @@ public class UIUtils {
 	} else if (type==1) {
 	   textview.setBackgroundResource(R.drawable.bg_text_orange);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-	} else {
+	} else if (type==4){
 	   if (helper.getAdapterPosition() % 2 == 0) {
 		textview.setBackgroundResource(R.color.bg_color);
 	   } else {
 		textview.setBackgroundResource(R.color.bg_f);
 	   }
 	   textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	}else {
+	   LogUtils.i("SSS","type   "+type);
+	   textview.setVisibility(View.GONE);
 	}
 
    }
@@ -292,5 +300,23 @@ public class UIUtils {
    public static String getRefreshToken(){
 	String RefreshToken = SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN);
       return RefreshToken;
+   }
+
+   public static void putOrderId(Object tag){
+	mPushFormDateBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	Gson gson = new Gson();
+	gson.toJson(mPushFormDateBean);
+	Log.e("twoDialog", gson.toJson(mPushFormDateBean));
+	NetRequest.getInstance().submitOrderCstInfo(gson.toJson(mPushFormDateBean), tag, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		Log.e("twoDialog", "result：receiveOrderId上传成功");
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		Log.e("twoDialog", "Erorr：" + result);
+	   }
+	});
    }
 }

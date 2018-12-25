@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,12 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
+import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -64,14 +67,19 @@ import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mPushFormOrders;
+import static high.rivamed.myapplication.base.App.mServiceManager;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
@@ -79,9 +87,8 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
-import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.http.NetApi.URL_AUTHORITY_MENU;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
@@ -135,6 +142,7 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+
 	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
@@ -161,6 +169,8 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+
+	mPushFormOrders.clear();
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
@@ -349,28 +359,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
-		try {
-		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
-		   if (loginResultBean.isOperateSuccess()) {
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
-						loginResultBean.getAppAccountInfoVo().getUserName());
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
-						loginResultBean.getAppAccountInfoVo().getAccountId());
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
-						loginResultBean.getAppAccountInfoVo().getSex());
-			SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
-			SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
-			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-			Intent intent = new Intent(mContext, HomeActivity.class);
-			mContext.startActivity(intent);
-			mContext.finish();
-		   } else {
-			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
-		   }
-		} catch (JsonSyntaxException e) {
-		   e.printStackTrace();
-		}
+		loginSpDate(result,mContext,mGson);
 	   }
 	});
 
@@ -390,33 +379,48 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
-		try {
-		   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
-		   if (loginResultBean.isOperateSuccess()) {
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
-						loginResultBean.getAppAccountInfoVo().getUserName());
-			SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
-						loginResultBean.getAppAccountInfoVo().getAccountId());
-			SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
-						loginResultBean.getAppAccountInfoVo().getSex());
-			SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
-			SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
-			//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
-			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-			Intent intent = new Intent(mContext, HomeActivity.class);
-			mContext.startActivity(intent);
-			mContext.finish();
-		   } else {
-			Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
-		   }
-		} catch (JsonSyntaxException e) {
-		   e.printStackTrace();
-		}
+		loginSpDate(result,mContext,mGson);
 	   }
-
 	});
 
+   }
+
+   /**
+    * 重启推送和赋值
+    * @param result
+    */
+   public static void loginSpDate(String result, Activity activity, Gson mGson) {
+	try {
+	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
+	   if (loginResultBean.isOperateSuccess()) {
+		if (mServiceManager!=null){
+		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
+		   mServiceManager.stopService();
+		   mServiceManager=null;
+		}
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,loginResultBean.getAppAccountInfoVo().getAccountId());
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+		SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
+					loginResultBean.getAppAccountInfoVo().getUserName());
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
+					loginResultBean.getAppAccountInfoVo().getAccountId());
+		SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
+					loginResultBean.getAppAccountInfoVo().getSex());
+		SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
+		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
+		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+		MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
+		mServiceManager = new ServiceManager(UIUtils.getContext(), SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), loginResultBean.getAppAccountInfoVo().getAccountId());
+		mServiceManager.startService();
+		Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
+		UIUtils.getContext().startActivity(intent);
+		activity.finish();
+	   } else {
+		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+	   }
+	} catch (JsonSyntaxException e) {
+	   e.printStackTrace();
+	}
    }
 
    @Override

@@ -11,9 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.base.App.mPushFormDateBean;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -146,7 +153,11 @@ public class TwoDialog extends Dialog {
                 @Override
                 public void onClick(View view) {
                     if (mMsgTwo.contains("退出登录")) {
-                        NetRequest.getInstance().submitOrderCstInfo(this,  new BaseResult() {
+                        mPushFormDateBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+			     Gson gson = new Gson();
+			     gson.toJson(mPushFormDateBean);
+			     Log.e("twoDialog",  gson.toJson(mPushFormDateBean));
+			     NetRequest.getInstance().submitOrderCstInfo(gson.toJson(mPushFormDateBean),this,  new BaseResult() {
                             @Override
                             public void onSucceed(String result) {
                                 Log.e("twoDialog", "result：receiveOrderId上传成功");
@@ -158,7 +169,8 @@ public class TwoDialog extends Dialog {
                             }
                         });
                     }
-                    mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+
+			 mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
                 }
             });
             return dialog;

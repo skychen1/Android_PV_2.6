@@ -33,7 +33,6 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -235,7 +234,8 @@ public class NetRequest {
 	map.put("status", status);
 	map.put("deviceId", deviceCode);
 	map.put("term", term);
-	GetTokenRequest(urls, map, tag, netResult);
+	String json = mGson.toJson(map);
+	PostTokenRequest(urls, json, tag, netResult);
    }
 
    /**
@@ -269,7 +269,7 @@ public class NetRequest {
 	map.put("thingId", sThingCode);
 	map.put("nameOrSpecQueryCon", nameOrSpecQueryCon);
 	map.put("deviceId", deviceCode);
-	map.put("expireStatus", mStopFlag+"");
+	map.put("expireStatus", mStopFlag + "");
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -350,20 +350,20 @@ public class NetRequest {
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
-//   /**
-//    * 耗材操作开柜扫描提交数据(快速开柜入柜)
-//    */
-//   public void putAllInEPCDate(
-//	   String deviceInventoryVos, Object tag, NetResult netResult) {
-//	String urls = MAIN_URL + NetApi.URL_QUERY_ALL_IN;
-//	PostTokenRequest(urls, deviceInventoryVos, tag, netResult);
-//   }
+   //   /**
+   //    * 耗材操作开柜扫描提交数据(快速开柜入柜)
+   //    */
+   //   public void putAllInEPCDate(
+   //	   String deviceInventoryVos, Object tag, NetResult netResult) {
+   //	String urls = MAIN_URL + NetApi.URL_QUERY_ALL_IN;
+   //	PostTokenRequest(urls, deviceInventoryVos, tag, netResult);
+   //   }
 
    /**
     * 耗材操作开柜扫描提交数据(快速开柜出柜)
     */
    public void putOutAndInEPCDate(
-	   String deviceInventoryVos, Object tag,  NetResult netResult) {
+	   String deviceInventoryVos, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_QUERY_OUTANDIN;
 	PostTokenRequest(urls, deviceInventoryVos, tag, netResult);
    }
@@ -396,8 +396,7 @@ public class NetRequest {
     * 查询非本科室的库房    调拨查
     */
    public void getOperateDbDialog(
-	   String deptId, String branchCode, Object tag,
-	   NetResult netResult) {
+	   String deptId, String branchCode, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_OPERATE_DB_YES;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", deptId);
@@ -435,7 +434,7 @@ public class NetRequest {
     * 盘点后的详情
     */
    public void getDetailDate(
-	   String tCstInventoryDto, Object tag,  NetResult netResult) {
+	   String tCstInventoryDto, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_TIMELY_DETAIL;
 	PostTokenRequest(urls, tCstInventoryDto, tag, netResult);
 
@@ -445,14 +444,13 @@ public class NetRequest {
     * 查询患者信息（包含临时患者）
     */
    public void findSchedulesDate(
-	   String optienNameOrId, int pageNo, int pageSize, Object tag,
-	   NetResult netResult) {
+	   String optienNameOrId, int pageNo, int pageSize, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_PATIENTS_FIND;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("patientNameOrId", optienNameOrId);
-	map.put("pageNo", pageNo+"");
-	map.put("pageSize", pageSize+"");
+	map.put("pageNo", pageNo + "");
+	map.put("pageSize", pageSize + "");
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -460,7 +458,7 @@ public class NetRequest {
     * 查询所有的未绑定临时患者
     */
    public void findTempPatients(
-	   String optienNameOrId, Object tag,NetResult netResult) {
+	   String optienNameOrId, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FIND_TEMP_PATIENTS;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
@@ -472,7 +470,7 @@ public class NetRequest {
     * 临时患者与在院患者进行关联
     */
    public void tempPatientConnPatient(
-	   String json, Object tag,  NetResult netResult) {
+	   String json, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_TEMP_PATIENT_CONN_PATIENT;
 	PostTokenRequest(urls, json, tag, netResult);
    }
@@ -486,8 +484,8 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FIND_IN_PATIENT_PAGE;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", patientNameOrId);
-	map.put("pageNo", pageNo+"");
-	map.put("pageSize", pageSize+"");
+	map.put("pageNo", pageNo + "");
+	map.put("pageSize", pageSize + "");
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -509,8 +507,8 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FIND_PATIENT;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", string);
-	map.put("pageSize",rows +"");
-	map.put("pageNo", page+"");
+	map.put("pageSize", rows + "");
+	map.put("pageNo", page + "");
 	map.put("thingId", sThingCode);
 	GetTokenRequest(urls, map, tag, netResult);
    }
@@ -522,7 +520,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FIND_EPC_DETAILS;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientId", patientId);
-	map.put("status", status+"");
+	map.put("status", status + "");
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -530,11 +528,12 @@ public class NetRequest {
     * 医嘱单领用-顶部医嘱单列表
     */
    public void findPatientOrderSheetDate(
-	   int pageNo, int pageSize, Object tag, NetResult netResult) {
+	   String orderId, String pageNo, String pageSize, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_LISTALL;
 	Map<String, String> map = new HashMap<>();
-	map.put("pageNo", pageNo+"");
-	map.put("pageSize", pageSize+"");
+	map.put("orderId", orderId);
+	map.put("pageNo", pageNo);
+	map.put("pageSize", pageSize);
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -554,10 +553,11 @@ public class NetRequest {
     * 医嘱单领用-根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
     */
    public void findOrderDetailByOrderId(
-	   String Id, Object tag,  NetResult netResult) {
+	   String Id, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_FINDDETAILBYORDERID;
 	Map<String, String> map = new HashMap<>();
-	map.put("receiveOrderId", Id);
+	map.put("orderId", Id);
+	map.put("thingId", sThingCode);
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -575,7 +575,7 @@ public class NetRequest {
     * 医嘱单领用-确认领用耗材
     */
    public void sureReceiveOrder(
-	   String json, Object tag,  NetResult netResult) {
+	   String json, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_TWOOUTBYRECEIVEORDER;
 	PostTokenRequest(urls, json, tag, netResult);
    }
@@ -583,10 +583,10 @@ public class NetRequest {
    /**
     * 套组领用-套组列表
     */
-   public void findOrderCstPlanDate(Object tag,NetResult netResult) {
+   public void findOrderCstPlanDate(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_CSTPLAN_LISTFORPAD;
 	Map<String, String> map = new HashMap<>();
-	map.put("deptId",  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -638,14 +638,11 @@ public class NetRequest {
    }
 
    /**
-    * 套组领用-在退出应用前提交套组信息生成消息
+    * 请领单领用-在退出应用前提交套组信息生成消息
     */
-   public void submitOrderCstInfo(Object tag, NetResult netResult) {
+   public void submitOrderCstInfo(String json, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_SAVERECEIVEORDERMSG;
-	Map<String, String> map = new HashMap<>();
-	map.put("orderId", SPUtils.getString(UIUtils.getContext(), SAVE_RECEIVE_ORDERID));
-	map.put("thingId", SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	GetTokenRequest(urls, map, tag, netResult);
+	PostTokenRequest(urls, json, tag, netResult);
    }
 
    /**
@@ -655,7 +652,10 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", "2");
-	GetTokenRequest(urls, map, tag, netResult);
+	OkGo.<String>get(urls).tag(tag)
+		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
+		.params(map)
+		.execute(new MyCallBack2(urls, map, tag, netResult, true, true));
    }
 
    /**
@@ -663,7 +663,8 @@ public class NetRequest {
     */
    public void updateToken(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_REFRESH_TOKEN;
-	String json = "{\"systemType\": \"1\",\"accessToken\": {\"refreshToken\": \"" + SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN) + "\"}}";
+	String json = "{\"systemType\": \"1\",\"accessToken\": {\"refreshToken\": \"" +
+			  SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN) + "\"}}";
 	PostRequest(urls, json, tag, netResult);
    }
 
@@ -700,7 +701,7 @@ public class NetRequest {
 	   if (response.code() == -1) {
 		ToastUtils.showShortToast("网络连接超时，请扫后重试！");
 	   } else {
-		ToastUtils.showShortToast( "请求失败  (" + response.code() + ")");
+		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
 	}
 
@@ -708,9 +709,13 @@ public class NetRequest {
 	public void onSuccess(Response<String> response) {
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
-		if (null == jsonObject.getString("opFlg") || jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
+		Log.i("jsonObject", "opFlg    jsonObject     " + jsonObject);
+		Log.i("jsonObject",
+			"null == jsonObject.getString(\"opFlg\")    " + jsonObject.getString("opFlg"));
+		if (null == jsonObject.getString("opFlg") ||
+		    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 		   if (netResult != null) {
-			Log.i("fff", "opFlg    无");
+			Log.i("jsonObject", "xxxxxx");
 			netResult.onSucceed(response.body());
 		   }
 		} else {
@@ -724,25 +729,30 @@ public class NetRequest {
 				@Override
 				public void onSucceed(String result) {
 				   JSONObject jsonObject = JSON.parseObject(response.body());
-				   if (null == jsonObject.getString("opFlg") ) {//正常
-					if (isGet){
-					   if (isToken){
-					      GetTokenRequest(url,(Map<String, String>) date,tag,netResult);
-					   }else {
-						GetRequest(url,(Map<String, String>) date,tag,netResult);
+				   if (null == jsonObject.getString("opFlg")) {//正常
+					if (isGet) {
+					   if (isToken) {
+						GetTokenRequest(url, (Map<String, String>) date, tag,
+								    netResult);
+					   } else {
+						GetRequest(url, (Map<String, String>) date, tag, netResult);
 					   }
-					}else {
-					   if (isToken){
-						PostTokenRequest(url,(String) date,tag,netResult);
-					   }else {
-					      PostRequest(url,(String) date,tag,netResult);
+					} else {
+					   if (isToken) {
+						PostTokenRequest(url, (String) date, tag, netResult);
+					   } else {
+						PostRequest(url, (String) date, tag, netResult);
 					   }
 					}
 				   } else {
-					if (jsonObject.getString("opFlg").equals(ERROR_1001)){
+					if (jsonObject.getString("opFlg").equals(ERROR_1001)) {
 					   ToastUtils.showShortToast("登录状态已经过期，请重新登录");
-					   if (tag instanceof Activity){
-						((Activity) tag).getApplicationContext().startActivity(new Intent(((Activity) tag).getApplicationContext(), LoginActivity.class));
+					   if (tag instanceof Activity) {
+						UIUtils.putOrderId(tag);
+						((Activity) tag).getApplicationContext()
+							.startActivity(
+								new Intent(((Activity) tag).getApplicationContext(),
+									     LoginActivity.class));
 						App.getInstance().removeALLActivity_();
 						((Activity) tag).finish();
 					   }
@@ -763,6 +773,45 @@ public class NetRequest {
 	   Log.i("fff", "response.body()    " + response.body());
 	   Log.i("fff", "response.code()    " + response.code());
 	   Log.i("fff", "response.message()    " + response.message());
+	}
+   }
+
+   private class MyCallBack2 extends StringCallback {
+
+	private String    url;
+	private Object    date;
+	private Object    tag;
+	private NetResult netResult;
+	private boolean   isGet;//是否是get请求
+	private boolean   isToken;//是否有token
+
+	public MyCallBack2(
+		String url, Object date, Object tag, NetResult netResult, boolean isGet,
+		boolean isToken) {
+	   super();
+
+	   this.url = url;
+	   this.date = date;
+	   this.tag = tag;
+	   this.netResult = netResult;
+	   this.isGet = isGet;
+	   this.isToken = isToken;
+	}
+
+	@Override
+	public void onError(Response<String> response) {
+	   if (netResult != null) {
+		netResult.onError(response.code() + "");
+	   }
+
+	}
+
+	@Override
+	public void onSuccess(Response<String> response) {
+	   if (netResult != null) {
+		Log.i("jsonObject", "xxxxxx");
+		netResult.onSucceed(response.body());
+	   }
 	}
    }
 

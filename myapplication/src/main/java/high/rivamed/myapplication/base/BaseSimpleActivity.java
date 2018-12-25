@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.androidpn.client.Notifier;
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -39,6 +37,7 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
@@ -117,10 +116,14 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void onEventIfHaveMessage(Notifier.EventPushMessageNum event) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
+    public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
+        if (Integer.parseInt(event.num) > 0) {
+            LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(true)  ");
+            mTitleMsg=true;
+        } else {
+            LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(false)  ");
+            mTitleMsg=false;
+        }
                 if (Integer.parseInt(event.num) > 0) {
                     LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
                     if (mBaseTabBtnMsg!=null){
@@ -132,8 +135,6 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                         mBaseTabBtnMsg.setActivated(false);
                     }
                 }
-            }
-        });
 
     }
 
@@ -141,8 +142,19 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
         selTitleIcon();
+        setTitleMsg();
     }
-
+    public  void setTitleMsg(){
+        if (mTitleMsg){
+            if (mBaseTabBtnMsg!=null){
+                mBaseTabBtnMsg.setActivated(true);
+            }
+        }else {
+            if (mBaseTabBtnMsg!=null){
+                mBaseTabBtnMsg.setActivated(false);
+            }
+        }
+    }
     public void selTitleIcon() {
         mBaseTabTvTitle.setVisibility(View.VISIBLE);
         mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));

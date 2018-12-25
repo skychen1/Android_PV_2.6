@@ -646,6 +646,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   ToastUtils.showLong(string);
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 		}
+
 		for (int i = 0; i < outInventoryVos.size(); i++) {
 		   outInventoryVos.get(i).setSelected(true);
 		}
@@ -706,7 +707,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
 		   ToastUtils.showLong(string);
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-		   return;
+
 		}
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.getInventoryVos() == null));
 		//先绑定患者
@@ -743,6 +744,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   mBuilder.mDialog.dismiss();
 			}
 			mEthDeviceIdBack.clear();
+			mEthDeviceIdBack2.clear();
 			Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
 		   } else {
 			LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
@@ -895,6 +897,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(string,
 										new TypeToken<List<HomeAuthorityMenuBean>>() {}
 											.getType());
+
 	if (fromJson.get(0).getChildren().size() > 0) {
 	   setDownType();//设置选择操作的权限
 	} else {

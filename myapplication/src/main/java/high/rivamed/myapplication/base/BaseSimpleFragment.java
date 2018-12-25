@@ -3,7 +3,6 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.androidpn.client.Notifier;
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,6 +35,7 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 /**
@@ -104,30 +103,38 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void onEventIfHaveMessage(Notifier.EventPushMessageNum event) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
+    public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
+
+        LogUtils.i("Notifier", "    "+event.num);
                 if (Integer.parseInt(event.num) > 0) {
-                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(true)  ");
-                    if (mBaseTabBtnMsg!=null){
-                        mBaseTabBtnMsg.setActivated(true);
-                    }
+                    LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(true)  ");
+                    mTitleMsg=true;
                 } else {
-                    LogUtils.i(TAG, "mBaseTabBtnMsg.setActivated(false)  ");
-                    if (mBaseTabBtnMsg!=null){
-                        mBaseTabBtnMsg.setActivated(false);
-                    }
+                    LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(false)  ");
+                    mTitleMsg=false;
                 }
-            }
-        });
     }
 
     @Override
     public void onResume() {
         selTitleIcon();
+        setTitleMsg();
         super.onResume();
     }
+
+    public  void setTitleMsg(){
+        if (mTitleMsg){
+            if (mBaseTabBtnMsg!=null){
+                LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(true)  ");
+                mBaseTabBtnMsg.setActivated(true);
+            }
+        }else {
+            if (mBaseTabBtnMsg!=null){
+                mBaseTabBtnMsg.setActivated(false);
+            }
+        }
+    }
+
 
     @Override
     public void getTitleName() {
@@ -152,12 +159,12 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
         if (mTitleConn) {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(true);
-                LogUtils.i(TAG, "XmmppConnect(true)3  ");
+//                LogUtils.i(TAG, "XmmppConnect(true)3  ");
             }
         } else {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(false);
-                LogUtils.i(TAG, "XmmppConnect(false)3  ");
+//                LogUtils.i(TAG, "XmmppConnect(false)3  ");
             }
         }
 

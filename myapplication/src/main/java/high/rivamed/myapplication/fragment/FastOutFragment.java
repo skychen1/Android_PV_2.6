@@ -21,7 +21,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
@@ -87,18 +86,15 @@ public class FastOutFragment extends SimpleFragment {
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
-   @BindView(R.id.btn_four_ly)
-   TextView           mBtnFourLy;
-   @BindView(R.id.btn_four_yc)
-   TextView           mBtnFourYc;
+   public static TextView mBtnFourLy;
+   public static TextView mBtnFourYc;
    @BindView(R.id.btn_four_tb)
-   TextView           mBtnFourTb;
-   @BindView(R.id.btn_four_th)
-   TextView           mBtnFourTh;
+   public        TextView mBtnFourTb;
+   public static TextView mBtnFourTh;
    @BindView(R.id.activity_down_btn_four_ll)
-   LinearLayout       mActivityDownBtnFourLl;
+   LinearLayout mActivityDownBtnFourLl;
    @BindView(R.id.timely_number)
-   TextView           mTimelyNumber;
+   TextView     mTimelyNumber;
    List<String> titeleList = null;
    public int           mSize;
    public TableTypeView mTypeView;
@@ -111,7 +107,6 @@ public class FastOutFragment extends SimpleFragment {
    TextView     mTimelyRight;
    @BindView(R.id.activity_down_btnll)
    LinearLayout mActivityDownBtnll;
-   Unbinder unbinder;
    private int          mOutSize;
    private int          mInSize;
    public  InventoryDto mInOutDto;
@@ -144,6 +139,7 @@ public class FastOutFragment extends SimpleFragment {
 
    /**
     * 接收快速开柜的数据
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -172,7 +168,7 @@ public class FastOutFragment extends SimpleFragment {
 	} else {
 	   mAllOutText.setText("");
 	}
-	if (event.type!=null&&event.type.equals("moreScan")){
+	if (event.type != null && event.type.equals("moreScan")) {
 	   LogUtils.i(TAG, "setOutBoxDate    " + 1);
 	   setOutBoxDate(mInOutDto.getOutInventoryVos());
 	}
@@ -192,7 +188,11 @@ public class FastOutFragment extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-      EventBusUtils.register(this);
+	EventBusUtils.register(this);
+	mBtnFourLy = mContext.findViewById(R.id.btn_four_ly);
+	mBtnFourYc = mContext.findViewById(R.id.btn_four_yc);
+	mBtnFourTh = mContext.findViewById(R.id.btn_four_th);
+
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
 	LogUtils.i(TAG, "setOutBoxDate    " + 2);
@@ -201,12 +201,13 @@ public class FastOutFragment extends SimpleFragment {
    }
 
    private void setOutBoxDate(List<InventoryVo> voList) {
+
 	LogUtils.i(TAG, "voList.size()    " + voList.size());
-	if (voList.size()==0){
+	if (voList.size() == 0) {
 	   mBtnFourLy.setEnabled(false);
 	   mBtnFourTh.setEnabled(false);
 	   mBtnFourYc.setEnabled(false);
-	}else {
+	} else {
 	   mBtnFourLy.setEnabled(true);
 	   mBtnFourTh.setEnabled(true);
 	   mBtnFourYc.setEnabled(true);
@@ -288,27 +289,28 @@ public class FastOutFragment extends SimpleFragment {
     * 完成操作后看是否还有耗材，无耗材跳转入柜界面或者直接退出
     */
    private void overFinish() {
+
 	EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
-//	mMTCstInventoryVosses = new ArrayList<>();
-//	for (int i = 0; i < mInOutDto.getOutInventoryVos().size(); i++) {
-//	   if (mInOutDto.getOutInventoryVos().get(i).isSelected()) {
-//		mMTCstInventoryVosses.add(mInOutDto.getOutInventoryVos().get(i));
-//	   } else {
-//	   }
-//	}
-//	if (mMTCstInventoryVosses.size() == mInOutDto.getOutInventoryVos().size()) {
-//	   mInOutDto.getOutInventoryVos().clear();
-//	} else {
-//	   for (int x = 0; x < mInOutDto.getOutInventoryVos().size(); x++) {
-//		for (InventoryVo s : mMTCstInventoryVosses) {
-//		   if (s.getEpc().equals(mInOutDto.getOutInventoryVos().get(x).getEpc())) {
-//			mInOutDto.getOutInventoryVos().remove(x);
-//		   }
-//		}
-//	   }
-//	}
-//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
-//	EventBusUtils.postSticky(new Event.EventDate(true));
+	//	mMTCstInventoryVosses = new ArrayList<>();
+	//	for (int i = 0; i < mInOutDto.getOutInventoryVos().size(); i++) {
+	//	   if (mInOutDto.getOutInventoryVos().get(i).isSelected()) {
+	//		mMTCstInventoryVosses.add(mInOutDto.getOutInventoryVos().get(i));
+	//	   } else {
+	//	   }
+	//	}
+	//	if (mMTCstInventoryVosses.size() == mInOutDto.getOutInventoryVos().size()) {
+	//	   mInOutDto.getOutInventoryVos().clear();
+	//	} else {
+	//	   for (int x = 0; x < mInOutDto.getOutInventoryVos().size(); x++) {
+	//		for (InventoryVo s : mMTCstInventoryVosses) {
+	//		   if (s.getEpc().equals(mInOutDto.getOutInventoryVos().get(x).getEpc())) {
+	//			mInOutDto.getOutInventoryVos().remove(x);
+	//		   }
+	//		}
+	//	   }
+	//	}
+	//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+	//	EventBusUtils.postSticky(new Event.EventDate(true));
    }
 
    private boolean getExceedTime(List<InventoryVo> voList) {
@@ -355,7 +357,6 @@ public class FastOutFragment extends SimpleFragment {
 		break;
 	}
    }
-
 
    /**
     * 退货
@@ -406,6 +407,7 @@ public class FastOutFragment extends SimpleFragment {
    private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
 	mInOutDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+
 	mTCstInventoryDtoJson = setNewDate(mInOutDto);
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
@@ -471,6 +473,7 @@ public class FastOutFragment extends SimpleFragment {
 	mDtoLy.setThingId(inventoryDto.getThingId());
 	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(3);
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mDtoLy.setType(inventoryDto.getType());
 	mDtoLy.setConfigPatientCollar(inventoryDto.getConfigPatientCollar());
 	List<InventoryVo> inventoryVos = new ArrayList<>();
@@ -555,17 +558,15 @@ public class FastOutFragment extends SimpleFragment {
 	});
    }
 
-
-
    @Override
    public void onDestroyView() {
 	super.onDestroyView();
 	mInOutDto.getInInventoryVos().clear();
 	mInOutDto.getOutInventoryVos().clear();
-	mInOutDto=null;
-	if (mDtoLy.getInventoryVos()!=null){
+	mInOutDto = null;
+	if (mDtoLy.getInventoryVos() != null) {
 	   mDtoLy.getInventoryVos().clear();
-	   mDtoLy=null;
+	   mDtoLy = null;
 	}
 	EventBusUtils.unregister(this);
    }

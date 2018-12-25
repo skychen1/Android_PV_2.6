@@ -30,7 +30,6 @@ import high.rivamed.myapplication.adapter.OutFormAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderSheetBean;
-import high.rivamed.myapplication.bean.OrderSheetFromMsgBean;
 import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -136,33 +135,54 @@ public class OutFormActivity extends BaseSimpleActivity {
                     .error(R.mipmap.hccz_mrtx_nv)
                     .into(mBaseTabIconRight);
         }
-        mReceiveOrderId = getIntent().getStringExtra("receiveOrderId");
+        mReceiveOrderId = getIntent().getStringExtra("orderId");
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         if (TextUtils.isEmpty(mReceiveOrderId)) {
             //不是从消息页面跳转过来
             getTopOrderSheetDate(mPageNo, PAGE_SIZE);
         } else {
             //从消息页面跳转过来
-            initFromMsgDate();
+            initFromMsgDate(mReceiveOrderId);
         }
     }
 
     /*
-    初始化从消息界面跳转过来的数据
-    * */
-    private void initFromMsgDate() {
-        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, new BaseResult() {
+	  初始化从消息界面跳转过来的数据
+	  * */
+    private void initFromMsgDate(String mReceiveOrderId) {
+        NetRequest.getInstance().findPatientOrderSheetDate(mReceiveOrderId,null, null, this,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                OrderSheetFromMsgBean orderSheetBean = mGson.fromJson(result, OrderSheetFromMsgBean.class);
-                mAllOrderSheetList.addAll(orderSheetBean.getPageModel().getRows());
+                LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);
+                OrderSheetBean orderSheetBean = mGson.fromJson(result, OrderSheetBean.class);
+                mAllOrderSheetList.addAll(orderSheetBean.getRows());
                 if (mOutFormAdapter == null) {
                     initData();
                 } else {
                     mOutFormAdapter.notifyDataSetChanged();
                     mPagerAdapter.notifyDataSetChanged();
                 }
+
             }
         });
+//        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, new BaseResult() {
+//            @Override
+//            public void onSucceed(String result) {
+//                OrderSheetFromMsgBean orderSheetBean = mGson.fromJson(result, OrderSheetFromMsgBean.class);
+//                mAllOrderSheetList.addAll(orderSheetBean.getPageModel().getRows());
+//                if (mOutFormAdapter == null) {
+//                    initData();
+//                } else {
+//                    mOutFormAdapter.notifyDataSetChanged();
+//                    mPagerAdapter.notifyDataSetChanged();
+//                }
+//            }
+//        });
     }
 
     private void initData() {
@@ -226,7 +246,7 @@ public class OutFormActivity extends BaseSimpleActivity {
     }
 
     private void getTopOrderSheetDate(int pageNo, int PageSize) {
-        NetRequest.getInstance().findPatientOrderSheetDate(pageNo, PageSize, this,  new BaseResult() {
+        NetRequest.getInstance().findPatientOrderSheetDate(null,pageNo+"", PageSize+"", this,  new BaseResult() {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);

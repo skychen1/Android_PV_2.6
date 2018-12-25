@@ -330,6 +330,7 @@ public class DialogUtils {
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
                     if (context instanceof Activity){
+                        UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                     }
@@ -357,6 +358,7 @@ public class DialogUtils {
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
                     if (context instanceof Activity){
+                        UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
                     }

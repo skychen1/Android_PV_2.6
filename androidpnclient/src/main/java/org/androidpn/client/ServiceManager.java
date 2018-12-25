@@ -24,6 +24,8 @@ import android.util.Log;
 
 import java.util.Properties;
 
+import high.rivamed.myapplication.utils.SPUtils;
+
 /** 
  * This class is to manage the notificatin service and to load the configuration.
  *
@@ -53,7 +55,7 @@ public final class ServiceManager {
 
     private String callbackActivityClassName;
 
-    public ServiceManager(Context context,String url) {
+    public ServiceManager(Context context,String url,String id) {
         this.context = context;
         this.url=url;
         if (context instanceof Activity) {
@@ -73,7 +75,7 @@ public final class ServiceManager {
         props = loadProperties();
         apiKey = props.getProperty("apiKey", "");
         xmppHost = url;
-        xmppPort = props.getProperty("xmppPort", "5224");
+        xmppPort = props.getProperty("xmppPort", "5222");
         Log.i(LOGTAG, "apiKey=" + apiKey);
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
@@ -89,6 +91,7 @@ public final class ServiceManager {
                 callbackActivityPackageName);
         editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
                 callbackActivityClassName);
+        editor.putString(Constants.XMPP_USERNAME,id);
         editor.commit();
         // Log.i(LOGTAG, "sharedPrefs=" + sharedPrefs.toString());
     }
@@ -105,6 +108,7 @@ public final class ServiceManager {
     }
 
     public void stopService() {
+        SPUtils.putString(context, "key_user_name_key","");
         Intent intent = NotificationService.getIntent(context);
         context.stopService(intent);
     }

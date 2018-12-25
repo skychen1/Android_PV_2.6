@@ -23,6 +23,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.androidpn.utils.EventBusUtils;
+import org.androidpn.utils.XmppEvent;
 
 import java.util.Random;
 
@@ -33,7 +34,7 @@ import java.util.Random;
  */
 public class Notifier {
 
-    private static final String LOGTAG = LogUtil.makeLogTag(Notifier.class);
+    private static final String LOGTAG = "Notifier";
 
     private static final Random random = new Random(System.currentTimeMillis());
 
@@ -51,29 +52,20 @@ public class Notifier {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    /**
-     * 页面顶部的连接状态改变
-     */
-    public static class EventPushMessageNum {
-        public String num;
-
-        public EventPushMessageNum(String num) {
-            this.num = num;
-        }
-    }
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void notify(String notificationId, String apiKey, String title,
                        String message, String uri) {
 
-        Log.d(LOGTAG, "notify()...");
+        Log.d("Androidpn_XmppManager", "notify()...");
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationApiKey=" + apiKey);
         Log.d(LOGTAG, "notificationTitle=" + title);
         Log.d(LOGTAG, "notificationMessage=" + message);
         Log.d(LOGTAG, "notificationUri=" + uri);
-        EventBusUtils.postSticky(new EventPushMessageNum(message));
+
+        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(message));
         //注释掉home界面显示提示和跳转Activity
         //        if (isNotificationEnabled()) {
         //            // Show the toast

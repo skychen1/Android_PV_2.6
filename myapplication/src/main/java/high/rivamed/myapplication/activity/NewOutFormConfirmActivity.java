@@ -49,6 +49,7 @@ import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindBillOrderBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
+import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -69,6 +70,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -512,13 +514,13 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						SureReciveOrder sureReciveOrder = mGson.fromJson(result,
 														 SureReciveOrder.class);
 						SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
-
+						setPushFormOrderDate();
 						if (sureReciveOrder.isOperateSuccess()) {
-						   if (!sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
-							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
-											  sureReciveOrder.getMsg());
-						   } else {
+						   if (sureReciveOrder.getMsg().equals("")||sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
 							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
+											  sureReciveOrder.getMsg());
+						   } else{
+							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
 											  sureReciveOrder.getMsg());
 						   }
 						} else {
@@ -533,6 +535,24 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 					});
    }
 
+   /**
+    * 需要上传的orders
+    */
+   private void setPushFormOrderDate() {
+	if (mPushFormOrders!=null&&mPushFormOrders.size()!=0){
+	   for (PushFormDateBean.OrdersBean s:mPushFormOrders){
+		if (!s.getOrderId().equals(mPrePageDate.getOrderId())){
+		   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
+		   ordersBean.setOrderId(mPrePageDate.getOrderId());
+		   mPushFormOrders.add(ordersBean);
+		}
+	   }
+	}else if (mPushFormOrders!=null&&mPushFormOrders.size()==0){
+	   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
+	   ordersBean.setOrderId(mPrePageDate.getOrderId());
+	   mPushFormOrders.add(ordersBean);
+	}
+   }
 
    private int k;
 

@@ -309,6 +309,10 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		} else {
 		   mEthDeviceIdBack2.clear();
 		   mEthDeviceIdBack.clear();
+		   mDoorList.clear();
+		   FastOutFragment.mBtnFourLy.setEnabled(false);
+		   FastOutFragment.mBtnFourTh.setEnabled(false);
+		   FastOutFragment.mBtnFourYc.setEnabled(false);
 		   ToastUtils.showShortToast("耗材操作完成，即将退回主页！");
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {

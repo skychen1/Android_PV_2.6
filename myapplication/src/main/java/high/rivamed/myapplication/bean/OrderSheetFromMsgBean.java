@@ -23,15 +23,15 @@ public class OrderSheetFromMsgBean implements Serializable {
      * id : 0
      * transReceiveOrderDetailVos : []
      * transReceiveOrders : [{"id":"40288293667aa53e01667aa5fc610016","userName":"高级管理员","accountId":"8a80cb8164d9b3940164da1bff760005","patientId":"577404","patientName":"马羊焕","operationScheduleId":"180907ysl0469663","deptId":null,"operationRoomName":"导管手术室4","createTime":"2018-11-01 10:13:10","status":"3"},{"id":"40288293667aa53e01667aa5fc610017","userName":"高级管理员","accountId":"8a80cb8164d9b3940164da1bff760005","patientId":"576542","patientName":"张培珅","operationScheduleId":"180907ysl0469663","deptId":null,"operationRoomName":"导管手术室4","createTime":"2018-11-02 10:13:10","status":"3"}]
-     * cstCount : 0
-     * cstTypes : 0
+     * countNum : 0
+     * kindsOfCst : 0
      */
 
-    private PageModelBean pageModel;
-    private int id;
-    private int cstCount;
-    private int cstTypes;
-    private List<?> transReceiveOrderDetailVos;
+    private PageModelBean                pageModel;
+    private int                          id;
+    private int                          countNum;
+    private int                          kindsOfCst;
+    private List<?>                      transReceiveOrderDetailVos;
     private List<TransReceiveOrdersBean> transReceiveOrders;
 
     public PageModelBean getPageModel() {
@@ -50,20 +50,20 @@ public class OrderSheetFromMsgBean implements Serializable {
         this.id = id;
     }
 
-    public int getCstCount() {
-        return cstCount;
+    public int getCountNum() {
+        return countNum;
     }
 
-    public void setCstCount(int cstCount) {
-        this.cstCount = cstCount;
+    public void setCountNum(int countNum) {
+        this.countNum = countNum;
     }
 
-    public int getCstTypes() {
-        return cstTypes;
+    public int getKindsOfCst() {
+        return kindsOfCst;
     }
 
-    public void setCstTypes(int cstTypes) {
-        this.cstTypes = cstTypes;
+    public void setKindsOfCst(int kindsOfCst) {
+        this.kindsOfCst = kindsOfCst;
     }
 
     public List<?> getTransReceiveOrderDetailVos() {

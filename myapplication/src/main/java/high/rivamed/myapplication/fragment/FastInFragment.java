@@ -236,6 +236,7 @@ public class FastInFragment extends SimpleFragment {
 		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 		if (mIntentType == 2) {
 		   if (mInOutDto.getOutInventoryVos().size()==0){
+			UIUtils.putOrderId(mContext);
 			mContext.startActivity(new Intent(mContext, LoginActivity.class));
 			App.getInstance().removeALLActivity_();
 		   }else {

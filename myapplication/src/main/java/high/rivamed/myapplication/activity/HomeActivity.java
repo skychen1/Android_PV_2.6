@@ -8,10 +8,8 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
-import org.androidpn.client.Notifier;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -22,7 +20,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
-import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
@@ -133,12 +130,11 @@ public class HomeActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
 	getAuthorityMenu();
-
 //	setMenu();
 	initData();
 	initListener();
 	initPushService();
-	initMessageIcon();
+//	initMessageIcon();
    }
 
    /**
@@ -172,25 +168,25 @@ public class HomeActivity extends SimpleActivity {
 	}
    }
 
-   /*
-    * 初始化消息图标显示状态
-    * */
-   private void initMessageIcon() {
-	NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		try {
-		   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
-		   if (emergencyBean.getMessages() != null) {
-			EventBusUtils.postSticky(
-				new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
-		   }
-		} catch (JsonSyntaxException e) {
-		   e.printStackTrace();
-		}
-	   }
-	});
-   }
+//   /*
+//    * 初始化消息图标显示状态
+//    * */
+//   private void initMessageIcon() {
+//	NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+//		try {
+//		   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
+//		   if (emergencyBean.getMessages() != null) {
+//			EventBusUtils.postSticky(
+//				new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
+//		   }
+//		} catch (JsonSyntaxException e) {
+//		   e.printStackTrace();
+//		}
+//	   }
+//	});
+//   }
 
    /**
     * 初始化消息推送服务

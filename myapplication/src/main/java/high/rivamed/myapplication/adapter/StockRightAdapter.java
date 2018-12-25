@@ -11,6 +11,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -51,6 +52,7 @@ public class StockRightAdapter
 	}
 	findId(helper);
 	int five = item.getExpireStatus();
+
 	mSeven_one.setText("未使用");
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());

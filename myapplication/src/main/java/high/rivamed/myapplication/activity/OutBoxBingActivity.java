@@ -71,6 +71,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
@@ -644,6 +645,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mInventoryDto.setPatientName(mPatient);
 	mInventoryDto.setPatientId(mPatientId);
 	mInventoryDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	mInventoryDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	String toJson = mGson.toJson(mInventoryDto);
 	LogUtils.i(TAG, "toJson  " + toJson);
 
@@ -666,6 +668,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 		   if (mIntentType == 2) {
+		      UIUtils.putOrderId(mContext);
 			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 			App.getInstance().removeALLActivity_();
 		   }

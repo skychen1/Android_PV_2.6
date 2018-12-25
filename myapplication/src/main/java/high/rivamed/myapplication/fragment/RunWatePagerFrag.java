@@ -50,7 +50,6 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -68,8 +67,6 @@ import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 @SuppressLint("ValidFragment")
 public class RunWatePagerFrag extends SimpleFragment {
 
-   private static final String TYPE_SIZE  = "TYPE_SIZE";
-   private static final String DEVICECODE = "DEVICECODE";
    private static final int loadTime      = 200;
    private static final String TAG        = "RunWatePagerFrag";
    List<String> titeleList = null;
@@ -132,14 +129,12 @@ public class RunWatePagerFrag extends SimpleFragment {
    private int SIZE = 20;
    public   String mDeviceCode;
    private String mTerm = null;
-   private String mEndTime;
-   private String mStartTime;
+   private String mEndTime = null;
+   private String mStartTime= null;
    private String mStatus = null;
    private List<RunWateBean.RowsBean> mWateBeanRows;
    private RunWatePageAdapter         mWatePageAdapter;
-   private LoadingDialog.Builder      mBuilder;
    private RunWateBean                mRunWateBean;
-   private String                     mStartTimes;
 
    @SuppressLint("ValidFragment")
    public RunWatePagerFrag(String deviceCode) {
@@ -149,13 +144,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    @SuppressLint("ValidFragment")
    public RunWatePagerFrag() {
    }
-//   public static RunWatePagerFrag newInstance(String deviceCode) {
-//	Bundle args = new Bundle();
-//	RunWatePagerFrag fragment = new RunWatePagerFrag();
-////	mDeviceCode = deviceCode;
-//	fragment.setArguments(args);
-//	return fragment;
-//   }
+
    /**
     * 重新加载数据
     *
@@ -178,20 +167,20 @@ public class RunWatePagerFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-//	mBuilder = DialogUtils.showLoading(mContext);
 	mSearchTypeDb.setVisibility(View.GONE);
 	initDate();
-
 	initlistener();
    }
 
    private void initDate() {
+
 	mSearchTypeThzc.setVisibility(View.GONE);
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
 	mSearchTimeStart.setHint(PowerDateUtils.getTime());
 	mSearchTimeEnd.setHint(format);
+
 	mSearchEt.setHint("请输入耗材名称、操作人、EPC查询");
 	mStartTime=null;
 	mEndTime=null;
@@ -222,11 +211,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
-		Log.i(TAG,"mDeviceCode "+mDeviceCode);
-		Log.i(TAG,"mTerm "+mTerm);
-		Log.i(TAG,"mStartTime "+mStartTime);
-		Log.i(TAG,"mEndTime "+mEndTime);
-		Log.i(TAG,"mStatus "+mStatus);
+
 		loadMoreRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		finishLoadMore();
 	   }
@@ -239,8 +224,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-		mStartTimes = s.toString().trim()+":00";
-		LogUtils.i(TAG, "mStartTimes     "+   mStartTimes);
+		mStartTime = s.toString().trim();
 	   }
 
 	   @Override
@@ -258,7 +242,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-		mEndTime = s.toString().trim()+":00";
+		mEndTime = s.toString().trim();
 	   }
 
 	   @Override
@@ -278,51 +262,38 @@ public class RunWatePagerFrag extends SimpleFragment {
 		switch (checkedId) {
 		   case R.id.search_type_all://全部
 			mStatus = null;
-//			mBuilder.create().show();
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_hous://入库
 			mStatus = "2";
-//			mBuilder.create().show();
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_use://领用
 			mStatus = "3";
-//			mBuilder.create().show();
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_info://移入
 			mStatus = "10";
-//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_out://移出
 			mStatus = "9";
-//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_return://退回
 			mStatus = "7";
-//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_return_goods://退货
 			mStatus = "8";
-//			mBuilder.create().show();
-
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_db://调拨
 			mStatus = "11";
-//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_thzc://退货暂存
 			mStatus = "12";
-//			mBuilder.create().show();
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		}
@@ -335,7 +306,6 @@ public class RunWatePagerFrag extends SimpleFragment {
 		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 		   mTerm = mSearchEt.getText().toString().trim();
 		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-		   Log.i("ccc", "mTerm  " + mTerm);
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		   return true;
 		}
@@ -346,23 +316,11 @@ public class RunWatePagerFrag extends SimpleFragment {
 
    private void loadRunWateDate(
 	   String deviceCode, String term, String startTime, String endTime, String status) {
-	Log.i(TAG,"mDeviceCode "+mDeviceCode);
-	Log.i(TAG,"mTerm "+mTerm);
-	Log.i(TAG,"mStartTime "+mStartTime);
-	Log.i(TAG,"mEndTime "+mEndTime);
-	Log.i(TAG,"mStatus "+mStatus);
-	Log.i(TAG,"----------------------------------------- ");
-	Log.i(TAG,"deviceCode "+deviceCode);
-	Log.i(TAG,"term "+term);
-	Log.i(TAG,"startTime "+startTime);
-	Log.i(TAG,"endTime "+endTime);
-	Log.i(TAG,"status "+status);
+
 	NetRequest.getInstance()
 		.loadRunWate("1", String.valueOf(SIZE),deviceCode, term, startTime, endTime, status, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			LogUtils.i(TAG, "deviceCodedfdfdfd  :" + deviceCode);
-
 			if (mWateBeanRows != null) {
 			   mWateBeanRows.clear();
 			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
@@ -404,14 +362,6 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mLinearLayout.addView(mHeadView);
 			   mWatePageAdapter.notifyDataSetChanged();
 			}
-//			mBuilder.mDialog.dismiss();
-			LogUtils.i(TAG, "deviceCode:" + deviceCode + "   " + result);
-		   }
-
-		   @Override
-		   public void onError(String result) {
-			LogUtils.i(TAG, "result:" + deviceCode + "   " + result);
-//			mBuilder.mDialog.dismiss();
 		   }
 		});
    }
@@ -444,10 +394,6 @@ public class RunWatePagerFrag extends SimpleFragment {
 			   mWateBeanRows.addAll(rows);
 			   mWatePageAdapter.notifyDataSetChanged();
 			}
-
-
-//			mBuilder.mDialog.dismiss();
-			Log.i(TAG, "deviceCode:" + deviceCode + "   " + result);
 		   }
 		});
    }
@@ -465,7 +411,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	      DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
 		break;
 	   case R.id.search_time_end:
-		if (mStartTimes == null) {
+		if (mStartTime == null) {
 		   ToastUtils.showShort("请先选择开始时间");
 		} else {
 		  DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);

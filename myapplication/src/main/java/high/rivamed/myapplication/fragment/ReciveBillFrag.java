@@ -208,6 +208,8 @@ public class ReciveBillFrag extends SimpleFragment {
         ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
         ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
         if (mPublicAdapter!=null){
+            mPublicAdapter.getData().clear();
+            mPublicAdapter.getData().addAll(mBillStockResultBean.getOrderDetailVos());
             mPublicAdapter.notifyDataSetChanged();
         }else {
             mPublicAdapter = new BillStockAdapter(mLayout, mBillStockResultBean.getOrderDetailVos());
@@ -243,8 +245,10 @@ public class ReciveBillFrag extends SimpleFragment {
                     } else {
                         ToastUtils.showShort("无柜子信息！");
                     }
-                } else {
+                } else if (six.equals("已领取")){
                     ToastUtils.showShort("此项已领取！");
+                }else if (mPublicAdapter.getItem(position).getCounts()==0){
+                    ToastUtils.showShort("库存不足，请补充库存");
                 }
             }
         });

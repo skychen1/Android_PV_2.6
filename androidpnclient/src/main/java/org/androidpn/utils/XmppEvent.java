@@ -19,4 +19,15 @@ public class XmppEvent {
 	   this.connect = connect;
 	}
    }
+   /**
+    * 页面顶部的连接状态改变
+    */
+   public static class EventPushMessageNum {
+	public String num;
+
+	public EventPushMessageNum(String num) {
+	   this.num = num;
+	}
+   }
+
 }

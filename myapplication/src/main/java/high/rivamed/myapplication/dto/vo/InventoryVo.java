@@ -15,7 +15,7 @@ public class InventoryVo implements Serializable {
     private boolean isCreate;
 
     // 0 已过期
-    private Integer expireStatus = 1;
+    private Integer expireStatus = -1;
     private String sthId;
     private String deviceId;
     private String cstId;

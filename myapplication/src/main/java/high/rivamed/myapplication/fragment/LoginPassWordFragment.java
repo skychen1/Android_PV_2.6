@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
@@ -25,18 +24,15 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.ConfigBean;
-import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
@@ -48,15 +44,8 @@ import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
-import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
@@ -190,27 +179,9 @@ public class LoginPassWordFragment extends SimpleFragment {
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i("BaseSimpleFragment", "result  " + result);
-                try {
-                    LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
-                    if (loginResultBean.isOperateSuccess()) {
-                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
-                        SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, loginResultBean.getAppAccountInfoVo().getUserName());
-                        SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, loginResultBean.getAppAccountInfoVo().getAccountId());
-                        SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, loginResultBean.getAppAccountInfoVo().getSex());
-                        SPUtils.putString(UIUtils.getContext(), KEY_USER_ID, loginResultBean.getAppAccountInfoVo().getUserId());
-                        SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
-                        SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
-                        Intent intent = new Intent(mContext, HomeActivity.class);
-                        mContext.startActivity(intent);
-                        mContext.finish();
-                    } else {
-                        Toast.makeText(mContext, loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
-                }
+                LogUtils.i("getAppAccountInfoVo", "result  " + result);
+
+                LoginActivity.loginSpDate(result,mContext,mGson);
             }
 
             @Override

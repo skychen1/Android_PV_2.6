@@ -34,6 +34,7 @@ import cn.rivamed.DeviceManager;
 import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
 import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
@@ -52,8 +53,11 @@ public class App extends Application {
 
     public static final String TAG = "BaseApplication";
     public static  int READER_TIME = 3000;     //扫描时间
-    private static App instance;
-    private static Handler mHandler;
+    private static App              instance;
+    private static Handler          mHandler;
+    public static PushFormDateBean mPushFormDateBean = new PushFormDateBean();
+    public static List<PushFormDateBean.OrdersBean> mPushFormOrders = new ArrayList<>();
+
     /**
      * 缓存
      */
@@ -61,6 +65,7 @@ public class App extends Application {
 
     public static String MAIN_URL = null;
     public static boolean mTitleConn = false;
+    public static boolean mTitleMsg = false;
     public static ServiceManager mServiceManager=null;
     private static Context mAppContext;
     public static Handler getHandler() {
@@ -92,6 +97,7 @@ public class App extends Application {
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();
+        mPushFormDateBean.setOrders(mPushFormOrders);
         mAppCache = ACache.get(UIUtils.getContext());
         Logger.addLogAdapter(new AndroidLogAdapter());
 
@@ -117,8 +123,8 @@ public class App extends Application {
      * 初始化消息Service
      */
     private void initMessgeService() {
-
-        mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT));
+      String id =  "xxx";
+        mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT),id);
         mServiceManager.startService();
     }
 

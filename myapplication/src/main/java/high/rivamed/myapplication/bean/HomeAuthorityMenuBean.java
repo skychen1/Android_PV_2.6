@@ -21,9 +21,9 @@ public class HomeAuthorityMenuBean implements Serializable{
     * title : 耗材操作
     * icon : null
     * parentSeq : null
-    * seq : 2
+    * seq : 102
     * menu : null
-    * children : [{"path":"\u2018\u2019","title":"选择操作","icon":"\u2018\u2019","parentSeq":2,"seq":7,"menu":null,"children":[{"path":"\u2018\u2019","title":"领用","icon":"\u2018\u2019","parentSeq":7,"seq":8,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"入库","icon":"\u2018\u2019","parentSeq":7,"seq":9,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"移出","icon":"\u2018\u2019","parentSeq":7,"seq":10,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"调拨","icon":"\u2018\u2019","parentSeq":7,"seq":11,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"移入","icon":"\u2018\u2019","parentSeq":7,"seq":12,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"退回","icon":"\u2018\u2019","parentSeq":7,"seq":13,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"退货","icon":"\u2018\u2019","parentSeq":7,"seq":14,"menu":null,"children":null,"selected":false}],"selected":false}]
+    * children : [{"path":null,"title":"选择操作","icon":null,"parentSeq":102,"seq":107,"menu":null,"children":[{"path":null,"title":"入库","icon":null,"parentSeq":107,"seq":109,"menu":null,"children":null,"selected":false},{"path":null,"title":"调拨","icon":null,"parentSeq":107,"seq":111,"menu":null,"children":null,"selected":false},{"path":null,"title":"退回","icon":null,"parentSeq":107,"seq":113,"menu":null,"children":null,"selected":false},{"path":null,"title":"退货","icon":null,"parentSeq":107,"seq":114,"menu":null,"children":null,"selected":false}],"selected":false}]
     * selected : false
     */
 
@@ -71,36 +71,36 @@ public class HomeAuthorityMenuBean implements Serializable{
    public static class ChildrenBeanX {
 
 	/**
-	 * path : ‘’
+	 * path : null
 	 * title : 选择操作
-	 * icon : ‘’
-	 * parentSeq : 2
-	 * seq : 7
+	 * icon : null
+	 * parentSeq : 102
+	 * seq : 107
 	 * menu : null
-	 * children : [{"path":"\u2018\u2019","title":"领用","icon":"\u2018\u2019","parentSeq":7,"seq":8,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"入库","icon":"\u2018\u2019","parentSeq":7,"seq":9,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"移出","icon":"\u2018\u2019","parentSeq":7,"seq":10,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"调拨","icon":"\u2018\u2019","parentSeq":7,"seq":11,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"移入","icon":"\u2018\u2019","parentSeq":7,"seq":12,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"退回","icon":"\u2018\u2019","parentSeq":7,"seq":13,"menu":null,"children":null,"selected":false},{"path":"\u2018\u2019","title":"退货","icon":"\u2018\u2019","parentSeq":7,"seq":14,"menu":null,"children":null,"selected":false}]
+	 * children : [{"path":null,"title":"入库","icon":null,"parentSeq":107,"seq":109,"menu":null,"children":null,"selected":false},{"path":null,"title":"调拨","icon":null,"parentSeq":107,"seq":111,"menu":null,"children":null,"selected":false},{"path":null,"title":"退回","icon":null,"parentSeq":107,"seq":113,"menu":null,"children":null,"selected":false},{"path":null,"title":"退货","icon":null,"parentSeq":107,"seq":114,"menu":null,"children":null,"selected":false}]
 	 * selected : false
 	 */
 
-	private String path;
+	private Object path;
 	private String             title;
-	private String             icon;
+	private Object             icon;
 	private int                parentSeq;
 	private int                seq;
 	private Object             menu;
 	private boolean            selected;
 	private List<ChildrenBean> children;
 
-	public String getPath() { return path;}
+	public Object getPath() { return path;}
 
-	public void setPath(String path) { this.path = path;}
+	public void setPath(Object path) { this.path = path;}
 
 	public String getTitle() { return title;}
 
 	public void setTitle(String title) { this.title = title;}
 
-	public String getIcon() { return icon;}
+	public Object getIcon() { return icon;}
 
-	public void setIcon(String icon) { this.icon = icon;}
+	public void setIcon(Object icon) { this.icon = icon;}
 
 	public int getParentSeq() { return parentSeq;}
 
@@ -125,36 +125,36 @@ public class HomeAuthorityMenuBean implements Serializable{
 	public static class ChildrenBean {
 
 	   /**
-	    * path : ‘’
-	    * title : 领用
-	    * icon : ‘’
-	    * parentSeq : 7
-	    * seq : 8
+	    * path : null
+	    * title : 入库
+	    * icon : null
+	    * parentSeq : 107
+	    * seq : 109
 	    * menu : null
 	    * children : null
 	    * selected : false
 	    */
 
-	   private String path;
+	   private Object path;
 	   private String  title;
-	   private String  icon;
+	   private Object  icon;
 	   private int     parentSeq;
 	   private int     seq;
 	   private Object  menu;
 	   private Object  children;
 	   private boolean selected;
 
-	   public String getPath() { return path;}
+	   public Object getPath() { return path;}
 
-	   public void setPath(String path) { this.path = path;}
+	   public void setPath(Object path) { this.path = path;}
 
 	   public String getTitle() { return title;}
 
 	   public void setTitle(String title) { this.title = title;}
 
-	   public String getIcon() { return icon;}
+	   public Object getIcon() { return icon;}
 
-	   public void setIcon(String icon) { this.icon = icon;}
+	   public void setIcon(Object icon) { this.icon = icon;}
 
 	   public int getParentSeq() { return parentSeq;}
 

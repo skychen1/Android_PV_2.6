@@ -608,6 +608,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mInventoryDto.getOperation());//播放操作成功提示音
 		if (mIntentType == 2) {
+		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		} else {
@@ -746,6 +747,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
 		if (event.mIntentType == 2) {
+		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -860,7 +862,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result退货   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		if (event.mIntentType == 2) {
+		if (event.mIntentType == 2) {UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
@@ -904,7 +906,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result调拨   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		if (event.mIntentType == 2) {
+		if (event.mIntentType == 2) {UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));

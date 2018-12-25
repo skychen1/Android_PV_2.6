@@ -2,6 +2,7 @@ package high.rivamed.myapplication.adapter;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -48,8 +49,12 @@ public class PendingTaskAdapter
             BaseViewHolder helper, PendingTaskBean.MessagesBean item) {
         findId(helper);
         tv_top_name.setText(item.getTitle());
-//        tv_bottom_name.setText(Html.fromHtml("任务在2018-05-22 18:00已启动，请前往<font color='#ff0000'><big><big>5号</big></big></font>柜领取"));
-        tv_bottom_name.setText(item.getText());
+        if (item.getText()==null||item.getText().equals("")){
+            tv_bottom_name.setText(Html.fromHtml("任务在 "+item.getCreateTime()+" 已启动，请及时领取"));
+        }else {
+            tv_bottom_name.setText(Html.fromHtml("任务在 "+item.getCreateTime()+" 已启动，请前往 <font color='#ff0000'><big><big>"+item.getText()+"</big></big></font> 领取"));
+        }
+
         tv_check_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,9 +62,9 @@ public class PendingTaskAdapter
                     String detail = item.getDetail();
                     try {
                         JSONObject jsonObject = new JSONObject(detail);
-                        String orderId = jsonObject.optString("receiveOrderId");
+                        String orderId = jsonObject.optString("orderId");
                         Intent intent = new Intent(mContext, OutFormActivity.class);
-                        intent.putExtra("receiveOrderId",orderId);
+                        intent.putExtra("orderId",orderId);
                         mContext.startActivity(intent);
 
                         Log.e("PendingTask", orderId);

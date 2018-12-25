@@ -11,6 +11,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -69,6 +70,8 @@ public class TimelyProfitAdapter
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 	int StopFlag = item.getExpireStatus();
+	LogUtils.i("SSS", "five   " + StopFlag);
+	LogUtils.i("SSS"," item.getExpireStatus()   "+ item.getExpireStatus());
 	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_four);
    }
 }

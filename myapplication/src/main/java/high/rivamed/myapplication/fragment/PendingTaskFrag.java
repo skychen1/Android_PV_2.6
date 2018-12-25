@@ -15,7 +15,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.androidpn.client.Notifier;
+import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -112,7 +112,7 @@ public class PendingTaskFrag extends SimpleFragment {
             public void onSucceed(String result) {
                 try {
                     initData();
-                    EventBusUtils.postSticky(new Notifier.EventPushMessageNum(mMessagesList.size() + ""));
+                    EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size() + ""));
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }

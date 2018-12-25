@@ -360,8 +360,8 @@ public class PublicStockFrag extends SimpleFragment {
 			   ArrayList<String> strings = new ArrayList<>();
 			   int SIZE = 0;
 			   for (InventoryVo vosBean : inventoryVos) {
-				strings.add(vosBean.getCstCode());
-				SIZE += vosBean.getCount();
+				strings.add(vosBean.getCstId());
+				SIZE += vosBean.getCountStock();
 			   }
 			   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 			   mTimelyReality2.setText(Html.fromHtml(
@@ -419,8 +419,8 @@ public class PublicStockFrag extends SimpleFragment {
 				ArrayList<String> strings = new ArrayList<>();
 				int SIZE = 0;
 				for (InventoryVo vosBean : mInventoryVos) {
-				   strings.add(vosBean.getCstCode());
-				   SIZE += vosBean.getCount();
+				   strings.add(vosBean.getCstId());
+				   SIZE += vosBean.getCountStock();
 
 				}
 				ArrayList<String> list = new ArrayList<>();

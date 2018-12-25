@@ -21,7 +21,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.util.Log;
 
-import org.androidpn.utils.SPUtils;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.ConnectionListener;
@@ -42,6 +41,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
+import high.rivamed.myapplication.utils.SPUtils;
+
 /**
  * This class is to manage the XMPP connection between client and server.
  * 
@@ -59,7 +60,7 @@ public class XmppManager {
 
     private NotificationService.TaskTracker taskTracker;
 
-    private SharedPreferences sharedPrefs;
+    public  static  SharedPreferences sharedPrefs;
 
     private String xmppHost;
 
@@ -83,7 +84,7 @@ public class XmppManager {
 
     private Future<?> futureTask;
 
-    private Thread reconnection;
+    public static Thread reconnection;
 
     public XmppManager(NotificationService notificationService) {
         context = notificationService;
@@ -108,7 +109,7 @@ public class XmppManager {
         return context;
     }
 
-    public void connect() {
+    public  void connect() {
         Log.d(LOGTAG, "connect()...");
         submitLoginTask();
     }
@@ -170,7 +171,7 @@ public class XmppManager {
         return notificationPacketListener;
     }
 
-    public void startReconnectionThread() {
+    public static void startReconnectionThread() {
         synchronized (reconnection) {
             try {
                 if (!reconnection.isAlive()) {
@@ -273,7 +274,7 @@ public class XmppManager {
         Log.d(LOGTAG, "addTask(runnable)... done");
     }
 
-    private void removeAccount() {
+    public static void removeAccount() {
         Editor editor = sharedPrefs.edit();
         editor.remove(Constants.XMPP_USERNAME);
         editor.remove(Constants.XMPP_PASSWORD);
@@ -298,8 +299,8 @@ public class XmppManager {
                 // Create the configuration for this new connection
                 ConnectionConfiguration connConfig = new ConnectionConfiguration(
                         xmppHost, xmppPort);
-                // connConfig.setSecurityMode(SecurityMode.disabled);
-                connConfig.setSecurityMode(SecurityMode.required);
+                 connConfig.setSecurityMode(SecurityMode.disabled);
+//                connConfig.setSecurityMode(SecurityMode.required);
                 connConfig.setSASLAuthenticationEnabled(false);
                 connConfig.setCompressionEnabled(false);
 
@@ -345,11 +346,9 @@ public class XmppManager {
             Log.i(LOGTAG, "RegisterTask.run()...");
 
             if (!xmppManager.isRegistered()) {
-//                final String newUsername = newRandomUUID();
-//                final String newPassword = newRandomUUID();
                 final String newUsername = SPUtils.getString(context, "key_user_name");
                 final String newPassword = "xb";
-                Log.e("RegisterTask", "newUsername:"+newUsername);
+                Log.e(LOGTAG, "newUsername:"+newUsername);
                 Registration registration = new Registration();
 
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
@@ -386,9 +385,7 @@ public class XmppManager {
                                 editor.putString(Constants.XMPP_PASSWORD,
                                         newPassword);
                                 editor.commit();
-                                Log
-                                        .i(LOGTAG,
-                                                "Account registered successfully");
+                                Log.i(LOGTAG, "Account registered successfully");
                                 xmppManager.runTask();
                             }
                         }

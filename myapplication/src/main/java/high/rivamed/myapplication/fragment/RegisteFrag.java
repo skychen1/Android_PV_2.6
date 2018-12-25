@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.androidpn.client.ServiceManager;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -24,7 +23,6 @@ import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
@@ -617,14 +615,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 				public void onSucceed(String result) {
 				   LogUtils.i(TAG, "result   " + result);
 				   ToastUtils.showShort("服务器已连接成功！");
-				   LogUtils.i(TAG,
-						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
-				   if (App.mServiceManager == null) {
-					App.mServiceManager = new ServiceManager(mContext,
-											     SPUtils.getString(mContext,
-														     SAVE_SEVER_IP_TEXT));
-					App.mServiceManager.startService();
-				   }
+				   LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 
 				   mNameBean = mGson.fromJson(result, DeviceNameBeanX.class);
 				   mNameList = mNameBean.getDeviceDictVos();

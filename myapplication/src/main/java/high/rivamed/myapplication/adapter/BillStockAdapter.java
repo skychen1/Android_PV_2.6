@@ -81,6 +81,8 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
         mSeven_three.setText("" + item.getNeedNum());
         mSeven_four.setText(item.getCounts()+"");
 
+
+
         StringBuffer deviceNames = new StringBuffer();
         for (int i = 0; i < item.getDeviceNames().size(); i++) {
             deviceNames.append(item.getDeviceNames().get(i));
@@ -102,11 +104,17 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            if(item.getCounts()==0){
+                mSeven_four.setTextColor(mContext.getResources().getColor(R.color.color_red));
+		   mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+            }else {
+                mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+		   mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
+            }
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
+
             mSeven_eight.setText("打开柜门");
         }
     }
