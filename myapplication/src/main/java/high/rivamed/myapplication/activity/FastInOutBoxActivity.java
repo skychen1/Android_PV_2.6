@@ -263,6 +263,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	mFastViewpager.addOnPageChangeListener(this);
 	if (mOutSize == 0) {
 	   mFastViewpager.setCurrentItem(1);
+
 	} else {
 	   mFastViewpager.setCurrentItem(0);
 	}
@@ -290,6 +291,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		String string = null;
 		if (outInventoryVos.size() == 0&&inInventoryVos.size()>0) {
 		   mFastViewpager.setCurrentItem(1);
+
 		} else {
 		   mFastViewpager.setCurrentItem(0);
 		}
@@ -310,9 +312,8 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   mEthDeviceIdBack2.clear();
 		   mEthDeviceIdBack.clear();
 		   mDoorList.clear();
-		   FastOutFragment.mBtnFourLy.setEnabled(false);
-		   FastOutFragment.mBtnFourTh.setEnabled(false);
-		   FastOutFragment.mBtnFourYc.setEnabled(false);
+		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
+										  outInventoryVos.size(), "moreScan"));
 		   ToastUtils.showShortToast("耗材操作完成，即将退回主页！");
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {

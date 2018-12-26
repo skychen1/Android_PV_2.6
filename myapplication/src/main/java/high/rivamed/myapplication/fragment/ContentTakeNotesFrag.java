@@ -43,7 +43,6 @@ import high.rivamed.myapplication.utils.SPUtils;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
-import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
 /**
@@ -119,12 +118,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("使用记录");
 	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
-	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null){
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-	}
-	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME)!=null){
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
-	}
 
 	String[] array = mContext.getResources().getStringArray(R.array.syjl_title_seven);
 	titeleList = Arrays.asList(array);

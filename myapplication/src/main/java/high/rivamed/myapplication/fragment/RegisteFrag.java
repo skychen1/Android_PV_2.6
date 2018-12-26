@@ -46,7 +46,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -106,6 +105,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
    private       ThingDto                            mSnRecoverBean;
    public static List<ThingDto.DeviceVosBean> mDeviceVos = new ArrayList<>();//柜子list
    public FrgNetWorkReceiver netWorkReceiver;
+   private String mBoxCode;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -117,10 +117,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 		   addFromDate(event.deptName, event.branchCode, event.deptId, event.storehouseCode,
 				   event.operationRoomNo));
 	   LogUtils.i(TAG, "激活的   " + s);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, event.branchCode);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, event.deptId);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, event.deptName);
-	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, event.storehouseCode);
+
 
 	   mFragRegisteRight.setEnabled(false);
 	   if (mSmallAdapter.mRightDelete != null) {
@@ -159,10 +156,11 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 			SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 						thingDto.getThingSnVo().getSthName());
 		   }
-		   if (thingDto.getThingSnVo().getRoomName() != null) {
-			SPUtils.putString(UIUtils.getContext(), SAVE_OPERATION_ROOM_NONAME,
-						thingDto.getThingSnVo().getRoomName());
-		   }
+		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE, thingDto.getThingSnVo().getBranchCode());
+		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE, thingDto.getThingSnVo().getDeptId());
+		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME, thingDto.getThingSnVo().getDeptName());
+		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE, thingDto.getThingSnVo().getSthId());
+
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, thingDto.getThing().getSn());
 		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
@@ -204,10 +202,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 				   mSnRecoverBean.getThingSnVo().getSthName());
 	}
-	if (mSnRecoverBean.getThingSnVo().getRoomName() != null) {
-	   SPUtils.putString(UIUtils.getContext(), SAVE_OPERATION_ROOM_NONAME,
-				   mSnRecoverBean.getThingSnVo().getRoomName());
-	}
+
 
 	mFragRegisteRight.setEnabled(false);
 	if (mSmallAdapter != null && mSmallAdapter.mRightDelete != null) {
@@ -248,7 +243,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   mFragRegisteNameEdit.setText("2.6.4柜子");
 	   mFragRegisteModelEdit.setText("rivamed26xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.2.23");
+	   mFragRegisteSeveripEdit.setText("192.168.2.20");
 	   mFragRegistePortEdit.setText("8017");
 	}
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
@@ -332,7 +327,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 
    //已有数据的时候   给激活之前添加界面数据
    private void setRegiestDate(String string) {
-
+	mDeviceVos.clear();
 	ThingDto returnBean = mGson.fromJson(string, ThingDto.class);
 	List<ThingDto.DeviceVosBean> tBaseDeviceVos = returnBean.getDeviceVos();
 	ThingDto.ThingBean mThing = returnBean.getThing();
@@ -368,20 +363,15 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   ThingDto.DeviceVosBean deviceVo = tBaseDeviceVos.get(y);
 	   List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall = new ArrayList<>();
 	   TBaseDevices registeAddBean1 = new TBaseDevices();
-	   LogUtils.i(TAG, "  tBaseDeviceVos.size()   " + tBaseDeviceVos.size() +
-				 "     mDeviceVos.size()     " + mDeviceVos.size());
-//	   if (mDeviceVos != null && mDeviceVos.size() > 0 && mDeviceVos.get(y) != null) {
-//		mDeviceVos.get(y).setDeviceId(deviceVo.getDeviceId());
-//	   }
-	   registeAddBean1.setBoxname(deviceVo.getDeviceName());
-	   registeAddBean1.setBoxCode(deviceVo.getDeviceId());
+	   LogUtils.i(TAG, " deviceVo.getDeviceName()   " +deviceVo.getDeviceName()+"    "+deviceVo.getDeviceId());
+	   registeAddBean1.setDeviceName(deviceVo.getDeviceName());
+	   registeAddBean1.setDeviceId(deviceVo.getDeviceId());
 	   registeAddBean1.setList(mTBaseDevicesSmall);
+
 	   if (deviceVo.getDevices() != null) {
 		for (int x = 0; x < deviceVo.getDevices().size(); x++) {//第二层柜体内条目的数据
 		   ThingDto.DeviceVosBean.DevicesBean devicesBean = deviceVo.getDevices().get(x);
-//		   if (mDeviceVos != null && mDeviceVos.size() > 0 && mDeviceVos.get(y) != null) {
-//			mDeviceVos.get(y).getDevices().get(x).setDeviceId(devicesBean.getDeviceId());
-//		   }
+		   LogUtils.i(TAG, "devicesBean   " +devicesBean.getDeviceName()+"    "+devicesBean.getDeviceId());
 		   TBaseDevices.tBaseDevices registeBean1 = new TBaseDevices.tBaseDevices();
 		   registeBean1.setPartsmacName(deviceTypes);
 		   registeBean1.setPartsname(devicesBean.getDeviceName());
@@ -390,13 +380,16 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 		   registeBean1.setPartsmac(mSmallmac);
 		   registeBean1.setDictId(devicesBean.getDictId());
 		   registeBean1.setDeviceType(devicesBean.getDeviceType());
-		   registeBean1.setDeviceCodes(devicesBean.getDeviceId());
+		   registeBean1.setDeviceId(devicesBean.getDeviceId());
 
 		   mTBaseDevicesSmall.add(registeBean1);
+
 		}
 	   }
 	   mTBaseDevicesAll.add(registeAddBean1);
 	}
+	mDeviceVos.addAll(tBaseDeviceVos);
+
 	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mTBaseDevicesAll);
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.setAdapter(mSmallAdapter);
@@ -468,10 +461,11 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	ThingDto.DeviceVosBean tBaseThingVoBean = new ThingDto.DeviceVosBean();
 	mHeadName = ((EditText) mRecyclerview.getChildAt(i)
 		.findViewById(R.id.head_left_name)).getText().toString().trim();
-	String boxCode = ((TextView) mRecyclerview.getChildAt(i)
+	mBoxCode = ((TextView) mRecyclerview.getChildAt(i)
 		.findViewById(R.id.gone_box_code)).getText().toString().trim();
 	tBaseThingVoBean.setDeviceName(mHeadName);
-	tBaseThingVoBean.setDeviceId(boxCode);
+	tBaseThingVoBean.setDeviceId(mBoxCode);
+	LogUtils.i(TAG, "boxCode " + mBoxCode);
 	RecyclerView mRecyclerView2 = mRecyclerview.getChildAt(i).findViewById(R.id.recyclerview2);
 	List<ThingDto.DeviceVosBean.DevicesBean> tBaseDevice = new ArrayList<>();//柜子内部的设备list
 	for (int x = 0; x < mRecyclerView2.getChildCount() - 1; x++) {
@@ -526,8 +520,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.setThing(tBaseThing);
-	LogUtils.i(TAG, " i  ffffff     " + i);
-
+	LogUtils.i(TAG, " mDeviceVos.size()     " + mDeviceVos.size());
 	if (mRecyclerview.getAdapter().getItemCount() != mDeviceVos.size()) {
 	   RecyclerView.LayoutManager layoutManager = mRecyclerview.getLayoutManager();
 	   LinearLayoutManager linearManager = (LinearLayoutManager) layoutManager;
@@ -672,9 +665,9 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	for (int y = 0; y < 1; y++) {//第一层数据
 
 	   if (mSmallAdapter == null && y == 0) {
-		registeAddBean1.setBoxname("1号柜");
+		registeAddBean1.setDeviceName("1号柜");
 	   } else {
-		registeAddBean1.setBoxname("");
+		registeAddBean1.setDeviceName("");
 	   }
 	   registeAddBean1.setList(mTBaseDevicesSmall);
 	   mTBaseDevicesAll.add(registeAddBean1);

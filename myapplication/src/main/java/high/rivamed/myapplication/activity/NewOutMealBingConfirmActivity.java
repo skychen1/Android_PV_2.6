@@ -570,6 +570,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			List<InventoryVo> inventoryVos = info.getInventoryVos();
 			EventBusUtils.post(new Event.EventMealType(inventoryVos));//用来判断套组是否已经领取
 			if (info.isOperateSuccess()) {
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 			   ToastUtils.showShort(info.getMsg());
 			   finish();
 			} else {

@@ -93,9 +93,9 @@ public class Constants {
     public static final String KEY_USER_SEX = "key_user_sex";//用户性别
     public static final String KEY_ACCOUNT_ID = "key_account_id";//用户ID
     public static final String SAVE_STOREHOUSE_NAME = "save_storehouse_name";//库房名字
-    public static final String SAVE_OPERATION_ROOM_NONAME = "save_operation_room_noname";//手术间名字
     public static final String SAVE_RECEIVE_ORDERID = "save_receive_orderid";//医嘱单ID
     public static final String SAVE_READER_TIME = "SAVE_READER_TIME";//READER扫描时长
+    public static final String SYSTEMTYPE = "HCT";//高值登录的type
 
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN

@@ -69,10 +69,11 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
-	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getBoxname());
+	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getDeviceName());
+	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getDeviceId());
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
-	   mLeftName.setText(item.getBoxname());
-	   mLeftCode.setText(item.getBoxCode());
+	   mLeftName.setText(item.getDeviceName());
+	   mLeftCode.setText(item.getDeviceId());
 	   if (holder.getAdapterPosition() == 0) {
 		mRightDelete.setVisibility(View.GONE);
 	   } else {
@@ -83,7 +84,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
 	   if (holder.getAdapterPosition() == 0) {
 		mRightDelete.setVisibility(View.GONE);
-	   } else if (item.boxname.equals("")) {
+	   } else if (item.deviceName.equals("")) {
 		mRightDelete.setVisibility(View.VISIBLE);
 	   }
    }

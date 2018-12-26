@@ -516,6 +516,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
 						setPushFormOrderDate();
 						if (sureReciveOrder.isOperateSuccess()) {
+						   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 						   if (sureReciveOrder.getMsg().equals("")||sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
 							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
 											  sureReciveOrder.getMsg());

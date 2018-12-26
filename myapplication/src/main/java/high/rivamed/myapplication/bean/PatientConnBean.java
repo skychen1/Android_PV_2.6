@@ -19,6 +19,15 @@ public class PatientConnBean {
     private String thingId;
     private String tempPatientId;
     private String medicalId;
+    private String surgeryId;
+
+    public String getSurgeryId() {
+        return surgeryId;
+    }
+
+    public void setSurgeryId(String surgeryId) {
+        this.surgeryId = surgeryId;
+    }
 
     public String getMedicalId() {
         return medicalId;

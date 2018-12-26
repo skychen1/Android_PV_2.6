@@ -39,7 +39,6 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
-import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
 /**
@@ -138,12 +137,8 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
         mSearchTypeRg = mContext.findViewById(R.id.search_type_rg);
         mSearchTimeEnd = mContext.findViewById(R.id.search_time_end);
         mSearchTimeStart = mContext.findViewById(R.id.search_time_start);
-        if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
             mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-        }
-        if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
-            mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
-        }
+
         loadTopBoxSize();
     }
 

@@ -33,6 +33,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -146,7 +147,7 @@ public class NetRequest {
    public void checkVer(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_GET_VER;
 	Map<String, String> map = new HashMap<>();
-	map.put("systemType", "2");
+	map.put("systemType",SYSTEMTYPE);
 	GetRequest(urls, map, tag, netResult);
    }
 
@@ -651,7 +652,7 @@ public class NetRequest {
    public void getAuthorityMenu(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
 	Map<String, String> map = new HashMap<>();
-	map.put("systemType", "2");
+	map.put("systemType", SYSTEMTYPE);
 	OkGo.<String>get(urls).tag(tag)
 		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
 		.params(map)
@@ -663,7 +664,7 @@ public class NetRequest {
     */
    public void updateToken(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_REFRESH_TOKEN;
-	String json = "{\"systemType\": \"1\",\"accessToken\": {\"refreshToken\": \"" +
+	String json = "{\"systemType\": "+SYSTEMTYPE+",\"accessToken\": {\"refreshToken\": \"" +
 			  SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN) + "\"}}";
 	PostRequest(urls, json, tag, netResult);
    }

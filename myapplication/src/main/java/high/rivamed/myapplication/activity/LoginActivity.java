@@ -88,6 +88,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetApi.URL_AUTHORITY_MENU;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
@@ -353,7 +354,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
 	data.setThingId(SPUtils.getString(mContext, THING_CODE));
-	data.setSystemType("2");
+	data.setSystemType(SYSTEMTYPE);
 	LogUtils.i(TAG, "mGson.toJson(data)   " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
@@ -372,7 +373,7 @@ public class LoginActivity extends SimpleActivity {
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
 	data.setThingId(thingCode);
-	data.setSystemType("2");
+	data.setSystemType(SYSTEMTYPE);
 	data.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	LogUtils.i("Login", "THING_CODE validateLoginFinger  " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {

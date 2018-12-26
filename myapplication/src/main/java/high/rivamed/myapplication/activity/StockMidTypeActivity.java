@@ -98,7 +98,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 		InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
 		mStockDetailsDownList = inventoryDto.getInventoryVos();
 		mTimelyNumber.setText(Html.fromHtml(
-			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCount() +
+			"耗材数量：<font color='#262626'><big>" + mStockDetailsTopBean.getCountStock() +
 			"</big></font>"));
 		mTimelyName.setVisibility(View.VISIBLE);
 		mTimelyName.setText("耗材名称：" + mStockDetailsTopBean.getCstName() + "    规格型号：" +

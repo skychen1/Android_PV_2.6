@@ -58,6 +58,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
    private static final String TAG = "PatientConnActivity";
    @BindView(R.id.search_et)
    EditText mSearchEt;
+   @BindView(R.id.tv_patient_conn)
+   TextView mTvConn;
    @BindView(R.id.base_tab_tv_title)
    public TextView mBaseTabTvTitle;
    @BindView(R.id.stock_search)
@@ -291,6 +293,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
 												  0) {
 												 connPatient(position,
 														 dialog);
+											    }else {
+												 mTvConn.setEnabled(false);
 											    }
 											 }
 										    });
@@ -348,7 +352,10 @@ public class PatientConnActivity extends BaseSimpleActivity {
 												 position);
 											 //进行患者关联
 											 if (mPatientInfos.size() > 0) {
+
 											    connPatient(position, dialog);
+											 }else {
+											    mTvConn.setEnabled(false);
 											 }
 										    }
 										 });
@@ -381,6 +388,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 	PatientConnBean bean = new PatientConnBean();
 	bean.setPatientId(mPatientInfos.get(position).getPatientId());
 	bean.setMedicalId(mPatientInfos.get(position).getMedicalId());
+	bean.setSurgeryId(mPatientInfos.get(position).getSurgeryId());
 	bean.setTempPatientId(
 		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
 	LogUtils.i(TAG, "mGson.toJson(bean)   " + mGson.toJson(bean));

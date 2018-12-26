@@ -92,7 +92,6 @@ import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -842,14 +841,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材操作");
-	if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
 					   SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-	}
-	if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
-					   SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
-	}
+
 
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

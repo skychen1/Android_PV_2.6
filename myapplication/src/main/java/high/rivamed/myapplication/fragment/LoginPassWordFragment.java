@@ -45,6 +45,7 @@ import high.rivamed.myapplication.views.UpDateDialog;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
@@ -173,7 +174,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         accountBean.setPassword(mPassword);
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
-        userLoginDto.setSystemType("2");
+        userLoginDto.setSystemType(SYSTEMTYPE);
         userLoginDto.setThingId(SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {

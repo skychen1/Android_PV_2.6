@@ -21,16 +21,16 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 	implements MultiItemEntity {
 
    private List<tBaseDevices>     list;//柜子list信息
-   public  String                 boxname;//柜子名字
-   public  String                 boxCode;//柜子名字
+   public  String                 deviceName;//柜子名字
+   public  String                 deviceId;//柜子名字
    private List<RegisteTitleBean> list2;//柜子list信息
 
-   public String getBoxCode() {
-	return boxCode;
+   public String getDeviceId() {
+	return deviceId;
    }
 
-   public void setBoxCode(String boxCode) {
-	this.boxCode = boxCode;
+   public void setDeviceId(String deviceId) {
+	this.deviceId = deviceId;
    }
 
    public List<RegisteTitleBean> getList2() {
@@ -51,12 +51,12 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
 	this.list = list;
    }
 
-   public String getBoxname() {
-	return boxname;
+   public String getDeviceName() {
+	return deviceName;
    }
 
-   public void setBoxname(String boxname) {
-	this.boxname = boxname;
+   public void setDeviceName(String deviceName) {
+	this.deviceName = deviceName;
    }
 
    public static class RegisteTitleBean extends tBaseDevices implements MultiItemEntity {
@@ -124,23 +124,23 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
    }
 
    public static class tBaseDevices implements MultiItemEntity {
-	private String dictId;
-	private String dictName;
-	private String deviceType;
-	public String partsname;
-	public String partip;
-	public List<partsmacBean> partsmac;
+	private String             dictId;
+	private String             dictName;
+	private String             deviceType;
+	public String              partsname;
+	public String              partip;
+	public List<partsmacBean>  partsmac;
 	public List<partsnameBean> partsmacName;
 	public String              partsmactext;
 	public String              partmac;
-	public String              deviceCodes;
+	public String              deviceId;
 
-	public String getDeviceCodes() {
-	   return deviceCodes;
+	public String getDeviceId() {
+	   return deviceId;
 	}
 
-	public void setDeviceCodes(String deviceCodes) {
-	   this.deviceCodes = deviceCodes;
+	public void setDeviceId(String deviceId) {
+	   this.deviceId = deviceId;
 	}
 
 	public String getDictId() {

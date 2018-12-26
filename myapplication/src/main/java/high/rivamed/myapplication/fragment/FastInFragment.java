@@ -122,6 +122,35 @@ public class FastInFragment extends SimpleFragment {
    public static CountDownTimer mStarts;
    public static boolean mOnResume =false;
 
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventButton(Event.EventButton event) {
+	if (event.type) {
+	   if (!event.bing) {//绑定的按钮转换
+		for (InventoryVo b : mInOutDto.getInInventoryVos()) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 ) ||
+			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+			  b.getExpireStatus() != 0)) {
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
+			if (mStarts != null) {
+			   mStarts.cancel();
+			   mTimelyRight.setText("确认并退出登录");
+			}
+			return;
+		   } else {
+			LogUtils.i(TAG, "SelInOutBoxTwoActivity   start");
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
+			if (mStarts != null) {
+			   mStarts.cancel();
+			   mStarts.start();
+			}
+		   }
+		}
+	   }
+	}
+   }
    /**
     * 接收快速开柜的数据
     *
@@ -314,9 +343,7 @@ public class FastInFragment extends SimpleFragment {
 		   }
 		   return;
 		}
-
 	   } else {
-
 		LogUtils.i(TAG, "SelInOutBoxTwoActivity.mStart   " + (mStarts == null));
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
@@ -400,7 +427,6 @@ public class FastInFragment extends SimpleFragment {
 	@Override
 	public void onFinish() {// 计时完毕时触发
 	   EventBusUtils.post(new Event.EventOverPut(true));
-
 	}
 
 	@Override

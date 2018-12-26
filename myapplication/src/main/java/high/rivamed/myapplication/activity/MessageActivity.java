@@ -16,7 +16,6 @@ import high.rivamed.myapplication.fragment.PendingTaskFrag;
 import high.rivamed.myapplication.utils.SPUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
-import static high.rivamed.myapplication.cont.Constants.SAVE_OPERATION_ROOM_NONAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
 /**
@@ -47,12 +46,8 @@ public class MessageActivity extends BaseSimpleActivity {
 //        mRgGroup2.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("待办任务");
         mBaseTabLl.setVisibility(View.GONE);
-        if (SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME) != null) {
             mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-        }
-        if (SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME) != null) {
-            mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_OPERATION_ROOM_NONAME));
-        }
+
     }
 
     private void initListener() {

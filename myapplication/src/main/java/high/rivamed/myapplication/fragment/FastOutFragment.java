@@ -86,11 +86,14 @@ public class FastOutFragment extends SimpleFragment {
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
-   public static TextView mBtnFourLy;
-   public static TextView mBtnFourYc;
+   @BindView(R.id.btn_four_ly)
+   TextView mBtnFourLy;
+   @BindView(R.id.btn_four_yc)
+   TextView mBtnFourYc;
+   @BindView(R.id.btn_four_th)
+   TextView mBtnFourTh;
    @BindView(R.id.btn_four_tb)
-   public        TextView mBtnFourTb;
-   public static TextView mBtnFourTh;
+  TextView mBtnFourTb;
    @BindView(R.id.activity_down_btn_four_ll)
    LinearLayout mActivityDownBtnFourLl;
    @BindView(R.id.timely_number)
@@ -170,6 +173,7 @@ public class FastOutFragment extends SimpleFragment {
 	}
 	if (event.type != null && event.type.equals("moreScan")) {
 	   LogUtils.i(TAG, "setOutBoxDate    " + 1);
+
 	   setOutBoxDate(mInOutDto.getOutInventoryVos());
 	}
    }
@@ -189,9 +193,9 @@ public class FastOutFragment extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	mBtnFourLy = mContext.findViewById(R.id.btn_four_ly);
-	mBtnFourYc = mContext.findViewById(R.id.btn_four_yc);
-	mBtnFourTh = mContext.findViewById(R.id.btn_four_th);
+//	mBtnFourLy = mContext.findViewById(R.id.btn_four_ly);
+//	mBtnFourYc = mContext.findViewById(R.id.btn_four_yc);
+//	mBtnFourTh = mContext.findViewById(R.id.btn_four_th);
 
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
@@ -199,6 +203,7 @@ public class FastOutFragment extends SimpleFragment {
 	setOutBoxDate(mInOutDto.getOutInventoryVos());
 
    }
+
 
    private void setOutBoxDate(List<InventoryVo> voList) {
 
@@ -289,28 +294,7 @@ public class FastOutFragment extends SimpleFragment {
     * 完成操作后看是否还有耗材，无耗材跳转入柜界面或者直接退出
     */
    private void overFinish() {
-
 	EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
-	//	mMTCstInventoryVosses = new ArrayList<>();
-	//	for (int i = 0; i < mInOutDto.getOutInventoryVos().size(); i++) {
-	//	   if (mInOutDto.getOutInventoryVos().get(i).isSelected()) {
-	//		mMTCstInventoryVosses.add(mInOutDto.getOutInventoryVos().get(i));
-	//	   } else {
-	//	   }
-	//	}
-	//	if (mMTCstInventoryVosses.size() == mInOutDto.getOutInventoryVos().size()) {
-	//	   mInOutDto.getOutInventoryVos().clear();
-	//	} else {
-	//	   for (int x = 0; x < mInOutDto.getOutInventoryVos().size(); x++) {
-	//		for (InventoryVo s : mMTCstInventoryVosses) {
-	//		   if (s.getEpc().equals(mInOutDto.getOutInventoryVos().get(x).getEpc())) {
-	//			mInOutDto.getOutInventoryVos().remove(x);
-	//		   }
-	//		}
-	//	   }
-	//	}
-	//	mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
-	//	EventBusUtils.postSticky(new Event.EventDate(true));
    }
 
    private boolean getExceedTime(List<InventoryVo> voList) {

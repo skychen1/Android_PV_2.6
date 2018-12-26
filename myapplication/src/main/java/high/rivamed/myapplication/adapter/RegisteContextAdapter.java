@@ -95,7 +95,7 @@ public           RecyclerView                    recyclerView;
 	   mMFootIp.setText(item.getPartip());
 	   mGone_dictid.setText(item.getDictId());
 	   mGone_devicetype.setText(item.getDeviceType());
-	   mGone_deviceCode.setText(item.getDeviceCodes());
+	   mGone_deviceCode.setText(item.getDeviceId());
 	}
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
