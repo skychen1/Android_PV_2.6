@@ -319,7 +319,7 @@ public class HomeActivity extends SimpleActivity {
 		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
 											new TypeToken<List<HomeAuthorityMenuBean>>() {}
 												.getType());
-		if (fromJson.get(0).getChildren().size()>0) {
+		if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size()>0) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
 		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
 			   .getChildren()

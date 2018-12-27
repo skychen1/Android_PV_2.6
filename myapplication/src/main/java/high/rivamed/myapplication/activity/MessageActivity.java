@@ -46,7 +46,7 @@ public class MessageActivity extends BaseSimpleActivity {
 //        mRgGroup2.setVisibility(View.VISIBLE);
         mBaseTabTvTitle.setText("待办任务");
         mBaseTabLl.setVisibility(View.GONE);
-            mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+        mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 
     }
 

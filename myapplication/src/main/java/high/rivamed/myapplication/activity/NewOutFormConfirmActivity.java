@@ -463,8 +463,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						  if (mBillOrderResultBean.getInventoryVos() !=
 							null && mBillOrderResultBean.getInventoryVos().size() > 0) {
 						     isCanUse = true;
-						     mInventoryVoList.addAll(
-							     mBillOrderResultBean.getInventoryVos());
+						     mInventoryVoList.addAll(mBillOrderResultBean.getInventoryVos());
 						  } else {
 						     isCanUse = false;
 						     mDownBtnOne.setEnabled(false);
@@ -489,11 +488,13 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						  } else {
 						     mDownBtnOne.setEnabled(false);
 						  }
+
 						  if (mPublicAdapter == null) {
 						     initData();
 						  } else {
 						     mPublicAdapter.notifyDataSetChanged();
 						  }
+						  EventBusUtils.post(new Event.EventButton(true, true));
 					     }
 					  });
    }

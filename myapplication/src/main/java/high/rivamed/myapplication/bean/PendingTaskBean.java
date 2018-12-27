@@ -65,7 +65,7 @@ public class PendingTaskBean {
          * title : 医嘱单未领用
          */
 
-        private String id;
+        private String messageId;
         private String type;
         private String text;
         private String detail;
@@ -73,12 +73,12 @@ public class PendingTaskBean {
         private String accountId;
         private String title;
 
-        public String getId() {
-            return id;
+        public String getmessageId() {
+            return messageId;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setmessageId(String messageId) {
+            this.messageId = messageId;
         }
 
         public String getType() {

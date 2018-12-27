@@ -32,6 +32,7 @@ import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -100,7 +101,7 @@ public class PendingTaskFrag extends SimpleFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMsgDelete(Event.EventMsgDelete event) {
-        deleteMsg(event.data.getId());
+        deleteMsg(event.data.getmessageId());
     }
 
     /**
@@ -112,7 +113,6 @@ public class PendingTaskFrag extends SimpleFragment {
             public void onSucceed(String result) {
                 try {
                     initData();
-                    EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size() + ""));
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
@@ -144,6 +144,12 @@ public class PendingTaskFrag extends SimpleFragment {
                         mMessagesList.addAll(emergencyBean.getMessages());
                         mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
                         mAdapter.notifyDataSetChanged();
+
+
+                    }
+                    if (emergencyBean.getMessages().size()==0){
+                        LogUtils.i(TAG,"mMessagesList.size()   "+mMessagesList.size());
+                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size() + ""));
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();

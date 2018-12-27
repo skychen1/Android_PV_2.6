@@ -626,7 +626,7 @@ public class NetRequest {
    public void deleteMessageById(String id, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_DELETE_MESSAGE_BY_ID;
 	Map<String, String> map = new HashMap<>();
-	map.put("message.id", id);
+	map.put("message.messageId", id);
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -710,9 +710,7 @@ public class NetRequest {
 	public void onSuccess(Response<String> response) {
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
-		Log.i("jsonObject", "opFlg    jsonObject     " + jsonObject);
-		Log.i("jsonObject",
-			"null == jsonObject.getString(\"opFlg\")    " + jsonObject.getString("opFlg"));
+
 		if (null == jsonObject.getString("opFlg") ||
 		    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 		   if (netResult != null) {

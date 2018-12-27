@@ -129,7 +129,7 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
         mSeven_four.setText(item.getExpirationText());
         mSeven_five.setText(item.getDeviceName());
         UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
-
+        setDeleteView(item.isDelete(),swipe);
 
         if ((item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) ||
             (item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0 && item.getExpireStatus() == 1 )){
@@ -153,9 +153,9 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mLl.setBackgroundResource(R.color.bg_f);
+            setDeleteView(item.isDelete(),swipe);
         }
-        setDeleteView(item.isDelete(),swipe);
+
     }
 
 
@@ -165,17 +165,13 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
             mSeven_two.setTextColor(Color.parseColor("#999999"));
             mSeven_three.setTextColor(Color.parseColor("#999999"));
             mSeven_four.setTextColor(Color.parseColor("#999999"));
-            mSeven_four.setBackgroundResource(R.color.bg_color);
             mSeven_five.setTextColor(Color.parseColor("#999999"));
-            mLl.setBackgroundResource(R.color.bg_color);
             swipe.setSwipeEnabled(true);
         } else {
             mSeven_one.setTextColor(Color.parseColor("#333333"));
             mSeven_two.setTextColor(Color.parseColor("#333333"));
             mSeven_three.setTextColor(Color.parseColor("#333333"));
-            mSeven_four.setTextColor(Color.parseColor("#333333"));
             mSeven_five.setTextColor(Color.parseColor("#333333"));
-            mLl.setBackgroundResource(R.color.bg_f);
             swipe.setSwipeEnabled(true);
         }
     }

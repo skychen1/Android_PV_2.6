@@ -892,7 +892,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 										new TypeToken<List<HomeAuthorityMenuBean>>() {}
 											.getType());
 
-	if (fromJson.get(0).getChildren().size() > 0) {
+	if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size() > 0) {
 	   setDownType();//设置选择操作的权限
 	} else {
 	   mConsumeDown.setVisibility(View.GONE);

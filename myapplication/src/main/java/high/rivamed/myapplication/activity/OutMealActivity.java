@@ -121,7 +121,10 @@ public class OutMealActivity extends BaseSimpleActivity {
     public void getCstDate(Event.EventMealType event) {
         for (InventoryVo s:event.inventoryVos){
 	     String cstId = s.getCstId();
+	     LogUtils.i(TAG,"cstId   "+cstId);
 	     for(OrderCstResultBean.SuiteVosBean k:movies){
+               LogUtils.i(TAG,"k.getCstId()     "+k.getCstId());
+               LogUtils.i(TAG,"cstId   "+cstId);
 	        if (k.getCstId().equals(cstId)){
 		     k.setStatus("已领取");
 		  }
@@ -339,7 +342,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(this, mSuites);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该部门暂无套组");
+                        ToastUtils.showShort("该科室暂无套组");
                     }
                 } else {
                     findOrderCstPlanDate(false);
@@ -385,7 +388,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(OutMealActivity.this, mSuites);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该部门暂无套组");
+                        ToastUtils.showShort("该科室暂无套组");
                     }
                 } else {
                     if (mSuites.size() > 0) {
