@@ -47,6 +47,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
  * 项目名称:    Android_PV_2.6.3
@@ -391,7 +392,6 @@ public class FastOutFragment extends SimpleFragment {
    private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
 	mInOutDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-
 	mTCstInventoryDtoJson = setNewDate(mInOutDto);
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
@@ -454,7 +454,7 @@ public class FastOutFragment extends SimpleFragment {
     * @param inventoryDto
     */
    private String setNewDate(InventoryDto inventoryDto) {
-	mDtoLy.setThingId(inventoryDto.getThingId());
+	mDtoLy.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setOperation(3);
 	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));

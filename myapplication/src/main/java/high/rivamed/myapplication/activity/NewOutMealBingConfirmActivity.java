@@ -78,6 +78,7 @@ import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -527,7 +528,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 				public void run() {
 				   finish();
 				}
-			   }, 3000);
+			   }, FINISH_TIME);
 			} else {
 			   if (mBillOrderResultBean.getMsg() != null) {
 				ToastUtils.showLong(mBillOrderResultBean.getMsg());

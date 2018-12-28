@@ -69,6 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -862,7 +863,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
-		}, 3000);
+		}, FINISH_TIME);
 	   } else {
 		mTimelyOpenDoorRight.setEnabled(true);
 		mTimelyStartBtnRight.setEnabled(true);

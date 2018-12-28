@@ -62,6 +62,7 @@ import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -706,7 +707,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			finish();
 		   }
-		}, 3000);
+		}, FINISH_TIME);
 	   } else {
 		mTimelyOpenDoor.setEnabled(true);
 		mTimelyStartBtn.setEnabled(true);

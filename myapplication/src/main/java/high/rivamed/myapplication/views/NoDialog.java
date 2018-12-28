@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
 
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
+
 /**
  * 项目名称:    WE_TG
  * 创建者:      LiangDanMing
@@ -127,7 +129,7 @@ public class NoDialog extends Dialog {
 		   public void run() {
 			mDialog.dismiss();
 		   }
-		}, 3000);
+		}, FINISH_TIME);
 	   }
 
 	   mDialogMsg.setText(mMsgText);

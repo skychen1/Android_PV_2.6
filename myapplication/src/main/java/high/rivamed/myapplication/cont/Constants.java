@@ -16,6 +16,7 @@ public class Constants {
 
     public static final long COUNTDOWN_TIME = 40000;     //默认无操作自动退出
     public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
+    public static final long FINISH_TIME = 1500;      //退出操作页面的时间
     public static final String TYPE_TIMELY = "timely";
     public static final String STYPE_STOCK_LEFT = "stock_left";
     public static final String STYPE_STOCK_MIDDLE = "stock_middle";

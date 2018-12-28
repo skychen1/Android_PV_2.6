@@ -16,7 +16,7 @@ public interface NetApi {
 
     //版本检测和下载
     String URL_GET_VER = "/rmApi/userManage/systemVersion/getApkInfo";//获取版本信息    新
-    String URL_UPDATE = "/app/app/downLoadApk";//下载    新
+    String URL_UPDATE = "/rmApi/userManage/systemVersion/downloadApk";//下载    新
     //工程模式
     String URL_TEST_FINDDEVICE = "/dict/deviceDict/findDevice";//根据部件类型查名字   新
     String URL_TEST_SNQUERY = "/basic/thing/findEquipmentInfo";//SN码查询   新

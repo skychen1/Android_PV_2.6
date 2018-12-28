@@ -71,6 +71,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -473,7 +474,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 							  public void run() {
 							     finish();
 							  }
-						     }, 3000);
+						     }, FINISH_TIME);
 						  }
 
 						  //是否可以点击领用按钮

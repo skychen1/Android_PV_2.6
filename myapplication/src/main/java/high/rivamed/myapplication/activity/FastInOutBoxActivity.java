@@ -45,6 +45,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -321,7 +322,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 			   mEthDeviceIdBack.clear();
 			   finish();
 			}
-		   }, 3000);
+		   }, FINISH_TIME);
 		}
 	   }
 	});

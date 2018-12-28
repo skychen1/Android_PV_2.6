@@ -605,6 +605,7 @@ public class LoginActivity extends SimpleActivity {
 	   final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
 	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
+		.params("systemType",SYSTEMTYPE)
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
