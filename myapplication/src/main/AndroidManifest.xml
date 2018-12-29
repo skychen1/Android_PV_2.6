@@ -73,14 +73,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.OutBoxFoutActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape" />
-        <activity
-            android:name=".activity.InBoxAllTwoActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape" />
-        <activity
             android:name=".activity.OutBoxBingActivity"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
@@ -105,10 +97,7 @@
         <activity
             android:name=".activity.NewOutMealBingConfirmActivity"
             android:screenOrientation="sensorLandscape" />
-		<activity
-            android:name=".activity.OutBoxFoutActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape" />
+
         <activity
             android:name=".activity.TestLoginActivity"
             android:screenOrientation="sensorLandscape" />

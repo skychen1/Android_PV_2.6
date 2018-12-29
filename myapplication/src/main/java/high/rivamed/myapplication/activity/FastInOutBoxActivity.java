@@ -443,7 +443,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_UP:
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&& mFastViewpager.getCurrentItem()==1) {
 		   FastInFragment.mStarts.cancel();
 		   FastInFragment.mStarts.start();
 		}

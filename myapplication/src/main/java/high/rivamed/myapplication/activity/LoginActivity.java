@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.charts.BarChart;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
@@ -45,6 +46,7 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.bean.VersionBean;
@@ -67,6 +69,7 @@ import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mServiceManager;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -172,6 +175,8 @@ public class LoginActivity extends SimpleActivity {
 	super.onStart();
 
 	mPushFormOrders.clear();
+	getAllCstDate();
+
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
@@ -185,6 +190,19 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
+   }
+
+   /**
+    * 所有耗材数据的获取（用于本地）
+    */
+   private void getAllCstDate() {
+	NetRequest.getInstance().getUnEntCstDate(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnEntCstDate    " + result);
+
+	   }
+	});
    }
 
    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
@@ -410,12 +428,10 @@ public class LoginActivity extends SimpleActivity {
 		SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
 		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
 		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
-		MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 		mServiceManager = new ServiceManager(UIUtils.getContext(), SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), loginResultBean.getAppAccountInfoVo().getAccountId());
 		mServiceManager.startService();
-		Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
-		UIUtils.getContext().startActivity(intent);
-		activity.finish();
+		getAuthorityMenu(activity,mGson);
+
 	   } else {
 		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 	   }
@@ -700,7 +716,39 @@ public class LoginActivity extends SimpleActivity {
 	   return mFragments.size();
 	}
    }
-
+   /**
+    * 获取权限菜单
+    */
+   public static void getAuthorityMenu(Activity activity,Gson mGson) {
+	NetRequest.getInstance().getAuthorityMenu(getAppContext(), new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getAuthorityMenu  " + result);
+		SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, result);
+		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
+											new TypeToken<List<HomeAuthorityMenuBean>>() {}
+												.getType());
+		if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size()>0) {
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
+		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
+			   .getChildren()
+			   .get(0)
+			   .getChildren();
+		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
+		}else {
+		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
+		}
+		if (fromJson!=null){
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
+		   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
+		   UIUtils.getContext().startActivity(intent);
+		   activity.finish();
+		}else {
+		   Toast.makeText(UIUtils.getContext(), "请开启管理端权限设置", Toast.LENGTH_SHORT).show();
+		}
+	   }
+	});
+   }
    @Override
    public Object newP() {
 	return null;

@@ -888,6 +888,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	});
 	String string = SPUtils.getString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE);
+	LogUtils.i(TAG,"耗材操作   "+string);
 	List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(string,
 										new TypeToken<List<HomeAuthorityMenuBean>>() {}
 											.getType());

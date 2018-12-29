@@ -8,29 +8,21 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.google.gson.reflect.TypeToken;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.NotificationsUtils;
-import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -41,9 +33,6 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
-import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
-import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -129,8 +118,7 @@ public class HomeActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	getAuthorityMenu();
-//	setMenu();
+	setMenu();
 	initData();
 	initListener();
 	initPushService();
@@ -307,36 +295,6 @@ public class HomeActivity extends SimpleActivity {
 	return null;
    }
 
-   /**
-    * 获取权限菜单
-    */
-   public void getAuthorityMenu() {
-	NetRequest.getInstance().getAuthorityMenu(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "getAuthorityMenu  " + result);
-		SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, result);
-		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
-											new TypeToken<List<HomeAuthorityMenuBean>>() {}
-												.getType());
-		if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size()>0) {
-		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
-		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
-			   .getChildren()
-			   .get(0)
-			   .getChildren();
-		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
-		}else {
-		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
-		}
-		setMenu();
-	   }
 
-	   @Override
-	   public void onError(String result) {
-		LogUtils.i(TAG, "onError  " + result);
-	   }
-	});
-   }
 
 }

@@ -333,6 +333,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	mFragRegisteNameEdit.setText(mThing.getThingName());
 	mFragRegisteModelEdit.setText(mThing.getThingModel());
 	mFragRegisteNumberEdit.setText(mThing.getSn());
+
 	mFragRegisteSeveripEdit.setText(SPUtils.getString(mContext, SAVE_SEVER_IP_TEXT));
 	mFragRegistePortEdit.setText(SPUtils.getString(mContext, SAVE_SEVER_CODE));
 	List<TBaseDevices.tBaseDevices.partsmacBean> mSmallmac = new ArrayList<>();
@@ -518,6 +519,8 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mFragRegisteModelEdit.getText().toString().trim());
+	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
+	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.setThing(tBaseThing);

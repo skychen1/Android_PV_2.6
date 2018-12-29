@@ -550,17 +550,6 @@ public class NetRequest {
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
-   /**
-    * 医嘱单领用-根据医嘱单ID查询顶部医嘱单和单柜耗材的库存数据
-    */
-   public void findOrderDetailByOrderId(
-	   String Id, Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_RECEIVEORDER_FINDDETAILBYORDERID;
-	Map<String, String> map = new HashMap<>();
-	map.put("orderId", Id);
-	map.put("thingId", sThingCode);
-	GetTokenRequest(urls, map, tag, netResult);
-   }
 
    /**
     * 医嘱单领用-根据EPC获取耗材
@@ -669,6 +658,32 @@ public class NetRequest {
 	PostRequest(urls, json, tag, netResult);
    }
 
+   /**
+    * 获取设备中所有的耗材
+    */
+   public void getUnEntCstDate(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_UNENT_GET_ALLCST;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingId", sThingCode);
+	GetRequest(urls, map, tag, netResult);
+   }
+//   /**
+//    * 获取设备离线账户信息
+//    */
+//   public void getUnNetUseDate(Object tag,  NetResult netResult) {
+//	OkGo.<String>get(MAIN_URL + NetApi.URL_UNENT_GET_LIST_ACCOUNT).tag(tag)
+//		.params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
+//		.execute(new MyCallBack(tag,  netResult, false));
+//   }
+//   /**
+//    * 获取离线手术间信息
+//    */
+//   public void getUnEntFindOperation(Object tag,  NetResult netResult) {
+//	OkGo.<String>get(MAIN_URL + NetApi.URL_UNENT_GET_FIND_OPERATIONROOM).tag(tag)
+//		.params("accountId", SPUtils.getString(UIUtils.getContext(),KEY_ACCOUNT_ID))
+//		.execute(new MyCallBack(tag,  netResult, false));
+//   }
+
    private class MyCallBack extends StringCallback {
 
 	private String    url;
@@ -714,12 +729,10 @@ public class NetRequest {
 		if (null == jsonObject.getString("opFlg") ||
 		    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 		   if (netResult != null) {
-			Log.i("jsonObject", "xxxxxx");
 			netResult.onSucceed(response.body());
 		   }
 		} else {
-		   String opFlg = jsonObject.getString("opFlg");//
-		   Log.i("fff", "opFlg    " + opFlg);
+		   String opFlg = jsonObject.getString("opFlg");
 		   if (opFlg.equals(ERROR_1010)) {
 			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期

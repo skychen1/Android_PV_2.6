@@ -896,7 +896,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   case MotionEvent.ACTION_UP:
 		LogUtils.i(TAG, "   ACTION_UP  ");
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
+		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&&mTimelyRight.isEnabled()) {
+
 		   mStarts.cancel();
 		   mStarts.start();
 		}

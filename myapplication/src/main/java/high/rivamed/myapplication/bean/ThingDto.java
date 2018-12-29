@@ -98,6 +98,24 @@ public class ThingDto implements Serializable{
         private String deptName;
         private String createTime;
         private String sthName;
+        private String thingType;
+        private String localIp;
+
+        public String getLocalIp() {
+            return localIp;
+        }
+
+        public void setLocalIp(String localIp) {
+            this.localIp = localIp;
+        }
+
+        public String getThingType() {
+            return thingType;
+        }
+
+        public void setThingType(String thingType) {
+            this.thingType = thingType;
+        }
 
         public String getThingId() { return thingId;}
 

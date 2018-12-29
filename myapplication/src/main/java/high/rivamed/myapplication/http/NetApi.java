@@ -96,8 +96,11 @@ public interface NetApi {
 
 
     //消息
-//    String URL_FIND_MESSAGE_BY_ACCOUNTID = "/message/pushMessageByAccountId";//获取条数   新
     String URL_FIND_MESSAGE_BY_ACCOUNTID = "/hvcMessage/findMessageByAccountId";//查询待办任务列表    新
     String URL_DELETE_MESSAGE_BY_ID = "/hvcMessage/deleteMessageById";//删除待办任务
 
+    //本地存储
+    String URL_UNENT_GET_ALLCST = "/consumables/inventory/getAllCst";//获取设备中所有的耗材
+    String URL_UNENT_GET_LIST_ACCOUNT = "/rmApi/login/accountLogin/listAccount";//获取离线账户信息
+    String URL_UNENT_GET_FIND_OPERATIONROOM = "/rmApi/dept/tBaseOperationRoom/findByAccountId";//获取离线手术间
 }
