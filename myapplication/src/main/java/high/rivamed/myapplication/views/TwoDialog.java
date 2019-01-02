@@ -125,14 +125,14 @@ public class TwoDialog extends Dialog {
             if (mType == 1) {
                 mDialogRed.setText(mMsgTwo);
             } else if(mType ==2){
-                mDialogCloss.setVisibility(View.GONE);
+                mDialogCloss.setVisibility(View.INVISIBLE);
                 mDialogRed.setTextColor(mContext.getResources().getColor(R.color.color_line));
                 String str3 = "您还有耗材尚未领用，请前往<font color='#F94641'><big>" + mMsgTwo + "</big></font>领取耗材";
                 mDialogRed.setText(Html.fromHtml(str3));
                 mLeft.setBackgroundResource(R.drawable.bg_btn_line_pre);
                 mLeft.setTextColor(mContext.getResources().getColor(R.color.bg_f));
             }else if (mType ==3){
-                mDialogCloss.setVisibility(View.GONE);
+                mDialogCloss.setVisibility(View.INVISIBLE);
                 mDialogRed.setText(mMsgTwo);
             }
             if (mLeftTextColor != -1) {
