@@ -53,6 +53,8 @@ import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
@@ -157,6 +159,8 @@ public class LoginActivity extends SimpleActivity {
 
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
+	   LitePal.deleteAll(InventoryDto.class);
+	   LitePal.deleteAll(InventoryVo.class);
 	}
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
@@ -176,7 +180,7 @@ public class LoginActivity extends SimpleActivity {
 
 	mPushFormOrders.clear();
 	getAllCstDate();
-
+	getUnNetUseDate();
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
@@ -193,6 +197,18 @@ public class LoginActivity extends SimpleActivity {
    }
 
    /**
+    *
+    */
+   private void getUnNetUseDate() {
+      NetRequest.getInstance().getUnNetUseDate(this,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnNetUseDate    " + result);
+	   }
+	});
+   }
+
+   /**
     * 所有耗材数据的获取（用于本地）
     */
    private void getAllCstDate() {
@@ -200,6 +216,9 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "getUnEntCstDate    " + result);
+		InventoryDto dto = mGson.fromJson(result,InventoryDto.class);
+		InventoryDto localDto = new InventoryDto();
+		localDto = dto;
 
 	   }
 	});

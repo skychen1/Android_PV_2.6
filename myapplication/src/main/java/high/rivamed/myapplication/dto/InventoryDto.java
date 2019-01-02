@@ -1,5 +1,9 @@
 package high.rivamed.myapplication.dto;
 
+import org.litepal.crud.LitePalSupport;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -16,14 +20,13 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  * @version V1.0
  * @date 2018-07-12 12:14:19
  */
-public class InventoryDto {
+public class InventoryDto extends LitePalSupport implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     int id;
     private Inventory               inventory;
     private List<Inventory>         inventorys;
     private List<DeviceInventoryVo> deviceInventoryVos;
-    private List<InventoryVo>       inventoryVos;
+    private List<InventoryVo>       inventoryVos =new ArrayList<InventoryVo>();
     private List<InventoryVo>       inInventoryVos;
     private List<InventoryVo>       outInventoryVos;
 
@@ -328,9 +331,6 @@ public class InventoryDto {
         this.configPatientCollar = configPatientCollar;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public int getId() {
         return id;

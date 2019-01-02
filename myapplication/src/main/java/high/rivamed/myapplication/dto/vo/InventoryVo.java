@@ -1,18 +1,23 @@
 package high.rivamed.myapplication.dto.vo;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.io.Serializable;
 
-public class InventoryVo implements Serializable {
+import high.rivamed.myapplication.dto.InventoryDto;
 
-    private String  cstName;
-    private String  epc;
-    private String  cstSpec;
-    private String  expirationText;
-    private String  expiryDate;
-    private String  deviceName;
-    private String  status;
-    private String  tempPatientId;
-    private boolean isCreate;
+public class InventoryVo  extends LitePalSupport implements Serializable{
+
+    private InventoryDto innventoryDto;
+    private String       cstName;
+    private String       epc;
+    private String       cstSpec;
+    private String       expirationText;
+    private String       expiryDate;
+    private String       deviceName;
+    private String       status;
+    private String       tempPatientId;
+    private boolean      isCreate;
 
     // 0 已过期
     private Integer expireStatus = -1;
@@ -52,6 +57,14 @@ public class InventoryVo implements Serializable {
    private String   bindType;
    private String medicalId;
    private String surgeryId;
+
+   public InventoryDto getInnventoryDto() {
+      return innventoryDto;
+   }
+
+   public void setInnventoryDto(InventoryDto innventoryDto) {
+      this.innventoryDto = innventoryDto;
+   }
 
    public String getSurgeryId() {
       return surgeryId;

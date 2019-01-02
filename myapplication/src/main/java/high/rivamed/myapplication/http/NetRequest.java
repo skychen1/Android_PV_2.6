@@ -667,14 +667,16 @@ public class NetRequest {
 	map.put("thingId", sThingCode);
 	GetRequest(urls, map, tag, netResult);
    }
-//   /**
-//    * 获取设备离线账户信息
-//    */
-//   public void getUnNetUseDate(Object tag,  NetResult netResult) {
-//	OkGo.<String>get(MAIN_URL + NetApi.URL_UNENT_GET_LIST_ACCOUNT).tag(tag)
-//		.params("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE))
-//		.execute(new MyCallBack(tag,  netResult, false));
-//   }
+   /**
+    * 获取设备离线账户信息
+    */
+   public void getUnNetUseDate(Object tag,  NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_UNENT_GET_LIST_ACCOUNT;
+	Map<String, String> map = new HashMap<>();
+	map.put("systemType", SYSTEMTYPE);
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	GetRequest(urls, map, tag, netResult);
+   }
 //   /**
 //    * 获取离线手术间信息
 //    */
