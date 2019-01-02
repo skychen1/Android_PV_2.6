@@ -62,7 +62,7 @@ public class LookUpDetailedListDialogAdapter extends BaseQuickAdapter<BillStockR
         findId(helper);
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
-        mSeven_three.setText("" + item.getCounts());
+        mSeven_three.setText("" + item.getNeedNum());
         StringBuffer deviceNames=new StringBuffer();
         for (int i = 0; i < item.getDeviceNames().size(); i++) {
             deviceNames.append(item.getDeviceNames().get(i));

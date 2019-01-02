@@ -520,7 +520,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 						if (sureReciveOrder.isOperateSuccess()) {
 						   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 						   if (sureReciveOrder.getMsg().equals("")||sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
-							DialogUtils.showTwoDialog(mContext,mContext, 1, "耗材领用成功",
+							DialogUtils.showTwoDialog(mContext,mContext, 3, "耗材领用成功",
 											  sureReciveOrder.getMsg());
 						   } else{
 							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",

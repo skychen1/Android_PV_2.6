@@ -298,7 +298,7 @@ public class DialogUtils {
 
     public static void showTwoDialog(Activity activity,Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
-        if (mType == 1) {
+        if (mType == 1||mType == 3) {
             builder.setTwoMsg(msg);
             builder.setMsg(title);
             builder.setLeft("取消", new DialogInterface.OnClickListener() {
