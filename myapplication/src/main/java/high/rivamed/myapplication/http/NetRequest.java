@@ -718,7 +718,7 @@ public class NetRequest {
 	   }
 	   LogUtils.w(TAG,"onError 请求URL： "+url);
 	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
-	   LogUtils.w(TAG,"onError 返回Body： "+response.body().toString());
+	   LogUtils.w(TAG,"onError 返回Body： "+response.body());
 	}
 
 	@Override
@@ -735,7 +735,7 @@ public class NetRequest {
 		   if (opFlg.equals(ERROR_1010)) {
 		      LogUtils.w(TAG,"请求URL： "+url);
 		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
-		      LogUtils.w(TAG,"返回Body： "+response.body().toString());
+		      LogUtils.w(TAG,"返回Body： "+response.body());
 			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
@@ -777,13 +777,22 @@ public class NetRequest {
 			   });
 			}
 		   } else if (opFlg.equals(ERROR_1001)) {//刷新TOKEN过期   需要重新登录
-
+			ToastUtils.showShortToast("登录状态已经过期，请重新登录");
+			if (tag instanceof Activity) {
+			   UIUtils.putOrderId(tag);
+			   ((Activity) tag).getApplicationContext()
+				   .startActivity(
+					   new Intent(((Activity) tag).getApplicationContext(),
+							  LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			   ((Activity) tag).finish();
+			}
 		   }
 		}
 	   } catch (Exception e) {
 		LogUtils.w(TAG,"Exception 请求URL： "+url);
 		LogUtils.w(TAG,"Exception 请求Body： "+mGson.toJson(date));
-		LogUtils.w(TAG,"Exception 返回Body： "+response.body().toString());
+		LogUtils.w(TAG,"Exception 返回Body： "+response.body());
 //		LogUtils.i(TAG, "Exception 网络接口返回数据JSON解析失败");
 		e.printStackTrace();
 	   }
@@ -819,7 +828,7 @@ public class NetRequest {
 	   }
 	   LogUtils.w(TAG,"onError 请求URL： "+url);
 	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
-	   LogUtils.w(TAG,"onError 返回Body： "+response.body().toString());
+	   LogUtils.w(TAG,"onError 返回Body： "+response.body());
 	}
 
 	@Override
@@ -828,7 +837,7 @@ public class NetRequest {
 		netResult.onSucceed(response.body());
 		LogUtils.w(TAG,"MyCallBack2 请求URL： "+url);
 		LogUtils.w(TAG,"MyCallBack2 请求Body： "+mGson.toJson(date));
-		LogUtils.w(TAG,"MyCallBack2 返回Body： "+response.body().toString());
+		LogUtils.w(TAG,"MyCallBack2 返回Body： "+response.body());
 	   }
 	}
    }
