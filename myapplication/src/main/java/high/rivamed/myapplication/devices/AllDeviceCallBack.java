@@ -112,15 +112,15 @@ public class AllDeviceCallBack {
 		} else {
 
 		}
-		LogUtils.i(TAG, "开门结果  开门stringsdeviceIndentify     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
+//		LogUtils.i(TAG, "开门结果  开门stringsdeviceIndentify     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		mEthDeviceIdBack.add(deviceIndentify);
-		LogUtils.i(TAG, "开门结果  开门yss     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
+//		LogUtils.i(TAG, "开门结果  开门yss     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		//筛选相同的锁
 		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
-		for (String s:strings){
-		   LogUtils.i(TAG, "  开门strings     " + s);
-		}
-		LogUtils.i(TAG, "开门结果  开门strings     " + strings.size());
+//		for (String s:strings){
+//		   LogUtils.i(TAG, "  开门strings     " + s);
+//		}
+//		LogUtils.i(TAG, "开门结果  开门strings     " + strings.size());
 		mEthDeviceIdBack.clear();
 		mEthDeviceIdBack.addAll(strings);
 		mEthDeviceIdBack2.clear();
@@ -132,10 +132,10 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
 //		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
-		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
+//		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
 
 		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
-		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
+//		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
 		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			mEthDeviceIdBack2.remove(i);
 		   }

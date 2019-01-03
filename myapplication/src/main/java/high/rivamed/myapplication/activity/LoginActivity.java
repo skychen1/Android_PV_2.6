@@ -152,7 +152,8 @@ public class LoginActivity extends SimpleActivity {
 	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(mContext));
+
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
 
 	//创建数据库表
 	LitePal.getDatabase();
@@ -164,7 +165,6 @@ public class LoginActivity extends SimpleActivity {
 	}
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
-
 	initData();
 	initlistener();
 	initCall();
@@ -177,7 +177,6 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-
 	mPushFormOrders.clear();
 	getAllCstDate();
 	getUnNetUseDate();
@@ -194,6 +193,7 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
+
    }
 
    /**

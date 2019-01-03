@@ -144,6 +144,9 @@ public class OutFormActivity extends BaseSimpleActivity {
         super.onStart();
         if (TextUtils.isEmpty(mReceiveOrderId)) {
             //不是从消息页面跳转过来
+            if (mAllOrderSheetList!=null){
+                mAllOrderSheetList.clear();
+            }
             getTopOrderSheetDate(mPageNo, PAGE_SIZE);
         } else {
             //从消息页面跳转过来

@@ -20,7 +20,7 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.view.View.GONE;
-import static high.rivamed.myapplication.base.BaseTimelyActivity.mOnBtnGone;
+import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
 
 /**
  * 识别耗材页面adapter

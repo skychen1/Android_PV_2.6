@@ -900,6 +900,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mConsumeDownRv.setVisibility(View.GONE);
 
 	}
+
    }
 
    /*

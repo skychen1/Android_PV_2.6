@@ -37,7 +37,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
-import high.rivamed.myapplication.utils.CrashHandler;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -91,14 +90,12 @@ public class App extends Application {
         super.onCreate();
         oList = new ArrayList<Activity>();
         mAppContext = getApplicationContext();
-        CrashHandler.getInstance().init(this);
         SPUtils.putString(this, "TestLoginName", "1");
         SPUtils.putString(this, "TestLoginPass", "1");
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();
         mPushFormDateBean.setOrders(mPushFormOrders);
-        mAppCache = ACache.get(UIUtils.getContext());
         Logger.addLogAdapter(new AndroidLogAdapter());
 
         initBugly();
@@ -157,10 +154,6 @@ public class App extends Application {
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
         // 初始化Bugly
         CrashReport.initCrashReport(context, UIUtils.getString(R.string.bugly_val), true, strategy);
-    }
-
-    public ACache getAppCache() {
-        return mAppCache;
     }
 
     /**

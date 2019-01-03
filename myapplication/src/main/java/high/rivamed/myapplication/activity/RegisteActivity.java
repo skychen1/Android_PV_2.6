@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,7 +67,7 @@ public class RegisteActivity extends SimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-	Log.e("xxb", "RegisteActivity     " + event.connect);
+//	Log.e("xxb", "RegisteActivity     " + event.connect);
 	mTitleConn = event.connect;
 	selTitleIcon();
    }
