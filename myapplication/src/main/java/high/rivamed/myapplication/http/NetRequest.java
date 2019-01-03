@@ -711,21 +711,20 @@ public class NetRequest {
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
-	   Log.i("fff", "response.body()    " + response.body());
-	   Log.i("fff", "response.code()    " + response.code());
-	   Log.i("fff", "response.message()    " + response.message());
 	   if (response.code() == -1) {
 		ToastUtils.showShortToast("网络连接超时，请扫后重试！");
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
+	   LogUtils.w(TAG,"onError 请求URL： "+url);
+	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
+	   LogUtils.w(TAG,"onError 返回Body： "+response.body().toString());
 	}
 
 	@Override
 	public void onSuccess(Response<String> response) {
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
-
 		if (null == jsonObject.getString("opFlg") ||
 		    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 		   if (netResult != null) {
@@ -734,6 +733,9 @@ public class NetRequest {
 		} else {
 		   String opFlg = jsonObject.getString("opFlg");
 		   if (opFlg.equals(ERROR_1010)) {
+		      LogUtils.w(TAG,"请求URL： "+url);
+		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
+		      LogUtils.w(TAG,"返回Body： "+response.body().toString());
 			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
@@ -779,12 +781,12 @@ public class NetRequest {
 		   }
 		}
 	   } catch (Exception e) {
-		LogUtils.i(TAG, "网络接口返回数据JSON解析失败");
+		LogUtils.w(TAG,"Exception 请求URL： "+url);
+		LogUtils.w(TAG,"Exception 请求Body： "+mGson.toJson(date));
+		LogUtils.w(TAG,"Exception 返回Body： "+response.body().toString());
+//		LogUtils.i(TAG, "Exception 网络接口返回数据JSON解析失败");
 		e.printStackTrace();
 	   }
-	   Log.i("fff", "response.body()    " + response.body());
-	   Log.i("fff", "response.code()    " + response.code());
-	   Log.i("fff", "response.message()    " + response.message());
 	}
    }
 
@@ -815,14 +817,18 @@ public class NetRequest {
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
-
+	   LogUtils.w(TAG,"onError 请求URL： "+url);
+	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
+	   LogUtils.w(TAG,"onError 返回Body： "+response.body().toString());
 	}
 
 	@Override
 	public void onSuccess(Response<String> response) {
 	   if (netResult != null) {
-		Log.i("jsonObject", "xxxxxx");
 		netResult.onSucceed(response.body());
+		LogUtils.w(TAG,"MyCallBack2 请求URL： "+url);
+		LogUtils.w(TAG,"MyCallBack2 请求Body： "+mGson.toJson(date));
+		LogUtils.w(TAG,"MyCallBack2 返回Body： "+response.body().toString());
 	   }
 	}
    }

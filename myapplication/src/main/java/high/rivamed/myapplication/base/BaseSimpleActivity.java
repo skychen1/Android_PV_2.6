@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -103,9 +102,9 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-        Log.e("xxb", "BaseSimpleActivity     " + event.connect);
+//        Log.e("xxb", "BaseSimpleActivity     " + event.connect);
         mTitleConn = event.connect;
-        LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
+//        LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
         selTitleIcon();
         hasNetWork(event.connect);
     }
@@ -173,12 +172,12 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
         if (mTitleConn) {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(true);
-                LogUtils.i(TAG, "XmmppConnect(true)3  ");
+//                LogUtils.i(TAG, "XmmppConnect(true)3  ");
             }
         } else {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(false);
-                LogUtils.i(TAG, "XmmppConnect(false)3  ");
+//                LogUtils.i(TAG, "XmmppConnect(false)3  ");
             }
         }
 

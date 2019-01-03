@@ -642,7 +642,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	deviceInventoryVo.setInventories(epcList);
 	deviceList.add(deviceInventoryVo);
 	inventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
-	inventoryDto.setOperation(mInventoryDto.getOperation());
+	inventoryDto.setOperation(mDtoOperation);
 	inventoryDto.setDeviceInventoryVos(deviceList);
 	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 	String toJson = mGson.toJson(inventoryDto);

@@ -35,7 +35,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
-import static high.rivamed.myapplication.base.BaseTimelyActivity.mOnBtnGone;
+import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;

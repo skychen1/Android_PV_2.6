@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.util.IOUtils;
 import com.lzy.okgo.OkGo;
@@ -15,12 +16,15 @@ import com.lzy.okgo.model.Response;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import static high.rivamed.myapplication.base.mvp.Kits.File.FILE_EXTENSION_SEPARATOR;
 
 /**
  * 项目名称:    Process_platform
@@ -424,4 +428,58 @@ public class FileUtils {
 
 	return true;
    }
+   /**
+    * 删除指定目录中特定的文件
+    *
+    * @param dir
+    * @param filter
+    */
+   public static void delete(String dir, FilenameFilter filter) {
+	if (TextUtils.isEmpty(dir))
+	   return;
+	File file = new File(dir);
+	if (!file.exists())
+	   return;
+	if (file.isFile())
+	   file.delete();
+	if (!file.isDirectory())
+	   return;
+
+	File[] lists = null;
+	if (filter != null)
+	   lists = file.listFiles(filter);
+	else
+	   lists = file.listFiles();
+
+	if (lists == null)
+	   return;
+	for (File f : lists) {
+	   if (f.isFile()) {
+		f.delete();
+	   }
+	}
+   }
+   /**
+    * 获得不带扩展名的文件名称
+    *
+    * @param filePath 文件路径
+    * @return
+    */
+   public static String getFileNameWithoutExtension(String filePath) {
+	if (TextUtils.isEmpty(filePath)) {
+	   return filePath;
+	}
+	int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+	int filePosi = filePath.lastIndexOf(File.separator);
+	if (filePosi == -1) {
+	   return (extenPosi == -1 ? filePath : filePath.substring(0,
+										     extenPosi));
+	}
+	if (extenPosi == -1) {
+	   return filePath.substring(filePosi + 1);
+	}
+	return (filePosi < extenPosi ? filePath.substring(filePosi + 1,
+									  extenPosi) : filePath.substring(filePosi + 1));
+   }
+
 }
