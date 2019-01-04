@@ -29,6 +29,8 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.FrgNetWorkReceiver;
@@ -208,6 +210,9 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 	}
 	LitePal.deleteAll(BoxIdBean.class);
+	LitePal.deleteAll(InventoryDto.class);
+	LitePal.deleteAll(InventoryVo.class);
+	LitePal.deleteDatabase("rivamedhigh");
 	setRegiestDate(s);
 
 	putDbDate(mSnRecoverBean);
