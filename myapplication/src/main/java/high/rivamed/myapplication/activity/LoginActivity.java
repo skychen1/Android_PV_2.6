@@ -174,7 +174,6 @@ public class LoginActivity extends SimpleActivity {
    public void onStart() {
 	super.onStart();
 	mPushFormOrders.clear();
-	getAllCstDate();
 
 	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
@@ -190,19 +189,6 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
 
-   }
-
-   /**
-    * 所有耗材数据的获取（用于本地）
-    */
-   private void getAllCstDate() {
-	NetRequest.getInstance().getUnEntCstDate(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "getUnEntCstDate    " + result);
-
-	   }
-	});
    }
 
    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {

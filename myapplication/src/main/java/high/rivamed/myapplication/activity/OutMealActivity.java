@@ -14,11 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +36,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealBean;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -55,6 +56,9 @@ import static android.widget.LinearLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -91,7 +95,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     private View mHeadView;
     private int mLayout;
     private int mSize;
-    private String mMealbing;
+    public static String mMealbing;
     private List<String> titeleList = null;
 
     /**
@@ -105,7 +109,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     /**
      * 开门柜子列表
      */
-    private List<BoxSizeBean.DevicesBean> mTbaseDevicesFromEvent = new ArrayList<>();
+    public static List<BoxSizeBean.DevicesBean> mTbaseDevicesFromEvent = new ArrayList<>();
 
     /**
      * 关柜子是否跳转界面，防止界面stop时重发跳转新界面；
@@ -241,44 +245,14 @@ public class OutMealActivity extends BaseSimpleActivity {
         mLinearLayout.addView(mHeadView);
         mRecyclerview.setAdapter(mPublicAdapter);
         mPublicAdapter.notifyDataSetChanged();
-        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (mPublicAdapter.getItem(position).getStatus() != null) {
-                    if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
-                        String six = mPublicAdapter.getItem(position).getStatus();
-                        ToastUtils.showShort("six！" + six);
-                        if (!six.equals("已领取")) {
-                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
-                        } else {
-                            ToastUtils.showShort("此项已领取！");
-                        }
-                    } else {
-                        String six = mPublicAdapter.getItem(position).getStatus();
-                        if (!six.equals("已领取")) {
-                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
-                        } else {
-                            ToastUtils.showShort("此项已领取！");
-                        }
-                    }
-                }
-                if (mPublicAdapter.getItem(position).getDeviceIds() != null && mPublicAdapter.getItem(position).getDeviceIds().size() > 0) {
-                    mTbaseDevicesFromEvent.clear();
-                    for (String deviceCode : mPublicAdapter.getItem(position).getDeviceIds()) {
-                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
-                        oneDoor.setDeviceId(deviceCode);
-                        if (oneDoor != null && oneDoor.getDeviceId() != null) {
-                            mTbaseDevicesFromEvent.add(oneDoor);
-                        }
-                    }
-                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
 
-                } else {
-                    ToastUtils.showShort("该耗材无耗材柜信息!");
-                }
-            }
-        });
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mEthDeviceIdBack3.clear();
+        mEthDeviceIdBack.clear();
     }
 
     private void initlistener() {
@@ -334,7 +308,10 @@ public class OutMealActivity extends BaseSimpleActivity {
             case R.id.base_tab_btn_msg:
                 break;
             case R.id.base_tab_back:
+                mEthDeviceIdBack3.clear();
+                mEthDeviceIdBack.clear();
                 finish();
+
                 break;
             case R.id.meal_tv_search:
                 if (mSuites != null) {
@@ -449,6 +426,20 @@ public class OutMealActivity extends BaseSimpleActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void isDoorClosed(Event.HomeNoClickEvent event) {
+        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.door)
+              .find(BoxIdBean.class);
+        for (BoxIdBean boxIdBean : boxIdBeanss) {
+            String box_id = boxIdBean.getBox_id();
+            List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE).find(BoxIdBean.class);
+            for (BoxIdBean BoxIdBean : boxIdDoor) {
+                String device_id = BoxIdBean.getDevice_id();
+                for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+                    if (device_id.equals(mEthDeviceIdBack3.get(x))) {
+                        mEthDeviceIdBack3.remove(x);
+                    }
+                }
+            }
+        }
         if (mIsCanSkipToSurePage) {
             if (!event.isClick) {
                 // 统一数据格式

@@ -1,7 +1,9 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +17,12 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BillStockResultBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
+
+import static high.rivamed.myapplication.fragment.ReciveBillFrag.mTbaseDevices;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -117,6 +125,61 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
 
             mSeven_eight.setText("打开柜门");
         }
+        mSeven_eight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String six = item.getReceivedStatus();
+                if (!six.equals("已领取")) {
+                    mTbaseDevices.clear();
+                    List<String> deviceCodes = item.getDeviceIds();
+                    for (String deviceCode : deviceCodes) {
+                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                        oneDoor.setDeviceId(deviceCode);
+                        if (!TextUtils.isEmpty(deviceCode)) {
+                            mTbaseDevices.add(oneDoor);
+                        }
+                    }
+                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
+                    if (mTbaseDevices.size() > 0) {
+                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                    } else {
+                        ToastUtils.showShort("无柜子信息！");
+                    }
+                } else if (six.equals("已领取")){
+                    ToastUtils.showShort("此项已领取！");
+                }else if (item.getCounts()==0){
+                    ToastUtils.showShort("库存不足，请补充库存");
+                }
+            }
+        });
+//        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                String six = mPublicAdapter.getItem(position).getReceivedStatus();
+//
+//                if (!six.equals("已领取")) {
+//                    mTbaseDevices.clear();
+//                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceIds();
+//                    for (String deviceCode : deviceCodes) {
+//                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+//                        oneDoor.setDeviceId(deviceCode);
+//                        if (!TextUtils.isEmpty(deviceCode)) {
+//                            mTbaseDevices.add(oneDoor);
+//                        }
+//                    }
+//                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
+//                    if (mTbaseDevices.size() > 0) {
+//                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+//                    } else {
+//                        ToastUtils.showShort("无柜子信息！");
+//                    }
+//                } else if (six.equals("已领取")){
+//                    ToastUtils.showShort("此项已领取！");
+//                }else if (mPublicAdapter.getItem(position).getCounts()==0){
+//                    ToastUtils.showShort("库存不足，请补充库存");
+//                }
+//            }
+//        });
     }
 
 

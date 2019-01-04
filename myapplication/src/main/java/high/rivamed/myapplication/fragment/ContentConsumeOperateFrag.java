@@ -98,6 +98,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
@@ -270,9 +271,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			.find(BoxIdBean.class);
 		for (BoxIdBean BoxIdBean : boxIdDoor) {
 		   String device_id = BoxIdBean.getDevice_id();
-		   for (int x = 0; x < mEthDeviceIdBack2.size(); x++) {
-			if (device_id.equals(mEthDeviceIdBack2.get(x))) {
-			   mEthDeviceIdBack2.remove(x);
+		   for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+			if (device_id.equals(mEthDeviceIdBack3.get(x))) {
+			   mEthDeviceIdBack3.remove(x);
 			}
 		   }
 		}
@@ -319,9 +320,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   }
 		}
 	   }
-	   LogUtils.i(TAG, "mEthDeviceIdBack2.size()   " + mEthDeviceIdBack2.size());
+	   LogUtils.i(TAG, "mEthDeviceIdBack2.size()   " + mEthDeviceIdBack.size());
 	   LogUtils.i(TAG, "mIsClick   " + mIsClick);
-	   if (mIsClick || mEthDeviceIdBack2.size() != 0) {
+	   if (mIsClick || mEthDeviceIdBack3.size() != 0) {
 		return;
 	   }
 	   LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
@@ -401,6 +402,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
+	   mEthDeviceIdBack.clear();
+	   mEthDeviceIdBack3.clear();
 	   mEPCDatess.clear();
 	   mEPCDate.clear();
 	   //	   initData();
@@ -421,7 +424,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
-	mEthDeviceIdBack2.clear();
+	mEthDeviceIdBack.clear();
 	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
 
@@ -655,7 +658,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
 		} else {
 		   mEthDeviceIdBack2.clear();
-		   mEthDeviceIdBack.clear();
+//		   mEthDeviceIdBack.clear();
 		  ToastUtils.showShortToast( "未扫描到操作耗材,请重新操作");
 		}
 	   }
@@ -728,7 +731,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
 		   } else {
 			mEthDeviceIdBack2.clear();
-			mEthDeviceIdBack.clear();
+//			mEthDeviceIdBack.clear();
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
@@ -742,7 +745,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			if (mBuilder != null) {
 			   mBuilder.mDialog.dismiss();
 			}
-			mEthDeviceIdBack.clear();
+//			mEthDeviceIdBack.clear();
 			mEthDeviceIdBack2.clear();
 			Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
 		   } else {
@@ -1076,6 +1079,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
+//	mEthDeviceIdBack.clear();
 	mEthDeviceIdBack2.clear();
 	mEPCDate.clear();
 	mEPCDatess.clear();
@@ -1274,5 +1278,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	mOnStart = false;
 	mEthDeviceIdBack2.clear();
+//	mEthDeviceIdBack.clear();
    }
 }

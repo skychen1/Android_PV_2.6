@@ -274,11 +274,13 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     protected class TimeCount extends CountDownTimer {
 
         TextView textView;
+        TextView leftText;
 
-        public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
+        public TimeCount(long millisInFuture, long countDownInterval,TextView leftText, TextView textView) {
 
             super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
             this.textView = textView;
+            this.leftText = leftText;
         }
 
         @Override
@@ -295,6 +297,10 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                 textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
             } else {
                 textView.setText("确认并退出登录");
+            }
+            if (millisUntilFinished / 1000 <= 2){
+                leftText.setEnabled(false);
+                textView.setEnabled(false);
             }
         }
     }

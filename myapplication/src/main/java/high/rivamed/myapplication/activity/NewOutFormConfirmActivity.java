@@ -80,6 +80,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -183,23 +184,23 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    /**
     * 根据EPC请求网络参数
     */
-   public  FindBillOrderBean                                        mFindBillOrderBean;
+   public  FindBillOrderBean       mFindBillOrderBean;
    /**
     * 确认领用使用参数
     */
-   private OrderSheetBean.RowsBean                                  mPrePageDate;
+   private OrderSheetBean.RowsBean mPrePageDate;
    /**
     * 所有耗材列表
     */
-   private List<InventoryVo> mInventoryVoList;
+   private List<InventoryVo>       mInventoryVoList;
    /**
     * 柜子信息
     */
    List<BillStockResultBean.OrderDetailVo> mTransReceiveOrderDetailVosBean;
-   private BillOrderResultBean mBillOrderResultBean;
-   private int                      mLayout;
-   private View                     mHeadView;
-   private OutFormConfirmAdapter    mPublicAdapter;
+   private BillOrderResultBean   mBillOrderResultBean;
+   private int                   mLayout;
+   private View                  mHeadView;
+   private OutFormConfirmAdapter mPublicAdapter;
    public SparseBooleanArray mCheckStates = new SparseBooleanArray();
    private LoadingDialog.Builder mLoading;
    /**
@@ -215,7 +216,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
    }
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
 	LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
 	if (event.type) {
@@ -223,7 +225,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		for (InventoryVo b : mBillOrderResultBean.getInventoryVos()) {
 
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0)||(!b.getRemark().equals("1")&&b.getDeleteCount()==0)) {
+			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+			  b.getExpireStatus() == 0) ||
+			 (!b.getRemark().equals("1") && b.getDeleteCount() == 0)) {
 			mDownBtnOne.setEnabled(false);
 			return;
 		   } else {
@@ -233,6 +237,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -369,9 +374,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		finish();
 		break;
 	   case R.id.timely_start_btn:
+		mEthDeviceIdBack3.clear();
+		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 		mEPCMapDate.clear();
 		if (mFindBillOrderBean != null) {
 		   mFindBillOrderBean.getEpcs().clear();
+		   mFindBillOrderBean.getDeviceIds().clear();
 		   mFindBillOrderBean = null;
 		}
 		mInventoryVoList.clear();
@@ -445,59 +453,54 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	findBillOrderBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	LogUtils.i(TAG, "json   " + mGson.toJson(findBillOrderBean));
 	NetRequest.getInstance()
-		.findBillStockByEpc(mGson.toJson(findBillOrderBean), this,
-					  new BaseResult() {
-					     @Override
-					     public void onSucceed(String result) {
-						  LogUtils.i(TAG, "getBillStockByEpc   " + result);
-						   mBillOrderResultBean = mGson.fromJson(
-							  result, BillOrderResultBean.class);
-						  if (mBillOrderResultBean.getErrorEpcs() != null &&
-							mBillOrderResultBean.getErrorEpcs().size() > 0) {
-						     String string = StringUtils.listToString(
-							     mBillOrderResultBean.getErrorEpcs());
-						     ToastUtils.showLong(string);
-						     MusicPlayer.getInstance()
-							     .play(MusicPlayer.Type.NOT_NORMAL);
-						  }
-						  boolean isCanUse;
-						  if (mBillOrderResultBean.getInventoryVos() !=
-							null && mBillOrderResultBean.getInventoryVos().size() > 0) {
-						     isCanUse = true;
-						     mInventoryVoList.addAll(mBillOrderResultBean.getInventoryVos());
-						  } else {
-						     isCanUse = false;
-						     mDownBtnOne.setEnabled(false);
-						     Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作",
-									  Toast.LENGTH_SHORT).show();
-						     new Handler().postDelayed(new Runnable() {
-							  public void run() {
-							     finish();
-							  }
-						     }, FINISH_TIME);
-						  }
+		.findBillStockByEpc(mGson.toJson(findBillOrderBean), this, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "getBillStockByEpc   " + result);
+			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
+			if (mBillOrderResultBean.getErrorEpcs() != null &&
+			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
+			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
+			   ToastUtils.showLong(string);
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+			}
+			boolean isCanUse;
+			if (mBillOrderResultBean.getInventoryVos() != null &&
+			    mBillOrderResultBean.getInventoryVos().size() > 0) {
+			   isCanUse = true;
+			   mInventoryVoList.addAll(mBillOrderResultBean.getInventoryVos());
+			} else {
+			   isCanUse = false;
+			   mDownBtnOne.setEnabled(false);
+			   Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
+			   new Handler().postDelayed(new Runnable() {
+				public void run() {
+				   finish();
+				}
+			   }, FINISH_TIME);
+			}
 
-						  //是否可以点击领用按钮
-						  for (InventoryVo item : mInventoryVoList) {
-						     if (!item.getRemark().equals("1")) {
-							  isCanUse = false;
-							  break;
-						     }
-						  }
-						  if (isCanUse) {
-						     mDownBtnOne.setEnabled(true);
-						  } else {
-						     mDownBtnOne.setEnabled(false);
-						  }
+			//是否可以点击领用按钮
+			for (InventoryVo item : mInventoryVoList) {
+			   if (!item.getRemark().equals("1")) {
+				isCanUse = false;
+				break;
+			   }
+			}
+			if (isCanUse) {
+			   mDownBtnOne.setEnabled(true);
+			} else {
+			   mDownBtnOne.setEnabled(false);
+			}
 
-						  if (mPublicAdapter == null) {
-						     initData();
-						  } else {
-						     mPublicAdapter.notifyDataSetChanged();
-						  }
-						  EventBusUtils.post(new Event.EventButton(true, true));
-					     }
-					  });
+			if (mPublicAdapter == null) {
+			   initData();
+			} else {
+			   mPublicAdapter.notifyDataSetChanged();
+			}
+			EventBusUtils.post(new Event.EventButton(true, true));
+		   }
+		});
    }
 
    private void sureTransReceiveOrder() {
@@ -508,49 +511,48 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mBillOrderResultBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	LogUtils.i(TAG, "mBillOrderResultBean   " + mGson.toJson(mBillOrderResultBean));
 	NetRequest.getInstance()
-		.sureReceiveOrder(mGson.toJson(mBillOrderResultBean), this,
-					new BaseResult() {
-					   @Override
-					   public void onSucceed(String result) {
-						LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
-						SureReciveOrder sureReciveOrder = mGson.fromJson(result,
-														 SureReciveOrder.class);
-						SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
-						setPushFormOrderDate();
-						if (sureReciveOrder.isOperateSuccess()) {
-						   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-						   if (sureReciveOrder.getMsg().equals("")||sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
-							DialogUtils.showTwoDialog(mContext,mContext, 3, "耗材领用成功",
-											  sureReciveOrder.getMsg());
-						   } else{
-							DialogUtils.showTwoDialog(mContext,mContext, 2, "耗材领用成功",
-											  sureReciveOrder.getMsg());
-						   }
-						} else {
-						   ToastUtils.showShort(sureReciveOrder.getMsg());
-						}
-					   }
+		.sureReceiveOrder(mGson.toJson(mBillOrderResultBean), this, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
+			SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
+			SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
+			setPushFormOrderDate();
+			if (sureReciveOrder.isOperateSuccess()) {
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+			   if (sureReciveOrder.getMsg().equals("") ||
+				 sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
+				DialogUtils.showTwoDialog(mContext, mContext, 3, "耗材领用成功",
+								  sureReciveOrder.getMsg());
+			   } else {
+				DialogUtils.showTwoDialog(mContext, mContext, 2, "耗材领用成功",
+								  sureReciveOrder.getMsg());
+			   }
+			} else {
+			   ToastUtils.showShort(sureReciveOrder.getMsg());
+			}
+		   }
 
-					   @Override
-					   public void onError(String result) {
-						Log.e(TAG, "Erorr：" + result);
-					   }
-					});
+		   @Override
+		   public void onError(String result) {
+			Log.e(TAG, "Erorr：" + result);
+		   }
+		});
    }
 
    /**
     * 需要上传的orders
     */
    private void setPushFormOrderDate() {
-	if (mPushFormOrders!=null&&mPushFormOrders.size()!=0){
-	   for (PushFormDateBean.OrdersBean s:mPushFormOrders){
-		if (!s.getOrderId().equals(mPrePageDate.getOrderId())){
+	if (mPushFormOrders != null && mPushFormOrders.size() != 0) {
+	   for (PushFormDateBean.OrdersBean s : mPushFormOrders) {
+		if (!s.getOrderId().equals(mPrePageDate.getOrderId())) {
 		   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
 		   ordersBean.setOrderId(mPrePageDate.getOrderId());
 		   mPushFormOrders.add(ordersBean);
 		}
 	   }
-	}else if (mPushFormOrders!=null&&mPushFormOrders.size()==0){
+	} else if (mPushFormOrders != null && mPushFormOrders.size() == 0) {
 	   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
 	   ordersBean.setOrderId(mPrePageDate.getOrderId());
 	   mPushFormOrders.add(ordersBean);
@@ -576,6 +578,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
+	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
+		   .find(BoxIdBean.class);
+	   for (BoxIdBean BoxIdBean : boxIdDoor) {
+		String device_id = BoxIdBean.getDevice_id();
+		for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+		   if (device_id.equals(mEthDeviceIdBack3.get(x))) {
+			mEthDeviceIdBack3.remove(x);
+		   }
+		}
+	   }
 	   if (box_id != null) {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
@@ -597,7 +609,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			   }
 			}
 			mFindBillOrderBean.getDeviceIds().add(box_id);
-			getBillStockByEpc(mFindBillOrderBean);
+//			getBillStockByEpc(mFindBillOrderBean);
 
 		   }
 		} else {
@@ -608,10 +620,14 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			}
 		   }
 		   mFindBillOrderBean.getDeviceIds().add(box_id);
-		   getBillStockByEpc(mFindBillOrderBean);
+//		   getBillStockByEpc(mFindBillOrderBean);
 		}
 
 	   }
+	   if (mIsClick || mEthDeviceIdBack3.size() != 0) {
+		return;
+	   }
+	   getBillStockByEpc(mFindBillOrderBean);
 	}
    }
 
@@ -619,6 +635,10 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     * 重新打开柜门
     */
    private void reOpenDoor() {
+      if (mFindBillOrderBean!=null){
+	   mFindBillOrderBean.getEpcs().clear();
+	   mFindBillOrderBean.getDeviceIds().clear();
+	}
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
 	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -654,5 +674,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   }
 	}
    }
-
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	mEthDeviceIdBack3.clear();
+   }
 }

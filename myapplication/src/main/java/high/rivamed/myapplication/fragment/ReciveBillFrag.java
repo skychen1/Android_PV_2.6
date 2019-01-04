@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -127,7 +125,7 @@ public class ReciveBillFrag extends SimpleFragment {
     /**
      * 柜子信息
      */
-    private List<BoxSizeBean.DevicesBean> mTbaseDevices = new ArrayList<>();
+    public static List<BoxSizeBean.DevicesBean> mTbaseDevices = new ArrayList<>();
     /**
      * 是否可以触发事件跳转界面
      */
@@ -224,34 +222,34 @@ public class ReciveBillFrag extends SimpleFragment {
             mRecyclerview.setAdapter(mPublicAdapter);
             mLinearLayout.addView(mHeadView);
         }
-        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                String six = mPublicAdapter.getItem(position).getReceivedStatus();
-
-                if (!six.equals("已领取")) {
-                    mTbaseDevices.clear();
-                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceIds();
-                    for (String deviceCode : deviceCodes) {
-                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
-                        oneDoor.setDeviceId(deviceCode);
-                        if (!TextUtils.isEmpty(deviceCode)) {
-                            mTbaseDevices.add(oneDoor);
-                        }
-                    }
-                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
-                    if (mTbaseDevices.size() > 0) {
-                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-                    } else {
-                        ToastUtils.showShort("无柜子信息！");
-                    }
-                } else if (six.equals("已领取")){
-                    ToastUtils.showShort("此项已领取！");
-                }else if (mPublicAdapter.getItem(position).getCounts()==0){
-                    ToastUtils.showShort("库存不足，请补充库存");
-                }
-            }
-        });
+//        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                String six = mPublicAdapter.getItem(position).getReceivedStatus();
+//
+//                if (!six.equals("已领取")) {
+//                    mTbaseDevices.clear();
+//                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceIds();
+//                    for (String deviceCode : deviceCodes) {
+//                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+//                        oneDoor.setDeviceId(deviceCode);
+//                        if (!TextUtils.isEmpty(deviceCode)) {
+//                            mTbaseDevices.add(oneDoor);
+//                        }
+//                    }
+//                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
+//                    if (mTbaseDevices.size() > 0) {
+//                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+//                    } else {
+//                        ToastUtils.showShort("无柜子信息！");
+//                    }
+//                } else if (six.equals("已领取")){
+//                    ToastUtils.showShort("此项已领取！");
+//                }else if (mPublicAdapter.getItem(position).getCounts()==0){
+//                    ToastUtils.showShort("库存不足，请补充库存");
+//                }
+//            }
+//        });
 
     }
 
