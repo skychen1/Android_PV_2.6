@@ -77,6 +77,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -289,7 +290,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size() + "    mOnBtnGone    " + mOnBtnGone);
+	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack2.size() + "    mOnBtnGone    " + mOnBtnGone);
 	if (!mOnBtnGone) {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
@@ -360,7 +361,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mLoading = null;
 	}
 	if (mStarts == null) {
-	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000,mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
 	}
 	setAfterBing();

@@ -229,7 +229,7 @@ public class FastInFragment extends SimpleFragment {
 	   mOnResume = true;
 	}
 	if (mStarts == null) {
-	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000,mTimelyLeft, mTimelyRight);
 	}
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	setInBoxDate(mInOutDto.getInInventoryVos());
@@ -417,16 +417,20 @@ public class FastInFragment extends SimpleFragment {
    public class TimeCount extends CountDownTimer {
 
 	TextView textView;
+	TextView leftText;
 
-	public TimeCount(long millisInFuture, long countDownInterval, TextView textView) {
+	public TimeCount(long millisInFuture, long countDownInterval,TextView leftText, TextView textView) {
 
 	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
 	   this.textView = textView;
+	   this.leftText = leftText;
 	}
 
 	@Override
 	public void onFinish() {// 计时完毕时触发
+	   LogUtils.i(TAG, "onFinish     " );
 	   EventBusUtils.post(new Event.EventOverPut(true));
+
 	}
 
 	@Override
@@ -436,6 +440,10 @@ public class FastInFragment extends SimpleFragment {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
 	   } else {
 		textView.setText("确认并退出登录");
+	   }
+	   if (millisUntilFinished / 1000 <= 2){
+		leftText.setEnabled(false);
+		textView.setEnabled(false);
 	   }
 	}
    }

@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.devices;
 
+import android.util.Log;
+
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class AllDeviceCallBack {
    private static AllDeviceCallBack instances;
    public static  ArrayList<String> mEthDeviceIdBack;
    public static  ArrayList<String> mEthDeviceIdBack2;
+   public static  ArrayList<String> mEthDeviceIdBack3;
    public static  List<String>      mReaderIdList;
    public static  List<String>      mReaderDeviceId;
    public static  List<String>      eth002DeviceIdList;
@@ -55,6 +58,7 @@ public class AllDeviceCallBack {
 		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 		   mEthDeviceIdBack = new ArrayList<>();
+		   mEthDeviceIdBack3 = new ArrayList<>();
 		   mEthDeviceIdBack2 = new ArrayList<>();
 		}
 	   }
@@ -113,19 +117,31 @@ public class AllDeviceCallBack {
 
 		}
 //		LogUtils.i(TAG, "开门结果  开门stringsdeviceIndentify     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
-		mEthDeviceIdBack.add(deviceIndentify);
+		if (mEthDeviceIdBack.size()>0){
+		   for (String s:mEthDeviceIdBack){
+			if (!deviceIndentify.equals(s)){
+			   mEthDeviceIdBack.add(deviceIndentify);
+			}
+		   }
+		}else {
+		   mEthDeviceIdBack.add(deviceIndentify);
+		}
+
 //		LogUtils.i(TAG, "开门结果  开门yss     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		//筛选相同的锁
 		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
-//		for (String s:strings){
-//		   LogUtils.i(TAG, "  开门strings     " + s);
-//		}
+		for (String s:strings){
+		   Log.i(TAG, "  开门strings     " + s);
+		}
 //		LogUtils.i(TAG, "开门结果  开门strings     " + strings.size());
 		mEthDeviceIdBack.clear();
 		mEthDeviceIdBack.addAll(strings);
+
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
-		LogUtils.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
+		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
+		strings.clear();
+		Log.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
 		EventBusUtils.postSticky(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
@@ -133,14 +149,16 @@ public class AllDeviceCallBack {
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
 //		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
 //		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
-
+		Log.i(TAG,"OnDoorClosed   "+deviceIndentify);
 		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
+		   Log.i(TAG,"OnDoorClosed mEthDeviceIdBack2.size()   "+mEthDeviceIdBack2.get(i));
 //		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
 		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			mEthDeviceIdBack2.remove(i);
 		   }
 		}
-		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
+		LogUtils.i(TAG, "门锁已关闭1：    " + mEthDeviceIdBack2.size());
+		LogUtils.i(TAG, "门锁已关闭2：    " + mEthDeviceIdBack.size());
 
 		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
 		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击

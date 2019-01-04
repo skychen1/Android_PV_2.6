@@ -160,16 +160,16 @@ public class TwoDialog extends Dialog {
                         mPushFormDateBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 			     Gson gson = new Gson();
 			     gson.toJson(mPushFormDateBean);
-			     Log.e("twoDialog",  gson.toJson(mPushFormDateBean));
+			     Log.i("twoDialog",  gson.toJson(mPushFormDateBean));
 			     NetRequest.getInstance().submitOrderCstInfo(gson.toJson(mPushFormDateBean),this,  new BaseResult() {
                             @Override
                             public void onSucceed(String result) {
-                                Log.e("twoDialog", "result：receiveOrderId上传成功");
+                                Log.i("twoDialog", "result：receiveOrderId上传成功");
                             }
 
                             @Override
                             public void onError(String result) {
-                                Log.e("twoDialog", "Erorr：" + result);
+                                Log.i("twoDialog", "Erorr：" + result);
                             }
                         });
                     }

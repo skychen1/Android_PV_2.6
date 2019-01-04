@@ -737,7 +737,7 @@ public class NetRequest {
 		   if (opFlg.equals(ERROR_1010)) {
 		      LogUtils.w(TAG,"请求URL： "+url);
 		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
-		      LogUtils.w(TAG,"返回Body： "+response.body().toString());
+		      LogUtils.w(TAG,"返回Body： "+response.body());
 			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {

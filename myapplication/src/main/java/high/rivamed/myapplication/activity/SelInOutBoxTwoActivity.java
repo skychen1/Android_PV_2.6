@@ -269,9 +269,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
+
 	AllDeviceCallBack.getInstance().initCallBack();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
@@ -299,7 +300,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			getDeviceDate(event.deviceId, mEPCDate);
 		   }
 		} else {
-		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
+		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
+		   LogUtils.i(TAG, "event.deviceId   " + event.deviceId);
 		   getDeviceDate(event.deviceId, event.epcs);
 		}
 	   }
@@ -313,9 +315,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	super.initDataAndEvent(savedInstanceState);
 	if (mStarts == null) {
-	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyRight);
+	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000,mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
 	}
    }
@@ -645,6 +646,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	inventoryDto.setOperation(mDtoOperation);
 	inventoryDto.setDeviceInventoryVos(deviceList);
 	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	LogUtils.i(TAG, "mGson    " + (mGson==null));
+	LogUtils.i(TAG, "inventoryDto    " + (inventoryDto==null));
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
@@ -771,7 +774,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mLoading = null;
 	}
 	EventBusUtils.unregister(this);
-	mEthDeviceIdBack.clear();
+
 	super.onDestroy();
    }
 
@@ -929,6 +932,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&&mTimelyRight.isEnabled()) {
 		   mStarts.cancel();
 		   mStarts.start();
+
 		}
 		break;
 	   //否则其他动作计时取消

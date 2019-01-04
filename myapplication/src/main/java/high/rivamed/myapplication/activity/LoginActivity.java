@@ -135,8 +135,8 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   private int    mConfigType;
-   private String mDesc;
+   private int                   mConfigType;
+   private String                mDesc;
 
    @Override
    public int getLayoutId() {
@@ -160,7 +160,6 @@ public class LoginActivity extends SimpleActivity {
 
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
-
 	}
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
@@ -231,9 +230,9 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
-	if (tCstConfigVos.size() == 0) {
+      if (tCstConfigVos.size()==0){
 	   return false;
-	} else {
+	}else {
 	   for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 		if (s.getCode().equals(CONFIG_013)) {
 		   return true;
@@ -255,7 +254,7 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-		   getUpDateVer(tCstConfigVos, configType, loginType);
+			getUpDateVer(tCstConfigVos, configType, loginType);
 		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 			mLoginPass.setVisibility(View.VISIBLE);
 			mLoginViewpager.setScanScroll(true);
@@ -403,7 +402,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
-		loginSpDate(result, mContext, mGson);
+		loginSpDate(result,mContext,mGson);
 	   }
 	});
 
@@ -423,7 +422,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
-		loginSpDate(result, mContext, mGson);
+		loginSpDate(result,mContext,mGson);
 	   }
 	});
 
@@ -431,20 +430,18 @@ public class LoginActivity extends SimpleActivity {
 
    /**
     * 重启推送和赋值
-    *
     * @param result
     */
    public static void loginSpDate(String result, Activity activity, Gson mGson) {
 	try {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
-		if (mServiceManager != null) {
+		if (mServiceManager!=null){
 		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
 		   mServiceManager.stopService();
-		   mServiceManager = null;
+		   mServiceManager=null;
 		}
-		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
-					loginResultBean.getAppAccountInfoVo().getAccountId());
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
 		SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
 					loginResultBean.getAppAccountInfoVo().getUserName());
@@ -457,17 +454,12 @@ public class LoginActivity extends SimpleActivity {
 		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
 					loginResultBean.getAccessToken().getRefreshToken());
 		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
-		mServiceManager = new ServiceManager(UIUtils.getContext(),
-								 SPUtils.getString(UIUtils.getContext(),
-											 SAVE_SEVER_IP_TEXT),
-								 loginResultBean.getAppAccountInfoVo()
-									 .getAccountId());
+		mServiceManager = new ServiceManager(UIUtils.getContext(), SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), loginResultBean.getAppAccountInfoVo().getAccountId());
 		mServiceManager.startService();
-		getAuthorityMenu(activity, mGson);
+		getAuthorityMenu(activity,mGson);
 
 	   } else {
-		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT)
-			.show();
+		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 	   }
 	} catch (JsonSyntaxException e) {
 	   e.printStackTrace();
@@ -588,7 +580,7 @@ public class LoginActivity extends SimpleActivity {
 		String localVersion = PackageUtils.getVersionName(mContext);
 		// 网络版本
 		String netVersion = versionBean.getSystemVersion().getVersion();
-		if (netVersion != null) {
+		if (netVersion!=null) {
 		   int i = StringUtils.compareVersion(netVersion, localVersion);
 		   if (i == 1) {
 			mDesc = versionBean.getSystemVersion().getDescription();
@@ -597,7 +589,7 @@ public class LoginActivity extends SimpleActivity {
 			// 不需要更新
 			loginEnjoin(tCstConfigVos, configType, loginType);
 		   }
-		} else {
+		}else {
 		   loginEnjoin(tCstConfigVos, configType, loginType);
 		}
 	   }
@@ -654,8 +646,8 @@ public class LoginActivity extends SimpleActivity {
    private void loadUpDataVersion(
 	   final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
-	OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(this)//
-		.params("systemType", SYSTEMTYPE)
+	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
+		.params("systemType",SYSTEMTYPE)
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
@@ -750,11 +742,10 @@ public class LoginActivity extends SimpleActivity {
 	   return mFragments.size();
 	}
    }
-
    /**
     * 获取权限菜单
     */
-   public static void getAuthorityMenu(Activity activity, Gson mGson) {
+   public static void getAuthorityMenu(Activity activity,Gson mGson) {
 	NetRequest.getInstance().getAuthorityMenu(getAppContext(), new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -763,29 +754,27 @@ public class LoginActivity extends SimpleActivity {
 		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
 											new TypeToken<List<HomeAuthorityMenuBean>>() {}
 												.getType());
-		if (null != fromJson.get(0) && fromJson.get(0).getChildren() != null &&
-		    fromJson.get(0).getChildren().size() > 0) {
+		if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size()>0) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
 		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
 			   .getChildren()
 			   .get(0)
 			   .getChildren();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
-		} else {
+		}else {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
 		}
-		if (fromJson != null) {
+		if (fromJson!=null){
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 		   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
 		   UIUtils.getContext().startActivity(intent);
 		   activity.finish();
-		} else {
+		}else {
 		   Toast.makeText(UIUtils.getContext(), "请开启管理端权限设置", Toast.LENGTH_SHORT).show();
 		}
 	   }
 	});
    }
-
    @Override
    public Object newP() {
 	return null;

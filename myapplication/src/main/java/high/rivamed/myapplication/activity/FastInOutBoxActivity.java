@@ -51,7 +51,6 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -310,7 +309,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
 										  outInventoryVos.size(), "moreScan"));
 		} else {
-		   mEthDeviceIdBack2.clear();
+
 		   mEthDeviceIdBack.clear();
 		   mDoorList.clear();
 		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),

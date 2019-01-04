@@ -14,7 +14,14 @@ import com.daimajia.swipe.SwipeLayout;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
+
+import static high.rivamed.myapplication.activity.OutMealActivity.mMealbing;
+import static high.rivamed.myapplication.activity.OutMealActivity.mTbaseDevicesFromEvent;
 
 /**
  * @ProjectName: new2.6.3
@@ -77,9 +84,15 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
         mSeven_four.setVisibility(View.GONE);
         StringBuffer deviceNames = new StringBuffer();
         for (int i = 0; i < item.getDeviceNames().size(); i++) {
-            deviceNames.append(item.getDeviceNames().get(i));
+            deviceNames.append(item.getDeviceNames().get(i)+",");
         }
-        mSeven_five.setText(deviceNames.toString());
+        if (item.getDeviceNames().size()>0){
+            String deviceName = deviceNames.toString().substring(0,deviceNames.toString().length()-1);
+            mSeven_five.setText(deviceName);
+        }else {
+            mSeven_five.setText(deviceNames.toString());
+        }
+
         if (!TextUtils.isEmpty(item.getStatus())) {
             mSeven_six.setText(item.getStatus());
         } else {
@@ -114,6 +127,83 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
+        mSeven_seven.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               int position= helper.getAdapterPosition();
+                if (item.getStatus() != null) {
+                    if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
+                        String six = item.getStatus();
+                        ToastUtils.showShort("six！" + six);
+                        if (!six.equals("已领取")) {
+                            DialogUtils.showNoDialog(mContext, position + "柜门已开", 2, "form", "BING_MEAL");
+                        } else {
+                            ToastUtils.showShort("此项已领取！");
+                        }
+                    } else {
+                        String six = item.getStatus();
+                        if (!six.equals("已领取")) {
+                            DialogUtils.showNoDialog(mContext, position + "柜门已开", 2, "form", null);
+                        } else {
+                            ToastUtils.showShort("此项已领取！");
+                        }
+                    }
+                }
+                if (item.getDeviceIds() != null && item.getDeviceIds().size() > 0) {
+                    mTbaseDevicesFromEvent.clear();
+                    for (String deviceCode : item.getDeviceIds()) {
+                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+                        oneDoor.setDeviceId(deviceCode);
+                        if (oneDoor != null && oneDoor.getDeviceId() != null) {
+                            mTbaseDevicesFromEvent.add(oneDoor);
+                        }
+                    }
+                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+
+                } else {
+                    ToastUtils.showShort("该耗材无耗材柜信息!");
+                }
+            }
+        });
+
+//        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                if (mPublicAdapter.getItem(position).getStatus() != null) {
+//                    if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
+//                        String six = mPublicAdapter.getItem(position).getStatus();
+//                        ToastUtils.showShort("six！" + six);
+//                        if (!six.equals("已领取")) {
+//                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", "BING_MEAL");
+//                        } else {
+//                            ToastUtils.showShort("此项已领取！");
+//                        }
+//                    } else {
+//                        String six = mPublicAdapter.getItem(position).getStatus();
+//                        if (!six.equals("已领取")) {
+//                            DialogUtils.showNoDialog(mContext, position + "号柜门已开", 2, "form", null);
+//                        } else {
+//                            ToastUtils.showShort("此项已领取！");
+//                        }
+//                    }
+//                }
+//                if (mPublicAdapter.getItem(position).getDeviceIds() != null && mPublicAdapter.getItem(position).getDeviceIds().size() > 0) {
+//                    mTbaseDevicesFromEvent.clear();
+//                    for (String deviceCode : mPublicAdapter.getItem(position).getDeviceIds()) {
+//                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
+//                        oneDoor.setDeviceId(deviceCode);
+//                        if (oneDoor != null && oneDoor.getDeviceId() != null) {
+//                            mTbaseDevicesFromEvent.add(oneDoor);
+//                        }
+//                    }
+//                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+//
+//                } else {
+//                    ToastUtils.showShort("该耗材无耗材柜信息!");
+//                }
+//            }
+//        });
+
     }
 
     /**

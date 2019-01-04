@@ -23,9 +23,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -52,7 +49,6 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindBillOrderBean;
-import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -85,7 +81,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -185,6 +181,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public String   mData;
    List<String> titeleList = null;
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos  = new ArrayList<>();
+   public List<String> boxList  = new ArrayList<>();
    private int                                     mLayout;
    private int                                     mTitleLayout;
    private View                                    mHeadView;
@@ -240,6 +237,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mFindBillOrderBean = new FindBillOrderBean();
 	mFindBillOrderBean.setSuiteId(mPrePageDate.getSuiteId());
 	mFindBillOrderBean.setInventoryVos(new ArrayList<>());
+	mFindBillOrderBean.setDeviceIds(new ArrayList<>());
 	initData();
 	if (mPublicAdapter != null && mBillOrderResultBean.getInventoryVos() != null) {
 	   initView();
@@ -403,7 +401,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   mEPCMapDate.clear();
 		   if (mFindBillOrderBean.getInventoryVos()!=null){
 			mFindBillOrderBean.getInventoryVos().clear();
+			mFindBillOrderBean.getDeviceIds().clear();
 		   }
+		   mEthDeviceIdBack3.clear();
+		   mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -582,107 +583,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    }
 
 
-   /**
-    * 获取需要绑定的患者（不包含临时患者）
-    */
-   private void loadBingDateNoTemp(
-	   String optienNameOrId, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
-	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
-	NetRequest.getInstance()
-		.findSchedulesDate(optienNameOrId, mNoTemPage, mRows, this, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			LogUtils.i(TAG, "result   " + result);
-			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
-			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
-			   if (mPatientInfos != null) {
-				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
-				   data.setPatientId(bean.getRows().get(i).getPatientId());
-				   data.setPatientName(bean.getRows().get(i).getPatientName());
-				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setDoctorName(
-					   bean.getRows().get(i).getDoctorName());
-				   data.setRoomName(
-					   bean.getRows().get(i).getRoomName());
-				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
-				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
-				   mPatientInfos.add(data);
-				}
-				if (mShowRvDialog2 != null && mShowRvDialog2.mDialog.isShowing()) {
-				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-				} else {
-				   mShowRvDialog2 = DialogUtils.showRvDialog(mContext, mContext,
-											   mPatientInfos, "firstBind",
-											   position, mTbaseDevices);
-				   mShowRvDialog2.mRefreshLayout.setOnRefreshListener(
-					   new OnRefreshListener() {
-						@Override
-						public void onRefresh(RefreshLayout refreshLayout) {
-						   mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
-						   mNoTemPage = 1;
-						   mPatientInfos.clear();
-						   loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
-						   mShowRvDialog2.mRefreshLayout.finishRefresh();
-						}
-					   });
-				   mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(
-					   new OnLoadMoreListener() {
-						@Override
-						public void onLoadMore(RefreshLayout refreshLayout) {
-						   mNoTemPage++;
-						   loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
-						   mShowRvDialog2.mRefreshLayout.finishLoadMore();
-						}
-					   });
-				}
-			   } else {
-				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
-				   data.setPatientId(bean.getRows().get(i).getPatientId());
-				   data.setPatientName(bean.getRows().get(i).getPatientName());
-				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setDoctorName(
-					   bean.getRows().get(i).getDoctorName());
-				   data.setRoomName(
-					   bean.getRows().get(i).getRoomName());
-				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
-				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
-				   mPatientInfos.add(data);
-				}
-				mShowRvDialog2 = DialogUtils.showRvDialog(mContext, mContext, mPatientInfos,
-											"firstBind", position,
-											mTbaseDevices);
-				mShowRvDialog2.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-				   @Override
-				   public void onRefresh(RefreshLayout refreshLayout) {
-					mShowRvDialog2.mRefreshLayout.setNoMoreData(false);
-					mNoTemPage = 1;
-					mPatientInfos.clear();
-					loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
-					mShowRvDialog2.mRefreshLayout.finishRefresh();
-				   }
-				});
-				mShowRvDialog2.mRefreshLayout.setOnLoadMoreListener(
-					new OnLoadMoreListener() {
-					   @Override
-					   public void onLoadMore(RefreshLayout refreshLayout) {
-						mNoTemPage++;
-						loadBingDateNoTemp(optienNameOrId, position, mTbaseDevices);
-						mShowRvDialog2.mRefreshLayout.finishLoadMore();
-					   }
-					});
-			   }
-			} else {
-			   if (mNoTemPage == 1) {
-				ToastUtils.showShort("没有患者数据");
-			   }
-			}
-		   }
-		});
-   }
 
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -715,13 +615,23 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    int k = 0;
 
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void scanEPCResult(Event.EventDeviceCallBack event) {
 	AllDeviceCallBack.getInstance().initCallBack();
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id();
+	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
+		   .find(BoxIdBean.class);
+	   for (BoxIdBean BoxIdBean : boxIdDoor) {
+		String device_id = BoxIdBean.getDevice_id();
+		for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+		   if (device_id.equals(mEthDeviceIdBack3.get(x))) {
+			mEthDeviceIdBack3.remove(x);
+		   }
+		}
+	   }
 	   if (box_id != null) {
 		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
 									   READER_TYPE).find(BoxIdBean.class);
@@ -736,7 +646,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			}
 		   }
 		   if (k == boxIdBeansss.size()) {
-			LogUtils.i(TAG, "mEPCDate  zou l  ");
 			k = 0;
 			for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
 			   InventoryVo item = new InventoryVo();
@@ -745,9 +654,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 				mFindBillOrderBean.getInventoryVos().add(item);
 			   }
 			}
-			mFindBillOrderBean.setDeviceIds(new ArrayList<>());
 			mFindBillOrderBean.getDeviceIds().add(box_id);
-			findBillOrder();
+//			findBillOrder();
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
@@ -758,11 +666,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			   mFindBillOrderBean.getInventoryVos().add(item);
 			}
 		   }
-		   mFindBillOrderBean.setDeviceIds(new ArrayList<>());
 		   mFindBillOrderBean.getDeviceIds().add(box_id);
-		   findBillOrder();
+//		   findBillOrder();
 		}
 	   }
+	   LogUtils.i(TAG, "mEthDeviceIdBack3.size()  "+mEthDeviceIdBack3.size()+"   mIsClick   "+mIsClick);
+	   if (mIsClick || mEthDeviceIdBack3.size() != 0) {
+		return;
+	   }
+	   findBillOrder();
 	}
    }
    /**
@@ -771,6 +683,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private void reOpenDoor() {
 	if (mFindBillOrderBean != null) {
 	   mFindBillOrderBean.getInventoryVos().clear();
+	   mFindBillOrderBean.getDeviceIds().clear();
 	}
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
@@ -803,4 +716,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	}
    }
 
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	mEthDeviceIdBack3.clear();
+   }
 }
