@@ -24,9 +24,13 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -84,6 +88,12 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
     */
    private void loadStockDetails() {
 	mBaseTabBack.setVisibility(View.VISIBLE);
+	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME).equals("")&&SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("")){
+	   mBaseTabTvName.setVisibility(View.GONE);
+	   mBaseTabBtnMsg.setVisibility(View.GONE);
+	   mBaseTabIconRight.setVisibility(View.GONE);
+	   mBaseTabOutLogin.setVisibility(View.GONE);
+	}
 	mBaseTabTvTitle.setText("耗材详情");
 	String deviceCode = mStockDetailsTopBean.getDeviceId();
 	String cstId = mStockDetailsTopBean.getCstCode();

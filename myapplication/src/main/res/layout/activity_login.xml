@@ -135,7 +135,16 @@
 
 				</LinearLayout>
 			</RelativeLayout>
-
+			<TextView
+				android:id="@+id/login_stock_status"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/y90"
+				android:layout_marginLeft="@dimen/x30"
+				android:text="查看库存详情  〉"
+				android:padding="@dimen/y15"
+				android:textColor="@color/toast_text"
+				android:textSize="@dimen/x36"/>
 		</LinearLayout>
 
 

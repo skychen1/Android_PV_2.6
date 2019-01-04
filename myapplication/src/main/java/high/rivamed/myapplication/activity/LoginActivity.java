@@ -124,6 +124,8 @@ public class LoginActivity extends SimpleActivity {
    BarChart        mChart;
    @BindView(R.id.down_text)
    TextView        mDownText;
+   @BindView(R.id.login_stock_status)
+   TextView        mStockStatus;
    @BindView(R.id.left_guo_text)
    TextView        mTextGuo;
    @BindView(R.id.left_jin_text)
@@ -516,6 +518,12 @@ public class LoginActivity extends SimpleActivity {
 		ToastUtils.showShort("正在维护，请到管理端启用");
 		mConfigType = 0;
 		getConfigDate(mConfigType, null);
+	   }
+	});
+	mStockStatus.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		startActivity(new Intent(LoginActivity.this,LoginStockStatusActivity.class));
 	   }
 	});
    }

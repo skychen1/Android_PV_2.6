@@ -121,6 +121,10 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
+            android:name=".activity.LoginStockStatusActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
             android:name=".activity.TakeNotesDetailsActivity"
             android:screenOrientation="sensorLandscape" />
         <!--androidpnclient 开始-->
