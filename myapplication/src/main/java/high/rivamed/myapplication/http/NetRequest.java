@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -736,7 +735,8 @@ public class NetRequest {
 		      LogUtils.w(TAG,"请求URL： "+url);
 		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
 		      LogUtils.w(TAG,"返回Body： "+response.body());
-			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
+			ToastUtils.showShortToast("后台系统异常，请联系开发人员！");
+//			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
 			   updateToken(tag, new BaseResult() {
@@ -793,7 +793,6 @@ public class NetRequest {
 		LogUtils.w(TAG,"Exception 请求URL： "+url);
 		LogUtils.w(TAG,"Exception 请求Body： "+mGson.toJson(date));
 		LogUtils.w(TAG,"Exception 返回Body： "+response.body());
-//		LogUtils.i(TAG, "Exception 网络接口返回数据JSON解析失败");
 		e.printStackTrace();
 	   }
 	}

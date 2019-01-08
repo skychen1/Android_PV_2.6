@@ -80,7 +80,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getCstSpec());
-        mSeven_three.setText(""+item.getSuiteNum());
+        mSeven_three.setText(""+item.getNeedNum());
         mSeven_four.setVisibility(View.GONE);
         StringBuffer deviceNames = new StringBuffer();
         for (int i = 0; i < item.getDeviceNames().size(); i++) {

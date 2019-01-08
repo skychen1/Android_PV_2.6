@@ -251,8 +251,11 @@ public class OutMealActivity extends BaseSimpleActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mEthDeviceIdBack3.clear();
-        mEthDeviceIdBack.clear();
+        if(mEthDeviceIdBack!=null){
+            mEthDeviceIdBack3.clear();
+            mEthDeviceIdBack.clear();
+        }
+
     }
 
     private void initlistener() {
@@ -445,10 +448,12 @@ public class OutMealActivity extends BaseSimpleActivity {
                 // 统一数据格式
                 OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
                 orderSheetBean.setSuiteId("" + mOrderCstResult.getSuiteId());
+                orderSheetBean.cstType = "" + mOrderCstResult.getKindsOfCst();
+                orderSheetBean.cstNumber = "" + mOrderCstResult.getCountNum();
                 List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList = new ArrayList<>();
-                for (OrderCstResultBean.SuiteVosBean item : mOrderCstResult.getSuiteVos()) {
+                for (OrderCstResultBean.SuiteVosBean item : movies) {
                     BillStockResultBean.OrderDetailVo info = new BillStockResultBean.OrderDetailVo();
-                    info.setCounts(item.getSuiteNum());
+                    info.setNeedNum(item.getNeedNum());
                     info.setCstId(item.getCstId());
                     info.setCstName(item.getCstName());
                     info.setCstSpec(item.getCstSpec());

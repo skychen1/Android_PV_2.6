@@ -52,7 +52,15 @@ public class InventoryVo implements Serializable {
    private String   bindType;
    private String medicalId;
    private String surgeryId;
+   private String hisPatientId        ;
 
+   public String getHisPatientId() {
+      return hisPatientId;
+   }
+
+   public void setHisPatientId(String hisPatientId) {
+      this.hisPatientId = hisPatientId;
+   }
    public String getSurgeryId() {
       return surgeryId;
    }

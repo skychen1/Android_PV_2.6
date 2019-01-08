@@ -78,7 +78,16 @@ public class FindInPatientBean {
         private String surgeryId              = "";
         private String surgeryTime            = "";
         private String tempPatientId          = "";
+        private String hisPatientId          = "";
         private boolean isSelected;
+
+        public String getHisPatientId() {
+            return hisPatientId;
+        }
+
+        public void setHisPatientId(String hisPatientId) {
+            this.hisPatientId = hisPatientId;
+        }
 
         public String getMedicalId() {
             return medicalId;

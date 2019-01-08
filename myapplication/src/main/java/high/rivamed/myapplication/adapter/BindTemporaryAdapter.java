@@ -74,7 +74,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
             mSeven_seven.setText("是");
         } else {
             mSeven_seven.setText("否");
-            mSeven_three.setText(item.getPatientId());
+            mSeven_three.setText(item.getHisPatientId());
         }
         mCheckBox.setOnCheckedChangeListener(null);
         int position = helper.getAdapterPosition();

@@ -307,6 +307,7 @@ public class Event {
         public String operationScheduleId;
         public String mMedicalId;
         public String mSurgeryId;
+        public String mHisPatientId;
         public int position;
         public boolean create;
         public List<BoxSizeBean.DevicesBean> mTbaseDevices;
@@ -327,7 +328,7 @@ public class Event {
             this.mMedicalId = medicalId;
         }
 
-        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String mMedicalId,String mSurgeryId) {
+        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String mMedicalId,String mSurgeryId,String mHisPatientId) {
             this.mString = name;
             this.id = id;
             this.mTempPatientId = mTempPatientId;
@@ -337,6 +338,7 @@ public class Event {
             this.operationScheduleId = operationScheduleId;
             this.mMedicalId = mMedicalId;
             this.mSurgeryId = mSurgeryId;
+            this.mHisPatientId = mHisPatientId;
         }
     }
 

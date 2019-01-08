@@ -68,7 +68,7 @@ public class BingDialogOutAdapter
 	mSeven_five = ((TextView) helper.getView(R.id.seven_five));
 	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
 	mSeven_two.setText(item.getPatientName());
-	mSeven_three.setText(item.getPatientId());
+	mSeven_three.setText(item.getHisPatientId());
 	mSeven_four.setText(item.getSurgeryTime());
 	mSeven_five.setText(item.getDoctorName());
 	mSeven_six.setText(item.getRoomName());

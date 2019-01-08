@@ -420,11 +420,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.ly_bing_btn:
-		OrderSheetBean.RowsBean prePageDate = new OrderSheetBean.RowsBean();
-		prePageDate.cstType = "" + mBillOrderResultBean.getKindsOfCst();
-		prePageDate.cstNumber = "" + mBillOrderResultBean.getCountNum();
+
+
+		LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
+				    mGson.toJson(mTransReceiveOrderDetailVos));
 		DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos,
-								     prePageDate);
+								     mPrePageDate);
 		break;
 	   case R.id.activity_btn_one:
 		if (UIUtils.isFastDoubleClick()) {

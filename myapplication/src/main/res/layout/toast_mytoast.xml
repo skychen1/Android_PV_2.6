@@ -25,6 +25,7 @@
 		android:layout_height="wrap_content"
 		android:textColor="@color/toast_text"
 		android:textSize="@dimen/textsize_22"
+		android:visibility="gone"
 		android:text="【点击查看】"
 		/>
 </LinearLayout>

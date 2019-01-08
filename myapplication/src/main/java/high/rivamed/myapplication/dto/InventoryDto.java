@@ -77,7 +77,15 @@ public class InventoryDto {
     private String opFlg;
     private String medicalId;
     private String surgeryId;
+    private String hisPatientId        ;
 
+    public String getHisPatientId() {
+        return hisPatientId;
+    }
+
+    public void setHisPatientId(String hisPatientId) {
+        this.hisPatientId = hisPatientId;
+    }
     public String getSurgeryId() {
         return surgeryId;
     }
