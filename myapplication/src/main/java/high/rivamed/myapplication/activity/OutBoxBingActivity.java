@@ -201,8 +201,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   ArrayList<String> strings = new ArrayList<>();
 		   strings.add(b.getCstCode());
 
-		   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-			 ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+		   if (UIUtils.getConfigType(mContext, CONFIG_009) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
@@ -213,10 +212,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			}
 			return;
 		   }
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getExpireStatus() == 0) ||
-			 (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) || (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
 			LogUtils.i(TAG, "OutBoxBingActivity   cancel");
@@ -1004,8 +1000,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
 		  mDtoOperation != 8) ||
-		 (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) &&
-		  b.getPatientName() == null)) {
+		 (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 		if (mDtoOperation == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		    b.getExpireStatus() == 0) {
 		   mTimelyLeft.setEnabled(true);

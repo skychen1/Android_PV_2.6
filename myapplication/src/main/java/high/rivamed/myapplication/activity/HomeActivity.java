@@ -28,6 +28,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCCZ;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
@@ -149,32 +150,13 @@ public class HomeActivity extends SimpleActivity {
 	}else {
 	   mContentTimelyCheck.setVisibility(View.GONE);
 	}
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SYJL)&&UIUtils.getConfigType(mContext, CONFIG_007)){//使用记录
+	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SYJL)&&(UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))){//使用记录
 	   mContentSyjl.setVisibility(View.VISIBLE);
 	}else {
 	   mContentSyjl.setVisibility(View.GONE);
 	}
    }
 
-//   /*
-//    * 初始化消息图标显示状态
-//    * */
-//   private void initMessageIcon() {
-//	NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
-//	   @Override
-//	   public void onSucceed(String result) {
-//		try {
-//		   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
-//		   if (emergencyBean.getMessages() != null) {
-//			EventBusUtils.postSticky(
-//				new Notifier.EventPushMessageNum(emergencyBean.getMessages().size() + ""));
-//		   }
-//		} catch (JsonSyntaxException e) {
-//		   e.printStackTrace();
-//		}
-//	   }
-//	});
-//   }
 
    /**
     * 初始化消息推送服务

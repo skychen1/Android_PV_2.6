@@ -82,6 +82,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_RK;
@@ -196,7 +197,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	LogUtils.i(TAG, "door   " + event.door);
@@ -1003,7 +1004,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void lingYong(int position) {
 	mRbKey = 3;
 	ToastUtils.showShort("领用！");//拿出
-	if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))&&
 	    UIUtils.getConfigType(mContext, CONFIG_010) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者再开柜，不启动临时患者
@@ -1012,21 +1013,20 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mAllPage = 1;
 	   goToFirstBindAC(position, "GONE");
 	   //	   loadBingDateNoTemp("", position, mTbaseDevices);
-	} else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))&&
 		     UIUtils.getConfigType(mContext, CONFIG_010) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者，启动临时患者
 	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
 	   mAllPage = 1;
 	   goToFirstBindAC(position, "VISIBLE");
-	} else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_009) &&
 		     !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，不启用临时患者
 	   LogUtils.i(TAG, "后绑定患者，不启用临时患者");
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-
-	} else if (UIUtils.getConfigType(mContext, CONFIG_007) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_009) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，启用临时患者

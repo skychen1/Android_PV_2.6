@@ -74,6 +74,7 @@ import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -249,16 +250,14 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
 		for (InventoryVo b : mBillOrderResultBean.getInventoryVos()) {
-		   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-			 ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+		   if (UIUtils.getConfigType(mContext, CONFIG_009)&&!UIUtils.getConfigType(mContext, CONFIG_019) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mDownBtnOne.setEnabled(false);
 			return;
 		   }
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getExpireStatus() == 0) ||
-			 (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
+			  b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 			mDownBtnOne.setEnabled(false);
 			return;
 		   } else {
@@ -323,7 +322,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mDownBtnOneLL.setVisibility(View.VISIBLE);
 	String[] array;
 
-	if (UIUtils.getConfigType(mContext, CONFIG_007)) {
+	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
 	   mBindPatient.setVisibility(View.VISIBLE);
 	   mDownBtnOne.setEnabled(false);
 	   array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
@@ -458,7 +457,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    private void initView() {
 	String[] array;
-	if (UIUtils.getConfigType(mContext, CONFIG_007)) {
+	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
 	   array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
 	   mLayout = R.layout.item_formcon_seven_layout;
 	   mTitleLayout = R.layout.item_formcon_seven_title_layout;
@@ -476,11 +475,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
 	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {
-	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-	} else {
+	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
 	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
 	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
+	} else {
+	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+
 	}
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.removeView(mHeadView);
