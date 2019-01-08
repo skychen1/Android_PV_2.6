@@ -170,6 +170,13 @@
 		<item>状态</item>
 		<item>操作</item>
 	</string-array>
+	<string-array name="four_outform_arrays">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>数量</item>
+		<item>柜号</item>
+
+	</string-array>
 	<string-array name="seven_outform_arrays">
 		<item>名称</item>
 		<item>规格型号</item>

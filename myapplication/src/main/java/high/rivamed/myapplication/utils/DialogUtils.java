@@ -147,6 +147,7 @@ public class DialogUtils {
                         String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
                         String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
                         String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
+                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
                         LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
@@ -155,7 +156,7 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices,mMedicalId,mSurgeryId));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -174,8 +175,9 @@ public class DialogUtils {
                         String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
                         String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
                         String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
+                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);

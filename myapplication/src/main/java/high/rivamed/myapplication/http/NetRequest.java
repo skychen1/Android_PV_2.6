@@ -795,7 +795,6 @@ public class NetRequest {
 		LogUtils.w(TAG,"Exception 请求URL： "+url);
 		LogUtils.w(TAG,"Exception 请求Body： "+mGson.toJson(date));
 		LogUtils.w(TAG,"Exception 返回Body： "+response.body());
-//		LogUtils.i(TAG, "Exception 网络接口返回数据JSON解析失败");
 		e.printStackTrace();
 	   }
 	}

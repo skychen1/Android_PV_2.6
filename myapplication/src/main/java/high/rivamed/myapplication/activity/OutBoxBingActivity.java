@@ -103,6 +103,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String                                       mOperationScheduleId="";
    private String                                       mMedicalId="";
    private String                                       mSurgeryId="";
+   private String                                       mHisPatientId="";
    private boolean                    mPause   = true;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private int                        mAllPage = 1;
@@ -175,6 +176,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mPatientId = mInventoryDto.getPatientId();
 	mMedicalId =mInventoryDto.getMedicalId();
 	mSurgeryId =mInventoryDto.getSurgeryId();
+	mHisPatientId =mInventoryDto.getHisPatientId();
 	mPatientDto =event.mPatientDto;
 	if (mPatientDto!=null){
 	   mDtoOperation = mPatientDto.getOperation();
@@ -391,6 +393,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mBingType = event.type;
 	mMedicalId = event.mMedicalId;
 	mSurgeryId =event.mSurgeryId;
+	mHisPatientId =event.mHisPatientId;
 	Log.i(TAG, "mMovie  " + mPatient);
 	LogUtils.i(TAG, "mOperatingRoomNoName  " + mOperatingRoomNoName);
 	if (mBingType != null && mBingType.equals("afterBindTemp")) {
@@ -410,6 +413,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mInventoryVos.get(i).setCreate(mIsCreate);
 		   mInventoryVos.get(i).setMedicalId(mMedicalId);
 		   mInventoryVos.get(i).setSurgeryId(mSurgeryId);
+		   mInventoryVos.get(i).setHisPatientId(mHisPatientId);
 		}
 		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();

@@ -109,6 +109,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String mOperationScheduleId;
    private String mMedicalId;
    private String mSurgeryId;
+   private String mHisPatientId;
    private String mTempPatientId;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
@@ -218,6 +219,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   .getTempPatientId();
 		   mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getMedicalId();
+		   mHisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getHisPatientId();
 		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getSurgeryId()!=null){
 			mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -232,7 +235,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
 												 mOperationScheduleId,
 												 mType, mPosition,
-												 mTemPTbaseDevices,mMedicalId,null));
+												 mTemPTbaseDevices,mMedicalId,null,null));
 			   } else {
 				LogUtils.i(TAG, "mPatientBean2 ");
 				String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
@@ -256,7 +259,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			} else {
 			   EventBusUtils.postSticky(
 				   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
-								   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId));
+								   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
 			}
 			finish();
 		   } else {
@@ -702,6 +705,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				data.setMedicalId(bean.getRows().get(i).getMedicalId());
+				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				if (bean.getRows().get(i).getSurgeryId()!=null){
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				}

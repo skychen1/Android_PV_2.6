@@ -75,7 +75,15 @@ public class TakeNotesBean implements Serializable {
 	private String operationBeginDateTime;
 	private Object status;
 	private Object loperPatsId;
+	private String hisPatientId        ;
 
+	public String getHisPatientId() {
+	   return hisPatientId;
+	}
+
+	public void setHisPatientId(String hisPatientId) {
+	   this.hisPatientId = hisPatientId;
+	}
 	public String getPatientId() { return patientId;}
 
 	public void setPatientId(String patientId) { this.patientId = patientId;}

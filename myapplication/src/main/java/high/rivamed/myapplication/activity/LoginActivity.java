@@ -193,7 +193,8 @@ public class LoginActivity extends SimpleActivity {
 	SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
-
+	mLoginPass.setVisibility(View.GONE);
+	mLoginViewpager.setScanScroll(false);
    }
 
    /**
@@ -256,14 +257,19 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+		   if (tCstConfigVos.size()!=0){
 			getUpDateVer(tCstConfigVos, configType, loginType);
-		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-			mLoginPass.setVisibility(View.VISIBLE);
-			mLoginViewpager.setScanScroll(true);
-		   } else {
-			mLoginPass.setVisibility(View.GONE);
-			mLoginViewpager.setScanScroll(false);
+			if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+			   mLoginPass.setVisibility(View.VISIBLE);
+			   mLoginViewpager.setScanScroll(true);
+			} else {
+			   mLoginPass.setVisibility(View.GONE);
+			   mLoginViewpager.setScanScroll(false);
+			}
+		   }else {
+			ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 		   }
+
 		}
 	   });
 	}

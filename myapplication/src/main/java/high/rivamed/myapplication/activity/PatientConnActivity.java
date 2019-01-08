@@ -267,6 +267,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
+				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -289,7 +290,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 												    "showRvDialog2 position:" +
 												    position);
 											    //进行患者关联
-											    if (mPatientInfos.size() >
+											    if (bean.getRows().size() >
 												  0) {
 												 connPatient(position,
 														 dialog);
@@ -332,6 +333,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
+				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -351,7 +353,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 												 "showRvDialog2 position:" +
 												 position);
 											 //进行患者关联
-											 if (mPatientInfos.size() > 0) {
+											 if (bean.getRows().size() > 0) {
 
 											    connPatient(position, dialog);
 											 }else {

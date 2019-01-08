@@ -178,7 +178,7 @@ public class LookUpDetailedListDialog extends Dialog {
                 lps.height = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y80) * mDate.size();
             }
             mRecyclerView.setLayoutParams(lps);
-            String[] array = mContext.getResources().getStringArray(R.array.seven_outform_arrays);
+            String[] array = mContext.getResources().getStringArray(R.array.four_outform_arrays);
             titeleList = Arrays.asList(array);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

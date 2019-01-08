@@ -49,7 +49,7 @@ public class TakeNotesAdapter extends BaseQuickAdapter<TakeNotesBean.RowsBean, B
         }
         findId(helper);
         mSeven_one.setText(item.getPatientName());
-        mSeven_two.setText(item.getPatientId());
+        mSeven_two.setText(item.getHisPatientId());
         mSeven_three.setText(item.getGender());
         mSeven_four.setText(item.getScheduleTime());
         mSeven_five.setText(item.getDoctorName());

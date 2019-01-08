@@ -1192,6 +1192,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				   mPatientInfos.add(data);
 				}
 				if (mShowRvDialog != null && mShowRvDialog.mDialog.isShowing()) {
@@ -1238,6 +1239,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 					data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 					data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 					data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+					data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 					mPatientInfos.add(data);
 				   }
 				   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext,

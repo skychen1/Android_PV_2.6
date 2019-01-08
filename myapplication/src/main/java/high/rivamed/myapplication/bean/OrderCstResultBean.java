@@ -254,7 +254,7 @@ public class OrderCstResultBean implements Serializable {
         private String       udiCode;
         private String       manuName;
         private String       vendorName;
-        private int          suiteNum;
+        private int          needNum;
         private String       thingId;
         private String       deviceId;
         private String       deviceName;
@@ -368,12 +368,12 @@ public class OrderCstResultBean implements Serializable {
             this.vendorName = vendorName;
         }
 
-        public int getSuiteNum() {
-            return suiteNum;
+        public int getNeedNum() {
+            return needNum;
         }
 
-        public void setSuiteNum(int suiteNum) {
-            this.suiteNum = suiteNum;
+        public void setNeedNum(int suiteNum) {
+            this.needNum = needNum;
         }
 
         public String getThingId() {
