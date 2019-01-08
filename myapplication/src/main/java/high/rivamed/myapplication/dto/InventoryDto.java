@@ -1,5 +1,8 @@
 package high.rivamed.myapplication.dto;
 
+import org.litepal.crud.LitePalSupport;
+
+import java.io.Serializable;
 import java.util.List;
 
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -16,7 +19,7 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  * @version V1.0
  * @date 2018-07-12 12:14:19
  */
-public class InventoryDto {
+public class InventoryDto extends LitePalSupport implements Serializable {
 
     int id;
     private Inventory               inventory;
