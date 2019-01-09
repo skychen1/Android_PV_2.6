@@ -78,8 +78,17 @@ public class InventoryDto {
     private String medicalId;
     private String surgeryId;
     private String hisPatientId        ;
+    private String optRoomId        ;
 
-    public String getHisPatientId() {
+   public String getOptRoomId() {
+	return optRoomId;
+   }
+
+   public void setOptRoomId(String optRoomId) {
+	this.optRoomId = optRoomId;
+   }
+
+   public String getHisPatientId() {
         return hisPatientId;
     }
 

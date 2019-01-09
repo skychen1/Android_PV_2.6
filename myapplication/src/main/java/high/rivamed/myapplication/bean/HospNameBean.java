@@ -169,6 +169,15 @@ public class HospNameBean extends Movie implements Serializable {
 	private String roomNo;
 	private int    status;
 	private String roomName;
+	private String optRoomId;
+
+	public String getOptRoomId() {
+	   return optRoomId;
+	}
+
+	public void setOptRoomId(String optRoomId) {
+	   this.optRoomId = optRoomId;
+	}
 
 	public OperationRooms(String one) {
 	   super(one);
