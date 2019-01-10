@@ -249,7 +249,7 @@ public class TempPatientDialog extends Dialog {
                     List<HospNameBean.OperationRooms> tbaseOperationRooms = hospNameBean.getOperationRooms();
                     for (int i = 0; i < tbaseOperationRooms.size(); i++) {
 
-                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomName(), tbaseOperationRooms.get(i).getRoomNo()));
+                        list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomName(), tbaseOperationRooms.get(i).getOptRoomId()));
                     }
                     setAdapterDate(list, mAddressTwo, mGoneTwoType);
                 }

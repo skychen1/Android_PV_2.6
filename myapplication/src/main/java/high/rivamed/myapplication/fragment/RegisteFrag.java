@@ -33,7 +33,7 @@ import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.receiver.FrgNetWorkReceiver;
+import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -69,7 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 更新描述：   ${TODO}
  */
 
-public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.IntAction {
+public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAction {
 
    String TAG = "RegisteFrag";
    @BindView(R.id.frag_registe_name_edit)
@@ -106,7 +106,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
    private       ThingDto                            mSnRecoverBean;
    public static List<ThingDto.DeviceVosBean> mDeviceVos = new ArrayList<>();//柜子list
-   public  FrgNetWorkReceiver netWorkReceiver;
+   public  NetWorkReceiver netWorkReceiver;
    private String             mBoxCode;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -132,7 +132,7 @@ public class RegisteFrag extends SimpleFragment implements FrgNetWorkReceiver.In
 
    private void applyNet() {
 	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-	netWorkReceiver = new FrgNetWorkReceiver();
+	netWorkReceiver = new NetWorkReceiver();
 	mContext.registerReceiver(netWorkReceiver, filter);
 	netWorkReceiver.setInteractionListener(this);
 

@@ -89,6 +89,15 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
     }
+    private String optRoomId        ;
+
+   public String getOptRoomId() {
+	return optRoomId;
+   }
+
+   public void setOptRoomId(String optRoomId) {
+	this.optRoomId = optRoomId;
+   }
 
     public String getHisPatientId() {
         return hisPatientId;

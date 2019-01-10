@@ -94,7 +94,7 @@
 				android:textSize="@dimen/textsize_16"
 				android:textColor="@color/text_color_3"
 				android:layout_gravity="center_vertical"
-				android:text="手术间号:"/>
+				android:text="手  术  间:"/>
 			<TextView
 				android:id="@+id/gone_two_type"
 				android:layout_width="0dp"

@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "2.6.4.10.0"
+        versionName "2.6.4.10.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 //        ndk {
@@ -40,7 +40,7 @@ android {
             signingConfig signingConfigs.release_config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "${defaultConfig.versionName}高值重构测试版1.apk"
+                    outputFileName = "${defaultConfig.versionName}高值重构测试版.apk"
                 }
             }
         }
