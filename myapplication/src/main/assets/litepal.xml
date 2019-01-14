@@ -20,7 +20,7 @@
     	<version value="1" ></version>
     -->
     <!--<version value="3" />-->
-    <version value="2" />
+    <version value="5" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -37,6 +37,12 @@
         <mapping class="high.rivamed.myapplication.dbmodel.BoxIdBean" />
         <mapping class="high.rivamed.myapplication.dto.vo.InventoryVo" />
         <mapping class="high.rivamed.myapplication.dto.InventoryDto" />
+        <mapping class="high.rivamed.myapplication.dbmodel.UserBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.AccountVosBean" />
+        <mapping class="high.rivamed.myapplication.bean.HomeAuthorityMenuBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.UserFeatureInfosBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.ChildrenBeanX" />
+        <mapping class="high.rivamed.myapplication.dbmodel.ChildrenBean" />
 
     </list>
 

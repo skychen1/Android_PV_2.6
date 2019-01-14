@@ -22,6 +22,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
@@ -286,10 +287,10 @@ public class UIUtils {
    public static boolean getMenuDownType(Context context,String title) {
 	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
-	List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> fromJson = gson.fromJson(string,new TypeToken<List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean>>() {}
+	List<ChildrenBean> fromJson = gson.fromJson(string, new TypeToken<List<ChildrenBean>>() {}
 		.getType());
 	if (fromJson!=null&&fromJson.size()>0){
-	   for (HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean mType :fromJson) {
+	   for (ChildrenBean mType :fromJson) {
 		if (title.equals(mType.getTitle())){
 		   return true;
 		}

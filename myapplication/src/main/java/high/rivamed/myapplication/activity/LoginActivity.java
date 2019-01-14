@@ -50,7 +50,12 @@ import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.bean.VersionBean;
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
+import high.rivamed.myapplication.dbmodel.UserBean;
+import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -137,8 +142,8 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   private int                   mConfigType;
-   private String                mDesc;
+   private int    mConfigType;
+   private String mDesc;
 
    @Override
    public int getLayoutId() {
@@ -150,7 +155,6 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-
 	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
@@ -201,12 +205,77 @@ public class LoginActivity extends SimpleActivity {
     * 所有用户的本地数据
     */
    private void getUnNetUseDate() {
+	deleteLitepal();
 	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "getUnNetUseDate    " + result);
+		UserBean userBean = mGson.fromJson(result, UserBean.class);
+		setLitePalUseBean(userBean);
 	   }
 	});
+   }
+
+   /**
+    * 数据
+    * @param userBean
+    */
+   private void setLitePalUseBean(UserBean userBean) {
+	UserBean mUserBean = new UserBean();
+	mUserBean.setDeptId(userBean.getDeptId());
+	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
+	   AccountVosBean vosBean = new AccountVosBean();
+	   vosBean.setAccountId(accountVosBean.getAccountId());
+	   vosBean.setUserId(accountVosBean.getUserId());
+	   vosBean.setAccountName(accountVosBean.getAccountName());
+	   vosBean.setTenantId(accountVosBean.getTenantId());
+	   vosBean.setUseState(accountVosBean.getUseState());
+	   vosBean.setPassword(accountVosBean.getPassword());
+	   vosBean.setSalt(accountVosBean.getSalt());
+	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
+		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
+		infosBean.setUserId(userFeatureInfosBean.getUserId());
+		infosBean.setType(userFeatureInfosBean.getType());
+		infosBean.setData(userFeatureInfosBean.getData());
+		infosBean.save();
+		vosBean.getUserFeatureInfos().add(infosBean);
+	   }
+	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
+		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
+		if (homeAuthorityMenuBean.getTitle().equals("耗材操作")&&null!=homeAuthorityMenuBean.getChildren()&&homeAuthorityMenuBean.getChildren().size()>0){
+			ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+			mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+		   for (int x =0;x<homeAuthorityMenuBean.getChildren().get(0).getChildren().size();x++){
+			ChildrenBean childrenBean =homeAuthorityMenuBean.getChildren().get(0).getChildren().get(x);
+			ChildrenBean mChildrenBean = new ChildrenBean();
+			mChildrenBean.setTitle(childrenBean.getTitle());
+			mChildrenBean.save();
+			mChildrenBeanX.getChildren().add(mChildrenBean);
+		   }
+		   mChildrenBeanX.save();
+		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
+		}
+		mhomeAuthorityMenuBean.save();
+		vosBean.getMenus().add(mhomeAuthorityMenuBean);
+	   }
+	   vosBean.save();
+	   mUserBean.getAccountVos().add(vosBean);
+	}
+	mUserBean.save();
+   }
+
+   /**
+    * 删除本地数据库用户信息表
+    */
+   private void deleteLitepal() {
+	LitePal.deleteAll(UserBean.class);
+	LitePal.deleteAll(AccountVosBean.class);
+	LitePal.deleteAll(HomeAuthorityMenuBean.class);
+	LitePal.deleteAll(UserFeatureInfosBean.class);
+	LitePal.deleteAll(ChildrenBeanX.class);
+	LitePal.deleteAll(ChildrenBean.class);
    }
 
    /**
@@ -225,6 +294,7 @@ public class LoginActivity extends SimpleActivity {
 		localDto.setThingId(dto.getThingId());
 		localDto.setAccount(dto.getAccount());
 		localDto.setTotalCount(dto.getTotalCount());
+		localDto.setInventoryVos(dto.getInventoryVos());
 		localDto.save();
 		tVos.addAll(dto.getInventoryVos());
 		LitePal.saveAll(tVos);
@@ -233,9 +303,9 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
-      if (tCstConfigVos.size()==0){
+	if (tCstConfigVos.size() == 0) {
 	   return false;
-	}else {
+	} else {
 	   for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 		if (s.getCode().equals(CONFIG_013)) {
 		   return true;
@@ -257,7 +327,7 @@ public class LoginActivity extends SimpleActivity {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
 		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-		   if (tCstConfigVos.size()!=0){
+		   if (tCstConfigVos.size() != 0) {
 			getUpDateVer(tCstConfigVos, configType, loginType);
 			if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 			   mLoginPass.setVisibility(View.VISIBLE);
@@ -266,7 +336,7 @@ public class LoginActivity extends SimpleActivity {
 			   mLoginPass.setVisibility(View.GONE);
 			   mLoginViewpager.setScanScroll(false);
 			}
-		   }else {
+		   } else {
 			ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 		   }
 
@@ -410,7 +480,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
-		loginSpDate(result,mContext,mGson);
+		loginSpDate(result, mContext, mGson);
 	   }
 	});
 
@@ -430,7 +500,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
-		loginSpDate(result,mContext,mGson);
+		loginSpDate(result, mContext, mGson);
 	   }
 	});
 
@@ -438,18 +508,20 @@ public class LoginActivity extends SimpleActivity {
 
    /**
     * 重启推送和赋值
+    *
     * @param result
     */
    public static void loginSpDate(String result, Activity activity, Gson mGson) {
 	try {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
-		if (mServiceManager!=null){
+		if (mServiceManager != null) {
 		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
 		   mServiceManager.stopService();
-		   mServiceManager=null;
+		   mServiceManager = null;
 		}
-		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,loginResultBean.getAppAccountInfoVo().getAccountId());
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
+					loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
 		SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
 					loginResultBean.getAppAccountInfoVo().getUserName());
@@ -462,12 +534,17 @@ public class LoginActivity extends SimpleActivity {
 		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
 					loginResultBean.getAccessToken().getRefreshToken());
 		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
-		mServiceManager = new ServiceManager(UIUtils.getContext(), SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), loginResultBean.getAppAccountInfoVo().getAccountId());
+		mServiceManager = new ServiceManager(UIUtils.getContext(),
+								 SPUtils.getString(UIUtils.getContext(),
+											 SAVE_SEVER_IP_TEXT),
+								 loginResultBean.getAppAccountInfoVo()
+									 .getAccountId());
 		mServiceManager.startService();
-		getAuthorityMenu(activity,mGson);
+		getAuthorityMenu(activity, mGson);
 
 	   } else {
-		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT)
+			.show();
 	   }
 	} catch (JsonSyntaxException e) {
 	   e.printStackTrace();
@@ -529,7 +606,7 @@ public class LoginActivity extends SimpleActivity {
 	mStockStatus.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		startActivity(new Intent(LoginActivity.this,LoginStockStatusActivity.class));
+		startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
 	   }
 	});
    }
@@ -594,7 +671,7 @@ public class LoginActivity extends SimpleActivity {
 		String localVersion = PackageUtils.getVersionName(mContext);
 		// 网络版本
 		String netVersion = versionBean.getSystemVersion().getVersion();
-		if (netVersion!=null) {
+		if (netVersion != null) {
 		   int i = StringUtils.compareVersion(netVersion, localVersion);
 		   if (i == 1) {
 			mDesc = versionBean.getSystemVersion().getDescription();
@@ -603,7 +680,7 @@ public class LoginActivity extends SimpleActivity {
 			// 不需要更新
 			loginEnjoin(tCstConfigVos, configType, loginType);
 		   }
-		}else {
+		} else {
 		   loginEnjoin(tCstConfigVos, configType, loginType);
 		}
 	   }
@@ -660,8 +737,8 @@ public class LoginActivity extends SimpleActivity {
    private void loadUpDataVersion(
 	   final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
-	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
-		.params("systemType",SYSTEMTYPE)
+	OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(this)//
+		.params("systemType", SYSTEMTYPE)
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
@@ -756,10 +833,11 @@ public class LoginActivity extends SimpleActivity {
 	   return mFragments.size();
 	}
    }
+
    /**
     * 获取权限菜单
     */
-   public static void getAuthorityMenu(Activity activity,Gson mGson) {
+   public static void getAuthorityMenu(Activity activity, Gson mGson) {
 	NetRequest.getInstance().getAuthorityMenu(getAppContext(), new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -768,27 +846,29 @@ public class LoginActivity extends SimpleActivity {
 		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
 											new TypeToken<List<HomeAuthorityMenuBean>>() {}
 												.getType());
-		if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size()>0) {
+		if (null != fromJson.get(0) && fromJson.get(0).getChildren() != null &&
+		    fromJson.get(0).getChildren().size() > 0) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
-		   List<HomeAuthorityMenuBean.ChildrenBeanX.ChildrenBean> children = fromJson.get(0)
+		   List<ChildrenBean> children = fromJson.get(0)
 			   .getChildren()
 			   .get(0)
 			   .getChildren();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
-		}else {
+		} else {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
 		}
-		if (fromJson!=null){
+		if (fromJson != null) {
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 		   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
 		   UIUtils.getContext().startActivity(intent);
 		   activity.finish();
-		}else {
+		} else {
 		   Toast.makeText(UIUtils.getContext(), "请开启管理端权限设置", Toast.LENGTH_SHORT).show();
 		}
 	   }
 	});
    }
+
    @Override
    public Object newP() {
 	return null;
