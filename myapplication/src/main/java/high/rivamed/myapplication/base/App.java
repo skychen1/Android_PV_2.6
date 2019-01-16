@@ -90,8 +90,8 @@ public class App extends Application {
         super.onCreate();
         oList = new ArrayList<Activity>();
         mAppContext = getApplicationContext();
-        SPUtils.putString(this, "TestLoginName", "1");
-        SPUtils.putString(this, "TestLoginPass", "1");
+        SPUtils.putString(this, "TestLoginName", "admin");
+        SPUtils.putString(this, "TestLoginPass", "rivamed");
         LitePal.initialize(this);//数据库初始化
         instance = this;
         mHandler = new Handler();

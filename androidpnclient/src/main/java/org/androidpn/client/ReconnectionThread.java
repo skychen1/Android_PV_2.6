@@ -43,7 +43,8 @@ public class ReconnectionThread extends Thread {
         try {
             while (!isInterrupted()) {
 
-                Thread.sleep((long)10 * 1000L);
+                Thread.sleep((long)waiting() * 1000L);
+//                Thread.sleep((long)100L);
                 xmppManager.connect();
                 xmppManager.getConnection().connect();
                 waiting++;
