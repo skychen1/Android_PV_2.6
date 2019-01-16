@@ -276,7 +276,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    }
 
    private void initData() {
-	initListener();
 
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
@@ -424,7 +423,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 		   initData();
 		} else {
 		   mFragmentBtnOne.setEnabled(true);
-		   ToastUtils.showShort(thingDto.getMsg());
+		   ToastUtils.showShortToast(thingDto.getMsg());
 		}
 		LogUtils.i(TAG, "result   " + result);
 	   }
@@ -525,7 +524,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mFragRegisteModelEdit.getText().toString().trim());
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
-	tBaseThing.setThingType("1");
+//	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.setThing(tBaseThing);
@@ -541,10 +540,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	}
 	TBaseThingDto.setDeviceVos(mDeviceVos);
 	return TBaseThingDto;
-   }
-
-   private void initListener() {
-
    }
 
    @Override
@@ -627,11 +622,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 				   initData();
 				}
 
-				@Override
-				public void onError(String result) {
-				   LogUtils.i(TAG, "服务器异常   " + result);
-				   ToastUtils.showShort("服务器异常，请检查网络！");
-				}
 			   });
 	}
    }

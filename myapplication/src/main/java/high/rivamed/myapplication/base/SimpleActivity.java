@@ -124,6 +124,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     * @param has:true
     */
    public void hasNetWork(boolean has) {
+
 	   if (has) {
 //	      Log.e("xxb",(mTipView != null)+"         "+(mTipView.getParent() != null));
 		if (mTipView != null && mTipView.getParent() != null) {

@@ -43,6 +43,8 @@
         <mapping class="high.rivamed.myapplication.dbmodel.UserFeatureInfosBean" />
         <mapping class="high.rivamed.myapplication.dbmodel.ChildrenBeanX" />
         <mapping class="high.rivamed.myapplication.dbmodel.ChildrenBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.RoomsBean" />
+        <mapping class="high.rivamed.myapplication.dbmodel.OperationRoomsBean" />
 
     </list>
 

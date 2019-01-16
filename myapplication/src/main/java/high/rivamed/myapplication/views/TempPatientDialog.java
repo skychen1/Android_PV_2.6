@@ -222,7 +222,7 @@ public class TempPatientDialog extends Dialog {
                             if (TextUtils.isEmpty(one)) {
                                 ToastUtils.showShort("请输入患者姓名");
                             } else if (TextUtils.isEmpty(two)) {
-                                ToastUtils.showShort("请选择手术间号");
+                                ToastUtils.showShort("请选择手术间");
                             } else {
                                 myListener.getDialogDate(one, two,twoGone, three, four, five, dialog);
                             }

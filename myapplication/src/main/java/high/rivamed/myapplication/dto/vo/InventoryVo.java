@@ -8,7 +8,7 @@ import high.rivamed.myapplication.dto.InventoryDto;
 
 public class InventoryVo  extends LitePalSupport implements Serializable{
 
-    private InventoryDto innventoryDto;
+    private InventoryDto inventoryDto;
     private String       cstName;
     private String       epc;
     private String       cstSpec;
@@ -66,12 +66,13 @@ public class InventoryVo  extends LitePalSupport implements Serializable{
    public void setHisPatientId(String hisPatientId) {
       this.hisPatientId = hisPatientId;
    }
-   public InventoryDto getInnventoryDto() {
-      return innventoryDto;
+
+   public InventoryDto getInventoryDto() {
+      return inventoryDto;
    }
 
-   public void setInnventoryDto(InventoryDto innventoryDto) {
-      this.innventoryDto = innventoryDto;
+   public void setInventoryDto(InventoryDto inventoryDto) {
+      this.inventoryDto = inventoryDto;
    }
 
    public String getSurgeryId() {

@@ -31,6 +31,9 @@ import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
 import org.androidpn.client.ServiceManager;
+import org.androidpn.utils.XmppEvent;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -54,6 +57,8 @@ import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
+import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
+import high.rivamed.myapplication.dbmodel.RoomsBean;
 import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
@@ -144,6 +149,31 @@ public class LoginActivity extends SimpleActivity {
    long[] mHits = new long[COUNTS];
    private int    mConfigType;
    private String mDesc;
+   private boolean mOnStart = false;
+
+   /**
+    * 设备title连接状态
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+	mTitleConn = event.connect;
+	hasNetWork(event.connect);
+	if (mTitleConn && mOnStart) {
+	   //todo:需要先把数据传给服务端后再进行重新拉取替换
+//	   List<InventoryVo> all1 = LitePal.findAll(InventoryVo.class);
+//	   InventoryDto cc= LitePal.findFirst(InventoryDto.class,true);
+//	   InventoryDto inventoryDto = new InventoryDto();
+//	   inventoryDto.setThingId(cc.getThingId());
+//	   all1.remove(1);
+//	   inventoryDto.setInventoryVos(all1);
+//	   LogUtils.i(TAG, "xxx    " + mGson.toJson(inventoryDto));
+	   getAllCstDate();
+	   getUnNetUseDate();
+	   getUnEntFindOperation();
+	}
+   }
 
    @Override
    public int getLayoutId() {
@@ -155,7 +185,7 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	   mTitleConn = true;
+//	   mTitleConn = true;
 	}
 	mLoginGone = findViewById(R.id.login_gone);
 
@@ -167,13 +197,14 @@ public class LoginActivity extends SimpleActivity {
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
 	}
+	LogUtils.i(TAG,"mTitleConn    "+mTitleConn);
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	initData();
 	initlistener();
 	initCall();
 
-	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	if (mTitleConn && MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
 	}
    }
@@ -181,24 +212,53 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	mOnStart = true;
 	mPushFormOrders.clear();
-	getAllCstDate();
-	getUnNetUseDate();
-	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
-	SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
-	SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
-	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, "");
-	SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
-	SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, "");
-	SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
-	SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
+	if (mTitleConn){
+	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
+	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
+	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
+	   SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
+	   SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
+	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
+	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, "");
+	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
+	   SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, "");
+	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
+	   SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
+	}
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
 	mLoginPass.setVisibility(View.GONE);
 	mLoginViewpager.setScanScroll(false);
+   }
+
+   /**
+    * 本地手术室
+    */
+   private void getUnEntFindOperation() {
+	LitePal.deleteAll(RoomsBean.class);
+	LitePal.deleteAll(OperationRoomsBean.class);
+
+	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
+		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
+		RoomsBean mRoomsBean = new RoomsBean();
+		if (roomsBean.getOperationRooms().size() > 0) {
+		   mRoomsBean.setThingId(roomsBean.getThingId());
+		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
+			OperationRoomsBean bean = new OperationRoomsBean();
+			bean.setOptRoomId(mOperationRooms.getOptRoomId());
+			bean.setRoomName(mOperationRooms.getRoomName());
+			bean.save();
+			mRoomsBean.getOperationRooms().add(bean);
+		   }
+		   mRoomsBean.save();
+		}
+	   }
+	});
    }
 
    /**
@@ -217,7 +277,8 @@ public class LoginActivity extends SimpleActivity {
    }
 
    /**
-    * 数据
+    * 数据存储
+    *
     * @param userBean
     */
    private void setLitePalUseBean(UserBean userBean) {
@@ -244,11 +305,17 @@ public class LoginActivity extends SimpleActivity {
 	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
 		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
 		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
-		if (homeAuthorityMenuBean.getTitle().equals("耗材操作")&&null!=homeAuthorityMenuBean.getChildren()&&homeAuthorityMenuBean.getChildren().size()>0){
-			ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
-			mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
-		   for (int x =0;x<homeAuthorityMenuBean.getChildren().get(0).getChildren().size();x++){
-			ChildrenBean childrenBean =homeAuthorityMenuBean.getChildren().get(0).getChildren().get(x);
+		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+		    null != homeAuthorityMenuBean.getChildren() &&
+		    homeAuthorityMenuBean.getChildren().size() > 0) {
+		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+		   for (int x = 0;
+			  x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+			ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+				.get(0)
+				.getChildren()
+				.get(x);
 			ChildrenBean mChildrenBean = new ChildrenBean();
 			mChildrenBean.setTitle(childrenBean.getTitle());
 			mChildrenBean.save();
@@ -298,6 +365,7 @@ public class LoginActivity extends SimpleActivity {
 		localDto.save();
 		tVos.addAll(dto.getInventoryVos());
 		LitePal.saveAll(tVos);
+
 	   }
 	});
    }
@@ -319,29 +387,48 @@ public class LoginActivity extends SimpleActivity {
     * 获取配置项
     */
    public void getConfigDate(int configType, String loginType) {
+
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   LogUtils.i(TAG, "result   " + result);
-		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
-		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-		   if (tCstConfigVos.size() != 0) {
-			getUpDateVer(tCstConfigVos, configType, loginType);
-			if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-			   mLoginPass.setVisibility(View.VISIBLE);
-			   mLoginViewpager.setScanScroll(true);
-			} else {
-			   mLoginPass.setVisibility(View.GONE);
-			   mLoginViewpager.setScanScroll(false);
-			}
-		   } else {
-			ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
+		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result   " + result);
+			SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+			setConfigBean(result, configType, loginType);
 		   }
 
-		}
-	   });
+
+		   @Override
+		   public void onError(String result) {
+		      if (SPUtils.getString(mContext, SAVE_SEVER_IP)!=null&&result.equals("-1")){
+			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			   setConfigBean(string, configType, loginType);
+			}
+		   }
+		});
+	}
+   }
+
+   /**
+    * 得到配置项后的操作
+    * @param result
+    * @param configType
+    * @param loginType
+    */
+   private void setConfigBean(String result, int configType, String loginType) {
+	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+	if (tCstConfigVos.size() != 0) {
+	   getUpDateVer(tCstConfigVos, configType, loginType);
+	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+		mLoginPass.setVisibility(View.VISIBLE);
+		mLoginViewpager.setScanScroll(true);
+	   } else {
+		mLoginPass.setVisibility(View.GONE);
+		mLoginViewpager.setScanScroll(false);
+	   }
+	} else {
+	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	}
    }
 
@@ -533,7 +620,6 @@ public class LoginActivity extends SimpleActivity {
 					loginResultBean.getAccessToken().getTokenId());
 		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
 					loginResultBean.getAccessToken().getRefreshToken());
-		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 		mServiceManager = new ServiceManager(UIUtils.getContext(),
 								 SPUtils.getString(UIUtils.getContext(),
 											 SAVE_SEVER_IP_TEXT),
@@ -598,9 +684,15 @@ public class LoginActivity extends SimpleActivity {
 	mLoginGone.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		ToastUtils.showShort("正在维护，请到管理端启用");
-		mConfigType = 0;
-		getConfigDate(mConfigType, null);
+	      if (mTitleConn){
+		   ToastUtils.showShort("正在维护，请到管理端启用");
+		   mConfigType = 0;
+		   getConfigDate(mConfigType, null);
+		}else {
+		   ToastUtils.showShortToast("请检查网络");
+
+		}
+
 	   }
 	});
 	mStockStatus.setOnClickListener(new View.OnClickListener() {
@@ -661,6 +753,7 @@ public class LoginActivity extends SimpleActivity {
     */
    public void getUpDateVer(
 	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
+
 	NetRequest.getInstance().checkVer(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
@@ -688,6 +781,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onNetFailing(String result) {
 		super.onNetFailing(result);
+		LogUtils.i(TAG,"我走了onNetFailing");
 		loginEnjoin(tCstConfigVos, configType, loginType);
 	   }
 	});
@@ -843,16 +937,11 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "getAuthorityMenu  " + result);
 		SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, result);
-		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
-											new TypeToken<List<HomeAuthorityMenuBean>>() {}
-												.getType());
+		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result, new TypeToken<List<HomeAuthorityMenuBean>>() {}.getType());
 		if (null != fromJson.get(0) && fromJson.get(0).getChildren() != null &&
 		    fromJson.get(0).getChildren().size() > 0) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
-		   List<ChildrenBean> children = fromJson.get(0)
-			   .getChildren()
-			   .get(0)
-			   .getChildren();
+		   List<ChildrenBean> children = fromJson.get(0).getChildren().get(0).getChildren();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
 		} else {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
@@ -867,6 +956,12 @@ public class LoginActivity extends SimpleActivity {
 		}
 	   }
 	});
+   }
+
+   @Override
+   protected void onPause() {
+	super.onPause();
+	mOnStart = false;
    }
 
    @Override

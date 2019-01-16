@@ -3,6 +3,7 @@ package high.rivamed.myapplication.dto;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -25,7 +26,7 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     private Inventory               inventory;
     private List<Inventory>         inventorys;
     private List<DeviceInventoryVo> deviceInventoryVos;
-    private List<InventoryVo>       inventoryVos;
+    private List<InventoryVo>       inventoryVos = new ArrayList<>();
     private List<InventoryVo>       inInventoryVos;
     private List<InventoryVo>       outInventoryVos;
 

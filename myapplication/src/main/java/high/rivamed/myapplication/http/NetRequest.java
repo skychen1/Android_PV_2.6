@@ -676,14 +676,15 @@ public class NetRequest {
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	GetRequest(urls, map, tag, netResult);
    }
-//   /**
-//    * 获取离线手术间信息
-//    */
-//   public void getUnEntFindOperation(Object tag,  NetResult netResult) {
-//	OkGo.<String>get(MAIN_URL + NetApi.URL_UNENT_GET_FIND_OPERATIONROOM).tag(tag)
-//		.params("accountId", SPUtils.getString(UIUtils.getContext(),KEY_ACCOUNT_ID))
-//		.execute(new MyCallBack(tag,  netResult, false));
-//   }
+   /**
+    * 获取离线手术间信息
+    */
+   public void getUnEntFindOperation(Object tag,  NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_UNENT_GET_FIND_OPERATIONROOM;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingId", sThingCode);
+	GetRequest(urls, map, tag, netResult);
+   }
 
    private class MyCallBack extends StringCallback {
 
@@ -713,11 +714,12 @@ public class NetRequest {
 		netResult.onError(response.code() + "");
 	   }
 	   if (response.code() == -1) {
-		ToastUtils.showShortToast("网络连接超时，请扫后重试！");
+		ToastUtils.showShortToast("服务器异常，请检查网络！");
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
 	   LogUtils.w(TAG,"onError 请求URL： "+url);
+	   LogUtils.w(TAG,"onError 请求URL： "+response.code());
 	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
 	   LogUtils.w(TAG,"onError 返回Body： "+response.body());
 	}
@@ -737,7 +739,11 @@ public class NetRequest {
 		      LogUtils.w(TAG,"请求URL： "+url);
 		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
 		      LogUtils.w(TAG,"返回Body： "+response.body());
+
 			ToastUtils.showShortToast("后台系统异常，请联系开发人员！");
+			if (netResult != null) {
+			   netResult.onSucceed(response.body());
+			}
 //			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
