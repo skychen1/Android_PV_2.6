@@ -197,6 +197,7 @@ public class RegisteTestFrag extends SimpleFragment {
 
 	   }
 
+
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
 

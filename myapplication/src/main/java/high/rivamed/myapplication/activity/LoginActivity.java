@@ -334,6 +334,8 @@ public class LoginActivity extends SimpleActivity {
 
 	   }
 
+
+
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
 
@@ -542,17 +544,21 @@ public class LoginActivity extends SimpleActivity {
 		LogUtils.i(TAG, "checkVer:" + result);
 
 		VersionBean versionBean = mGson.fromJson(result, VersionBean.class);
-		// 本地版本号
-		String localVersion = PackageUtils.getVersionName(mContext);
-		// 网络版本
-		String netVersion = versionBean.getSystemVersion().getVersion();
-		if (netVersion!=null) {
-		   int i = StringUtils.compareVersion(netVersion, localVersion);
-		   if (i == 1) {
-			mDesc = versionBean.getSystemVersion().getDescription();
-			showUpdateDialog(tCstConfigVos, configType, loginType);
-		   } else {
-			// 不需要更新
+		if (versionBean.isOperateSuccess()){
+		   // 本地版本号
+		   String localVersion = PackageUtils.getVersionName(mContext);
+		   // 网络版本
+		   String netVersion = versionBean.getSystemVersion().getVersion();
+		   if (netVersion!=null) {
+			int i = StringUtils.compareVersion(netVersion, localVersion);
+			if (i == 1) {
+			   mDesc = versionBean.getSystemVersion().getDescription();
+			   showUpdateDialog(tCstConfigVos, configType, loginType);
+			} else {
+			   // 不需要更新
+			   loginEnjoin(tCstConfigVos, configType, loginType);
+			}
+		   }else {
 			loginEnjoin(tCstConfigVos, configType, loginType);
 		   }
 		}else {

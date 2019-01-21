@@ -24,6 +24,15 @@ public class VersionBean implements Serializable{
    private int id;
    private SystemVersionBean systemVersion;
    private String            systemType;
+   private boolean            operateSuccess;
+
+   public boolean isOperateSuccess() {
+      return operateSuccess;
+   }
+
+   public void setOperateSuccess(boolean operateSuccess) {
+      this.operateSuccess = operateSuccess;
+   }
 
    public int getId() { return id;}
 
