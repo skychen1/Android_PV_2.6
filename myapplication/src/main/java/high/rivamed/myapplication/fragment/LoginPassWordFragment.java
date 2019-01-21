@@ -17,6 +17,8 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
+import org.litepal.LitePal;
+
 import java.io.File;
 import java.util.List;
 
@@ -28,9 +30,11 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.VersionBean;
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.Coder;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.PackageUtils;
@@ -38,13 +42,15 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.utils.WifiUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
+import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
@@ -97,8 +103,17 @@ public class LoginPassWordFragment extends SimpleFragment {
         if (UIUtils.isFastDoubleClick()) {
             return;
         } else {
-            if (isvalidate() && WifiUtils.isWifi(mContext) != 0) {
-                getConfigDate();
+            if (isvalidate() ) {
+               if (mTitleConn){
+			getConfigDate();
+		   }else {
+			if (SPUtils.getString(mContext, SAVE_SEVER_IP)!=null){
+			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			   ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
+			   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+			   loginEnjoin(tCstConfigVos,false);
+			}
+		   }
             } else {
                 Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
             }
@@ -123,6 +138,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                     }
 
                 }
+
             });
         }
     }
@@ -132,13 +148,25 @@ public class LoginPassWordFragment extends SimpleFragment {
      *
      * @param tCstConfigVos
      */
-    private void loginEnjoin(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
+    private void loginEnjoin(List<ConfigBean.ThingConfigVosBean> tCstConfigVos,boolean type) {
         if (getConfigTrue(tCstConfigVos)) {
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
             ToastUtils.showShort("正在维护，请到管理端启用");
         } else {
             LoginActivity.mLoginGone.setVisibility(View.GONE);
-            loadLogin();
+            if (type){
+                loadLogin();
+            }else {
+                List<AccountVosBean> beans = LitePal.where("accountname = ? ", mLoginName.getText().toString())
+                      .find(AccountVosBean.class,true);
+		   String password = mLoginPassword.getText().toString();
+		   if (beans.size()>0&&Coder.loginCheck(password,beans.get(0).getSalt(),beans.get(0).getPassword())){
+			SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE,mGson.toJson(beans.get(0).getMenus()));
+			LoginActivity.setMenuDateAndStart( beans.get(0).getMenus(),mGson,_mActivity);
+		   }else {
+			ToastUtils.showShortToast("登录失败，暂无登录信息！");
+		   }
+            }
         }
     }
 
@@ -215,18 +243,13 @@ public class LoginPassWordFragment extends SimpleFragment {
                         showUpdateDialog(tCstConfigVos);
                     } else {
                         // 不需要更新
-                        loginEnjoin(tCstConfigVos);
+                        loginEnjoin(tCstConfigVos,true);
                     }
                 } else {
-                    loginEnjoin(tCstConfigVos);
+                    loginEnjoin(tCstConfigVos,true);
                 }
             }
 
-            @Override
-            public void onNetFailing(String result) {
-                super.onNetFailing(result);
-                loginEnjoin(tCstConfigVos);
-            }
         });
     }
 
@@ -241,7 +264,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         builder.setLeft(UIUtils.getString(R.string.ver_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                loginEnjoin(tCstConfigVos);
+                loginEnjoin(tCstConfigVos,true);
                 dialog.dismiss();
             }
         });
@@ -291,7 +314,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                         super.onError(response);
                         ToastUtils.showShort(R.string.connection_fails);
                         mDialog.dismiss();
-                        loginEnjoin(tCstConfigVos);
+                        loginEnjoin(tCstConfigVos,true);
                     }
                 });
 

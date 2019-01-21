@@ -833,6 +833,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 		onSucceedDate();
 	   }
+
 	});
    }
 

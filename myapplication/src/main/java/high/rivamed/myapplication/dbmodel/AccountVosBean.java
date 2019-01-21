@@ -37,12 +37,30 @@ public class AccountVosBean extends LitePalSupport implements Serializable {
    private String                      accountId;
    private String                      userId;
    private String                      accountName;
+   private String                      userName;
    private String                      tenantId;
    private String                      useState;
    private String                      password;
    private String                      salt;
+   private String                      sex;
    private List<UserFeatureInfosBean>  userFeatureInfos = new ArrayList<>();
    private List<HomeAuthorityMenuBean> menus= new ArrayList<>();
+
+   public String getUserName() {
+      return userName;
+   }
+
+   public void setUserName(String userName) {
+      this.userName = userName;
+   }
+
+   public String getSex() {
+      return sex;
+   }
+
+   public void setSex(String sex) {
+      this.sex = sex;
+   }
 
    public UserBean getUserbean() {
       return userbean;

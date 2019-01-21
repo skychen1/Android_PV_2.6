@@ -120,7 +120,7 @@ public class App extends Application {
      * 初始化消息Service
      */
     private void initMessgeService() {
-      String id =  "xxx";
+      String id =  "xxxxxx";
         mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT),id);
         mServiceManager.startService();
     }

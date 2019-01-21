@@ -293,6 +293,8 @@ public class LoginActivity extends SimpleActivity {
 	   vosBean.setUseState(accountVosBean.getUseState());
 	   vosBean.setPassword(accountVosBean.getPassword());
 	   vosBean.setSalt(accountVosBean.getSalt());
+	   vosBean.setSex(accountVosBean.getSex());
+	   vosBean.setUserName(accountVosBean.getUserName());
 	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
 		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
 		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
@@ -456,10 +458,44 @@ public class LoginActivity extends SimpleActivity {
 	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.GONE);
 	   } else if (configType == 1) {//IC卡登录限制
-		validateLoginIdCard(loginType);
+//		if(mTitleConn){
+//		   validateLoginIdCard(loginType);
+//		}else {
+		   uNNetvalidateLoginIdCard(loginType);
+//		}
 	   } else if (configType == 2) {
 		validateLoginFinger(loginType);
 	   }
+	}
+   }
+
+   /**
+    * 断网后IC卡登陆
+    * @param loginType
+    */
+   private void uNNetvalidateLoginIdCard(String loginType) {
+	List<UserFeatureInfosBean> beans = LitePal.where("data = ? ", loginType)
+		.find(UserFeatureInfosBean.class,true);
+
+	if (beans.size()>0&&beans.get(0).getData().equals(loginType)){
+	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
+				   beans.get(0).getAccountVosbean().getAccountId());
+//	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
+	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
+				   beans.get(0).getAccountVosbean().getUserName());
+	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
+				   beans.get(0).getAccountVosbean().getAccountId());
+	   SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
+				   beans.get(0).getAccountVosbean().getSex());
+//	   SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN,
+//				   loginResultBean.getAccessToken().getTokenId());
+//	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
+//				   loginResultBean.getAccessToken().getRefreshToken());
+	   List<HomeAuthorityMenuBean> menus = beans.get(0).getAccountVosbean().getMenus();
+	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE,mGson.toJson(menus));
+	   setMenuDateAndStart(menus, mGson, this);
+	}else {
+	   ToastUtils.showShortToast("登录失败，暂无登录信息！");
 	}
    }
 
@@ -938,24 +974,35 @@ public class LoginActivity extends SimpleActivity {
 		LogUtils.i(TAG, "getAuthorityMenu  " + result);
 		SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, result);
 		List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result, new TypeToken<List<HomeAuthorityMenuBean>>() {}.getType());
-		if (null != fromJson.get(0) && fromJson.get(0).getChildren() != null &&
-		    fromJson.get(0).getChildren().size() > 0) {
-		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
-		   List<ChildrenBean> children = fromJson.get(0).getChildren().get(0).getChildren();
-		   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
-		} else {
-		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
-		}
-		if (fromJson != null) {
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-		   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
-		   UIUtils.getContext().startActivity(intent);
-		   activity.finish();
-		} else {
-		   Toast.makeText(UIUtils.getContext(), "请开启管理端权限设置", Toast.LENGTH_SHORT).show();
-		}
+		setMenuDateAndStart(fromJson, mGson, activity);
 	   }
 	});
+   }
+
+   /**
+    * 保存权限配置和跳转
+    * @param fromJson
+    * @param mGson
+    * @param activity
+    */
+   public static void setMenuDateAndStart(
+	   List<HomeAuthorityMenuBean> fromJson, Gson mGson, Activity activity) {
+	if (null != fromJson.get(0) && fromJson.get(0).getChildren() != null &&
+	    fromJson.get(0).getChildren().size() > 0) {
+	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
+	   List<ChildrenBean> children = fromJson.get(0).getChildren().get(0).getChildren();
+	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));
+	} else {
+	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
+	}
+	if (fromJson != null) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
+	   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
+	   UIUtils.getContext().startActivity(intent);
+	   activity.finish();
+	} else {
+	   Toast.makeText(UIUtils.getContext(), "请开启管理端权限设置", Toast.LENGTH_SHORT).show();
+	}
    }
 
    @Override

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.security.MessageDigest;
 
-
 /**
  * 
  * <p>
@@ -32,7 +31,7 @@ public class Coder {
 	public static void main(String[] args) {
 		try {
 			
-			String shaPassword=Coder.shaDigest(Coder.shaDigest("000000"), "F3uJ1rZsLljRRyDn");
+			String shaPassword= Coder.shaDigest(Coder.shaDigest("000000"), "F3uJ1rZsLljRRyDn");
 		   Log.e("xxb",shaPassword);
 			//  shaPassword=3576311414e73b9b208438a28200b6bcb7b090ea
 		} catch (Exception e) {
@@ -58,9 +57,9 @@ public class Coder {
 	   } catch (Exception e) {
 		e.printStackTrace();
 	   }
-	   LogUtils.i("Login","shaPassword    "   +shaPassword);
+	   LogUtils.i("Login", "shaPassword    " + shaPassword);
 	   if (shaPassword.equals(dataPassowrd)) {
-		LogUtils.i("Login","shaPasswordtrue    "   +true);
+		LogUtils.i("Login", "shaPasswordtrue    " + true);
 		return true;
 	   }else {
 		return false;
