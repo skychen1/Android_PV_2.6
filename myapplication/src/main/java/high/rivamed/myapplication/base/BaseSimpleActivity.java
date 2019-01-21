@@ -106,7 +106,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
         mTitleConn = event.connect;
 //        LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
         selTitleIcon();
-        hasNetWork(event.connect);
+        hasNetWork(mTitleConn);
     }
 
     /**

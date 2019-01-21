@@ -739,8 +739,7 @@ public class NetRequest {
 		      LogUtils.w(TAG,"请求URL： "+url);
 		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
 		      LogUtils.w(TAG,"返回Body： "+response.body());
-
-			ToastUtils.showShortToast("后台系统异常，请联系开发人员！");
+			ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
 			if (netResult != null) {
 			   netResult.onSucceed(response.body());
 			}

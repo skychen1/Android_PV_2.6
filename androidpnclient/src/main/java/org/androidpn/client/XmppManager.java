@@ -177,6 +177,7 @@ public class XmppManager {
                 if (!reconnection.isAlive()) {
                     reconnection.setName("Xmpp Reconnection Thread");
                     reconnection.start();
+                    Log.e("xb", "start");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -309,13 +310,17 @@ public class XmppManager {
 
                 try {
                     // Connect to the server
-                    connection.connect();
+                    if (!connection.isConnected()){
+                        connection.connect();
+                        ProviderManager.getInstance().addIQProvider("notification",
+                                                                    "androidpn:iq:notification",
+                                                                    new NotificationIQProvider());
+                    }
+
                     Log.i(LOGTAG, "XMPP connected successfully");
 
                     // packet provider
-                    ProviderManager.getInstance().addIQProvider("notification",
-                            "androidpn:iq:notification",
-                            new NotificationIQProvider());
+
 
                 } catch (Exception e) {
                     connectionListener.reconnectionFailed(e);

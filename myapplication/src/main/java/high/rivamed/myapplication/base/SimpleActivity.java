@@ -74,7 +74,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 //      Log.e("xxb","SimpleActivity     "+event.connect);
 	mTitleConn = event.connect;
-	hasNetWork(event.connect);
+	hasNetWork(mTitleConn);
    }
 
 
@@ -124,18 +124,22 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     * @param has:true
     */
    public void hasNetWork(boolean has) {
-
+      if (mWindowManager!=null){
 	   if (has) {
-//	      Log.e("xxb",(mTipView != null)+"         "+(mTipView.getParent() != null));
 		if (mTipView != null && mTipView.getParent() != null) {
 		   mWindowManager.removeView(mTipView);
 		}
 	   } else {
 		if (mTipView.getParent() == null) {
-		   mWindowManager.addView(mTipView, mLayoutParams);
+		   try{
+			mWindowManager.addView(mTipView, mLayoutParams);
+		   }catch (Exception e){
+
+		   }
+
 		}
 	   }
-
+	}
    }
    private void initTipView() {
 	LayoutInflater inflater = getLayoutInflater();
@@ -202,6 +206,9 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onPause() {
 	super.onPause();
+	if (mTipView != null && mTipView.getParent() != null) {
+	   mWindowManager.removeView(mTipView);
+	}
 	getvDelegate().pause();
 
    }
@@ -214,9 +221,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	if (mTipView != null && mTipView.getParent() != null) {
-	   mWindowManager.removeView(mTipView);
-	}
+
 	EventBusUtils.unregister(this);
 	OkGo.getInstance().cancelTag(this);
 	UIUtils.removeAllCallbacks();

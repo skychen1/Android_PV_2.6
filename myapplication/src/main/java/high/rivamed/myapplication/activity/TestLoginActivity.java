@@ -63,8 +63,8 @@ public class TestLoginActivity extends SimpleActivity {
 	   }
 	});
 	if (BuildConfig.DEBUG) {
-	   mLoginName.setText("1");
-	   mLoginPassword.setText("1");
+	   mLoginName.setText("admin");
+	   mLoginPassword.setText("rivamed");
 	}
    }
 
