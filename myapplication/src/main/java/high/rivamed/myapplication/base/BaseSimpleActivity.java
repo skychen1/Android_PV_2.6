@@ -102,9 +102,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-//        Log.e("xxb", "BaseSimpleActivity     " + event.connect);
         mTitleConn = event.connect;
-//        LogUtils.i(TAG, "Xmmpp  "+mTitleConn);
         selTitleIcon();
         hasNetWork(mTitleConn);
     }
@@ -169,6 +167,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
                   .error(R.mipmap.hccz_mrtx_nv)
                   .into(mBaseTabIconRight);
         }
+        LogUtils.i(TAG, "mTitleConn  "+mTitleConn);
         if (mTitleConn) {
             if (mBaseTabBtnConn != null) {
                 mBaseTabBtnConn.setEnabled(true);

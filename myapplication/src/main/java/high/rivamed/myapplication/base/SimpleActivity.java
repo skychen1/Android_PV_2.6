@@ -7,6 +7,7 @@ import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,11 +32,12 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.utils.WifiUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -72,7 +74,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-//      Log.e("xxb","SimpleActivity     "+event.connect);
+      Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	hasNetWork(mTitleConn);
    }
@@ -98,6 +100,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	   bindEvent();
 	}
 	initDataAndEvent(savedInstanceState);
+
 	App.getInstance().addActivity_(this);
    }
    private void applyNet() {
@@ -110,12 +113,11 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    public void setInt(int k) {
 	if (k != -1) {
-	   if (k == 2) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+	   if (k == 2||k == 1) {
+		NetRequest.getInstance().getHospBranch(this, new BaseResult());//用来查询是否网连通了
+//		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
 	   } else if (k == 0) {
 		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
-	   } else if (k == 1) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
 	   }
 	}
    }
@@ -196,8 +198,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onResume() {
 	super.onResume();
-	if (WifiUtils.isWifi(mContext) == 0) {
-	   hasNetWork(false);
+	if (!mTitleConn) {
+	   hasNetWork(mTitleConn);
 	}
 	getvDelegate().resume();
 

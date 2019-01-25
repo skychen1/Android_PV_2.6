@@ -62,6 +62,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
@@ -177,7 +178,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutBoxBingEvent(Event.EventOutBoxBingDto event) {
-	LogUtils.i(TAG, "event");
+	LogUtils.i(TAG, "mTitleConn  "+mTitleConn);
 	if (mInventoryDto != null && mInventoryVos != null) {
 	   mInventoryDto = event.mInventoryDto;
 	   List<InventoryVo> inventoryVos = event.mInventoryDto.getInventoryVos();
@@ -364,6 +365,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mTimelyRight.setVisibility(View.GONE);
 	}
 	super.onResume();
+
    }
 
    @Override
@@ -380,13 +382,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	}
 	setAfterBing();
-	//        Intent intent = getIntent();
-	//        int type = intent.getIntExtra("type", 0);
-	//        if (type == 100) {
-	//            mPatient = intent.getStringExtra("patientName");
-	//            mPatientId = intent.getStringExtra("patientId");
-	//            mOperationScheduleId = intent.getStringExtra("operationScheduleId");
-	//        }
+
    }
 
    @Override

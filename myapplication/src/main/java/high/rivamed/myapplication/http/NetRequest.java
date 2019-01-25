@@ -11,6 +11,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 
+import org.androidpn.utils.XmppEvent;
 import org.litepal.LitePal;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.UpDateTokenBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -30,6 +32,7 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1001;
@@ -714,6 +717,8 @@ public class NetRequest {
 	PostRequest(urls, json, tag, netResult);
    }
 
+
+
    private class MyCallBack extends StringCallback {
 
 	private String    url;
@@ -738,8 +743,12 @@ public class NetRequest {
 
 	@Override
 	public void onError(Response<String> response) {
+
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
+	   }
+	   if(mTitleConn){
+		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
 	   }
 	   if (response.code() == -1) {
 		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
@@ -754,6 +763,9 @@ public class NetRequest {
 
 	@Override
 	public void onSuccess(Response<String> response) {
+	   if(!mTitleConn){
+		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+	   }
 	   UnNetCstUtils.putUnNetOperateYes(mGson, tag);//提交离线耗材和重新获取在库耗材数据
 
 	   try {
@@ -904,6 +916,9 @@ public class NetRequest {
 
 	@Override
 	public void onError(Response<String> response) {
+	   if(mTitleConn){
+		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+	   }
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
@@ -914,6 +929,9 @@ public class NetRequest {
 
 	@Override
 	public void onSuccess(Response<String> response) {
+	   if(!mTitleConn){
+		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+	   }
 	   if (netResult != null) {
 		netResult.onSucceed(response.body());
 		LogUtils.w(TAG, "MyCallBack2 请求URL： " + url);

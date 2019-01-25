@@ -127,7 +127,6 @@ public class LoginPassWordFragment extends SimpleFragment {
                     }else {
                         ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
                     }
-
                 }
 
 		   @Override
