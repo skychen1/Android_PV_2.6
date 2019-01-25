@@ -373,9 +373,9 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
-	if (tCstConfigVos.size() == 0) {
+      if (tCstConfigVos.size()==0){
 	   return false;
-	} else {
+	}else {
 	   for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 		if (s.getCode().equals(CONFIG_013)) {
 		   return true;
@@ -631,20 +631,18 @@ public class LoginActivity extends SimpleActivity {
 
    /**
     * 重启推送和赋值
-    *
     * @param result
     */
    public static void loginSpDate(String result, Activity activity, Gson mGson) {
 	try {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
-		if (mServiceManager != null) {
+		if (mServiceManager!=null){
 		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
 		   mServiceManager.stopService();
-		   mServiceManager = null;
+		   mServiceManager=null;
 		}
-		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
-					loginResultBean.getAppAccountInfoVo().getAccountId());
+		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
 		SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME,
 					loginResultBean.getAppAccountInfoVo().getUserName());
@@ -652,21 +650,15 @@ public class LoginActivity extends SimpleActivity {
 					loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
 					loginResultBean.getAppAccountInfoVo().getSex());
-		SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN,
-					loginResultBean.getAccessToken().getTokenId());
-		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
-					loginResultBean.getAccessToken().getRefreshToken());
-		mServiceManager = new ServiceManager(UIUtils.getContext(),
-								 SPUtils.getString(UIUtils.getContext(),
-											 SAVE_SEVER_IP_TEXT),
-								 loginResultBean.getAppAccountInfoVo()
-									 .getAccountId());
+		SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, loginResultBean.getAccessToken().getTokenId());
+		SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, loginResultBean.getAccessToken().getRefreshToken());
+		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
+		mServiceManager = new ServiceManager(UIUtils.getContext(), SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), loginResultBean.getAppAccountInfoVo().getAccountId());
 		mServiceManager.startService();
-		getAuthorityMenu(activity, mGson);
+		getAuthorityMenu(activity,mGson);
 
 	   } else {
-		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT)
-			.show();
+		Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT).show();
 	   }
 	} catch (JsonSyntaxException e) {
 	   e.printStackTrace();
@@ -789,27 +781,30 @@ public class LoginActivity extends SimpleActivity {
     */
    public void getUpDateVer(
 	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos, int configType, String loginType) {
-
 	NetRequest.getInstance().checkVer(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "checkVer:" + result);
 
 		VersionBean versionBean = mGson.fromJson(result, VersionBean.class);
-		// 本地版本号
-		String localVersion = PackageUtils.getVersionName(mContext);
-		// 网络版本
-		String netVersion = versionBean.getSystemVersion().getVersion();
-		if (netVersion != null) {
-		   int i = StringUtils.compareVersion(netVersion, localVersion);
-		   if (i == 1) {
-			mDesc = versionBean.getSystemVersion().getDescription();
-			showUpdateDialog(tCstConfigVos, configType, loginType);
-		   } else {
-			// 不需要更新
+		if (versionBean.isOperateSuccess()){
+		   // 本地版本号
+		   String localVersion = PackageUtils.getVersionName(mContext);
+		   // 网络版本
+		   String netVersion = versionBean.getSystemVersion().getVersion();
+		   if (netVersion!=null) {
+			int i = StringUtils.compareVersion(netVersion, localVersion);
+			if (i == 1) {
+			   mDesc = versionBean.getSystemVersion().getDescription();
+			   showUpdateDialog(tCstConfigVos, configType, loginType);
+			} else {
+			   // 不需要更新
+			   loginEnjoin(tCstConfigVos, configType, loginType);
+			}
+		   }else {
 			loginEnjoin(tCstConfigVos, configType, loginType);
 		   }
-		} else {
+		}else {
 		   loginEnjoin(tCstConfigVos, configType, loginType);
 		}
 	   }
@@ -817,7 +812,6 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onNetFailing(String result) {
 		super.onNetFailing(result);
-		LogUtils.i(TAG,"我走了onNetFailing");
 		loginEnjoin(tCstConfigVos, configType, loginType);
 	   }
 	});
@@ -867,8 +861,8 @@ public class LoginActivity extends SimpleActivity {
    private void loadUpDataVersion(
 	   final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos,
 	   int configType, String loginType) {
-	OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(this)//
-		.params("systemType", SYSTEMTYPE)
+	OkGo.<File>get(MAIN_URL+URL_UPDATE).tag(this)//
+		.params("systemType",SYSTEMTYPE)
 		.execute(new FileCallback(FileUtils.getDiskCacheDir(mContext),
 						  "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
 		   @Override
@@ -963,7 +957,6 @@ public class LoginActivity extends SimpleActivity {
 	   return mFragments.size();
 	}
    }
-
    /**
     * 获取权限菜单
     */

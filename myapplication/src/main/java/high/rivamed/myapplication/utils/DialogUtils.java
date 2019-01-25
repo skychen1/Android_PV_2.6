@@ -471,6 +471,7 @@ public class DialogUtils {
 
             }
 
+
             @Override
             public void OnUhfScanComplete(boolean success, String deviceId) {
 

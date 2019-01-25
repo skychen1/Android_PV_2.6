@@ -203,10 +203,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	LogUtils.i(TAG, "door   " + event.door);
 	mIsClick = event.isClick;
 	if (mIsClick) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   mRgTopGone.setVisibility(View.VISIBLE);
 	   mRgMiddleGone.setVisibility(View.VISIBLE);
 	   mRgDownGone.setVisibility(View.VISIBLE);
 	} else {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   mRgTopGone.setVisibility(View.GONE);
 	   mRgMiddleGone.setVisibility(View.GONE);
 	   mRgDownGone.setVisibility(View.GONE);

@@ -232,18 +232,22 @@ public class LoginPassWordFragment extends SimpleFragment {
             public void onSucceed(String result) {
                 LogUtils.i("Login", "checkVer:" + result);
                 VersionBean versionBean = mGson.fromJson(result, VersionBean.class);
-                // 本地版本号
-                String localVersion = PackageUtils.getVersionName(mContext);
-                // 网络版本
-                String netVersion = versionBean.getSystemVersion().getVersion();
-                if (netVersion != null) {
-                    int i = StringUtils.compareVersion(netVersion, localVersion);
-                    if (i == 1) {
-                        mDesc = versionBean.getSystemVersion().getDescription();
-                        showUpdateDialog(tCstConfigVos);
+                if (versionBean.isOperateSuccess()){
+                    // 本地版本号
+                    String localVersion = PackageUtils.getVersionName(mContext);
+                    // 网络版本
+                    String netVersion = versionBean.getSystemVersion().getVersion();
+                    if (netVersion != null) {
+                        int i = StringUtils.compareVersion(netVersion, localVersion);
+                        if (i == 1) {
+                            mDesc = versionBean.getSystemVersion().getDescription();
+                            showUpdateDialog(tCstConfigVos);
+                        } else {
+                            // 不需要更新
+				   loginEnjoin(tCstConfigVos,true);
+                        }
                     } else {
-                        // 不需要更新
-                        loginEnjoin(tCstConfigVos,true);
+			     loginEnjoin(tCstConfigVos,true);
                     }
                 } else {
                     loginEnjoin(tCstConfigVos,true);

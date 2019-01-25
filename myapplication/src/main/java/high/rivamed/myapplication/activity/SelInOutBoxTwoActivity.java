@@ -204,7 +204,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   putDateOutLogin(mIntentType);
 	}
    }
-
+   /**
+    * (检测没有关门)语音
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onHomeNoClick(Event.HomeNoClickEvent event) {
+	if (event.isClick) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	} else {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	}
+	EventBusUtils.removeStickyEvent(getClass());
+   }
    /**
     * dialog操作数据
     *
