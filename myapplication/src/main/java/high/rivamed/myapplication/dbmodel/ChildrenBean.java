@@ -29,6 +29,15 @@ public class ChildrenBean extends LitePalSupport implements Serializable {
 
    private ChildrenBeanX childrenbeanx;
    private String                title;
+   private String                      accountName;
+
+   public String getAccountName() {
+      return accountName;
+   }
+
+   public void setAccountName(String accountName) {
+      this.accountName = accountName;
+   }
 
    public ChildrenBeanX getChildrenbeanx() {
 	return childrenbeanx;

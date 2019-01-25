@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,10 +24,8 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import butterknife.BindView;
@@ -55,6 +54,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -71,13 +71,17 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
+import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -534,7 +538,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTimelyRight.setText("确认并退出登录");
 		   List<DeviceInventoryVo> deviceInventoryVoss = mInventoryDto.getDeviceInventoryVos();
 		   mInventoryDto.getInventoryVos().clear();
-		   deviceInventoryVoss.clear();
+		   if (deviceInventoryVoss!=null){
+			deviceInventoryVoss.clear();
+		   }
 		   TimelyAllFrag.mPauseS = true;
 		   if (UIUtils.getConfigType(mContext, CONFIG_009)) {
 			mPatient = null;
@@ -603,7 +609,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
 	mInventoryDto.getInventoryVos().clear();
-	deviceInventoryVos.clear();
+	if (deviceInventoryVos!=null){
+	   deviceInventoryVos.clear();
+	}
 	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 	TimelyAllFrag.mPauseS = true;
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
@@ -647,6 +655,21 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   }
 		}
 	   }
+
+	   @Override
+	   public void onError(String result) {
+		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")){
+		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+			startActivity(
+				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
+					"position", position)
+					.putExtra("type", "afterBindTemp")
+					.putExtra("GoneType", "VISIBLE"));
+		   } else {
+			ToastUtils.showShort("请开启管理端临时患者创建");
+		   }
+		}
+	   }
 	});
    }
 
@@ -671,6 +694,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "result   " + result);
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+		   UnNetCstUtils.putUnNetOperateYes(mGson, OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}
 	   });
@@ -687,7 +711,44 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 			App.getInstance().removeALLActivity_();
 		   }
+		   UnNetCstUtils.putUnNetOperateYes(mGson, OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
+		}
+
+		@Override
+		public void onError(String result) {
+		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") && mDtoOperation == 3){
+			ContentValues values = new ContentValues();
+			values.put("status", "3");
+			values.put("operationstatus", "3");
+			values.put("updatetime", getDates());
+
+			for (InventoryVo s : mInventoryDto.getInventoryVos()){
+			   values.put("idNo",s.getIdNo());
+			   values.put("isCreate",s.isCreate());
+			   values.put("medicalId",s.getMedicalId());
+			   values.put("operatingRoomName",s.getOperatingRoomName());
+			   values.put("operatingRoomNo",s.getOperatingRoomNo());
+			   values.put("patientId",s.getPatientId());
+			   values.put("patientName",s.getPatientName());
+			   values.put("sex",s.getSex());
+			   values.put("surgeryTime",s.getSurgeryTime());
+			   values.put("accountId",SPUtils.getString(mContext,KEY_ACCOUNT_ID ));
+			   values.put("accountName",SPUtils.getString(mContext,KEY_ACCOUNT_NAME));
+
+			   LitePal.updateAll(InventoryVo.class,values,"epc = ?",s.getEpc());
+			}
+			MusicPlayer.playSoundByOperation(mDtoOperation);//播放操作成功提示音
+
+			if (mIntentType == 2) {
+			   UIUtils.putOrderId(mContext);
+			   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			} else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			}
+			finish();
+		   }
 		}
 	   });
 	}
@@ -772,16 +833,65 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTCstInventoryTwoDto = null;
 		}
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
-		setDateEpc();
+		setDateEpc(mTCstInventoryTwoDto,true);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
+		   setUnNetDate(toJson);
+		}
 	   }
 	});
    }
+   /**
+    * 无网的扫描后的EPC信息赋值
+    * @param toJson
+    */
+   private void setUnNetDate(String toJson) {
+	List<InventoryVo> mInVo = new ArrayList<>();
+	InventoryDto cc = LitePal.findFirst(InventoryDto.class);
+	InventoryDto inventoryDto = new InventoryDto();
+	inventoryDto.setOperation(mDtoOperation);
+	inventoryDto.setThingId(cc.getThingId());
+	LogUtils.i(TAG, "FDFDF0   " + mGson.toJson(inventoryDto));
+	InventoryDto dto = mGson.fromJson(toJson, InventoryDto.class);
+	if (dto.getDeviceInventoryVos().size() > 0) {
+	   List<Inventory> list = dto.getDeviceInventoryVos().get(0).getInventories();
+	   String deviceId = dto.getDeviceInventoryVos().get(0).getDeviceId();
 
+	   List<InventoryVo> vos = LitePal.where("deviceid = ? and status = ?", deviceId,"2")
+		   .find(InventoryVo.class);
+	   mInVo.addAll(vos);
+	   if (list.size() != 0) {
+		for (Inventory s : list) {
+		   InventoryVo first = LitePal.where("epc = ? and deviceid = ?", s.getEpc(),
+								 deviceId).findFirst(InventoryVo.class);
+		   InventoryVo unnetEPC = LitePal.where("epc = ? ", s.getEpc())
+			   .findFirst(InventoryVo.class);
+		   if (unnetEPC == null) {
+			inventoryDto.getUnNetMoreEpcs().add(s.getEpc());
+		   } else {
+			if (first != null) {
+			   mInVo.remove(first);
+			}
+		   }
+		}
+	   }
+	}
+	inventoryDto.setInventoryVos(mInVo);
+	setDateEpc(inventoryDto, false);
+   }
    /**
     * 扫描EPC返回后进行赋值
     */
-   private void setDateEpc() {
+   private void setDateEpc(InventoryDto mTCstInventoryTwoDto,boolean type) {
 	String string = null;
+	if (!type&&null!=mTCstInventoryTwoDto.getUnNetMoreEpcs()&&mTCstInventoryTwoDto.getUnNetMoreEpcs().size()>0){
+	   string = StringUtils.listToStrings(mTCstInventoryTwoDto.getUnNetMoreEpcs());
+	   ToastUtils.showLong(string);
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+	}
 	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
 	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
 	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
@@ -790,14 +900,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	} else {
 
 	   List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
-	   List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
+//	   List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
 	   List<InventoryVo> inventoryVos1 = mTCstInventoryTwoDto.getInventoryVos();
-	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
+//	   List<DeviceInventoryVo> deviceInventoryVos1 = mTCstInventoryTwoDto.getDeviceInventoryVos();
 
-	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
-	   set.addAll(deviceInventoryVos);
-	   set.addAll(deviceInventoryVos1);
-	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
+//	   Set<DeviceInventoryVo> set = new HashSet<DeviceInventoryVo>();
+//	   set.addAll(deviceInventoryVos);
+//	   set.addAll(deviceInventoryVos1);
+//	   List<DeviceInventoryVo> c = new ArrayList<DeviceInventoryVo>(set);
 	   if (UIUtils.getConfigType(mContext, CONFIG_009)) {
 		mTCstInventoryTwoDto.setBindType("afterBind");
 	   } else {
@@ -856,7 +966,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mTimelyRight.setEnabled(false);
 	   }
 	   mTCstInventoryTwoDto.setInventoryVos(inventoryVos1);
-	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
+//	   mTCstInventoryTwoDto.setDeviceInventoryVos(c);
 
 	   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(mTCstInventoryTwoDto));
 	   String toJson = mGson.toJson(mTCstInventoryTwoDto);

@@ -28,6 +28,15 @@ public class UserFeatureInfosBean extends LitePalSupport implements Serializable
    private String userId;
    private String type;
    private String data;
+   private String                      accountName;
+
+   public String getAccountName() {
+      return accountName;
+   }
+
+   public void setAccountName(String accountName) {
+      this.accountName = accountName;
+   }
 
    public AccountVosBean getAccountVosbean() {
       return accountVosbean;

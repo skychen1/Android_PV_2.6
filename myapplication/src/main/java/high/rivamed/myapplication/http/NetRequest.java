@@ -3,7 +3,6 @@ package high.rivamed.myapplication.http;
 import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -12,16 +11,22 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 
+import org.litepal.LitePal;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.App;
+import high.rivamed.myapplication.bean.UpDateTokenBean;
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
+import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -30,6 +35,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1001;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
@@ -146,7 +152,7 @@ public class NetRequest {
    public void checkVer(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_GET_VER;
 	Map<String, String> map = new HashMap<>();
-	map.put("systemType",SYSTEMTYPE);
+	map.put("systemType", SYSTEMTYPE);
 	GetRequest(urls, map, tag, netResult);
    }
 
@@ -549,7 +555,6 @@ public class NetRequest {
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
-
    /**
     * 医嘱单领用-根据EPC获取耗材
     */
@@ -652,8 +657,9 @@ public class NetRequest {
     */
    public void updateToken(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_REFRESH_TOKEN;
-	String json = "{\"systemType\": "+SYSTEMTYPE+",\"accessToken\": {\"refreshToken\": \"" +
-			  SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN) + "\"}}";
+	String json =
+		"{\"systemType\": \"" + SYSTEMTYPE + "\",\"accessToken\": {\"refreshToken\": \"" +
+		SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN) + "\"}}";
 	PostRequest(urls, json, tag, netResult);
    }
 
@@ -666,24 +672,46 @@ public class NetRequest {
 	map.put("thingId", sThingCode);
 	GetRequest(urls, map, tag, netResult);
    }
+
    /**
     * 获取设备离线账户信息
     */
-   public void getUnNetUseDate(Object tag,  NetResult netResult) {
+   public void getUnNetUseDate(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_UNENT_GET_LIST_ACCOUNT;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", SYSTEMTYPE);
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	GetRequest(urls, map, tag, netResult);
    }
+
    /**
     * 获取离线手术间信息
     */
-   public void getUnEntFindOperation(Object tag,  NetResult netResult) {
+   public void getUnEntFindOperation(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_UNENT_GET_FIND_OPERATIONROOM;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
 	GetRequest(urls, map, tag, netResult);
+   }
+
+   /**
+    * 无网后来网的登录
+    *
+    * @param tag
+    * @param netResult
+    */
+   public void getUnNetLogin(String account, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_USER_UNNET_LOGIN;
+	PostRequest(urls, account, tag, netResult);
+   }
+   /**
+    * 无网后来网的登录
+    * @param tag
+    * @param netResult
+    */
+   public void putUnNetCstDate(String json, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_UNENT_CST_OFFLINE;
+	PostRequest(urls, json, tag, netResult);
    }
 
    private class MyCallBack extends StringCallback {
@@ -714,18 +742,20 @@ public class NetRequest {
 		netResult.onError(response.code() + "");
 	   }
 	   if (response.code() == -1) {
-		ToastUtils.showShortToast("服务器异常，请检查网络！");
+		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
-	   LogUtils.w(TAG,"onError 请求URL： "+url);
-	   LogUtils.w(TAG,"onError 请求URL： "+response.code());
-	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
-	   LogUtils.w(TAG,"onError 返回Body： "+response.body());
+	   LogUtils.w(TAG, "onError 请求URL： " + url);
+	   LogUtils.w(TAG, "onError 请求URL： " + response.code());
+	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
+	   LogUtils.w(TAG, "onError 返回Body： " + response.body());
 	}
 
 	@Override
 	public void onSuccess(Response<String> response) {
+	   UnNetCstUtils.putUnNetOperateYes(mGson, tag);//提交离线耗材和重新获取在库耗材数据
+
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
 		if (null == jsonObject.getString("opFlg") ||
@@ -736,71 +766,116 @@ public class NetRequest {
 		} else {
 		   String opFlg = jsonObject.getString("opFlg");
 		   if (opFlg.equals(ERROR_1010)) {
-		      LogUtils.w(TAG,"请求URL： "+url);
-		      LogUtils.w(TAG,"请求Body： "+mGson.toJson(date));
-		      LogUtils.w(TAG,"返回Body： "+response.body());
+			LogUtils.w(TAG, "请求URL： " + url);
+			LogUtils.w(TAG, "请求Body： " + mGson.toJson(date));
+			LogUtils.w(TAG, "返回Body： " + response.body());
 			ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
 			if (netResult != null) {
 			   netResult.onSucceed(response.body());
 			}
-//			ToastUtils.showClickToast(App.getAppContext(), "后台系统异常 ", Toast.LENGTH_LONG);
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
-			   updateToken(tag, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-				   JSONObject jsonObject = JSON.parseObject(response.body());
-				   if (null == jsonObject.getString("opFlg")) {//正常
-					if (isGet) {
-					   if (isToken) {
-						GetTokenRequest(url, (Map<String, String>) date, tag,
-								    netResult);
-					   } else {
-						GetRequest(url, (Map<String, String>) date, tag, netResult);
-					   }
-					} else {
-					   if (isToken) {
-						PostTokenRequest(url, (String) date, tag, netResult);
-					   } else {
-						PostRequest(url, (String) date, tag, netResult);
-					   }
-					}
-				   } else {
-					if (jsonObject.getString("opFlg").equals(ERROR_1001)) {
-					   ToastUtils.showShortToast("登录状态已经过期，请重新登录");
-					   if (tag instanceof Activity) {
-						UIUtils.putOrderId(tag);
-						((Activity) tag).getApplicationContext()
-							.startActivity(
-								new Intent(((Activity) tag).getApplicationContext(),
-									     LoginActivity.class));
-						App.getInstance().removeALLActivity_();
-						((Activity) tag).finish();
-					   }
-					}
-				   }
-				   Log.i(TAG, "result   " + result);
-				}
-			   });
+			   setUpDateToken(response);//换token
 			}
 		   } else if (opFlg.equals(ERROR_1001)) {//刷新TOKEN过期   需要重新登录
+			putUnNetLoginDate();//重新登录获取token
+
+		   }
+		}
+	   } catch (Exception e) {
+		LogUtils.w(TAG, "Exception 请求URL： " + url);
+		LogUtils.w(TAG, "Exception 请求Body： " + mGson.toJson(date));
+		LogUtils.w(TAG, "Exception 返回Body： " + response.body());
+		e.printStackTrace();
+	   }
+	}
+
+	/**
+	 * 离线后来网，重新登录获取token
+	 */
+	private void putUnNetLoginDate() {
+	   String accountId = SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID);
+	   AccountVosBean beans = LitePal.where("accountid = ? ", accountId)
+		   .findFirst(AccountVosBean.class);
+	   UserLoginDto userLoginDto = new UserLoginDto();
+	   UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
+	   accountBean.setAccountName(beans.getAccountName());
+	   accountBean.setPassword(beans.getPassword());
+	   accountBean.setSalt(beans.getSalt());
+	   userLoginDto.setAccount(accountBean);
+	   userLoginDto.setSystemType(SYSTEMTYPE);
+	   userLoginDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	   getUnNetLogin(mGson.toJson(userLoginDto), tag, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   UpDateTokenBean tokenBean = mGson.fromJson(result, UpDateTokenBean.class);
+		   setUnNetToken(tokenBean);
+		}
+
+		@Override
+		public void onError(String result) {
+		   ToastUtils.showShortToast("登录状态已经过期，请重新登录");
+		   if (tag instanceof Activity) {
+			UIUtils.putOrderId(tag);
+			((Activity) tag).getApplicationContext()
+				.startActivity(new Intent(((Activity) tag).getApplicationContext(),
+								  LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+			((Activity) tag).finish();
+		   }
+		}
+	   });
+	}
+
+	/**
+	 * 更换token后进行重新请求
+	 *
+	 * @param response
+	 */
+	private void setUpDateToken(Response<String> response) {
+	   updateToken(tag, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   UpDateTokenBean tokenBean = mGson.fromJson(result, UpDateTokenBean.class);
+		   if (tokenBean.getOpFlg().equals("200")){
+			setUnNetToken(tokenBean);//设置token
+		   }else {
 			ToastUtils.showShortToast("登录状态已经过期，请重新登录");
 			if (tag instanceof Activity) {
 			   UIUtils.putOrderId(tag);
 			   ((Activity) tag).getApplicationContext()
-				   .startActivity(
-					   new Intent(((Activity) tag).getApplicationContext(),
-							  LoginActivity.class));
+				   .startActivity(new Intent(((Activity) tag).getApplicationContext(),
+								     LoginActivity.class));
 			   App.getInstance().removeALLActivity_();
 			   ((Activity) tag).finish();
 			}
 		   }
 		}
-	   } catch (Exception e) {
-		LogUtils.w(TAG,"Exception 请求URL： "+url);
-		LogUtils.w(TAG,"Exception 请求Body： "+mGson.toJson(date));
-		LogUtils.w(TAG,"Exception 返回Body： "+response.body());
-		e.printStackTrace();
+	   });
+	}
+
+	/**
+	 * 设置token重新请求
+	 * @param tokenBean
+	 */
+	public void setUnNetToken(UpDateTokenBean tokenBean) {
+
+	   String tokenId = tokenBean.getAccessToken().getTokenId();
+	   String refreshToken = tokenBean.getAccessToken().getRefreshToken();
+	   SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, tokenId);
+	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, refreshToken);
+	   if (isGet) {
+		if (isToken) {
+		   GetTokenRequest(url, (Map<String, String>) date, tag, netResult);
+		} else {
+		   GetRequest(url, (Map<String, String>) date, tag, netResult);
+		}
+	   } else {
+		if (isToken) {
+		   PostTokenRequest(url, (String) date, tag, netResult);
+		} else {
+		   PostRequest(url, (String) date, tag, netResult);
+		}
 	   }
 	}
    }
@@ -832,18 +907,18 @@ public class NetRequest {
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
-	   LogUtils.w(TAG,"onError 请求URL： "+url);
-	   LogUtils.w(TAG,"onError 请求Body： "+mGson.toJson(date));
-	   LogUtils.w(TAG,"onError 返回Body： "+response.body());
+	   LogUtils.w(TAG, "onError 请求URL： " + url);
+	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
+	   LogUtils.w(TAG, "onError 返回Body： " + response.body());
 	}
 
 	@Override
 	public void onSuccess(Response<String> response) {
 	   if (netResult != null) {
 		netResult.onSucceed(response.body());
-		LogUtils.w(TAG,"MyCallBack2 请求URL： "+url);
-		LogUtils.w(TAG,"MyCallBack2 请求Body： "+mGson.toJson(date));
-		LogUtils.w(TAG,"MyCallBack2 返回Body： "+response.body());
+		LogUtils.w(TAG, "MyCallBack2 请求URL： " + url);
+		LogUtils.w(TAG, "MyCallBack2 请求Body： " + mGson.toJson(date));
+		LogUtils.w(TAG, "MyCallBack2 返回Body： " + response.body());
 	   }
 	}
    }

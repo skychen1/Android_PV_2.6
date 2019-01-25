@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.SelectBean;
+import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.PowerDateUtils;
@@ -34,6 +37,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
 /**
  * 创建临时患者弹窗
@@ -252,6 +256,18 @@ public class TempPatientDialog extends Dialog {
                         list.add(new SelectBean(tbaseOperationRooms.get(i).getRoomName(), tbaseOperationRooms.get(i).getOptRoomId()));
                     }
                     setAdapterDate(list, mAddressTwo, mGoneTwoType);
+                }
+
+                @Override
+                public void onError(String result) {
+                    if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")){
+			     List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+			     List<SelectBean> list = new ArrayList<>();
+			     for (OperationRoomsBean s:roomsBeans){
+				  list.add(new SelectBean(s.getRoomName(),s.getOptRoomId()));
+			     }
+			     setAdapterDate(list, mAddressTwo, mGoneTwoType);
+			  }
                 }
             });
 

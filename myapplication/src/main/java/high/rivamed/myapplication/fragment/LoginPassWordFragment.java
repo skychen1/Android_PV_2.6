@@ -29,6 +29,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
@@ -46,10 +47,8 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
-import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -103,17 +102,9 @@ public class LoginPassWordFragment extends SimpleFragment {
         if (UIUtils.isFastDoubleClick()) {
             return;
         } else {
-            if (isvalidate() ) {
-               if (mTitleConn){
+            if (isvalidate()) {
 			getConfigDate();
-		   }else {
-			if (SPUtils.getString(mContext, SAVE_SEVER_IP)!=null){
-			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
-			   ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
-			   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-			   loginEnjoin(tCstConfigVos,false);
-			}
-		   }
+
             } else {
                 Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
             }
@@ -139,7 +130,17 @@ public class LoginPassWordFragment extends SimpleFragment {
 
                 }
 
-            });
+		   @Override
+		   public void onError(String result) {
+			if (SPUtils.getString(mContext, SAVE_SEVER_IP)!=null&&result.equals("-1")){
+			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			   LogUtils.i("LoginA","string   "+string);
+			   ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
+			   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+			   loginEnjoin(tCstConfigVos,false);
+			}
+		   }
+		});
         }
     }
 
@@ -157,12 +158,15 @@ public class LoginPassWordFragment extends SimpleFragment {
             if (type){
                 loadLogin();
             }else {
-                List<AccountVosBean> beans = LitePal.where("accountname = ? ", mLoginName.getText().toString())
-                      .find(AccountVosBean.class,true);
+                String accountName =  mLoginName.getText().toString();
+                List<AccountVosBean> beans = LitePal.where("accountname = ? ", accountName)
+                      .find(AccountVosBean.class);
+                LogUtils.i("LoginA","LitePal   "+mGson.toJson(beans));
+
 		   String password = mLoginPassword.getText().toString();
 		   if (beans.size()>0&&Coder.loginCheck(password,beans.get(0).getSalt(),beans.get(0).getPassword())){
-			SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE,mGson.toJson(beans.get(0).getMenus()));
-			LoginActivity.setMenuDateAndStart( beans.get(0).getMenus(),mGson,_mActivity);
+                   List<HomeAuthorityMenuBean> fromJson = LoginActivity.setUnNetSPdate(accountName, mGson );
+			LoginActivity.setMenuDateAndStart(fromJson,mGson,_mActivity);
 		   }else {
 			ToastUtils.showShortToast("登录失败，暂无登录信息！");
 		   }
@@ -204,7 +208,6 @@ public class LoginPassWordFragment extends SimpleFragment {
         UserLoginDto userLoginDto = new UserLoginDto();
         UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
         accountBean.setAccountName(mUserPhone);
-        accountBean.setPassword(mPassword);
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
         userLoginDto.setSystemType(SYSTEMTYPE);
@@ -254,7 +257,11 @@ public class LoginPassWordFragment extends SimpleFragment {
                 }
             }
 
-        });
+	     @Override
+	     public void onError(String result) {
+		  loginEnjoin(tCstConfigVos,true);
+	     }
+	  });
     }
 
     /**

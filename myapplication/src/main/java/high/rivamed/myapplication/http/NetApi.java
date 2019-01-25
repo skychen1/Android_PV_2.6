@@ -32,6 +32,7 @@ public interface NetApi {
 
     //用户
     String URL_USER_LOGIN = "/rmApi/restLogin/validateLoginPassword";//登录    新
+    String URL_USER_UNNET_LOGIN = "/rmApi/restLogin/validateLoginPasswordOffline";//离线登录换Token    新
     String URL_REFRESH_TOKEN = "/rmApi/restLogin/refreshToken";//token刷新换取   新
     String URL_USER_REGISTER_FINGER = "/rmApi/userManage/userFeature/registerFinger";//绑定指纹    新
     String URL_USER_VALIDATELOGIN_FINGER = "/rmApi/restLogin/validateLoginFinger";//指纹登录    新

@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.dbmodel;
 
+import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
@@ -98,10 +99,12 @@ public class AccountVosBean extends LitePalSupport implements Serializable {
 
    public void setSalt(String salt) { this.salt = salt;}
 
+   public List<UserFeatureInfosBean> getUserFeatureInfosbean(String name) {
+      return LitePal.where("accountname = ? ", name).find(UserFeatureInfosBean.class);
+   }
    public List<UserFeatureInfosBean> getUserFeatureInfos() {
       return userFeatureInfos;
    }
-
    public void setUserFeatureInfos(
          List<UserFeatureInfosBean> userFeatureInfos) {
       this.userFeatureInfos = userFeatureInfos;
@@ -111,7 +114,14 @@ public class AccountVosBean extends LitePalSupport implements Serializable {
       this.menus = menus;
    }
 
+   public List<HomeAuthorityMenuBean> getMenusList(String name) {
+      return LitePal.where("accountname = ? ", name).find(HomeAuthorityMenuBean.class);
+   }
+   public HomeAuthorityMenuBean getMenusbean(String name) {
+      return LitePal.where("accountname = ? ", name).findFirst(HomeAuthorityMenuBean.class);
+   }
    public List<HomeAuthorityMenuBean> getMenus() {
       return menus;
    }
+
 }

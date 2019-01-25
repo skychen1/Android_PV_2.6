@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.dbmodel;
 
+import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
@@ -34,7 +35,16 @@ public  class ChildrenBeanX extends LitePalSupport implements Serializable {
 
    private HomeAuthorityMenuBean homeauthoritymenubean;
    private String                title;
+   private String                      accountName;
    private List<ChildrenBean> children = new ArrayList<>();
+
+   public String getAccountName() {
+	return accountName;
+   }
+
+   public void setAccountName(String accountName) {
+	this.accountName = accountName;
+   }
 
    public HomeAuthorityMenuBean getHomeAuthorityMenuBean() {
 	return homeauthoritymenubean;
@@ -52,4 +62,7 @@ public  class ChildrenBeanX extends LitePalSupport implements Serializable {
    public List<ChildrenBean> getChildren() { return children;}
 
    public void setChildren(List<ChildrenBean> children) { this.children = children;}
+   public List<ChildrenBean> getChildrenbean(String name) {
+	return LitePal.where("accountname = ? ", name).find(ChildrenBean.class);
+   }
 }

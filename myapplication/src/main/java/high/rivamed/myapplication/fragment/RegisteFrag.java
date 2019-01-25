@@ -43,6 +43,8 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.getAppContext;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -190,6 +192,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
+	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,

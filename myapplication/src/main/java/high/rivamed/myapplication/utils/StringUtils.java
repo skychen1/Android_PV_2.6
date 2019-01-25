@@ -286,4 +286,21 @@ public class StringUtils {
 	}
 	return string;
    }
+   /**
+    * 无网络情况下的多的epc
+    * @param list
+    * @return
+    */
+   public static String listToStrings(List<String> list) {
+	String string ="扫描到以下无网状态入柜EPC：\n";
+	for (int i = 0; i < list.size(); i++) {
+	   String keyString = list.get(i);
+	   if (i==list.size()-1){
+		string += keyString;
+	   }else {
+		string += keyString + "\n";
+	   }
+	}
+	return string;
+   }
 }

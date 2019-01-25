@@ -58,6 +58,24 @@ public class InventoryVo  extends LitePalSupport implements Serializable{
    private String medicalId;
    private String surgeryId;
    private String hisPatientId        ;
+   private String                      accountId;
+   private String                      accountName;
+
+   public String getAccountName() {
+      return accountName;
+   }
+
+   public void setAccountName(String accountName) {
+      this.accountName = accountName;
+   }
+
+   public String getAccountId() {
+      return accountId;
+   }
+
+   public void setAccountId(String accountId) {
+      this.accountId = accountId;
+   }
 
    public String getHisPatientId() {
       return hisPatientId;

@@ -244,7 +244,7 @@
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/consume_down_rv"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="@dimen/y132"
 		android:layout_marginLeft="@dimen/x50"
 		android:layout_marginTop="@dimen/y30"
 		android:overScrollMode="never"

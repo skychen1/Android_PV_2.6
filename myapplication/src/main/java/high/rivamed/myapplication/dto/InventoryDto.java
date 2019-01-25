@@ -82,8 +82,17 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     private String surgeryId;
     private String hisPatientId        ;
     private int totalCount;
+   private List<String> unNetMoreEpcs;
 
-    public int getTotalCount() {
+   public List<String> getUnNetMoreEpcs() {
+      return unNetMoreEpcs;
+   }
+
+   public void setUnNetMoreEpcs(List<String> unNetMoreEpcs) {
+      this.unNetMoreEpcs = unNetMoreEpcs;
+   }
+
+   public int getTotalCount() {
         return totalCount;
     }
 

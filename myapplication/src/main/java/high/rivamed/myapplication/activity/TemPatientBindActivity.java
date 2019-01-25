@@ -518,6 +518,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 
 	   }
+	   @Override
+	   public void onError(String result) {
+
+	   }
 	});
    }
 

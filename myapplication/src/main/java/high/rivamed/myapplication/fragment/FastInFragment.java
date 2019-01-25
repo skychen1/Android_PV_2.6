@@ -41,6 +41,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.activity.FastInOutBoxActivity.mFastViewpager;
@@ -282,6 +283,7 @@ public class FastInFragment extends SimpleFragment {
 		   }
 
 		}
+		UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
 	   }
 	});
    }
