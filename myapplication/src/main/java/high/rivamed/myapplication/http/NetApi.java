@@ -104,7 +104,7 @@ public interface NetApi {
     String URL_UNENT_GET_ALLCST = "/consumables/inventory/getAllCst";//获取设备中所有的耗材
     String URL_UNENT_GET_LIST_ACCOUNT = "/rmApi/userManage/account/listAccount";//获取离线账户信息
     String URL_UNENT_GET_FIND_OPERATIONROOM = "/basic/operationRoom/findByThingId";//获取离线手术间
-    String URL_UNENT_CST_OFFLINE = "/consumables/inventory/receiveCstForOffline";//离线领用
+    String URL_UNENT_CST_OFFLINE = "/consumables/inventory/forceOperateInventoryCst";//离线领用和强开
 
     String URL_CONNECT_TITLE = "/rmApi/restLogin/connectAble";//顶部连接状态(网线和WIFI插上后的检测)
 }

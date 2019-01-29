@@ -162,8 +162,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+	mIsClick = event.isClick;
 	if (event.isClick) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	} else {
@@ -967,10 +968,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(mTCstInventoryTwoDto));
 	   String toJson = mGson.toJson(mTCstInventoryTwoDto);
 	   LogUtils.i(TAG, "dddddddd    " + toJson);
-	   if (mTCstInventoryTwoDto.getErrorEpcs() == null &&
-		 (mTCstInventoryTwoDto.getInventoryVos() == null ||
-		  mTCstInventoryTwoDto.getInventoryVos().size() < 1) &&
-		 mEthDeviceIdBack.size() == 1) {
+	   if (!mIsClick && (mTCstInventoryTwoDto.getInventoryVos() == null ||
+				   mTCstInventoryTwoDto.getInventoryVos().size() < 1)) {
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);

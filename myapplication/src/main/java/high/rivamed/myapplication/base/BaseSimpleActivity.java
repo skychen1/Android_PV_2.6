@@ -93,6 +93,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onHomeNoClick(Event.HomeNoClickEvent event) {
+
         mIsClick = event.isClick;
     }
     /**

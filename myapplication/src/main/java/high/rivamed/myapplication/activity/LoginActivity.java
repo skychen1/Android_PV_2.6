@@ -69,6 +69,7 @@ import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -201,7 +202,8 @@ public class LoginActivity extends SimpleActivity {
 	initData();
 	initlistener();
 	initCall();
-
+	Intent intent = new Intent(LoginActivity.this, ScanService.class);
+	startService(intent);
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 
 	   getBoxSize();
@@ -405,7 +407,7 @@ public class LoginActivity extends SimpleActivity {
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	if (tCstConfigVos.size() != 0) {
+	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
 	   getUpDateVer(tCstConfigVos, configType, loginType);
 	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 		mLoginPass.setVisibility(View.VISIBLE);
@@ -736,7 +738,12 @@ public class LoginActivity extends SimpleActivity {
 	mStockStatus.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
+	      if (mTitleConn){
+		   startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
+		}else {
+	         ToastUtils.showShortToast("网络异常，请检查网络!");
+		}
+
 	   }
 	});
    }

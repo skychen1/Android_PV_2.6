@@ -506,7 +506,7 @@ public class Event {
     }
 
     /**
-     * 硬件
+     * 硬件正常扫描返回
      */
     public static class EventDeviceCallBack {
         public String deviceId;
@@ -517,7 +517,18 @@ public class Event {
             this.epcs = epcs;
         }
     }
+    /**
+     * 硬件强开返回
+     */
+    public static class EventStrongOpenDeviceCallBack {
+        public String deviceId;
+        public Map<String, List<TagInfo>> epcs;
 
+        public EventStrongOpenDeviceCallBack(String deviceId, Map<String, List<TagInfo>> epcs) {
+            this.deviceId = deviceId;
+            this.epcs = epcs;
+        }
+    }
     /**
      * 刷新按钮
      */

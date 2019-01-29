@@ -38,7 +38,7 @@ import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 public class AllDeviceCallBack {
 
    private static final String TAG = "AllDeviceCallBack";
-
+   private        List<BoxIdBean>   mBoxIdBeans;
    // 设置本类为单例模式
    private static AllDeviceCallBack instances;
    public static  ArrayList<String> mEthDeviceIdBack;
@@ -48,9 +48,10 @@ public class AllDeviceCallBack {
    public static  List<String>      mReaderDeviceId;
    public static  List<String>      eth002DeviceIdList;
    public static  String            sReaderType;
+   List<String> ss = new ArrayList<>();
 
    public static AllDeviceCallBack getInstance() {
-//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
+	//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
 	if (instances == null) {
 	   synchronized (NetRequest.class) {
 		if (instances == null) {
@@ -116,24 +117,21 @@ public class AllDeviceCallBack {
 		} else {
 
 		}
-//		LogUtils.i(TAG, "开门结果  开门stringsdeviceIndentify     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
-		if (mEthDeviceIdBack.size()>0){
-		   for (String s:mEthDeviceIdBack){
-			if (!deviceIndentify.equals(s)){
+		if (mEthDeviceIdBack.size() > 0) {
+		   for (String s : mEthDeviceIdBack) {
+			if (!deviceIndentify.equals(s)) {
 			   mEthDeviceIdBack.add(deviceIndentify);
 			}
 		   }
-		}else {
+		} else {
 		   mEthDeviceIdBack.add(deviceIndentify);
 		}
 
-//		LogUtils.i(TAG, "开门结果  开门yss     " + deviceIndentify+"   "+mEthDeviceIdBack.size());
 		//筛选相同的锁
 		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
-		for (String s:strings){
+		for (String s : strings) {
 		   Log.i(TAG, "  开门strings     " + s);
 		}
-//		LogUtils.i(TAG, "开门结果  开门strings     " + strings.size());
 		mEthDeviceIdBack.clear();
 		mEthDeviceIdBack.addAll(strings);
 
@@ -141,49 +139,70 @@ public class AllDeviceCallBack {
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 		strings.clear();
-		Log.i(TAG, "开门结果  开门     " + mEthDeviceIdBack2.size()+"      "+  deviceIndentify);
-		EventBusUtils.postSticky(new Event.HomeNoClickEvent(true,deviceIndentify));//禁止桌面左边菜单栏点击
+		EventBusUtils.postSticky(
+			new Event.HomeNoClickEvent(true, deviceIndentify));//禁止桌面左边菜单栏点击
 	   }
 
 	   @Override
 	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-//		DeviceManager.getInstance().CheckDoorState(deviceIndentify);
-//		LogUtils.i(TAG, "门锁已关闭：    " + mEthDeviceIdBack2.size());
-		Log.i(TAG,"OnDoorClosed   "+deviceIndentify);
-		for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
-		   Log.i(TAG,"OnDoorClosed mEthDeviceIdBack2.size()   "+mEthDeviceIdBack2.get(i));
-//		   LogUtils.i(TAG, "mEthDeviceIdBack2关闭：    " + mEthDeviceIdBack2.get(i));
-		   if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
-			mEthDeviceIdBack2.remove(i);
+		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
+		   ss.clear();
+		   mBoxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
+		   for (BoxIdBean s : mBoxIdBeans) {
+			DeviceManager.getInstance().CheckDoorState(s.getDevice_id());
 		   }
+		   Log.i("FAFAS", "OnDoorClosed   " + deviceIndentify);
+		} else {//正常开门
+		   for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
+			if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
+			   mEthDeviceIdBack2.remove(i);
+			}
+		   }
+		   if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
+			EventBusUtils.postSticky(new Event.HomeNoClickEvent(false, ""));//开启桌面左边菜单栏点击
+			EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
+		   }
+		   clossDoorStartScan(deviceIndentify);
 		}
-		LogUtils.i(TAG, "门锁已关闭1：    " + mEthDeviceIdBack2.size());
-		LogUtils.i(TAG, "门锁已关闭2：    " + mEthDeviceIdBack.size());
-
-		if (mEthDeviceIdBack2 == null || mEthDeviceIdBack2.size() == 0) {
-		   EventBusUtils.postSticky(new Event.HomeNoClickEvent(false,""));//开启桌面左边菜单栏点击
-		   EventBusUtils.postSticky(new Event.EventGoneBtn("显示"));
-		}
-		clossDoorStartScan(deviceIndentify);
 	   }
 
 	   @Override
 	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
+		   for (BoxIdBean s : mBoxIdBeans) {//记录强开后未关门
+			if (s.getDevice_id().equals(deviceIndentify) && opened) {
+			   ss.add(deviceIndentify);
+			}
+		   }
+		   Log.i("FAFAS", "ss   " + ss.size());
+		   if (ss.size() == 0) {//强开后门关完了
+			StrongOpenScanStart();
+		   }
+		}else {
+
+		}
 	   }
 
 	   @Override
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
 		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
-
-		EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, epcs));
-		//		EventBusUtils.postSticky(new Event.EventLoading(false));
+		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
+		   //TODO:1，强开需要进行的后续操作
+		   EventBusUtils.postSticky(new Event.EventStrongOpenDeviceCallBack(deviceId, epcs));
+		} else {
+		   EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, epcs));
+		}
 	   }
 
 	   @Override
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
+		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
+		} else {
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		}
 		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 	   }
 
 	   @Override
@@ -201,6 +220,18 @@ public class AllDeviceCallBack {
 
 	   }
 	});
+   }
+
+   /**
+    * 强开的扫描
+    */
+   private void StrongOpenScanStart() {
+	List<String> deviceId = DevicesUtils.getReaderDeviceId();
+	for (String s : deviceId) {//记录强开后未关门
+	   Log.i("FAFAS", "StrongOpenScanStart   " + s);
+	   int i = DeviceManager.getInstance().StartUhfScan(s, READER_TIME);
+	   Log.i("FAFAS", "xxx   " + i);
+	}
    }
 
    /**
@@ -329,7 +360,7 @@ public class AllDeviceCallBack {
     * @param deviceIndentify
     */
    private void startScan(String deviceIndentify) {
-	LogUtils.i(TAG,"startScan   ");
+	LogUtils.i(TAG, "startScan   ");
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	EventBusUtils.postSticky(new Event.EventLoading(true));
@@ -337,32 +368,32 @@ public class AllDeviceCallBack {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 		   .find(BoxIdBean.class);
-//	   if (sReaderType.equals(READER_2)) {
-//		new Thread() {
-//		   public void run() {
-//			for (BoxIdBean deviceid : deviceBean) {
-//			   String device_id = deviceid.getDevice_id();
-//			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
-//			   LogUtils.i(TAG, "开始扫描了状态 罗丹贝尔   " + i + "    " + device_id);
-//			   try {
-//				Thread.sleep(3000);
-//			   } catch (InterruptedException e) {
-//				e.printStackTrace();
-//			   }
-//			}
-//		   }
-//		}.start();
-//	   } else {
-		for (BoxIdBean deviceid : deviceBean) {
-		   String device_id = deviceid.getDevice_id();
-		   int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-		   if (i==2){
-			DeviceManager.getInstance().StopUhfScan(device_id);
-			DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-		   }
-		   LogUtils.i(TAG, "开始扫描了状态    " + i+"    "+device_id);
+	   //	   if (sReaderType.equals(READER_2)) {
+	   //		new Thread() {
+	   //		   public void run() {
+	   //			for (BoxIdBean deviceid : deviceBean) {
+	   //			   String device_id = deviceid.getDevice_id();
+	   //			   int i = DeviceManager.getInstance().StartUhfScan(device_id, 3000);
+	   //			   LogUtils.i(TAG, "开始扫描了状态 罗丹贝尔   " + i + "    " + device_id);
+	   //			   try {
+	   //				Thread.sleep(3000);
+	   //			   } catch (InterruptedException e) {
+	   //				e.printStackTrace();
+	   //			   }
+	   //			}
+	   //		   }
+	   //		}.start();
+	   //	   } else {
+	   for (BoxIdBean deviceid : deviceBean) {
+		String device_id = deviceid.getDevice_id();
+		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+		if (i == 2) {
+		   DeviceManager.getInstance().StopUhfScan(device_id);
+		   DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
 		}
-//	   }
+		LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
+	   }
+	   //	   }
 	}
    }
 }

@@ -163,6 +163,10 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+        <service
+            android:name="high.rivamed.myapplication.service.ScanService"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

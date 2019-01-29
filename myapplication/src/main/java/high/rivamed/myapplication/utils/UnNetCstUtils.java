@@ -29,7 +29,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 public class UnNetCstUtils {
 
    private static List<InventoryVo> sVos;
-
+   static int type = 0;//控制第一次请求，然后需要等到重新获取新的耗材后才重置
    /**
     * 所有耗材数据的获取（用于本地）
     */
@@ -40,6 +40,7 @@ public class UnNetCstUtils {
 	   public void onSucceed(String result) {
 		LitePal.deleteAll(InventoryDto.class);
 		LitePal.deleteAll(InventoryVo.class);
+		type=0;
 		InventoryDto dto = mGson.fromJson(result, InventoryDto.class);
 		InventoryDto localDto = new InventoryDto();
 		List<InventoryVo> tVos = new ArrayList<>();
@@ -59,8 +60,8 @@ public class UnNetCstUtils {
     * @return
     */
    public static boolean getSqlChangeType(){
-	sVos = LitePal.where("status = ?", "3").find(InventoryVo.class);
-	LogUtils.i("UN","sVos   "+sVos.size());
+	sVos = LitePal.where("operationstatus > ? ", "0").find(InventoryVo.class);
+	LogUtils.i("UNCC","sVos   "+sVos.size());
 	if (sVos != null && sVos.size() > 0){
 	   return true;
 	}
@@ -83,16 +84,19 @@ public class UnNetCstUtils {
     */
    public static void putUnNetOperateYes(Gson mGson, Object activity){
 	if (getSqlChangeType()){//判断数据库是否有改变
-	   LogUtils.i("UN","putSqlDate(mGson)   "+putSqlDate(mGson));
-	   NetRequest.getInstance().putUnNetCstDate(putSqlDate(mGson),UIUtils.getContext(),new BaseResult(){
-		@Override
-		public void onSucceed(String result) {
-		   UnNetOperateBean bean = mGson.fromJson(result, UnNetOperateBean.class);
-		   if (bean.getOpFlg().equals("200")){
-			getAllCstDate(mGson, activity);	//重新获取在库耗材数据
+	   type ++;
+	   if (type==1){
+		LogUtils.i("UNCC","putSqlDate(mGson)   "+putSqlDate(mGson));
+		NetRequest.getInstance().putUnNetCstDate(putSqlDate(mGson),UIUtils.getContext(),new BaseResult(){
+		   @Override
+		   public void onSucceed(String result) {
+			UnNetOperateBean bean = mGson.fromJson(result, UnNetOperateBean.class);
+			if (bean.getOpFlg().equals("200")){
+			   getAllCstDate(mGson, activity);	//重新获取在库耗材数据
+			}
 		   }
-		}
-	   });
+		});
+	   }
 	}
    }
 }
