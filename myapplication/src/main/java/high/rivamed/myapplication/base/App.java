@@ -115,8 +115,7 @@ public class App extends Application {
 	   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 	}
 	LogcatHelper.getInstance(this).start();
-	if (mServiceManager == null && (SPUtils.getString(this, SAVE_SEVER_IP_TEXT) != null ||
-						  SPUtils.getString(this, SAVE_SEVER_IP_TEXT).equals(""))) {
+	if (mServiceManager == null && SPUtils.getString(this, SAVE_SEVER_IP_TEXT) != null ) {
 	   initMessgeService();
 	}
 

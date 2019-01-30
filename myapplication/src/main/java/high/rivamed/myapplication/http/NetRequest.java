@@ -782,9 +782,9 @@ public class NetRequest {
 			LogUtils.w(TAG, "请求Body： " + mGson.toJson(date));
 			LogUtils.w(TAG, "返回Body： " + response.body());
 			ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
-			if (netResult != null) {
-			   netResult.onSucceed(response.body());
-			}
+//			if (netResult != null) {
+//			   netResult.onSucceed(response.body());
+//			}
 		   } else if (opFlg.equals(ERROR_1000)) {//Token过期
 			if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
 			   setUpDateToken(response);//换token

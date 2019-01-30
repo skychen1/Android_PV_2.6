@@ -44,6 +44,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -401,52 +402,60 @@ public class FastOutFragment extends SimpleFragment {
 	if (getExceedTime(voList)) {
 	   return;
 	}
-	if (!UIUtils.getConfigType(mContext, CONFIG_007)) {//直接领取
-	   if (mDtoLy != null && mDtoLy.getInventoryVos().size() == 0) {
-		ToastUtils.showShort("未选择耗材");
-	   } else {
-		NetRequest.getInstance()
-			.putAllOperateYes(mTCstInventoryDtoJson, this, new BaseResult() {
-			   @Override
-			   public void onSucceed(String result) {
-				LogUtils.i(TAG, "result 领用 " + result);
-				MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
-				mShowNoDialog = DialogUtils.showNoDialog(mContext, "耗材领用成功！", 2, "nojump",
-										     null);
-				overFinish();
-			   }
+	if (UIUtils.getConfigType(mContext, CONFIG_007) || UIUtils.getConfigType(mContext, CONFIG_019)) {//绑定患者
+	   setBindLy(mTCstInventoryDtoJson);
+	} else {//直接领取
+	   setLy(mTCstInventoryDtoJson);
+	}
+   }
 
-			   @Override
-			   public void onError(String result) {
-				mShowNoDialog2 = DialogUtils.showNoDialog(mContext, "耗材领用失败，请重试！", 1,
-											"nojump", null);
-			   }
-			});
-	   }
-	} else {//绑定患者
-	   if (mDtoLy != null && mDtoLy.getInventoryVos().size() == 0) {
-		ToastUtils.showShort("未选择耗材");
+   private void setBindLy(String mTCstInventoryDtoJson) {
+	if (mDtoLy != null && mDtoLy.getInventoryVos().size() == 0) {
+	   ToastUtils.showShort("未选择耗材");
+	} else {
+	   InventoryDto inventoryDto = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
+	   if (inventoryDto.getInventoryVos().size() == mInOutDto.getOutInventoryVos().size()) {
+		mInOutDto.getOutInventoryVos().clear();
 	   } else {
-		InventoryDto inventoryDto = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
-		if (inventoryDto.getInventoryVos().size() == mInOutDto.getOutInventoryVos().size()) {
-		   mInOutDto.getOutInventoryVos().clear();
-		} else {
-		   for (int x = 0; x < mInOutDto.getOutInventoryVos().size(); x++) {
-			for (InventoryVo s : inventoryDto.getInventoryVos()) {
-			   if (s.getEpc().equals(mInOutDto.getOutInventoryVos().get(x).getEpc())) {
-				mInOutDto.getOutInventoryVos().remove(x);
-			   }
+		for (int x = 0; x < mInOutDto.getOutInventoryVos().size(); x++) {
+		   for (InventoryVo s : inventoryDto.getInventoryVos()) {
+			if (s.getEpc().equals(mInOutDto.getOutInventoryVos().get(x).getEpc())) {
+			   mInOutDto.getOutInventoryVos().remove(x);
 			}
 		   }
 		}
-		for (InventoryVo c : mInOutDto.getOutInventoryVos()) {
-		   c.setSelected(true);
-		}
-		inventoryDto.setBindType("afterBind");
-		EventBusUtils.postSticky(new Event.EventButGone(true));
-		startActivity(new Intent(mContext, OutBoxBingActivity.class));
-		EventBusUtils.postSticky(new Event.EventOutBoxBingDto(inventoryDto));
 	   }
+	   for (InventoryVo c : mInOutDto.getOutInventoryVos()) {
+		c.setSelected(true);
+	   }
+	   inventoryDto.setBindType("afterBind");
+	   EventBusUtils.postSticky(new Event.EventButGone(true));
+	   startActivity(new Intent(mContext, OutBoxBingActivity.class));
+	   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(inventoryDto));
+	}
+   }
+
+   private void setLy(String mTCstInventoryDtoJson) {
+	if (mDtoLy != null && mDtoLy.getInventoryVos().size() == 0) {
+	   ToastUtils.showShort("未选择耗材");
+	} else {
+	   NetRequest.getInstance()
+		   .putAllOperateYes(mTCstInventoryDtoJson, this, new BaseResult() {
+			@Override
+			public void onSucceed(String result) {
+			   LogUtils.i(TAG, "result 领用 " + result);
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
+			   mShowNoDialog = DialogUtils.showNoDialog(mContext, "耗材领用成功！", 2, "nojump",
+										  null);
+			   overFinish();
+			}
+
+			@Override
+			public void onError(String result) {
+			   mShowNoDialog2 = DialogUtils.showNoDialog(mContext, "耗材领用失败，请重试！", 1,
+										   "nojump", null);
+			}
+		   });
 	}
    }
 

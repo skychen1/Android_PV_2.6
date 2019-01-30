@@ -53,7 +53,7 @@ public class ScanService extends Service {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventStrongOpenDeviceCallBack event) {
 
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)

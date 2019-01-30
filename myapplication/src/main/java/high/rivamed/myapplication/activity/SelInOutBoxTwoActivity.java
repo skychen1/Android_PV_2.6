@@ -65,7 +65,7 @@ import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -125,71 +125,77 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public InventoryDto mInventoryDto;
    public List<InventoryVo> mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
    private int mOperation;
+   private Event.EventButton mEventButton;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
 	if (event.type) {
-	   if (event.bing) {//绑定的按钮转换
-		for (InventoryVo b : mInventoryVos) {
-		   ArrayList<String> strings = new ArrayList<>();
-		   strings.add(b.getCstCode());
-		   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-			 ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mTimelyRight.setText("确认并退出登录");
-			}
-			return;
+	   mEventButton = event;
+	   setButtonType(mEventButton);
+	}
+   }
+
+   private void setButtonType(Event.EventButton event) {
+	if (event.bing) {//绑定的按钮转换
+	   for (InventoryVo b : mInventoryVos) {
+		ArrayList<String> strings = new ArrayList<>();
+		strings.add(b.getCstCode());
+		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
+		    ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+		     (b.getPatientName() == null || b.getPatientName().equals(""))) || mIsClick) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
 		   }
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getExpireStatus() == 0) ||
-			 (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "OutBoxBingActivity   cancel");
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mTimelyRight.setText("确认并退出登录");
-			}
-			return;
-		   } else {
-			LogUtils.i(TAG, "OutBoxBingActivity   start");
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
-			if (mStarts != null) {
-			   LogUtils.i(TAG, "OutBoxBingActivity   ssss");
-			   mStarts.cancel();
-			   mStarts.start();
-			}
+		   return;
+		}
+		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+		     b.getExpireStatus() == 0) ||
+		    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)||mIsClick) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   LogUtils.i(TAG, "OutBoxBingActivity   cancel");
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		   return;
+		} else {
+		   LogUtils.i(TAG, "OutBoxBingActivity   start");
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			LogUtils.i(TAG, "OutBoxBingActivity   ssss");
+			mStarts.cancel();
+			mStarts.start();
 		   }
 		}
-	   } else {
-		for (InventoryVo b : mInventoryVos) {
-		   LogUtils.i(TAG, "mOperation   cancel" + mOperation);
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getExpireStatus() != 0)) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mTimelyRight.setText("确认并退出登录");
-			}
-			return;
-		   } else {
-			LogUtils.i(TAG, "SelInOutBoxTwoActivity   start");
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mStarts.start();
-			}
+	   }
+	} else {
+	   for (InventoryVo b : mInventoryVos) {
+		LogUtils.i(TAG, "mOperation   cancel" + mOperation);
+		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8) ||
+		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+		     b.getExpireStatus() != 0)||mIsClick) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		   return;
+		} else {
+		   LogUtils.i(TAG, "SelInOutBoxTwoActivity   start");
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mStarts.start();
 		   }
 		}
 	   }
@@ -222,7 +228,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+
 	}
+	EventBusUtils.post(new Event.EventButton(true,false));
 	EventBusUtils.removeStickyEvent(getClass());
    }
 
@@ -654,9 +662,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   ContentValues values = new ContentValues();
 		   values.put("status", "3");
 		   values.put("operationstatus", "3");
-		   values.put("updatetime", getDates());
-		   values.put("accountId", SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-		   values.put("accountName", SPUtils.getString(mContext, KEY_ACCOUNT_NAME));
+		   values.put("renewtime", getDates());
+		   values.put("accountid", SPUtils.getString(mContext, KEY_ACCOUNT_ID));
+		   values.put("username", SPUtils.getString(mContext, KEY_USER_NAME));
 		   for (InventoryVo s : dto.getInventoryVos()) {
 			LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
 		   }

@@ -40,17 +40,13 @@ import org.litepal.LitePal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
@@ -152,10 +148,23 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   private int    mConfigType;
+   public static int    mConfigType;
    private String mDesc;
    private boolean mOnStart = false;
 
+   /**
+    * ic卡和指纹仪登陆回调
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventICFinger(Event.EventICAndFinger event) {
+	if (event.type==1){
+	   getConfigDate(event.type, event.date);
+	}else if (event.type==2){
+	   getConfigDate(event.type, event.date.trim().replaceAll("\n", ""));
+	}
+   }
    /**
     * 设备title连接状态
     *
@@ -201,7 +210,7 @@ public class LoginActivity extends SimpleActivity {
 	mFragments.add(new LoginPassFragment());//紧急登录
 	initData();
 	initlistener();
-	initCall();
+
 	Intent intent = new Intent(LoginActivity.this, ScanService.class);
 	startService(intent);
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
@@ -504,96 +513,6 @@ public class LoginActivity extends SimpleActivity {
 	return fromJson;
    }
 
-   private void initCall() {
-	DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
-	   @Override
-	   public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
-
-	   }
-
-	   @Override
-	   public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
-
-	   }
-
-	   @Override
-	   public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
-
-	   }
-
-	   @Override
-	   public void OnIDCard(String deviceId, String idCard) {
-		if (UIUtils.isFastDoubleClick()) {
-		   return;
-		} else {
-		   mConfigType = 1;//IC卡
-		   getConfigDate(mConfigType, idCard);
-		}
-	   }
-
-	   @Override
-	   public void OnFingerFea(String deviceId, String fingerFea) {
-		if (UIUtils.isFastDoubleClick()) {
-		   return;
-		} else {
-		   mConfigType = 2;//指纹登录
-		   getConfigDate(mConfigType, fingerFea.trim().replaceAll("\n", ""));
-		}
-	   }
-
-	   @Override
-	   public void OnFingerRegExcuted(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-	   }
-
-	   @Override
-	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-
-	   }
-
-	   @Override
-	   public void OnUhfScanRet(
-		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
-	   }
-
-	   @Override
-	   public void OnUhfScanComplete(boolean success, String deviceId) {
-
-	   }
-
-	   @Override
-	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-	   }
-
-	   @Override
-	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-
-	   }
-	});
-
-   }
 
    private void validateLoginIdCard(String idCard) {
 	IdCardLoginDto data = new IdCardLoginDto();

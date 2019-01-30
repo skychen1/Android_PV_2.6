@@ -73,7 +73,7 @@ import static high.rivamed.myapplication.cont.Constants.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -157,6 +157,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    List<String> titeleList = null;
    public  int    mSize;
    private String mBingType;
+
    /**
     * (检测没有关门)语音
     *
@@ -170,6 +171,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
+	EventBusUtils.post(new Event.EventButton(true,true));
 	EventBusUtils.removeStickyEvent(getClass());
    }
    /**
@@ -217,40 +219,44 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventButton(Event.EventButton event) {
 	if (event.type) {
-	   if (event.bing) {//绑定的按钮转换
-		for (InventoryVo b : mInventoryVos) {
-		   ArrayList<String> strings = new ArrayList<>();
-		   strings.add(b.getCstCode());
+	   setButtonType(event);
+	}
+   }
 
-		   if (UIUtils.getConfigType(mContext, CONFIG_009) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mTimelyRight.setText("确认并退出登录");
-			}
-			return;
+   private void setButtonType(Event.EventButton event) {
+	if (event.bing) {//绑定的按钮转换
+	   for (InventoryVo b : mInventoryVos) {
+		ArrayList<String> strings = new ArrayList<>();
+		strings.add(b.getCstCode());
+
+		if (UIUtils.getConfigType(mContext, CONFIG_009) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+										    (b.getPatientName() == null || b.getPatientName().equals(""))) || mIsClick) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
 		   }
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) || (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			LogUtils.i(TAG, "OutBoxBingActivity   cancel");
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mTimelyRight.setText("确认并退出登录");
-			}
-			return;
-		   } else {
-			LogUtils.i(TAG, "OutBoxBingActivity   start");
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
-			if (mStarts != null) {
-			   LogUtils.i(TAG, "OutBoxBingActivity   ssss");
-			   mStarts.cancel();
-			   mStarts.start();
-			}
+		   return;
+		}
+		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) || (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)||mIsClick) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   LogUtils.i(TAG, "OutBoxBingActivity   cancel");
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		   return;
+		} else {
+		   LogUtils.i(TAG, "OutBoxBingActivity   start");
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			LogUtils.i(TAG, "OutBoxBingActivity   ssss");
+			mStarts.cancel();
+			mStarts.start();
 		   }
 		}
 	   }
@@ -718,7 +724,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			ContentValues values = new ContentValues();
 			values.put("status", "3");
 			values.put("operationstatus", "3");
-			values.put("updatetime", getDates());
+			values.put("renewtime", getDates());
 
 			for (InventoryVo s : mInventoryDto.getInventoryVos()){
 			   values.put("idNo",s.getIdNo());
@@ -729,11 +735,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			   values.put("patientId",s.getPatientId());
 			   values.put("patientName",s.getPatientName());
 			   values.put("sex",s.getSex());
-			   values.put("surgeryTime",s.getSurgeryTime());
-			   values.put("accountId",SPUtils.getString(mContext,KEY_ACCOUNT_ID ));
-			   values.put("accountName",SPUtils.getString(mContext,KEY_ACCOUNT_NAME));
-
+			   values.put("surgerytime",s.getSurgeryTime());
+			   values.put("accountid",SPUtils.getString(mContext,KEY_ACCOUNT_ID ));
+			   values.put("username",SPUtils.getString(mContext,KEY_USER_NAME));
+			   Log.e(TAG,"s.getEpc()   "+s.getEpc());
 			   LitePal.updateAll(InventoryVo.class,values,"epc = ?",s.getEpc());
+
 			}
 			MusicPlayer.playSoundByOperation(mDtoOperation);//播放操作成功提示音
 

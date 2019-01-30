@@ -91,6 +91,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private List<DeviceInventoryVo> mDeviceList = new ArrayList<>();
    private List<Inventory> mEpcList;
    private int                   mEpcsNumber = 0;
+   public static boolean mTimelyOnResume;
 
    /**
     * 重新加载数据
@@ -286,6 +287,7 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void onPause() {
 	mPauseS = true;
+	mTimelyOnResume = false;
 	EventBusUtils.unregister(this);
 	super.onPause();
 
@@ -298,6 +300,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
+	mTimelyOnResume = true;
 	EventBusUtils.register(this);
 	super.onResume();
    }

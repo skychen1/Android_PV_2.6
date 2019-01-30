@@ -19,10 +19,13 @@ import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.activity.LoginActivity.mConfigType;
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.fragment.TimelyAllFrag.mTimelyOnResume;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -90,12 +93,23 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void OnIDCard(String deviceId, String idCard) {
-
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   mConfigType = 1;//IC卡
+		   EventBusUtils.post(new Event.EventICAndFinger(deviceId,idCard,mConfigType));
+		}
 	   }
 
 	   @Override
 	   public void OnFingerFea(String deviceId, String fingerFea) {
+		if (UIUtils.isFastDoubleClick()) {
+		   return;
+		} else {
+		   mConfigType = 2;//指纹登录
+		   EventBusUtils.post(new Event.EventICAndFinger(deviceId,fingerFea,mConfigType));
 
+		}
 	   }
 
 	   @Override
@@ -187,10 +201,11 @@ public class AllDeviceCallBack {
 	   public void OnUhfScanRet(
 		   boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
 		LogUtils.i(TAG, "扫描完成   " + success + "   deviceId   " + deviceId);
-		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
-		   //TODO:1，强开需要进行的后续操作
-		   EventBusUtils.postSticky(new Event.EventStrongOpenDeviceCallBack(deviceId, epcs));
+		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0&&!mTimelyOnResume) {//强开
+		   Log.e(TAG,"扫描强开");
+		   EventBusUtils.post(new Event.EventStrongOpenDeviceCallBack(deviceId, epcs));
 		} else {
+		   Log.e(TAG,"正常扫描");
 		   EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, epcs));
 		}
 	   }

@@ -11,7 +11,7 @@ import high.rivamed.myapplication.fragment.StockMiddleInforFrag;
  * 项目名称:    Android_PV_2.6.4New
  * 创建者:      DanMing
  * 创建时间:    2019/1/4 17:16
- * 描述:        TODO:
+ * 描述:       查看库存详情
  * 包名:        high.rivamed.myapplication.activity
  * <p>
  * 更新者：     $$Author$$

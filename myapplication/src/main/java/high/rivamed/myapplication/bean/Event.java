@@ -26,6 +26,19 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
     /**
+     * ic卡登陆
+     */
+    public static class EventICAndFinger {
+        public int type;
+        public String deviceId;
+        public String date;
+        public EventICAndFinger(String deviceId,String date,int type) {
+            this.type = type;
+            this.deviceId = deviceId;
+            this.date = date;
+        }
+    }
+    /**
      * 快速开柜重新扫描
      */
     public static class EventMealType {

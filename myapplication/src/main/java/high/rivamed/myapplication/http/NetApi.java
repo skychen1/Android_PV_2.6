@@ -18,7 +18,7 @@ public interface NetApi {
     String URL_GET_VER = "/rmApi/userManage/systemVersion/getApkInfo";//获取版本信息    新
     String URL_UPDATE = "/rmApi/userManage/systemVersion/downloadApk";//下载    新
     //工程模式
-    String URL_TEST_FINDDEVICE = "/dict/deviceDict/findDevice";//根据部件类型查名字   新
+    String URL_TEST_FINDDEVICE = "/dict/deviceDict/rmApi/findDevice";//根据部件类型查名字   新
     String URL_TEST_SNQUERY = "/basic/thing/findEquipmentInfo";//SN码查询   新
     String URL_TEST_REGISTE = "/basic/thing/save";//预注册   新
     String URL_TEST_ACTIVE = "/basic/thing/active";//设备激活    新
@@ -28,7 +28,7 @@ public interface NetApi {
 
     String URL_TEST_FIND_OPERROOMS = "/basic/operationRoom/findOperRoomsByDept";//根据科室查询手术室信息   新
 
-    String URL_HOME_BOXSIZE = "/basic/device/getCabinetCount";//获取柜子信息   新
+    String URL_HOME_BOXSIZE = "/basic/device/rmApi/getCabinetCount";//获取柜子信息   新
 
     //用户
     String URL_USER_LOGIN = "/rmApi/restLogin/validateLoginPassword";//登录    新
@@ -46,10 +46,10 @@ public interface NetApi {
     String URL_HOME_RUNWATE = "/consumables/inventoryJournal/findInventoryJournal";//查询耗材流水    新
 
     //库存状态
-    String URL_STOCKSTATUS_TOP = "/consumables/inventory/expireStatistics";//库存监控 耗材效期监控     新
-    String URL_STOCKSTATUS_DETAILS = "/consumables/inventory/inventoryStatusAndDetails";//库存详情和耗材库存预警    新
+    String URL_STOCKSTATUS_TOP = "/consumables/inventory/rmApi/expireStatistics";//库存监控 耗材效期监控     新
+    String URL_STOCKSTATUS_DETAILS = "/consumables/inventory/rmApi/inventoryStatusAndDetails";//库存详情和耗材库存预警    新
     String URL_STOCKUNCON_RIGHT = "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
-    String URL_STOCK_DETAIL = "/consumables/inventory/detail";//查询单个耗材    新
+    String URL_STOCK_DETAIL = "/consumables/inventory/rmApi/detail";//查询单个耗材    新
 
 
     //耗材操作
@@ -101,10 +101,9 @@ public interface NetApi {
     String URL_DELETE_MESSAGE_BY_ID = "/hvcMessage/deleteMessageById";//删除待办任务
 
     //本地存储
-    String URL_UNENT_GET_ALLCST = "/consumables/inventory/getAllCst";//获取设备中所有的耗材
+    String URL_UNENT_GET_ALLCST = "/consumables/inventory/rmApi/getAllCst";//获取设备中所有的耗材
     String URL_UNENT_GET_LIST_ACCOUNT = "/rmApi/userManage/account/listAccount";//获取离线账户信息
-    String URL_UNENT_GET_FIND_OPERATIONROOM = "/basic/operationRoom/findByThingId";//获取离线手术间
-    String URL_UNENT_CST_OFFLINE = "/consumables/inventory/forceOperateInventoryCst";//离线领用和强开
+    String URL_UNENT_GET_FIND_OPERATIONROOM = "/basic/operationRoom/rmApi/findByThingId";//获取离线手术间
+    String URL_UNENT_CST_OFFLINE = "/consumables/inventory/rmApi/forceOperateInventoryCst";//离线领用和强开
 
-    String URL_CONNECT_TITLE = "/rmApi/restLogin/connectAble";//顶部连接状态(网线和WIFI插上后的检测)
 }
