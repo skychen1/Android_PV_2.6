@@ -64,6 +64,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
@@ -528,6 +529,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 				DialogUtils.showTwoDialog(mContext, mContext, 2, "耗材领用成功",
 								  sureReciveOrder.getMsg());
 			   }
+			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
+
 			} else {
 			   ToastUtils.showShort(sureReciveOrder.getMsg());
 			}

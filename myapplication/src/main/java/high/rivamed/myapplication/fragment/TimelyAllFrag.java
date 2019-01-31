@@ -90,7 +90,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private ArrayList<String> mBoxIdListss;
    private List<DeviceInventoryVo> mDeviceList = new ArrayList<>();
    private List<Inventory> mEpcList;
-   private int                   mEpcsNumber = 0;
+   private int mEpcsNumber = 0;
    public static boolean mTimelyOnResume;
 
    /**
@@ -107,6 +107,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		mLoading.mDialog.dismiss();
 		mLoading = null;
 	   }
+
 	   AllDeviceCallBack.getInstance().initCallBack();
 	} else {
 	   mPauseS = true;
@@ -207,7 +208,7 @@ public class TimelyAllFrag extends SimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	if (!mPauseS) {
 	   if (mLoading != null) {
@@ -279,8 +280,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
 	initDateAll();
+	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
 	AllDeviceCallBack.getInstance().initCallBack();
    }
 
@@ -347,14 +348,19 @@ public class TimelyAllFrag extends SimpleFragment {
 	} else {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
 	}
+	if (mTimelyAllAdapter == null) {
+	   mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mInventoryVos);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	   mRefreshLayout.setEnableAutoLoadMore(false);
+	   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	   mRecyclerview.setAdapter(mTimelyAllAdapter);
+	} else {
+	   mTimelyAllAdapter.getData().clear();
+	   mTimelyAllAdapter.getData().addAll(mInventoryVos);
+	}
 
-	mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mInventoryVos);
-	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-	mRefreshLayout.setEnableAutoLoadMore(false);
-	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-	mRecyclerview.setAdapter(mTimelyAllAdapter);
 	mTimelyAllAdapter.notifyDataSetChanged();
 	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
@@ -389,12 +395,11 @@ public class TimelyAllFrag extends SimpleFragment {
 		   xxx = mGson.toJson(dto);
 		}
 		LogUtils.i(TAG, "详情 xxx   " + xxx);
-		NetRequest.getInstance().getDetailDate(xxx, this,  new BaseResult() {
+		NetRequest.getInstance().getDetailDate(xxx, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "详情 result   " + result);
-			InventoryDto inventoryDto = mGson.fromJson(result,
-										 InventoryDto.class);
+			InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
 			inventoryDto.setEpcName(mInventoryVos.get(position).getCstName());
 			inventoryDto.setCstSpec(mInventoryVos.get(position).getCstSpec());
 			mContext.startActivity(new Intent(mContext, TimelyDetailsActivity.class));
@@ -441,14 +446,14 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请先盘点后再查看");
 		   } else {
 			LogUtils.i(TAG, "盘盈 mObject   " + mToJson);
-			NetRequest.getInstance().getProfitDate(mToJson, this,  new BaseResult() {
+			NetRequest.getInstance().getProfitDate(mToJson, this, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘盈 result   " + result);
-				InventoryDto inventoryDto = mGson.fromJson(result,
-											 InventoryDto.class);
-				if (inventoryDto.getErrorEpcs() != null && inventoryDto.getErrorEpcs().size() > 0) {
-				String   string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
+				if (inventoryDto.getErrorEpcs() != null &&
+				    inventoryDto.getErrorEpcs().size() > 0) {
+				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
 				   ToastUtils.showLong(string);
 				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 				}
@@ -477,10 +482,10 @@ public class TimelyAllFrag extends SimpleFragment {
 			   @Override
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘亏 result   " + result);
-				InventoryDto inventoryDto = mGson.fromJson(result,
-											 InventoryDto.class);
-				if (inventoryDto.getErrorEpcs() != null && inventoryDto.getErrorEpcs().size() > 0) {
-				   String   string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
+				if (inventoryDto.getErrorEpcs() != null &&
+				    inventoryDto.getErrorEpcs().size() > 0) {
+				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
 				   ToastUtils.showLong(string);
 				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 				}
@@ -517,7 +522,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		ToastUtils.showShort("reader未启动，请稍后重新扫描");
 	   }
 	   for (String readerCode : mReaderDeviceId) {
-		DeviceManager.getInstance().StartUhfScan(readerCode,READER_TIME);
+		DeviceManager.getInstance().StartUhfScan(readerCode, READER_TIME);
 	   }
 	} else {
 	   mBoxIdListss = new ArrayList<String>();
@@ -534,7 +539,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
-			DeviceManager.getInstance().StartUhfScan(device_id,READER_TIME);
+			DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
 		   }
 		}
 	   }
@@ -617,8 +622,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			   } else {//重新刷新的数据
 				mInventoryVos.clear();
 				mDeviceInventoryVos.clear();
-				InventoryDto mCstInventoryDto = mGson.fromJson(result,
-											     InventoryDto.class);
+				InventoryDto mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 				List<InventoryVo> inventoryVos = mCstInventoryDto.getInventoryVos();
 				List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 				mInventoryVos.addAll(inventoryVos);

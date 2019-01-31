@@ -723,7 +723,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   InventoryDto cc = LitePal.findFirst(InventoryDto.class);
 		   InventoryDto inventoryDto = new InventoryDto();
 		   inventoryDto.setThingId(cc.getThingId());
-
+		   inventoryDto.setUnNetMoreEpcs(new ArrayList<>());
 		   LogUtils.i(TAG, "FDFDF0   " + mGson.toJson(inventoryDto));
 		   InventoryDto dto = mGson.fromJson(toJson, InventoryDto.class);
 		   if (dto.getDeviceInventoryVos().size() > 0) {
@@ -740,6 +740,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 									    deviceId).findFirst(InventoryVo.class);
 				InventoryVo unnetEPC = LitePal.where("epc = ? ", s.getEpc())
 					.findFirst(InventoryVo.class);
+				Log.i("tadg","inventoryDto.getUnNetMoreEpcs()    "+(unnetEPC==null));
 				if (unnetEPC == null) {
 				   inventoryDto.getUnNetMoreEpcs().add(s.getEpc());
 				} else {

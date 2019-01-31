@@ -65,6 +65,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
@@ -575,6 +576,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			if (info.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 			   ToastUtils.showShort(info.getMsg());
+			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 			   finish();
 			} else {
 			   ToastUtils.showShort(info.getMsg());

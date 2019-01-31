@@ -158,7 +158,9 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            if(mSeven_seven!=null){
+                mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            }
             mLl.setBackgroundResource(R.color.bg_f);
         }
 
