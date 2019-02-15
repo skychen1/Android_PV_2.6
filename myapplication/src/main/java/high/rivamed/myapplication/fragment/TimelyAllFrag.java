@@ -361,9 +361,10 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mTimelyAllAdapter.getData().addAll(mInventoryVos);
 	}
 
-	mTimelyAllAdapter.notifyDataSetChanged();
 	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
+	mTimelyAllAdapter.notifyDataSetChanged();
+
 	mTimelyAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -627,6 +628,8 @@ public class TimelyAllFrag extends SimpleFragment {
 				List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 				mInventoryVos.addAll(inventoryVos);
 				mDeviceInventoryVos.addAll(deviceInventoryVos);
+				mTimelyAllAdapter.getData().clear();
+				mTimelyAllAdapter.getData().addAll(inventoryVos);
 				int number = 0;
 				for (InventoryVo InventoryVo : mInventoryVos) {
 				   number += InventoryVo.getCountStock();
@@ -706,6 +709,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	   List<DeviceInventoryVo> deviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 	   mInventoryVos.addAll(inventoryVos);
 	   mDeviceInventoryVos.addAll(deviceInventoryVos);
+	   mTimelyAllAdapter.getData().clear();
+	   mTimelyAllAdapter.getData().addAll(inventoryVos);
 	   int number = 0;
 	   for (InventoryVo inventoryVo : mInventoryVos) {
 		number += inventoryVo.getCountStock();
