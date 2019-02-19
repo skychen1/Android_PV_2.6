@@ -90,7 +90,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
             String deviceName = deviceNames.toString().substring(0,deviceNames.toString().length()-1);
             mSeven_five.setText(deviceName);
         }else {
-            mSeven_five.setText(deviceNames.toString());
+            mSeven_five.setText("缺货");
         }
 
         if (!TextUtils.isEmpty(item.getStatus())) {
@@ -115,7 +115,11 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
                 mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
                 mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
                 mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-                mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+                if (mSeven_five.getText().equals("缺货")){
+                    mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+                }else {
+                    mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+                }
                 mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             }
         } else {
@@ -124,7 +128,11 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            if (mSeven_five.getText().equals("缺货")){
+                mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+            }else {
+                mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            }
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
         mSeven_seven.setOnClickListener(new View.OnClickListener() {

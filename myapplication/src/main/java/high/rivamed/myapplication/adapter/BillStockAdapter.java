@@ -95,7 +95,12 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
         for (int i = 0; i < item.getDeviceNames().size(); i++) {
             deviceNames.append(item.getDeviceNames().get(i));
         }
-        mSeven_five.setText(deviceNames.toString());
+        if (deviceNames.toString().trim().length()>0){
+            mSeven_five.setText(deviceNames.toString());
+        }else {
+            mSeven_five.setText("缺货");
+        }
+
         mSeven_six.setText(item.getPatientName());
         mSeven_seven.setText(item.getReceivedStatus());
         mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
@@ -119,10 +124,13 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
                 mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 		   mSeven_eight.setTextColor(mContext.getResources().getColor(R.color.color_green));
             }
-            mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            if (mSeven_five.getText().equals("缺货")){
+                mSeven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+            }else {
+                mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+            }
             mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-
             mSeven_eight.setText("打开柜门");
         }
         mSeven_eight.setOnClickListener(new View.OnClickListener() {

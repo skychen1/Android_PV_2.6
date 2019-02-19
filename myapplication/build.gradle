@@ -40,7 +40,7 @@ android {
             signingConfig signingConfigs.release_config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "${defaultConfig.versionName}高值强开测试版.apk"
+                    outputFileName = "${defaultConfig.versionName}高值测试版.apk"
                 }
             }
         }
