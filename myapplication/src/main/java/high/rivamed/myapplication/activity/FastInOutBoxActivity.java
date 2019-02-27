@@ -99,6 +99,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventFastMoreScan event) {
 	if (event.b) {
+	   mInOutDto=null;
 	   moreStartScan();
 	}
    }

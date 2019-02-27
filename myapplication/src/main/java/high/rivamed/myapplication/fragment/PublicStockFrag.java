@@ -110,6 +110,7 @@ public class PublicStockFrag extends SimpleFragment {
    private int                  mStopFlag;
    private InventoryDto         mInventoryDto;
    private List<InventoryVo>    mInventoryVos;
+   private List<InventoryVo>    mInventoryVosS;
    public  StockLeftDownAdapter mDownAdapter;
    private String               mTrim;
    private List<InventoryVo>    mTCstStockRightList;
@@ -233,16 +234,16 @@ public class PublicStockFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
-		if (mInventoryVos != null) {
-		   mInventoryVos.clear();
+		if (mInventoryVosS != null) {
+		   mInventoryVosS.clear();
 		   mLeftDownBean = mGson.fromJson(result, InventoryDto.class);
 		   List<InventoryVo> inventoryVos = mLeftDownBean.getInventoryVos();
-		   mInventoryVos.addAll(inventoryVos);
+		   mInventoryVosS.addAll(inventoryVos);
 		   mStockLeftAdapter.notifyDataSetChanged();
 		} else {
 		   mLeftDownBean = mGson.fromJson(result, InventoryDto.class);
-		   mInventoryVos = mLeftDownBean.getInventoryVos();
-		   if (mInventoryVos != null) {
+		   mInventoryVosS = mLeftDownBean.getInventoryVos();
+		   if (mInventoryVosS != null) {
 			mLayout = R.layout.item_stockmid_five_layout;
 			mHeadView = LayoutInflater.from(_mActivity)
 				.inflate(R.layout.item_stockmid_five_title_layout,
@@ -253,7 +254,7 @@ public class PublicStockFrag extends SimpleFragment {
 			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 
-			mStockLeftAdapter = new StockLeftDownAdapter(mLayout, mInventoryVos, mSize);
+			mStockLeftAdapter = new StockLeftDownAdapter(mLayout, mInventoryVosS, mSize);
 			mHeadView.setBackgroundResource(R.color.bg_green);
 			mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 			mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
@@ -272,7 +273,7 @@ public class PublicStockFrag extends SimpleFragment {
 					   BaseQuickAdapter adapter, View view, int position) {
 					mContext.startActivity(
 						new Intent(mContext, StockMidTypeActivity.class));
-					InventoryVo vosBean = mInventoryVos.get(position);
+					InventoryVo vosBean = mInventoryVosS.get(position);
 					EventBusUtils.postSticky(new Event.EventStockDetailVo(vosBean));
 				   }
 				});

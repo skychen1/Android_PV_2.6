@@ -123,6 +123,10 @@ public class FastInFragment extends SimpleFragment {
    public static CountDownTimer mStarts;
    public static boolean mOnResume =false;
    public  boolean mIsClick ;
+   private int mCountTwoin;
+   private int mCountMoveIn;
+   private int mCountBack;
+
    /**
     * (检测没有关门)语音
     *
@@ -175,17 +179,22 @@ public class FastInFragment extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutDtoEvent(Event.EventOutDto event) {
 	LogUtils.i(TAG, "event   " + event.outSize);
+	LogUtils.i(TAG, "size   " + event.inventoryDto.getCountTwoin());
 	LogUtils.i(TAG, "type   " + event.type);
 	if (mInOutDto != null) {
 	   mInOutDto.setInInventoryVos(event.inventoryDto.getInInventoryVos());
 	   mInSize = event.inSize;
 	   mOutSize = event.outSize;
+
 	} else {
 	   mInSize = event.inSize;
 	   mOutSize = event.outSize;
 	   mInOutDto = event.inventoryDto;
 
 	}
+	mCountTwoin = event.inventoryDto.getCountTwoin();
+	mCountMoveIn = event.inventoryDto.getCountMoveIn();
+	mCountBack = event.inventoryDto.getCountBack();
 	mDtoOperation = mInOutDto.getOperation();
 	if (mAllOutText != null && mInOutDto.getOutInventoryVos().size() != 0) {
 	   mAllOutText.setText("注意：您还有出柜耗材尚未确认，请完成操作后确认！");
@@ -381,11 +390,12 @@ public class FastInFragment extends SimpleFragment {
 	for (InventoryVo vosBean : mInOutDto.getInInventoryVos()) {
 	   strings.add(vosBean.getCstCode());
 	}
+
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml(
-		"入库：<font color='#262626'><big>" + mInOutDto.getCountTwoin() +
-		"</big>&emsp</font>移入：<font color='#262626'><big>" + mInOutDto.getCountMoveIn() +
-		"</big>&emsp</font>退回：<font color='#262626'><big>" + mInOutDto.getCountBack() +
+		"入库：<font color='#262626'><big>" + mCountTwoin +
+		"</big>&emsp</font>移入：<font color='#262626'><big>" + mCountMoveIn +
+		"</big>&emsp</font>退回：<font color='#262626'><big>" + mCountBack +
 		"</big>&emsp</font>耗材种类：<font color='#262626'><big>" + list.size() +
 		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 		mInOutDto.getInInventoryVos().size() + "</big></font>"));

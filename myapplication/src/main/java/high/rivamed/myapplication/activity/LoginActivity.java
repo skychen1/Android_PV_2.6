@@ -151,13 +151,14 @@ public class LoginActivity extends SimpleActivity {
    public static int    mConfigType;
    private String mDesc;
    private boolean mOnStart = false;
+   private Intent mIntent;
 
    /**
     * ic卡和指纹仪登陆回调
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventICFinger(Event.EventICAndFinger event) {
 	if (event.type==1){
 	   getConfigDate(event.type, event.date);
@@ -175,7 +176,6 @@ public class LoginActivity extends SimpleActivity {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect);
 	if (mTitleConn && mOnStart) {
-
 	   getAllCstDate(mGson, this);
 	   getUnNetUseDate();
 	   getUnEntFindOperation();
@@ -211,10 +211,7 @@ public class LoginActivity extends SimpleActivity {
 	initData();
 	initlistener();
 
-	Intent intent = new Intent(LoginActivity.this, ScanService.class);
-	startService(intent);
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-
 	   getBoxSize();
 	   getLeftDate();
 	}
@@ -223,9 +220,13 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-
 	LogUtils.i(TAG,"mTitleConn  onStart     "+mTitleConn);
 	mOnStart = true;
+	if (mIntent==null){
+	   mIntent = new Intent(LoginActivity.this, ScanService.class);
+	}
+	startService(mIntent);
+
 	mPushFormOrders.clear();
 	if (mTitleConn){
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
@@ -562,9 +563,9 @@ public class LoginActivity extends SimpleActivity {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
 		if (mServiceManager!=null){
-		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
 		   mServiceManager.stopService();
 		   mServiceManager=null;
+		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
 		}
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);

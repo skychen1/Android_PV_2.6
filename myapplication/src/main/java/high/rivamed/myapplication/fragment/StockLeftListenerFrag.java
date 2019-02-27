@@ -28,6 +28,7 @@ import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
@@ -45,7 +46,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
  */
 
 public class StockLeftListenerFrag extends SimpleFragment {
-
+	String TAG ="StockLeftListenerFrag";
    @BindView(R.id.cttimecheck_rg)
    SlidingTabLayout mCttimeCheck_Rg;
    @BindView(R.id.cttimecheck_viewpager)
@@ -79,8 +80,8 @@ public class StockLeftListenerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
+	LogUtils.i(TAG, "START3   " + event.type);
 	if (event.type.equals("START3")) {
-
 	   getLeftDate();
 	}
    }
@@ -88,8 +89,8 @@ public class StockLeftListenerFrag extends SimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
+	LogUtils.i(TAG, "START3 fafafa  " );
 	getLeftDate();
-
    }
 
 
@@ -103,10 +104,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		   onSucceedDate();
 		}
 	   }
-	   @Override
-	   public void onError(String result) {
-//		mBuilder.mDialog.dismiss();
-	   }
+
 	});
    }
 
@@ -136,11 +134,11 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		manager.beginTransaction().replace(R.id.home_stock_viewpager, inforFrag).commit();
 	   }
 	});
-	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
-	mCttimecheckViewpager.setAdapter(mPagerAdapter);
-	mCttimecheckViewpager.setCurrentItem(0);
-	mCttimecheckViewpager.setOffscreenPageLimit(6);
-	mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+	   mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
+	   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+	   mCttimecheckViewpager.setCurrentItem(0);
+	   mCttimecheckViewpager.setOffscreenPageLimit(6);
+	   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
    }
 
    @Override

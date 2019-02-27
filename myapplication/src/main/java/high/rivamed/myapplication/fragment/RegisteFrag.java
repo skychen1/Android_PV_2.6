@@ -135,7 +135,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    private void applyNet() {
 	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 	netWorkReceiver = new NetWorkReceiver();
-	mContext.registerReceiver(netWorkReceiver, filter);
+	_mActivity.registerReceiver(netWorkReceiver, filter);
 	netWorkReceiver.setInteractionListener(this);
 
    }

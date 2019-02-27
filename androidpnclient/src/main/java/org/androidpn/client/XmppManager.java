@@ -351,7 +351,7 @@ public class XmppManager {
             Log.i(LOGTAG, "RegisterTask.run()...");
 
             if (!xmppManager.isRegistered()) {
-                final String newUsername = SPUtils.getString(context, "key_user_name");
+                final String newUsername = SPUtils.getString(context, "key_user_name_key");
                 final String newPassword = "xb";
                 Log.e(LOGTAG, "newUsername:"+newUsername);
                 Registration registration = new Registration();
@@ -381,8 +381,8 @@ public class XmppManager {
                             } else if (response.getType() == IQ.Type.RESULT) {
                                 xmppManager.setUsername(newUsername);
                                 xmppManager.setPassword(newPassword);
-                                Log.d(LOGTAG, "username=" + newUsername);
-                                Log.d(LOGTAG, "password=" + newPassword);
+                                Log.e(LOGTAG, "username=" + newUsername);
+                                Log.e(LOGTAG, "password=" + newPassword);
 
                                 Editor editor = sharedPrefs.edit();
                                 editor.putString(Constants.XMPP_USERNAME,
@@ -431,8 +431,8 @@ public class XmppManager {
             Log.i(LOGTAG, "LoginTask.run()...");
 
             if (!xmppManager.isAuthenticated()) {
-                Log.d(LOGTAG, "username=" + username);
-                Log.d(LOGTAG, "password=" + password);
+                Log.e(LOGTAG, "username=" + username);
+                Log.e(LOGTAG, "password=" + password);
 
                 try {
                     xmppManager.getConnection().login(
