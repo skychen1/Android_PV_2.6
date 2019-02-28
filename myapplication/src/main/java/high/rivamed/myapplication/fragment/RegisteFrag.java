@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.fragment;
 
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,8 +41,6 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.getAppContext;
-import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -71,7 +67,8 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 更新描述：   ${TODO}
  */
 
-public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAction {
+//public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAction {
+public class RegisteFrag extends SimpleFragment {
 
    String TAG = "RegisteFrag";
    @BindView(R.id.frag_registe_name_edit)
@@ -132,13 +129,13 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 
    }
 
-   private void applyNet() {
-	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-	netWorkReceiver = new NetWorkReceiver();
-	_mActivity.registerReceiver(netWorkReceiver, filter);
-	netWorkReceiver.setInteractionListener(this);
-
-   }
+//   private void applyNet() {
+//	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+//	netWorkReceiver = new NetWorkReceiver();
+//	_mActivity.registerReceiver(netWorkReceiver, filter);
+//	netWorkReceiver.setInteractionListener(this);
+//
+//   }
 
    /**
     * 激活
@@ -186,13 +183,25 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	});
    }
 
+   @Override
+   public void onStart() {
+	super.onStart();
+	if (WifiUtils.isWifi(mContext) == 1){
+	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
+	}else if (WifiUtils.isWifi(mContext)==2){
+	   mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
+	}else {
+	   mFragRegisteLocalipEdit.setText("");
+	}
+   }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onRecoverEvent(ThingDto event) {
 	mSnRecoverBean = event;
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
-	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
+//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
@@ -236,7 +245,7 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	applyNet();
+//	applyNet();
 
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
@@ -253,30 +262,30 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
 	   mFragRegisteSeveripEdit.setText("192.168.11.42");
 	   mFragRegistePortEdit.setText("8017");
 	}
+
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
 	initData();
    }
 
-   /**
-    * 获取本地和WIFI的IP  显示
-    *
-    * @param k
-    */
-   @Override
-   public void setInt(int k) {
-	LogUtils.i(TAG, "setInt   ");
-	if (k != -1) {
-	   if (k == 2) {
-		mFragRegisteLocalipEdit.setText(
-			WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
-	   } else if (k == 0) {
-		mFragRegisteLocalipEdit.setText("");
-	   } else if (k == 1) {
-		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
-	   }
-	}
-   }
+//   /**
+//    * 获取本地和WIFI的IP  显示
+//    *
+//    * @param k
+//    */
+//   @Override
+//   public void setInt(int k) {
+//	LogUtils.i(TAG, "setInt   ");
+//	if (k != -1) {
+//	   if (k == 2) {
+//		mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
+//	   } else if (k == 0) {
+//		mFragRegisteLocalipEdit.setText("");
+//	   } else if (k == 1) {
+//		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
+//	   }
+//	}
+//   }
 
    private void initData() {
 
@@ -682,6 +691,6 @@ public class RegisteFrag extends SimpleFragment implements NetWorkReceiver.IntAc
    @Override
    public void onDestroy() {
 	super.onDestroy();
-	mContext.unregisterReceiver(netWorkReceiver);
+//	mContext.unregisterReceiver(netWorkReceiver);
    }
 }

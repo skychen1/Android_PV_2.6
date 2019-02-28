@@ -29,7 +29,15 @@ public class ResetPasswordDto {
 
         private String password;
         private String accountName;
+        private String accountId;
 
+        public String getAccountId() {
+            return accountId;
+        }
+
+        public void setAccountId(String accountId) {
+            this.accountId = accountId;
+        }
         public String getPassword() {
             return password;
         }

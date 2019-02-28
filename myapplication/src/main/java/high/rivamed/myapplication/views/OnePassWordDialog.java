@@ -166,11 +166,13 @@ public class OnePassWordDialog extends Dialog {
 
             LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
 
-            String accountName = appAccountInfoVo.getAccountName();
-
+//            String accountName = appAccountInfoVo.getAccountName();
+            //            String accountName = appAccountInfoVo.getAccountName();
+            String accountId = appAccountInfoVo.getAccountId();
             ResetPasswordDto dto = new ResetPasswordDto();
             ResetPasswordDto.AccountBean bean = new ResetPasswordDto.AccountBean();
-            bean.setAccountName(accountName);
+            //            bean.setAccountName(accountName);
+            bean.setAccountId(accountId);
             bean.setPassword(passOne);
             dto.setAccount(bean);
             if (mGson == null) {

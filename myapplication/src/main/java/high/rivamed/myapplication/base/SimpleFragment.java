@@ -189,8 +189,8 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    @Override
    public void onDestroyView() {
 	super.onDestroyView();
-	EventBusUtils.unregister(this);
 	OkGo.getInstance().cancelTag(this);
+
 	UIUtils.removeAllCallbacks();
 	if (getP() != null) {
 	   getP().detachV();
@@ -211,6 +211,12 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    }
 
    public void getTitleName() {
+   }
+
+   @Override
+   public void onDestroy() {
+	super.onDestroy();
+	EventBusUtils.unregister(this);
    }
 }
 

@@ -881,8 +881,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	LogUtils.i(TAG, "loadDate   " + string);
 
-	mTbaseDevices.addAll(
-		mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	if (string!=null){
+	   mTbaseDevices.addAll(mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	}else {
+	   String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	   mTbaseDevices.addAll(mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	}
+
 	onSucceedDate();
 
    }

@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -124,7 +125,7 @@ public class RegisteActivity extends SimpleActivity {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.base_tab_tv_outlogin:
-//		startActivity(new Intent(this, LoginActivity.class));
+		startActivity(new Intent(this, LoginActivity.class));
 		finish();
 		break;
 	}

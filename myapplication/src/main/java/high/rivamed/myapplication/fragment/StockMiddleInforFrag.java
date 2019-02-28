@@ -156,11 +156,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	}
    }
 
-   @Override
-   public void onPause() {
-	EventBusUtils.unregister(this);
-	super.onPause();
-   }
+
    @Override
    public void onDestroyView() {
 	super.onDestroyView();

@@ -437,4 +437,5 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.finishLoadMoreWithNoMoreData();
 //	mRefreshLayout.setNoMoreData(true);
    }
+
 }

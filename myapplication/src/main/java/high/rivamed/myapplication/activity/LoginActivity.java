@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -194,6 +195,7 @@ public class LoginActivity extends SimpleActivity {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 //	   mTitleConn = true;
 	}
+	Log.e("版本号：",UIUtils.getVersionName(this));
 	LogUtils.i(TAG,"getDates()   "+getDates());
 	mLoginGone = findViewById(R.id.login_gone);
 
@@ -205,27 +207,30 @@ public class LoginActivity extends SimpleActivity {
 	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   LitePal.deleteAll(BoxIdBean.class);
 	}
+	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   getBoxSize();
+	   getLeftDate();
+	}
+	if (mIntent==null){
+	   mIntent = new Intent(LoginActivity.this, ScanService.class);
+	}
+	startService(mIntent);
+
 	LogUtils.i(TAG,"mTitleConn    "+mTitleConn);
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	initData();
 	initlistener();
 
-	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   getBoxSize();
-	   getLeftDate();
-	}
+
    }
 
    @Override
    public void onStart() {
 	super.onStart();
+
 	LogUtils.i(TAG,"mTitleConn  onStart     "+mTitleConn);
 	mOnStart = true;
-	if (mIntent==null){
-	   mIntent = new Intent(LoginActivity.this, ScanService.class);
-	}
-	startService(mIntent);
 
 	mPushFormOrders.clear();
 	if (mTitleConn){

@@ -43,7 +43,6 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -75,7 +74,6 @@ public class LoginPassWordFragment extends SimpleFragment {
     TextView mLoginButton;
     private String mUserPhone;
     private String mPassword;
-    private LoadingDialog.Builder mBuilder;
     private String mDesc;
 
     @Override

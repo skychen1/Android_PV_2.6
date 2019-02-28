@@ -494,4 +494,5 @@ public class PublicStockFrag extends SimpleFragment {
 
 	});
    }
+
 }

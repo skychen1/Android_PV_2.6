@@ -351,22 +351,25 @@ public class XmppManager {
             Log.i(LOGTAG, "RegisterTask.run()...");
 
             if (!xmppManager.isRegistered()) {
-                final String newUsername = SPUtils.getString(context, "key_user_name_key");
+               String newUsername = null;
+                if (SPUtils.getString(context, "key_user_name_key")==null){
+                    newUsername  = "xxxxxx";
+                }else {
+                    newUsername  = SPUtils.getString(context, "key_user_name_key");
+                }
+                final String finalNewUsername = newUsername;
                 final String newPassword = "xb";
-                Log.e(LOGTAG, "newUsername:"+newUsername);
+                Log.e(LOGTAG, "newUsername:"+finalNewUsername);
                 Registration registration = new Registration();
 
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
                         registration.getPacketID()), new PacketTypeFilter(
                         IQ.class));
 
+
                 PacketListener packetListener = new PacketListener() {
 
                     public void processPacket(Packet packet) {
-                        Log.d("RegisterTask.PacketListener",
-                                "processPacket().....");
-                        Log.d("RegisterTask.PacketListener", "packet="
-                                + packet.toXML());
 
                         if (packet instanceof IQ) {
                             IQ response = (IQ) packet;
@@ -379,14 +382,14 @@ public class XmppManager {
                                                             .getCondition());
                                 }
                             } else if (response.getType() == IQ.Type.RESULT) {
-                                xmppManager.setUsername(newUsername);
+
+                                xmppManager.setUsername(finalNewUsername);
                                 xmppManager.setPassword(newPassword);
-                                Log.e(LOGTAG, "username=" + newUsername);
+                                Log.e(LOGTAG, "username=" + finalNewUsername);
                                 Log.e(LOGTAG, "password=" + newPassword);
 
                                 Editor editor = sharedPrefs.edit();
-                                editor.putString(Constants.XMPP_USERNAME,
-                                        newUsername);
+                                editor.putString(Constants.XMPP_USERNAME, finalNewUsername);
                                 editor.putString(Constants.XMPP_PASSWORD,
                                         newPassword);
                                 editor.commit();

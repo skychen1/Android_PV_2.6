@@ -247,4 +247,5 @@ public class UnconfirmHaocaiFrag extends SimpleFragment {
 
         });
     }
+
 }

@@ -375,4 +375,5 @@ public class ReciveBillFrag extends SimpleFragment {
     public OrderSheetBean.RowsBean getTypeAndNumber() {
         return mPrePageDate;
     }
+
 }

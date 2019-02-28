@@ -103,7 +103,7 @@ public class App extends Application {
 	mPushFormDateBean.setOrders(mPushFormOrders);
 	Logger.addLogAdapter(new AndroidLogAdapter());
 
-	initBugly();
+//	initBugly();
 
 	initOkGo();
 
@@ -116,7 +116,7 @@ public class App extends Application {
 	}
 	LogcatHelper.getInstance(this).start();
 	if (mServiceManager == null && SPUtils.getString(this, SAVE_SEVER_IP_TEXT) != null ) {
-	   initMessgeService();
+//	   initMessgeService();
 	}
 
    }
@@ -127,8 +127,8 @@ public class App extends Application {
    private void initMessgeService() {
 	LogUtils.i(TAG, "initMessgeService   ");
 	String id = "xxxxxx";
-	mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT), id);
-	mServiceManager.startService();
+//	mServiceManager = new ServiceManager(App.this, SPUtils.getString(this, SAVE_SEVER_IP_TEXT), id);
+//	mServiceManager.startService();
    }
 
    public static void InitDeviceService() {

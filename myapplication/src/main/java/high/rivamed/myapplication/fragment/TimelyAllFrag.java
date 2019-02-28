@@ -753,4 +753,5 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onBindViewBefore(View view) {
 
    }
+
 }

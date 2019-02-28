@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -1004,13 +1003,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * @param event
     * @return
     */
-   @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if (keyCode == KeyEvent.KEYCODE_BACK) {
-	   return true;
-	}
-	return super.onKeyDown(keyCode, event);
-   }
+//   @Override
+//   public boolean onKeyDown(int keyCode, KeyEvent event) {
+//	if (keyCode == KeyEvent.KEYCODE_BACK) {
+//	   return true;
+//	}
+//	return super.onKeyDown(keyCode, event);
+//   }
 
    /**
     * 分发触摸事件给所有注册了MyTouchListener的接口

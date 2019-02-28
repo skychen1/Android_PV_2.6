@@ -2,14 +2,11 @@ package high.rivamed.myapplication.base;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -32,8 +29,6 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -54,7 +49,8 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
  * 更新描述：   ${TODO}
  */
 public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
-	implements IView<P>,NetWorkReceiver.IntAction {
+//	implements IView<P>,NetWorkReceiver.IntAction {
+	implements IView<P> {
 
    private VDelegate    vDelegate;
    private P            p;
@@ -87,7 +83,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
-	   applyNet();
+//	   applyNet();
 	mContext = this;
 	mGson = new Gson();
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
@@ -103,24 +99,24 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 
 	App.getInstance().addActivity_(this);
    }
-   private void applyNet() {
-	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-	netWorkReceiver = new NetWorkReceiver();
-	registerReceiver(netWorkReceiver, filter);
-	netWorkReceiver.setInteractionListener(this);
-
-   }
-   @Override
-   public void setInt(int k) {
-	if (k != -1) {
-	   if (k == 2||k == 1) {
-		NetRequest.getInstance().getHospBranch(this, new BaseResult());//用来查询是否网连通了
-//		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
-	   } else if (k == 0) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
-	   }
-	}
-   }
+//   private void applyNet() {
+//	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+//	netWorkReceiver = new NetWorkReceiver();
+//	registerReceiver(netWorkReceiver, filter);
+//	netWorkReceiver.setInteractionListener(this);
+//
+//   }
+//   @Override
+//   public void setInt(int k) {
+//	if (k != -1) {
+//	   if (k == 2||k == 1) {
+//		NetRequest.getInstance().getHospBranch(this, new BaseResult());//用来查询是否网连通了
+////		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+//	   } else if (k == 0) {
+//		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+//	   }
+//	}
+//   }
    /**
     * 判断显示网络异常
     * @param has:true
@@ -187,14 +183,14 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
    }
-   @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-	if (keyCode == KeyEvent.KEYCODE_BACK) {
-	   return true;
-	}
-	return super.onKeyDown(keyCode, event);
-
-   }
+//   @Override
+//   public boolean onKeyDown(int keyCode, KeyEvent event) {
+//	if (keyCode == KeyEvent.KEYCODE_BACK) {
+//	   return true;
+//	}
+//	return super.onKeyDown(keyCode, event);
+//
+//   }
    @Override
    protected void onResume() {
 	super.onResume();
@@ -236,7 +232,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	vDelegate = null;
 	unbinder.unbind();
 
-	  unregisterReceiver(netWorkReceiver);
+//	  unregisterReceiver(netWorkReceiver);
    }
 
    @Override

@@ -24,8 +24,6 @@ import android.util.Log;
 
 import java.util.Properties;
 
-import high.rivamed.myapplication.utils.SPUtils;
-
 /** 
  * This class is to manage the notificatin service and to load the configuration.
  *
@@ -102,15 +100,21 @@ public final class ServiceManager {
             public void run() {
                 Intent intent = NotificationService.getIntent(context);
                 context.startService(intent);
+
             }
         });
         serviceThread.start();
+        Log.i(LOGTAG, "startService" );
     }
 
     public void stopService() {
-        SPUtils.putString(context, "key_user_name_key","");
-        Intent intent = NotificationService.getIntent(context);
-        context.stopService(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = NotificationService.getIntent(context);
+                context.stopService(intent);
+            }
+        });
     }
 
     //    private String getMetaDataValue(String name, String def) {
