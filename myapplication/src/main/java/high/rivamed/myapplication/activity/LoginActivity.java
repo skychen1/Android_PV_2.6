@@ -214,7 +214,14 @@ public class LoginActivity extends SimpleActivity {
 	if (mIntent==null){
 	   mIntent = new Intent(LoginActivity.this, ScanService.class);
 	}
-	startService(mIntent);
+	new Thread(new Runnable() {
+	   @Override
+	   public void run() {
+		startService(mIntent);
+	   }
+	}).start();
+
+
 
 	LogUtils.i(TAG,"mTitleConn    "+mTitleConn);
 	mFragments.add(new LoginPassWordFragment());//用户名登录

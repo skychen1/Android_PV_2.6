@@ -114,7 +114,7 @@ public final class ServiceManager {
                 Intent intent = NotificationService.getIntent(context);
                 context.stopService(intent);
             }
-        });
+        }).start();
     }
 
     //    private String getMetaDataValue(String name, String def) {
