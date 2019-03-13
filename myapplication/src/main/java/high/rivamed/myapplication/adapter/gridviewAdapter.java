@@ -64,11 +64,7 @@ public class gridviewAdapter extends BaseAdapter {
          holder = new ViewHolder();
          holder.textView = (TextView) convertView.findViewById(R.id.tag);
          holder.mGoneTextView = (TextView) convertView.findViewById(R.id.gone_tag);
-//         if (mNumColumn==2){
-//		ViewGroup.LayoutParams params = holder.textView.getLayoutParams();
-//		params.width = 300;
-//		holder.textView.setLayoutParams(params);
-//	   }
+
          convertView.setTag(holder);
       } else {
          holder = (ViewHolder) convertView.getTag();

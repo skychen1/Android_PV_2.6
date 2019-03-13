@@ -158,15 +158,22 @@ public class ScanService extends Service {
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
 	Log.e("FAFAS", "onStartCommand   ");
+	new Thread(new Runnable() {
+	   @Override
+	   public void run() {
+		DeviceManager.getInstance().UnRegisterDeviceCallBack();
+		AllDeviceCallBack.getInstance().initCallBack();
+		Log.e("FAFAS", "发起   ");
+	   }
+	}).start();
 
-	DeviceManager.getInstance().UnRegisterDeviceCallBack();
-	AllDeviceCallBack.getInstance().initCallBack();
 	return START_STICKY;
    }
 
    @Override
    public void onCreate() {
 	super.onCreate();
+//	AllDeviceCallBack.getInstance().initCallBack();
 	EventBusUtils.register(this);
 	Log.i("FAFAS", "onCreate   ");
    }

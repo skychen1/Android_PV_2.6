@@ -20,8 +20,13 @@ import high.rivamed.myapplication.activity.LoginActivity;
 public class ContentReceiver extends BroadcastReceiver {
    @Override
    public void onReceive(Context context, Intent intent) {
-	Intent it=new Intent(context,LoginActivity.class);
-	it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	context.startActivity(it);
+      new Thread(new Runnable() {
+	   @Override
+	   public void run() {
+		Intent it=new Intent(context,LoginActivity.class);
+		it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(it);
+	   }
+	}).start();
    }
 }

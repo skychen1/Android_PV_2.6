@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -43,9 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
-import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
@@ -53,20 +52,19 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
-import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
 import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
 import high.rivamed.myapplication.dbmodel.RoomsBean;
 import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -84,7 +82,6 @@ import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mServiceManager;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
-import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -100,7 +97,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
-import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
@@ -177,9 +173,14 @@ public class LoginActivity extends SimpleActivity {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect);
 	if (mTitleConn && mOnStart) {
-	   getAllCstDate(mGson, this);
-	   getUnNetUseDate();
-	   getUnEntFindOperation();
+	   new Thread(new Runnable() {
+		@Override
+		public void run() {
+		   getAllCstDate(mGson, this);
+		   getUnNetUseDate();
+		   getUnEntFindOperation();
+		}
+	   }).start();
 	}
    }
 
@@ -195,50 +196,29 @@ public class LoginActivity extends SimpleActivity {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 //	   mTitleConn = true;
 	}
-	Log.e("版本号：",UIUtils.getVersionName(this));
 	LogUtils.i(TAG,"getDates()   "+getDates());
 	mLoginGone = findViewById(R.id.login_gone);
-
 	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
-
-	//创建数据库表
-	LitePal.getDatabase();
-
-	if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
-	   LitePal.deleteAll(BoxIdBean.class);
-	}
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   getBoxSize();
 	   getLeftDate();
 	}
-	if (mIntent==null){
-	   mIntent = new Intent(LoginActivity.this, ScanService.class);
-	}
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		startService(mIntent);
-	   }
-	}).start();
-
-
-
-	LogUtils.i(TAG,"mTitleConn    "+mTitleConn);
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	initData();
 	initlistener();
-
-
    }
 
    @Override
    public void onStart() {
 	super.onStart();
-
-	LogUtils.i(TAG,"mTitleConn  onStart     "+mTitleConn);
+	new Thread(new Runnable() {
+	   @Override
+	   public void run() {
+		DeviceManager.getInstance().UnRegisterDeviceCallBack();
+		AllDeviceCallBack.getInstance().initCallBack();
+	   }
+	}).start();
 	mOnStart = true;
-
 	mPushFormOrders.clear();
 	if (mTitleConn){
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
@@ -297,9 +277,14 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		deleteLitepal();
-		LogUtils.i(TAG, "getUnNetUseDate    " + result);
+		LogUtils.w(TAG, "getUnNetUseDate    " + result);
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		setLitePalUseBean(userBean);
+		new Thread(new Runnable() {
+		   @Override
+		   public void run() {
+			setLitePalUseBean(userBean);
+		   }
+		}).start();
 	   }
 	});
    }
@@ -670,6 +655,7 @@ public class LoginActivity extends SimpleActivity {
 	mStockStatus.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
+
 	      if (mTitleConn){
 		   startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
 		}else {
@@ -858,28 +844,28 @@ public class LoginActivity extends SimpleActivity {
 	android.os.Process.killProcess(android.os.Process.myPid());
    }
 
-   public void getBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
-		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		LogUtils.i(TAG, "result  " + result);
-		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
-		if (devices.size() > 1) {
-		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-		   tbaseDevicesBean.setDeviceName("全部开柜");
-		   devices.add(0, tbaseDevicesBean);
-		}
-		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,mGson.toJson(devices));
-	   }
-
-	   @Override
-	   public void onError(String result) {
-
-	   }
-	});
-   }
+//   public void getBoxSize() {
+//	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+//		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
+//		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
+//		LogUtils.i(TAG, "result  " + result);
+//		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
+//		if (devices.size() > 1) {
+//		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
+//		   tbaseDevicesBean.setDeviceName("全部开柜");
+//		   devices.add(0, tbaseDevicesBean);
+//		}
+//		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,mGson.toJson(devices));
+//	   }
+//
+//	   @Override
+//	   public void onError(String result) {
+//
+//	   }
+//	});
+//   }
 
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 

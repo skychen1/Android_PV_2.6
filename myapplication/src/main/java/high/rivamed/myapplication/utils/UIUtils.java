@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -319,5 +320,25 @@ public class UIUtils {
 		Log.i("twoDialog", "Erorr：" + result);
 	   }
 	});
+   }
+
+
+
+   /**
+    * 全屏显示，隐藏虚拟按钮
+    *
+    * @param view
+    */
+   public static void fullScreenImmersive(View view) {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+	   int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+				 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+				 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+				 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				 | View.SYSTEM_UI_FLAG_FULLSCREEN
+				 | View.SYSTEM_UI_FLAG_IMMERSIVE;
+	   view.setSystemUiVisibility(uiOptions);
+	}
    }
 }

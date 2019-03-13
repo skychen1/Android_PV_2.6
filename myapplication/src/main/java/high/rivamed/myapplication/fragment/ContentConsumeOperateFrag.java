@@ -256,7 +256,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 扫描后EPC准备传值
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)

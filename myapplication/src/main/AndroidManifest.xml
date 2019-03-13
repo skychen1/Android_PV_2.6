@@ -31,22 +31,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:label">
-
+        tools:replace="android:label"
+        android:largeHeap="true">
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.SplashActivity"
             android:screenOrientation="sensorLandscape"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/SplashTheme"
+            >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="sensorLandscape"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="sensorLandscape" />
-
         <activity
             android:name=".activity.MyInfoActivity"
             android:launchMode="singleInstance"

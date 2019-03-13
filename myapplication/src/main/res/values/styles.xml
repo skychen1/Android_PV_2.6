@@ -1,8 +1,16 @@
-<resources >
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="ClubToolbar" parent="Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
 
+    </style>
+    <style name="SplashTheme" parent="AppTheme">
+        <!--为了解决启动页白屏问题-->
+        <item name="android:windowBackground">@drawable/splash_logo</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -206,6 +214,7 @@
         <item name="android:drawablePadding">@dimen/x12</item>
         <item name="android:background">@null</item>
         <item name="android:singleLine">true</item>
+        <item name="android:inputType">textNoSuggestions</item>
         <item name="android:drawableBottom">@drawable/bg_register_lines</item>
     </style>
 

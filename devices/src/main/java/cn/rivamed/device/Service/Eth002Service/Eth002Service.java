@@ -21,32 +21,27 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.internal.StringUtil;
 
 public class Eth002Service extends BaseService {
 
 
-    int port = -1;
-
+    private int port = -1;
     private static final String LOG_TAG = "DEV_ETH002_S";
-
     private Eth002ServiceType serviceType;
 
-    private Eth002ServiceType getServiceType() {
-        return serviceType;
-    }
-
-    EventLoopGroup group = null;
-    ServerBootstrap b = null;
-    boolean serverRunning = false;
-
+    private EventLoopGroup group = null;
+    private ServerBootstrap b = null;
+    private boolean serverRunning = false;
 
     public Eth002Service(Eth002ServiceType serviceType, int port) {
         this.serviceType = serviceType;
         this.port = port;
     }
 
+    private Eth002ServiceType getServiceType() {
+        return serviceType;
+    }
 
     @Override
     public boolean isAlive() {
@@ -65,13 +60,14 @@ public class Eth002Service extends BaseService {
             try {
                 group = new NioEventLoopGroup();
                 b = new ServerBootstrap();
-
                 b.option(ChannelOption.TCP_NODELAY, true);
                 b.childOption(ChannelOption.SO_KEEPALIVE, true);
+                b.option(ChannelOption.SO_BACKLOG, 1024);
                 b.group(group)
                         .channel(NioServerSocketChannel.class)
                         .localAddress(new InetSocketAddress(port))
                         .childHandler(new ChannelInitializer() {
+                            @Override
                             protected void initChannel(Channel channel) {
                                 channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
                                 Eth002ClientHandler channelHandler = null;
@@ -81,16 +77,17 @@ public class Eth002Service extends BaseService {
                                         break;
                                     case Eth002V26:
                                         channelHandler = new Eth002V26Handler();
+                                        break;
+                                    default:
+                                        break;
                                 }
                                 if (channelHandler == null) {
                                     channel.close();
                                 }
-
                                 Log.i(LOG_TAG, "接收到新的链接请求" + channel.remoteAddress());
-
                                 channelHandler.RegisterMessageListener(new Eth002ClientMessageListener());
                                 channel.config().setOption(ChannelOption.SO_RCVBUF, 1024);
-                                channel.pipeline().addLast(new IdleStateHandler(5, 5, 0));
+//                                channel.pipeline().addLast(new IdleStateHandler(5, 5, 0));
                                 /**
                                  * 第一个参数为信息最大长度，超过这个长度回报异常，
                                  * 第二参数为长度属性的起始（偏移）位，

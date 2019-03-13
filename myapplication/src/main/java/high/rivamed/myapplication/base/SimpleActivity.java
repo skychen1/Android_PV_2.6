@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -36,6 +37,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -80,7 +82,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
-
+//	hideBottomUIMenu();
+	onWindowFocusChanged(true);
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //	   applyNet();
@@ -117,6 +120,13 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 //	   }
 //	}
 //   }
+@Override
+public void onWindowFocusChanged(boolean hasFocus) {
+   super.onWindowFocusChanged(hasFocus);
+   fullScreenImmersive(this.getWindow().getDecorView());
+}
+
+
    /**
     * 判断显示网络异常
     * @param has:true
@@ -183,14 +193,14 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
    }
-//   @Override
-//   public boolean onKeyDown(int keyCode, KeyEvent event) {
-//	if (keyCode == KeyEvent.KEYCODE_BACK) {
-//	   return true;
-//	}
-//	return super.onKeyDown(keyCode, event);
-//
-//   }
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	   return true;
+	}
+	return super.onKeyDown(keyCode, event);
+
+   }
    @Override
    protected void onResume() {
 	super.onResume();

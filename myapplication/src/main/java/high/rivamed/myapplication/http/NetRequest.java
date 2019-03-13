@@ -934,9 +934,9 @@ public class NetRequest {
 	   }
 	   if (netResult != null) {
 		netResult.onSucceed(response.body());
-		LogUtils.w(TAG, "MyCallBack2 请求URL： " + url);
-		LogUtils.w(TAG, "MyCallBack2 请求Body： " + mGson.toJson(date));
-		LogUtils.w(TAG, "MyCallBack2 返回Body： " + response.body());
+//		LogUtils.w(TAG, "MyCallBack2 请求URL： " + url);
+//		LogUtils.w(TAG, "MyCallBack2 请求Body： " + mGson.toJson(date));
+//		LogUtils.w(TAG, "MyCallBack2 返回Body： " + response.body());
 	   }
 	}
    }

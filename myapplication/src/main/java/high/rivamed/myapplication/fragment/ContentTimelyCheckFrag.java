@@ -59,7 +59,6 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	initData();
-
    }
 
    private void initData() {

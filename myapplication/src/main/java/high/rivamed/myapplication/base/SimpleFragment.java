@@ -23,7 +23,6 @@ import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MyTimer;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -87,7 +86,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 		switch (event.getAction()) {
 		   //获取触摸动作，如果ACTION_UP，计时开始。
 		   case MotionEvent.ACTION_UP:
-			LogUtils.i(TAG, "   ACTION_UP  ");
+//			LogUtils.i(TAG, "   ACTION_UP  ");
 			EventBusUtils.post(new Event.EventTouch(true));
 //			if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 //			    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")) {
@@ -99,7 +98,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 		   default:
 			EventBusUtils.post(new Event.EventTouch(false));
 //			countTimerView.cancel();
-			LogUtils.i(TAG, "   其他操作  ");
+//			LogUtils.i(TAG, "   其他操作  ");
 			break;
 		}
 		return false;
