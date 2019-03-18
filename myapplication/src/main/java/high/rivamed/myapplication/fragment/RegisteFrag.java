@@ -39,12 +39,13 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
-
+import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
@@ -87,7 +88,8 @@ public class RegisteFrag extends SimpleFragment {
    TextView mFragRegisteRight;
    @BindView(R.id.frag_registe_left)
    TextView mFragRegisteLeft;
-
+   @BindView(R.id.frag_registe_loginout_edit)
+   EditText mFragRegisteLoginoutEdit;
    public RecyclerView mRecyclerview;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
@@ -559,7 +561,7 @@ public class RegisteFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left})
+   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -588,7 +590,15 @@ public class RegisteFrag extends SimpleFragment {
 		}
 
 		break;
-
+	   case R.id.frag_registe_loginout_btn:
+		try {
+		   int time = Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim());
+		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME,time);
+		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
+		   ToastUtils.showShortToast("设置成功！操作界面无操作后 "+COUNTDOWN_TIME/1000 +" s后自动退出登录！");
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
 	}
    }
 

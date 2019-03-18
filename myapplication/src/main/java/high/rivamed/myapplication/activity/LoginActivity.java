@@ -45,6 +45,7 @@ import butterknife.BindView;
 import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
@@ -82,6 +83,7 @@ import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mServiceManager;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -201,13 +203,36 @@ public class LoginActivity extends SimpleActivity {
 	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
+	   getBoxSize();
 	}
+
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	initData();
 	initlistener();
    }
+   public void getBoxSize() {
+	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		SPUtils.putString(getAppContext(), BOX_SIZE_DATE, "");
+		Gson gson = new Gson();
+		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
+		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
+		if (devices.size() > 1) {
+		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
+		   tbaseDevicesBean.setDeviceName("全部开柜");
+		   devices.add(0, tbaseDevicesBean);
+		}
+		SPUtils.putString(getAppContext(), BOX_SIZE_DATE, gson.toJson(devices));
+	   }
 
+	   @Override
+	   public void onError(String result) {
+
+	   }
+	});
+   }
    @Override
    public void onStart() {
 	super.onStart();

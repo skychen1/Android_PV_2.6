@@ -7,19 +7,13 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import org.litepal.LitePal;
 
-import java.util.List;
-
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -27,12 +21,9 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.base.App.getAppContext;
-import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
 
 /**
@@ -65,34 +56,11 @@ public class SplashActivity extends Activity {
 	Logger.addLogAdapter(new AndroidLogAdapter());
 	setDate();//设置默认值
 	initLitePal();//数据库
-	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   getBoxSize();
-	}
+
 	startAct();//页面跳转
    }
 
-   public void getBoxSize() {
-	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		SPUtils.putString(getAppContext(), BOX_SIZE_DATE, "");
-		Gson gson = new Gson();
-		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
-		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
-		if (devices.size() > 1) {
-		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-		   tbaseDevicesBean.setDeviceName("全部开柜");
-		   devices.add(0, tbaseDevicesBean);
-		}
-		SPUtils.putString(getAppContext(), BOX_SIZE_DATE, gson.toJson(devices));
-	   }
 
-	   @Override
-	   public void onError(String result) {
-
-	   }
-	});
-   }
 
    private void setDate() {
 	new Thread(new Runnable() {
@@ -100,7 +68,7 @@ public class SplashActivity extends Activity {
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
-		   READER_TIME = 3000;
+//		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		}

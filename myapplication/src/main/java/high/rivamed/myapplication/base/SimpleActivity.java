@@ -37,7 +37,6 @@ import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
-import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -83,7 +82,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
 //	hideBottomUIMenu();
-	onWindowFocusChanged(true);
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //	   applyNet();
@@ -120,11 +118,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 //	   }
 //	}
 //   }
-@Override
-public void onWindowFocusChanged(boolean hasFocus) {
-   super.onWindowFocusChanged(hasFocus);
-   fullScreenImmersive(this.getWindow().getDecorView());
-}
+
 
 
    /**

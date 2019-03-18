@@ -199,7 +199,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	LogUtils.i(TAG, "door   " + event.door);
@@ -210,7 +210,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mRgMiddleGone.setVisibility(View.VISIBLE);
 	   mRgDownGone.setVisibility(View.VISIBLE);
 	} else {
-//	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   mRgTopGone.setVisibility(View.GONE);
 	   mRgMiddleGone.setVisibility(View.GONE);
 	   mRgDownGone.setVisibility(View.GONE);
@@ -667,7 +667,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		} else {
 		   mEthDeviceIdBack2.clear();
 		   //		   mEthDeviceIdBack.clear();
-		   ToastUtils.showShortToast("未扫描到操作耗材,请重新操作");
+		   ToastUtils.showShortToast("未扫描到操作耗材");
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		}
 	   }
 	});
@@ -792,7 +793,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		mEthDeviceIdBack2.clear();
 		//			mEthDeviceIdBack.clear();
-		Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+		ToastUtils.showShortToast("未扫描到操作耗材");
+		MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		if (mBuilder != null) {
 		   mBuilder.mDialog.dismiss();
 		   mBuilder = null;
@@ -807,7 +809,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 		//			mEthDeviceIdBack.clear();
 		mEthDeviceIdBack2.clear();
-		Toast.makeText(mContext, "未扫描到操作的耗材", Toast.LENGTH_SHORT).show();
+		ToastUtils.showShortToast("未扫描到操作耗材");
+		MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 	   } else {
 		LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));

@@ -55,10 +55,10 @@
 		android:id="@+id/consume_openall_middle"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/y30"
+		android:layout_marginTop="@dimen/x30"
 		android:background="@color/bg_f"
 		android:orientation="vertical"
-		android:paddingBottom="@dimen/y30"
+		android:paddingBottom="@dimen/x30"
 		android:paddingLeft="@dimen/x50"
 		>
 
@@ -82,174 +82,175 @@
 			android:orientation="horizontal"
 			android:paddingTop="@dimen/y32">
 
-				<TextView
-					android:id="@+id/function_title_meal"
-					android:layout_width="@dimen/x250"
-					android:layout_height="@dimen/y125"
-					android:layout_gravity="center"
-					android:background="@drawable/bg_fastopen_sel"
-					android:clickable="true"
-					android:layout_marginRight="@dimen/x30"
-					android:drawableLeft="@drawable/bg_meal_icon_sel"
-					android:drawablePadding="@dimen/x10"
-					android:gravity="center"
-					android:paddingLeft="@dimen/x25"
-					android:paddingRight="@dimen/x20"
-					android:text="套组领用"
-					android:textColor="@color/selector_fastopen_text"
-					android:textSize="@dimen/textsize_18"/>
+			<TextView
+				android:id="@+id/function_title_meal"
+				android:layout_width="@dimen/x250"
+				android:layout_height="@dimen/y125"
+				android:layout_gravity="center"
+				android:background="@drawable/bg_fastopen_sel"
+				android:clickable="true"
+				android:layout_marginRight="@dimen/x30"
+				android:drawableLeft="@drawable/bg_meal_icon_sel"
+				android:drawablePadding="@dimen/x10"
+				android:gravity="center"
+				android:paddingLeft="@dimen/x25"
+				android:paddingRight="@dimen/x20"
+				android:text="套组领用"
+				android:textColor="@color/selector_fastopen_text"
+				android:textSize="@dimen/textsize_18"/>
 
 
 
-				<TextView
-					android:id="@+id/fastopen_title_form"
-					android:layout_width="@dimen/x250"
-					android:layout_height="@dimen/y125"
-					android:layout_gravity="center"
-					android:background="@drawable/bg_fastopen_sel"
-					android:clickable="true"
-					android:layout_marginRight="@dimen/x30"
-					android:drawableLeft="@drawable/bg_form_icon_sel"
-					android:drawablePadding="@dimen/x5"
-					android:gravity="center"
-					android:paddingLeft="@dimen/x25"
-					android:paddingRight="@dimen/x20"
-					android:text="术间请领单"
-					android:textColor="@color/selector_fastopen_text"
-					android:textSize="@dimen/textsize_18"/>
+			<TextView
+				android:id="@+id/fastopen_title_form"
+				android:layout_width="@dimen/x250"
+				android:layout_height="@dimen/y125"
+				android:layout_gravity="center"
+				android:background="@drawable/bg_fastopen_sel"
+				android:clickable="true"
+				android:layout_marginRight="@dimen/x30"
+				android:drawableLeft="@drawable/bg_form_icon_sel"
+				android:drawablePadding="@dimen/x5"
+				android:gravity="center"
+				android:paddingLeft="@dimen/x25"
+				android:paddingRight="@dimen/x20"
+				android:text="术间请领单"
+				android:textColor="@color/selector_fastopen_text"
+				android:textSize="@dimen/textsize_18"/>
 
 
 
-				<TextView
-					android:id="@+id/fastopen_title_guanlian"
-					android:layout_width="@dimen/x250"
-					android:layout_height="@dimen/y125"
-					android:layout_gravity="center"
-					android:background="@drawable/bg_fastopen_sel"
-					android:clickable="true"
-					android:drawableLeft="@drawable/bg_connect_icon_sel"
-					android:drawablePadding="@dimen/x10"
-					android:gravity="center"
-					android:paddingLeft="@dimen/x25"
-					android:paddingRight="@dimen/x20"
-					android:text="关联患者"
-					android:textColor="@color/selector_fastopen_text"
-					android:textSize="@dimen/textsize_18"/>
+			<TextView
+				android:id="@+id/fastopen_title_guanlian"
+				android:layout_width="@dimen/x250"
+				android:layout_height="@dimen/y125"
+				android:layout_gravity="center"
+				android:background="@drawable/bg_fastopen_sel"
+				android:clickable="true"
+				android:drawableLeft="@drawable/bg_connect_icon_sel"
+				android:drawablePadding="@dimen/x10"
+				android:gravity="center"
+				android:paddingLeft="@dimen/x25"
+				android:paddingRight="@dimen/x20"
+				android:text="关联患者"
+				android:textColor="@color/selector_fastopen_text"
+				android:textSize="@dimen/textsize_18"/>
 		</LinearLayout>
 		<View
 			android:id="@+id/rg_middle_gone"
 			android:visibility="gone"
 			android:layout_width="match_parent"
-			android:layout_height="@dimen/y235">
+			android:layout_height="@dimen/y230">
 		</View>
 	</RelativeLayout>
-<LinearLayout
-	android:layout_width="match_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	android:orientation="vertical">
-	<RelativeLayout
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<LinearLayout
-			android:id="@+id/consume_down"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:orientation="vertical">
+		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/y30"
-			android:background="@color/bg_f"
-			android:orientation="vertical"
-			android:paddingBottom="@dimen/y38"
-			android:paddingLeft="@dimen/x20"
-			android:paddingTop="@dimen/y30"
-			android:paddingRight="@dimen/x30"
-			>
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:drawableLeft="@mipmap/home_title_xz_icon"
-				android:drawablePadding="@dimen/x20"
-				android:gravity="center_vertical"
-				android:paddingLeft="@dimen/x30"
-				android:text="选择操作："
-				android:textColor="@color/text_color_3"
-				android:textSize="@dimen/textsize_20"
-				android:textStyle="bold"/>
-
-			<RadioGroup
-				android:id="@+id/content_rg"
+			android:layout_height="wrap_content">
+			<LinearLayout
+				android:id="@+id/consume_down"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingTop="@dimen/y25"
-				android:orientation="horizontal">
+				android:layout_marginTop="@dimen/y30"
+				android:background="@color/bg_f"
+				android:orientation="vertical"
+				android:paddingBottom="@dimen/y35"
+				android:paddingLeft="@dimen/x20"
+				android:paddingTop="@dimen/y30"
+				android:paddingRight="@dimen/x30"
+				>
 
-				<RadioButton
-					android:id="@+id/content_rb_ly"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_ly_sel"
-					android:text="领用"/>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:drawableLeft="@mipmap/home_title_xz_icon"
+					android:drawablePadding="@dimen/x20"
+					android:gravity="center_vertical"
+					android:paddingLeft="@dimen/x30"
+					android:text="选择操作："
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_20"
+					android:textStyle="bold"/>
 
-				<RadioButton
-					android:id="@+id/content_rb_rk"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_rk_sel"
-					android:text="入库"/>
+				<RadioGroup
+					android:id="@+id/content_rg"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="@dimen/y25"
+					android:orientation="horizontal">
 
-				<RadioButton
-					android:id="@+id/content_rb_yc"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_yc_sel"
-					android:text="移出"/>
-				<RadioButton
-					android:id="@+id/content_rb_tb"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_tb_sel"
-					android:text="调拨"/>
-				<RadioButton
-					android:id="@+id/content_rb_yr"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_yr_sel"
-					android:text="移入"/>
+					<RadioButton
+						android:id="@+id/content_rb_ly"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_ly_sel"
+						android:text="领用"/>
 
-				<RadioButton
-					android:id="@+id/content_rb_tuihui"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_tuihui_sel"
-					android:text="退回"/>
+					<RadioButton
+						android:id="@+id/content_rb_rk"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_rk_sel"
+						android:text="入库"/>
 
-				<RadioButton
-					android:id="@+id/content_rb_tuihuo"
-					style="@style/consume_rb_style"
-					android:drawablePadding="@dimen/x15"
-					android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
-					android:text="退货"/>
+					<RadioButton
+						android:id="@+id/content_rb_yc"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_yc_sel"
+						android:text="移出"/>
+					<RadioButton
+						android:id="@+id/content_rb_tb"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_tb_sel"
+						android:text="调拨"/>
+					<RadioButton
+						android:id="@+id/content_rb_yr"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_yr_sel"
+						android:text="移入"/>
 
-			</RadioGroup>
+					<RadioButton
+						android:id="@+id/content_rb_tuihui"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_tuihui_sel"
+						android:text="退回"/>
 
-		</LinearLayout>
-		<View
-			android:id="@+id/rg_down_gone"
-			android:visibility="gone"
+					<RadioButton
+						android:id="@+id/content_rb_tuihuo"
+						style="@style/consume_rb_style"
+						android:drawablePadding="@dimen/x15"
+						android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
+						android:text="退货"/>
+
+				</RadioGroup>
+
+			</LinearLayout>
+			<View
+				android:id="@+id/rg_down_gone"
+				android:visibility="gone"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/y340"
+				>
+			</View>
+		</RelativeLayout>
+
+		<android.support.v7.widget.RecyclerView
+			android:id="@+id/consume_down_rv"
 			android:layout_width="match_parent"
-			android:layout_height="@dimen/y370">
-		</View>
-	</RelativeLayout>
-
-	<android.support.v7.widget.RecyclerView
-		android:id="@+id/consume_down_rv"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/y132"
-		android:layout_marginLeft="@dimen/x50"
-		android:layout_marginTop="@dimen/y30"
-		android:overScrollMode="never"
-		>
-	</android.support.v7.widget.RecyclerView>
-</LinearLayout>
+			android:layout_height="@dimen/y132"
+			android:layout_marginLeft="@dimen/x50"
+			android:layout_marginTop="@dimen/y30"
+			android:overScrollMode="never"
+			>
+		</android.support.v7.widget.RecyclerView>
+	</LinearLayout>
 
 </LinearLayout>

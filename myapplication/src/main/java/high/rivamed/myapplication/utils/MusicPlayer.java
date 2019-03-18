@@ -27,8 +27,9 @@ public class MusicPlayer {
         public final static int RETURN_GOOD_SUC = 9;//耗材成功退货.
         public final static int UNCONFIRM_SUC = 10;//您有入柜耗材尚未确认，请点击确认.
         public final static int DOOR_OPEN = 11;//柜门已打开.
-        public final static int DOOR_CLOSED = 12;//柜门已关闭.
-        public final static int SUCCESS = 13;//耗材操作成功.
+        public final static int DOOR_CLOSED = 12;//柜门已关闭
+        public final static int SUCCESS = 13;//耗材操作成功
+        public final static int NO_EVERY = 14;//未扫描到操作耗材
     }
 
     private SoundPool mSp;
@@ -51,7 +52,7 @@ public class MusicPlayer {
         sSpMap.put(Type.DOOR_OPEN, mSp.load(mContext, R.raw.door_open, 1));
         sSpMap.put(Type.DOOR_CLOSED, mSp.load(mContext, R.raw.door_closed, 1));
         sSpMap.put(Type.SUCCESS, mSp.load(mContext, R.raw.succes, 1));
-        // sSpMap.put(Type.MUSIC_FOCUSED, mSp.load(mContext, R.raw.focused, 1))
+        sSpMap.put(Type.NO_EVERY, mSp.load(mContext, R.raw.no_every, 1));
 
     }
 

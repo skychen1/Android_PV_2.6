@@ -14,7 +14,6 @@ package high.rivamed.myapplication.cont;
 
 public class Constants {
 
-    public static final long COUNTDOWN_TIME = 40000;     //默认无操作自动退出
     public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
     public static final long FINISH_TIME = 1500;      //退出操作页面的时间
     public static final String TYPE_TIMELY = "timely";
@@ -97,6 +96,7 @@ public class Constants {
     public static final String SAVE_STOREHOUSE_NAME = "save_storehouse_name";//库房名字
     public static final String SAVE_RECEIVE_ORDERID = "save_receive_orderid";//医嘱单ID
     public static final String SAVE_READER_TIME = "SAVE_READER_TIME";//READER扫描时长
+    public static final String SAVE_LOGINOUT_TIME = "SAVE_READER_TIME";//无操作退出时间
     public static final String SYSTEMTYPE = "HCT";//高值登录的type
     public static final String BOX_SIZE_DATE = "BOX_SIZE_DATE";//柜子的信息
 

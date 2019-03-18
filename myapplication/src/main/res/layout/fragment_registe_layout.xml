@@ -270,6 +270,53 @@
 					android:background="@drawable/bg_edit_e_nor"
 					/>
 			</RelativeLayout>
+			<RelativeLayout
+				android:id="@+id/frag_registe_loginout"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/x66"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/x60"
+				>
+
+				<TextView
+					android:id="@+id/text"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/textsize_16"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="操作界面 "/>
+				<EditText
+					android:id="@+id/frag_registe_loginout_edit"
+					android:layout_width="@dimen/x120"
+					android:layout_height="match_parent"
+					android:layout_toRightOf="@+id/text"
+					android:paddingLeft="@dimen/x10"
+					android:paddingRight="@dimen/x10"
+					android:inputType="number"
+					android:textSize="@dimen/textsize_15"
+					android:singleLine="true"
+					android:textColor="@color/text_color_58"
+					android:hint="20000"
+					android:background="@drawable/bg_password_line_nor"
+					/>
+				<TextView
+					android:layout_toRightOf="@+id/frag_registe_loginout_edit"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/textsize_16"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="  毫秒后无操作自动退出(默认20s)"/>
+				<TextView
+					android:id="@+id/frag_registe_loginout_btn"
+					style="@style/btn_style_sel"
+					android:layout_width="@dimen/x100"
+					android:layout_alignParentRight="true"
+					android:layout_marginTop="@dimen/x5"
+					android:text="确认"
+					/>
+			</RelativeLayout>
 
 		</LinearLayout>
 		<LinearLayout
