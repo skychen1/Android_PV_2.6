@@ -493,6 +493,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FIND_IN_PATIENT_PAGE;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", patientNameOrId);
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("pageNo", pageNo + "");
 	map.put("pageSize", pageSize + "");
 	GetTokenRequest(urls, map, tag, netResult);

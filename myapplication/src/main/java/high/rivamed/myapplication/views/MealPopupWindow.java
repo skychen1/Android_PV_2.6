@@ -94,6 +94,7 @@ public class MealPopupWindow extends PopupWindow {
                     }
                 }
                 if (trim.equals("")) {
+                    mMovies1.clear();
                     mMovies1.addAll(mMovies);
                 }
 
@@ -141,6 +142,7 @@ public class MealPopupWindow extends PopupWindow {
             //	   showAtLocation(parent, Gravity.NO_GRAVITY, 100,
             //				240);
         } else {
+            mMovies1.clear();
             dismiss();
         }
     }

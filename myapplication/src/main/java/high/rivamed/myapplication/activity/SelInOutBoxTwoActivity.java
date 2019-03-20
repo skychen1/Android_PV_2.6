@@ -228,7 +228,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-
 	}
 	EventBusUtils.post(new Event.EventButton(true,false));
 	EventBusUtils.removeStickyEvent(getClass());
@@ -303,7 +302,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
-
+	if (mTypeView!=null&&mTypeView.mInBoxAllAdapter!=null){
+	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
+	}
 	AllDeviceCallBack.getInstance().initCallBack();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();

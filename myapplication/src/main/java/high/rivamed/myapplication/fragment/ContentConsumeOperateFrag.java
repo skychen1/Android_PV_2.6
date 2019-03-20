@@ -668,7 +668,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   mEthDeviceIdBack2.clear();
 		   //		   mEthDeviceIdBack.clear();
 		   ToastUtils.showShortToast("未扫描到操作耗材");
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   if (mFastInOutDto.getErrorEpcs() == null || mFastInOutDto.getErrorEpcs().size() == 0){
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
 		}
 	   }
 	});

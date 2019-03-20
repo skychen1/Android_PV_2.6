@@ -419,12 +419,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			.getMedicalId();
 		mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			.getSurgeryId();
+		mHisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getHisPatientId();
 	   }
 	   inventoryDto.setPatientName(mName);
 	   inventoryDto.setPatientId(mId);
 	   inventoryDto.setOperationScheduleId(mOperationScheduleId);
 	   inventoryDto.setMedicalId(mMedicalId);
-	   inventoryDto.setSurgeryId(mMedicalId);
+	   inventoryDto.setSurgeryId(mSurgeryId);
+	   inventoryDto.setHisPatientId(mHisPatientId);
 	}
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
@@ -473,7 +475,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			 surgeryId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 				.getSurgeryId();
 		   }
-
+		   String hisPatientId=null;
+		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+				 .getHisPatientId()!=null){
+			hisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+				.getHisPatientId();
+		   }
 		   for (InventoryVo inventoryVo : cstInventoryDto.getInventoryVos()) {
 
 			inventoryVo.setPatientName(patientName);
@@ -489,6 +496,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			inventoryVo.setDeptId(deptId);
 			inventoryVo.setMedicalId(medicalId);
 			inventoryVo.setSurgeryId(surgeryId);
+			inventoryVo.setHisPatientId(hisPatientId);
 		   }
 		   InventoryDto dto = new InventoryDto();
 		   dto.setPatientName(patientName);
@@ -506,6 +514,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   dto.setOperation(mRbKey);
 		   dto.setMedicalId(medicalId);
 		   dto.setSurgeryId(surgeryId);
+		   dto.setHisPatientId(hisPatientId);
 		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto,dto));
 		   if (cstInventoryDto.getInventoryVos() != null &&
 			 cstInventoryDto.getInventoryVos().size() != 0) {

@@ -439,7 +439,7 @@ public class LoginActivity extends SimpleActivity {
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
+//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
 	   getUpDateVer(tCstConfigVos, configType, loginType);
 	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 		mLoginPass.setVisibility(View.VISIBLE);
@@ -448,9 +448,9 @@ public class LoginActivity extends SimpleActivity {
 		mLoginPass.setVisibility(View.GONE);
 		mLoginViewpager.setScanScroll(false);
 	   }
-	} else {
-	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
-	}
+//	} else {
+//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
+//	}
    }
 
    /**

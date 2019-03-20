@@ -165,9 +165,16 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
+      LogUtils.i(TAG,"ssssssss");
 	mIsClick = event.isClick;
 	if (event.isClick) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   mTimelyLeft.setEnabled(false);
+	   mTimelyRight.setEnabled(false);
+	   if (mStarts != null) {
+		mStarts.cancel();
+		mTimelyRight.setText("确认并退出登录");
+	   }
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
@@ -181,6 +188,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onOutBoxBingEvent(Event.EventOutBoxBingDto event) {
+	if (mTypeView!=null&&mTypeView.mRecogHaocaiAdapter!=null){
+	   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+	}
 	LogUtils.i(TAG, "mTitleConn  "+mTitleConn);
 	if (mInventoryDto != null && mInventoryVos != null) {
 	   mInventoryDto = event.mInventoryDto;
@@ -198,6 +208,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mMedicalId =mInventoryDto.getMedicalId();
 	mSurgeryId =mInventoryDto.getSurgeryId();
 	mHisPatientId =mInventoryDto.getHisPatientId();
+	LogUtils.i(TAG, "mHisPatientId     "+mHisPatientId);
 	mPatientDto =event.mPatientDto;
 	if (mPatientDto!=null){
 	   mDtoOperation = mPatientDto.getOperation();
@@ -213,6 +224,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mSex =  mPatientDto.getSex();
 	   mDeptId = mPatientDto.getDeptId();
 	   mMedicalId = mPatientDto.getMedicalId();
+	   mHisPatientId = mPatientDto.getHisPatientId();
 	}
    }
 
@@ -313,6 +325,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
+      if (mTypeView!=null&&mTypeView.mRecogHaocaiAdapter!=null){
+	   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+	}
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack2.size() + "    mOnBtnGone    " + mOnBtnGone);
 	if (!mOnBtnGone) {
 	   if (mLoading != null) {
@@ -549,7 +564,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatient = null;
 			mPatientId = null;
 		   }
-		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+//		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			LogUtils.i(TAG, "deviceCode    " + deviceCode);
@@ -615,7 +630,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (deviceInventoryVos!=null){
 	   deviceInventoryVos.clear();
 	}
-	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+//	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 	TimelyAllFrag.mPauseS = true;
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
@@ -826,6 +841,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	inventoryDto.setPatientId(mInventoryDto.getPatientId());
 	inventoryDto.setMedicalId(mInventoryDto.getMedicalId());
 	inventoryDto.setSurgeryId(mInventoryDto.getSurgeryId());
+	inventoryDto.setHisPatientId(mInventoryDto.getHisPatientId());
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
@@ -917,14 +933,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   } else {
 		mTCstInventoryTwoDto.setBindType("firstBind");
 	   }
-	   inventoryVos1.addAll(inventoryVos);
-	   inventoryVos1.removeAll(inventoryVos);
+//	   inventoryVos1.addAll(inventoryVos);
+//	   inventoryVos1.removeAll(inventoryVos);
 	   inventoryVos1.addAll(inventoryVos);
 	   for (InventoryVo ff : inventoryVos1) {
 		LogUtils.i(TAG, "ff   " + mPatient);
 		if (UIUtils.getConfigType(mContext, CONFIG_010) &&
 		    UIUtils.getConfigType(mContext, CONFIG_012)) {
-		   LogUtils.i(TAG,"virtual  CONFIG_012 ");
+		   LogUtils.i(TAG,"virtual  CONFIG_012 "+mHisPatientId);
 		   ff.setPatientName(mPatient);
 		   ff.setCreate(mIsCreate);
 		   ff.setPatientId(mPatientId);
@@ -938,6 +954,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   ff.setDeptId(mDeptId);
 		   ff.setMedicalId(mMedicalId);
 		   ff.setSurgeryId(mSurgeryId);
+		   ff.setHisPatientId(mHisPatientId);
 		} else {
 		   if (mPatientId!=null&&mPatientId.equals("virtual")){
 		      LogUtils.i(TAG,"virtual   "+mTempPatientId);
@@ -954,6 +971,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			ff.setDeptId(mDeptId);
 			ff.setMedicalId(mMedicalId);
 			ff.setSurgeryId(mSurgeryId);
+			ff.setHisPatientId(mHisPatientId);
 
 		   }else {
 			LogUtils.i(TAG,"ZHENGSHI   ");
@@ -962,6 +980,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			ff.setOperationScheduleId(mOperationScheduleId);
 			ff.setMedicalId(mMedicalId);
 			ff.setSurgeryId(mSurgeryId);
+			ff.setHisPatientId(mHisPatientId);
 		   }
 		}
 	   }
@@ -1020,7 +1039,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	switch (ev.getAction()) {
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_UP:
-		LogUtils.i(TAG, "   ACTION_UP  ");
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&&mTimelyRight.isEnabled()) {
 
@@ -1031,7 +1049,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   //否则其他动作计时取消
 	   default:
 		mStarts.cancel();
-		LogUtils.i(TAG, "   其他操作  ");
 
 		break;
 	}
@@ -1150,12 +1167,22 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   } else {
 		LogUtils.i(TAG, "我走了false");
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
-		if (mStarts != null) {
-		   mStarts.cancel();
-		   mStarts.start();
+		if (mIsClick){
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mStarts.start();
+		   }
 		}
+
 	   }
 	}
    }

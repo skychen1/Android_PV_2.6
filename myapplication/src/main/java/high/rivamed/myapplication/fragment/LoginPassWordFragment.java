@@ -120,11 +120,11 @@ public class LoginPassWordFragment extends SimpleFragment {
                     SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
                     ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
                     List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-                    if (tCstConfigVos.size()!=0){
+//                    if (tCstConfigVos.size()!=0){
                         getUpDateVer(tCstConfigVos);
-                    }else {
-                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
-                    }
+//                    }else {
+//                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
+//                    }
                 }
 
 		   @Override
