@@ -320,6 +320,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Override
    protected void onDestroy() {
 	patientInfos.clear();
+	mTrim="";
 	super.onDestroy();
    }
 
@@ -728,6 +729,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				patientInfos.get(0).setSelected(true);
 			   }
 			   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			}else {
+			   if (mAllPage==1&&mTypeView!=null&&mTypeView.mTempPatientAdapter!=null){
+				mTypeView.mTempPatientAdapter.getData().clear();
+				mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			   }
 			}
 		   }
 		});

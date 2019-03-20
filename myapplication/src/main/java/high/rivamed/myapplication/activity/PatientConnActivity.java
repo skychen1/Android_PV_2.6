@@ -84,6 +84,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
    @Override
    protected void onResume() {
 	super.onResume();
+	mString="";
 	loadTempBingDate("");
 	initDate();
    }
@@ -379,6 +380,12 @@ public class PatientConnActivity extends BaseSimpleActivity {
 					mBuilder.mRefreshLayout.finishLoadMore();
 				   }
 				});
+			   }
+			}else {
+			   if (page==1&& RvDialog2.sTableTypeView2!=null&&RvDialog2.sTableTypeView2.mBingOutAdapter!=null){
+				RvDialog2.sTableTypeView2.mBingOutAdapter.getData().clear();
+				RvDialog2.sTableTypeView2.mBingOutAdapter.notifyDataSetChanged();
+
 			   }
 			}
 		   }
