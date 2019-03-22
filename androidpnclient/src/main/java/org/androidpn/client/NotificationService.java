@@ -41,8 +41,7 @@ import java.util.concurrent.Future;
  */
 public class NotificationService extends Service {
 
-    private static final String LOGTAG = LogUtil
-            .makeLogTag(NotificationService.class);
+    private static final String LOGTAG = "xmpp";
 
     public static final String SERVICE_NAME = "org.androidpn.client.NotificationService";
 
@@ -86,8 +85,7 @@ public class NotificationService extends Service {
         // wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         // connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        sharedPrefs = getSharedPreferences(Constants.SHARED_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
+        sharedPrefs = getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
 
         // Get deviceId
         Editor editor = sharedPrefs.edit();
@@ -101,15 +99,11 @@ public class NotificationService extends Service {
         }
 
         // If running on an emulator
-        if (deviceId == null || deviceId.trim().length() == 0
-                || deviceId.matches("0+")) {
+        if (deviceId == null || deviceId.trim().length() == 0 || deviceId.matches("0+")) {
             if (sharedPrefs.contains("EMULATOR_DEVICE_ID")) {
-                deviceId = sharedPrefs.getString(Constants.EMULATOR_DEVICE_ID,
-                        "");
+                deviceId = sharedPrefs.getString(Constants.EMULATOR_DEVICE_ID, "");
             } else {
-                deviceId = (new StringBuilder("EMU")).append(
-                        (new Random(System.currentTimeMillis())).nextLong())
-                        .toString();
+                deviceId = (new StringBuilder("EMU")).append((new Random(System.currentTimeMillis())).nextLong()).toString();
                 editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
                 editor.commit();
             }
@@ -211,8 +205,7 @@ public class NotificationService extends Service {
     }
 
     private void unregisterNotificationReceiver() {
-            unregisterReceiver(notificationReceiver);
-
+        unregisterReceiver(notificationReceiver);
     }
 
     private void registerConnectivityReceiver() {

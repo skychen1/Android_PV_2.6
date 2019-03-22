@@ -28,7 +28,11 @@ import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
+
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 public class App extends Application {
 
@@ -80,6 +84,13 @@ public class App extends Application {
 	registDevice();//注册硬件
 	instance = this;
 	initOkGo();
+   }
+   public static void initPush(String id){
+	if (id!=null){
+	   mServiceManager = new ServiceManager(UIUtils.getContext());
+	   mServiceManager.init("CC39A99BD90D179F", SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), "5222");
+	   mServiceManager.startService(id);
+	}
    }
    private void registDevice() {
 	new Thread(new Runnable() {

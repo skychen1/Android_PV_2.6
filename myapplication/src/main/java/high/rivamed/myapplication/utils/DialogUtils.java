@@ -27,6 +27,7 @@ import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
+import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
@@ -300,7 +301,7 @@ public class DialogUtils {
 
     public static void showTwoDialog(Activity activity,Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
-        if (mType == 1||mType == 3) {
+        if (mType == 1) {
             builder.setTwoMsg(msg);
             builder.setMsg(title);
             builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -325,6 +326,7 @@ public class DialogUtils {
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
                     activity.finish();
+                    activity.startActivity(new Intent(activity, OutFormActivity.class));
                 }
             });
             builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {

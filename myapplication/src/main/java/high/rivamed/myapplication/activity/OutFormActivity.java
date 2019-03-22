@@ -144,18 +144,6 @@ public class OutFormActivity extends BaseSimpleActivity {
 		   .into(mBaseTabIconRight);
 	}
 	mReceiveOrderId = getIntent().getStringExtra("orderId");
-
-   }
-
-   @Override
-   public void onStart() {
-	super.onStart();
-	mEthDeviceIdBack3.clear();
-	mEthDeviceIdBack.clear();
-
-	if (mPagerAdapter!=null){
-	   mPagerAdapter.notifyDataSetChanged();
-	}
 	if (TextUtils.isEmpty(mReceiveOrderId)) {
 	   //不是从消息页面跳转过来
 	   if (mAllOrderSheetList != null) {
@@ -167,6 +155,26 @@ public class OutFormActivity extends BaseSimpleActivity {
 	   initFromMsgDate(mReceiveOrderId);
 	}
    }
+//
+//   @Override
+//   public void onStart() {
+//	super.onStart();
+//	mEthDeviceIdBack3.clear();
+//	mEthDeviceIdBack.clear();
+//
+//
+//	if (TextUtils.isEmpty(mReceiveOrderId)) {
+//	   //不是从消息页面跳转过来
+//	   if (mAllOrderSheetList != null) {
+//		mAllOrderSheetList.clear();
+//
+//	   }
+//	   getTopOrderSheetDate(mPageNo, PAGE_SIZE);
+//	} else {
+//	   //从消息页面跳转过来
+//	   initFromMsgDate(mReceiveOrderId);
+//	}
+//   }
 
    /*
 	 初始化从消息界面跳转过来的数据
@@ -178,10 +186,11 @@ public class OutFormActivity extends BaseSimpleActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);
 			OrderSheetBean orderSheetBean = mGson.fromJson(result, OrderSheetBean.class);
-			mAllOrderSheetList.addAll(orderSheetBean.getRows());
 			if (mOutFormAdapter == null) {
 			   initData();
 			} else {
+			   mAllOrderSheetList.clear();
+			   mAllOrderSheetList.addAll(orderSheetBean.getRows());
 			   mOutFormAdapter.notifyDataSetChanged();
 			   mPagerAdapter.notifyDataSetChanged();
 			}
@@ -212,7 +221,6 @@ public class OutFormActivity extends BaseSimpleActivity {
 	mRecyclerviewNull.setVisibility(View.VISIBLE);
 
 	mPagerAdapter = new OutFormPagerAdapter(getSupportFragmentManager());
-	mCttimecheckViewpager.setAdapter(mPagerAdapter);
 	if (mAllOrderSheetList.size() > 0) {
 	   mRecyclerviewNull.setVisibility(View.GONE);
 	   mCttimecheckViewpager.setVisibility(View.VISIBLE);
@@ -261,6 +269,8 @@ public class OutFormActivity extends BaseSimpleActivity {
 
 	   }
 	});
+	mCttimecheckViewpager.setAdapter(mPagerAdapter);
+
    }
 
    private void getTopOrderSheetDate(int pageNo, int PageSize) {
@@ -409,4 +419,10 @@ public class OutFormActivity extends BaseSimpleActivity {
 	public abstract void onLoadMore();
    }
 
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	mEthDeviceIdBack3.clear();
+	mEthDeviceIdBack.clear();
+   }
 }

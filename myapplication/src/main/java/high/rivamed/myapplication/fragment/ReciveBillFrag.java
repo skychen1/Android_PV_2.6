@@ -161,6 +161,8 @@ public class ReciveBillFrag extends SimpleFragment {
                 getStockByOrderId(mPrePageDate.getOrderId());
             }
         }
+
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -375,5 +377,6 @@ public class ReciveBillFrag extends SimpleFragment {
     public OrderSheetBean.RowsBean getTypeAndNumber() {
         return mPrePageDate;
     }
+
 
 }

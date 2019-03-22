@@ -397,6 +397,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick()) {
 		   return;
 		} else {
+		   mDownBtnOne.setEnabled(false);
 		   sureTransReceiveOrder();
 		}
 		break;
@@ -515,6 +516,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		.sureReceiveOrder(mGson.toJson(mBillOrderResultBean), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
+			mDownBtnOne.setEnabled(true);
 			LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
 			SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
 			SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
@@ -538,6 +540,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
 		   @Override
 		   public void onError(String result) {
+			mDownBtnOne.setEnabled(true);
 			Log.e(TAG, "Erorr：" + result);
 		   }
 		});

@@ -1,4 +1,4 @@
-///*
+package org.androidpn.client;///*
 // * Copyright (C) 2010 Moduad Co., Ltd.
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");

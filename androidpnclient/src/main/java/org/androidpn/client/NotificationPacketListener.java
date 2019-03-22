@@ -15,11 +15,11 @@
  */
 package org.androidpn.client;
 
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.packet.Packet;
-
 import android.content.Intent;
 import android.util.Log;
+
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.packet.Packet;
 
 /** 
  * This class notifies the receiver of incoming notifcation packets asynchronously.  

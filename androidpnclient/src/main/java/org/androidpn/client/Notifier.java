@@ -55,15 +55,14 @@ public class Notifier {
 
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void notify(String notificationId, String apiKey, String title,
-                       String message, String uri) {
+    public void notify(String notificationId, String apiKey, String title, String message, String uri) {
 
-        Log.d("Androidpn_XmppManager", "notify()...");
-        Log.d(LOGTAG, "notificationId=" + notificationId);
-        Log.d(LOGTAG, "notificationApiKey=" + apiKey);
-        Log.d(LOGTAG, "notificationTitle=" + title);
-        Log.d(LOGTAG, "notificationMessage=" + message);
-        Log.d(LOGTAG, "notificationUri=" + uri);
+        Log.e(LOGTAG, "notify()...");
+        Log.e(LOGTAG, "notificationId=" + notificationId);
+        Log.e(LOGTAG, "notificationApiKey=" + apiKey);
+        Log.e(LOGTAG, "notificationTitle=" + title);
+        Log.e(LOGTAG, "notificationMessage=" + message);
+        Log.e(LOGTAG, "notificationUri=" + uri);
 
         EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(message));
         //注释掉home界面显示提示和跳转Activity
