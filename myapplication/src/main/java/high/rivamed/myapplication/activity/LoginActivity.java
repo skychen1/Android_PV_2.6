@@ -198,17 +198,7 @@ public class LoginActivity extends SimpleActivity {
 //	   mTitleConn = true;
 	}
 	LogUtils.i(TAG,"getDates()   "+getDates());
-	mLoginGone = findViewById(R.id.login_gone);
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
-	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   getLeftDate();
-	   getBoxSize();
-	}
 
-	mFragments.add(new LoginPassWordFragment());//用户名登录
-	mFragments.add(new LoginPassFragment());//紧急登录
-	initData();
-	initlistener();
    }
    public void getBoxSize() {
 	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
@@ -244,6 +234,19 @@ public class LoginActivity extends SimpleActivity {
 	}).start();
 	mOnStart = true;
 	mPushFormOrders.clear();
+
+	mLoginGone = findViewById(R.id.login_gone);
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
+	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   getLeftDate();
+	   getBoxSize();
+	}
+
+	mFragments.add(new LoginPassWordFragment());//用户名登录
+	mFragments.add(new LoginPassFragment());//紧急登录
+	initData();
+	initlistener();
+
 	if (mTitleConn){
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
@@ -975,6 +978,7 @@ public class LoginActivity extends SimpleActivity {
 	if (fromJson != null&&fromJson.size()>0) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
 	   Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
+	   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 	   UIUtils.getContext().startActivity(intent);
 	   activity.finish();
 	} else {

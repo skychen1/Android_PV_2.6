@@ -21,6 +21,8 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -71,6 +73,7 @@ public class SplashActivity extends Activity {
 //		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
+		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
 		}
 		LogcatHelper.getInstance(getApplicationContext()).start();
 		SPUtils.putString(getApplicationContext(), "TestLoginName", "admin");

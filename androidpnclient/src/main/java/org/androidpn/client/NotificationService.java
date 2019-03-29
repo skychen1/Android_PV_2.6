@@ -80,7 +80,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(LOGTAG, "onCreate()...");
+        Log.i(LOGTAG, "onCreate()...");
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         // connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -121,29 +121,29 @@ public class NotificationService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        Log.d(LOGTAG, "onStart()...");
+        Log.i(LOGTAG, "onStart()...");
     }
 
     @Override
     public void onDestroy() {
-        Log.d(LOGTAG, "onDestroy()...");
+        Log.i(LOGTAG, "onDestroy()...");
         stop();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(LOGTAG, "onBind()...");
+        Log.i(LOGTAG, "onBind()...");
         return null;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.d(LOGTAG, "onRebind()...");
+        Log.i(LOGTAG, "onRebind()...");
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(LOGTAG, "onUnbind()...");
+        Log.i(LOGTAG, "onUnbind()...");
         return true;
     }
 
@@ -179,7 +179,7 @@ public class NotificationService extends Service {
     }
 
     public void connect() {
-        Log.d(LOGTAG, "connect()...");
+        Log.i(LOGTAG, "connect()...");
         taskSubmitter.submit(new Runnable() {
             public void run() {
                 NotificationService.this.getXmppManager().connect();
@@ -188,7 +188,7 @@ public class NotificationService extends Service {
     }
 
     public void disconnect() {
-        Log.d(LOGTAG, "disconnect()...");
+        Log.i(LOGTAG, "disconnect()...");
         taskSubmitter.submit(new Runnable() {
             public void run() {
                 NotificationService.this.getXmppManager().disconnect();
@@ -220,13 +220,15 @@ public class NotificationService extends Service {
 
     private void unregisterConnectivityReceiver() {
         Log.d(LOGTAG, "unregisterConnectivityReceiver()...");
-        telephonyManager.listen(phoneStateListener,
-                PhoneStateListener.LISTEN_NONE);
-        unregisterReceiver(connectivityReceiver);
+        if (connectivityReceiver!=null){
+            telephonyManager.listen(phoneStateListener,
+                                    PhoneStateListener.LISTEN_NONE);
+            unregisterReceiver(connectivityReceiver);
+        }
     }
 
     private void start() {
-        Log.d(LOGTAG, "start()...");
+        Log.i(LOGTAG, "start()...");
         registerNotificationReceiver();
         registerConnectivityReceiver();
         AppBroadcastReceiverManager.registerNetLinkReceiver(this);
@@ -236,7 +238,7 @@ public class NotificationService extends Service {
     }
 
     private void stop() {
-        Log.d(LOGTAG, "stop()...");
+        Log.i(LOGTAG, "stop()...");
         unregisterNotificationReceiver();
         unregisterConnectivityReceiver();
         AppBroadcastReceiverManager.unregisterNetLinkReceiver(this);
