@@ -106,4 +106,5 @@ public interface NetApi {
     String URL_UNENT_GET_FIND_OPERATIONROOM = "/basic/operationRoom/rmApi/findByThingId";//获取离线手术间
     String URL_UNENT_CST_OFFLINE = "/consumables/inventory/rmApi/forceOperateInventoryCst";//离线领用和强开
 
+    String URL_ROBOT = "/clrApi/basic/clrRobot/callRobot";//召唤机器人
 }

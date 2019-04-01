@@ -78,7 +78,7 @@ public class ColuNettyService extends BaseService implements UhfService {
                                  * initialBytesToStrip 为跳过的字节数，从长度属性结束的位置往前数，
                                  *
                                  * */
-                                channel.pipeline().addLast(new RivamedLengthFieldBasedFrameDecoder(10000, 3, 2, 0, 0,2,false    ));
+//                                channel.pipeline().addLast(new RivamedLengthFieldBasedFrameDecoder(10000, 3, 2, 0, 0,2,false    ));
                                 channel.pipeline().addLast(channelHandler);
                             }
                         });

@@ -12,8 +12,10 @@ import cn.rivamed.device.DeviceType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledHeapByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.internal.StringUtil;
 
 
@@ -178,7 +180,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
             return;
         }
         byte[] buf = new byte[]{0x00, 0x67, 0x01};
-//        Log.e(LOG_TAG, "收到心跳数据回复了");
+        Log.e(LOG_TAG, "收到心跳数据回复了");
         SendBuf(buf);
     }
 
@@ -280,12 +282,12 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
         //计算校验码
         int retCheck = DataProtocol.CheckSum(buf, 0, buf.length - 1);
         if (retCheck != (buf[buf.length - 1] & 0xff)) {
-//            Log.e(LOG_TAG, "客户端" + this.getIdentification() + "接收指纹消息错误，校验码未通过；消息=" + Transfer.Byte2String(buf));
+            Log.e(LOG_TAG, "客户端" + this.getIdentification() + "接收指纹消息错误，校验码未通过；消息=" + Transfer.Byte2String(buf));
             error = true;
         }
         //判断指令
         if (buf[4] != 0x6b) {
-//            Log.e(LOG_TAG, "客户端" + this.getIdentification() + "接收指纹消息指令错误，需要指令为 0x6b,实际指令为" + buf[4] + " 消息=" + Transfer.Byte2String(buf));
+            Log.e(LOG_TAG, "客户端" + this.getIdentification() + "接收指纹消息指令错误，需要指令为 0x6b,实际指令为" + buf[4] + " 消息=" + Transfer.Byte2String(buf));
             error = true;
         }
         lastFingerData = new Date();  //重置时间
@@ -332,7 +334,7 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
 
             //头部必须为 0xef 0x01
             if (((0xff & finger[0]) != 0xef) || (0xff & finger[1]) != 0x01) {
-//                Log.e(LOG_TAG, "指纹原始数据格式错误，数据为" + Transfer.Byte2String(finger));
+                Log.e(LOG_TAG, "指纹原始数据格式错误，数据为" + Transfer.Byte2String(finger));
                 error = true;
             }
 
@@ -344,19 +346,19 @@ public class Eth002V2Handler extends NettyDeviceClientHandler implements Eth002C
                 byte[] check = DataProtocol.FingerCheckSum(finger, postion + 6, len - 2 + 3);
                 if (finger[postion + 9 + len - 2] != check[0] || finger[postion + 9 + len - 1] != check[1]) {  //确认码前有9个字节未计入len
                     //校验未通过
-//                    Log.e(LOG_TAG, "指纹校验码计算失败，Postion=" + postion + ",data=" + Transfer.Byte2String(finger));
+                    Log.e(LOG_TAG, "指纹校验码计算失败，Postion=" + postion + ",data=" + Transfer.Byte2String(finger));
                     completed = true;
                     error = true;
                 }
-//                Log.e(LOG_TAG, "指纹数据通过数据检测了" + error);
+                Log.e(LOG_TAG, "指纹数据通过数据检测了" + error);
                 //判断包标识  执行结果   0x07 表示执行结果，目前的指令中，07之后都还有数据
                 if (finger[postion + 6] == 0x07) {
                     if ((0xff & finger[postion + 9]) != 0x00 && len == 3) {
-//                        Log.e(LOG_TAG, "指纹数据错误   0x07");
+                        Log.e(LOG_TAG, "指纹数据错误   0x07");
                         error = true;
                     } else if (len > 3) {
                         //有实际数据
-//                        Log.e(LOG_TAG, "有指纹数据了   0x07");
+                        Log.e(LOG_TAG, "有指纹数据了   0x07");
                         fingerData.put(finger, postion + 10, len - 3);
                     }
                 } else if (finger[postion + 6] == 0x08) {

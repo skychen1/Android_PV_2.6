@@ -51,6 +51,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
+import high.rivamed.myapplication.bean.RobotBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -483,6 +484,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
+	mBaseTabBtnRobot.setVisibility(View.VISIBLE);
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -496,7 +498,29 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mEPCDate.clear();
 	}
 	initData();
+/*
+	召唤机器人
+	 */
+	mBaseTabBtnRobot.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		NetRequest.getInstance().CallRobot(_mActivity,new BaseResult(){
+		   @Override
+		   public void onSucceed(String result) {
+			RobotBean robotBean = mGson.fromJson(result, RobotBean.class);
+			if (robotBean.isOperateSuccess()){
+			   if (robotBean.getReciveMessage().getResultCode()==0){
+				ToastUtils.showShortToast("机器人召唤成功！");
+			   }else {
+				ToastUtils.showShortToast("机器人召唤失败！");
+			   }
 
+			}
+			Log.e(TAG,"机器人    "+result);
+		   }
+		});
+	   }
+	});
    }
 
    /**

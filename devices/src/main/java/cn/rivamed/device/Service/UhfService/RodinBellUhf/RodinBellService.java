@@ -4,7 +4,7 @@ import android.util.Log;
 
 import cn.rivamed.DeviceManager;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
-import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler11;
+import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.UhfClientMessage;
 import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
@@ -13,7 +13,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 
 
@@ -60,18 +59,20 @@ public class RodinBellService extends BaseService implements UhfService {
                 ServerBootstrap b = new ServerBootstrap();
                 b.option(ChannelOption.TCP_NODELAY, true);
                 b.childOption(ChannelOption.SO_KEEPALIVE, true);
+                b.option(ChannelOption.SO_BACKLOG,1024);
                 b.group(group)
                         .channel(NioServerSocketChannel.class)
                         .localAddress(new InetSocketAddress(port))
                         .childHandler(new ChannelInitializer() {
                             protected void initChannel(Channel channel) throws Exception {
                                 channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
-                                RodinbellReaderHandler11 channelHandler = new RodinbellReaderHandler11();
+                                channel.config().setOption(ChannelOption.SO_RCVBUF, 1024);
+                                RodinbellReaderHandler channelHandler = new RodinbellReaderHandler();
                                 Log.i(log_tag, "接收到新的链接请求" + channel.remoteAddress());
-                                channelHandler.RegisterMessageListener(new RodinBellMessageListener());
+                                channelHandler.registerMessageListener(new RodinBellMessageListener());
                                 channel.pipeline().addLast(new IdleStateHandler(5, 0, 0));
                                 /**
-                                 *
+                                 * 数据站包解析规则（由于存在掉包的可能，所以解析数据方式需要自己重写）
                                  * maxFrameLength 为信息最大长度，超过这个长度回报异常，
                                  * lengthFieldOffset 为长度属性的起始（偏移）位，
                                  * lengthFieldLength 为“长度属性”的长度，
@@ -79,7 +80,7 @@ public class RodinBellService extends BaseService implements UhfService {
                                  * initialBytesToStrip 为跳过的字节数，从长度属性结束的位置往前数，
                                  *
                                  * */
-                                channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(10000, 1, 1, 0, 0));
+//                                channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(10000, 1, 1, 0, 0));
                                 channel.pipeline().addLast(channelHandler);
                             }
                         });
@@ -144,7 +145,7 @@ public class RodinBellService extends BaseService implements UhfService {
         @Override
         public void OnConnected() {
             if (RodinBellService.this.getDeviceManager() != null) {
-                RodinBellService.this.getDeviceManager().AppendConnectedDevice(deviceHandler.getIdentification(),deviceHandler);
+                RodinBellService.this.getDeviceManager().AppendConnectedDevice(deviceHandler.getIdentification(), deviceHandler);
                 if (RodinBellService.this.getDeviceManager().getDeviceCallBack() != null) {
                     RodinBellService.this.getDeviceManager().getDeviceCallBack().OnDeviceConnected(this.deviceHandler.getDeviceType(), this.deviceHandler.getIdentification());
                 }

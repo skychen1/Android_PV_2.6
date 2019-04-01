@@ -55,7 +55,7 @@ public class RodinbellReaderHandler11 extends NettyDeviceClientHandler implement
     /**
      * 持续扫描的时间，默认3秒，实际由 StartScan 方法进行赋值
      */
-    int scanTime = 3000;
+    int scanTime = 2000;
 
     long startScanTime = new Date().getTime();
 

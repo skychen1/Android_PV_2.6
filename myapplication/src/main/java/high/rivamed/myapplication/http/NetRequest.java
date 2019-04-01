@@ -41,6 +41,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -718,7 +719,16 @@ public class NetRequest {
 	PostRequest(urls, json, tag, netResult);
    }
 
-
+   /**
+    * 召唤机器人
+    */
+   public void CallRobot(
+	   Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_ROBOT;
+	Map<String, String> map = new HashMap<>();
+	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	GetTokenRequest(urls, map, tag, netResult);
+   }
 
    private class MyCallBack extends StringCallback {
 

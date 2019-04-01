@@ -1,7 +1,5 @@
 package cn.rivamed;
 
-import io.netty.handler.codec.mqtt.MqttMessageBuilders;
-
 /**
  * @Author 郝小鹏
  * @Description 公共方法的返回值参考

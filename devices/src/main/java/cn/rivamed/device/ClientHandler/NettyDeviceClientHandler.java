@@ -4,6 +4,7 @@ import android.util.Log;
 
 import cn.rivamed.FunctionCode;
 import cn.rivamed.device.DeviceType;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -22,7 +23,6 @@ public abstract class NettyDeviceClientHandler extends ChannelInboundHandlerAdap
         this.identification = value;
     }
 
-
     public ChannelHandlerContext getCtx() {
         return ctx;
     }
@@ -39,8 +39,12 @@ public abstract class NettyDeviceClientHandler extends ChannelInboundHandlerAdap
 
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx){
-       this.setCtx(ctx);
+    public void channelActive(ChannelHandlerContext ctx) {
+        this.setCtx(ctx);
     }
+
+
+
+
 
 }

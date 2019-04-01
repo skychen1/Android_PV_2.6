@@ -3,24 +3,24 @@ package cn.rivamed.device.ClientHandler.uhfClientHandler;
 import java.util.List;
 
 public interface UhfHandler {
-    public int StartScan();
+     int StartScan();
 
     /**
      *  开始扫描，并持续扫描一定时间后停止；
      *
      *  @param timeout
      * */
-    public int StartScan(int timeout);
+     int StartScan(int timeout);
 
-    public int StopScan();
+     int StopScan();
 
-    public int SetPower(byte power);
+     int SetPower(byte power);
 
-    public int QueryPower();
+     int QueryPower();
 
-    public List<Integer> getUhfAnts();
+     List<Integer> getUhfAnts();
 
-    public int Reset();
+     int Reset();
 
-    public int Close();
+     int Close();
 }

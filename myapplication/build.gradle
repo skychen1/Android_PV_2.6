@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "high.rivamed.myapplication"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "2.6.5.4.6.0"
@@ -40,7 +40,7 @@ android {
             signingConfig signingConfigs.release_config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "${defaultConfig.versionName}高值定时测试版.apk"
+                    outputFileName = "${defaultConfig.versionName}高值持续性扫描测试版.apk"
                 }
             }
         }

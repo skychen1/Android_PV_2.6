@@ -80,6 +80,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @BindView(R.id.base_tab_rlayout)
     public RelativeLayout mBaseTabRlayout;
     public ImageView mBaseTabBtnConn;
+    public ImageView mBaseTabBtnRobot;
     private ViewStub mStub;
     public SettingPopupWindow mPopupWindow;
 
@@ -178,6 +179,8 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public void onBindViewBefore(View root) {
         mStub = (ViewStub) root.findViewById(R.id.viewstub_layout);
         mBaseTabBtnConn = (ImageView) root.findViewById(R.id.base_tab_conn);
+        mBaseTabBtnRobot = (ImageView) root.findViewById(R.id.base_tab_robot);
+
         mStub.setLayoutResource(getContentLayoutId());
         mStub.inflate();
     }

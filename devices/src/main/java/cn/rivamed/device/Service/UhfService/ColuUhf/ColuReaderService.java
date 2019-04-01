@@ -41,7 +41,7 @@ public class ColuReaderService extends BaseService implements UhfService {
     /**
      * 记录已连接的设备的MAC地址和链接ID
      * Key：connid
-     * Value：   Mac address  ，其中connid用于Clou内部进行操作，MAC用于Rivamed系统中的设备标识
+     * Value：   Mac ADDRESS  ，其中connid用于Clou内部进行操作，MAC用于Rivamed系统中的设备标识
      */
     Map<String, String> conneIDs = new HashMap<>();
 

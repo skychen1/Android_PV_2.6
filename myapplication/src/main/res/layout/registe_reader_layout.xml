@@ -32,7 +32,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="@dimen/x30"
 		android:textSize="@dimen/textsize_16"
-		android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描时长默认3000 ms"/>
+		android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描时长默认2000 ms"/>
 </LinearLayout>
 
 <LinearLayout
@@ -68,7 +68,7 @@
 			android:layout_marginBottom="@dimen/y10"
 			android:textSize="@dimen/textsize_16" android:singleLine="true"
 			android:textColor="@color/black"
-			android:hint="扫描时间:3000 ms"
+			android:hint="扫描时间:2000 ms"
 			android:background="@drawable/bg_edit_e_nor"
 			/>
 		<TextView

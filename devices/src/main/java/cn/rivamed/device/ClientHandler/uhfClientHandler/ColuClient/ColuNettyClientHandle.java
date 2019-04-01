@@ -1,9 +1,10 @@
 package cn.rivamed.device.ClientHandler.uhfClientHandler.ColuClient;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,19 +27,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     private static final String LOG_TAG = "DEV_COLU_NC";
     Map<String, List<TagInfo>> epcs = new HashMap<>();
+    private long lastTipTime;
     private int MAX_ANT = 8;
     private int MAX_POWER = 30;
-
-    private long queryConnIndex = 0l;
-
-    boolean scanMode = false;
-
-    int antByte = 0x0;  //用数位标识天线，从低位开始 第一位为1 标识天线 1存在，0 则不存在，以此类推
-
+    private long queryConnIndex = 0L;
+    private byte[] m_btAryBuffer = new byte[4096];
+    private int m_nLength = 0;
+    private boolean scanMode = false;
+    //用数位标识天线，从低位开始 第一位为1 标识天线 1存在，0 则不存在，以此类推
+    private int antByte = 0x0;
+    private static final byte HEAD = (byte) 0xAA;
     /**
      * 判断扫描状态的线程
      */
-    Thread scanCompleteThread;
+    //Thread scanCompleteThread;
     boolean scanCompleteThreadWorking = true;
 
     /**
@@ -46,63 +48,163 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
      */
     int scanTime = 3000;
 
-    long startScanTime = new Date().getTime();
+    long startScanTime = System.currentTimeMillis();
+    private Handler mHandler;
+
+    /**
+     * 构造函数，舒适化handler 用来执行定时任务
+     */
+    public ColuNettyClientHandle() {
+        HandlerThread mHandlerThread = new HandlerThread("delay_ant_thread::::" + this.hashCode());
+        mHandlerThread.start();
+        mHandler = new Handler(mHandlerThread.getLooper());
+    }
 
     /**
      * 扫描过程中检测已扫描的时间是否超过预定时间
      */
     private boolean ScanTimeCompleted() {
-        return new Date().getTime() - startScanTime > scanTime;
+        return System.currentTimeMillis() - startScanTime > scanTime;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        // super.channelRead(ctx, msg);
+
+        ByteBuf in = (ByteBuf) msg;
+        byte[] buf = new byte[in.readableBytes()];
+        in.readBytes(buf);
+        Log.e(LOG_TAG, "接收到消息" + Transfer.Byte2String(buf));
+        receiveData(buf);
+    }
+
+    /**
+     * 将收到的数据按照鸿陆的协议规则进行解析
+     */
+    private void receiveData(byte[] buf) {
         try {
-            ByteBuf in = (ByteBuf) msg;
-            byte[] buf = new byte[in.readableBytes()];
-            in.readBytes(buf);
-            Log.d(LOG_TAG, "接收到消息" + Transfer.Byte2String(buf));
-
-            //计算校验码  判断校验码
-            byte[] crcCheckBuf = new byte[buf.length - 3];
-            System.arraycopy(buf, 1, crcCheckBuf, 0, crcCheckBuf.length);
-            byte[] crc = DataProtocol.CalcCRC16(crcCheckBuf, crcCheckBuf.length);
-            if (crc[0] != buf[buf.length - 2] || crc[1] != buf[buf.length - 1]) {
-                Log.w(LOG_TAG, "接收到的信息有误，校验码未通过  origin=" + Transfer.Byte2String(buf) + "||ji算的校验码=" + Transfer.Byte2String(crc));
-                return;
+            int nCount = buf.length;
+            byte[] btAryBuffer = new byte[nCount + m_nLength];
+            System.arraycopy(m_btAryBuffer, 0, btAryBuffer, 0, m_nLength);
+            System.arraycopy(buf, 0, btAryBuffer, m_nLength,
+                    buf.length);
+            int nIndex = 0;
+            int nMarkIndex = 0;
+            //遍历截取标准的协议数据
+            for (int nLoop = 0; nLoop < btAryBuffer.length; nLoop++) {
+                //数据的长度的位置在第4位和第5位（两位）
+                if (btAryBuffer.length > nLoop + 4) {
+                    //找到标识头
+                    if (btAryBuffer[nLoop] == HEAD) {
+                        //拿到第三和第四位的数据长度位，解析成长度
+                        int leng1 = (btAryBuffer[nLoop + 3] & 0xFF) * 256;
+                        int leng2 = btAryBuffer[nLoop + 4] & 0xFF;
+                        int nLen = leng1 + leng2;
+                        //根据协议知道，数据的长度不可能超过38，炒股狗38，说明是错误数据
+                        if (nLen > 38) {
+                            continue;
+                        }
+                        if (nLoop + 6 + nLen < btAryBuffer.length) {
+                            byte[] btAryAnaly = new byte[nLen + 7];
+                            System.arraycopy(btAryBuffer, nLoop, btAryAnaly, 0,
+                                    nLen + 7);
+                            processData(btAryAnaly);
+                            nLoop += 6 + nLen;
+                            //标识剩余的位置
+                            nIndex = nLoop + 1;
+                        } else {
+                            nLoop += 6 + nLen;
+                        }
+                    } else {
+                        Log.e(LOG_TAG, "出现标志位异常的情况：：");
+                        nMarkIndex = nLoop;
+                    }
+                }
             }
-            if (buf.length < 7) {
-                Log.e(LOG_TAG, "根据数据协议,消息长度最少为7,当前数据长度有误;origindata=" + Transfer.Byte2String(buf));
-                return;
+            if (nIndex < nMarkIndex) {
+                nIndex = nMarkIndex + 1;
             }
-            switch (buf[1] & 0xf)  //  8-11位为消息类型
-            {
-                case DataProtocol.MSG_TYPE_READER_ERROR:
-                    break;
-                case DataProtocol.MSG_TYPE_READER_OPTION:
-                    ProcessReaderOption(buf);
-                    break;
-                case DataProtocol.MSG_TYPE_RFID_OPERATION:
-                    ProcessRfidOperation(buf);
-                    break;
-                case DataProtocol.MSG_TYPE_READER_LOG:
-                    break;
-                case DataProtocol.MSG_TYPE_READER_UPDATE:
-                    break;
-                case DataProtocol.MSG_TYPE_READER_TEST:
-                    break;
-                default:
-                    break;
-
+            if (nIndex < btAryBuffer.length) {
+                m_nLength = btAryBuffer.length - nIndex;
+                m_btAryBuffer = new byte[btAryBuffer.length - nIndex];
+                System.arraycopy(btAryBuffer, nIndex, m_btAryBuffer, 0,
+                        btAryBuffer.length - nIndex);
+                Log.e(LOG_TAG, "解析完一个包剩余的数据：：" + Transfer.Byte2String(m_btAryBuffer));
+            } else {
+                m_nLength = 0;
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(LOG_TAG, e.toString());
         }
     }
 
+    private void processData(byte[] buf) {
+        //计算校验码  判断校验码
+
+        byte[] crcCheckBuf = new byte[buf.length - 3];
+        System.arraycopy(buf, 1, crcCheckBuf, 0, crcCheckBuf.length);
+        byte[] crc = DataProtocol.CalcCRC16(crcCheckBuf, crcCheckBuf.length);
+        if (crc[0] != buf[buf.length - 2] || crc[1] != buf[buf.length - 1]) {
+            Log.w(LOG_TAG, "接收到的信息有误，校验码未通过  origin=" + Transfer.Byte2String(buf) + "||ji算的校验码=" + Transfer.Byte2String(crc));
+            return;
+        }
+        if (buf.length < 7) {
+            Log.e(LOG_TAG, "根据数据协议,消息长度最少为7,当前数据长度有误;origindata=" + Transfer.Byte2String(buf));
+            return;
+        }
+        //  8-11位为消息类型
+        switch (buf[1] & 0xf) {
+            case DataProtocol.MSG_TYPE_READER_ERROR:
+                Log.e(LOG_TAG, "收到错误数据：" + Transfer.Byte2String(buf));
+                //没有标签的时候，开扫描就会出现这个结果
+                //延时返回结果
+                sendScanResultDelay();
+                break;
+            case DataProtocol.MSG_TYPE_READER_OPTION:
+                ProcessReaderOption(buf);
+                break;
+            case DataProtocol.MSG_TYPE_RFID_OPERATION:
+                ProcessRfidOperation(buf);
+                break;
+            case DataProtocol.MSG_TYPE_READER_LOG:
+                break;
+            case DataProtocol.MSG_TYPE_READER_UPDATE:
+                break;
+            case DataProtocol.MSG_TYPE_READER_TEST:
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /**
+     * 延时返回扫描结果
+     * 没有标签的时候回返回错误数据，需要启动延时
+     */
+    private void sendScanResultDelay() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("扫描返回", "延时返回结果了");
+                StopScan();
+                if (messageListener != null) {
+                    messageListener.OnUhfScanRet(true, getIdentification(), "", epcs);
+                }
+            }
+        }, scanTime);
+    }
+
+    /**
+     * 取消延时
+     */
+    private void cancelSendScanResultDelay() {
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
     private byte[] getData(byte[] buf) {
-        if (buf.length < 7) return null;
+        if (buf.length < 7) {
+            return null;
+        }
         int lenPre = buf[3] & 0xff;
         int lenAft = buf[4] & 0xff;
         int len = lenPre * 256 + lenAft;
@@ -137,6 +239,8 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             case DataProtocol.MID_READER_OPTION_QUERY_MAC:
                 ProcessQueryMac(buf);
                 break;
+            default:
+                break;
         }
     }
 
@@ -147,8 +251,9 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
      */
     private void ProcessQueryMac(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length <= 0) return;
+        if (data == null || data.length <= 0) {
+            return;
+        }
         String mac = Transfer.Byte2String(data);
         setIdentification(mac);
         //通知
@@ -166,10 +271,12 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
      */
     private void ProcessConnQuery(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length <= 0) {
-            Log.d(LOG_TAG, "接收到心跳回复确认消息");
+
+        if (data == null) {
             return;
+        }
+        if (data.length <= 0) {
+            Log.d("接收到心跳", "没有心跳数据");
         } else {
             if (SendConnQuery(data)) {
                 Log.d(LOG_TAG, "发送心跳回复成功");
@@ -178,42 +285,56 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
     private void ProcessRfidOperation(byte[] buf) {
-        int dst = buf[1] & 0x10;  //第12位，1标识阅读器主动上传，0 标识上位机指令或阅读器响应上位机指令
+        //第12位，1标识阅读器主动上传，0 标识上位机指令或阅读器响应上位机指令
+        int dst = buf[1] & 0x10;
+        Log.e(LOG_TAG, "收到处理消息：协议的类型是：：" + buf[2] + "消息情况是：：" + dst);
         switch (buf[2]) {
-            case 0x00:// DataProtocol.MID_RFID_UPDATE_TAG,
-                if (dst == 0X10) {   //阅读器主动上传  ox00 EPC 数据上传信息
+            case 0x00:
+                if (dst == 0X10) {
+                    //阅读器主动上传  ox00 EPC 数据上传信息
                     ProcessRfidEpc(buf);
-                } else {    //==0 阅读器响应
+                } else {
+                    //==0 阅读器响应
                     ProccessRfidInfo(buf);
                 }
                 break;
             case DataProtocol.MID_RFID_QUERY_ANT:
                 ProcessRfidQueryAnt(buf);
                 break;
-            case 0x01:  //设定功率  和 读取结束  依赖上传表示判断
+            case 0x01:
+                // /设定功率  和 读取结束  依赖上传表示判断
                 if (dst != 0x10) {
                     ProcessRfidOptionPower(buf);
                 } else {
                     ProccessInventoryEnd(buf);
                 }
                 break;
+
             case DataProtocol.MID_RFID_QUERY_POWER:
                 ProcessRfidQueryPower(buf);
                 break;
             case DataProtocol.MID_RFID_INVENTORY_EPC:
-                Log.i(LOG_TAG, "读取EPC开始结果:" + Transfer.Byte2String(buf));
+                //没有标签返回的时候就延时操作
+                sendScanResultDelay();
+                break;
+            default:
                 break;
         }
     }
 
     private void ProccessInventoryEnd(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length != 1) return;
+        if (data == null) {
+            return;
+        }
+        if (data.length != 1) {
+            return;
+        }
         if (data[0] == 0x00) {
             Log.i(LOG_TAG, "RFID扫描结束");
-            scanMode = false;
-            if (this.messageListener != null) {   //发送回调
+            StopScan();
+            if (this.messageListener != null) {
+                //发送回调
                 Log.d(LOG_TAG, "触发扫描完成回调");
                 this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
                 this.messageListener.OnUhfScanComplete(true, this.getIdentification());
@@ -222,20 +343,27 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
     private void ProcessRfidEpc(byte[] buf) {
+        //收到新的标签协议了就要取消延时，因为中途可能有错误数据
+        cancelSendScanResultDelay();
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length < 6) return;
+        if (data == null) {
+            return;
+        }
+        if (data.length < 6) {
+            return;
+        }
         String epc = "";
         int rssi = 0;
         String pc = "";
         int antIndex = 0;
         int ret = 0x00;
-
         boolean getRet = false;
         boolean getRssi = false;
         for (int i = data.length - 1; i >= 0; i--) {
-            if (!getRssi && i < 7) return;   //数据长度不够
-
+            //数据长度不够
+            if (!getRssi && i < 7) {
+                return;
+            }
             if (!getRssi) {
                 if ((data[i - 1] != 0x01 && data[i - 1] != 0x02)) {
                     i--;
@@ -283,7 +411,19 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         }
         if (this.epcs.containsKey(epc)) {
             this.epcs.get(epc).add(tagInfo);
+            if (System.currentTimeMillis() - lastTipTime > scanTime) {
+                StopScan();
+                scanMode = false;
+                if (this.messageListener != null) {
+                    //发送回调
+                    Log.d(LOG_TAG, "触发扫描完成回调");
+                    this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
+                    this.messageListener.OnUhfScanComplete(true, this.getIdentification());
+                }
+            }
+
         } else {
+            lastTipTime = System.currentTimeMillis();
             List<TagInfo> tagInfos = new ArrayList<>();
             tagInfos.add(tagInfo);
             this.epcs.put(epc, tagInfos);
@@ -292,8 +432,12 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     private void ProccessRfidInfo(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length < 2) return;
+        if (data == null) {
+            return;
+        }
+        if (data.length < 2) {
+            return;
+        }
         MAX_POWER = data[1];
         MAX_ANT = data[2];
         Log.i(LOG_TAG, "获取RFID信息:最大天线数目：" + MAX_ANT + ";最大支持功率:" + MAX_POWER);
@@ -302,8 +446,12 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     private void ProcessRfidOptionPower(byte[] buf) {
         // AA020100010092F3
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length != 1) return;
+        if (data == null) {
+            return;
+        }
+        if (data.length != 1) {
+            return;
+        }
         Log.i(LOG_TAG, "设置功率结果=" + (data[0] == 0x00));
         if (messageListener != null) {
             messageListener.OnUhfSetPowerRet(this.getIdentification(), data[0] == 0);
@@ -312,9 +460,15 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     private void ProcessRfidQueryPower(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) return;
-        if (data.length <= 0) return;
-        if (data.length % 2 != 0) return;
+        if (data == null) {
+            return;
+        }
+        if (data.length <= 0) {
+            return;
+        }
+        if (data.length % 2 != 0) {
+            return;
+        }
         int power = 100;
         int tmpPower = 100;
         int index = 0;
@@ -357,7 +511,8 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     }
 
-    int sendQueryMac = 0;  //累计获取MAC地址，3次未获取到，则主动断开
+    //累计获取MAC地址，3次未获取到，则主动断开
+    private int sendQueryMac = 0;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -393,7 +548,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             SendRfidQueryInfo();
         }).start();
 
-        scanCompleteThread = new Thread(() -> {
+        /*scanCompleteThread = new Thread(() -> {
             scanCompleteThreadWorking = true;
             while (scanCompleteThreadWorking) {
                 if (scanMode && ScanTimeCompleted()) {
@@ -404,8 +559,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                         this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
                         this.messageListener.OnUhfScanComplete(true, this.getIdentification());
                     }
-                }
-                else {
+                } else {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -414,19 +568,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                 }
             }
         });
-        scanCompleteThread.start();
+        scanCompleteThread.start();*/
     }
 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Log.e(LOG_TAG, "设备断开时间发生了" + getIdentification());
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        Log.w(LOG_TAG, "通道已关闭，Reader已断开");
+        Log.e(LOG_TAG, "通道已关闭，Reader已断开");
         Close();
     }
 
@@ -447,14 +602,20 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int StartScan() {
-        return StartScan(3000);
+        return StartScan(2000);
     }
 
     @Override
     public int StartScan(int timeout) {
-        if (timeout <= 0) timeout = 3000;
+        //如果正在扫描就不直接返回
+        if (scanMode) {
+            return FunctionCode.DEVICE_BUSY;
+        }
+        lastTipTime = System.currentTimeMillis();
+        if (timeout <= 0) {
+            timeout = 2000;
+        }
         this.scanTime = timeout;
-        startScanTime = new Date().getTime();
         scanMode = true;
         epcs.clear();
         return SendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
@@ -468,7 +629,9 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int SetPower(byte power) {
-        if (power <= 0 || power > 30) return FunctionCode.PARAM_ERROR;
+        if (power <= 0 || power > 30) {
+            return FunctionCode.PARAM_ERROR;
+        }
         return SendOptionPower(power) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
@@ -501,7 +664,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
         byte msttype = DataProtocol.MSG_TYPE_RFID_OPERATION;
         byte mid = DataProtocol.MID_RFID_INVENTORY_EPC;
 
-        startScanTime = new Date().getTime();
+        startScanTime = System.currentTimeMillis();
         byte[] data;
         if (password == null || password.length != 4) {
             data = new byte[2];
@@ -514,6 +677,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
             data[2] = 0x05; //密码
             System.arraycopy(password, 0, data, 3, password.length);
         }
+        Log.e("发送扫描指令了", "发送扫描指令了");
         return SendBuf(msttype, mid, data);
     }
 
@@ -542,7 +706,9 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
                 datatmp[pos++] = power;
             }
         }
-        if (pos <= 0) return false;
+        if (pos <= 0) {
+            return false;
+        }
         byte[] data = new byte[pos];
         System.arraycopy(datatmp, 0, data, 0, pos);
         return SendBuf(msgtype, mid, data);
@@ -581,6 +747,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
     }
 
     private boolean SendConnQuery(byte[] data) {
+//        Log.e("发送心跳数据", "心跳数据为" + Transfer.Byte2String(data));
         byte msgType = DataProtocol.MSG_TYPE_READER_OPTION;
         byte mid = DataProtocol.MID_READER_OPTION_QUERYCONN;
         // byte[] data = DataProtocol.ReverseLongToU32Bytes(queryConnIndex);
@@ -653,7 +820,7 @@ public class ColuNettyClientHandle extends NettyDeviceClientHandler implements U
 
     @Override
     public int Close() {
-        scanCompleteThreadWorking=false;
+        scanCompleteThreadWorking = false;
         try {
             Log.e(LOG_TAG, "已断开与设备 DeviceId=" + getIdentification() + "的连接");
             getCtx().close();
