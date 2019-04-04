@@ -520,7 +520,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
 			SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
 			SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
-			setPushFormOrderDate();
+
 			if (sureReciveOrder.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 			   if (sureReciveOrder.getMsg().equals("") ||
@@ -536,6 +536,13 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			} else {
 			   ToastUtils.showShort(sureReciveOrder.getMsg());
 			}
+
+			new Thread(new Runnable() {
+			   @Override
+			   public void run() {
+				setPushFormOrderDate();
+			   }
+			}).start();
 		   }
 
 		   @Override

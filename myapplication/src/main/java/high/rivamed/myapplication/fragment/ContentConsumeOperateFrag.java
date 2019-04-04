@@ -484,7 +484,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
-	mBaseTabBtnRobot.setVisibility(View.VISIBLE);
+//	mBaseTabBtnRobot.setVisibility(View.GONE);
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();

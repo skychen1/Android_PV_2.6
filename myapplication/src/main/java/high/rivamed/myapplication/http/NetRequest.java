@@ -809,6 +809,9 @@ public class NetRequest {
 		LogUtils.w(TAG, "Exception 请求URL： " + url);
 		LogUtils.w(TAG, "Exception 请求Body： " + mGson.toJson(date));
 		LogUtils.w(TAG, "Exception 返回Body： " + response.body());
+		if (netResult != null) {
+		   netResult.onSucceed(response.body());
+		}
 		e.printStackTrace();
 	   }
 	}

@@ -236,7 +236,7 @@ public class LoginActivity extends SimpleActivity {
 	mPushFormOrders.clear();
 
 	mLoginGone = findViewById(R.id.login_gone);
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this)+"_c");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   getLeftDate();
 	   getBoxSize();
