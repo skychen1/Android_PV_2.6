@@ -97,7 +97,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private InventoryDto mDtoLy = new InventoryDto();
    private int mIntentType;
    private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
-   int k          = 0;
+   int k = 0;
    private LoadingDialog.Builder mLoading;
    @BindView(R.id.timely_open_door)
    TextView           mTimelyOpenDoor;
@@ -124,7 +124,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public int          mSize;
    public InventoryDto mInventoryDto;
    public List<InventoryVo> mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
-   private int mOperation;
+   private int               mOperation;
    private Event.EventButton mEventButton;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -155,7 +155,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		     b.getExpireStatus() == 0) ||
-		    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)||mIsClick) {
+		    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null) ||
+		    mIsClick) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		   LogUtils.i(TAG, "OutBoxBingActivity   cancel");
@@ -180,7 +181,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "mOperation   cancel" + mOperation);
 		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperation != 8) ||
 		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		     b.getExpireStatus() != 0)||mIsClick) {
+		     b.getExpireStatus() != 0) || mIsClick) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		   LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
@@ -229,7 +230,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
-	EventBusUtils.post(new Event.EventButton(true,false));
+	EventBusUtils.post(new Event.EventButton(true, false));
 	EventBusUtils.removeStickyEvent(getClass());
    }
 
@@ -302,7 +303,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
-	if (mTypeView!=null&&mTypeView.mInBoxAllAdapter!=null){
+	if (mTypeView != null && mTypeView.mInBoxAllAdapter != null) {
 	   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 	}
 	AllDeviceCallBack.getInstance().initCallBack();
@@ -814,7 +815,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   //		  mTCstInventoryTwoDto.getInventoryVos().size() < 1) && mEthDeviceIdBack.size() != 0) {
 
 	   if (!mIsClick && (mTCstInventoryTwoDto.getInventoryVos() == null ||
-	   		  mTCstInventoryTwoDto.getInventoryVos().size() < 1)) {
+				   mTCstInventoryTwoDto.getInventoryVos().size() < 1)) {
 		if (mTimelyLeft != null && mTimelyRight != null) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
@@ -894,7 +895,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mLoading = null;
 	}
 	EventBusUtils.unregister(this);
-
+	mStarts.cancel();
+	mStarts = null;
 	super.onDestroy();
    }
 

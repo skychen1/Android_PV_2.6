@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleActivity;
@@ -77,6 +76,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.UpDateDialog;
 
+import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
@@ -96,6 +96,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
@@ -195,7 +196,6 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-//	   mTitleConn = true;
 	}
 	LogUtils.i(TAG,"getDates()   "+getDates());
 
@@ -228,7 +228,6 @@ public class LoginActivity extends SimpleActivity {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		DeviceManager.getInstance().UnRegisterDeviceCallBack();
 		AllDeviceCallBack.getInstance().initCallBack();
 	   }
 	}).start();
@@ -236,8 +235,9 @@ public class LoginActivity extends SimpleActivity {
 	mPushFormOrders.clear();
 
 	mLoginGone = findViewById(R.id.login_gone);
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this)+"_d");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
 	   getLeftDate();
 	   getBoxSize();
 	}

@@ -71,7 +71,7 @@ public class AllDeviceCallBack {
    }
 
    public void initCallBack() {
-
+	DeviceManager.getInstance().UnRegisterDeviceCallBack();
 	DeviceManager.getInstance().RegisterDeviceCallBack(new cn.rivamed.callback.DeviceCallBack() {
 	   @Override
 	   public void OnDeviceConnected(

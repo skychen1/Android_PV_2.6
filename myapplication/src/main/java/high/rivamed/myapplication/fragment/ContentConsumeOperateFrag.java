@@ -32,7 +32,6 @@ import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
@@ -386,7 +385,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   LogUtils.i(TAG, "EventBoolean   " + mOppenDoor);
 		   if (mOppenDoor == null) {
 			LogUtils.i(TAG, "EventBoolean  进来1");
-			DeviceManager.getInstance().UnRegisterDeviceCallBack();
 			AllDeviceCallBack.getInstance().initCallBack();
 		   } else {
 			LogUtils.i(TAG, "EventBoolean  进来2");
@@ -646,33 +644,36 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
-		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
-		List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
-		String string = null;
-		if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-		}
+//		if (mFastInOutDto.isOperateSuccess()){
+		   List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
+		   List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
+		   String string = null;
+		   if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
+			string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
+			ToastUtils.showLong(string);
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+		   }
 
-		for (int i = 0; i < outInventoryVos.size(); i++) {
-		   outInventoryVos.get(i).setSelected(true);
-		}
+		   for (int i = 0; i < outInventoryVos.size(); i++) {
+			outInventoryVos.get(i).setSelected(true);
+		   }
 
-		if (mFastInOutDto != null &&
-		    (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
-		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
-										  outInventoryVos.size()));
-		   mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
-		} else {
-		   mEthDeviceIdBack2.clear();
-		   //		   mEthDeviceIdBack.clear();
-		   ToastUtils.showShortToast("未扫描到操作耗材");
-		   if (mFastInOutDto.getErrorEpcs() == null || mFastInOutDto.getErrorEpcs().size() == 0){
-			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   if (mFastInOutDto != null &&
+			 (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
+			EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
+										     outInventoryVos.size()));
+			mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
+		   } else {
+			mEthDeviceIdBack2.clear();
+			//		   mEthDeviceIdBack.clear();
+			ToastUtils.showShortToast("未扫描到操作耗材");
+			if (mFastInOutDto.getErrorEpcs() == null || mFastInOutDto.getErrorEpcs().size() == 0){
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+			}
 		   }
 		}
-	   }
+
+//	   }
 	});
    }
 
@@ -714,7 +715,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
-		setEPCDateAndIntent(cstInventoryDto, true);
+//		if (cstInventoryDto.isOperateSuccess()){
+		   setEPCDateAndIntent(cstInventoryDto, true);
+//		}
 	   }
 
 	   @Override

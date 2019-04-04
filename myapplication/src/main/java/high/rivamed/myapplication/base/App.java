@@ -27,6 +27,7 @@ import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
 import cn.rivamed.device.Service.UhfService.UhfDeviceType;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
+import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -108,7 +109,7 @@ public class App extends Application {
    private void initOkGo() {
 	OkHttpClient.Builder builder = new OkHttpClient.Builder();
 	//log相关
-	HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("OkGo");
+	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
 	loggingInterceptor.setPrintLevel(
 		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
 	loggingInterceptor.setColorLevel(
