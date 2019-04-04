@@ -275,7 +275,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/x66"
 				android:orientation="horizontal"
-				android:layout_marginTop="@dimen/x60"
+				android:layout_marginTop="@dimen/x40"
 				>
 
 				<TextView
@@ -317,7 +317,39 @@
 					android:text="确认"
 					/>
 			</RelativeLayout>
+			<RelativeLayout
+				android:id="@+id/frag_registe_logcat"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/x20"
+				>
 
+				<TextView
+					android:id="@+id/text_closs"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/textsize_16"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="日志记录关闭"/>
+				<Switch
+					android:id="@+id/switch_btn"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_toRightOf="@+id/text_closs"
+					android:layout_marginLeft="@dimen/dp_10"
+					android:layout_marginRight="@dimen/dp_10"/>
+				<TextView
+					android:layout_toRightOf="@+id/switch_btn"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="@dimen/textsize_16"
+					android:textColor="@color/text_color_58"
+					android:layout_centerVertical="true"
+					android:text="日志记录开启"/>
+
+			</RelativeLayout>
 		</LinearLayout>
 		<LinearLayout
 			android:layout_width="0dp"

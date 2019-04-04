@@ -278,7 +278,9 @@ public class DialogUtils {
         builder.setLeft("", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
+            if (mStarts!=null){
                 mStarts.start();
+            }
                 dialog.dismiss();
             }
         });

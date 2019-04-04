@@ -5,8 +5,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
+
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -21,6 +27,7 @@ import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
+import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
@@ -39,8 +46,10 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
+
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -55,6 +64,8 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.http.NetApi.URL_CLOSE;
+import static high.rivamed.myapplication.http.NetApi.URL_OPEN;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -91,6 +102,8 @@ public class RegisteFrag extends SimpleFragment {
    @BindView(R.id.frag_registe_loginout_edit)
    EditText mFragRegisteLoginoutEdit;
    public RecyclerView mRecyclerview;
+   @BindView(R.id.switch_btn)
+   Switch   mSwitch;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
    public  RegisteSmallAdapter             mSmallAdapter;
@@ -108,7 +121,7 @@ public class RegisteFrag extends SimpleFragment {
    private       ThingDto                            mSnRecoverBean;
    public static List<ThingDto.DeviceVosBean> mDeviceVos = new ArrayList<>();//柜子list
    public  NetWorkReceiver netWorkReceiver;
-   private String             mBoxCode;
+   private String          mBoxCode;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -131,13 +144,13 @@ public class RegisteFrag extends SimpleFragment {
 
    }
 
-//   private void applyNet() {
-//	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//	netWorkReceiver = new NetWorkReceiver();
-//	_mActivity.registerReceiver(netWorkReceiver, filter);
-//	netWorkReceiver.setInteractionListener(this);
-//
-//   }
+   //   private void applyNet() {
+   //	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+   //	netWorkReceiver = new NetWorkReceiver();
+   //	_mActivity.registerReceiver(netWorkReceiver, filter);
+   //	netWorkReceiver.setInteractionListener(this);
+   //
+   //   }
 
    /**
     * 激活
@@ -155,7 +168,7 @@ public class RegisteFrag extends SimpleFragment {
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
-						thingDto.getThingSnVo().getSthName());
+					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
 					   thingDto.getThingSnVo().getBranchCode());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE,
@@ -188,11 +201,11 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void onStart() {
 	super.onStart();
-	if (WifiUtils.isWifi(mContext) == 1){
+	if (WifiUtils.isWifi(mContext) == 1) {
 	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
-	}else if (WifiUtils.isWifi(mContext)==2){
+	} else if (WifiUtils.isWifi(mContext) == 2) {
 	   mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
-	}else {
+	} else {
 	   mFragRegisteLocalipEdit.setText("");
 	}
    }
@@ -203,7 +216,7 @@ public class RegisteFrag extends SimpleFragment {
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
-//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
+	//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
@@ -216,8 +229,7 @@ public class RegisteFrag extends SimpleFragment {
 				mSnRecoverBean.getThingSnVo().getSthId());
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 				mSnRecoverBean.getThingSnVo().getSthName());
-	SPUtils.putString(UIUtils.getContext(), THING_CODE,
-				mSnRecoverBean.getThing().getThingId());
+	SPUtils.putString(UIUtils.getContext(), THING_CODE, mSnRecoverBean.getThing().getThingId());
 
 	mFragRegisteRight.setEnabled(false);
 	if (mSmallAdapter != null && mSmallAdapter.mRightDelete != null) {
@@ -247,7 +259,7 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-//	applyNet();
+	//	applyNet();
 
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
@@ -267,27 +279,60 @@ public class RegisteFrag extends SimpleFragment {
 
 	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
 	mBaseDevices = generateData();
+	if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
+	   mSwitch.setChecked(true);
+	}else {
+	   mSwitch.setChecked(false);
+	}
 	initData();
+	initListener();
    }
 
-//   /**
-//    * 获取本地和WIFI的IP  显示
-//    *
-//    * @param k
-//    */
-//   @Override
-//   public void setInt(int k) {
-//	LogUtils.i(TAG, "setInt   ");
-//	if (k != -1) {
-//	   if (k == 2) {
-//		mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
-//	   } else if (k == 0) {
-//		mFragRegisteLocalipEdit.setText("");
-//	   } else if (k == 1) {
-//		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
-//	   }
-//	}
-//   }
+   private void initListener() {
+	mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+	   @Override
+	   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	      if (isChecked){
+		   OkGo.<String>get(MAIN_URL+URL_OPEN).tag(mContext).execute(new StringCallback() {
+			@Override
+			public void onSuccess(Response<String> response) {
+			   Log.i(TAG,"responseURL_OPEN   "+response.body());
+			   SimpleActivity.hasLogWork(true);
+			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
+			}
+		   });
+		}else {
+		   OkGo.<String>get(MAIN_URL+URL_CLOSE).tag(mContext).execute(new StringCallback() {
+			@Override
+			public void onSuccess(Response<String> response) {
+			   Log.i(TAG,"responseURL_CLOSE   "+response.body());
+			   SimpleActivity.hasLogWork(false);
+			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
+			}
+		   });
+		}
+	   }
+	});
+   }
+
+   //   /**
+   //    * 获取本地和WIFI的IP  显示
+   //    *
+   //    * @param k
+   //    */
+   //   @Override
+   //   public void setInt(int k) {
+   //	LogUtils.i(TAG, "setInt   ");
+   //	if (k != -1) {
+   //	   if (k == 2) {
+   //		mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
+   //	   } else if (k == 0) {
+   //		mFragRegisteLocalipEdit.setText("");
+   //	   } else if (k == 1) {
+   //		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
+   //	   }
+   //	}
+   //   }
 
    private void initData() {
 
@@ -538,7 +583,7 @@ public class RegisteFrag extends SimpleFragment {
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mFragRegisteModelEdit.getText().toString().trim());
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
-//	tBaseThing.setThingType("1");
+	//	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
 	TBaseThingDto.setThing(tBaseThing);
@@ -593,9 +638,9 @@ public class RegisteFrag extends SimpleFragment {
 	   case R.id.frag_registe_loginout_btn:
 		try {
 		   int time = Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim());
-		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME,time);
+		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
 		   COUNTDOWN_TIME = time;
-		   ToastUtils.showShortToast("设置成功！操作界面无操作后 "+COUNTDOWN_TIME/1000 +" s后自动退出登录！");
+		   ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");
 		}
@@ -701,6 +746,6 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void onDestroy() {
 	super.onDestroy();
-//	mContext.unregisterReceiver(netWorkReceiver);
+	//	mContext.unregisterReceiver(netWorkReceiver);
    }
 }

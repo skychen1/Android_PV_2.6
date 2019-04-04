@@ -33,10 +33,12 @@ import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -50,7 +52,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
  * 更新描述：   ${TODO}
  */
 public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
-//	implements IView<P>,NetWorkReceiver.IntAction {
+	//	implements IView<P>,NetWorkReceiver.IntAction {
 	implements IView<P> {
 
    private VDelegate    vDelegate;
@@ -61,30 +63,33 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    public  List<String> eth002DeviceIdList;
    private Unbinder     unbinder;
    View mTipView;
+   static View mLogView;
    WindowManager mWindowManager;
+   static WindowManager mLogWindowManager;
    WindowManager.LayoutParams mLayoutParams;
-  public  NetWorkReceiver netWorkReceiver;
+   static WindowManager.LayoutParams mLayoutParamsLog;
+   public NetWorkReceiver            netWorkReceiver;
+
    /**
     * 设备title连接状态
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-      Log.e("xxb", "SimpleActivity     " + event.connect);
+	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	hasNetWork(mTitleConn);
    }
-
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
-//	hideBottomUIMenu();
+	//	hideBottomUIMenu();
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//	   applyNet();
+	//	   applyNet();
 	mContext = this;
 	mGson = new Gson();
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
@@ -92,6 +97,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	if (getLayoutId() > 0) {
 	   setContentView(getLayoutId());
 	   initTipView();
+	   initLogView();
 	   onBindViewBefore();
 	   bindUI(null);
 	   bindEvent();
@@ -100,42 +106,41 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 
 	App.getInstance().addActivity_(this);
    }
-//   private void applyNet() {
-//	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//	netWorkReceiver = new NetWorkReceiver();
-//	registerReceiver(netWorkReceiver, filter);
-//	netWorkReceiver.setInteractionListener(this);
-//
-//   }
-//   @Override
-//   public void setInt(int k) {
-//	if (k != -1) {
-//	   if (k == 2||k == 1) {
-//		NetRequest.getInstance().getHospBranch(this, new BaseResult());//用来查询是否网连通了
-////		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
-//	   } else if (k == 0) {
-//		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
-//	   }
-//	}
-//   }
-
-
+   //   private void applyNet() {
+   //	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+   //	netWorkReceiver = new NetWorkReceiver();
+   //	registerReceiver(netWorkReceiver, filter);
+   //	netWorkReceiver.setInteractionListener(this);
+   //
+   //   }
+   //   @Override
+   //   public void setInt(int k) {
+   //	if (k != -1) {
+   //	   if (k == 2||k == 1) {
+   //		NetRequest.getInstance().getHospBranch(this, new BaseResult());//用来查询是否网连通了
+   ////		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+   //	   } else if (k == 0) {
+   //		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+   //	   }
+   //	}
+   //   }
 
    /**
     * 判断显示网络异常
+    *
     * @param has:true
     */
    public void hasNetWork(boolean has) {
-      if (mWindowManager!=null){
+	if (mWindowManager != null) {
 	   if (has) {
 		if (mTipView != null && mTipView.getParent() != null) {
 		   mWindowManager.removeView(mTipView);
 		}
 	   } else {
 		if (mTipView.getParent() == null) {
-		   try{
+		   try {
 			mWindowManager.addView(mTipView, mLayoutParams);
-		   }catch (Exception e){
+		   } catch (Exception e) {
 
 		   }
 
@@ -143,20 +148,61 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	   }
 	}
    }
+
    private void initTipView() {
 	LayoutInflater inflater = getLayoutInflater();
 	mTipView = inflater.inflate(R.layout.layout_network_tip, null); //提示View布局
 	mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-	mLayoutParams = new WindowManager.LayoutParams(
-		ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-		WindowManager.LayoutParams.TYPE_APPLICATION,
-		WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-		| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-		PixelFormat.TRANSLUCENT);
+	mLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								     ViewGroup.LayoutParams.WRAP_CONTENT,
+								     WindowManager.LayoutParams.TYPE_APPLICATION,
+								     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+								     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+								     PixelFormat.TRANSLUCENT);
 	//使用非CENTER时，可以通过设置XY的值来改变View的位置
 	mLayoutParams.gravity = Gravity.TOP;
 	mLayoutParams.x = 0;
 	mLayoutParams.y = getResources().getDimensionPixelSize(R.dimen.y86);
+   }
+
+   /**
+    * 判断日志开启
+    *
+    * @param has:true
+    */
+   public static void hasLogWork(boolean has) {
+	if (mLogWindowManager != null) {
+	   if (!has) {
+		if (mLogView != null && mLogView.getParent() != null) {
+		   mLogWindowManager.removeView(mLogView);
+		}
+	   } else {
+		if (mLogView.getParent() == null) {
+		   try {
+			mLogWindowManager.addView(mLogView, mLayoutParamsLog);
+		   } catch (Exception e) {
+
+		   }
+
+		}
+	   }
+	}
+   }
+
+   private void initLogView() {
+	LayoutInflater inflater = getLayoutInflater();
+	mLogView = inflater.inflate(R.layout.layout_log_layout, null); //提示View布局
+	mLogWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+	mLayoutParamsLog = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+									  ViewGroup.LayoutParams.WRAP_CONTENT,
+									  WindowManager.LayoutParams.TYPE_APPLICATION,
+									  WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+									  WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+									  PixelFormat.TRANSLUCENT);
+	//使用非CENTER时，可以通过设置XY的值来改变View的位置
+
+	mLayoutParamsLog.gravity = Gravity.BOTTOM;
+
    }
 
    @Override
@@ -186,7 +232,13 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onStart();
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
+	   SimpleActivity.hasLogWork(true);
+	} else {
+	   SimpleActivity.hasLogWork(false);
+	}
    }
+
    @Override
    public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -195,6 +247,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	return super.onKeyDown(keyCode, event);
 
    }
+
    @Override
    protected void onResume() {
 	super.onResume();
@@ -236,7 +289,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	vDelegate = null;
 	unbinder.unbind();
 
-//	  unregisterReceiver(netWorkReceiver);
+	//	  unregisterReceiver(netWorkReceiver);
    }
 
    @Override
