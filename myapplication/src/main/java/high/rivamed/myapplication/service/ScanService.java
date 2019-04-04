@@ -161,7 +161,6 @@ public class ScanService extends Service {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		DeviceManager.getInstance().UnRegisterDeviceCallBack();
 		AllDeviceCallBack.getInstance().initCallBack();
 		Log.e("FAFAS", "发起   ");
 	   }

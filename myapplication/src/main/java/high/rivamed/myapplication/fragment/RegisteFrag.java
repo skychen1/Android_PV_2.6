@@ -594,7 +594,7 @@ public class RegisteFrag extends SimpleFragment {
 		try {
 		   int time = Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim());
 		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME,time);
-		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
+		   COUNTDOWN_TIME = time;
 		   ToastUtils.showShortToast("设置成功！操作界面无操作后 "+COUNTDOWN_TIME/1000 +" s后自动退出登录！");
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");

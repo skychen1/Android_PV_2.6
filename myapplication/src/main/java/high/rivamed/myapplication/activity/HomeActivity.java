@@ -119,6 +119,7 @@ public class HomeActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
+
 	setMenu();
 	initData();
 	initListener();

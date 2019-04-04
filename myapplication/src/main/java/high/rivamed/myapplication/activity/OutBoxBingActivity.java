@@ -786,6 +786,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);
+	mStarts.cancel();
+	mStarts = null;
 	super.onDestroy();
    }
 

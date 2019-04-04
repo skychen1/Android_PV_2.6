@@ -106,6 +106,8 @@ public class LogcatHelper {
 	   //	    cmds = "logcat *:e *:w | grep \"(" + mPID + ")\"";
 	   // cmds = "logcat  | grep \"(" + mPID + ")\"";//打印所有日志信息
 	   // cmds = "logcat -mObject way";//打印标签过滤信息
+//	   if ()
+//	   cmds = "logcat OkGo:i *:e *:w | grep \"(" + mPID + ")\"";
 	   cmds = "logcat *:e *:w ";
 //	   cmds = "logcat *:i ";
 
