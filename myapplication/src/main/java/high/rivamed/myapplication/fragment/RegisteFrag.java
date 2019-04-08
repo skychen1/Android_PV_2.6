@@ -210,7 +210,7 @@ public class RegisteFrag extends SimpleFragment {
 	}
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRecoverEvent(ThingDto event) {
 	mSnRecoverBean = event;
 	String s = mGson.toJson(event);
