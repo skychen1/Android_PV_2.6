@@ -189,6 +189,9 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	}
    }
 
+   /**
+    * 日志启用显示
+    */
    private void initLogView() {
 	LayoutInflater inflater = getLayoutInflater();
 	mLogView = inflater.inflate(R.layout.layout_log_layout, null); //提示View布局

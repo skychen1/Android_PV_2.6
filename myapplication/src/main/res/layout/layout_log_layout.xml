@@ -8,10 +8,11 @@
 		android:id="@+id/log_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:paddingBottom="@dimen/x10"
-		android:paddingRight="@dimen/x10"
+		android:padding="@dimen/x16"
+
 		android:layout_alignParentRight="true"
 		android:text="***日志记录开***"
+		android:background="@color/color_red_f"
 		android:textSize="@dimen/textsize_20"
-		android:textColor="@color/color_red"/>
+		android:textColor="@color/bg_f"/>
 </RelativeLayout>
