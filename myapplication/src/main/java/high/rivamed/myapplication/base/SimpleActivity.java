@@ -2,10 +2,10 @@ package high.rivamed.myapplication.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,13 +30,16 @@ import high.rivamed.myapplication.base.mvp.IView;
 import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
+import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 
@@ -62,13 +65,14 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    public  List<String> mReaderDeviceId;
    public  List<String> eth002DeviceIdList;
    private Unbinder     unbinder;
-   View mTipView;
-   static View mLogView;
-   WindowManager mWindowManager;
-   static WindowManager mLogWindowManager;
+   View                       mTipView;
+   View                       mLogView;
+   WindowManager              mWindowManager;
+   WindowManager              mLogWindowManager;
    WindowManager.LayoutParams mLayoutParams;
-   static WindowManager.LayoutParams mLayoutParamsLog;
-   public NetWorkReceiver            netWorkReceiver;
+   WindowManager.LayoutParams mLayoutParamsLog;
+   public NetWorkReceiver netWorkReceiver;
+   public static Intent mIntent;
 
    /**
     * 设备title连接状态
@@ -77,9 +81,18 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-	Log.e("xxb", "SimpleActivity     " + event.connect);
+//	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	hasNetWork(mTitleConn);
+   }
+
+   /**
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onLogEvent(Event.EventLogType event) {
+//	Log.e("xxb", "EventLogType     " +event.type);
+	hasLogWork(event.type);
    }
 
    @Override
@@ -87,6 +100,10 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
 	//	hideBottomUIMenu();
+	if (MAIN_URL != null&&mIntent==null) {
+	   mIntent = new Intent(this, TimerService.class);
+	   startService(mIntent);
+	}
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	//	   applyNet();
@@ -170,7 +187,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     *
     * @param has:true
     */
-   public static void hasLogWork(boolean has) {
+   public void hasLogWork(boolean has) {
 	if (mLogWindowManager != null) {
 	   if (!has) {
 		if (mLogView != null && mLogView.getParent() != null) {
@@ -205,7 +222,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	//使用非CENTER时，可以通过设置XY的值来改变View的位置
 
 	mLayoutParamsLog.gravity = Gravity.BOTTOM;
-
    }
 
    @Override
@@ -236,9 +252,9 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
-	   SimpleActivity.hasLogWork(true);
+	   hasLogWork(true);
 	} else {
-	   SimpleActivity.hasLogWork(false);
+	   hasLogWork(false);
 	}
    }
 
@@ -279,10 +295,12 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-
 	EventBusUtils.unregister(this);
 	OkGo.getInstance().cancelTag(this);
 	UIUtils.removeAllCallbacks();
+	if (mLogWindowManager!=null&&mLogView!=null&&mLogView.getParent()!=null){
+	   mLogWindowManager.removeViewImmediate(mLogView);
+	}
 
 	if (getP() != null) {
 	   getP().detachV();

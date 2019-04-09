@@ -17,9 +17,6 @@ package org.androidpn.client;
 
 import android.util.Log;
 
-import org.androidpn.utils.EventBusUtils;
-import org.androidpn.utils.XmppEvent;
-
 /**
  * A thread class for recennecting the server.
  *
@@ -42,17 +39,19 @@ public class ReconnectionThread extends Thread {
     public void run() {
         try {
             while (!isInterrupted()) {
-
+                if (xmppManager.getConnection().isConnected()){
+                    xmppManager.disconnect();
+                }
                 Thread.sleep((long)waiting()*1000L);
                 xmppManager.connect();
                 xmppManager.getConnection().connect();
                 waiting++;
                 Log.e("xb", "Trying to reconnect in 10 " + " seconds");
-                EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+//                EventBusUtils.post(new XmppEvent.XmmppConnect(true));
             }
         } catch (final Exception e) {
             Log.e("xb", "e");
-            EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+//            EventBusUtils.post(new XmppEvent.XmmppConnect(false));
             xmppManager.getHandler().postDelayed(new Runnable() {
                 public void run() {
                     xmppManager.getConnectionListener().connectionClosedOnError(e);

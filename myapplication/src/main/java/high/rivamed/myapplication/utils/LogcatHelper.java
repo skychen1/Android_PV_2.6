@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 
 import high.rivamed.myapplication.timeutil.PowerDateUtils;
 
+import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
+
 /**
  * 项目名称:    Android_PV_2.6
  * 创建者:      DanMing
@@ -106,9 +108,12 @@ public class LogcatHelper {
 	   //	    cmds = "logcat *:e *:w | grep \"(" + mPID + ")\"";
 	   // cmds = "logcat  | grep \"(" + mPID + ")\"";//打印所有日志信息
 	   // cmds = "logcat -mObject way";//打印标签过滤信息
-//	   if ()
+	   if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
+	      cmds = "logcat OkGo:i *:e *:w | grep \"(" + mPID + ")\"";
+	   }else {
+		cmds = "logcat *:e *:w ";
+	   }
 //	   cmds = "logcat OkGo:i *:e *:w | grep \"(" + mPID + ")\"";
-	   cmds = "logcat *:e *:w ";
 //	   cmds = "logcat *:i ";
 
 	}

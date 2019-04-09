@@ -27,7 +27,6 @@ import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
-import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
@@ -297,7 +296,7 @@ public class RegisteFrag extends SimpleFragment {
 			@Override
 			public void onSuccess(Response<String> response) {
 			   Log.i(TAG,"responseURL_OPEN   "+response.body());
-			   SimpleActivity.hasLogWork(true);
+			   EventBusUtils.post(new Event.EventLogType(true));
 			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
 			}
 		   });
@@ -306,7 +305,7 @@ public class RegisteFrag extends SimpleFragment {
 			@Override
 			public void onSuccess(Response<String> response) {
 			   Log.i(TAG,"responseURL_CLOSE   "+response.body());
-			   SimpleActivity.hasLogWork(false);
+			   EventBusUtils.post(new Event.EventLogType(false));
 			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
 			}
 		   });

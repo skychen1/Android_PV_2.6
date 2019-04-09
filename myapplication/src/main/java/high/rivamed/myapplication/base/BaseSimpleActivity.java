@@ -101,7 +101,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
      *
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
         mTitleConn = event.connect;
         selTitleIcon();

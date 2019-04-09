@@ -110,4 +110,6 @@ public interface NetApi {
     String URL_OPEN = "/rmApi/openLog";//日志收集开启
     String URL_CLOSE = "/rmApi/closeLog";//日志收集关闭
 
+    String URL_CONNECT = "/rmApi/userManage/account/connect";//测试连接提示
+
 }

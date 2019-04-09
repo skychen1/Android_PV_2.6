@@ -65,6 +65,7 @@ import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -150,7 +151,6 @@ public class LoginActivity extends SimpleActivity {
    public static int    mConfigType;
    private String mDesc;
    private boolean mOnStart = false;
-   private Intent mIntent;
 
    /**
     * ic卡和指纹仪登陆回调
@@ -170,7 +170,7 @@ public class LoginActivity extends SimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect);
@@ -270,6 +270,15 @@ public class LoginActivity extends SimpleActivity {
 	mLoginViewpager.setScanScroll(false);
    }
 
+   @Override
+   protected void onResume() {
+	super.onResume();
+	if (MAIN_URL != null &&mIntent == null) {
+	    mIntent = new Intent(this, TimerService.class);
+	   startService(mIntent);
+	}
+   }
+
    /**
     * 本地手术室
     */
@@ -306,7 +315,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		deleteLitepal();
-		LogUtils.w(TAG, "getUnNetUseDate    " + result);
+//		LogUtils.w(TAG, "getUnNetUseDate    " + result);
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
 		new Thread(new Runnable() {
 		   @Override

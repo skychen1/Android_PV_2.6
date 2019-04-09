@@ -88,7 +88,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      *
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 //        Log.e("xxb", "BaseSimpleFragment     " + event.connect);
         mTitleConn = event.connect;

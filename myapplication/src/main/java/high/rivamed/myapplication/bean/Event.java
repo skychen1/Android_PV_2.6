@@ -25,7 +25,15 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
-    /**
+
+   public static class EventLogType {
+      public boolean type;
+      public EventLogType(boolean type){
+         this.type = type;
+      }
+   }
+
+   /**
      * ic卡登陆
      */
     public static class EventICAndFinger {
