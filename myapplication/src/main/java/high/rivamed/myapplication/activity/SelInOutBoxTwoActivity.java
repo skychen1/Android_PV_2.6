@@ -459,7 +459,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		finish();
 		break;
 	   case R.id.timely_start_btn:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
 		   if (!mIsClick) {

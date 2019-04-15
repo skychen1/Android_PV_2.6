@@ -85,7 +85,7 @@ public class RegisteRecoverFrag extends SimpleFragment {
 
    @OnClick(R.id.fragment_btn_one)
    public void onViewClicked() {
-	if (UIUtils.isFastDoubleClick()) {
+	if (UIUtils.isFastDoubleClick(R.id.fragment_btn_one)) {
 	   return;
 	} else {
 	   loadDate();

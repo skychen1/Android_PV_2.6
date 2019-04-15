@@ -354,9 +354,11 @@ public class AllDeviceCallBack {
     * 获取设备门锁ID，并开柜
     */
    private void queryDoorId(String mDeviceCode) {
+	LogUtils.i(TAG, " eth002DeviceIdList.size  " +  eth002DeviceIdList.size());
 	for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
 								    UHF_TYPE).find(BoxIdBean.class);
+	   LogUtils.i(TAG, " boxIdBeans.size  " +  boxIdBeans.size());
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(eth002DeviceIdList.get(i))) {

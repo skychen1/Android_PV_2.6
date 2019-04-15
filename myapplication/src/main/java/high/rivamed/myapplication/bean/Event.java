@@ -25,6 +25,15 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+   /*
+   首页禁止点击按钮
+    */
+   public static class EventHomeEnable {
+      public boolean type;
+      public EventHomeEnable(boolean type){
+         this.type = type;
+      }
+   }
 
    public static class EventLogType {
       public boolean type;

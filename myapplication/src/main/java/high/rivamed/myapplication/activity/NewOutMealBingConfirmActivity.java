@@ -395,7 +395,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		finish();
 		break;
 	   case R.id.timely_start_btn:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
 		   mEPCMapDate.clear();
@@ -413,7 +413,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.timely_open_door:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   return;
 		} else {
 		   reOpenDoor();
@@ -428,7 +428,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 								     mPrePageDate);
 		break;
 	   case R.id.activity_btn_one:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
 		   return;
 		} else {
 		   useOrderCst();

@@ -97,7 +97,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     @OnClick(R.id.login_button)
     public void onViewClicked() {
-        if (UIUtils.isFastDoubleClick()) {
+        if (UIUtils.isFastDoubleClick(R.id.login_button)) {
             return;
         } else {
             if (isvalidate()) {

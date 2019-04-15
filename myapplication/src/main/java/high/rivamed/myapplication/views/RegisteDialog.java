@@ -163,7 +163,7 @@ public class RegisteDialog extends Dialog {
 	   mAddressTwo.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(v.getId())) {
 			return;
 		   } else {
 		      getHospBranch(mAddressTwo, mGoneTwoType, 2);
@@ -192,7 +192,7 @@ public class RegisteDialog extends Dialog {
 	   mAddressFour.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(v.getId())) {
 			return;
 		   } else {
 			String trim = mGoneThreeType.getText().toString().trim();
@@ -216,7 +216,7 @@ public class RegisteDialog extends Dialog {
 	   mDialogRight.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(v.getId())) {
 			return;
 		   } else {
 			String mAddressTwos = mAddressTwo.getText().toString().trim();

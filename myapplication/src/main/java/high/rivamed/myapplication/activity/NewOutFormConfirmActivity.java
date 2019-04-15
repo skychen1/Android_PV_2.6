@@ -394,7 +394,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		reOpenDoor();
 		break;
 	   case R.id.activity_btn_one:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
 		   return;
 		} else {
 		   mDownBtnOne.setEnabled(false);

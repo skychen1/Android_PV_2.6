@@ -170,7 +170,7 @@ public class LoginActivity extends SimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect);
@@ -233,7 +233,7 @@ public class LoginActivity extends SimpleActivity {
 	}).start();
 	mOnStart = true;
 	mPushFormOrders.clear();
-
+	getAllCstDate(mGson, this);
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this)+"_d");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {

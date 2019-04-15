@@ -43,15 +43,15 @@ public class RegisteActivity extends SimpleActivity {
 
    private static final String TAG = "RegisteActivity";
    @BindView(R.id.base_tab_tv_title)
-   TextView         mBaseTabTvTitle;
+   TextView              mBaseTabTvTitle;
    @BindView(R.id.base_tab_tv_name)
-   TextView         mBaseTabTvName;
+   TextView              mBaseTabTvName;
    @BindView(R.id.base_tab_icon_right)
-   CircleImageView  mBaseTabIconRight;
+   CircleImageView       mBaseTabIconRight;
    @BindView(R.id.base_tab_tv_outlogin)
-   ImageView        mBaseTabOutLogin;
+   ImageView mBaseTabOutLogin;
    @BindView(R.id.base_tab_btn_msg)
-   ImageView        mBaseTabBtnMsg;
+   ImageView             mBaseTabBtnMsg;
 
    @BindView(R.id.registe_tl)
    SlidingTabLayout mRegisteTl;

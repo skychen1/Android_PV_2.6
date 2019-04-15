@@ -56,31 +56,31 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
     private static final String TAG = "BaseSimpleActivity";
     @BindView(R.id.base_tab_back)
-    public TextView mBaseTabBack;
+    public TextView              mBaseTabBack;
     @BindView(R.id.base_tab_btn_left)
-    public TextView mBaseTabBtnLeft;
+    public TextView              mBaseTabBtnLeft;
     @BindView(R.id.base_tab_tv_title)
     public TextView mBaseTabTvTitle;
     @BindView(R.id.stock_rdbtn_left)
-    public RadioButton mStockRdbtnLeft;
+    public RadioButton           mStockRdbtnLeft;
     @BindView(R.id.stock_rdbtn_middle)
-    public RadioButton mStockRdbtnMiddle;
+    public RadioButton           mStockRdbtnMiddle;
     @BindView(R.id.stock_rdbtn_right)
-    public RadioButton mStockRdbtnRight;
+    public RadioButton           mStockRdbtnRight;
     @BindView(R.id.rg_group)
-    public RadioGroup mRgGroup;
+    public RadioGroup            mRgGroup;
     @BindView(R.id.base_tab_tv_name)
-    public TextView mBaseTabTvName;
+    public TextView              mBaseTabTvName;
     @BindView(R.id.base_tab_icon_right)
-    public CircleImageView mBaseTabIconRight;
+    public CircleImageView       mBaseTabIconRight;
     @BindView(R.id.base_tab_tv_outlogin)
     public ImageView mBaseTabOutLogin;
     @BindView(R.id.base_tab_btn_msg)
-    public ImageView mBaseTabBtnMsg;
+    public ImageView             mBaseTabBtnMsg;
     @BindView(R.id.base_tab_ll)
-    public RelativeLayout mBaseTabLl;
+    public RelativeLayout        mBaseTabLl;
     @BindView(R.id.base_tab_rlayout)
-    public RelativeLayout mBaseTabRlayout;
+    public RelativeLayout        mBaseTabRlayout;
 
     public ViewStub mStub;
     public SettingPopupWindow mPopupWindow;

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
 
@@ -57,6 +59,7 @@ public class LoadingDialog extends Dialog {
 									     ViewGroup.LayoutParams.MATCH_PARENT));
 	   mAnimationDrawable = (AnimationDrawable) mLoading.getBackground();
 	   mAnimationDrawable.start();
+	   EventBusUtils.post(new Event.EventHomeEnable(true));
 	   new Handler().postDelayed(new Runnable() {
 		@Override
 		public void run() {

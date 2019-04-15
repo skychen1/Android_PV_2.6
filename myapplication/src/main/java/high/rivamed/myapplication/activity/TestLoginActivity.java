@@ -87,7 +87,7 @@ public class TestLoginActivity extends SimpleActivity {
 		finish();
 		break;
 	   case R.id.dialog_right:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.dialog_right)) {
 		   return;
 		} else {
 

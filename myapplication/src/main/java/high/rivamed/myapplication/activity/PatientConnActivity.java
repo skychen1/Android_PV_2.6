@@ -178,7 +178,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 		builder.create().show();
 		break;
 	   case R.id.base_tab_btn_msg:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.base_tab_btn_msg)) {
 		   return;
 		} else {
 		   mContext.startActivity(new Intent(this, MessageActivity.class));
@@ -188,7 +188,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 		finish();
 		break;
 	   case R.id.tv_patient_conn://选择患者关联
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.tv_patient_conn)) {
 		   return;
 		} else {
 		   if (patientInfos.size() > 0) {

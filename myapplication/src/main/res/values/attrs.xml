@@ -64,4 +64,5 @@
 			<flag name="menu" value="0x02"/>
 		</attr>
 	</declare-styleable>
+
 </resources>

@@ -416,7 +416,7 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
 		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
@@ -440,7 +440,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.timely_profit://盘盈
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_profit)) {
 		   return;
 		} else {
 		   if (mToJson == null) {
@@ -472,7 +472,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.timely_loss://盘亏
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_loss)) {
 		   return;
 		} else {
 		   if (mToJson == null) {

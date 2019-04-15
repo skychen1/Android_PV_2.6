@@ -604,14 +604,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.base_tab_btn_msg://消息
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.base_tab_btn_msg)) {
 		   return;
 		} else {
 		  startActivity(new Intent(this, MessageActivity.class));
 		}
 		break;
 	   case R.id.ly_creat_temporary_btn://创建临时患者
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.ly_creat_temporary_btn)) {
 		   return;
 		} else {
 		   DialogUtils.showCreatTempPatientDialog(mContext, TemPatientBindActivity.this,

@@ -408,7 +408,7 @@ public class FastInFragment extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
@@ -426,7 +426,7 @@ public class FastInFragment extends SimpleFragment {
 		}
 		break;
 	   case R.id.timely_right:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_right)) {
 		   return;
 		} else {
 		   mIntentType = 2;

@@ -355,7 +355,7 @@ public class RegisteFrag extends SimpleFragment {
 		mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View v) {
-			if (UIUtils.isFastDoubleClick()) {
+			if (UIUtils.isFastDoubleClick(v.getId())) {
 			   return;
 			} else {
 			   DialogUtils.showRegisteDialog(mContext, _mActivity);
@@ -373,7 +373,7 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragmentBtnOne.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(v.getId())) {
 			return;
 		   } else {
 			mFragmentBtnOne.setEnabled(false);
@@ -609,7 +609,7 @@ public class RegisteFrag extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(view.getId())) {
 		   return;
 		} else {
 		   mRecyclerview.scrollToPosition(i);
@@ -624,7 +624,7 @@ public class RegisteFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.frag_registe_left:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(view.getId())) {
 		   return;
 		} else {
 		   if (SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE) == null) {

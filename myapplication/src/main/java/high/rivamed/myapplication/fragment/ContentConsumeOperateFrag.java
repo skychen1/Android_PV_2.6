@@ -3,6 +3,7 @@ package high.rivamed.myapplication.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -193,6 +194,23 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private InventoryDto mAllOutDto;
    private InventoryDto mFastInOutDto;
 
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onDialogEvent(Event.EventHomeEnable event) {
+      if (!mPause){
+	   if (event.type) {
+		mBaseTabOutLogin.setEnabled(false);
+		mBaseTabIconRight.setEnabled(false);
+		mBaseTabBtnMsg.setEnabled(false);
+		mBaseTabTvName.setEnabled(false);
+	   } else {
+		mBaseTabOutLogin.setEnabled(true);
+		mBaseTabIconRight.setEnabled(true);
+		mBaseTabBtnMsg.setEnabled(true);
+		mBaseTabTvName.setEnabled(true);
+	   }
+	}
+
+   }
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     *
@@ -478,6 +496,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
 
    @Override
+   public void onCreate(@Nullable Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	AllDeviceCallBack.getInstance().initCallBack();
+   }
+
+   @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	mPause = false;
 	EventBusUtils.register(this);
@@ -486,7 +510,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	AllDeviceCallBack.getInstance().initCallBack();
 	mContentRbTb.setVisibility(View.GONE);
 	mContentRbTb.setVisibility(View.GONE);
 	mContentRg.setVisibility(View.GONE);
@@ -714,6 +737,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
+		EventBusUtils.post(new Event.EventHomeEnable(false));
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 //		if (cstInventoryDto.isOperateSuccess()){
 		   setEPCDateAndIntent(cstInventoryDto, true);
@@ -722,6 +746,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void onError(String result) {
+		EventBusUtils.post(new Event.EventHomeEnable(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 		    mRbKey == 3) {
 		   List<InventoryVo> mInVo = new ArrayList<>();
@@ -950,7 +975,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   ToastUtils.showShort("请选择操作方式！");
 		} else {
 		   //点击柜子进行操作
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(id)) {
 			return;
 		   }
 		   doSelectOption(position, id);
@@ -1257,7 +1282,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   }
 		   break;
 		case R.id.fastopen_title_guanlian://患者关联
-		   if (UIUtils.isFastDoubleClick()) {
+		   if (UIUtils.isFastDoubleClick(R.id.fastopen_title_guanlian)) {
 			return;
 		   } else {
 			if (mTitleConn) {
@@ -1270,7 +1295,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(view.getId())) {
 		   return;
 		} else {
 		   doSelectOption(0, view.getId());

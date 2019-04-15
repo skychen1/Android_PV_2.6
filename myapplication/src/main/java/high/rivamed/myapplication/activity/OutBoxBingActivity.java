@@ -575,7 +575,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.timely_left:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_left)) {
 		   return;
 		} else {
 		   if (!mIsClick) {
@@ -587,7 +587,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.timely_right:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_right)) {
 		   return;
 		} else {
 		   if (!mIsClick) {
@@ -599,7 +599,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.ly_bing_btn_right://选择绑定患者  区分是否有临时患者
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.ly_bing_btn_right)) {
 		   return;
 		} else {
 		   if (!mIsClick) {

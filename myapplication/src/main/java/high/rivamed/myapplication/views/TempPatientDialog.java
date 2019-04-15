@@ -215,7 +215,7 @@ public class TempPatientDialog extends Dialog {
             mDialogRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!UIUtils.isFastDoubleClick()) {
+                    if (!UIUtils.isFastDoubleClick(v.getId())) {
                         if (myListener != null) {
                             String three = mAddressThree.getText().toString().trim();
                             String four = mAddressFour.getText().toString().trim();

@@ -316,7 +316,7 @@ public class FastOutFragment extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
-		if (UIUtils.isFastDoubleClick()) {
+		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
