@@ -75,6 +75,8 @@ public class RodinbellReaderHandler11 extends NettyDeviceClientHandler implement
     Object locker = new Object();
 
     int continueIdleCount = 0;
+    private byte[] m_btAryBuffer = new byte[4096];
+    private int m_nLength = 0;
 
     public RodinbellReaderHandler11() {
         super();
@@ -85,51 +87,126 @@ public class RodinbellReaderHandler11 extends NettyDeviceClientHandler implement
      */
     static byte address = 0x01;
 
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        //只要收到包，就认为设备连接正常的，重置发包次数
         continueIdleCount = 0;
+        //收到的所有数据都为ByteBuf类型，转换数据
         ByteBuf in = (ByteBuf) msg;
         byte[] buf = new byte[in.readableBytes()];
         in.readBytes(buf);
-
+        //转换数据为byte【】
         Log.d(log_tag, "接收到消息" + Transfer.Byte2String(buf));
+        receiveData(buf);
+        //以下代码是必须的，释放管道数据，防止内存泄露；
+        in.retain();
+        ctx.write(in);
+        super.channelRead(ctx, msg);
+    }
 
+    /**
+     * 将收到的数据按照罗丹贝尔的规则进行解析
+     */
+    private void receiveData(byte[] buf) {
+        try {
+            int nCount = buf.length;
+            byte[] btAryBuffer = new byte[nCount + m_nLength];
+            System.arraycopy(m_btAryBuffer, 0, btAryBuffer, 0, m_nLength);
+            System.arraycopy(buf, 0, btAryBuffer, m_nLength,
+                    buf.length);
+            Log.d(log_tag, "需要解析的数据" + Transfer.Byte2String(btAryBuffer));
+            int nIndex = 0;
+            int nMarkIndex = 0;
+            for (int nLoop = 0; nLoop < btAryBuffer.length; nLoop++) {
+                if (btAryBuffer.length > nLoop + 1) {
+                    if (btAryBuffer[nLoop] == DataProtocol.BEGIN_FLAG) {
+                        int nLen = btAryBuffer[nLoop + 1] & 0xFF;
+                        Log.d(log_tag, "数据长度为" + nLen);
+                        if (nLen > 39) {
+                            continue;
+                        }
+                        if (nLoop + 1 + nLen < btAryBuffer.length) {
+                            byte[] btAryAnaly = new byte[nLen + 2];
+                            System.arraycopy(btAryBuffer, nLoop, btAryAnaly, 0,
+                                    nLen + 2);
+                            processData(btAryAnaly);
+                            nLoop += 1 + nLen;
+                            nIndex = nLoop + 1;
+                        } else {
+                            nLoop += 1 + nLen;
+                        }
+                    } else {
+                        Log.e(log_tag, "出现标志位异常的情况：：");
+                        nMarkIndex = nLoop;
+                    }
+                }
+            }
+            if (nIndex < nMarkIndex) {
+                nIndex = nMarkIndex + 1;
+            }
+            if (nIndex < btAryBuffer.length) {
+                m_nLength = btAryBuffer.length - nIndex;
+                m_btAryBuffer = new byte[btAryBuffer.length - nIndex];
+                System.arraycopy(btAryBuffer, nIndex, m_btAryBuffer, 0,
+                        btAryBuffer.length - nIndex);
+                Log.e(log_tag, "解析完一个包剩余的数据：：" + Transfer.Byte2String(m_btAryBuffer));
+            } else {
+                m_nLength = 0;
+            }
+        } catch (Exception e) {
+            Log.e(log_tag, e.toString());
+        }
+    }
+
+    private void processData(byte[] buf) {
+        //协议最小数据是6，如果数据小于6就直接退出，防止错误数据崩溃
+        //如果数据不合法，直接丢掉数据包,判断上一条协议如果是扫描，就要重置设备
+        if (buf.length < 6) {
+            Log.e(log_tag, "数据出错，数据长度小于6：：" + Transfer.Byte2String(buf));
+            return;
+        }
+        //检测数据的合法性
         int check = DataProtocol.CheckSum(buf, 0, buf.length - 1);
+        //如果数据不合法，直接丢掉数据包,判断上一条协议如果是扫描，就要重置设备
         if ((check & 0xff) != (0xff & buf[buf.length - 1])) {
             Log.e(log_tag, "效验码验证未通过  数据为" + Transfer.Byte2String(buf) + "计算校验码为" + check);
             return;
         }
-        //是否已完成当前指令
-
-
-        boolean completed = false;
-
+        //根据协议，第三个字节流是类型数据，根据不同类型的数据做不同的处理
         switch (buf[3]) {
+            //复位的回包，不处理？
             case DataProtocol.CMD_RESET:
-//                completed = processReset(buf);
+                //重置没有回复的消息
                 break;
-            case DataProtocol.CMD_SETDEVICEID:
-                completed = processSetDeviceId(buf);
-                break;
+            //获取读写器的识别码
             case DataProtocol.CMD_GETDEVICEID:
-                completed = processGetDeviceId(buf);
+                processGetDeviceId(buf);
                 break;
+            //设置读写器射频输出功率
             case DataProtocol.CMD_SET_OUTPUTPOWER:
-                completed = processSetPower(buf);
+                processSetPower(buf);
                 break;
+            //获取读写器射频输出功率
             case DataProtocol.CMD_GET_OUTPUTPOWER:
-                completed = processGetPower(buf);
+                processGetPower(buf);
                 break;
+            //设置读写器工作天线
             case DataProtocol.CMD_SET_WORK_ANT:
-                completed = processSetWorkAnt(buf);
+                processSetWorkAnt(buf);
                 break;
+            //获取读写器工作天线
             case DataProtocol.CMD_GET_WORK_ANT:
-                completed = processGetWorkAnt(buf);
+                //本服务器模式将获取工作天线作为心跳包，所以此处不处理
                 break;
+            //自定义session和target盘存
             case DataProtocol.CMD_REALTIME_INVENTORY:
-                completed = processRealTimeInventory(buf);
+                processRealTimeInventory(buf);
                 break;
+            //快速轮询多个天线盘存标签
             case DataProtocol.CMD_FAST_SWITCH_ANT_INVENTORY:
-                completed = processSwitchFastInventory(buf);
+                //暂时没有使用该指令，所以没有这样的回复，不处理
+                break;
+            default:
                 break;
         }
     }
@@ -277,10 +354,10 @@ public class RodinbellReaderHandler11 extends NettyDeviceClientHandler implement
                     sendScanRet = true;
                     setNextWorkAnt = false;
                 } else {
-                    if(success){
+                    if (success) {
                         SendRtInventory();
                         setNextWorkAnt = false;
-                    }else{
+                    } else {
                         setNextWorkAnt = true;
                     }
                     sendScanRet = false;
@@ -494,7 +571,7 @@ public class RodinbellReaderHandler11 extends NettyDeviceClientHandler implement
      */
     private boolean SendRtInventory() {
         //data是0X8A盘存要发送的命令
-        byte[] data = new byte[]{RTINVENTORY_SESSION,RTINVENTORY_TARGET,RTINVENTORY_REPEAT};
+        byte[] data = new byte[]{RTINVENTORY_SESSION, RTINVENTORY_TARGET, RTINVENTORY_REPEAT};
         Log.d(log_tag, "发送实时盘点命令，Ant=" + currentAntIndex);
         return SendBuf(DataProtocol.CMD_REALTIME_INVENTORY, data);//将盘存的全部指令发送出去
     }

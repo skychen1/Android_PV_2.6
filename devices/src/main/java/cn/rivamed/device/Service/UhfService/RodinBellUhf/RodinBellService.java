@@ -2,6 +2,10 @@ package cn.rivamed.device.Service.UhfService.RodinBellUhf;
 
 import android.util.Log;
 
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
+
 import cn.rivamed.DeviceManager;
 import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.ClientHandler.uhfClientHandler.RodinBellClient.RodinbellReaderHandler11;
@@ -10,16 +14,14 @@ import cn.rivamed.device.Service.BaseService;
 import cn.rivamed.device.Service.UhfService.UhfService;
 import cn.rivamed.model.TagInfo;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
-
-
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author 郝小鹏
@@ -29,6 +31,7 @@ import java.util.Map;
  */
 
 public class RodinBellService extends BaseService implements UhfService {
+
 
     String log_tag = "DEV_RDBL_S";
 
@@ -79,7 +82,8 @@ public class RodinBellService extends BaseService implements UhfService {
                                  * initialBytesToStrip 为跳过的字节数，从长度属性结束的位置往前数，
                                  *
                                  * */
-                                channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(10000, 1, 1, 0, 0));
+                                //按照netty的规则粘包如果掉包会出现问题；
+//                                channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(10000, 1, 1, 0, 0));
                                 channel.pipeline().addLast(channelHandler);
                             }
                         });
