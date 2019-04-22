@@ -17,6 +17,7 @@
 		android:orientation="vertical"
 		android:paddingTop="@dimen/x20">
 
+
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -34,60 +35,19 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="@dimen/x30"
-				android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描时长默认3000 ms"
+				android:text="IC卡直接刷卡即可查看结果"
 				android:textSize="@dimen/textsize_16"/>
 		</LinearLayout>
 
-		<LinearLayout
+		<include
+			layout="@layout/include_recyclerview"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-
-			<include
-				layout="@layout/include_recyclerview"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="@dimen/y30"
-				android:layout_marginLeft="@dimen/x40"
-				android:layout_marginRight="@dimen/x40"
-				android:layout_marginTop="@dimen/x30"
-				android:layout_weight="1"
-				/>
-
-			<LinearLayout
-				android:id="@+id/gone_ll"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/y100"
-				android:layout_gravity="center_vertical"
-				android:orientation="horizontal">
-
-				<EditText
-					android:id="@+id/item_time_text"
-					android:layout_width="@dimen/x210"
-					android:layout_height="match_parent"
-					android:layout_gravity="center_vertical"
-					android:layout_marginBottom="@dimen/y10"
-					android:layout_marginLeft="@dimen/x30"
-					android:layout_marginTop="@dimen/y10"
-					android:background="@drawable/bg_edit_e_nor"
-					android:hint="扫描时间:3000 ms"
-					android:inputType="number"
-					android:paddingLeft="@dimen/x10"
-					android:paddingRight="@dimen/x10"
-					android:singleLine="true"
-					android:textColor="@color/black"
-					android:textSize="@dimen/textsize_16"
-					/>
-
-				<TextView
-					android:id="@+id/item_setting_time"
-					style="@style/btn_style_sel"
-					android:layout_gravity="center_vertical"
-					android:layout_marginRight="@dimen/x30"
-					android:text="时长保存"
-					/>
-			</LinearLayout>
-		</LinearLayout>
+			android:layout_marginBottom="@dimen/y30"
+			android:layout_marginLeft="@dimen/x40"
+			android:layout_marginRight="@dimen/x40"
+			android:layout_marginTop="@dimen/x30"
+			/>
 
 		<ScrollView
 			android:id="@+id/scroll_log"
