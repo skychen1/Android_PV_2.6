@@ -18,7 +18,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content">
 
-			<FrameLayout
+			<LinearLayout
 				android:id="@+id/stock_search"
 				android:layout_width="@dimen/x700"
 				android:layout_height="@dimen/y70"
@@ -27,7 +27,13 @@
 				android:focusableInTouchMode="true"
 				android:orientation="horizontal"
 				android:visibility="gone">
-
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:text="查询患者："
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_16"/>
 				<EditText
 					android:id="@+id/search_et"
 					android:layout_width="match_parent"
@@ -51,8 +57,41 @@
 					android:src="@mipmap/runwate_del"
 					android:visibility="gone" />
 
-			</FrameLayout>
+			</LinearLayout>
+			<LinearLayout
+				android:id="@+id/stock_search_right"
+				android:layout_width="@dimen/x700"
+				android:layout_height="@dimen/y70"
+				android:layout_toRightOf="@+id/stock_search"
+				android:background="@color/bg"
+				android:focusable="true"
+				android:focusableInTouchMode="true"
+				android:orientation="horizontal"
+				android:visibility="gone">
 
+				<TextView
+					android:id="@+id/search_dept"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:layout_marginLeft="@dimen/x50"
+					android:text="查询手术间："
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_16" />
+				<EditText
+					android:id="@+id/search_et_right"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:background="@drawable/bg_search_w"
+					android:drawableLeft="@mipmap/runwate_search"
+					android:drawablePadding="@dimen/x10"
+					android:hint="请输入手术间名称/编号/拼音码"
+					android:imeOptions="actionSearch"
+					android:paddingLeft="@dimen/x30"
+					android:singleLine="true"
+					android:textColorHint="@color/text_color_9"
+					android:textSize="@dimen/textsize_15" />
+			</LinearLayout>
 		</RelativeLayout>
 
 		<RelativeLayout

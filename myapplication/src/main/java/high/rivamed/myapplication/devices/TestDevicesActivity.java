@@ -20,11 +20,11 @@ import java.util.Map;
 
 import cn.rivamed.DeviceManager;
 import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.ClientHandler.DeviceHandler;
 import cn.rivamed.device.DeviceType;
 import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 
@@ -121,12 +121,15 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
                 if (deviceType == DeviceType.UHFREADER) {
+
                     uhfDeviceId = deviceIndentify;
                 } else if (deviceType == DeviceType.Eth002) {
                     eth002DeviceId = deviceIndentify;
                 }
                 LogUtils.i("FFS", "设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
                 AppendLog("设备已连接：" + deviceType + ":::ID=" + deviceIndentify);
+                mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+                eth002DeviceIdList = DevicesUtils.getEthDeviceId();
             }
 
             @Override
@@ -276,12 +279,12 @@ public class TestDevicesActivity extends SimpleActivity {
                 } catch (Throwable e) {
 
                 }
-                for (Map.Entry<String, DeviceHandler> device : DeviceManager.getInstance().getConnetedDevices().entrySet()) {
-                    if (device.getValue().getDeviceType() == DeviceType.UHFREADER) {
-                        int ret = getInstance().StartUhfScan(uhfDeviceId, scanTime);
-                        AppendLog("启动持续扫描,设备ID=" + device.getKey() + "，扫描时间为" + scanTime + "s ;RET=" + ret);
-                    }
+                for (int i = 0; i < mReaderDeviceId.size(); i++) {
+                    String DeviceId = (String) mReaderDeviceId.get(i);
+                    int ret = getInstance().StartUhfScan(DeviceId, scanTime);
+                    AppendLog("启动持续扫描,设备ID=" + DeviceId + "，扫描时间为" + scanTime + "s ;RET=" + ret);
                 }
+
             }
         });
 
@@ -293,6 +296,7 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
+
                 int ret = getInstance().FingerReg(eth002DeviceId);
                 AppendLog("指纹注册命令已发送 RET=" + ret + ";请等待质问注册执行结果");
             }
@@ -308,18 +312,25 @@ public class TestDevicesActivity extends SimpleActivity {
              */
             @Override
             public void onClick(View v) {
-                int ret = getInstance().OpenDoor(eth002DeviceId);
-                AppendLog("开门命令已发出 ret=" + ret);
+                for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+                    String DeviceId = (String) eth002DeviceIdList.get(i);
+                    int ret = getInstance().OpenDoor(DeviceId);
+                    AppendLog("开门命令已发出 ret=" + ret+"      DeviceId   "+DeviceId);
+                }
             }
         });
 
-        bt_checkState.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int ret = getInstance().CheckDoorState(eth002DeviceId);
-                AppendLog("检查门锁指令已发出 ret=" + ret);
-            }
-        });
+//        bt_checkState.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+//                    String DeviceId = (String) eth002DeviceIdList.get(i);
+//                    int ret = getInstance().CheckDoorState(DeviceId);
+//                    AppendLog("检查门锁指令已发出 ret=" + ret+"      DeviceId   "+DeviceId);
+//                }
+//
+//            }
+//        });
 
         bt_queryConnDev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,8 +353,12 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_checkState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = getInstance().CheckDoorState(eth002DeviceId);
-                AppendLog("检查门锁命令发送 RET=" + ret);
+                for (int i = 0; i < eth002DeviceIdList.size(); i++) {
+                    String DeviceId = (String) eth002DeviceIdList.get(i);
+                    int ret = getInstance().CheckDoorState(DeviceId);
+                    AppendLog("检查门锁指令已发出 ret=" + ret+"      DeviceId   "+DeviceId);
+                }
+
             }
         });
 
@@ -365,8 +380,13 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_getpower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = getInstance().getUhfReaderPower(uhfDeviceId);
-                AppendLog("获取RFID reader功率指令发送 RET=" + ret);
+                for (int i = 0; i < mReaderDeviceId.size(); i++) {
+                    String DeviceId = (String) mReaderDeviceId.get(i);
+                    int ret = getInstance().getUhfReaderPower(DeviceId);
+                    AppendLog("获取RFID reader功率指令发送 RET=" + ret+"     DeviceId =  "+DeviceId);
+                }
+
+
             }
         });
 
@@ -384,8 +404,12 @@ public class TestDevicesActivity extends SimpleActivity {
                     if (powerByte < 0 || powerByte > 30) {
                         throw new Exception();
                     }
-                    int ret = getInstance().setUhfReaderPower(uhfDeviceId, powerByte);
-                    AppendLog("设置RFID reader功率指令发送 设备Ｉ=" + uhfDeviceId + ",功率=" + powerByte + " RET=" + ret);
+                    for (int i = 0; i < mReaderDeviceId.size(); i++) {
+                        String DeviceId = (String) mReaderDeviceId.get(i);
+                        int ret = getInstance().setUhfReaderPower(DeviceId, powerByte);
+                        AppendLog("设置RFID reader功率指令发送 设备Ｉ=" + DeviceId + ",功率=" + powerByte + " RET=" + ret);
+                    }
+
                 } catch (Exception ex) {
                     Toast.makeText(TestDevicesActivity.this, "请输入有效的功率数值,1-30", Toast.LENGTH_LONG).show();
                 }
@@ -394,8 +418,11 @@ public class TestDevicesActivity extends SimpleActivity {
         bt_uhf_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int ret = getInstance().ResetUhfReader(uhfDeviceId);
-                AppendLog("复位RFID reader功率指令发送 设备Ｉ=" + uhfDeviceId + " RET=" + ret);
+                for (int i = 0; i < mReaderDeviceId.size(); i++) {
+                    String DeviceId = (String) mReaderDeviceId.get(i);
+                    int ret = getInstance().ResetUhfReader(DeviceId);
+                    AppendLog("复位RFID reader功率指令发送 设备Ｉ=" + DeviceId + " RET=" + ret);
+                }
             }
         });
 

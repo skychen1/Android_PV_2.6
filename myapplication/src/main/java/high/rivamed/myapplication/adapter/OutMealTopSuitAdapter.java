@@ -71,11 +71,11 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
 
     @Override
     protected void convert(final BaseViewHolder helper, OrderCstResultBean.SuiteVosBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        } else {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         findId(helper, mSize);
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
         mSeven_one.setText(item.getCstName());
@@ -236,11 +236,11 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
             textview.setBackgroundResource(R.drawable.bg_text_orange);
             textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
         } else {
-            if (helper.getAdapterPosition() % 2 == 0) {
-                textview.setBackgroundResource(R.color.bg_color);
-            } else {
+//            if (helper.getAdapterPosition() % 2 == 0) {
+//                textview.setBackgroundResource(R.color.bg_color);
+//            } else {
                 textview.setBackgroundResource(R.color.bg_f);
-            }
+//            }
             textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
 

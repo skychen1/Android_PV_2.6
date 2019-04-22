@@ -154,32 +154,35 @@ public class UIUtils {
    /**
     * 设置某个效期的背景
     *
-    * @param helper
     * @param type     0 过期，1 小鱼30   2小鱼90    3  小鱼120   4
     * @param textview
     */
    public static void initTermOfValidity(
-	   Context mContext, BaseViewHolder helper, int type, TextView textview) {
-
+	   Context mContext, int  IsErrorOperation, int type, TextView textview) {
 	if (type == 0) {
-	   textview.setBackgroundResource(R.drawable.bg_text_red);
-	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+//	   textview.setBackgroundResource(R.drawable.bg_text_red);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.color_overdue_prompt));
 	} else if (type == 3) {
-	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
-	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+//	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.color_100_prompt));
 	} else if (type == 2) {
-	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
-	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+//	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.color_70_prompt));
 	} else if (type == 1) {
-	   textview.setBackgroundResource(R.drawable.bg_text_orange);
-	   textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+//	   textview.setBackgroundResource(R.drawable.bg_text_orange);
+	   textview.setTextColor(mContext.getResources().getColor(R.color.color_28_prompt));
 	} else if (type == 4) {
-	   if (helper.getAdapterPosition() % 2 == 0) {
-		textview.setBackgroundResource(R.color.bg_color);
-	   } else {
-		textview.setBackgroundResource(R.color.bg_f);
+//	   if (helper.getAdapterPosition() % 2 == 0) {
+//		textview.setBackgroundResource(R.color.bg_color);
+//	   } else {
+//		textview.setBackgroundResource(R.color.bg_f);
+//	   }
+	   if (IsErrorOperation==1){
+		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   }else {
+		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   }
-	   textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+
 	} else {
 	   LogUtils.i("SSS", "type   " + type);
 	   textview.setVisibility(View.GONE);

@@ -361,7 +361,9 @@ public class PublicStockFrag extends SimpleFragment {
 			   ArrayList<String> strings = new ArrayList<>();
 			   int SIZE = 0;
 			   for (InventoryVo vosBean : inventoryVos) {
-				strings.add(vosBean.getCstId());
+				if(vosBean.getCstId()!=null){
+				   strings.add(vosBean.getCstId());
+				}
 				SIZE += vosBean.getCountStock();
 			   }
 			   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
@@ -420,7 +422,9 @@ public class PublicStockFrag extends SimpleFragment {
 				ArrayList<String> strings = new ArrayList<>();
 				int SIZE = 0;
 				for (InventoryVo vosBean : mInventoryVos) {
-				   strings.add(vosBean.getCstId());
+				   if(vosBean.getCstId()!=null){
+					strings.add(vosBean.getCstId());
+				   }
 				   SIZE += vosBean.getCountStock();
 
 				}

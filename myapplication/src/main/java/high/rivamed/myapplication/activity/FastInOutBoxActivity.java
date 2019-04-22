@@ -37,9 +37,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -49,6 +47,7 @@ import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
+import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 
@@ -90,7 +89,30 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    private InventoryDto          mFastInOutDto;
    private LoadingDialog.Builder mLoading;
    public  FastInFragment        mCurrentFragment;
+   /**
+    * 重新开柜
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventOpenDoor(Event.EventFastOpenDoor event) {
+	if (event.b) {
+	   if (!mIsClick) {
+		mInOutDto=null;
+		if (mStarts!=null){
+		   mStarts.cancel();
+		}
+		for (String deviceInventoryVo : mEthDeviceIdBack) {
+		   String deviceCode = deviceInventoryVo;
+		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
+		   DeviceManager.getInstance().OpenDoor(deviceCode);
+		}
+	   } else {
+		ToastUtils.showShort("请关闭柜门，再进行操作！");
+	   }
 
+	}
+   }
    /**
     * 重新扫描
     *
@@ -296,11 +318,11 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		} else {
 		   mFastViewpager.setCurrentItem(0);
 		}
-		if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-		}
+//		if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
+//		   string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
+//		   ToastUtils.showLong(string);
+//		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//		}
 		for (int i = 0; i < outInventoryVos.size(); i++) {
 		   outInventoryVos.get(i).setSelected(true);
 		}
@@ -345,6 +367,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	}
 	allOutBean.setInventoryVos(epcList);
 	allOutBean.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	allOutBean.setThingId(SPUtils.getString(mContext,THING_CODE));
 	String toJson = mGson.toJson(allOutBean);
 	LogUtils.i(TAG, "toJson mObject   " + toJson);
 	return toJson;
@@ -443,7 +466,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_UP:
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
-		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&& mFastViewpager.getCurrentItem()==1) {
+		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&& mFastViewpager.getCurrentItem()==1&&FastInFragment.mTimelyLeft.isEnabled()) {
 		   FastInFragment.mStarts.cancel();
 		   FastInFragment.mStarts.start();
 		}

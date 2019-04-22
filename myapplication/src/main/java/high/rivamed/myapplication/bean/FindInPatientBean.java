@@ -79,7 +79,16 @@ public class FindInPatientBean {
         private String surgeryTime            = "";
         private String tempPatientId          = "";
         private String hisPatientId          = "";
+        private String deptType          = "";
         private boolean isSelected;
+
+        public String getDeptType() {
+            return deptType;
+        }
+
+        public void setDeptType(String deptType) {
+            this.deptType = deptType;
+        }
 
         public String getHisPatientId() {
             return hisPatientId;

@@ -55,11 +55,11 @@ public class BingDialogOutAdapter
 		mSelectedPos = i;
 	   }
 	}
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
 	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));

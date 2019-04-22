@@ -57,9 +57,7 @@ import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -452,12 +450,12 @@ public class TimelyAllFrag extends SimpleFragment {
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘盈 result   " + result);
 				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
-				if (inventoryDto.getErrorEpcs() != null &&
-				    inventoryDto.getErrorEpcs().size() > 0) {
-				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
-				   ToastUtils.showLong(string);
-				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-				}
+//				if (inventoryDto.getErrorEpcs() != null &&
+//				    inventoryDto.getErrorEpcs().size() > 0) {
+//				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+//				   ToastUtils.showLong(string);
+//				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//				}
 				if (inventoryDto.getInventoryVos() != null &&
 				    inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
@@ -484,12 +482,12 @@ public class TimelyAllFrag extends SimpleFragment {
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘亏 result   " + result);
 				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
-				if (inventoryDto.getErrorEpcs() != null &&
-				    inventoryDto.getErrorEpcs().size() > 0) {
-				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
-				   ToastUtils.showLong(string);
-				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-				}
+//				if (inventoryDto.getErrorEpcs() != null &&
+//				    inventoryDto.getErrorEpcs().size() > 0) {
+//				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
+//				   ToastUtils.showLong(string);
+//				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//				}
 				if (inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
 				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", inventoryDto));

@@ -42,11 +42,11 @@ public class TakeNotesAdapter extends BaseQuickAdapter<TakeNotesBean.RowsBean, B
     @Override
     protected void convert(
             BaseViewHolder helper, TakeNotesBean.RowsBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         findId(helper);
         mSeven_one.setText(item.getPatientName());
         mSeven_two.setText(item.getHisPatientId());

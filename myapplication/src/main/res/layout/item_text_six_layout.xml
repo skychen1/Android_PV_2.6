@@ -112,13 +112,17 @@
             android:layout_weight="5" />
 
         <View style="@style/view_line_style" />
-
-        <TextView
-            android:id="@+id/seven_seven"
-            style="@style/text_title_content_style"
+        <LinearLayout
+            android:id="@+id/seven_seven_l"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.2" />
+            android:layout_weight="2.2"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/seven_seven"
+                style="@style/view_termof_style" />
+        </LinearLayout>
 
         <View style="@style/view_line_style" />
     </LinearLayout>

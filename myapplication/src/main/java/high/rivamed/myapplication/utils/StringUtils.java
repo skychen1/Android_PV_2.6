@@ -17,6 +17,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import high.rivamed.myapplication.dto.vo.InventoryVo;
+
 public class StringUtils {
 
    public final static String UTF_8 = "utf-8";
@@ -245,7 +247,19 @@ public class StringUtils {
 	   return diff > 0 ? 1 : -1;
 	}
    }
-
+   /**
+    * 弹窗过期
+    * @param voList
+    * @return
+    */
+   public static boolean isExceedTime( List<InventoryVo> voList) {
+	for (InventoryVo s : voList) {
+	   if (s.getIsErrorOperation() == 1&&s.getDeleteCount()==0) {
+		return true;
+	   }
+	}
+	return false;
+   }
    /**
     * 将列表中重复的用户移除，重复指的是EPC相同
     *

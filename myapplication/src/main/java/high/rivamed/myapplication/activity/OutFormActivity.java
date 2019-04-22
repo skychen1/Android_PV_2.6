@@ -123,6 +123,7 @@ public class OutFormActivity extends BaseSimpleActivity {
 	return R.layout.activity_outform_layout;
    }
 
+
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);

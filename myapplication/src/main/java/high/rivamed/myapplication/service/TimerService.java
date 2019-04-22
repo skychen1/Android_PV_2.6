@@ -11,8 +11,11 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 
+import org.androidpn.utils.XmppEvent;
+
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.receiver.AlarmReceiver;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -45,11 +48,11 @@ public class TimerService extends Service {
 //		LogUtils.i("xxb", "result   " + body.equals("true")+"    "+mTitleConn);
 		if (body.equals("true")) {
 		   if (!mTitleConn){
-//			EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+			EventBusUtils.post(new XmppEvent.XmmppConnect(true));
 		   }
 		} else {
 		   if (mTitleConn){
-//			EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+			EventBusUtils.post(new XmppEvent.XmmppConnect(false));
 		   }
 		}
 	   }
@@ -58,7 +61,7 @@ public class TimerService extends Service {
 	   public void onError(Response<String> response) {
 		super.onError(response);
 		if (mTitleConn) {
-//		   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+		   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
 		}
 	   }
 	});
@@ -69,7 +72,7 @@ public class TimerService extends Service {
 	   }
 	}).start();
 	AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-	int anHour = 105 * 1000;  // 这是一小时的毫秒数
+	int anHour = 15 * 1000;  // 这是一小时的毫秒数
 	long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
 	Intent i = new Intent(this, AlarmReceiver.class);
 	PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);

@@ -75,6 +75,7 @@ public class TakeNotesDetailsBean implements Serializable{
 	private String epc;
 	private String cstName;
 	private String cstSpec;
+	private String deviceName;
 	private Object manuFactory;
 	private Object vendorName;
 	private Object deptName;
@@ -82,6 +83,14 @@ public class TakeNotesDetailsBean implements Serializable{
 	private String operationTime;
 	private String userName;
 	private String status;
+
+	public String getDeviceName() {
+	   return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+	   this.deviceName = deviceName;
+	}
 
 	public String getEpc() { return epc;}
 

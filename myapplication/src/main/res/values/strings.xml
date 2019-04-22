@@ -23,4 +23,22 @@
     <string name="ver_title">版本更新提醒</string>
     <string name="ver_cancel">稍后再说</string>
     <string name="ver_ok">立刻更新</string>
+
+    <string name="fast_in_more_string">注意：您还有出柜耗材尚未确认，请完成操作后确认！</string>
+    <string name="fast_in_error_string">注意：异常耗材禁止入柜，请重新开柜取出！</string>
+    <string name="fast_out_more_string">注意：您还有入柜耗材尚未确认，请完成操作后确认！</string>
+    <string name="fast_out_error_string">注意：异常耗材禁止领用和移出！</string>
+    <string name="epc_error_string">注意：请开柜取出异常耗材再进行操作！</string>
+    <string name="bind_error_string">注意：请先绑定患者再进行操作！</string>
+    <string name="outform_error_string">注意：非请领单耗材禁止领用！</string>
+
+    <string name="op_error_ly">注意：异常耗材禁止领用，请开柜重新操作！</string>
+    <string name="op_error_rk">注意：异常耗材禁止入库，请开柜重新操作！</string>
+    <string name="op_error_yc">注意：异常耗材禁止移出，请开柜重新操作！</string>
+    <string name="op_error_yr">注意：异常耗材禁止移入，请开柜重新操作！</string>
+    <string name="op_error_th">注意：异常耗材禁止退回，请开柜重新操作！</string>
+    <string name="op_error_tuihuo">注意：异常耗材禁止退货，请开柜重新操作！</string>
+
+    <string name="log_closs">全日志收集关闭，请重新启动APP，只收集部分警告和崩溃日志！</string>
+    <string name="log_open">请重新启动APP，才会进行全日志收集</string>
 </resources>

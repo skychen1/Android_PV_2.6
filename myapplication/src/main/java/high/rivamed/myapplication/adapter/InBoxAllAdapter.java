@@ -58,11 +58,11 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   BaseViewHolder helper, InventoryVo item) {
 
 	 mLl=((LinearLayout) helper.getView(R.id.seven_ll));
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   mLl.setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   mLl.setBackgroundResource(R.color.bg_color);
+//	} else {
 	   mLl.setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	 mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	 mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	 mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -122,7 +122,8 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	});
 
 	if ((item.getIsErrorOperation()==1&&item.getDeleteCount()==0)||(item.getIsErrorOperation()==1 &&item.getDeleteCount()==0 && item.getExpireStatus() != 0 && mOperation != 8)){
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	   mSeven_six.setBackgroundResource(R.drawable.bg_text_red);
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -130,11 +131,9 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 
 	} else {
-	   if (helper.getAdapterPosition() % 2 == 0) {
-		mLl.setBackgroundResource(R.color.bg_color);
-	   } else {
-		mLl.setBackgroundResource(R.color.bg_f);
-	   }
+
+	   mSeven_six.setBackgroundResource(R.color.bg_f);
+	   mLl.setBackgroundResource(R.color.bg_f);
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
@@ -143,7 +142,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 
-	UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_four);
+
 
 	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
 	if (item.getDeleteCount()>0){
@@ -151,22 +150,28 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_four.setBackgroundResource(R.color.bg_color);
-	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+	   mSeven_six.setBackgroundResource(R.color.bg_color);
 	   mLl.setBackgroundResource(R.color.bg_color);
-	}else if (item.getExpireStatus() == 0 && mOperation != 8){
+	}else if (item.getIsErrorOperation() == 1&&item.getDeleteCount()==0){
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	}else if (item.getExpireStatus() == 0 && mOperation == 8){
-	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+
 	}
+	if (item.getExpireStatus()!=null){
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_four);
+	}
+
+//	else if (item.getExpireStatus() == 0 && mOperation == 8){
+//	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+//	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+//	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+//	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+//	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+//	}
 
 
    }
@@ -187,6 +192,8 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_two.setTextColor(Color.parseColor("#333333"));
 	   mSeven_three.setTextColor(Color.parseColor("#333333"));
 	   mSeven_five.setTextColor(Color.parseColor("#333333"));
+	   mSeven_four.setBackgroundResource(R.color.bg_f);
+	   mLl.setBackgroundResource(R.color.bg_f);
 //	   mSeven_six.setTextColor(Color.parseColor("#333333"));
 	   swipe.setSwipeEnabled(true);
 	}

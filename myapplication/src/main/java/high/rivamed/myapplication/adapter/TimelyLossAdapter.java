@@ -48,11 +48,11 @@ public class TimelyLossAdapter
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 //	if (mSelectedPos == 0 && mLossData.size() > 0) {
 //	   mLossData.get(mSelectedPos).setSelected(true);
 //	}
@@ -117,6 +117,8 @@ public class TimelyLossAdapter
 
 
 	int StopFlag = item.getExpireStatus();
-	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_five);
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), StopFlag, mSeven_five);
+	}
    }
 }

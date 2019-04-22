@@ -118,11 +118,11 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
     @Override
     protected void convert(final BaseViewHolder helper, Movie item) {
         Log.i("xxx", "xxxxxxxxxxxxxxxxxx");
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         if (mSize == 4) {
             if (mType != null && mType.equals(STYPE_TIMELY_FOUR_DETAILS)) {
                 findId(helper, mSize);
@@ -192,17 +192,18 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
                 mSeven_six.setText(item.six);
                 initTermOfValidity(helper, item.four, mSeven_four);
                 if (item.six.equals("禁止操作")) {
-                    mSeven_six.setTextColor(mContext.getResources().getColor(R.color.color_red));
+                    mSeven_six.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+                    mSeven_six.setBackgroundResource(R.drawable.bg_text_red);
                     mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                     mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                     mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                     mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
                     mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-                    if (helper.getAdapterPosition() % 2 == 0) {
-                        mSeven_four.setBackgroundResource(R.color.bg_color);
-                    } else {
-                        mSeven_four.setBackgroundResource(R.color.bg_f);
-                    }
+//                    if (helper.getAdapterPosition() % 2 == 0) {
+//                        mSeven_four.setBackgroundResource(R.color.bg_color);mSeven_six.setBackgroundResource(R.color.bg_color);
+//                    } else {
+                        mSeven_four.setBackgroundResource(R.color.bg_f);mSeven_six.setBackgroundResource(R.color.bg_f);
+//                    }
                 }
             } else if (mType != null && mType.equals(STYPE_OUT)) {
                 mMCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
@@ -460,11 +461,11 @@ public class TimelyPublicAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>
             textview.setBackgroundResource(R.drawable.bg_text_orange);
             textview.setTextColor(mContext.getResources().getColor(R.color.bg_f));
         } else {
-            if (helper.getAdapterPosition() % 2 == 0) {
-                textview.setBackgroundResource(R.color.bg_color);
-            } else {
+//            if (helper.getAdapterPosition() % 2 == 0) {
+//                textview.setBackgroundResource(R.color.bg_color);
+//            } else {
                 textview.setBackgroundResource(R.color.bg_f);
-            }
+//            }
             textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
         }
 

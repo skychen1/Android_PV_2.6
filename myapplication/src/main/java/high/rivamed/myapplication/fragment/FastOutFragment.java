@@ -67,6 +67,8 @@ public class FastOutFragment extends SimpleFragment {
    private static final String TAG = "FastOutFragment";
    @BindView(R.id.timely_start_btn)
    TextView           mTimelyStartBtn;
+   @BindView(R.id.timely_open_door)
+   TextView           mTimelyOpenBtn;
    @BindView(R.id.all_out_text)
    TextView           mAllOutText;
    @BindView(R.id.ly_bing_btn)
@@ -96,7 +98,7 @@ public class FastOutFragment extends SimpleFragment {
    @BindView(R.id.btn_four_th)
    TextView mBtnFourTh;
    @BindView(R.id.btn_four_tb)
-  TextView mBtnFourTb;
+   TextView mBtnFourTb;
    @BindView(R.id.activity_down_btn_four_ll)
    LinearLayout mActivityDownBtnFourLl;
    @BindView(R.id.timely_number)
@@ -107,10 +109,7 @@ public class FastOutFragment extends SimpleFragment {
    public List<InventoryVo> mInventoryVosOut = new ArrayList<>(); //入柜扫描到的epc信息
    @BindView(R.id.public_ll)
    LinearLayout mPublicLl;
-   @BindView(R.id.timely_left)
-   TextView     mTimelyLeft;
-   @BindView(R.id.timely_right)
-   TextView     mTimelyRight;
+
    @BindView(R.id.activity_down_btnll)
    LinearLayout mActivityDownBtnll;
    private int          mOutSize;
@@ -170,9 +169,15 @@ public class FastOutFragment extends SimpleFragment {
 	   voList.get(i).setSelected(true);
 	}
 	if (mAllOutText != null && mInOutDto.getInInventoryVos().size() != 0) {
-	   mAllOutText.setText("注意：您还有入柜耗材尚未确认，请完成操作后确认！");
-	} else {
-	   mAllOutText.setText("");
+		mAllOutText.setText((getExceedTime(voList,0))?R.string.fast_out_error_string:R.string.fast_out_more_string);
+	}else {
+	   if (mInOutDto.getInInventoryVos().size() != 0){
+		mAllOutText.setText((getExceedTime(voList,0))?R.string.fast_out_error_string:R.string.fast_out_more_string);
+	   }else if (mInOutDto.getOutInventoryVos().size() != 0&&(getExceedTime(voList,0))){
+		mAllOutText.setText(R.string.fast_out_error_string);
+	   }else {
+		mAllOutText.setText("");
+	   }
 	}
 	if (event.type != null && event.type.equals("moreScan")) {
 	   LogUtils.i(TAG, "setOutBoxDate    " + 1);
@@ -196,9 +201,9 @@ public class FastOutFragment extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-//	mBtnFourLy = mContext.findViewById(R.id.btn_four_ly);
-//	mBtnFourYc = mContext.findViewById(R.id.btn_four_yc);
-//	mBtnFourTh = mContext.findViewById(R.id.btn_four_th);
+	//	mBtnFourLy = mContext.findViewById(R.id.btn_four_ly);
+	//	mBtnFourYc = mContext.findViewById(R.id.btn_four_yc);
+	//	mBtnFourTh = mContext.findViewById(R.id.btn_four_th);
 
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
@@ -241,7 +246,9 @@ public class FastOutFragment extends SimpleFragment {
    private void setOutBoxTitles(List<InventoryVo> voList) {
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : voList) {
-	   strings.add(vosBean.getCstCode());
+	   if(vosBean.getCstId()!=null){
+		strings.add(vosBean.getCstId());
+	   }
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
@@ -271,7 +278,7 @@ public class FastOutFragment extends SimpleFragment {
 		inventoryVos.add(mInOutDto.getOutInventoryVos().get(i));
 	   }
 	}
-	if (getExceedTime(inventoryVos)) {
+	if (getExceedTime(inventoryVos,1)) {
 	   return;
 	}
 	mDtoLy.setInventoryVos(inventoryVos);
@@ -301,17 +308,25 @@ public class FastOutFragment extends SimpleFragment {
 	UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
    }
 
-   private boolean getExceedTime(List<InventoryVo> voList) {
+   /**
+    *
+    * @param voList
+    * @param type  1弹窗，其他无提示
+    * @return
+    */
+   private boolean getExceedTime(List<InventoryVo> voList,int type) {
 	for (InventoryVo s : voList) {
 	   if (s.getIsErrorOperation() == 1) {
-		DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+		if (type==1){
+		   DialogUtils.showNoDialog(mContext, "耗材中包含过期耗材，请查看！", 1, "noJump", null);
+		}
 		return true;
 	   }
 	}
 	return false;
    }
 
-   @OnClick({R.id.timely_start_btn, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb,
+   @OnClick({R.id.timely_start_btn,R.id.timely_open_door, R.id.btn_four_ly, R.id.btn_four_yc, R.id.btn_four_tb,
 	   R.id.btn_four_th})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
@@ -320,6 +335,14 @@ public class FastOutFragment extends SimpleFragment {
 		   return;
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+		}
+		break;
+	   case R.id.timely_open_door:
+		if (!UIUtils.isFastDoubleClick()) {
+		   mBtnFourLy.setEnabled(false);
+		   mBtnFourTh.setEnabled(false);
+		   mBtnFourYc.setEnabled(false);
+		   EventBusUtils.postSticky(new Event.EventFastOpenDoor(true));
 		}
 		break;
 	   case R.id.btn_four_ly:
@@ -399,7 +422,7 @@ public class FastOutFragment extends SimpleFragment {
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
 	List<InventoryVo> voList = inventoryDtos.getInventoryVos();
-	if (getExceedTime(voList)) {
+	if (getExceedTime(voList,1)) {
 	   return;
 	}
 	if (UIUtils.getConfigType(mContext, CONFIG_007) || UIUtils.getConfigType(mContext, CONFIG_019)) {//绑定患者

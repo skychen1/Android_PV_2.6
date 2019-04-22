@@ -38,11 +38,11 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     @Override
     protected void convert(
             BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         if (mSelectedPos == 0 && patientInfos.size() > 0) {
             patientInfos.get(mSelectedPos).setSelected(true);
         }
@@ -68,14 +68,24 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_four.setText(item.getSurgeryTime());
         mSeven_five.setText(item.getDoctorName());
         mSeven_six.setText(item.getRoomName());
-
-	 if (item.getPatientId().equals("virtual")) {
-	     mSeven_three.setText("");
-            mSeven_seven.setText("是");
-        } else {
-            mSeven_seven.setText("否");
-            mSeven_three.setText(item.getHisPatientId());
+        if (item.getPatientId()!=null){
+            if (item.getPatientId().equals("virtual")) {
+                mSeven_three.setText("/");
+                mSeven_seven.setText("是");
+                mSeven_five.setText("/");
+                if (null!=item.getDeptType()&&item.getDeptType().equals("2")){
+                    mSeven_four.setText(item.getSurgeryTime());
+                    mSeven_six.setText(item.getRoomName());
+                }else {
+                    mSeven_four.setText("/");
+                    mSeven_six.setText("/");
+                }
+            } else {
+                mSeven_seven.setText("否");
+                mSeven_three.setText(item.getHisPatientId());
+            }
         }
+
         mCheckBox.setOnCheckedChangeListener(null);
         int position = helper.getAdapterPosition();
         mCheckBox.setChecked(item.isSelected());

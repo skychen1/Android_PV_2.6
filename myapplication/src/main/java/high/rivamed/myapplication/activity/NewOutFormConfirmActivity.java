@@ -61,7 +61,6 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
@@ -230,9 +229,18 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			  b.getExpireStatus() == 0) ||
 			 (!b.getRemark().equals("1") && b.getDeleteCount() == 0)) {
 			mDownBtnOne.setEnabled(false);
+			if (!b.getRemark().equals("1")){
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.outform_error_string);
+			}else {
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.epc_error_string);
+			}
 			return;
 		   } else {
 			mDownBtnOne.setEnabled(true);
+			mAllOutText.setVisibility(View.GONE);
+
 		   }
 		}
 	   }
@@ -280,6 +288,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mBaseTabTvName.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
 	mBaseTabBtnMsg.setEnabled(false);
+	mDownBtnOne.setEnabled(false);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
 	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
@@ -323,6 +332,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setText("重新扫描");
 	mTimelyOpenDoor.setText("打开柜门");
 	mLyBingBtn.setText("查看术间请领单");
+
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -460,12 +470,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "getBillStockByEpc   " + result);
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
-			if (mBillOrderResultBean.getErrorEpcs() != null &&
-			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
-			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
-			   ToastUtils.showLong(string);
-			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-			}
+//			if (mBillOrderResultBean.getErrorEpcs() != null &&
+//			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
+//			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
+//			   ToastUtils.showLong(string);
+//			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//			}
 			boolean isCanUse;
 			if (mBillOrderResultBean.getInventoryVos() != null &&
 			    mBillOrderResultBean.getInventoryVos().size() > 0) {

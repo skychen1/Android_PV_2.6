@@ -44,11 +44,11 @@ public class UnconfirmHaocaiAdapter
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	findId(helper);
 	int five = item.getExpireStatus();
 	mSeven_one.setText("未使用");
@@ -59,8 +59,9 @@ public class UnconfirmHaocaiAdapter
 	mSeven_six.setText(item.getDeviceName());
 	mSeven_seven.setText(item.getUpdateTime());
 	mSeven_eight.setText(item.getUserName());
-
-	UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), five, mSeven_five);
+	}
 	mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
 
    }

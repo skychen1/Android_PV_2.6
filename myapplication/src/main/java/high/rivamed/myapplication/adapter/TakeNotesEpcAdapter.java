@@ -42,18 +42,19 @@ public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.J
     @Override
     protected void convert(
             BaseViewHolder helper, TakeNotesDetailsBean.JournalUseRecordDetailVos item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         findId(helper);
         mSeven_one.setText(item.getEpc());
         mSeven_two.setText(item.getCstName());
         mSeven_three.setText(item.getCstSpec());
         mSeven_four.setText(item.getOperationTime());
-        mSeven_five.setText(item.getUserName());
-        mSeven_six.setText(item.getStatus());
+        mSeven_five.setText(item.getDeviceName());
+        mSeven_six.setText(item.getUserName());
+        mSeven_seven.setText(item.getStatus());
 
     }
 

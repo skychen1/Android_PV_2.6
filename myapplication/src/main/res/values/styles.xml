@@ -175,6 +175,7 @@
         <item name="android:layout_marginRight">@dimen/x15</item>
         <item name="android:layout_marginLeft">@dimen/x15</item>
         <item name="android:textSize">@dimen/textsize_16</item>
+        <item name="android:textColor">@color/text_color_3</item>
 
     </style>
 

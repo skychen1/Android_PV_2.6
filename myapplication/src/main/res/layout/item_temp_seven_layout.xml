@@ -38,7 +38,7 @@
             android:id="@+id/seven_two"
             style="@style/text_title_content_style"
             android:layout_width="0dp"
-            android:layout_weight="4" />
+            android:layout_weight="2.5" />
 
         <View style="@style/view_line_style" />
 
@@ -46,7 +46,7 @@
             android:id="@+id/seven_three"
             style="@style/text_title_content_style"
             android:layout_width="0dp"
-            android:layout_weight="4.5" />
+            android:layout_weight="3" />
 
         <View style="@style/view_line_style" />
 
@@ -54,21 +54,14 @@
             android:id="@+id/seven_four"
             style="@style/text_title_content_style"
             android:layout_width="0dp"
-            android:layout_weight="2.5" />
+            android:layout_weight="4" />
 
         <View style="@style/view_line_style" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/seven_five"
+            style="@style/text_title_content_style"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/seven_five"
-                style="@style/view_termof_style" />
-        </LinearLayout>
-
+            android:layout_weight="2" />
 
         <View style="@style/view_line_style" />
 

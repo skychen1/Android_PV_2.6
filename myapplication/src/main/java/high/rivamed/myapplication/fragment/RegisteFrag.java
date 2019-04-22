@@ -27,6 +27,7 @@ import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
@@ -41,6 +42,7 @@ import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -295,7 +297,20 @@ public class RegisteFrag extends SimpleFragment {
 		   OkGo.<String>get(MAIN_URL+URL_OPEN).tag(mContext).execute(new StringCallback() {
 			@Override
 			public void onSuccess(Response<String> response) {
+			   ToastUtils.showShortToast(getString(R.string.log_open));
 			   Log.i(TAG,"responseURL_OPEN   "+response.body());
+			   LogcatHelper.getInstance(App.getAppContext()).stop();
+			   LogcatHelper.getInstance(App.getAppContext()).start();
+			   EventBusUtils.post(new Event.EventLogType(true));
+			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
+			}
+
+			@Override
+			public void onError(Response<String> response) {
+			   super.onError(response);
+			   ToastUtils.showShortToast(getString(R.string.log_open));
+			   LogcatHelper.getInstance(App.getAppContext()).stop();
+			   LogcatHelper.getInstance(App.getAppContext()).start();
 			   EventBusUtils.post(new Event.EventLogType(true));
 			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
 			}
@@ -304,8 +319,21 @@ public class RegisteFrag extends SimpleFragment {
 		   OkGo.<String>get(MAIN_URL+URL_CLOSE).tag(mContext).execute(new StringCallback() {
 			@Override
 			public void onSuccess(Response<String> response) {
+			   ToastUtils.showShortToast(getString(R.string.log_closs));
 			   Log.i(TAG,"responseURL_CLOSE   "+response.body());
 			   EventBusUtils.post(new Event.EventLogType(false));
+			   LogcatHelper.getInstance(App.getAppContext()).stop();
+			   LogcatHelper.getInstance(App.getAppContext()).start();
+			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
+			}
+
+			@Override
+			public void onError(Response<String> response) {
+			   super.onError(response);
+			   ToastUtils.showShortToast(getString(R.string.log_closs));
+			   EventBusUtils.post(new Event.EventLogType(false));
+			   LogcatHelper.getInstance(App.getAppContext()).stop();
+			   LogcatHelper.getInstance(App.getAppContext()).start();
 			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
 			}
 		   });

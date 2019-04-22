@@ -20,7 +20,7 @@
 			android:id="@+id/timely_rl_title"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingRight="@dimen/x40">
+			>
 
 			<RelativeLayout
 				android:layout_width="wrap_content"
@@ -41,12 +41,19 @@
 						android:text="重新扫描"
 						/>
 					<TextView
+						android:id="@+id/timely_open_door"
+						style="@style/btn_style_sel"
+						android:text="重新开柜"
+						android:layout_marginLeft="@dimen/x25"
+
+						/>
+					<TextView
 						android:id="@+id/all_out_text"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:textSize="@dimen/textsize_20"
 						android:textColor="@color/color_red"
-						android:layout_marginLeft="@dimen/x50"
+						android:layout_marginLeft="@dimen/x26"
 						android:textStyle="bold"
 						/>
 

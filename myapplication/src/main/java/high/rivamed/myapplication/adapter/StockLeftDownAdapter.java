@@ -66,19 +66,29 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseView
    @Override
    protected void convert(final BaseViewHolder helper, InventoryVo item) {
 	Log.i("xxx", "xxxxxxxxxxxxxxxxxx");
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	   findId(helper, mSize);
 	   int five = item.getExpireStatus();
 	   mSeven_one.setText(item.getCstName());
 	   mSeven_two.setText(item.getCstSpec());
 	   mSeven_three.setText(item.getCountStock()+"");
 	   mSeven_four.setText(item.getDeviceName());
+
+
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), five, mSeven_five);
+	}
+	if (item.getExpireStatus()==0){
+	   mSeven_five.setText("已过期");
+	   mSeven_five.setBackgroundResource(R.drawable.bg_text_red);
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	}else {
 	   mSeven_five.setText(item.getExpirationText());
-	   UIUtils.initTermOfValidity(mContext,helper, five, mSeven_five);
+	}
 
    }
 

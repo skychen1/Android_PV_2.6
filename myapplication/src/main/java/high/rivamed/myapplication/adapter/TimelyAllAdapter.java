@@ -43,11 +43,11 @@ public class TimelyAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
 	findId(helper);
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	Log.i("TimelyAllFrag", "item.getCstCode()   " + item.getCstCode());
 	int six = item.getCountStock();
 	int five = item.getCountActual();
@@ -62,7 +62,9 @@ public class TimelyAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	} else {
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getExpireStatus(), mSeven_three);
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(UIUtils.getContext(), item.getIsErrorOperation(), item.getExpireStatus(), mSeven_three);
+	}
    }
 
    private void findId(BaseViewHolder helper) {

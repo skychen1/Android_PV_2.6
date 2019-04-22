@@ -47,11 +47,11 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 
 
 	mMCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
@@ -66,10 +66,17 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpirationText());
-	mSeven_six.setText(item.getDeviceName());
-	UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_five);
-
+	mSeven_five.setText(item.getDeviceName());
+	mSeven_six.setText(item.getExpirationText());
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
+						mSeven_six);
+	}
+	if (item.getExpireStatus()==0){
+	   mSeven_six.setBackgroundResource(R.drawable.bg_text_red);
+	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+	   mSeven_six.setText("已过期");
+	}
 	mMCheckBox.setOnCheckedChangeListener(null);
 
 	mMCheckBox.setChecked(item.isSelected());

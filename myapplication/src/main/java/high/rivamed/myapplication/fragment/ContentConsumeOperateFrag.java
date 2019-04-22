@@ -17,9 +17,6 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.reflect.TypeToken;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -51,6 +48,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
+import high.rivamed.myapplication.bean.RobotBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -102,7 +100,6 @@ import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
-import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -196,7 +193,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.EventHomeEnable event) {
-      if (!mPause){
+      Log.i(TAG,"EventHomeEnable  "+mPause);
+      Log.i(TAG,"event.type  "+event.type);
+	if (!mPause) {
 	   if (event.type) {
 		mBaseTabOutLogin.setEnabled(false);
 		mBaseTabIconRight.setEnabled(false);
@@ -211,23 +210,28 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 
    }
+
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	LogUtils.i(TAG, "event   " + event.isClick);
 	LogUtils.i(TAG, "door   " + event.door);
 	mIsClick = event.isClick;
 	if (mIsClick) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (!mPause) {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }
 	   mRgTopGone.setVisibility(View.VISIBLE);
 	   mRgMiddleGone.setVisibility(View.VISIBLE);
 	   mRgDownGone.setVisibility(View.VISIBLE);
 	} else {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   if (!mPause) {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   }
 	   mRgTopGone.setVisibility(View.GONE);
 	   mRgMiddleGone.setVisibility(View.GONE);
 	   mRgDownGone.setVisibility(View.GONE);
@@ -273,9 +277,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 扫描后EPC准备传值
+    *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
 	if (mLoading != null) {
@@ -293,6 +298,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		for (BoxIdBean BoxIdBean : boxIdDoor) {
 		   String device_id = BoxIdBean.getDevice_id();
 		   for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+			Log.i(TAG, "mEthDeviceIdBack3.get(x)   " + mEthDeviceIdBack3.get(x));
+			Log.i(TAG, "device_id   " + device_id);
 			if (device_id.equals(mEthDeviceIdBack3.get(x))) {
 			   mEthDeviceIdBack3.remove(x);
 			}
@@ -303,7 +310,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 										READER_TYPE).find(BoxIdBean.class);
 		   if (boxIdBeansss.size() > 1) {
 			for (BoxIdBean BoxIdBean : boxIdBeansss) {
-			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
+
 			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
 				mEPCDate.putAll(event.epcs);
 				k++;
@@ -341,7 +348,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   }
 		}
 	   }
-	   LogUtils.i(TAG, "mEthDeviceIdBack2.size()   " + mEthDeviceIdBack.size());
+	   LogUtils.i(TAG, "mEthDeviceIdBack2.size()   " + mEthDeviceIdBack3.size());
 	   LogUtils.i(TAG, "mIsClick   " + mIsClick);
 	   if (mIsClick || mEthDeviceIdBack3.size() != 0) {
 		return;
@@ -351,6 +358,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		putOutAndInEPCDates(mEPCDatess);
 	   }
 	} else {
+	   if (mEthDeviceIdBack3!=null){
+		mEthDeviceIdBack3.clear();
+	   }
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean boxIdBean : boxIdBeanss) {
@@ -389,7 +399,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onOppenDoorEvent(Event.EventOppenDoor event) {
+   public void onOppenDoorEvent(
+	   Event.EventOppenDoor event) {
 	mOppenDoor = event.mString;
    }
 
@@ -426,21 +437,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mEthDeviceIdBack3.clear();
 	   mEPCDatess.clear();
 	   mEPCDate.clear();
-	   //	   initData();
+//	   	   initData();
 	} else {
 	   //            mPause = true;
 	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
 	}
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onRvEvent(Event.EventString event) {
-	mRvEventString = event.mString;
-	LogUtils.i(TAG, "mRvEventString   " + mRvEventString);
-	mAllPage = 1;
-	mPatientInfos.clear();
-	loadBingDate(mRvEventString, -2, null);
-   }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
@@ -448,28 +451,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onRvCheckBindEvent(Event.EventCheckbox event) {
-	mFirstBind = event.type;
-	mOperationScheduleId = event.operationScheduleId;
-	if (event.type.equals("firstBind")) {
-	   mPatientName = event.mString;
-	   mPatientId = event.id;
-	   LogUtils.i(TAG, "mPatientName   " + mPatientName);
-	   LogUtils.i(TAG, "mPatientId   " + mPatientId);
-	   mPosition = event.position;
-	   mTbaseDevicesFromEvent = event.mTbaseDevices;
-	   AllDeviceCallBack.getInstance().openDoor(mPosition, mTbaseDevicesFromEvent);
-	} else {
-	   String type = event.type;
-	   String mString = event.mString;
-	   int position = event.position;
-	   List<BoxSizeBean.DevicesBean> mTbaseDevices = event.mTbaseDevices;
-	   mRvEventString = event.mString;
-	   loadBingDate(mRvEventString, -1, null);
-	}
-
-   }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActString(Event.EventAct event) {
@@ -667,36 +648,38 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
-//		if (mFastInOutDto.isOperateSuccess()){
-		   List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
-		   List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
-		   String string = null;
-		   if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
-			string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
-			ToastUtils.showLong(string);
-			MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-		   }
+		EventBusUtils.post(new Event.EventHomeEnable(false));
+		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
+		List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
+		String string = null;
 
-		   for (int i = 0; i < outInventoryVos.size(); i++) {
-			outInventoryVos.get(i).setSelected(true);
-		   }
 
-		   if (mFastInOutDto != null &&
-			 (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
-			EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
-										     outInventoryVos.size()));
-			mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
-		   } else {
-			mEthDeviceIdBack2.clear();
-			//		   mEthDeviceIdBack.clear();
-			ToastUtils.showShortToast("未扫描到操作耗材");
-			if (mFastInOutDto.getErrorEpcs() == null || mFastInOutDto.getErrorEpcs().size() == 0){
-			   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
-			}
-		   }
+		for (int i = 0; i < outInventoryVos.size(); i++) {
+		   outInventoryVos.get(i).setSelected(true);
 		}
 
-//	   }
+		if (mFastInOutDto != null &&
+		    (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
+		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
+										  outInventoryVos.size()));
+		   mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
+		} else {
+		   mEthDeviceIdBack2.clear();
+		   //		   mEthDeviceIdBack.clear();
+		   ToastUtils.showShortToast("未扫描到操作耗材");
+		   if (mFastInOutDto.getErrorEpcs() == null ||
+			 mFastInOutDto.getErrorEpcs().size() == 0) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
+		}
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		EventBusUtils.post(new Event.EventHomeEnable(false));
+	   }
+	   //	   }
 	});
    }
 
@@ -717,6 +700,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 	allOutBean.setInventoryVos(epcList);
 	allOutBean.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
+	allOutBean.setThingId(SPUtils.getString(mContext, THING_CODE));
 	String toJson = mGson.toJson(allOutBean);
 	LogUtils.i(TAG, "toJson mObject   " + toJson);
 	return toJson;
@@ -739,9 +723,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		Log.i(TAG, "result    " + result);
 		EventBusUtils.post(new Event.EventHomeEnable(false));
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
-//		if (cstInventoryDto.isOperateSuccess()){
-		   setEPCDateAndIntent(cstInventoryDto, true);
-//		}
+		//		if (cstInventoryDto.isOperateSuccess()){
+		setEPCDateAndIntent(cstInventoryDto, true);
+		//		}
 	   }
 
 	   @Override
@@ -770,7 +754,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 									    deviceId).findFirst(InventoryVo.class);
 				InventoryVo unnetEPC = LitePal.where("epc = ? ", s.getEpc())
 					.findFirst(InventoryVo.class);
-				Log.i("tadg","inventoryDto.getUnNetMoreEpcs()    "+(unnetEPC==null));
+				Log.i("tadg", "inventoryDto.getUnNetMoreEpcs()    " + (unnetEPC == null));
 				if (unnetEPC == null) {
 				   inventoryDto.getUnNetMoreEpcs().add(s.getEpc());
 				} else {
@@ -790,12 +774,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void setEPCDateAndIntent(InventoryDto cstInventoryDto, boolean type) {
 	String string = null;
-	if (cstInventoryDto.getErrorEpcs() != null && cstInventoryDto.getErrorEpcs().size() > 0) {
-	   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
-	   ToastUtils.showLong(string);
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 
-	}
 	if (!type && null != cstInventoryDto.getUnNetMoreEpcs() &&
 	    cstInventoryDto.getUnNetMoreEpcs().size() > 0) {
 	   string = StringUtils.listToStrings(cstInventoryDto.getUnNetMoreEpcs());
@@ -870,12 +849,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	} else {
 	   mConsumeOpenallTop.setVisibility(View.GONE);
 	}
-	//	//是否启用选择操作
-	//	if (UIUtils.getConfigType(mContext, CONFIG_019)){
-	//	   mConsumeDown.setVisibility(View.VISIBLE);
-	//	}else {
-	//	   mConsumeDown.setVisibility(View.GONE);
-	//	}
+
 	//是否启用功能开柜
 	if (UIUtils.getConfigType(mContext, CONFIG_016)) {
 	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
@@ -913,11 +887,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	LogUtils.i(TAG, "loadDate   " + string);
 
-	if (string!=null){
-	   mTbaseDevices.addAll(mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
-	}else {
+	if (string != null) {
+	   mTbaseDevices.addAll(
+		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	} else {
 	   String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	   mTbaseDevices.addAll(mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	   mTbaseDevices.addAll(mGson.fromJson(strings,
+							   new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
 	}
 
 	onSucceedDate();
@@ -989,19 +965,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mConsumeDown.setVisibility(View.GONE);
 	   mConsumeDownRv.setVisibility(View.GONE);
 	}
-	//
-	//	String string = SPUtils.getString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE);
-	//	LogUtils.i(TAG,"耗材操作   "+string);
-	//	List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(string,
-	//										new TypeToken<List<HomeAuthorityMenuBean>>() {}
-	//											.getType());
-	//	if (null!=fromJson.get(0)&&fromJson.get(0).getChildren()!=null&&fromJson.get(0).getChildren().size() > 0) {
-	//	   setDownType();//设置选择操作的权限
-	//	} else {
-	//	   mConsumeDown.setVisibility(View.GONE);
-	//	   mConsumeDownRv.setVisibility(View.GONE);
-	//	}
-
+	mBaseTabBtnLeft.setOnClickListener(new View.OnClickListener() {
+	   @Override
+	   public void onClick(View v) {
+		Log.i(TAG,"XFDFDFDFDFD");
+	   }
+	});
    }
 
    /*
@@ -1169,7 +1138,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void goToFirstBindAC(int position, String gonetype) {
 	//获取需要绑定的患者
-	NetRequest.getInstance().findSchedulesDate("", mAllPage, mRows, this, new BaseResult() {
+	NetRequest.getInstance().findSchedulesDate("","", mAllPage, mRows, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
@@ -1217,9 +1186,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
 	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
 	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo,
-	   R.id.fastopen_title_guanlian})
+	   R.id.fastopen_title_guanlian,R.id.base_tab_robot})
    public void onViewClicked(View view) {
+      Log.i(TAG,"onViewClicked   "+mIsClick);
 	if (!mIsClick) {
+	   Log.i(TAG,"view   "+view.getId());
 	   switch (view.getId()) {
 		case R.id.base_tab_icon_right:
 		case R.id.base_tab_tv_name:
@@ -1292,6 +1263,25 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			}
 		   }
 		   break;
+		case R.id.base_tab_robot://机器人
+		   if (UIUtils.isFastDoubleClick(R.id.base_tab_robot)) {
+			NetRequest.getInstance().CallRobot(_mActivity, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				RobotBean robotBean = mGson.fromJson(result, RobotBean.class);
+				if (robotBean.isOperateSuccess()) {
+				   if (robotBean.getReciveMessage().getResultCode() == 0) {
+					ToastUtils.showShortToast("机器人召唤成功！");
+				   } else {
+					ToastUtils.showShortToast("机器人召唤失败！");
+				   }
+
+				}
+				Log.e(TAG, "机器人    " + result);
+			   }
+			});
+		   }
+		   break;
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
@@ -1302,119 +1292,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 	   }
 	} else {
-	   ToastUtils.showShort("请关闭柜门再进行操作");
+	   ToastUtils.showShortToast("请关闭柜门再进行操作");
 	}
-
-   }
-
-   /**
-    * 获取需要绑定的患者
-    */
-   private void loadBingDate(
-	   String optienNameOrId, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
-	LogUtils.i(TAG, "optienNameOrId   " + optienNameOrId);
-	NetRequest.getInstance()
-		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			LogUtils.i(TAG, "result   " + result);
-			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
-			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
-
-			   if (mPatientInfos != null) {
-				for (int i = 0; i < bean.getRows().size(); i++) {
-				   BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
-				   data.setPatientId(bean.getRows().get(i).getPatientId());
-				   data.setPatientName(bean.getRows().get(i).getPatientName());
-				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setDoctorName(bean.getRows().get(i).getDoctorName());
-				   data.setRoomName(bean.getRows().get(i).getRoomName());
-				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
-				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
-				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
-				   mPatientInfos.add(data);
-				}
-				if (mShowRvDialog != null && mShowRvDialog.mDialog.isShowing()) {
-				   sTableTypeView.mBingOutAdapter.notifyDataSetChanged();
-				} else {
-				   if (!mPause) {
-					mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext,
-											     mPatientInfos, "firstBind",
-											     position, mTbaseDevices);
-					mShowRvDialog.mRefreshLayout.setOnRefreshListener(
-						new OnRefreshListener() {
-						   @Override
-						   public void onRefresh(RefreshLayout refreshLayout) {
-							mShowRvDialog.mRefreshLayout.setNoMoreData(false);
-							mAllPage = 1;
-							mPatientInfos.clear();
-							loadBingDate(optienNameOrId, position, mTbaseDevices);
-							mShowRvDialog.mRefreshLayout.finishRefresh();
-						   }
-						});
-					mShowRvDialog.mRefreshLayout.setOnLoadMoreListener(
-						new OnLoadMoreListener() {
-						   @Override
-						   public void onLoadMore(RefreshLayout refreshLayout) {
-							mAllPage++;
-							loadBingDate(optienNameOrId, position, mTbaseDevices);
-							mShowRvDialog.mRefreshLayout.finishLoadMore();
-						   }
-						});
-				   }
-				}
-
-			   } else {
-				if (!mPause) {
-				   for (int i = 0; i < bean.getRows().size(); i++) {
-					BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
-					data.setPatientId(bean.getRows().get(i).getPatientId());
-					data.setPatientName(bean.getRows().get(i).getPatientName());
-					data.setDeptName(bean.getRows().get(i).getDeptName());
-					data.setDoctorName(bean.getRows().get(i).getDoctorName());
-					data.setRoomName(bean.getRows().get(i).getRoomName());
-					data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
-					data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
-					data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
-					data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
-					mPatientInfos.add(data);
-				   }
-				   mShowRvDialog = DialogUtils.showRvDialog(_mActivity, mContext,
-											  mPatientInfos, "firstBind",
-											  position, mTbaseDevices);
-				   mShowRvDialog.mRefreshLayout.setOnRefreshListener(
-					   new OnRefreshListener() {
-						@Override
-						public void onRefresh(RefreshLayout refreshLayout) {
-						   mShowRvDialog.mRefreshLayout.setNoMoreData(false);
-						   mAllPage = 1;
-						   mPatientInfos.clear();
-						   loadBingDate(optienNameOrId, position, mTbaseDevices);
-						   mShowRvDialog.mRefreshLayout.finishRefresh();
-						}
-					   });
-				   mShowRvDialog.mRefreshLayout.setOnLoadMoreListener(
-					   new OnLoadMoreListener() {
-						@Override
-						public void onLoadMore(RefreshLayout refreshLayout) {
-						   mAllPage++;
-						   loadBingDate(optienNameOrId, position, mTbaseDevices);
-						   mShowRvDialog.mRefreshLayout.finishLoadMore();
-						}
-					   });
-				}
-			   }
-			}
-		   }
-		});
 
    }
 
    @Override
    public void onDestroyView() {
 	super.onDestroyView();
-
 	mOnStart = false;
 	mEthDeviceIdBack2.clear();
 	//	mEthDeviceIdBack.clear();

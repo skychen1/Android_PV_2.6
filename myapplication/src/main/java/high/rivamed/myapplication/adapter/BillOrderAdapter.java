@@ -130,8 +130,15 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
         mSeven_three.setText(item.getCstSpec());
         mSeven_four.setText(item.getExpirationText());
         mSeven_five.setText(item.getDeviceName());
-        UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
 
+        if (item.getExpireStatus()!=null){
+            UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
+        }
+        if (item.getExpireStatus()==0){
+            mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
+            mSeven_four.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+            mSeven_four.setText("已过期");
+        }
         setDeleteView(item.isDelete(),swipe);
 
         if ((item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) ||

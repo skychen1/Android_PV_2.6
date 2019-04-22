@@ -56,6 +56,16 @@
 	<View
 		style="@style/view_line_style"/>
 
+	<TextView
+		android:id="@+id/seven_five"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="2"
+		/>
+
+
+	<View
+		style="@style/view_line_style"/>
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="0dp"
@@ -63,20 +73,11 @@
 		android:gravity="center"
 		>
 		<TextView
-			android:id="@+id/seven_five"
+			android:id="@+id/seven_six"
 			style="@style/view_termof_style"
 			/>
 	</LinearLayout>
 
-
-	<View
-		style="@style/view_line_style"/>
-	<TextView
-		android:id="@+id/seven_six"
-		style="@style/text_title_content_style"
-		android:layout_width="0dp"
-		android:layout_weight="2"
-		/>
 
 	<View
 		style="@style/view_line_style"/>

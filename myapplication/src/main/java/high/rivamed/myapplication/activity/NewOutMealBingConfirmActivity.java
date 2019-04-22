@@ -254,15 +254,30 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   if (UIUtils.getConfigType(mContext, CONFIG_009)&&!UIUtils.getConfigType(mContext, CONFIG_019) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
 			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			mDownBtnOne.setEnabled(false);
+			if (b.getPatientName() == null || b.getPatientName().equals("")){
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.bind_error_string);
+			}else {
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.fast_out_error_string);
+			}
 			return;
 		   }
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 			  b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
 			mDownBtnOne.setEnabled(false);
+			if (b.getPatientName() == null || b.getPatientName().equals("")){
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.bind_error_string);
+			}else {
+			   mAllOutText.setVisibility(View.VISIBLE);
+			   mAllOutText.setText(R.string.fast_out_error_string);
+			}
 			return;
 		   } else {
 			mDownBtnOne.setEnabled(true);
+			mAllOutText.setVisibility(View.GONE);
 		   }
 		}
 	   }
@@ -343,6 +358,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setText("重新扫描");
 	mTimelyOpenDoor.setText("打开柜门");
 	mLyBingBtn.setText("查看套组清单");
+
+	mTimelyOpenDoor.setEnabled(false);
+	mLyBingBtn.setEnabled(false);
+	mBindPatient.setEnabled(false);
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -435,24 +454,29 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.ly_bind_patient:
-		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		   EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
-		   Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-		   intent.putExtra("type", "afterBindTemp");
-		   intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
-		   intent.putExtra("position", -1000);
-		   intent.putExtra("GoneType", "VISIBLE");
-		   startActivity(intent);
-		} else {
-		   EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
-		   Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-		   intent.putExtra("type", "afterBindTemp");
-		   intent.putExtra("position", -1000);
-		   intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
-		   intent.putExtra("GoneType", "GONE");
-		   startActivity(intent);
-//		   loadBingDateNoTemp("", 0, mTbaseDevices);
+	      if (StringUtils.isExceedTime(mBillOrderResultBean.getInventoryVos())){
+		   DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump", null);
+		}else {
+		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
+			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
+			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
+			intent.putExtra("position", -1000);
+			intent.putExtra("GoneType", "VISIBLE");
+			startActivity(intent);
+		   } else {
+			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
+			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
+			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("position", -1000);
+			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
+			intent.putExtra("GoneType", "GONE");
+			startActivity(intent);
+			//		   loadBingDateNoTemp("", 0, mTbaseDevices);
+		   }
 		}
+
 		break;
 	}
    }
@@ -517,12 +541,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
-			if (mBillOrderResultBean.getErrorEpcs() != null &&
-			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
-			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
-			   ToastUtils.showLong(string);
-			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-			}
+			mTimelyOpenDoor.setEnabled(true);
+			mLyBingBtn.setEnabled(true);
+			mBindPatient.setEnabled(true);
+//			if (mBillOrderResultBean.getErrorEpcs() != null &&
+//			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
+//			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
+//			   ToastUtils.showLong(string);
+//			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//			}
 			if (mBillOrderResultBean.getInventoryVos() == null ||
 			    mBillOrderResultBean.getInventoryVos().size() == 0) {
 			   mDownBtnOne.setEnabled(false);
@@ -549,6 +576,14 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 									   "</big></font>"));
 			   EventBusUtils.post(new Event.EventButton(true,true));
 			}
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			super.onError(result);
+			mTimelyOpenDoor.setEnabled(true);
+			mLyBingBtn.setEnabled(true);
+			mBindPatient.setEnabled(true);
 		   }
 		});
    }

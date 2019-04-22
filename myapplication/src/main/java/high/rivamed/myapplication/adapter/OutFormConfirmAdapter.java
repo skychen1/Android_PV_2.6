@@ -63,7 +63,7 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
     protected void convert(final BaseViewHolder helper,InventoryVo item) {
 
         mLl=((LinearLayout) helper.getView(R.id.seven_ll));
-
+        mLl.setBackgroundResource(R.color.bg_f);
         mSeven_one = ((TextView) helper.getView(R.id.seven_one));
         mSeven_two = ((TextView) helper.getView(R.id.seven_two));
         mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -128,7 +128,14 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
         mSeven_three.setText(item.getCstSpec());
         mSeven_four.setText(item.getExpirationText());
         mSeven_five.setText(item.getDeviceName());
-        UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
+        if (item.getExpireStatus()!=null){
+            UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
+        }
+        if (item.getExpireStatus()==0){
+            mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
+            mSeven_four.setTextColor(mContext.getResources().getColor(R.color.bg_f));
+            mSeven_four.setText("已过期");
+        }
         setDeleteView(item.isDelete(),swipe);
 
         if ((item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) ||
@@ -166,6 +173,8 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
             mSeven_three.setTextColor(Color.parseColor("#999999"));
             mSeven_four.setTextColor(Color.parseColor("#999999"));
             mSeven_five.setTextColor(Color.parseColor("#999999"));
+            mSeven_four.setBackgroundResource(R.color.bg_color);
+            mLl.setBackgroundResource(R.color.bg_color);
             swipe.setSwipeEnabled(true);
         } else {
             mSeven_one.setTextColor(Color.parseColor("#333333"));

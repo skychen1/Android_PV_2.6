@@ -11,7 +11,6 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 /**
@@ -42,11 +41,11 @@ public class TimelyProfitAdapter
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}/
 	mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -70,8 +69,9 @@ public class TimelyProfitAdapter
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 	int StopFlag = item.getExpireStatus();
-	LogUtils.i("SSS", "five   " + StopFlag);
-	LogUtils.i("SSS"," item.getExpireStatus()   "+ item.getExpireStatus());
-	UIUtils.initTermOfValidity(mContext,helper,StopFlag , mSeven_four);
+
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), StopFlag, mSeven_four);
+	}
    }
 }

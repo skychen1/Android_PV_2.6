@@ -10,7 +10,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +53,6 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -85,6 +83,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    TextView           mDialogRight;
    @BindView(R.id.search_et)
    EditText           mSearchEt;
+   @BindView(R.id.search_et_right)
+   EditText           mSearchRight;
    @BindView(R.id.activity_down_btn_one_ll)
    LinearLayout       mDownBtnOneLL;
    @BindView(R.id.timely_ll)
@@ -94,7 +94,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.stock_search)
-   FrameLayout        mStockSearch;
+
+   LinearLayout        mStockSearch;
+   @BindView(R.id.stock_search_right)
+   LinearLayout        mStockSearchRight;
+
+   @BindView(R.id.search_dept)
+   TextView           mSearchDept;
    @BindView(R.id.ly_creat_temporary_btn)
    TextView           mLyCreatTemporaryBtn;
    @BindView(R.id.activity_down_btn_seven_ll)
@@ -117,11 +123,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private int    mAllPage = 1;
    private int    mRows    = 20;
    private String mTrim    = "";
+   private String mTrims    = "";
    private CreatTempPatientBean mPatientBean;
    public  TableTypeView        mTypeView;
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
    List<String> titeleList = null;
    public int mSize;
+   private String mDeptType;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
@@ -178,10 +186,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	}else {
 	   mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
 	}
+	mBaseTabTvTitle.setText("患者列表");
+	mStockSearch.setVisibility(View.VISIBLE);
+	mStockSearchRight.setVisibility(View.VISIBLE);
+	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
 
-	loadBingDate("");
-	setTemporaryBing();
-	initListener();
+	loadBingDate("","");
+
+
    }
 
    @Override
@@ -192,16 +204,26 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    /**
     * 患者列表
     */
-   private void setTemporaryBing() {
-	mBaseTabTvTitle.setText("患者列表");
-	mStockSearch.setVisibility(View.VISIBLE);
-	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-	String[] array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+   private void setTemporaryBing(String deptType) {
+	String[] array;
+	if (deptType==null||deptType.equals("2")||deptType.equals("")){
+	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	   mSearchDept.setText("查询手术间：");
+	   mSearchRight.setHint("请输入手术间名称、编号、拼音码");
+	}else {
+	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays2);
+	   mSearchDept.setText("查询申请科室：");
+	   mSearchRight.setHint("请输入原科室名称、拼音码");
+	}
 	titeleList = Arrays.asList(array);
 	mSize = titeleList.size();
-	mTypeView = new TableTypeView(mContext, this, (Object) patientInfos, titeleList, mSize,
-						mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
-						STYPE_DIALOG, -10);
+	if (mTypeView==null){
+	   mTypeView = new TableTypeView(mContext, this, (Object) patientInfos, titeleList, mSize,
+						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+						   STYPE_DIALOG, -10);
+	}
+	initListener();
+
    }
 
    private void initListener() {
@@ -283,11 +305,31 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mTrim = charSequence.toString().trim();
 		mAllPage = 1;
 		patientInfos.clear();
-		loadBingDate(mTrim);
+		loadBingDate(mTrim,mTrims);
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable editable) {
+
+	   }
+	});
+
+	mSearchRight.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		mTrims = s.toString().trim();
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim,mTrims);
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
 
 	   }
 	});
@@ -297,7 +339,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mRefreshLayout.setNoMoreData(false);
 		mAllPage = 1;
 		patientInfos.clear();
-		loadBingDate(mTrim);
+		loadBingDate(mTrim,mTrims);
 		mRefreshLayout.finishRefresh();
 	   }
 	});
@@ -305,7 +347,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
 		mAllPage++;
-		loadBingDate(mTrim);
+		loadBingDate(mTrim,mTrims);
 		mRefreshLayout.finishLoadMore();
 	   }
 	});
@@ -438,13 +480,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		Log.i(TAG, "result    " + result);
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		String string = null;
-		if (cstInventoryDto.getErrorEpcs() != null &&
-		    cstInventoryDto.getErrorEpcs().size() > 0) {
-		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
-		   ToastUtils.showLong(string);
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-		   return;
-		}
+//		if (cstInventoryDto.getErrorEpcs() != null &&
+//		    cstInventoryDto.getErrorEpcs().size() > 0) {
+//		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
+//		   ToastUtils.showLong(string);
+//		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//		   return;
+//		}
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.getInventoryVos() == null));
 		//先绑定患者
 		if (mRbKey == 3) {
@@ -662,6 +704,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	bean.setCreate(true);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	bean.setMedicalId("virtual");
+	bean.setDeptType(mDeptType);
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
 	   BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
@@ -675,6 +718,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   data2.setSex(event.userSex);
 	   data2.setMedicalId("virtual");
 	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
+	   data2.setDeptType(mDeptType);
 	   patientInfos.add(0, data2);
 	   ToastUtils.showShort("创建成功");
 	   event.dialog.dismiss();
@@ -691,15 +735,17 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    /**
     * 获取需要绑定的患者
     */
-   private void loadBingDate(String optienNameOrId) {
+   private void loadBingDate(String optienNameOrId,String deptName) {
 
 	NetRequest.getInstance()
-		.findSchedulesDate(optienNameOrId, mAllPage, mRows, this, new BaseResult() {
+		.findSchedulesDate(optienNameOrId,deptName, mAllPage, mRows, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
 			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
 			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+			   mDeptType = bean.getRows().get(0).getDeptType();
+			   setTemporaryBing(mDeptType);
 			   boolean isClear;
 			   if (patientInfos.size() == 0) {
 				isClear = true;
@@ -735,6 +781,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				mTypeView.mTempPatientAdapter.notifyDataSetChanged();
 			   }
 			}
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			super.onError(result);
+			setTemporaryBing(null);
 		   }
 		});
    }

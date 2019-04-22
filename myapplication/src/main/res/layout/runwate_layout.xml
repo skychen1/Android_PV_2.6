@@ -212,6 +212,10 @@
 					android:id="@+id/search_type_thzc"
 					style="@style/runwate_btn_style"
 					android:text="退货暂存"/>
+				<RadioButton
+					android:id="@+id/search_type_yjf"
+					style="@style/runwate_btn_style"
+					android:text="已计费"/>
 			</RadioGroup>
 		</LinearLayout>
 	</LinearLayout>

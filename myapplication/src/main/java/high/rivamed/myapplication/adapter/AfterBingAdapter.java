@@ -48,11 +48,11 @@ public class AfterBingAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 
 	LinearLayout mCheckBoxLl = ((LinearLayout) helper.getView(R.id.seven_one_ll));
 
@@ -83,7 +83,9 @@ public class AfterBingAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 		}
 	   }
 	}
-
-	UIUtils.initTermOfValidity(mContext, helper, item.getExpireStatus(), mSeven_five);
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
+						mSeven_five);
+	}
    }
 }

@@ -41,6 +41,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -453,11 +454,12 @@ public class NetRequest {
     * 查询患者信息（包含临时患者）
     */
    public void findSchedulesDate(
-	   String optienNameOrId, int pageNo, int pageSize, Object tag, NetResult netResult) {
+	   String optienNameOrId,String deptName, int pageNo, int pageSize, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_PATIENTS_FIND;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("patientNameOrId", optienNameOrId);
+	map.put("operationOrDept", deptName);
 	map.put("pageNo", pageNo + "");
 	map.put("pageSize", pageSize + "");
 	GetTokenRequest(urls, map, tag, netResult);
@@ -717,7 +719,16 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_UNENT_CST_OFFLINE;
 	PostRequest(urls, json, tag, netResult);
    }
-
+   /**
+    * 召唤机器人
+    */
+   public void CallRobot(
+	   Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_ROBOT;
+	Map<String, String> map = new HashMap<>();
+	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	GetTokenRequest(urls, map, tag, netResult);
+   }
 
 
    private class MyCallBack extends StringCallback {

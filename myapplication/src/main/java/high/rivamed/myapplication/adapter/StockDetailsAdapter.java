@@ -38,19 +38,20 @@ public class StockDetailsAdapter extends
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	findId(helper);
 	int four = item.getExpireStatus();
 	mSeven_one.setText(item.getEpc());
 	mSeven_two.setText(item.getUpdateTime());
 	mSeven_three.setText(item.getStatus());
 	mSeven_four.setText(item.getExpirationText());
-	UIUtils.initTermOfValidity(mContext,helper, four, mSeven_four);
-
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), four, mSeven_four);
+	}
    }
    private void findId(BaseViewHolder helper) {
 	mSeven_one = ((TextView) helper.getView(R.id.seven_one));

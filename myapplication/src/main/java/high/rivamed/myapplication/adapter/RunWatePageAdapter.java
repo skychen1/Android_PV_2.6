@@ -42,11 +42,11 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
     @Override
     protected void convert(
             BaseViewHolder helper, RunWateBean.RowsBean item) {
-        if (helper.getAdapterPosition() % 2 == 0) {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-        } else {
+//        if (helper.getAdapterPosition() % 2 == 0) {
+//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-        }
+//        }
         findId(helper);
         int five = item.getStopFlag();
         String one = item.getStatus();

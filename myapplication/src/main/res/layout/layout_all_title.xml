@@ -184,6 +184,17 @@
 					android:layout_toLeftOf="@+id/base_tab_btn_msg"
 					android:src="@drawable/conn_sel"
 					/>
+				<ImageView
+					android:id="@+id/base_tab_robot"
+					android:layout_width="@dimen/x80"
+					android:layout_height="@dimen/x80"
+					android:layout_centerVertical="true"
+					android:paddingLeft="@dimen/x15"
+					android:paddingRight="@dimen/x15"
+					android:layout_toLeftOf="@+id/base_tab_conn"
+					android:src="@drawable/robot_sel"
+					android:visibility="gone"
+					/>
 			</RelativeLayout>
 
 		</RelativeLayout>

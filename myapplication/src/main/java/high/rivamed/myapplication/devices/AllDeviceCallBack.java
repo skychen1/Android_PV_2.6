@@ -60,6 +60,7 @@ public class AllDeviceCallBack {
 		if (instances == null) {
 		   instances = new AllDeviceCallBack();
 		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+		   Log.i(TAG,"mReaderDeviceId    "+mReaderDeviceId.size());
 		   eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 		   mEthDeviceIdBack = new ArrayList<>();
 		   mEthDeviceIdBack3 = new ArrayList<>();
@@ -404,6 +405,10 @@ public class AllDeviceCallBack {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+		if (i==1){
+		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+		  DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+		}
 		if (i == 2) {
 		   DeviceManager.getInstance().StopUhfScan(device_id);
 		   DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);

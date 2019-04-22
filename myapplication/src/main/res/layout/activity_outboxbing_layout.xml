@@ -27,6 +27,19 @@
 				android:textSize="@dimen/textsize_17"
 				android:textStyle="bold"
 				android:visibility="gone" />
+			<TextView
+				android:id="@+id/timely_number_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toRightOf="@+id/timely_number_left"
+				android:paddingTop="@dimen/x10"
+				android:textSize="@dimen/textsize_20"
+				android:textColor="@color/color_red"
+				android:text="@string/bind_error_string"
+				android:layout_marginLeft="@dimen/x150"
+				android:textStyle="bold"
+				android:visibility="gone"
+				/>
 		</RelativeLayout>
 
 
@@ -85,6 +98,10 @@
 		android:layout_marginRight="@dimen/x40"
 		android:layout_marginTop="@dimen/x30"
 		android:layout_weight="1" />
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="2px"
+		android:background="@color/item_divider" />
 	<LinearLayout
 		android:id="@+id/activity_down_btnll"
 		android:layout_width="match_parent"

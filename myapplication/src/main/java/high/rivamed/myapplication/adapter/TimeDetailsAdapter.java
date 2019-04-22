@@ -38,11 +38,11 @@ public class TimeDetailsAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
 	findId(helper);
-	if (helper.getAdapterPosition() % 2 == 0) {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-	} else {
+//	if (helper.getAdapterPosition() % 2 == 0) {
+//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
+//	} else {
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-	}
+//	}
 	int Stock = item.getCountStock();
 	int Actual = item.getCountActual();
 
@@ -55,9 +55,9 @@ public class TimeDetailsAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	} else {
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-
-	UIUtils.initTermOfValidity(UIUtils.getContext(), helper, item.getExpireStatus(), mSeven_two);
-
+	if (item.getExpireStatus()!=null) {
+	   UIUtils.initTermOfValidity(UIUtils.getContext(), item.getIsErrorOperation(), item.getExpireStatus(), mSeven_two);
+	}
    }
    private void findId(BaseViewHolder helper) {
 	mSeven_one = ((TextView) helper.getView(R.id.seven_one));

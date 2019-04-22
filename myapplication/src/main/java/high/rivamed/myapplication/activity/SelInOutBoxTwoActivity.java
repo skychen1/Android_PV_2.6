@@ -107,6 +107,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    TextView           mTimelyLeft;
    @BindView(R.id.timely_right)
    TextView           mTimelyRight;
+   @BindView(R.id.all_out_text)
+   TextView           mAllText;
    @BindView(R.id.activity_down_btnll)
    LinearLayout       mActivityDownBtnTwoll;
    @BindView(R.id.timely_ll)
@@ -136,8 +138,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    }
 
    private void setButtonType(Event.EventButton event) {
+
 	if (event.bing) {//绑定的按钮转换
 	   for (InventoryVo b : mInventoryVos) {
+
 		ArrayList<String> strings = new ArrayList<>();
 		strings.add(b.getCstCode());
 		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
@@ -145,6 +149,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		     (b.getPatientName() == null || b.getPatientName().equals(""))) || mIsClick) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   setAllTextVis();
+
 		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
 		   if (mStarts != null) {
 			mStarts.cancel();
@@ -159,6 +165,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		    mIsClick) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   setAllTextVis();
 		   LogUtils.i(TAG, "OutBoxBingActivity   cancel");
 		   if (mStarts != null) {
 			mStarts.cancel();
@@ -169,6 +176,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "OutBoxBingActivity   start");
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
+		   mAllText.setVisibility(View.GONE);
+
 		   if (mStarts != null) {
 			LogUtils.i(TAG, "OutBoxBingActivity   ssss");
 			mStarts.cancel();
@@ -184,6 +193,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		     b.getExpireStatus() != 0) || mIsClick) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
+		   setAllTextVis();
+
 		   LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
 		   if (mStarts != null) {
 			mStarts.cancel();
@@ -194,12 +205,31 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "SelInOutBoxTwoActivity   start");
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
+		   mAllText.setVisibility(View.GONE);
+
 		   if (mStarts != null) {
 			mStarts.cancel();
 			mStarts.start();
 		   }
 		}
 	   }
+	}
+   }
+
+   private void setAllTextVis() {
+	mAllText.setVisibility(View.VISIBLE);
+	if (mDtoOperation == 8) {
+	   mAllText.setText(R.string.op_error_tuihuo);
+	} else if (mDtoOperation == 3) {
+	   mAllText.setText(R.string.op_error_ly);
+	} else if (mDtoOperation == 2) {
+	   mAllText.setText(R.string.op_error_rk);
+	} else if (mDtoOperation == 9) {
+	   mAllText.setText(R.string.op_error_yc);
+	}  else if (mDtoOperation == 10) {
+	   mAllText.setText(R.string.op_error_yr);
+	} else if (mDtoOperation == 7) {
+	   mAllText.setText(R.string.op_error_th);
 	}
    }
 
@@ -375,6 +405,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
 	mBaseTabBack.setVisibility(View.GONE);
+
 	mBaseTabBtnMsg.setEnabled(false);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
@@ -389,13 +420,19 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mSize = array.length;
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mInventoryVos) {
-	   strings.add(vosBean.getCstCode());
+	   if(vosBean.getCstId()!=null){
+		strings.add(vosBean.getCstId());
+	   }
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
 							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 							mInventoryVos.size() + "</big></font>"));
-
+	if (StringUtils.isExceedTime(mInventoryVos)) {
+	   setAllTextVis();
+	}else {
+	   mAllText.setVisibility(View.GONE);
+	}
 	mOperation = mInventoryDto.getOperation();
 	if (mTypeView == null) {
 	   mTypeView = new TableTypeView(this, this, mInventoryVos, titeleList, mSize, mLinearLayout,
@@ -551,8 +588,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 重新扫描
     */
    private void moreStartScan() {
-	mTimelyLeft.setEnabled(true);
-	mTimelyRight.setEnabled(true);
+//	mTimelyLeft.setEnabled(true);
+//	mTimelyRight.setEnabled(true);
 	mEPCDate.clear();
 	List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
 	mInventoryDto.getInventoryVos().clear();
@@ -790,12 +827,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   ToastUtils.showLong(string);
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
 	}
-	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
-	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
-	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
-	   ToastUtils.showLong(string);
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-	} else {
+//	if (mTCstInventoryTwoDto.getErrorEpcs() != null &&
+//	    mTCstInventoryTwoDto.getErrorEpcs().size() > 0) {
+//	   string = StringUtils.listToString(mTCstInventoryTwoDto.getErrorEpcs());
+//	   ToastUtils.showLong(string);
+//	   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+//	} else {
 	   List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
 	   //	   List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
 	   List<InventoryVo> inventoryVos1 = mTCstInventoryTwoDto.getInventoryVos();
@@ -835,7 +872,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mTimelyOpenDoor.setEnabled(true);
 		mTimelyStartBtn.setEnabled(true);
 	   }
-	}
+//	}
    }
 
    /**

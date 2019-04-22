@@ -82,6 +82,16 @@ public class Event {
             this.b = b;
         }
     }
+
+   /**
+    * 快速开柜重新开柜
+    */
+   public static class EventFastOpenDoor {
+      public boolean b;
+      public EventFastOpenDoor(boolean b) {
+         this.b = b;
+      }
+   }
     /**
      * 快速入柜的数据
      */

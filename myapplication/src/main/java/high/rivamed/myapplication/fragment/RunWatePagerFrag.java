@@ -296,6 +296,10 @@ public class RunWatePagerFrag extends SimpleFragment {
 			mStatus = "12";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
+		   case R.id.search_type_yjf://已计费
+			mStatus = "5";
+			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+			break;
 		}
 	   }
 	});
