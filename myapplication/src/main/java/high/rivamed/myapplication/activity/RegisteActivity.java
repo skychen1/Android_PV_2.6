@@ -141,13 +141,7 @@ public class RegisteActivity extends SimpleActivity {
 	public Fragment getItem(int position) {
 	   if (position == 0) {
 		return RegisteFrag.newInstance();
-	   }
-//	   else if (position == 1) {
-//		return RegisteSelfCheckFrag.newInstance();
-//	   } else if (position == 2) {
-//		return RegisteTestFrag.newInstance();
-//	   }
-	   else if (position == 1){
+	   } else if (position == 1){
 		return RegisteRecoverFrag.newInstance();
 	   }else if (position ==2){
 		return RegisteReaderFrag.newInstance();

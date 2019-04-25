@@ -14,7 +14,9 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.CONFIG_023;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
@@ -53,8 +55,11 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	initData();
 	mFragments.add(new StockLeftListenerFrag());
 	mFragments.add(new StockMiddleInforFrag());
-//	mFragments.add(new StockRightUnconfFrag());
-	mStockRdbtnRight.setVisibility(View.GONE);
+	if(UIUtils.getConfigType(mContext, CONFIG_023)){
+	   mFragments.add(new StockRightUnconfFrag());
+	}else {
+	   mStockRdbtnRight.setVisibility(View.GONE);
+	}
 	mHomeStockViewpager.setAdapter(new StockPagerAdapter(getChildFragmentManager()));
 	mHomeStockViewpager.addOnPageChangeListener(new PageChangeListener());
 	initListener();
@@ -73,16 +78,28 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	mRgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-		switch (checkedId) {
-		   case R.id.stock_rdbtn_left:
-			mHomeStockViewpager.setCurrentItem(0);
-			break;
-		   case R.id.stock_rdbtn_middle:
-			mHomeStockViewpager.setCurrentItem(1);
-			break;
-//		   case R.id.stock_rdbtn_right:
-//			mHomeStockViewpager.setCurrentItem(2);
-//			break;
+		if(UIUtils.getConfigType(mContext, CONFIG_023)){
+		   switch (checkedId) {
+			case R.id.stock_rdbtn_left:
+			   mHomeStockViewpager.setCurrentItem(0);
+			   break;
+			case R.id.stock_rdbtn_middle:
+			   mHomeStockViewpager.setCurrentItem(1);
+			   break;
+
+			case R.id.stock_rdbtn_right:
+			   mHomeStockViewpager.setCurrentItem(2);
+			   break;
+		   }
+		}else {
+		   switch (checkedId) {
+			case R.id.stock_rdbtn_left:
+			   mHomeStockViewpager.setCurrentItem(0);
+			   break;
+			case R.id.stock_rdbtn_middle:
+			   mHomeStockViewpager.setCurrentItem(1);
+			   break;
+		   }
 		}
 	   }
 	});
@@ -120,17 +137,27 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 
 	@Override
 	public void onPageSelected(int position) {
-	   switch (position) {
-		case 0:
-		   mRgGroup.check(R.id.stock_rdbtn_left);
-		   break;
-		case 1:
-		   mRgGroup.check(R.id.stock_rdbtn_middle);
-		   break;
-//		case 2:
-//		   mRgGroup.check(R.id.stock_rdbtn_right);
-//		   break;
-
+	   if(UIUtils.getConfigType(mContext, CONFIG_023)){
+		switch (position) {
+		   case 0:
+			mRgGroup.check(R.id.stock_rdbtn_left);
+			break;
+		   case 1:
+			mRgGroup.check(R.id.stock_rdbtn_middle);
+			break;
+		   case 2:
+			mRgGroup.check(R.id.stock_rdbtn_right);
+			break;
+		}
+	   }else {
+		switch (position) {
+		   case 0:
+			mRgGroup.check(R.id.stock_rdbtn_left);
+			break;
+		   case 1:
+			mRgGroup.check(R.id.stock_rdbtn_middle);
+			break;
+		}
 	   }
 	}
 
