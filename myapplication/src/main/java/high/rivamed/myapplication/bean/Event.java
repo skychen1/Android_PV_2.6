@@ -26,6 +26,15 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /*
+  快速开柜清理界面数据
+   */
+   public static class FastOutDataClear {
+      public boolean type;
+      public FastOutDataClear(boolean type){
+         this.type = type;
+      }
+   }
+   /*
    首页禁止点击按钮
     */
    public static class EventHomeEnable {

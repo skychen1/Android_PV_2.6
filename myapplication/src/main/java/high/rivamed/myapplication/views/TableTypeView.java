@@ -312,7 +312,7 @@ public class TableTypeView extends LinearLayout {
                                 } else {
                                     mOutBoxAllAdapter.getData().get(position).setSelected(true);
                                 }
-                               FastInOutBoxActivity. mInOutDto.setInInventoryVos(mOutBoxAllAdapter.getData());
+                                FastInOutBoxActivity. mInOutDto.setOutInventoryVos(mOutBoxAllAdapter.getData());
                                 mOutBoxAllAdapter.notifyDataSetChanged();
                             }
                         });

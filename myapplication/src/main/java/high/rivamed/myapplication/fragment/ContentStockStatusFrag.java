@@ -16,7 +16,7 @@ import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
-import static high.rivamed.myapplication.cont.Constants.CONFIG_023;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
@@ -55,7 +55,7 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	initData();
 	mFragments.add(new StockLeftListenerFrag());
 	mFragments.add(new StockMiddleInforFrag());
-	if(UIUtils.getConfigType(mContext, CONFIG_023)){
+	if(UIUtils.getConfigType(mContext, CONFIG_026)){
 	   mFragments.add(new StockRightUnconfFrag());
 	}else {
 	   mStockRdbtnRight.setVisibility(View.GONE);
@@ -78,7 +78,7 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	mRgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-		if(UIUtils.getConfigType(mContext, CONFIG_023)){
+		if(UIUtils.getConfigType(mContext, CONFIG_026)){
 		   switch (checkedId) {
 			case R.id.stock_rdbtn_left:
 			   mHomeStockViewpager.setCurrentItem(0);
@@ -137,7 +137,7 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 
 	@Override
 	public void onPageSelected(int position) {
-	   if(UIUtils.getConfigType(mContext, CONFIG_023)){
+	   if(UIUtils.getConfigType(mContext, CONFIG_026)){
 		switch (position) {
 		   case 0:
 			mRgGroup.check(R.id.stock_rdbtn_left);

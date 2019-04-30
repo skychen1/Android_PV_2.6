@@ -91,12 +91,12 @@ public class FastOutFragment extends SimpleFragment {
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
-   @BindView(R.id.btn_four_ly)
-   TextView mBtnFourLy;
-   @BindView(R.id.btn_four_yc)
-   TextView mBtnFourYc;
-   @BindView(R.id.btn_four_th)
-   TextView mBtnFourTh;
+//   @BindView(R.id.btn_four_ly)
+public static   TextView mBtnFourLy;
+//   @BindView(R.id.btn_four_yc)
+public static  TextView mBtnFourYc;
+//   @BindView(R.id.btn_four_th)
+public static  TextView mBtnFourTh;
    @BindView(R.id.btn_four_tb)
    TextView mBtnFourTb;
    @BindView(R.id.activity_down_btn_four_ll)
@@ -122,7 +122,18 @@ public class FastOutFragment extends SimpleFragment {
    private InventoryDto mDtoLy = new InventoryDto();
    private NoDialog.Builder mShowNoDialog;
    private NoDialog.Builder mShowNoDialog2;
+   /**
+    * 完毕后清理数据
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onClearEvent(Event.FastOutDataClear event) {
+	if (event.type&&mTypeView!=null&&mTypeView.mOutBoxAllAdapter!=null&& mTypeView.mOutBoxAllAdapter.getData()!=null){
+	   mTypeView.mOutBoxAllAdapter.getData().clear();
+	   mTypeView.mOutBoxAllAdapter.notifyDataSetChanged();
+	}
 
+   }
    /**
     * dialog操作数据
     *
@@ -169,7 +180,7 @@ public class FastOutFragment extends SimpleFragment {
 	   voList.get(i).setSelected(true);
 	}
 	if (mAllOutText != null && mInOutDto.getInInventoryVos().size() != 0) {
-		mAllOutText.setText((getExceedTime(voList,0))?R.string.fast_out_error_string:R.string.fast_out_more_string);
+	   mAllOutText.setText((getExceedTime(voList,0))?R.string.fast_out_error_string:R.string.fast_out_more_string);
 	}else {
 	   if (mInOutDto.getInInventoryVos().size() != 0){
 		mAllOutText.setText((getExceedTime(voList,0))?R.string.fast_out_error_string:R.string.fast_out_more_string);
@@ -259,6 +270,9 @@ public class FastOutFragment extends SimpleFragment {
    @Override
    public void onBindViewBefore(View view) {
 
+	mBtnFourLy=view.findViewById(R.id.btn_four_ly);
+	mBtnFourYc=view.findViewById(R.id.btn_four_yc);
+	mBtnFourTh=	view.findViewById(R.id.btn_four_th);
    }
 
    /**

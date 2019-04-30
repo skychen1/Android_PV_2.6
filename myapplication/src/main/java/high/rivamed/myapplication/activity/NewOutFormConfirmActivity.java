@@ -530,7 +530,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
 			SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
 			SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
-			setPushFormOrderDate();
 			if (sureReciveOrder.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 			   if (sureReciveOrder.getMsg().equals("") ||
@@ -546,6 +545,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			} else {
 			   ToastUtils.showShort(sureReciveOrder.getMsg());
 			}
+			new Thread(new Runnable() {
+			   @Override
+			   public void run() {
+				setPushFormOrderDate();
+			   }
+			}).start();
 		   }
 
 		   @Override
@@ -560,7 +565,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     * 需要上传的orders
     */
    private void setPushFormOrderDate() {
-	if (mPushFormOrders != null && mPushFormOrders.size() != 0) {
+	if (mPushFormOrders != null && mPushFormOrders.size() == 0) {
+	   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
+	   ordersBean.setOrderId(mPrePageDate.getOrderId());
+	   mPushFormOrders.add(ordersBean);
+	} else if (mPushFormOrders != null && mPushFormOrders.size() != 0) {
 	   for (PushFormDateBean.OrdersBean s : mPushFormOrders) {
 		if (!s.getOrderId().equals(mPrePageDate.getOrderId())) {
 		   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
@@ -568,10 +577,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   mPushFormOrders.add(ordersBean);
 		}
 	   }
-	} else if (mPushFormOrders != null && mPushFormOrders.size() == 0) {
-	   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
-	   ordersBean.setOrderId(mPrePageDate.getOrderId());
-	   mPushFormOrders.add(ordersBean);
 	}
    }
 

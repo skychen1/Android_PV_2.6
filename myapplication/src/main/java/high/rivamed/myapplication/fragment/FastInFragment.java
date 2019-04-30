@@ -123,6 +123,7 @@ public class FastInFragment extends SimpleFragment {
    private       int            mInSize;
    public        InventoryDto   mInOutDto;
    public static CountDownTimer mStarts;
+   public static boolean mStartsType =false;
    public static boolean mOnResume = false;
    public  boolean mIsClick;
    private int     mCountTwoin;
@@ -530,8 +531,6 @@ public class FastInFragment extends SimpleFragment {
 	   }
 	}
    }
-
-
 
    @Override
    public void onDestroyView() {
