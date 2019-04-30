@@ -50,6 +50,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.fragment.FastInFragment.mStartsType;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -311,32 +312,37 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
 		List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
-		String string = null;
-		if (outInventoryVos.size() == 0&&inInventoryVos.size()>0) {
-		   mFastViewpager.setCurrentItem(1);
 
-		} else {
-		   mFastViewpager.setCurrentItem(0);
-		}
-//		if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
-//		   string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
-//		   ToastUtils.showLong(string);
-//		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-//		}
-		for (int i = 0; i < outInventoryVos.size(); i++) {
-		   outInventoryVos.get(i).setSelected(true);
-		}
+		//		if (mFastInOutDto.getErrorEpcs() != null && mFastInOutDto.getErrorEpcs().size() > 0) {
+		//		   string = StringUtils.listToString(mFastInOutDto.getErrorEpcs());
+		//		   ToastUtils.showLong(string);
+		//		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
+		//		}
+
 
 		if (mFastInOutDto != null &&
 		    (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
+		   if (outInventoryVos.size() == 0&&inInventoryVos.size()>0) {
+			mFastViewpager.setCurrentItem(1);
+
+		   } else {
+			mFastViewpager.setCurrentItem(0);
+		   }
+		   for (int i = 0; i < outInventoryVos.size(); i++) {
+			outInventoryVos.get(i).setSelected(true);
+		   }
 		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
 										  outInventoryVos.size(), "moreScan"));
 		} else {
 
 		   mEthDeviceIdBack.clear();
 		   mDoorList.clear();
-		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
-										  outInventoryVos.size(), "moreScan"));
+		   //		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
+		   //										  outInventoryVos.size(), "moreScan"));
+		   EventBusUtils.post(new Event.FastOutDataClear(true));
+		   FastOutFragment.mBtnFourLy.setEnabled(false);
+		   FastOutFragment.mBtnFourTh.setEnabled(false);
+		   FastOutFragment.mBtnFourYc.setEnabled(false);
 		   ToastUtils.showShortToast("耗材操作完成，即将退回主页！");
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {
@@ -386,7 +392,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    @Override
    public void onPageSelected(int position) {
 	LogUtils.i(TAG,"onPageSelected");
-	if (position == 1 && FastInFragment.mStarts != null) {
+	if (position == 1 && mStartsType) {
 	   EventBusUtils.post(new Event.EventFastTimeStart(true));
 	}else {
 	   EventBusUtils.post(new Event.EventFastTimeStart(false));
@@ -467,13 +473,12 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	   case MotionEvent.ACTION_UP:
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("")&& mFastViewpager.getCurrentItem()==1&&FastInFragment.mTimelyLeft.isEnabled()) {
-		   FastInFragment.mStarts.cancel();
-		   FastInFragment.mStarts.start();
+		   EventBusUtils.post(new Event.EventFastTimeStart(true));
 		}
 		break;
 	   //否则其他动作计时取消
 	   default:
-		FastInFragment.mStarts.cancel();
+		EventBusUtils.post(new Event.EventFastTimeStart(false));
 		break;
 	}
 	return super.dispatchTouchEvent(ev);

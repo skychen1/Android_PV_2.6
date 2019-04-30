@@ -124,6 +124,7 @@ public class FastInFragment extends SimpleFragment {
    public        InventoryDto   mInOutDto;
    public static CountDownTimer mStarts;
    public static boolean mOnResume = false;
+   public static boolean mStartsType =false;
    public  boolean mIsClick;
    private int     mCountTwoin;
    private int     mCountMoveIn;

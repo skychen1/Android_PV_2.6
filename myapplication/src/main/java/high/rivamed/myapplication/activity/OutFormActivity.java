@@ -187,6 +187,7 @@ public class OutFormActivity extends BaseSimpleActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "findPatientOrderSheetDate   " + result);
 			OrderSheetBean orderSheetBean = mGson.fromJson(result, OrderSheetBean.class);
+			mAllOrderSheetList.addAll(orderSheetBean.getRows());
 			if (mOutFormAdapter == null) {
 			   initData();
 			} else {
