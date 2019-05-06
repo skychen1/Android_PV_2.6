@@ -105,6 +105,10 @@ public class Constants {
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN
 
+    public static final String READER_NAME = "reader_name";//reader的厂家
+    public static final String READER_NAME_RODINBELL = "RODINBELL";//reader的厂家罗丹贝尔
+    public static final String READER_NAME_COLU = "COLU";//reader的厂家鸿路
+
     public static final String ERROR_200 = "200";//请求正常
     public static final String ERROR_1010 = "1010";//系统异常
     public static final String ERROR_1001 = "1001";//刷新Token过期

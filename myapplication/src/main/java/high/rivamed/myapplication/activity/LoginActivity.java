@@ -242,7 +242,7 @@ public class LoginActivity extends SimpleActivity {
 
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_d");
+		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_c");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);

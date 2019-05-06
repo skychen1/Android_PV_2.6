@@ -9,27 +9,24 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
-import cn.rivamed.model.TagInfo;
+import cn.rivamed.Eth002Manager;
+import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistLockAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static android.widget.GridLayout.VERTICAL;
-import static cn.rivamed.DeviceManager.getInstance;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -72,7 +69,8 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	initCallBack();
+	initEth002();
+//	initCallBack();
    }
 
    @Override
@@ -98,50 +96,36 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 	});
    }
-   private void initCallBack() {
-	getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+
+   private void initEth002() {
+	Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
 	   @Override
-	   public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
-		if (deviceType == DeviceType.Eth002) {
-		   mDiviceId = deviceIndentify;
+	   public void onConnectState(String deviceId, boolean isConnect) {
+		if (!isConnect) {
+		   AppendLog("设备已断开：设备ID:   " + deviceId + "；");
 		}
 	   }
 
 	   @Override
-	   public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
-		AppendLog("设备已断开：设备ID:   " + deviceType + "   ;   ID=" + deviceIndentify);
-	   }
-
-	   @Override
-	   public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
-		AppendLog("检查门锁开关：设备ID:   " + deviceType + "   ;   ID = " + deviceId + "   ;   RET = " + code);
-	   }
-
-	   @Override
-	   public void OnIDCard(String deviceId, String idCard) {
-		AppendLog("接收到刷卡信息：设备ID:   " + deviceId + "   ;   ID = " + idCard);
-	   }
-
-	   @Override
-	   public void OnFingerFea(String deviceId, String fingerFea) {
+	   public void onFingerFea(String deviceId, String fingerFea) {
 		AppendLog("接收到指纹采集信息：设备ID:   " + deviceId + "   ;   FingerData = " + fingerFea);
 		fingerData = fingerFea;
 	   }
 
 	   @Override
-	   public void OnFingerRegExcuted(String deviceId, boolean success) {
-	      String type ;
-	      if(success){
-	         type ="成功";
+	   public void onFingerRegExcuted(String deviceId, boolean success) {
+		String type ;
+		if(success){
+		   type ="成功";
 		}else {
-	         type="失败";
+		   type="失败";
 		}
 
 		AppendLog("指纹注册命令已执行：设备ID:   " + deviceId + "   ;   操作状态 = " + type);
 	   }
 
 	   @Override
-	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+	   public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
 		String type ;
 		if(success){
 		   type ="成功";
@@ -155,7 +139,12 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 
 	   @Override
-	   public void OnDoorOpened(String deviceIndentify, boolean success) {
+	   public void onIDCard(String deviceId, String idCard) {
+		AppendLog("接收到刷卡信息：设备ID:   " + deviceId + "   ;   ID = " + idCard);
+	   }
+
+	   @Override
+	   public void onDoorOpened(String deviceIndentify, boolean success) {
 		String type ;
 		if(success){
 		   type ="成功";
@@ -166,7 +155,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 
 	   @Override
-	   public void OnDoorClosed(String deviceIndentify, boolean success) {
+	   public void onDoorClosed(String deviceIndentify, boolean success) {
 		String type ;
 		if(success){
 		   type ="成功";
@@ -177,7 +166,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 
 	   @Override
-	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
+	   public void onDoorCheckedState(String deviceIndentify, boolean opened) {
 		String type ;
 		if(opened){
 		   type ="门锁打开状态";
@@ -186,48 +175,9 @@ public class RegisteLockFrag extends SimpleFragment {
 		}
 		AppendLog("门锁状态检查：设备ID:   " + deviceIndentify + "   ;   门锁状态 = " + type);
 	   }
-
-	   @Override
-	   public void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
-	   }
-
-	   @Override
-	   public void OnUhfScanComplete(boolean success, String deviceId) {
-
-	   }
-
-	   /**
-	    * 获取UHF Reader 的天线状态
-	    * <p>
-	    * 仅标识已使能的天线 （开启）
-	    * <p>
-	    * 无法获取 天线是否连接；
-	    * <p>
-	    * 对部分reader,连接即意味着使能
-	    * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
-	    *
-	    * @param deviceId
-	    * @param success
-	    * @param ants
-	    */
-	   @Override
-	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-	   }
-
-	   @Override
-	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-	   }
-
-	   @Override
-	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-
-	   }
 	});
-
    }
+
    @OnClick({R.id.frag_start})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
@@ -236,16 +186,13 @@ public class RegisteLockFrag extends SimpleFragment {
 		   mDate.clear();
 		   mTxtLog.setText("");
 		}
-
-		List<DeviceManager.DeviceInfo> deviceInfos = getInstance().QueryConnectedDevice();
+		List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
 		String s = "";
-		for (DeviceManager.DeviceInfo d : deviceInfos) {
-		   if (d.getDeviceType() == DeviceType.Eth002) {
-			mDiviceId = d.getIdentifition();
+		for (DeviceInfo d : deviceInfos) {
+			mDiviceId = d.getIdentification();
 			mDate.add(mDiviceId);
-			s += "\t  设备类型 \t" + d.getDeviceType() + ";\t\t设备ID \t" + d.getIdentifition() +
+			s += "\t  设备类型 \t" + d.getProduct() + ";\t\t设备ID \t" + d.getIdentification() +
 			     "\n";
-		   }
 		}
 
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无连接" : ("已连接设备如下：\n" + s));

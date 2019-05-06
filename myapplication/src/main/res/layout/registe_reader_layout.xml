@@ -16,12 +16,46 @@
 		android:focusableInTouchMode="true"
 		android:orientation="vertical"
 		android:paddingTop="@dimen/x20">
-
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/y15"
+			android:orientation="horizontal"
+			android:layout_marginTop="@dimen/y8">
+			<RadioGroup
+				android:id="@+id/radioproup"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginLeft="@dimen/x16"
+				android:layout_marginRight="@dimen/x14">
+				<RadioButton
+					android:id="@+id/reader_left"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="鸿路Reader"
+					android:textSize="@dimen/textsize_16"/>
+				<RadioButton
+					android:id="@+id/reader_right"
+					android:layout_marginLeft="@dimen/x14"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="罗丹贝尔Reader"
+					android:textSize="@dimen/textsize_16"/>
+			</RadioGroup>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="@dimen/textsize_18"
+				android:textColor="@color/color_red"
+				android:layout_gravity="center_vertical"
+				android:text="【 首次注册激活或SN恢复后，请先选定本主附柜Reader的品牌再进行检测 】"/>
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/y20"
 			android:orientation="horizontal">
+
 
 			<TextView
 				android:id="@+id/frag_start"
@@ -34,7 +68,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="@dimen/x30"
-				android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描时长默认3000 ms"
+				android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描完成默认3000 ms后停止扫描"
 				android:textSize="@dimen/textsize_16"/>
 		</LinearLayout>
 
