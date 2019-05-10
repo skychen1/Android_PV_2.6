@@ -48,6 +48,7 @@ import static high.rivamed.myapplication.activity.FastInOutBoxActivity.mFastView
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -302,6 +303,7 @@ public class FastInFragment extends SimpleFragment {
 
 	InventoryDto dto = new InventoryDto();
 	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	dto.setInventoryVos(mInOutDto.getInInventoryVos());
 	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 

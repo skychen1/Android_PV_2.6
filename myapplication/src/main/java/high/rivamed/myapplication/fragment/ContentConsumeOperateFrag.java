@@ -649,6 +649,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
 		EventBusUtils.post(new Event.EventHomeEnable(false));
+		if (mFastInOutDto.isOperateSuccess()){
 		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
 		List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
 		String string = null;
@@ -673,7 +674,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   }
 		}
 	   }
-
+	   }
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
@@ -723,9 +724,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		Log.i(TAG, "result    " + result);
 		EventBusUtils.post(new Event.EventHomeEnable(false));
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
-		//		if (cstInventoryDto.isOperateSuccess()){
+				if (cstInventoryDto.isOperateSuccess()){
 		setEPCDateAndIntent(cstInventoryDto, true);
-		//		}
+				}
 	   }
 
 	   @Override

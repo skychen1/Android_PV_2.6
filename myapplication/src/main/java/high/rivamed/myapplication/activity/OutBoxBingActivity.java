@@ -741,6 +741,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mInventoryDto.setPatientName(mPatient);
 	mInventoryDto.setPatientId(mPatientId);
 	mInventoryDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	mInventoryDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mInventoryDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	String toJson = mGson.toJson(mInventoryDto);
 	LogUtils.i(TAG, "toJson  " + toJson);

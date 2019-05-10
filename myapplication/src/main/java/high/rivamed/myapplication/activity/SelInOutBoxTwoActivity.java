@@ -672,6 +672,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void setDate(int mIntentType) {
 	InventoryDto dto = new InventoryDto();
 	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	dto.setInventoryVos(mInventoryVos);
 	dto.setOperation(mInventoryDto.getOperation());
 	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
@@ -885,6 +886,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(9);
 	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mDtoLy.setToSthId(event.context);
 	List<InventoryVo> inventoryVos = new ArrayList<>();
 	if (mTCstInventoryTwoDto == null) {
@@ -1002,6 +1004,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void putThDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mDtoLy.setOperation(8);
 	mDtoLy.setRemark(event.context);
 	List<InventoryVo> inventoryVos = new ArrayList<>();
@@ -1050,6 +1053,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void putDbDates(Event.outBoxEvent event) {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mDtoLy.setOperation(11);
 	mDtoLy.setSthId(event.context);
 	List<InventoryVo> inventoryVos = new ArrayList<>();

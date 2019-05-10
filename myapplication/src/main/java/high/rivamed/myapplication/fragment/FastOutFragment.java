@@ -285,6 +285,7 @@ public class FastOutFragment extends SimpleFragment {
 	String mTCstInventoryDtoJsons;
 	mDtoLy.setOperation(9);
 	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setToSthId(event.context);
 	List<InventoryVo> inventoryVos = new ArrayList<>();
 	for (int i = 0; i < mInOutDto.getOutInventoryVos().size(); i++) {
@@ -432,6 +433,7 @@ public class FastOutFragment extends SimpleFragment {
    private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
 	mInOutDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mInOutDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mTCstInventoryDtoJson = setNewDate(mInOutDto);
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);
@@ -535,6 +537,7 @@ public class FastOutFragment extends SimpleFragment {
 	   }
 	}
 	mDtoLy.setInventoryVos(inventoryVos);
+	mDtoLy.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mDtoLy.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mTCstInventoryDtoJsons = mGson.toJson(mDtoLy);
 

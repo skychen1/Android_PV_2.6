@@ -533,6 +533,8 @@ public class NetRequest {
 	Map<String, String> map = new HashMap<>();
 	map.put("patientId", patientId);
 	map.put("status", status + "");
+	map.put("thingId", sThingCode);
+
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
