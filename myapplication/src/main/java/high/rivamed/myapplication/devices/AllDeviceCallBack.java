@@ -215,7 +215,7 @@ public class AllDeviceCallBack {
 	   public void OnUhfScanComplete(boolean success, String deviceId) {
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
 		} else {
-		   EventBusUtils.postSticky(new Event.EventLoading(false));
+//		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
 		LogUtils.i(TAG, "RFID扫描结束：" + deviceId + ":::success=" + success);
 

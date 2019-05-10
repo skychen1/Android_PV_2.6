@@ -895,6 +895,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		LogUtils.i(TAG, "result    " + result);
 		if (mTCstInventoryTwoDto != null) {
 		   mTCstInventoryTwoDto = null;
@@ -905,6 +906,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
 		   setUnNetDate(toJson);
 		}

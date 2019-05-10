@@ -646,6 +646,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	NetRequest.getInstance().putOutAndInEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
 		EventBusUtils.post(new Event.EventHomeEnable(false));
@@ -678,6 +679,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		EventBusUtils.post(new Event.EventHomeEnable(false));
 	   }
 	   //	   }
@@ -721,6 +723,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	NetRequest.getInstance().putEPCDate(toJson, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		Log.i(TAG, "result    " + result);
 		EventBusUtils.post(new Event.EventHomeEnable(false));
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
@@ -731,6 +734,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	   @Override
 	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		EventBusUtils.post(new Event.EventHomeEnable(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 		    mRbKey == 3) {
@@ -1303,6 +1307,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	super.onDestroyView();
 	mOnStart = false;
 	mEthDeviceIdBack2.clear();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	//	mEthDeviceIdBack.clear();
    }
 }

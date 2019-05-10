@@ -3,7 +3,6 @@ package high.rivamed.myapplication.views;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.ImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
-
-import static high.rivamed.myapplication.base.App.READER_TIME;
 
 /**
  * 项目名称:    Rivamed_High_2.6
@@ -60,13 +57,13 @@ public class LoadingDialog extends Dialog {
 	   mAnimationDrawable = (AnimationDrawable) mLoading.getBackground();
 	   mAnimationDrawable.start();
 	   EventBusUtils.post(new Event.EventHomeEnable(true));
-	   new Handler().postDelayed(new Runnable() {
-		@Override
-		public void run() {
-		   mAnimationDrawable.stop();
-		   mDialog.dismiss();
-		}
-	   }, READER_TIME);
+//	   new Handler().postDelayed(new Runnable() {
+//		@Override
+//		public void run() {
+//		   mAnimationDrawable.stop();
+//		   mDialog.dismiss();
+//		}
+//	   }, READER_TIME);
 	   return mDialog;
 	}
 

@@ -308,6 +308,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	NetRequest.getInstance().putOutAndInEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
@@ -352,6 +353,11 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 			}
 		   }, FINISH_TIME);
 		}
+	   }
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
    }

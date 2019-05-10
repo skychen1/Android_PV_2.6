@@ -477,6 +477,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		Log.i(TAG, "result    " + result);
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		String string = null;
@@ -572,7 +573,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   }
 	   @Override
 	   public void onError(String result) {
-
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
    }

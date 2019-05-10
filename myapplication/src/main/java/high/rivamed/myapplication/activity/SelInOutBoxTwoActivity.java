@@ -757,6 +757,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
 		setDateEpc(mTCstInventoryTwoDto, true);
@@ -764,6 +765,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 		    mDtoOperation == 3) {
 		   setUnNetDate(toJson);
