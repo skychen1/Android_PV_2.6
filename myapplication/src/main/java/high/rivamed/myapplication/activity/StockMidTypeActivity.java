@@ -80,6 +80,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
 	loadStockDetails();
    }
 

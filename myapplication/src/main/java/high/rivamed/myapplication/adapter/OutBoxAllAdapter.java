@@ -3,7 +3,6 @@ package high.rivamed.myapplication.adapter;
 import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -77,7 +76,7 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.bg_f));
 	   mSeven_six.setText("已过期");
 	}
-	mMCheckBox.setOnCheckedChangeListener(null);
+//	mMCheckBox.setOnCheckedChangeListener(null);
 
 	mMCheckBox.setChecked(item.isSelected());
 
@@ -98,22 +97,22 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 ////		notifyDataSetChanged();
 //	   }
 //	});
-	mMCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-		int position = helper.getAdapterPosition();
-		if (item.isSelected()){
-		   item.setSelected(false);
-		}else {
-		   item.setSelected(true);
-		}
-//		BaseTimelyActivity.mOutDto.setInventoryVos(mInventoryVos);
-//		LogUtils.i("Out", " position    " + position + "     mDataVo.get(position).isSelected()   " + mInventoryVos.get(position).isSelected());
-		notifyDataSetChanged();
-//		mMCheckBox.setChecked(mDataVo.get(position).isSelected());
-		//设置新的Item勾选状态
+//	mMCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//	   @Override
+//	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//		int position = helper.getAdapterPosition();
+//		if (item.isSelected()){
+//		   item.setSelected(false);
+//		}else {
+//		   item.setSelected(true);
+//		}
+////		BaseTimelyActivity.mOutDto.setInventoryVos(mInventoryVos);
+////		LogUtils.i("Out", " position    " + position + "     mDataVo.get(position).isSelected()   " + mInventoryVos.get(position).isSelected());
 //		notifyDataSetChanged();
-	   }
-	});
+////		mMCheckBox.setChecked(mDataVo.get(position).isSelected());
+//		//设置新的Item勾选状态
+////		notifyDataSetChanged();
+//	   }
+//	});
    }
 }

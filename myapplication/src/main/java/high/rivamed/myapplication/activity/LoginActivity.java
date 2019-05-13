@@ -42,7 +42,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
@@ -81,7 +80,6 @@ import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
-import static high.rivamed.myapplication.base.App.mServiceManager;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
@@ -598,11 +596,11 @@ public class LoginActivity extends SimpleActivity {
 	try {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
-		if (mServiceManager != null) {
-		   mServiceManager.stopService();
-		   mServiceManager = null;
-		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
-		}
+//		if (mServiceManager != null) {
+//		   mServiceManager.stopService();
+//		   mServiceManager = null;
+//		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
+//		}
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
 					loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
@@ -620,7 +618,7 @@ public class LoginActivity extends SimpleActivity {
 					loginResultBean.getAccessToken().getRefreshToken());
 		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 
-		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());
+//		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());
 
 		getAuthorityMenu(activity, mGson);
 

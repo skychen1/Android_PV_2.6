@@ -149,7 +149,9 @@ public class PendingTaskFrag extends SimpleFragment {
                     }
                     if (emergencyBean.getMessages().size()==0){
                         LogUtils.i(TAG,"mMessagesList.size()   "+mMessagesList.size());
-                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size() + ""));
+                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size()));
+                    }else {
+                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size()));
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();

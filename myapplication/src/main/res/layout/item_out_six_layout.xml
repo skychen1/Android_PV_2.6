@@ -17,6 +17,7 @@
 			android:id="@+id/seven_one"
 			android:layout_height="@dimen/x35"
 			android:gravity="center_horizontal"
+			android:enabled="false"
 			android:button="@drawable/checkbox_dialog_sel"
 			android:layout_width="@dimen/x35"
 			/>

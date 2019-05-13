@@ -80,7 +80,16 @@ public class FindInPatientBean {
         private String tempPatientId          = "";
         private String hisPatientId          = "";
         private String deptType          = "";
+        private String  operatingRoomNo;//手术间ID
         private boolean isSelected;
+
+        public String getOperatingRoomNo() {
+            return operatingRoomNo;
+        }
+
+        public void setOperatingRoomNo(String operatingRoomNo) {
+            this.operatingRoomNo = operatingRoomNo;
+        }
 
         public String getDeptType() {
             return deptType;

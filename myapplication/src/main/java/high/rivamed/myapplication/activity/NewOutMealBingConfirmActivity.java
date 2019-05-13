@@ -229,6 +229,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
 		.getSerializable("DATA");

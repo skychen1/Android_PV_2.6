@@ -68,15 +68,7 @@
 			/>
 		<View
 			style="@style/view_line_style"/>
-		<TextView
-			android:id="@+id/item_comparison_finger"
-			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x20"
-			android:layout_marginLeft="@dimen/x20"
-			android:text="指纹对比"
-			/>
-		<View
-			style="@style/view_line_style"/>
+
 
 	</LinearLayout>
 

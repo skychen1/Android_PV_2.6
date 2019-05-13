@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+
+import org.androidpn.utils.XmppEvent;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
+import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -365,5 +369,32 @@ public class UIUtils {
 		   View.SYSTEM_UI_FLAG_IMMERSIVE;
 	   view.setSystemUiVisibility(uiOptions);
 	}
+   }
+   /**
+    * 获取代办任务的数量
+    */
+   public static void setMessagersV(){
+	new Thread(new Runnable() {
+	   @Override
+	   public void run() {
+		Gson mGson = new Gson();
+		NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			try {
+			   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
+			   int size = emergencyBean.getMessages().size();
+			   if (emergencyBean.getMessages().size()==0){
+				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
+			   }else {
+				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
+			   }
+			} catch (JsonSyntaxException e) {
+
+			}
+		   }
+		});
+	   }
+	}).start();
    }
 }

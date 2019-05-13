@@ -308,7 +308,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 	NetRequest.getInstance().putOutAndInEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
@@ -332,6 +332,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   for (int i = 0; i < outInventoryVos.size(); i++) {
 			outInventoryVos.get(i).setSelected(true);
 		   }
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
 										  outInventoryVos.size(), "moreScan"));
 		} else {
@@ -344,6 +345,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   FastOutFragment.mBtnFourLy.setEnabled(false);
 		   FastOutFragment.mBtnFourTh.setEnabled(false);
 		   FastOutFragment.mBtnFourYc.setEnabled(false);
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		   ToastUtils.showShortToast("耗材操作完成，即将退回主页！");
 		   new Handler().postDelayed(new Runnable() {
 			public void run() {

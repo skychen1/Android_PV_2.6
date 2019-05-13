@@ -23,9 +23,9 @@ public class XmppEvent {
     * 页面顶部的连接状态改变
     */
    public static class EventPushMessageNum {
-	public String num;
+	public int num;
 
-	public EventPushMessageNum(String num) {
+	public EventPushMessageNum(int num) {
 	   this.num = num;
 	}
    }

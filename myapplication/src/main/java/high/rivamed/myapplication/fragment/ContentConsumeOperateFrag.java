@@ -193,8 +193,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.EventHomeEnable event) {
-      Log.i(TAG,"EventHomeEnable  "+mPause);
-      Log.i(TAG,"event.type  "+event.type);
+	Log.i(TAG, "EventHomeEnable  " + mPause);
+	Log.i(TAG, "event.type  " + event.type);
 	if (!mPause) {
 	   if (event.type) {
 		mBaseTabOutLogin.setEnabled(false);
@@ -280,14 +280,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "epc  " + event.deviceId + "   " + event.epcs.size());
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+//	if (mLoading != null) {
+//	   mLoading.mAnimationDrawable.stop();
+//	   mLoading.mDialog.dismiss();
+//	   mLoading = null;
+//	}
 	if (mRbKey == -1) {
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		   .find(BoxIdBean.class);
@@ -358,7 +358,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		putOutAndInEPCDates(mEPCDatess);
 	   }
 	} else {
-	   if (mEthDeviceIdBack3!=null){
+	   if (mEthDeviceIdBack3 != null) {
 		mEthDeviceIdBack3.clear();
 	   }
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
@@ -437,20 +437,18 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mEthDeviceIdBack3.clear();
 	   mEPCDatess.clear();
 	   mEPCDate.clear();
-//	   	   initData();
+	   //	   	   initData();
 	} else {
 	   //            mPause = true;
 	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
 	}
    }
 
-
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onToast(Event.EventToast event) {
 	mEthDeviceIdBack.clear();
 	Toast.makeText(mContext, event.mString, Toast.LENGTH_SHORT).show();
    }
-
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActString(Event.EventAct event) {
@@ -484,6 +482,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
 	mPause = false;
 	EventBusUtils.register(this);
 	if (mLoading != null) {
@@ -646,36 +645,44 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	NetRequest.getInstance().putOutAndInEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 		LogUtils.i(TAG, "result    " + result);
 		mFastInOutDto = mGson.fromJson(result, InventoryDto.class);
-		EventBusUtils.post(new Event.EventHomeEnable(false));
-		if (mFastInOutDto.isOperateSuccess()){
-		List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
-		List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
-		String string = null;
 
+		if (mFastInOutDto.isOperateSuccess()) {
+		   List<InventoryVo> inInventoryVos = mFastInOutDto.getInInventoryVos();//入柜的数据
+		   List<InventoryVo> outInventoryVos = mFastInOutDto.getOutInventoryVos();//出柜的数据
+		   String string = null;
 
-		for (int i = 0; i < outInventoryVos.size(); i++) {
-		   outInventoryVos.get(i).setSelected(true);
-		}
+		   for (int i = 0; i < outInventoryVos.size(); i++) {
+			outInventoryVos.get(i).setSelected(true);
+		   }
 
-		if (mFastInOutDto != null &&
-		    (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
-		   EventBusUtils.postSticky(new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
-										  outInventoryVos.size()));
-		   mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
-		} else {
-		   mEthDeviceIdBack2.clear();
-		   //		   mEthDeviceIdBack.clear();
-		   ToastUtils.showShortToast("未扫描到操作耗材");
-		   if (mFastInOutDto.getErrorEpcs() == null ||
-			 mFastInOutDto.getErrorEpcs().size() == 0) {
-			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   if (mFastInOutDto != null &&
+			 (inInventoryVos.size() != 0 || outInventoryVos.size() != 0)) {
+			EventBusUtils.postSticky(
+				new Event.EventOutDto(mFastInOutDto, inInventoryVos.size(),
+							    outInventoryVos.size()));
+//			EventBusUtils.postSticky(new Event.EventLoading(false));
+//			EventBusUtils.post(new Event.EventHomeEnable(false));
+			mContext.startActivity(new Intent(mContext, FastInOutBoxActivity.class));
+		   } else {
+			mEthDeviceIdBack2.clear();
+			//		   mEthDeviceIdBack.clear();
+//			EventBusUtils.postSticky(new Event.EventLoading(false));
+//			EventBusUtils.post(new Event.EventHomeEnable(false));
+			ToastUtils.showShortToast("未扫描到操作耗材");
+			if (mFastInOutDto.getErrorEpcs() == null ||
+			    mFastInOutDto.getErrorEpcs().size() == 0) {
+			   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+			}
 		   }
 		}
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   EventBusUtils.post(new Event.EventHomeEnable(false));
+
 	   }
-	   }
+
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
@@ -715,27 +722,29 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     * @param toJson
     */
    public void putEPCDates(String toJson) {
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+//	if (mLoading != null) {
+//	   mLoading.mAnimationDrawable.stop();
+//	   mLoading.mDialog.dismiss();
+//	   mLoading = null;
+//	}
 	NetRequest.getInstance().putEPCDate(toJson, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 		Log.i(TAG, "result    " + result);
-		EventBusUtils.post(new Event.EventHomeEnable(false));
+
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
-				if (cstInventoryDto.isOperateSuccess()){
-		setEPCDateAndIntent(cstInventoryDto, true);
-				}
+		if (cstInventoryDto.isOperateSuccess()) {
+		   setEPCDateAndIntent(cstInventoryDto, true);
+		}
+		EventBusUtils.postSticky(new Event.EventLoading(false));
+		EventBusUtils.post(new Event.EventHomeEnable(false));
+
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
-		EventBusUtils.post(new Event.EventHomeEnable(false));
+
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 		    mRbKey == 3) {
 		   List<InventoryVo> mInVo = new ArrayList<>();
@@ -773,6 +782,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   inventoryDto.setInventoryVos(mInVo);
 		   setEPCDateAndIntent(inventoryDto, false);
 		}
+		EventBusUtils.postSticky(new Event.EventLoading(false));
+		EventBusUtils.post(new Event.EventHomeEnable(false));
 	   }
 	});
    }
@@ -802,11 +813,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 		cstInventoryDto.setOperation(mRbKey);
 		cstInventoryDto.setBindType("afterBind");
+
+//		EventBusUtils.postSticky(new Event.EventLoading(false));
+//		EventBusUtils.post(new Event.EventHomeEnable(false));
+
 		mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 		EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto));
 	   } else {
 		mEthDeviceIdBack2.clear();
 		//			mEthDeviceIdBack.clear();
+//		EventBusUtils.postSticky(new Event.EventLoading(false));
+//		EventBusUtils.post(new Event.EventHomeEnable(false));
 		ToastUtils.showShortToast("未扫描到操作耗材");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		if (mBuilder != null) {
@@ -823,12 +840,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		}
 		//			mEthDeviceIdBack.clear();
 		mEthDeviceIdBack2.clear();
+//		EventBusUtils.postSticky(new Event.EventLoading(false));
+//		EventBusUtils.post(new Event.EventHomeEnable(false));
 		ToastUtils.showShortToast("未扫描到操作耗材");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 	   } else {
 		LogUtils.i(TAG, "我跳转    " + cstInventoryDto.getType());
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
-
+//		EventBusUtils.postSticky(new Event.EventLoading(false));
+//		EventBusUtils.post(new Event.EventHomeEnable(false));
 		if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
 		    mRbKey == 7 || mRbKey == 8) {
 		   Intent intent2 = new Intent(mContext, SelInOutBoxTwoActivity.class);
@@ -973,7 +993,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mBaseTabBtnLeft.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		Log.i(TAG,"XFDFDFDFDFD");
+		Log.i(TAG, "XFDFDFDFDFD");
 	   }
 	});
    }
@@ -1143,7 +1163,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void goToFirstBindAC(int position, String gonetype) {
 	//获取需要绑定的患者
-	NetRequest.getInstance().findSchedulesDate("","", mAllPage, mRows, this, new BaseResult() {
+	NetRequest.getInstance().findSchedulesDate("", "", mAllPage, mRows, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
@@ -1174,11 +1194,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void onPause() {
 	mPause = true;
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+//	if (mLoading != null) {
+//	   mLoading.mAnimationDrawable.stop();
+//	   mLoading.mDialog.dismiss();
+//	   mLoading = null;
+//	}
 	//	mEthDeviceIdBack.clear();
 	mEthDeviceIdBack2.clear();
 	mEPCDate.clear();
@@ -1191,11 +1211,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
 	   R.id.content_rb_ly, R.id.content_rb_rk, R.id.content_rb_yc, R.id.content_rb_tb,
 	   R.id.content_rb_yr, R.id.content_rb_tuihui, R.id.content_rb_tuihuo,
-	   R.id.fastopen_title_guanlian,R.id.base_tab_robot})
+	   R.id.fastopen_title_guanlian, R.id.base_tab_robot})
    public void onViewClicked(View view) {
-      Log.i(TAG,"onViewClicked   "+mIsClick);
+	Log.i(TAG, "onViewClicked   " + mIsClick);
 	if (!mIsClick) {
-	   Log.i(TAG,"view   "+view.getId());
+	   Log.i(TAG, "view   " + view.getId());
 	   switch (view.getId()) {
 		case R.id.base_tab_icon_right:
 		case R.id.base_tab_tv_name:

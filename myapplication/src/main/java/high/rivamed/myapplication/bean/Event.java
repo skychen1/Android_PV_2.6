@@ -377,7 +377,7 @@ public class Event {
             this.mMedicalId = medicalId;
         }
 
-        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String mMedicalId,String mSurgeryId,String mHisPatientId) {
+        public EventCheckbox(String name, String id, String mTempPatientId, String operationScheduleId, String type, int position, List<BoxSizeBean.DevicesBean> mTbaseDevices,String mMedicalId,String mSurgeryId,String mHisPatientId,String mOperatingRoomNo) {
             this.mString = name;
             this.id = id;
             this.mTempPatientId = mTempPatientId;
@@ -388,6 +388,7 @@ public class Event {
             this.mMedicalId = mMedicalId;
             this.mSurgeryId = mSurgeryId;
             this.mHisPatientId = mHisPatientId;
+            this.operatingRoomNo = mOperatingRoomNo;
         }
     }
 

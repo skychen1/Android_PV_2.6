@@ -106,13 +106,17 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
 
         LogUtils.i("Notifier", "    "+event.num);
-                if (Integer.parseInt(event.num) > 0) {
-                    LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(true)  ");
-                    mTitleMsg=true;
-                } else {
-                    LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(false)  ");
-                    mTitleMsg=false;
-                }
+        if (event.num > 0) {
+            mTitleMsg = true;
+            if (mBaseTabBtnMsg != null) {
+                mBaseTabBtnMsg.setActivated(true);
+            }
+        } else {
+            mTitleMsg = false;
+            if (mBaseTabBtnMsg != null) {
+                mBaseTabBtnMsg.setActivated(false);
+            }
+        }
     }
 
     @Override

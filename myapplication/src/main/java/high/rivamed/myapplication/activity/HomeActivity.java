@@ -123,7 +123,7 @@ public class HomeActivity extends SimpleActivity {
 	setMenu();
 	initData();
 	initListener();
-	initPushService();
+//	initPushService();
 //	initMessageIcon();
    }
 

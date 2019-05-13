@@ -740,6 +740,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mInventoryDto.setOperationScheduleId(mOperationScheduleId);
 	mInventoryDto.setPatientName(mPatient);
 	mInventoryDto.setPatientId(mPatientId);
+	mInventoryDto.setOperatingRoomNo(mOperatingRoomNo);
 	mInventoryDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mInventoryDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	mInventoryDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
@@ -895,7 +896,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 		LogUtils.i(TAG, "result    " + result);
 		if (mTCstInventoryTwoDto != null) {
 		   mTCstInventoryTwoDto = null;
@@ -906,7 +907,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onError(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
 		   setUnNetDate(toJson);
 		}
@@ -1056,6 +1056,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
 	   }
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
 	   Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
 	   mTimelyOpenDoorRight.setEnabled(false);
 	   mTimelyStartBtnRight.setEnabled(false);
@@ -1066,6 +1067,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   }, FINISH_TIME);
 	} else {
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
 	   mTimelyOpenDoorRight.setEnabled(true);
 	   mTimelyStartBtnRight.setEnabled(true);
 	}

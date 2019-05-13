@@ -83,6 +83,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
+
 	mSettingPassLL.setVisibility(View.GONE);//隐藏底部紧急登录修改密码
 	mSettingIcCardBind = findViewById(R.id.setting_ic_card_bind);
 	mSettingIcCardEdit = findViewById(R.id.setting_ic_card_edit);

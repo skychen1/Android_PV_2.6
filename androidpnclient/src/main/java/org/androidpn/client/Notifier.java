@@ -22,9 +22,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
-import org.androidpn.utils.EventBusUtils;
-import org.androidpn.utils.XmppEvent;
-
 import java.util.Random;
 
 /**
@@ -64,7 +61,7 @@ public class Notifier {
         Log.e(LOGTAG, "notificationMessage=" + message);
         Log.e(LOGTAG, "notificationUri=" + uri);
 
-        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(message));
+//        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(message));
         //注释掉home界面显示提示和跳转Activity
         //        if (isNotificationEnabled()) {
         //            // Show the toast

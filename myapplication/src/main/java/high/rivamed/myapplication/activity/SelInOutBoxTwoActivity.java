@@ -378,6 +378,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
@@ -757,7 +758,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
 		setDateEpc(mTCstInventoryTwoDto, true);
@@ -765,7 +766,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onError(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
 		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 		    mDtoOperation == 3) {
 		   setUnNetDate(toJson);
@@ -862,6 +862,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   mStarts.cancel();
 		   mTimelyRight.setText("确认并退出登录");
 		}
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
 		mTimelyOpenDoor.setEnabled(false);
 		mTimelyStartBtn.setEnabled(false);
@@ -872,6 +873,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		}, FINISH_TIME);
 	   } else {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 		mTimelyOpenDoor.setEnabled(true);
 		mTimelyStartBtn.setEnabled(true);
 	   }

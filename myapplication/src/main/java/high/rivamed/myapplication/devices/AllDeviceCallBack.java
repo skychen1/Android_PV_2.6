@@ -267,6 +267,8 @@ public class AllDeviceCallBack {
 			   LogUtils.i(TAG, "走了");
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 			   mEthDeviceIdBack.clear();
+			   mEthDeviceIdBack3.clear();
+			   mEthDeviceIdBack2.clear();
 			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
 			} else {
 			   startScan(deviceIndentify);

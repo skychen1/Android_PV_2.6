@@ -114,6 +114,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String  mGoneType  = "";
    private String mOperationScheduleId;
    private String mMedicalId;
+   private String mOperatingRoomNo;
    private String mSurgeryId;
    private String mHisPatientId;
    private String mTempPatientId;
@@ -241,6 +242,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   .getTempPatientId();
 		   mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getMedicalId();
+		   mOperatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			   .getOperatingRoomNo();
 		   mHisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			   .getHisPatientId();
 		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -257,7 +260,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
 												 mOperationScheduleId,
 												 mType, mPosition,
-												 mTemPTbaseDevices,mMedicalId,null,null));
+												 mTemPTbaseDevices,mMedicalId,null,null,mOperatingRoomNo));
 			   } else {
 				LogUtils.i(TAG, "mPatientBean2 ");
 				String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
@@ -281,7 +284,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			} else {
 			   EventBusUtils.postSticky(
 				   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
-								   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
+								   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
 			}
 			finish();
 		   } else {
@@ -458,6 +461,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
 		mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			.getOperationScheduleId();
+		mOperatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+			.getOperatingRoomNo();
 		mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
 			.getMedicalId();
 		mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
@@ -468,6 +473,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   inventoryDto.setPatientId(mId);
 	   inventoryDto.setOperationScheduleId(mOperationScheduleId);
 	   inventoryDto.setMedicalId(mMedicalId);
+	   inventoryDto.setOperatingRoomNo(mOperatingRoomNo);
 	   inventoryDto.setSurgeryId(mSurgeryId);
 	   inventoryDto.setHisPatientId(mHisPatientId);
 	}
@@ -477,7 +483,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
 		Log.i(TAG, "result    " + result);
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		String string = null;
@@ -563,9 +568,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   if (cstInventoryDto.getInventoryVos() != null &&
 			 cstInventoryDto.getInventoryVos().size() != 0) {
 			EventBusUtils.post(new Event.EventButton(true, true));
+			EventBusUtils.postSticky(new Event.EventLoading(false));
+
 			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
 			finish();
 		   } else {
+			EventBusUtils.postSticky(new Event.EventLoading(false));
+
 			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
 		   }
 		}
@@ -767,6 +776,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
+				data.setOperatingRoomNo(bean.getRows().get(i).getOperatingRoomNo());
 				if (bean.getRows().get(i).getSurgeryId()!=null){
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				}
@@ -777,6 +787,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   }
 			   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
 			}else {
+			   setTemporaryBing("2");
 			   if (mAllPage==1&&mTypeView!=null&&mTypeView.mTempPatientAdapter!=null){
 				mTypeView.mTempPatientAdapter.getData().clear();
 				mTypeView.mTempPatientAdapter.notifyDataSetChanged();
