@@ -16,6 +16,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
+import high.rivamed.myapplication.fragment.ContentExceptionDealFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
@@ -34,6 +35,7 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
+import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_YCCL;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -68,13 +70,16 @@ public class HomeActivity extends SimpleActivity {
    RadioButton mContentStockStatus;
    @BindView(R.id.content_timely_check)
    RadioButton mContentTimelyCheck;
-   private SupportFragment[] mFragments = new SupportFragment[5];
+   @BindView(R.id.content_exception_deal)
+   RadioButton mContentExceptionDeal;
+   private SupportFragment[] mFragments = new SupportFragment[6];
 
    public static final int CONSUME = 0;
    public static final int RUNWATE = 1;
    public static final int STOCK   = 2;
    public static final int CHECK   = 3;
    public static final int SYJL    = 4;
+   public static final int YCCL    = 5;
    private int     LastId;
 
    /**
@@ -156,6 +161,11 @@ public class HomeActivity extends SimpleActivity {
 	}else {
 	   mContentSyjl.setVisibility(View.GONE);
 	}
+//	if (UIUtils.getMenuLeftType(this, LEFT_MENU_YCCL)) {//异常处理
+//		mContentExceptionDeal.setVisibility(View.VISIBLE);
+//	} else {
+//		mContentExceptionDeal.setVisibility(View.GONE);
+//	}
    }
 
 
@@ -198,10 +208,11 @@ public class HomeActivity extends SimpleActivity {
 	   mFragments[STOCK] = ContentStockStatusFrag.newInstance();
 	   mFragments[CHECK] = ContentTimelyCheckFrag.newInstance();
 	   mFragments[SYJL] = ContentTakeNotesFrag.newInstance();
+	   mFragments[YCCL] = ContentExceptionDealFrag.newInstance();
 
 	   loadMultipleRootFragment(R.id.fl_tab_container, CONSUME, mFragments[CONSUME],
 					    mFragments[RUNWATE], mFragments[STOCK], mFragments[CHECK],
-					    mFragments[SYJL]);
+					    mFragments[SYJL], mFragments[YCCL]);
 	} else {
 	   // 拿到mFragments的引用
 	   mFragments[CONSUME] = firstFragment;
@@ -209,6 +220,7 @@ public class HomeActivity extends SimpleActivity {
 	   mFragments[STOCK] = findFragment(ContentStockStatusFrag.class);
 	   mFragments[CHECK] = findFragment(ContentTimelyCheckFrag.class);
 	   mFragments[SYJL] = findFragment(ContentTakeNotesFrag.class);
+	   mFragments[YCCL] = findFragment(ContentExceptionDealFrag.class);
 	}
 
 	//设置选中的页面
@@ -252,6 +264,11 @@ public class HomeActivity extends SimpleActivity {
 			showHideFragment(mFragments[4], mFragments[LastId]);
 			EventBusUtils.postSticky(new Event.EventFrag("START5"));
 			LastId = 4;
+			break;
+		   case R.id.content_exception_deal://异常处理
+			showHideFragment(mFragments[5], mFragments[LastId]);
+			EventBusUtils.postSticky(new Event.EventFrag("START6"));
+			LastId = 5;
 			break;
 		}
 	   }

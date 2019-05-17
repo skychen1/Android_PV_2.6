@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nine_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/nine_one"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:text="处理人" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_two"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:text="耗材名称" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_three"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:text="EPC" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_four"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:text="型号规格" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_five"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2.3"
+        android:text="效期" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_six"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="柜号" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_seven"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2.4"
+        android:text="异常内容" />
+
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_eight"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:text="处理结果" />
+
+    <View style="@style/view_title_line_style" />
+
+    <TextView
+        android:id="@+id/nine_nine"
+        style="@style/text_title_style"
+        android:layout_width="0dp"
+        android:layout_weight="2.3"
+        android:text="处理时间" />
+
+</LinearLayout>

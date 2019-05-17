@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/x30"
+        android:layout_marginRight="@dimen/x30"
+        android:background="@color/bg_f"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/y30"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y70"
+                android:background="@color/bg_f"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/search_et"
+                    android:layout_width="@dimen/x700"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_search"
+                    android:drawableLeft="@mipmap/runwate_search"
+                    android:drawablePadding="@dimen/x10"
+                    android:hint="请输入耗材名称、操作人、EPC查询"
+                    android:imeOptions="actionSearch"
+                    android:paddingLeft="@dimen/x30"
+                    android:singleLine="true"
+                    android:textColorHint="@color/text_color_9"
+                    android:textSize="@dimen/textsize_15" />
+
+                <ImageView
+                    android:id="@+id/search_iv_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/x20"
+                    android:src="@mipmap/runwate_del"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/x75"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+
+                    android:gravity="center_vertical"
+                    android:text="时间段:"
+                    android:textColor="@color/text_color_3"
+                    android:textSize="@dimen/textsize_16" />
+
+                <TextView
+                    android:id="@+id/search_time_start"
+                    style="@style/runwate_textview_style"  />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:text="～"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/search_time_end"
+                    style="@style/runwate_textview_style"  />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_except_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/x25"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="异常来源:"
+                android:textColor="@color/text_color_3"
+                android:textSize="@dimen/textsize_16" />
+
+            <RadioGroup
+                android:id="@+id/search_type_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x50"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/search_type_all"
+                    style="@style/runwate_btn_style"
+                    android:checked="true"
+                    android:text="全部" />
+
+                <RadioButton
+                    android:id="@+id/search_type_continue"
+                    style="@style/runwate_btn_style"
+                    android:text="连续移除" />
+
+                <RadioButton
+                    android:id="@+id/search_type_unbind"
+                    style="@style/runwate_btn_style"
+                    android:text="未绑定患者" />
+
+                <RadioButton
+                    android:id="@+id/search_type_force_in"
+                    style="@style/runwate_btn_style"
+                    android:text="强开入柜" />
+
+                <RadioButton
+                    android:id="@+id/search_type_force_out"
+                    style="@style/runwate_btn_style"
+                    android:text="强开出柜" />
+
+            </RadioGroup>
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        layout="@layout/include_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/x30"
+        android:layout_marginRight="@dimen/x30"
+        android:background="@color/bg_f"
+        android:overScrollMode="never"
+        android:layout_marginTop="10dp" />
+</LinearLayout>

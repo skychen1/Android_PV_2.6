@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_dialog_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_marginLeft="@dimen/x40"
+        android:layout_marginRight="@dimen/x40"
+        android:layout_marginTop="@dimen/x30"
+        android:id="@+id/rvdialog_search"
+        layout="@layout/view_search_et_layout"
+        android:layout_width="@dimen/x700"
+        android:layout_height="@dimen/x60" />
+
+
+    <include
+        android:id="@+id/public_ll"
+        layout="@layout/include_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y550"
+        android:layout_marginLeft="@dimen/x40"
+        android:layout_marginRight="@dimen/x40"
+        android:layout_marginTop="@dimen/x30"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@color/bg_e" />
+
+    <LinearLayout
+        android:id="@+id/activity_down_btn_seven_ll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x128"
+        android:background="@color/bg_f"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/dialog_left"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x68"
+            android:background="@drawable/bg_btn_line_nor"
+            android:gravity="center"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="取消"
+            android:textColor="@color/text_color_58"
+            android:textSize="@dimen/textsize_17" />
+
+        <TextView
+            android:id="@+id/dialog_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x68"
+            android:layout_marginLeft="@dimen/x30"
+            android:background="@drawable/bg_btn_line_pre"
+            android:gravity="center"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x50"
+            android:paddingRight="@dimen/x50"
+            android:paddingTop="@dimen/x10"
+            android:text="确定"
+            android:textColor="@color/bg_f"
+            android:textSize="@dimen/textsize_17" />
+    </LinearLayout>
+
+</LinearLayout>

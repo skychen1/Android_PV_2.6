@@ -34,6 +34,7 @@ import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.ExceptionOperatorBean;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
@@ -55,9 +56,11 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
+import high.rivamed.myapplication.views.OutBoxConnectDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.RvDialog2;
+import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TempPatientDialog;
@@ -120,9 +123,9 @@ public class DialogUtils {
     }
 
     public static RvDialog.Builder showRvDialog(
-          Activity activity, final Context context,
-          List<BingFindSchedulesBean.PatientInfoVos> patientInfos, String type, int position,
-          List<BoxSizeBean.DevicesBean> mTbaseDevices) {
+            Activity activity, final Context context,
+            List<BingFindSchedulesBean.PatientInfoVos> patientInfos, String type, int position,
+            List<BoxSizeBean.DevicesBean> mTbaseDevices) {
         RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
         builder.setMsg("耗材中包含过期耗材，请查看！");
         builder.setLeft("取消", new DialogInterface.OnClickListener() {
@@ -157,7 +160,7 @@ public class DialogUtils {
 //                                checkedPosition)
 //                                .findViewById(R.id.seven_three)).getText().toString();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices, mMedicalId, mSurgeryId, mHisPatientId));
                     }
                     dialog.dismiss();
                 } else {//后绑定
@@ -178,7 +181,7 @@ public class DialogUtils {
                         String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
                         String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
                         EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId));
+                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices, mMedicalId, mSurgeryId, mHisPatientId));
                         dialog.dismiss();
                     }
                     LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
@@ -268,7 +271,9 @@ public class DialogUtils {
             Context context, int mNumColumn, int mType, HospNameBean hospNameBean, int mIntentType) {
         StoreRoomDialog.Builder builder = new StoreRoomDialog.Builder(context, mNumColumn, mType,
                 hospNameBean, mIntentType);
-        if (mType == 2) {
+        if (mType == 104) {
+            builder.setTitle("处理选择");
+        } else if (mType == 2) {
             builder.setTitle("请选择退货原因");
         } else if (mType == 1) {
             builder.setTitle("请选择库房");
@@ -278,11 +283,32 @@ public class DialogUtils {
         builder.setLeft("", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-            if (mStarts!=null){
-                mStarts.start();
-            }
+                if (mStarts != null) {
+                    mStarts.start();
+                }
                 dialog.dismiss();
             }
+        });
+
+        builder.create().show();
+    }
+
+
+    /**
+     * 出柜关联操作
+     * @param context
+     * @param hasNext 是否有下一步
+     * @param mNumColumn 列数
+     * @param mIntentType
+     */
+    public static void showOutBoxConnectDialog(Context context,boolean hasNext, int mNumColumn,  int mIntentType) {
+        OutBoxConnectDialog.Builder builder = new OutBoxConnectDialog.Builder(context,hasNext, mNumColumn, mIntentType);
+        builder.setTitle("关联操作");
+        builder.setLeft("", (dialog, i) -> {
+            if (mStarts != null) {
+                mStarts.start();
+            }
+            dialog.dismiss();
         });
 
         builder.create().show();
@@ -301,7 +327,7 @@ public class DialogUtils {
         builder.create().show();
     }
 
-    public static void showTwoDialog(Activity activity,Context context, int mType, String title, String msg) {
+    public static void showTwoDialog(Activity activity, Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {
             builder.setTwoMsg(msg);
@@ -335,7 +361,7 @@ public class DialogUtils {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
-                    if (context instanceof Activity){
+                    if (context instanceof Activity) {
                         UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
@@ -348,28 +374,28 @@ public class DialogUtils {
 
     public static void showOutFormDialog(Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
-            builder.setTwoMsg(msg);
-            builder.setMsg(title);
-            builder.setLeft("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    dialog.dismiss();
-                    if (context instanceof Activity){
-                        ((Activity) context).finish();
-                    }
+        builder.setTwoMsg(msg);
+        builder.setMsg(title);
+        builder.setLeft("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+                if (context instanceof Activity) {
+                    ((Activity) context).finish();
                 }
-            });
-            builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    dialog.dismiss();
-                    if (context instanceof Activity){
-                        UIUtils.putOrderId(context);
-                        context.startActivity(new Intent(context, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
-                    }
+            }
+        });
+        builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+                if (context instanceof Activity) {
+                    UIUtils.putOrderId(context);
+                    context.startActivity(new Intent(context, LoginActivity.class));
+                    App.getInstance().removeALLActivity_();
                 }
-            });
+            }
+        });
         builder.create().show();
     }
 
@@ -675,6 +701,7 @@ public class DialogUtils {
 
     /**
      * 激活医院信息的
+     *
      * @param context
      * @param activity
      */
@@ -697,7 +724,7 @@ public class DialogUtils {
                 LogUtils.i("RegisteDialog", "deptId  " + deptId);
                 LogUtils.i("RegisteDialog", "storehouseCode  " + storehouseCode);
                 EventBusUtils.postSticky(
-                        new Event.dialogEvent(deptName, branchCode, deptId, storehouseCode,dialog));
+                        new Event.dialogEvent(deptName, branchCode, deptId, storehouseCode, dialog));
             }
         });
 
@@ -830,5 +857,14 @@ public class DialogUtils {
             }
         });
         builder.create().show();
+    }
+
+    /**
+     * 异常处理：关联操作人
+     */
+    public static void showSelectOperatorDialog(Context context, List<ExceptionOperatorBean> list,SelectExceptionOperatorDialog.Builder.OnSelectOperatorListener listener) {
+        new SelectExceptionOperatorDialog.Builder(context)
+                .setDate(list)
+                .setOnSelectListener(listener).create().show();
     }
 }
