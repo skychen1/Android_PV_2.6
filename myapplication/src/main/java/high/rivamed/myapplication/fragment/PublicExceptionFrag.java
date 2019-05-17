@@ -297,11 +297,13 @@ public class PublicExceptionFrag extends SimpleFragment {
         dealAdapter.setOnItemChildClickListener((adapter, view, position) -> {
             curPosition = position;
             switch (view.getId()) {
-                case R.id.nine_seven2:
+                case R.id.nine_seven1:
                     // TODO: 2019/5/15 异常处理-关联操作人
-                    connectOperator();
+                    if (showDealList.get(position).getOperator().equals("Unknown")){
+                        connectOperator();
+                    }
                     break;
-                case R.id.nine_nine2:
+                case R.id.nine_nine1:
                     // TODO: 2019/5/15 异常处理-操作
                     //1.移除判断 选择 2.出柜关联 根据配置是否需要绑定患者 3.关联患者
                     String operate = showDealList.get(position).getOperate();
@@ -400,11 +402,9 @@ public class PublicExceptionFrag extends SimpleFragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Event.outBoxEvent event) {
-        if (!ContentExceptionDealFrag.CURRENT_TAB.equals(mType_page)) {
-            return;
-        }
-        //只更新当前选中tab，过滤掉其他tab
-        if (mType_page.equals(STYPE_EXCEPTION_LEFT) && ExceptionDealFrag.CURRENT_TAB == mType_size || mType_page.equals(STYPE_EXCEPTION_RIGHT) && ExceptionRecordFrag.CURRENT_TAB == mType_size) {
+        // TODO: 2019/5/17 判断当前选中 首页 tab是异常处理
+        //只更新异常处理tab，过滤掉其他tab
+        if (mType_page.equals(STYPE_EXCEPTION_LEFT) && ExceptionDealFrag.CURRENT_TAB == mType_size ) {
             // TODO: 2019/5/17  根据选择的操作项处理
             switch (event.type){
                 case "104":
@@ -416,9 +416,20 @@ public class PublicExceptionFrag extends SimpleFragment {
                     //出柜关联
                     onOutBoxConnectEvent(event);
                     break;
+                case "106":
+                    //出柜关联-下一步-绑定患者
+                    event.dialog.dismiss();
+                    showDealList.get(curPosition).setOperate("绑定患者");
+                    dealAdapter.notifyDataSetChanged();
+                    connectPatient();
+                    break;
                 case "x":
                     //选择库房结果处理
                     if (event.mIntentType==INTENT_TYPE){
+                        //修改操作项
+                        showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[1]);
+                        dealAdapter.notifyDataSetChanged();
+
                         event.dialog.dismiss();
                         ToastUtils.showShort("选择库房ID：" + event.context);
                     }
@@ -426,6 +437,8 @@ public class PublicExceptionFrag extends SimpleFragment {
                 case "2":
                     //选择原因结果处理
                     if (event.mIntentType==INTENT_TYPE){
+                        showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[2]);
+                        dealAdapter.notifyDataSetChanged();
                         event.dialog.dismiss();
                         ToastUtils.showShort("选择原因：" + event.context);
                     }
@@ -433,16 +446,11 @@ public class PublicExceptionFrag extends SimpleFragment {
                 case "3":
                     //选择科室结果处理
                     if (event.mIntentType==INTENT_TYPE){
+                        showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[3]);
+                        dealAdapter.notifyDataSetChanged();
                         event.dialog.dismiss();
                         ToastUtils.showShort("选择科室ID：" + event.context);
                     }
-                    break;
-                case "106":
-                    //出柜关联-下一步-绑定患者
-                    event.dialog.dismiss();
-                    showDealList.get(curPosition).setOperate("绑定患者");
-                    dealAdapter.notifyDataSetChanged();
-                    connectPatient();
                     break;
             }
         }
@@ -464,8 +472,6 @@ public class PublicExceptionFrag extends SimpleFragment {
                 dealAdapter.notifyDataSetChanged();
                 break;
             case "1"://移出
-                showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[1]);
-                dealAdapter.notifyDataSetChanged();
                 //选择库房
                 NetRequest.getInstance().getHospBydept(deptId, this, new BaseResult() {
                     @Override
@@ -476,14 +482,10 @@ public class PublicExceptionFrag extends SimpleFragment {
                 });
                 break;
             case "2"://调拨出库
-                showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[2]);
-                dealAdapter.notifyDataSetChanged();
                 //选择原因
                 DialogUtils.showStoreDialog(_mActivity, 2, 2, null, INTENT_TYPE);
                 break;
             case "3"://退货
-                showDealList.get(curPosition).setOperate(Constants.EXCEPTION_DEAL_OUT_BOX_CONNECT[3]);
-                dealAdapter.notifyDataSetChanged();
                 //选择科室
                 String branchCode = SPUtils.getString(UIUtils.getContext(), SAVE_BRANCH_CODE);
                 NetRequest.getInstance().getOperateDbDialog(deptId, branchCode, this, new BaseResult() {
@@ -554,6 +556,7 @@ public class PublicExceptionFrag extends SimpleFragment {
      */
     private void connectPatient() {
         // TODO: 2019/5/17 关联患者 （有两种患者）
+        ToastUtils.showShort("关联患者");
     }
 
     /**

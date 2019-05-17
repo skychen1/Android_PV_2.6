@@ -250,7 +250,7 @@ public class StoreRoomDialog extends Dialog {
 			EventBusUtils.post(new Event.outBoxEvent("x", mCode, dialog, mIntentType));
 		   } else if (mType == 2) {
 			EventBusUtils.post(new Event.outBoxEvent("2", mName, dialog, mIntentType));
-		   } else if (mType == 4) {
+		   } else if (mType == 104) {
 		   	//异常处理-移除判断
 			EventBusUtils.post(new Event.outBoxEvent("104", mCode, dialog, mIntentType));
 		   } else {

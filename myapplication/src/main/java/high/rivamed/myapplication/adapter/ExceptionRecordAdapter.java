@@ -8,7 +8,6 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.bean.ExceptionDealBean;
 import high.rivamed.myapplication.bean.ExceptionRecordBean;
 import high.rivamed.myapplication.utils.UIUtils;
 
@@ -25,16 +24,11 @@ public class ExceptionRecordAdapter extends BaseQuickAdapter<ExceptionRecordBean
 
     @Override
     protected void convert(BaseViewHolder helper, ExceptionRecordBean item) {
-
+        // TODO: 2019/5/17 设置数据
         String exceptContent = item.getExceptContent();
-//        boolean isUnknown=exceptContent.equals("Unknown");
-//        int resId=exceptContent.equals("连续移除")?R.color.card_stock_text:R.color.text_color_3;
-        int resId=exceptContent.equals("连续移除")?R.color.card_stock_text:R.color.color_28_prompt;
+        int resId = exceptContent.equals("连续移除") ? R.color.card_stock_text : R.color.color_28_prompt;
         //异常内容:未操作与异常做样式区分
-        helper.setText(R.id.nine_record_seven2, exceptContent)
-                .setText(R.id.nine_record_seven1, exceptContent)
-                .setTextColor(R.id.nine_record_seven1, UIUtils.getColor(resId))
-                .setGone(R.id.nine_record_seven1,true)
-                .setGone(R.id.nine_record_seven2,false);
+        helper.setText(R.id.nine_record_seven1, exceptContent)
+                .setTextColor(R.id.nine_record_seven1, UIUtils.getColor(resId));
     }
 }

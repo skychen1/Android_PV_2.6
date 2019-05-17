@@ -24,6 +24,7 @@ public class ExceptionOperatorAdapter extends BaseQuickAdapter<ExceptionOperator
 
     @Override
     protected void convert(BaseViewHolder helper, ExceptionOperatorBean item) {
+        // TODO: 2019/5/17 设置数据
         helper.setChecked(R.id.seven_one, item.isCheck())
                 .setText(R.id.seven_two, item.getOperator())
                 .setText(R.id.seven_three, item.getId());

@@ -54,29 +54,19 @@
 
     <View style="@style/view_line_style" />
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/nine_record_seven1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2.4">
-
-        <TextView
-            android:id="@+id/nine_record_seven1"
-            style="@style/text_title_content_style"
-            android:layout_width="match_parent" />
-
-        <TextView
-            android:id="@+id/nine_record_seven2"
-            android:layout_height="@dimen/y55"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_width="match_parent"
-            android:background="@drawable/bg_btn_gray_sel"
-            android:text="Unknown"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/bg_f"
-            android:textSize="12sp" />
-    </FrameLayout>
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        android:layout_weight="2.4"
+        android:gravity="center"
+        android:paddingLeft="@dimen/x10"
+        android:paddingTop="@dimen/y10"
+        android:paddingRight="@dimen/x10"
+        android:paddingBottom="@dimen/y10"
+        android:textSize="16sp" />
 
     <View style="@style/view_line_style" />
 
@@ -91,8 +81,8 @@
 
     <TextView
         android:id="@+id/nine_record_nine"
+        style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3"
-        style="@style/text_title_content_style"  />
+        android:layout_weight="2.3" />
 
 </LinearLayout>
