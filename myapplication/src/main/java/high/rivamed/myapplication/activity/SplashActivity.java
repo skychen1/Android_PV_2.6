@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.ruihua.face.recognition.FaceManager;
+import com.ruihua.face.recognition.callback.InitListener;
 
 import org.litepal.LitePal;
 
@@ -17,6 +19,7 @@ import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -104,11 +107,37 @@ public class SplashActivity extends Activity {
 	   }
 	}).start();
 
-	new Handler().postDelayed(new Runnable() {
-	   public void run() {
-		startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-		finish();
-	   }
-	}, 2000);
+		//启动页初始化人脸识别sdk
+	   FaceManager.getManager().init(this, new InitListener() {
+		   @Override
+		   public void initSuccess() {
+			   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+			   //初始化分组
+			   boolean b = FaceManager.getManager().initGroup();
+			   if (!b) {
+				   ToastUtils.showShortSafe("创建人脸照分组失败");
+				   return;
+			   }
+			   //设置是否需要活体
+			   FaceManager.getManager().setNeedLive(false);
+				//初始化完成后跳转页面
+			   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+			   finish();
+		   }
+
+		   @Override
+		   public void initFail(int errorCode, String msg) {
+			   ToastUtils.showShortSafe("SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+			   //初始化完成后跳转页面
+			   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+			   finish();
+		   }
+	   });
+//	new Handler().postDelayed(new Runnable() {
+//	   public void run() {
+//		startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+//		finish();
+//	   }
+//	}, 2000);
    }
 }

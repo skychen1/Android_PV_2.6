@@ -16,6 +16,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
+import com.ruihua.face.recognition.ui.FaceGatewayActivity;
 
 import org.litepal.LitePal;
 
@@ -344,4 +345,5 @@ public class LoginPassWordFragment extends SimpleFragment {
         startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
+
 }

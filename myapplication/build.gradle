@@ -110,6 +110,8 @@ dependencies {
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     implementation project(':libeth002')
     implementation project(':libreader')
+    //人脸识别
+    implementation project(':libfacerecognition')
 
     api 'io.reactivex.rxjava2:rxjava:2.1.5'
     api 'io.reactivex.rxjava2:rxandroid:2.0.1'

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2018 Baidu, Inc. All Rights Reserved.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="无感知活体检测设置"
+                    android:textSize="17dp"
+                    android:textColor="@color/face_black"
+                    android:gravity="center"/>
+
+                <RadioGroup
+                    android:id="@+id/liveness_rg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/no_liveness_rb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="不使用活体检测"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="活体检测主要用于判断用户释放为真人，但如使用场景下，常有固定人员看守，则可无需活体，直接采集人脸。因为活体检测虽然保障了安全性，但却会影响一定的通过率"
+                        android:textColor="@color/face_black"/>
+
+                    <RadioButton
+                        android:id="@+id/rgb_liveness_rb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="RGB单目活体"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="仅使用RGB活体(单目活体)，可有效放在照片翻拍，屏幕等攻击，前端采集可为USB单目摄像头即可"
+                        android:textColor="@color/face_black"/>
+
+                    <RadioButton
+                        android:visibility="gone"
+                        android:id="@+id/rgb_ir_liveness_rb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="RGB+NIR活体"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"/>
+
+                    <TextView
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="RGB+IR活体，在RGB活体的安全级别基础上，对屏幕、高清打印照片、视频、默契等防御力更强。硬件推荐迪威泰"
+                        android:textColor="@color/face_black"/>
+
+                    <RadioButton
+                        android:visibility="gone"
+                        android:id="@+id/rgb_depth_liveness_rb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="RGB+Depth活体"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"/>
+
+                    <TextView
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="RGB+Depth活体，在RGB活体的安全级别基础上，对屏幕、高清打印照片、视频、默契等防御力更强。硬件推荐奥比中光mini或mini s,Pro系列，华捷艾米"
+                        android:textColor="@color/face_black"/>
+
+                    <RadioButton
+                        android:id="@+id/rgb_ir_depth_liveness_rb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="高级安全级别"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="RGB+NIR+Depth活体，基于近红外图像成像特点，如果屏幕无法成像，不同材质反射率不同等，可对屏幕、高清照片等攻击，更加有效的防作弊。设备推荐boteye模组"
+                        android:visibility="gone"/>
+
+                </RadioGroup>
+
+                <TextView
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:text="注意：安全性越搞，对作弊的拒绝率越高，但也会相应影响真人的通过率，遮挡需要结合业务安全要求，视情况选择"
+                    android:textColor="@android:color/holo_red_light"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="25dp"
+                    android:text="模型类型的选择："
+                    android:textSize="20dp"/>
+
+                <RadioGroup
+                    android:id="@+id/rg_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rb_recognize_live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="生活照模型"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="适用于识别生活中照片"
+                        android:visibility="visible"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_recognize_id_photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="证件照模型"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="适用于识别证件类型照片"
+                        android:visibility="visible"/>
+                </RadioGroup>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_camera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="25dp"
+                    android:text="摄像头的选择："
+                    android:textSize="17dp"
+                    android:gravity="center"
+                    android:textColor="@color/face_black"/>
+
+                <RadioGroup
+                    android:id="@+id/rg_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rb_orbbec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="奥比中光Astra mini及mini s"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="visible"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_iminect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="华捷艾米"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="visible"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_orbbec_pro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="奥比中光Astra Pro"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textSize="16dp"
+                        android:visibility="visible"/>
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/confirm_btn"
+                android:layout_width="250dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="确定"
+                android:background="@color/face_buttonColor"
+                android:textColor="@color/face_white"/>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

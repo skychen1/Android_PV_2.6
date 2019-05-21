@@ -239,13 +239,31 @@
 					android:orientation="horizontal">
 
 					<RadioButton
-						android:id="@+id/login_password"
+						android:id="@+id/login_face"
 						android:layout_width="0dp"
 						android:layout_height="match_parent"
 						android:layout_weight="1"
 						android:background="@drawable/selector_login_line_text"
 						android:button="@null"
 						android:checked="true"
+						android:gravity="center"
+						android:text="@string/login_face_title"
+						android:textColor="@color/selector_login_tab_text"
+						android:textSize="@dimen/x30"
+						/>
+
+					<View
+						android:layout_width="@dimen/x2"
+						android:layout_height="@dimen/y75"
+						android:background="@color/bg_e"/>
+
+					<RadioButton
+						android:id="@+id/login_password"
+						android:layout_width="0dp"
+						android:layout_height="match_parent"
+						android:layout_weight="1"
+						android:background="@drawable/selector_login_line_text"
+						android:button="@null"
 						android:gravity="center"
 						android:text="@string/login_title"
 						android:textColor="@color/selector_login_tab_text"

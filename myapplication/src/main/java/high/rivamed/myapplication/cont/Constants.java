@@ -56,6 +56,7 @@ public class Constants {
     public static final String CONFIG_017 = "017";//是否启用紧急登录
     public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
     public static final String CONFIG_026 = "026";//启用未确认耗材
+    public static final String CONFIG_099 = "099";//todo 是否启用人脸识别登录，替换成后台真实code
 
     public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
     public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水

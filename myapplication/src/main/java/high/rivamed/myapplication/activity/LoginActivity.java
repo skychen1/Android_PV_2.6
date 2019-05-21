@@ -61,6 +61,7 @@ import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.fragment.LoginFaceFragment;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
@@ -125,6 +126,8 @@ public class LoginActivity extends SimpleActivity {
    private static final String TAG = "LoginActivity";
    @BindView(R.id.login_logo)
    ImageView       mLoginLogo;
+   @BindView(R.id.login_face)
+   RadioButton     mLoginFace;
    @BindView(R.id.login_pass)
    RadioButton     mLoginPass;
    @BindView(R.id.login_radiogroup)
@@ -199,7 +202,7 @@ public class LoginActivity extends SimpleActivity {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
 	LogUtils.i(TAG, "getDates()   " + getDates());
-
+	initTab();
    }
 
    public void getBoxSize() {
@@ -242,7 +245,7 @@ public class LoginActivity extends SimpleActivity {
 
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_c");
+		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_d");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -250,10 +253,6 @@ public class LoginActivity extends SimpleActivity {
 	   getLeftDate();
 	   getBoxSize();
 	}
-
-	mFragments.add(new LoginPassWordFragment());//用户名登录
-	mFragments.add(new LoginPassFragment());//紧急登录
-	initData();
 	initlistener();
 
 	if (mTitleConn) {
@@ -462,16 +461,35 @@ public class LoginActivity extends SimpleActivity {
 	if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 	   mLoginPass.setVisibility(View.VISIBLE);
 	   mLoginViewpager.setScanScroll(true);
+		if (isConfigFace()) {
+			mLoginFace.setVisibility(View.VISIBLE);
+		} else {
+			mLoginFace.setVisibility(View.GONE);
+		}
+
 	} else {
 	   mLoginPass.setVisibility(View.GONE);
-	   mLoginViewpager.setScanScroll(false);
+		if (isConfigFace()) {
+			mLoginFace.setVisibility(View.VISIBLE);
+			mLoginViewpager.setScanScroll(true);
+		} else {
+			mLoginFace.setVisibility(View.GONE);
+			mLoginViewpager.setScanScroll(false);
+		}
 	}
 	//	} else {
 	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	//	}
    }
 
-   /**
+	private boolean isConfigFace() {
+		// TODO: 2019/5/21 判断是否配置人脸识别登录
+//		return UIUtils.getConfigType(mContext, CONFIG_099);
+		//测试时默认开启，真实情况需要根据后台配置
+		return true;
+	}
+
+	/**
     * 是否禁止使用
     *
     * @param tCstConfigVos
@@ -598,11 +616,11 @@ public class LoginActivity extends SimpleActivity {
 	try {
 	   LoginResultBean loginResultBean = mGson.fromJson(result, LoginResultBean.class);
 	   if (loginResultBean.isOperateSuccess()) {
-		if (mServiceManager != null) {
-		   mServiceManager.stopService();
-		   mServiceManager = null;
-		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
-		}
+//		if (mServiceManager != null) {
+//		   mServiceManager.stopService();
+//		   mServiceManager = null;
+//		   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME, "");
+//		}
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_s_NAME,
 					loginResultBean.getAppAccountInfoVo().getAccountId());
 		SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, result);
@@ -620,7 +638,7 @@ public class LoginActivity extends SimpleActivity {
 					loginResultBean.getAccessToken().getRefreshToken());
 		//			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 
-		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());
+//		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());
 
 		getAuthorityMenu(activity, mGson);
 
@@ -722,37 +740,60 @@ public class LoginActivity extends SimpleActivity {
 	}
    }
 
-   private void initData() {
-
-	if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_password) {
-	   mLoginViewpager.setCurrentItem(0);
-	} else {
-	   mLoginViewpager.setCurrentItem(1);
-	}
-
-	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
-	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
-	mLoginRadiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(RadioGroup radioGroup, int i) {
-		if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-		   switch (radioGroup.getCheckedRadioButtonId()) {
-			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(0);
-			   break;
-			case R.id.login_pass:
-			   mLoginViewpager.setCurrentItem(1);
-			   break;
+   private void initTab() {
+	   mFragments.add(new LoginFaceFragment());//人脸识别登录
+	   mFragments.add(new LoginPassWordFragment());//用户名登录
+	   mFragments.add(new LoginPassFragment());//紧急登录
+	   mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
+	   mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
+	   mLoginRadiogroup.setOnCheckedChangeListener((radioGroup, i) -> {
+		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+			   if (isConfigFace()) {
+				   switch (radioGroup.getCheckedRadioButtonId()) {
+					   case R.id.login_face:
+						   mLoginViewpager.setCurrentItem(0);
+						   break;
+					   case R.id.login_password:
+						   mLoginViewpager.setCurrentItem(1);
+						   break;
+					   case R.id.login_pass:
+						   mLoginViewpager.setCurrentItem(2);
+						   break;
+				   }
+			   } else {
+				   switch (radioGroup.getCheckedRadioButtonId()) {
+					   case R.id.login_password:
+						   mLoginViewpager.setCurrentItem(1);
+						   break;
+					   case R.id.login_pass:
+						   mLoginViewpager.setCurrentItem(2);
+						   break;
+				   }
+			   }
+		   } else {
+			   if (isConfigFace()) {
+				   switch (radioGroup.getCheckedRadioButtonId()) {
+					   case R.id.login_face:
+						   mLoginViewpager.setCurrentItem(0);
+						   break;
+					   case R.id.login_password:
+						   mLoginViewpager.setCurrentItem(1);
+						   break;
+				   }
+			   } else {
+				   switch (radioGroup.getCheckedRadioButtonId()) {
+					   case R.id.login_password:
+						   mLoginViewpager.setCurrentItem(1);
+						   break;
+				   }
+			   }
 		   }
-		} else {
-		   switch (radioGroup.getCheckedRadioButtonId()) {
-			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(0);
-			   break;
-		   }
-		}
+	   });
+	   if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_face) {
+		   mLoginViewpager.setCurrentItem(0);
+	   } else {
+		   mLoginViewpager.setCurrentItem(1);
 	   }
-	});
    }
 
    /**
@@ -920,20 +961,45 @@ public class LoginActivity extends SimpleActivity {
 	@Override
 	public void onPageSelected(int position) {
 	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-		switch (position) {
-		   case 0:
-			mLoginRadiogroup.check(R.id.login_password);
-			break;
-		   case 1:
-			mLoginRadiogroup.check(R.id.login_pass);
-			break;
-		}
+		   if (isConfigFace()) {
+			   switch (position) {
+				   case 0:
+					   mLoginRadiogroup.check(R.id.login_face);
+					   break;
+				   case 1:
+					   mLoginRadiogroup.check(R.id.login_password);
+					   break;
+				   case 2:
+					   mLoginRadiogroup.check(R.id.login_pass);
+					   break;
+			   }
+		   } else {
+			   switch (position) {
+				   case 1:
+					   mLoginRadiogroup.check(R.id.login_password);
+					   break;
+				   case 2:
+					   mLoginRadiogroup.check(R.id.login_pass);
+					   break;
+			   }
+		   }
 	   } else {
-		switch (position) {
-		   case 0:
-			mLoginRadiogroup.check(R.id.login_password);
-			break;
-		}
+		   if (isConfigFace()) {
+			   switch (position) {
+				   case 0:
+					   mLoginRadiogroup.check(R.id.login_face);
+					   break;
+				   case 1:
+					   mLoginRadiogroup.check(R.id.login_password);
+					   break;
+			   }
+		   } else {
+			   switch (position) {
+				   case 1:
+					   mLoginRadiogroup.check(R.id.login_password);
+					   break;
+			   }
+		   }
 	   }
 	}
 

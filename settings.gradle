@@ -1,1 +1,1 @@
-include ':myapplication', ':devices', ':androidpnclient',':libdevicesbase', ':libeth002',':libreader'
+include ':myapplication', ':devices', ':androidpnclient', ':libdevicesbase', ':libeth002', ':libreader', ':libfacerecognition'
