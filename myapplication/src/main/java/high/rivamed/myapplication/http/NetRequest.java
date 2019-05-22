@@ -9,11 +9,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
 import org.androidpn.utils.XmppEvent;
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,30 @@ public class NetRequest {
 	}
 	return instance;
    }
+
+
+	/**
+	 * Post请求无token 文件上传
+	 */
+	private void PostRequestWithFile(String url, Map<String, String> map,String fileKey, File file,Object tag, FileUpResult netResult) {
+
+		OkGo.<String>post(url).tag(tag)
+				.params(fileKey,file)//待上传文件
+				.params(map)//其他参数
+				.execute(new FileUpCallBack(url, map, fileKey,file,tag, netResult, false ));
+	}
+
+	/**
+	 * Post请求有token 文件上传
+	 */
+	private void PostTokenRequestWithFile(String url, Map<String, String> map,String fileKey, File file,Object tag, FileUpResult netResult) {
+
+		OkGo.<String>post(url).tag(tag)
+		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
+				.params(fileKey,file)//待上传文件
+				.params(map)//其他参数
+				.execute(new FileUpCallBack(url, map, fileKey,file,tag, netResult, true ));
+	}
 
    /**
     * Post请求无token
@@ -730,6 +756,20 @@ public class NetRequest {
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
+	/**
+	 * 开/关柜 上传视频录制文件
+	 */
+	public void uploadVideoFile(String deviceCode, File file, String startDate, String endDate, Object tag, FileUpResult netResult){
+		String urls=MAIN_URL+ NetApi.URL_VIDEO_UPLOAD_RECORD;
+		Map<String, String> map = new HashMap<>();
+		map.put("video.startDate",startDate);
+		map.put("video.endDate",endDate);
+		map.put("video.creator",SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));//登录人accountId
+		map.put("video.thingId",sThingCode);//设备ID
+		map.put("video.sthId",SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));//库房code
+		map.put("video.deviceId",deviceCode);//柜子ID
+		PostTokenRequestWithFile(urls,map,"file",file,tag,netResult);
+	}
 
    private class MyCallBack extends StringCallback {
 
@@ -953,7 +993,182 @@ public class NetRequest {
 	}
    }
 
-   /**
+
+
+	private class FileUpCallBack extends StringCallback {
+
+		private String    url;
+		private Object    date;
+		private String 	  fileKey;//上传文件
+		private File 	  file;//上传文件
+		private Object    tag;
+		private FileUpResult netResult;
+		private boolean   isToken;//是否有token
+
+		public FileUpCallBack(
+				String url, Object date,String fileKey, File file, Object tag, FileUpResult netResult,
+				boolean isToken) {
+			super();
+
+			this.url = url;
+			this.date = date;
+			this.fileKey=fileKey;
+			this.file=file;
+			this.tag = tag;
+			this.netResult = netResult;
+			this.isToken = isToken;
+		}
+
+		@Override
+		public void uploadProgress(Progress progress) {
+			super.uploadProgress(progress);
+			netResult.uploadProgress(progress);
+		}
+
+		@Override
+		public void onError(Response<String> response) {
+
+			if (netResult != null) {
+				netResult.onError(response.code() + "");
+			}
+			if(mTitleConn){
+				EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+			}
+			if (response.code() == -1) {
+				//		ToastUtils.showShortToast("服务器异常，请检查网络！");
+			} else {
+				ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
+			}
+			LogUtils.w(TAG, "onError 请求URL： " + url);
+			LogUtils.w(TAG, "onError 请求URL： " + response.code());
+			LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
+			LogUtils.w(TAG, "onError 请求文件： " + file.getAbsolutePath());
+			LogUtils.w(TAG, "onError 返回Body： " + response.body());
+		}
+
+		@Override
+		public void onSuccess(Response<String> response) {
+			if(!mTitleConn){
+				EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+			}
+			try {
+				JSONObject jsonObject = JSON.parseObject(response.body());
+				if (null == jsonObject.getString("opFlg") ||
+						jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
+					if (netResult != null) {
+						netResult.onSucceed(response.body());
+					}
+				} else {
+					String opFlg = jsonObject.getString("opFlg");
+					if (opFlg.equals(ERROR_1010)) {
+						LogUtils.w(TAG, "请求URL： " + url);
+						LogUtils.w(TAG, "请求Body： " + mGson.toJson(date));
+						LogUtils.w(TAG, "onError 请求文件： " + file.getAbsolutePath());
+						LogUtils.w(TAG, "返回Body： " + response.body());
+						ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
+						if (netResult != null) {
+							netResult.onSucceed(response.body());
+						}
+					} else if (opFlg.equals(ERROR_1000)) {//Token过期
+						if (!TextUtils.isEmpty(UIUtils.getRefreshToken())) {
+							setUpDateToken(response);//换token
+						}
+					} else if (opFlg.equals(ERROR_1001)) {//刷新TOKEN过期   需要重新登录
+						putUnNetLoginDate();//重新登录获取token
+					}
+				}
+			} catch (Exception e) {
+				LogUtils.w(TAG, "Exception 请求URL： " + url);
+				LogUtils.w(TAG, "Exception 请求Body： " + mGson.toJson(date));
+				LogUtils.w(TAG, "Exception 返回Body： " + response.body());
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * 离线后来网，重新登录获取token
+		 */
+		private void putUnNetLoginDate() {
+			String accountId = SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID);
+			AccountVosBean beans = LitePal.where("accountid = ? ", accountId)
+					.findFirst(AccountVosBean.class);
+			UserLoginDto userLoginDto = new UserLoginDto();
+			UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
+			accountBean.setAccountName(beans.getAccountName());
+			accountBean.setPassword(beans.getPassword());
+			accountBean.setSalt(beans.getSalt());
+			userLoginDto.setAccount(accountBean);
+			userLoginDto.setSystemType(SYSTEMTYPE);
+			userLoginDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+			getUnNetLogin(mGson.toJson(userLoginDto), tag, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+					UpDateTokenBean tokenBean = mGson.fromJson(result, UpDateTokenBean.class);
+					setUnNetToken(tokenBean);
+				}
+
+				@Override
+				public void onError(String result) {
+					ToastUtils.showShortToast("登录状态已经过期，请重新登录");
+					if (tag instanceof Activity) {
+						UIUtils.putOrderId(tag);
+						((Activity) tag).getApplicationContext()
+								.startActivity(new Intent(((Activity) tag).getApplicationContext(),
+										LoginActivity.class));
+						App.getInstance().removeALLActivity_();
+						((Activity) tag).finish();
+					}
+				}
+			});
+		}
+
+		/**
+		 * 更换token后进行重新请求
+		 *
+		 * @param response
+		 */
+		private void setUpDateToken(Response<String> response) {
+			updateToken(tag, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+					UpDateTokenBean tokenBean = mGson.fromJson(result, UpDateTokenBean.class);
+					if (tokenBean.getOpFlg().equals("200")){
+						setUnNetToken(tokenBean);//设置token
+					}else {
+						ToastUtils.showShortToast("登录状态已经过期，请重新登录");
+						if (tag instanceof Activity) {
+							UIUtils.putOrderId(tag);
+							((Activity) tag).getApplicationContext()
+									.startActivity(new Intent(((Activity) tag).getApplicationContext(),
+											LoginActivity.class));
+							App.getInstance().removeALLActivity_();
+							((Activity) tag).finish();
+						}
+					}
+				}
+			});
+		}
+
+		/**
+		 * 设置token重新请求
+		 * @param tokenBean
+		 */
+		public void setUnNetToken(UpDateTokenBean tokenBean) {
+
+			String tokenId = tokenBean.getAccessToken().getTokenId();
+			String refreshToken = tokenBean.getAccessToken().getRefreshToken();
+			SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, tokenId);
+			SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, refreshToken);
+			if (isToken) {
+				PostTokenRequestWithFile(url, (Map<String, String>) date, fileKey,file,tag, netResult);
+			} else {
+				PostRequestWithFile(url, (Map<String, String>) date, fileKey,file,tag, netResult);
+			}
+		}
+	}
+
+
+	/**
     * 更新本地Token
     */
    private void updateLocalToken(String data) {
