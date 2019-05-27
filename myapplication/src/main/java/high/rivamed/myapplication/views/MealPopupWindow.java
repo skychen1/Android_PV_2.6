@@ -70,7 +70,7 @@ public class MealPopupWindow extends PopupWindow {
         mMealPopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                EventBusUtils.postSticky(new Event.EventOutMealSuit(true,movies.get(position)));
+                EventBusUtils.postSticky(new Event.EventOutMealSuit(true,mMovies1.get(position)));
             }
         });
 

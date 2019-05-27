@@ -47,7 +47,7 @@ public class TimeDetailsAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	int Actual = item.getCountActual();
 
 	mSeven_one.setText(item.getEpc());
-	mSeven_two.setText(item.getExpirationText());
+	mSeven_two.setText(item.getExpiryDate());
 	mSeven_three.setText(Actual+"");
 	mSeven_four.setText(Stock+"");
 	if (Stock!=Actual) {

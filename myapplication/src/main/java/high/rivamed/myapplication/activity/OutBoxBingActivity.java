@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +32,6 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
@@ -110,7 +110,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String                     mSurgeryId           = "";
    private String                     mHisPatientId        = "";
    private boolean                    mPause               = true;
-   private Map<String, List<TagInfo>> mEPCDate             = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCDate             = new TreeMap<>();
    private int                        mAllPage             = 1;
    private int                        mRows                = 20;
    int k = 0;
@@ -764,7 +764,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
 		   ToastUtils.showShort("操作成功");
-		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
+//		   EventBusUtils.post(new Event.PopupEvent(false, "关闭"));
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
@@ -859,12 +859,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * 扫描后传值
     */
 
-   private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+   private void getDeviceDate(String deviceId, Map<String, List<EpcInfo>> epcs) {
 
 	InventoryDto inventoryDto = new InventoryDto();
 	List<Inventory> epcList = new ArrayList<>();
 
-	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+	for (Map.Entry<String, List<EpcInfo>> v : epcs.entrySet()) {
 	   Inventory inventory = new Inventory();
 	   inventory.setEpc(v.getKey());
 	   epcList.add(inventory);

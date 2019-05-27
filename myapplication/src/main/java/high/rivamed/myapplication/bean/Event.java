@@ -3,12 +3,13 @@ package high.rivamed.myapplication.bean;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import com.ruihua.reader.net.bean.EpcInfo;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
@@ -25,6 +26,18 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+
+   /**
+    * 门锁的检测消息
+    */
+   public static class EventDoorStatus {
+      public boolean type;
+      public String id;
+      public EventDoorStatus(String id,boolean type){
+         this.id = id;
+         this.type = type;
+      }
+   }
    /*
   快速开柜清理界面数据
    */
@@ -405,22 +418,21 @@ public class Event {
         }
     }
 
+   /**
+    * 柜门的开关提示
+    */
     public static class PopupEvent {
 
         public boolean isMute;
         public String mString;
-        public int mPos;
+        public String mEthId;
 
-        public PopupEvent(boolean isMute, String trim) {
-            this.isMute = isMute;
-            this.mString = trim;
-        }
+      public PopupEvent(boolean isMute, String trim,String EthId) {
+         this.isMute = isMute;
+         this.mString = trim;
+         this.mEthId = EthId;
+      }
 
-        public PopupEvent(boolean isMute, String trim, int pos) {
-            this.isMute = isMute;
-            this.mString = trim;
-            this.mPos = pos;
-        }
     }
 
     public static class activationEvent {
@@ -560,21 +572,45 @@ public class Event {
      */
     public static class EventDeviceCallBack {
         public String deviceId;
-        public Map<String, List<TagInfo>> epcs;
+        public Map<String, List<EpcInfo>> epcs;
 
-        public EventDeviceCallBack(String deviceId, Map<String, List<TagInfo>> epcs) {
+        public EventDeviceCallBack(String deviceId, Map<String, List<EpcInfo>> epcs) {
             this.deviceId = deviceId;
             this.epcs = epcs;
         }
     }
+   /**
+    * 硬件正常扫描返回（单个）
+    */
+   public static class EventOneEpcDeviceCallBack {
+      public String deviceId;
+      public String epc;
+
+      public EventOneEpcDeviceCallBack(String deviceId, String epc) {
+         this.deviceId = deviceId;
+         this.epc = epc;
+      }
+   }
+   /**
+    * 硬件强开扫描返回（单个）
+    */
+   public static class EventOneEpcStrongOpenDeviceCallBack {
+      public String deviceId;
+      public String epc;
+
+      public EventOneEpcStrongOpenDeviceCallBack(String deviceId, String epc) {
+         this.deviceId = deviceId;
+         this.epc = epc;
+      }
+   }
     /**
      * 硬件强开返回
      */
     public static class EventStrongOpenDeviceCallBack {
-        public String deviceId;
-        public Map<String, List<TagInfo>> epcs;
+        public String                     deviceId;
+        public Map<String, List<EpcInfo>> epcs;
 
-        public EventStrongOpenDeviceCallBack(String deviceId, Map<String, List<TagInfo>> epcs) {
+        public EventStrongOpenDeviceCallBack(String deviceId, Map<String, List<EpcInfo>> epcs) {
             this.deviceId = deviceId;
             this.epcs = epcs;
         }

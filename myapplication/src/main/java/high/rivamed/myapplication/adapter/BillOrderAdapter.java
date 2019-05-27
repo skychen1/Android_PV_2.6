@@ -128,11 +128,11 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
         mSeven_one.setText(item.getCstName());
         mSeven_two.setText(item.getEpc());
         mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getExpirationText());
+        mSeven_four.setText(item.getExpiryDate());
         mSeven_five.setText(item.getDeviceName());
-
+        mSeven_four.setBackgroundResource(R.color.bg_f);
         if (item.getExpireStatus()!=null){
-            UIUtils.initTermOfValidity2(mContext, helper, item.getExpireStatus(), mSeven_four);
+            UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_four);
         }
         if (item.getExpireStatus()==0){
             mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
@@ -158,6 +158,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             if (item.getExpireStatus() != 0 ){
+                mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
                 mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
             }
         }else {

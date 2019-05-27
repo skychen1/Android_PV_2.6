@@ -66,7 +66,7 @@ public class AfterBingAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpirationText());
+	mSeven_five.setText(item.getExpiryDate());
 	mSeven_six.setText(item.getDeviceName());
 	if (mOperation != 3) {
 	   mCheckBoxLl.setVisibility(View.VISIBLE);

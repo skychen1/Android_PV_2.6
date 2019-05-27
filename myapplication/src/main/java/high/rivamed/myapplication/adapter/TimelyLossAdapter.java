@@ -72,7 +72,7 @@ public class TimelyLossAdapter
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpirationText());
+	mSeven_five.setText(item.getExpiryDate());
 	mSeven_six.setText(item.getDeviceName());
 	if (item.getRemark()==null||item.getRemark().equals("")){
 	   mSeven_seven.setText("");

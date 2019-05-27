@@ -44,11 +44,8 @@ public class StockRightAdapter
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-//	if (helper.getAdapterPosition() % 2 == 0) {
-//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//	} else {
+
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//	}
 	findId(helper);
 	int five = item.getExpireStatus();
 
@@ -56,10 +53,10 @@ public class StockRightAdapter
 	mSeven_two.setText(item.getCstName());
 	mSeven_three.setText(item.getEpc());
 	mSeven_four.setText(item.getCstSpec());
-	mSeven_five.setText(item.getExpirationText());
+	mSeven_five.setText(item.getExpiryDate());
 	mSeven_six.setText(item.getDeviceName());
 	mSeven_seven.setText(item.getUpdateTime());
-	mSeven_eight.setText(item.getUserName());
+	mSeven_eight.setText(item.getName());
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), five, mSeven_five);
 	}

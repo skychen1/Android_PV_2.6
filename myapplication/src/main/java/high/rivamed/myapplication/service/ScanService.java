@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ruihua.reader.net.bean.EpcInfo;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -16,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -45,7 +45,7 @@ public class ScanService extends Service {
    private List<BoxIdBean> mBoxIdBeans;
    int k    = 0;
    int size = 0;
-   private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
 
    /**
@@ -79,7 +79,7 @@ public class ScanService extends Service {
 			if (mEPCDate.size() == 0) {
 			   mEPCDatess.put("", box_id);//没有空格
 			}
-			for (Map.Entry<String, List<TagInfo>> v : mEPCDate.entrySet()) {
+			for (Map.Entry<String, List<EpcInfo>> v : mEPCDate.entrySet()) {
 			   mEPCDatess.put(v.getKey(), box_id);
 			}
 			LogUtils.i(TAG, "mEPCDates.mEPCDates()多reader  " + mEPCDatess.size());
@@ -90,7 +90,7 @@ public class ScanService extends Service {
 		   if (event.epcs.size() == 0) {
 			mEPCDatess.put(" ", box_id);//1个空格
 		   }
-		   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
 			mEPCDatess.put(v.getKey(), box_id);
 		   }
 		   LogUtils.i(TAG, "mEPCDates.mEPCDates()单reader  " + mEPCDatess.size());

@@ -4,10 +4,10 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.rivamed.libdevicesbase.base.DeviceInfo;
 
 import java.util.List;
 
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 
 /**
@@ -22,18 +22,18 @@ import high.rivamed.myapplication.R;
  * 更新描述：   ${TODO}
  */
 
-public class PartsmacPopAdapter extends BaseQuickAdapter<DeviceManager.DeviceInfo, BaseViewHolder> {
+public class PartsmacPopAdapter extends BaseQuickAdapter<DeviceInfo, BaseViewHolder> {
 
    TextView mMeal;
 
-   public PartsmacPopAdapter(int layout, List<DeviceManager.DeviceInfo> data) {
+   public PartsmacPopAdapter(int layout, List<DeviceInfo> data) {
       super(layout, data);
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, DeviceManager.DeviceInfo item) {
+   protected void convert(BaseViewHolder helper, DeviceInfo item) {
       findId(helper);
-      mMeal.setText(item.getIdentifition());
+      mMeal.setText(item.getIdentification());
    }
 
    private void findId(BaseViewHolder helper) {

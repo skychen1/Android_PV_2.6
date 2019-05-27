@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -38,7 +39,6 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BillOrderAdapter;
 import high.rivamed.myapplication.base.App;
@@ -219,7 +219,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCMapDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
 
    @Override
@@ -540,6 +540,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		.findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
+			EventBusUtils.postSticky(new Event.EventLoading(false));
 			LogUtils.i(TAG, "result   " + result);
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
 			mTimelyOpenDoor.setEnabled(true);
@@ -582,6 +583,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onError(String result) {
 			super.onError(result);
+			EventBusUtils.postSticky(new Event.EventLoading(false));
 			mTimelyOpenDoor.setEnabled(true);
 			mLyBingBtn.setEnabled(true);
 			mBindPatient.setEnabled(true);
@@ -686,7 +688,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   }
 		   if (k == boxIdBeansss.size()) {
 			k = 0;
-			for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+			for (Map.Entry<String, List<EpcInfo>> v : mEPCMapDate.entrySet()) {
 			   InventoryVo item = new InventoryVo();
 			   item.setEpc(v.getKey());
 			   if (!mFindBillOrderBean.getInventoryVos().contains(item)) {
@@ -698,7 +700,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
-		   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
 			InventoryVo item = new InventoryVo();
 			item.setEpc(v.getKey());
 			if (!mFindBillOrderBean.getInventoryVos().contains(item)) {

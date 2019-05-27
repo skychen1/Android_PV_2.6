@@ -7,14 +7,13 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.ruihua.reader.ReaderManager;
 
 import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
-
-import static cn.rivamed.DeviceManager.getInstance;
 
 /**
  * 项目名称:    Android_PV_2.6.1
@@ -30,7 +29,7 @@ import static cn.rivamed.DeviceManager.getInstance;
 public class RegistReaderAdapter extends BaseQuickAdapter<String, BaseViewHolder>{
 
    public RegistReaderAdapter(int layoutResId, @Nullable List<String> data) {
-	super(layoutResId, data);
+      super(layoutResId, data);
    }
 
    @Override
@@ -50,7 +49,7 @@ public class RegistReaderAdapter extends BaseQuickAdapter<String, BaseViewHolder
                if (powerByte < 0 || powerByte > 30) {
                   throw new Exception();
                }
-               getInstance().setUhfReaderPower(item, powerByte);
+               ReaderManager.getManager().setPower(item, powerByte);
                EventBusUtils.post(new Event.EventTestIdAndPower(null,"设置RFID reader功率为："+powerByte));
             } catch (Exception ex) {
                EventBusUtils.post(new Event.EventTestIdAndPower(null,"请输入有效的功率数值: 1-30"));

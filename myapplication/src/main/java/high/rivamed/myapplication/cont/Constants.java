@@ -52,7 +52,7 @@ public class Constants {
     public static final String CONFIG_016 = "016";//是否启用功能开柜
     public static final String CONFIG_017 = "017";//是否启用紧急登录
     public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
-    public static final String CONFIG_023 = "023";//启用未确认耗材
+    public static final String CONFIG_026 = "026";//启用未确认耗材
 
     public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
     public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水
@@ -104,6 +104,10 @@ public class Constants {
 
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN
+
+    public static final String READER_NAME = "reader_name";//reader的厂家
+    public static final String READER_NAME_RODINBELL = "RODINBELL";//reader的厂家罗丹贝尔
+    public static final String READER_NAME_COLU = "COLU";//reader的厂家鸿路
 
     public static final String ERROR_200 = "200";//请求正常
     public static final String ERROR_1010 = "1010";//系统异常

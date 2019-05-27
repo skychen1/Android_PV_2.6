@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +37,6 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.TimelyDetailsActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
@@ -174,7 +174,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private TimelyAllAdapter  mTimelyAllAdapter;
    private String            mToJson;
    public static boolean                    mPauseS  = true;
-   private       Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   private       Map<String, List<EpcInfo>> mEPCDate = new TreeMap<>();
    int k = 0;
 
    private LoadingDialog.Builder mLoading;
@@ -549,7 +549,7 @@ public class TimelyAllFrag extends SimpleFragment {
     * 扫描后传值
     */
 
-   private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+   private void getDeviceDate(String deviceId, Map<String, List<EpcInfo>> epcs) {
 	if (mBoxIdListss != null) {
 	   for (String s : mBoxIdListss) {
 		LogUtils.i(TAG, "mBoxIdListss   " + s);
@@ -562,7 +562,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
 			mEpcList = new ArrayList<>();
 			mEpcsNumber += epcs.size();
-			for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+			for (Map.Entry<String, List<EpcInfo>> v : epcs.entrySet()) {
 			   Inventory inventory = new Inventory();
 			   inventory.setEpc(v.getKey());
 			   mEpcList.add(inventory);

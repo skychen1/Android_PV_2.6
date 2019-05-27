@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -28,6 +29,7 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
@@ -162,28 +164,28 @@ public class UIUtils {
     * @param textview
     */
    public static void initTermOfValidity(
-	   Context mContext, int  IsErrorOperation, int type, TextView textview) {
+	   Context mContext, int IsErrorOperation, int type, TextView textview) {
 	if (type == 0) {
-//	   textview.setBackgroundResource(R.drawable.bg_text_red);
+	   //	   textview.setBackgroundResource(R.drawable.bg_text_red);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_overdue_prompt));
 	} else if (type == 3) {
-//	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
+	   //	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_100_prompt));
 	} else if (type == 2) {
-//	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
+	   //	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_70_prompt));
 	} else if (type == 1) {
-//	   textview.setBackgroundResource(R.drawable.bg_text_orange);
+	   //	   textview.setBackgroundResource(R.drawable.bg_text_orange);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_28_prompt));
 	} else if (type == 4) {
-//	   if (helper.getAdapterPosition() % 2 == 0) {
-//		textview.setBackgroundResource(R.color.bg_color);
-//	   } else {
-//		textview.setBackgroundResource(R.color.bg_f);
-//	   }
-	   if (IsErrorOperation==1){
+	   //	   if (helper.getAdapterPosition() % 2 == 0) {
+	   //		textview.setBackgroundResource(R.color.bg_color);
+	   //	   } else {
+	   //		textview.setBackgroundResource(R.color.bg_f);
+	   //	   }
+	   if (IsErrorOperation == 1) {
 		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
-	   }else {
+	   } else {
 		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   }
 
@@ -370,10 +372,11 @@ public class UIUtils {
 	   view.setSystemUiVisibility(uiOptions);
 	}
    }
+
    /**
     * 获取代办任务的数量
     */
-   public static void setMessagersV(){
+   public static void setMessagersV() {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
@@ -384,9 +387,9 @@ public class UIUtils {
 			try {
 			   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
 			   int size = emergencyBean.getMessages().size();
-			   if (emergencyBean.getMessages().size()==0){
+			   if (emergencyBean.getMessages().size() == 0) {
 				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
-			   }else {
+			   } else {
 				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
 			   }
 			} catch (JsonSyntaxException e) {
@@ -396,5 +399,43 @@ public class UIUtils {
 		});
 	   }
 	}).start();
+   }
+
+   /**
+    * 禁止radiogroup点击
+    *
+    * @param testRadioGroup
+    */
+   public static void disableRadioGroup(RadioGroup testRadioGroup) {
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(false);
+	}
+   }
+
+   /**
+    * 恢复点击
+    *
+    * @param testRadioGroup
+    */
+   public static void enableRadioGroup(RadioGroup testRadioGroup) {
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(true);
+	}
+   }
+
+   /**
+    * 是否包含epc
+    *
+    * @return
+    */
+   public static boolean getVosType(List<InventoryVo> vos, String epc) {
+	if (vos != null) {
+	   for (int i = 0; i < vos.size(); i++) {
+		if (vos.get(i).getEpc().equals(epc)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
    }
 }

@@ -48,7 +48,7 @@ public interface NetApi {
     //库存状态
     String URL_STOCKSTATUS_TOP = "/consumables/inventory/rmApi/expireStatistics";//库存监控 耗材效期监控     新
     String URL_STOCKSTATUS_DETAILS = "/consumables/inventory/rmApi/inventoryStatusAndDetails";//库存详情和耗材库存预警    新
-    String URL_STOCKUNCON_RIGHT = "/rmApi/consumables/tCstInventory/findNoConfirm";//未确认耗材
+    String URL_STOCKUNCON_RIGHT = "/consumables/inventory/findNoConfirm";//未确认耗材
     String URL_STOCK_DETAIL = "/consumables/inventory/rmApi/detail";//查询单个耗材    新
 
 

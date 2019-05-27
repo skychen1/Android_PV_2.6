@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.ruihua.reader.net.bean.EpcInfo;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -23,7 +24,6 @@ import java.util.TreeMap;
 
 import butterknife.BindView;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
@@ -81,7 +81,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    private FastPagerAdapter mFastPagerAdapter;
 
    public  ArrayList<String>          mDoorList  = new ArrayList<>();
-   private Map<String, List<TagInfo>> mEPCDate   = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
    int k = 0;
    private int                   mOperation;
@@ -97,6 +97,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventOpenDoor(Event.EventFastOpenDoor event) {
+	EventBusUtils.post(new Event.EventFastTimeStart(false));
 	if (event.b) {
 	   if (!mIsClick) {
 		mInOutDto=null;
@@ -239,7 +240,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 			if (mEPCDate.size() == 0) {
 			   mEPCDatess.put("", box_id);//没有空格
 			}
-			for (Map.Entry<String, List<TagInfo>> v : mEPCDate.entrySet()) {
+			for (Map.Entry<String, List<EpcInfo>> v : mEPCDate.entrySet()) {
 			   mEPCDatess.put(v.getKey(), box_id);
 			}
 			LogUtils.i(TAG, "mEPCDates.mEPCDates()多reader  " + mEPCDatess.size());
@@ -250,7 +251,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   if (event.epcs.size() == 0) {
 			mEPCDatess.put(" ", box_id);//1个空格
 		   }
-		   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
 			mEPCDatess.put(v.getKey(), box_id);
 		   }
 		   LogUtils.i(TAG, "mEPCDates.mEPCDates()单reader  " + mEPCDatess.size());

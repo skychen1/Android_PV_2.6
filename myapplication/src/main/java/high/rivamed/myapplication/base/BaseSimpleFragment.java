@@ -37,6 +37,8 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.utils.UIUtils.setMessagersV;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -192,7 +194,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-
+        setMessagersV();//获取消息数量
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,

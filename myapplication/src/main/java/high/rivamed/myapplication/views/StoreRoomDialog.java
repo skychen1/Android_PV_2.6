@@ -231,12 +231,16 @@ public class StoreRoomDialog extends Dialog {
 	   mRigtht.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   if (mType == 1) {
-			EventBusUtils.post(new Event.outBoxEvent("x", mCode, dialog, mIntentType));
-		   } else if (mType == 2) {
-			EventBusUtils.post(new Event.outBoxEvent("2", mName, dialog, mIntentType));
+		   if (UIUtils.isFastDoubleClick(R.id.dialog_sure)) {
+			return;
 		   } else {
-			EventBusUtils.post(new Event.outBoxEvent("3", mCode, dialog, mIntentType));
+			if (mType == 1) {
+			   EventBusUtils.post(new Event.outBoxEvent("x", mCode, dialog, mIntentType));
+			} else if (mType == 2) {
+			   EventBusUtils.post(new Event.outBoxEvent("2", mName, dialog, mIntentType));
+			} else {
+			   EventBusUtils.post(new Event.outBoxEvent("3", mCode, dialog, mIntentType));
+			}
 		   }
 		}
 	   });

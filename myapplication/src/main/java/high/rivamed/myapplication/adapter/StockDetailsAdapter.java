@@ -46,11 +46,16 @@ public class StockDetailsAdapter extends
 	findId(helper);
 	int four = item.getExpireStatus();
 	mSeven_one.setText(item.getEpc());
-	mSeven_two.setText(item.getUpdateTime());
+	mSeven_two.setText(item.getUpdateDateTime());
 	mSeven_three.setText(item.getStatus());
-	mSeven_four.setText(item.getExpirationText());
+	mSeven_four.setText(item.getExpiryDate());
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), four, mSeven_four);
+	}
+	if (item.getExpireStatus()==0){
+	   mSeven_four.setText("已过期");
+	   mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.bg_f));
 	}
    }
    private void findId(BaseViewHolder helper) {

@@ -59,7 +59,7 @@ public class TimelyProfitAdapter
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
 	mSeven_three.setText(item.getCstSpec());
-	mSeven_four.setText(item.getExpirationText());
+	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(six+"");
 	mSeven_seven.setText(seven+"");

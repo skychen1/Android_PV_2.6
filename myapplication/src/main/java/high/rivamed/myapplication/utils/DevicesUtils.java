@@ -3,11 +3,13 @@ package high.rivamed.myapplication.utils;
 import android.content.Context;
 import android.view.WindowManager;
 
+import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.ruihua.reader.ReaderManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.rivamed.DeviceManager;
-import cn.rivamed.device.DeviceType;
+import cn.rivamed.Eth002Manager;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -21,23 +23,36 @@ import cn.rivamed.device.DeviceType;
  * 更新描述：   ${TODO}
  */
 public class DevicesUtils {
-
+   public static  List<DeviceInfo>  arrayList = new ArrayList();
+   /**
+    * 获取设备连接设备
+    */
+   public static List<DeviceInfo> QueryConnectedDevice() {
+	arrayList.clear();
+	List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
+	for (int i = 0; i < deviceInfos.size(); i++) {
+	   deviceInfos.get(i).setDeviceType(DeviceInfo.DeviceType.Eth002);
+	}
+	List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
+	for (int i = 0; i < connectedDevice.size(); i++) {
+	   connectedDevice.get(i).setDeviceType(DeviceInfo.DeviceType.UHFREADER);
+	}
+	arrayList.addAll(deviceInfos);
+	arrayList.addAll(connectedDevice);
+	return  arrayList;
+   }
    /**
     * 获取锁
     * @return
     */
    public static List<String> getEthDeviceId() {
-	List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance()
-		.QueryConnectedDevice();
-	String s = "";
+	List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
+	//	String s = "";
 	List<String> identifition = new ArrayList<>();
-	for (DeviceManager.DeviceInfo d : deviceInfos) {
-	   if (d.getDeviceType() == DeviceType.Eth002) {
-		String eth002DeviceId = d.getIdentifition();
-		identifition.add(eth002DeviceId);
-	   }
-	   s += d.getIdentifition() + "|||";
-
+	for (DeviceInfo d : deviceInfos) {
+	   String eth002DeviceId = d.getIdentification();
+	   identifition.add(eth002DeviceId);
+	   //	   s += d.getIdentification() + "|||";
 	}
 	return identifition;
    }
@@ -46,24 +61,31 @@ public class DevicesUtils {
     * @return
     */
    public static List<String> getReaderDeviceId() {
-	List<DeviceManager.DeviceInfo> deviceInfos = DeviceManager.getInstance()
-		.QueryConnectedDevice();
+	List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
 	List<String> identifition = new ArrayList<>();
-	for (DeviceManager.DeviceInfo d : deviceInfos) {
-	   if (d.getDeviceType() == DeviceType.UHFREADER) {
-		String uhfDeviceId = d.getIdentifition();
-		identifition.add(uhfDeviceId);
-	   }
+	for (DeviceInfo d : connectedDevice) {
+	   String uhfDeviceId = d.getIdentification();
+	   identifition.add(uhfDeviceId);
 	}
 	return identifition;
    }
-	/**
-	 * 获取当前屏幕宽度px(像素)
-	 */
-	public static int getScreenWidth(Context context) {
-		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-		int width = wm.getDefaultDisplay().getWidth();
-		return width;
+   /**
+    * 获取当前屏幕宽度px(像素)
+    */
+   public static int getScreenWidth(Context context) {
+	WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+	int width = wm.getDefaultDisplay().getWidth();
+	return width;
+   }
+   /**
+    * 检测所有门锁是否关闭 true 关闭，false未关闭
+    *
+    * @return
+    */
+   public static void getDoorStatus() {
+	List<DeviceInfo> connectedDevice = Eth002Manager.getEth002Manager().getConnectedDevice();
+	for (DeviceInfo s : connectedDevice) {
+	   Eth002Manager.getEth002Manager().checkDoorState(s.getIdentification());
 	}
-
+   }
 }

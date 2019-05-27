@@ -9,10 +9,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;
 
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
-
-import static cn.rivamed.DeviceManager.getInstance;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -35,7 +34,6 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
    private TextView     mItemSettingCloss;
    private TextView     mItemSettingStats;
    private TextView     mItemRegisteFinger;
-   private TextView     mItemComparisonFinger;
 
 
 
@@ -49,21 +47,21 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemSettingOpen.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = getInstance().OpenDoor(item);
+            int ret = Eth002Manager.getEth002Manager().openDoor(item);
             RegisteLockFrag.AppendLog("开门命令已发出 ret=" + ret + "      DeviceId   " + item);
          }
       });
       mItemSettingStats.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = getInstance().CheckDoorState(item);
+            int ret = Eth002Manager.getEth002Manager().checkDoorState(item);
             RegisteLockFrag.AppendLog("检查门锁指令已发出 ret=" + ret+"   ：设备ID:   "+item);
          }
       });
       mItemRegisteFinger.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = getInstance().FingerReg(item);
+            int ret =  Eth002Manager.getEth002Manager().fingerReg(item);
             RegisteLockFrag.AppendLog("指纹注册命令已发送 RET=" + ret + ";请等待质问注册执行结果");
          }
       });

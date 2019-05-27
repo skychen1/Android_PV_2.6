@@ -1,0 +1,28 @@
+1，将moudle（libdevicesbase）和该moudle一起烤至需要使用的项目；
+2，在需要使用的项目依赖该moudle；
+3，在application中调用方法传入连接的类型，类型参数为静态常量类ReaderConnectType中选择；
+     默认是网络连接
+     ReaderManager.getManager().setConnectType(ReaderConnectType.TYPE_LOCAL);
+4    设置是否是模拟形式，默认不是模拟，传入true就是模拟模式，不需要设备也能运行返回数据
+      ReaderManager.getManager().setSimulation(true);
+5， 连接设备：传入设备的厂家类型，在常量类ReaderProducerType中选择
+     ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_LOCAL_RAYLINKS);
+6，在要使用的地方注册callback： ReaderManager().registerCallBack(new RodinbellCallBack() {}；所有的数据将回调在该接口中；
+7，在需要的地方调用对应的方法ReaderManager().startScan(rodinbellId, scanTime)；
+8，所有的使用方法集合：
+     （1）：startScan，开始扫描
+     （2）：stopScan  ， 停止扫描
+     （3）：setPower ，设置功率
+     （4）：checkAnt  ，查询天线状况（未实现）
+     （5）：openLock  ，开锁
+     （6）：closeLock，关锁
+     （7）：checkLockState，检测锁状态
+     （8）：openLight，开灯
+     （9）：closeLight  关灯
+     （10）：checkLightState  检测灯状态
+
+9，回调的方法与参数详情参看接口ReaderlCallBack；
+
+10，使用方法可以参考TestDevicesActivity ；
+
+11,  在不再使用reader的情下，一定要反注册回调，否则可能内存泄露 ReaderManager.getManager().unRegisterCallBack();

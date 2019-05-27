@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.rivamed.libdevicesbase.base.DeviceInfo;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
@@ -39,6 +39,7 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
+import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -115,7 +116,7 @@ public class RegisteFrag extends SimpleFragment {
    private       String                              mFootIpStr;
    private       String                              mFootMacStr;
    private       String                              mHeadName;
-   public static List<DeviceManager.DeviceInfo>      mDeviceInfos;
+   public static List<DeviceInfo>                    mDeviceInfos;
    private       List<TBaseDevices>                  mBaseDevices;
    private       DeviceNameBeanX                     mNameBean;
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
@@ -264,21 +265,21 @@ public class RegisteFrag extends SimpleFragment {
 
 	mRecyclerview = mContext.findViewById(R.id.recyclerview);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
-	mFragRegisteNameEdit.setHint("2.6.1高值柜");
+	mFragRegisteNameEdit.setHint("2.6.7高值柜");
 	mFragRegisteModelEdit.setHint("rivamed");
 	mFragRegisteNumberEdit.setHint("1");
 	mFragRegisteSeveripEdit.setHint("192.168.1.1");
 	mFragRegistePortEdit.setHint("8016");
 
 	if (BuildConfig.DEBUG) {
-	   mFragRegisteNameEdit.setText("2.6.4柜子");
+	   mFragRegisteNameEdit.setText("2.6.7柜子");
 	   mFragRegisteModelEdit.setText("rivamed26xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.11.42");
-	   mFragRegistePortEdit.setText("8017");
+	   mFragRegisteSeveripEdit.setText("192.168.11.30");
+	   mFragRegistePortEdit.setText("8018");
 	}
 
-	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
 	if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
 	   mSwitch.setChecked(true);
@@ -434,7 +435,7 @@ public class RegisteFrag extends SimpleFragment {
 	if (mDeviceInfos != null) {
 	   for (int i = 0; i < mDeviceInfos.size(); i++) {//第三层内部部件标识的数据
 		TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
-		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentifition());
+		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentification());
 		partsmacBean1.setPartsIp(mDeviceInfos.get(i).getRemoteIP());
 		mSmallmac.add(partsmacBean1);
 	   }
@@ -678,7 +679,7 @@ public class RegisteFrag extends SimpleFragment {
     * 填写服务器后进行绑定服务器，获取设备名称
     */
    private void getDeviceName() {
-	mDeviceInfos = DeviceManager.getInstance().QueryConnectedDevice();
+	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	List<String> strings = new ArrayList<>();
 	for (int i = 0; i < mDeviceInfos.size(); i++) {
 	   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
@@ -735,7 +736,7 @@ public class RegisteFrag extends SimpleFragment {
 	if (mDeviceInfos != null) {
 	   for (int i = 0; i < mDeviceInfos.size(); i++) {//第三层内部部件标识的数据
 		TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
-		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentifition());
+		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentification());
 		partsmacBean1.setPartsIp(mDeviceInfos.get(i).getRemoteIP());
 
 		mSmallmac.add(partsmacBean1);

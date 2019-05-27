@@ -4,24 +4,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.LitePal;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.fragment.ContentRunWateFrag;
 import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.NotificationsUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -34,6 +37,7 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -56,10 +60,8 @@ public class HomeActivity extends SimpleActivity {
 
    @BindView(R.id.content_syjl)
    RadioButton mContentSyjl;
-   @BindView(R.id.home_rg)
-   RadioGroup  mHomeRg;
-   @BindView(R.id.rg_gone)
-   View        mHomeRgGone;
+   public static RadioGroup  mHomeRg;
+  public static View        mHomeRgGone;
    @BindView(R.id.content_consume_operate)
    RadioButton mContentConsumeOperate;
    @BindView(R.id.content_running_wate)
@@ -76,33 +78,17 @@ public class HomeActivity extends SimpleActivity {
    public static final int CHECK   = 3;
    public static final int SYJL    = 4;
    private int     LastId;
+   private boolean           mDoorStatus     = true;
+   private ArrayList<String> mEthDevices     = new ArrayList<>();
+   private List<String>      mDeviceSizeList = new ArrayList<>();
+   private ArrayList<String> mListDevices;
 
-   /**
-    * 开锁后禁止点击左侧菜单栏按钮
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onHomeNoClick(Event.HomeNoClickEvent event) {
-	LogUtils.i(TAG, "event   " + event.isClick);
-	if (event.isClick) {
-	   mHomeRgGone.setVisibility(View.VISIBLE);
-	   disableRadioGroup(mHomeRg);
-	} else {
-	   mHomeRgGone.setVisibility(View.GONE);
-	   enableRadioGroup(mHomeRg);
-	}
-   }
-
-   public void disableRadioGroup(RadioGroup testRadioGroup) {
-	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
-	   testRadioGroup.getChildAt(i).setEnabled(false);
-	}
-   }
-
-   public void enableRadioGroup(RadioGroup testRadioGroup) {
-	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
-	   testRadioGroup.getChildAt(i).setEnabled(true);
+   @Override
+   protected void onCreate(@Nullable Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean idBean : boxIdBeans) {
+	   mDeviceSizeList.add(idBean.getDevice_id());
 	}
    }
 
@@ -184,6 +170,8 @@ public class HomeActivity extends SimpleActivity {
 
    @Override
    public void onBindViewBefore() {
+	mHomeRgGone =findViewById(R.id.rg_gone);
+	mHomeRg =findViewById(R.id.home_rg);
 
    }
 

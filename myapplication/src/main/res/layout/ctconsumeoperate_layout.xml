@@ -45,6 +45,7 @@
 				android:id="@+id/rg_top_gone"
 				android:visibility="gone"
 				android:layout_width="match_parent"
+
 				android:layout_height="@dimen/y130">
 			</View>
 		</RelativeLayout>
@@ -144,6 +145,7 @@
 		</View>
 	</RelativeLayout>
 	<LinearLayout
+		android:id="@+id/consume_openall_down"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1"

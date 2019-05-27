@@ -13,6 +13,9 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
+import com.rivamed.libdevicesbase.utils.LogUtils;
+import com.ruihua.reader.ReaderManager;
+import com.ruihua.reader.ReaderProducerType;
 
 import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
@@ -22,9 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import cn.rivamed.DeviceManager;
-import cn.rivamed.device.Service.Eth002Service.Eth002ServiceType;
-import cn.rivamed.device.Service.UhfService.UhfDeviceType;
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
@@ -33,16 +34,19 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
+import static high.rivamed.myapplication.cont.Constants.READER_NAME;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 public class App extends Application {
 
    private List<Activity> oList;//用于存放所有启动的Activity的集合
 
-   public static final String TAG         = "BaseApplication";
-   public static       int    READER_TIME = 3000;     //扫描时间
+   public static final String TAG            = "BaseApplication";
+   public static       int    READER_TIME    = 3000;     //扫描时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
-   private static App     instance;
+   private static App instance;
    public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
    public static List<PushFormDateBean.OrdersBean> mPushFormOrders   = new ArrayList<>();
 
@@ -56,7 +60,6 @@ public class App extends Application {
    public static boolean        mTitleMsg       = false;
    public static ServiceManager mServiceManager = null;
    private static Context mAppContext;
-
 
    public static synchronized App getInstance() {
 	return instance;
@@ -85,24 +88,46 @@ public class App extends Application {
 	registDevice();//注册硬件
 	instance = this;
 	initOkGo();
+	LogUtils.setDebugMode(false);
    }
-   public static void initPush(String id){
-	if (id!=null){
+
+   public static void initPush(String id) {
+	if (id != null) {
 	   mServiceManager = new ServiceManager(UIUtils.getContext());
-	   mServiceManager.init("CC39A99BD90D179F", SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), "5222");
+	   mServiceManager.init("CC39A99BD90D179F",
+					SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), "5222");
 	   mServiceManager.startService(id);
 	}
    }
-   private void registDevice() {
+
+   public void registDevice() {
+
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_COLU_NETTY, 8010);
-		DeviceManager.getInstance().AppendUhfService(UhfDeviceType.UHF_READER_RODINBELL, 8014);
-		DeviceManager.getInstance().AppendEht002Service(Eth002ServiceType.Eth002V2, 8012);
+		//设置reader的连接方式，不设置，默认为网络连接方式
+		//		ReaderManager.getManager().setConnectType(ReaderConnectType.TYPE_NET);
+		//设置是否是模拟形式，默认不是模拟
+		//		ReaderManager.getManager().setSimulation(true);
+		//连接罗丹贝尔的设备
+		if (SPUtils.getString(mAppContext, READER_NAME) == null ||
+		    SPUtils.getString(mAppContext, READER_NAME)
+			    .equals(READER_NAME_RODINBELL)) {
+		   ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+		} else if (SPUtils.getString(mAppContext, READER_NAME) != null &&
+			     SPUtils.getString(mAppContext, READER_NAME)
+				     .equals(READER_NAME_COLU)) {
+		   ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+		}
+		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+
+		//li模块儿
+		Eth002Manager.getEth002Manager().startService(8012);
 	   }
 	}).start();
    }
+
    /**
     * 加载网络框架
     */
@@ -139,8 +164,6 @@ public class App extends Application {
 			0);                              //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 
    }
-
-
 
    /**
     * 添加Activity

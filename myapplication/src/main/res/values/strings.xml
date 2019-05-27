@@ -41,4 +41,8 @@
 
     <string name="log_closs">全日志收集关闭，请重新启动APP，只收集部分警告和崩溃日志！</string>
     <string name="log_open">请重新启动APP，才会进行全日志收集</string>
+
+    <string name="content_clossdoor_text">请关闭柜门再进行操作！</string>
+
+
 </resources>

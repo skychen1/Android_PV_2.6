@@ -29,6 +29,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 public class UnNetCstUtils {
 
    private static List<InventoryVo> sVos;
+   private static List<InventoryVo> mAllCstVos = new ArrayList<>();
    static int type = 0;//控制第一次请求，然后需要等到重新获取新的耗材后才重置
    /**
     * 所有耗材数据的获取（用于本地）
@@ -54,7 +55,15 @@ public class UnNetCstUtils {
 	   }
 	});
    }
-
+   /**
+    * 获取本地所有的耗材数据信息
+    * @return
+    */
+   public static List<InventoryVo> getLocalAllCstVos(){
+	mAllCstVos.clear();
+	mAllCstVos = LitePal.findAll(InventoryVo.class);
+	return mAllCstVos;
+   }
    /**
     * 判断耗材数据库是否有变动
     * @return

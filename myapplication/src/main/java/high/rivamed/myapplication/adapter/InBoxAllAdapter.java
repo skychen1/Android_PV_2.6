@@ -90,7 +90,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getEpc());
 	mSeven_three.setText(item.getCstSpec());
-	mSeven_four.setText(item.getExpirationText());
+	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
 	if (status!=null&&status.equals("2")){
 	   mSeven_six.setText("领用");

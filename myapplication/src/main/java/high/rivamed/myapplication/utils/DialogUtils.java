@@ -18,12 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
-import cn.rivamed.model.TagInfo;
+import cn.rivamed.Eth002Manager;
+import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
@@ -403,29 +400,14 @@ public class DialogUtils {
         });
 
         builder.create().show();
-        DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
             @Override
-            public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
+            public void onConnectState(String deviceId, boolean isConnect) {
 
             }
 
             @Override
-            public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
-
-            }
-
-            @Override
-            public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
-
-            }
-
-            @Override
-            public void OnIDCard(String deviceId, String idCard) {
-
-            }
-
-            @Override
-            public void OnFingerFea(String deviceId, String fingerFea) {
+            public void onFingerFea(String deviceId, String fingerFea) {
                 times[0]++;
                 String myfingerFea = fingerFea.trim().replaceAll("\n", "");
                 if (times[0] == 1) {
@@ -447,54 +429,31 @@ public class DialogUtils {
             }
 
             @Override
-            public void OnFingerRegExcuted(String deviceId, boolean success) {
+            public void onFingerRegExcuted(String deviceId, boolean success) {
 
             }
 
             @Override
-            public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
 
             }
 
             @Override
-            public void OnDoorOpened(String deviceIndentify, boolean success) {
+            public void onIDCard(String deviceId, String idCard) {
+            }
+
+            @Override
+            public void onDoorOpened(String deviceIndentify, boolean success) {
 
             }
 
             @Override
-            public void OnDoorClosed(String deviceIndentify, boolean success) {
+            public void onDoorClosed(String deviceIndentify, boolean success) {
 
             }
 
             @Override
-            public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-
-            }
-
-            @Override
-            public void OnUhfScanRet(
-                    boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
-            }
-
-
-            @Override
-            public void OnUhfScanComplete(boolean success, String deviceId) {
-
-            }
-
-            @Override
-            public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-            }
-
-            @Override
-            public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-            }
-
-            @Override
-            public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
 
             }
         });
@@ -513,24 +472,29 @@ public class DialogUtils {
         });
 
         builder.create().show();
-        DeviceManager.getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
             @Override
-            public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
+            public void onConnectState(String deviceId, boolean isConnect) {
 
             }
 
             @Override
-            public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
+            public void onFingerFea(String deviceId, String fingerFea) {
 
             }
 
             @Override
-            public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
+            public void onFingerRegExcuted(String deviceId, boolean success) {
 
             }
 
             @Override
-            public void OnIDCard(String deviceId, String idCard) {
+            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+
+            }
+
+            @Override
+            public void onIDCard(String deviceId, String idCard) {
                 mIdCard[0] = idCard;
                 UIUtils.runInUIThread(new Runnable() {
                     @Override
@@ -541,58 +505,17 @@ public class DialogUtils {
             }
 
             @Override
-            public void OnFingerFea(String deviceId, String fingerFea) {
+            public void onDoorOpened(String deviceIndentify, boolean success) {
 
             }
 
             @Override
-            public void OnFingerRegExcuted(String deviceId, boolean success) {
+            public void onDoorClosed(String deviceIndentify, boolean success) {
 
             }
 
             @Override
-            public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-            }
-
-            @Override
-            public void OnDoorOpened(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void OnDoorClosed(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-
-            }
-
-            @Override
-            public void OnUhfScanRet(
-                    boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
-
-            }
-
-            @Override
-            public void OnUhfScanComplete(boolean success, String deviceId) {
-
-            }
-
-            @Override
-            public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
-            }
-
-            @Override
-            public void OnUhfSetPowerRet(String deviceId, boolean success) {
-
-            }
-
-            @Override
-            public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
+            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
 
             }
         });

@@ -53,7 +53,7 @@ public class TimelyAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	int five = item.getCountActual();
 	mSeven_one.setText(item.getCstName());
 	mSeven_two.setText(item.getCstSpec());
-	mSeven_three.setText(item.getExpirationText());
+	mSeven_three.setText(item.getExpiryDate());
 	mSeven_four.setText(item.getDeviceName());
 	mSeven_five.setText(five+"");
 	mSeven_six.setText(six+"");

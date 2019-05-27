@@ -14,11 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.rivamed.libdevicesbase.base.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.PartsmacPopAdapter;
 import high.rivamed.myapplication.bean.TBaseDevices;
@@ -52,10 +52,10 @@ public class MacPopupWindow extends PopupWindow {
    private       TextView            mTextView;
    private       TextView            mTextViewIp;
 //   private final List<TBaseDevices.tBaseDevices.partsmacBean> mDate;
-   private final List<DeviceManager.DeviceInfo> mDate;
+   private final List<DeviceInfo> mDate;
 
 //   public MacPopupWindow(Context context, List<TBaseDevices.tBaseDevices.partsmacBean> data) {
-   public MacPopupWindow(Context context, List<DeviceManager.DeviceInfo>  data) {
+   public MacPopupWindow(Context context, List<DeviceInfo>  data) {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
 //	mDate = data;

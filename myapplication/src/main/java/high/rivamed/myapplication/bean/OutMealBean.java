@@ -18,13 +18,13 @@ public class OutMealBean implements Serializable{
 
    /**
     * id : 0
-    * suites : [{"suiteId":"402882a0675e1d4c01675e1ea68d0000","suiteName":"taozu66","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-12-05","status":1,"inventoryEnough":false},{"suiteId":"402882a06753298a016753dc4bb40005","suiteName":"1","creatorId":"10000000000000000000000000000000","creatorName":"super","createTime":"2018-11-27","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06753f0160167543cc169000b","suiteName":"123","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06754af25016754b6ae110009","suiteName":"cehsi222","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06754af25016754b76650000f","suiteName":"dhdh123","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"1","suiteName":"ceshi1","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-27","status":1,"inventoryEnough":false}]
+    * suiteVos : [{"suiteId":"402882a0675e1d4c01675e1ea68d0000","suiteName":"taozu66","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-12-05","status":1,"inventoryEnough":false},{"suiteId":"402882a06753298a016753dc4bb40005","suiteName":"1","creatorId":"10000000000000000000000000000000","creatorName":"super","createTime":"2018-11-27","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06753f0160167543cc169000b","suiteName":"123","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06754af25016754b6ae110009","suiteName":"cehsi222","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"402882a06754af25016754b76650000f","suiteName":"dhdh123","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-28","status":1,"inventoryEnough":false},{"suiteId":"1","suiteName":"ceshi1","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","updateTime":"2018-11-27","status":1,"inventoryEnough":false}]
     * deptId : 40287281674eaca301674ebd649d0003
     */
 
-   private int id;
+   private int              id;
    private String           deptId;
-   private List<SuitesBean> suites;
+   private List<SuitesBean> suiteVos;
 
    public int getId() { return id;}
 
@@ -34,9 +34,9 @@ public class OutMealBean implements Serializable{
 
    public void setDeptId(String deptId) { this.deptId = deptId;}
 
-   public List<SuitesBean> getSuites() { return suites;}
+   public List<SuitesBean> getSuiteVos() { return suiteVos;}
 
-   public void setSuites(List<SuitesBean> suites) { this.suites = suites;}
+   public void setSuiteVos(List<SuitesBean> suiteVos) { this.suiteVos = suiteVos;}
 
    public static class SuitesBean {
 

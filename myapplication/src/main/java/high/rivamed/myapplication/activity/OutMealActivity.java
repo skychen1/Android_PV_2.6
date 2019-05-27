@@ -362,7 +362,7 @@ public class OutMealActivity extends BaseSimpleActivity {
             public void onSucceed(String result) {
                 LogUtils.i(TAG,"result   "+result);
 		   OutMealBean outMealBean = mGson.fromJson(result, OutMealBean.class);
-		   mSuites = outMealBean.getSuites();
+		   mSuites = outMealBean.getSuiteVos();
 		   if (!isDefulat) {
                     if (mSuites.size()>0) {
                         mPopupWindowSearch = new MealPopupWindow(OutMealActivity.this, mSuites);

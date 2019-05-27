@@ -45,7 +45,6 @@ public class TimerService extends Service {
 	   @Override
 	   public void onSuccess(Response<String> response) {
 		String body = response.body();
-//		LogUtils.i("xxb", "result   " + body.equals("true")+"    "+mTitleConn);
 		if (body.equals("true")) {
 		   if (!mTitleConn){
 			EventBusUtils.post(new XmppEvent.XmmppConnect(true));

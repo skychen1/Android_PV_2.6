@@ -63,7 +63,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
    public  int               mSize;
    private List<InventoryVo> mStockDetailsDownList;
    private InventoryVo       mStockDetailsTopBean;
-
+   private int mExpireStatus;
    /**
     * 拿到耗材详情的数据
     * @param event
@@ -81,6 +81,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	mExpireStatus = getIntent().getIntExtra("expireStatus", -1);
 	loadStockDetails();
    }
 
@@ -101,7 +102,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
-	NetRequest.getInstance().getStockDetailDate(deviceCode, cstId, mContext, new BaseResult() {
+	NetRequest.getInstance().getStockDetailDate(mExpireStatus,deviceCode, cstId, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 

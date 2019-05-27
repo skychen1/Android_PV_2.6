@@ -219,7 +219,7 @@ public class FastOutFragment extends SimpleFragment {
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
 	LogUtils.i(TAG, "setOutBoxDate    " + 2);
-	setOutBoxDate(mInOutDto.getOutInventoryVos());
+//	setOutBoxDate(mInOutDto.getOutInventoryVos());
 
    }
 
@@ -319,7 +319,7 @@ public class FastOutFragment extends SimpleFragment {
     * 完成操作后看是否还有耗材，无耗材跳转入柜界面或者直接退出
     */
    private void overFinish() {
-	EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+	EventBusUtils.post(new Event.EventFastMoreScan(true));
 	UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
    }
 
@@ -349,37 +349,48 @@ public class FastOutFragment extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+		   EventBusUtils.post(new Event.EventFastMoreScan(true));
 		}
 		break;
 	   case R.id.timely_open_door:
-		if (!UIUtils.isFastDoubleClick()) {
+		if (!UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   mBtnFourLy.setEnabled(false);
 		   mBtnFourTh.setEnabled(false);
 		   mBtnFourYc.setEnabled(false);
-		   EventBusUtils.postSticky(new Event.EventFastOpenDoor(true));
+		   EventBusUtils.post(new Event.EventFastOpenDoor(true));
 		}
 		break;
 	   case R.id.btn_four_ly:
 		//确认
 		mIntentType = 1;
 		mSelType = 1;
-
-		setLyDate();
+		if (UIUtils.isFastDoubleClick(R.id.btn_four_ly)) {
+		   return;
+		} else {
+		   setLyDate();
+		}
 		break;
 	   case R.id.btn_four_yc:
 		//确认
 		mIntentType = 1;
 		mSelType = 2;
-		setYcDate(mIntentType);
-		break;
+		if (UIUtils.isFastDoubleClick(R.id.btn_four_yc)) {
+		   return;
+		} else {
+		   setYcDate(mIntentType);
+		   break;
+		}
 	   //	   case R.id.btn_four_tb:
 	   //		break;
 	   case R.id.btn_four_th:
 		//确认
 		mIntentType = 1;
 		mSelType = 3;
-		setThDate(mIntentType);
+		if (UIUtils.isFastDoubleClick(R.id.btn_four_th)) {
+		   return;
+		} else {
+		   setThDate(mIntentType);
+		}
 		break;
 	}
    }

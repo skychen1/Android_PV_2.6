@@ -126,7 +126,7 @@ public class PublicStockFrag extends SimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START3")) {
 	   Log.i("ccc", "START3:  " + mDeviceCode);
-//	   initData();
+	   initData();
 	}
    }
 
@@ -182,7 +182,7 @@ public class PublicStockFrag extends SimpleFragment {
 	} else if (mType_size == EIGHT && (mType_page.equals(STYPE_STOCK_RIGHT))) {
 	   mRightTop.setVisibility(View.GONE);
 	   mRelativeLayout.setVisibility(View.GONE);
-	   String[] array = mContext.getResources().getStringArray(R.array.eight_runwate_arrays);
+	   String[] array = mContext.getResources().getStringArray(R.array.eight_unconfirm_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
 
@@ -272,7 +272,7 @@ public class PublicStockFrag extends SimpleFragment {
 				   public void onItemClick(
 					   BaseQuickAdapter adapter, View view, int position) {
 					mContext.startActivity(
-						new Intent(mContext, StockMidTypeActivity.class));
+						new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus",-1));
 					InventoryVo vosBean = mInventoryVosS.get(position);
 					EventBusUtils.postSticky(new Event.EventStockDetailVo(vosBean));
 				   }
@@ -399,9 +399,8 @@ public class PublicStockFrag extends SimpleFragment {
 					   public void onItemClick(
 						   BaseQuickAdapter adapter, View view, int position) {
 						mContext.startActivity(
-							new Intent(mContext, StockMidTypeActivity.class));
-						InventoryVo inventoryVo = mInventoryVos.get(
-							position);
+							new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus",mStopFlag));
+						InventoryVo inventoryVo = mInventoryVos.get(position);
 						//						EventBusUtils.postSticky(inventoryVo);
 						EventBusUtils.postSticky(
 							new Event.EventStockDetailVo(inventoryVo));

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -39,7 +40,6 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.DeviceManager;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutFormConfirmAdapter;
 import high.rivamed.myapplication.base.App;
@@ -208,7 +208,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   private Map<String, List<TagInfo>> mEPCMapDate = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCMapDate = new TreeMap<>();
 
    private static boolean mIsFirst = true;
 
@@ -468,6 +468,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		.findBillStockByEpc(mGson.toJson(findBillOrderBean), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
+			EventBusUtils.postSticky(new Event.EventLoading(false));
 			LogUtils.i(TAG, "getBillStockByEpc   " + result);
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
 //			if (mBillOrderResultBean.getErrorEpcs() != null &&
@@ -511,6 +512,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			   mPublicAdapter.notifyDataSetChanged();
 			}
 			EventBusUtils.post(new Event.EventButton(true, true));
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			super.onError(result);
+			EventBusUtils.postSticky(new Event.EventLoading(false));
 		   }
 		});
    }
@@ -625,7 +632,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   if (k == boxIdBeansss.size()) {
 			LogUtils.i(TAG, "mEPCDate  zou l  ");
 			k = 0;
-			for (Map.Entry<String, List<TagInfo>> v : mEPCMapDate.entrySet()) {
+			for (Map.Entry<String, List<EpcInfo>> v : mEPCMapDate.entrySet()) {
 			   if (!mFindBillOrderBean.getEpcs().equals(v.getKey())) {
 				mFindBillOrderBean.getEpcs().add(v.getKey());
 			   }
@@ -636,7 +643,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
-		   for (Map.Entry<String, List<TagInfo>> v : event.epcs.entrySet()) {
+		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
 			if (!mFindBillOrderBean.getEpcs().equals(v.getKey())) {
 			   mFindBillOrderBean.getEpcs().add(v.getKey());
 			}

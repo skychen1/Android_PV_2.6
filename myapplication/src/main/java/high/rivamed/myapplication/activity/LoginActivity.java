@@ -102,7 +102,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetApi.URL_AUTHORITY_MENU;
 import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
@@ -266,7 +265,6 @@ public class LoginActivity extends SimpleActivity {
 	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
 	   SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, "");
 	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
-	   SPUtils.putString(UIUtils.getContext(), URL_AUTHORITY_MENU, "");
 	}
 
 	mConfigType = 0;//默认获取
@@ -371,17 +369,18 @@ public class LoginActivity extends SimpleActivity {
 		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
 		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
 		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
-		   for (int x = 0;
-			  x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
-			ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
-				.get(0)
-				.getChildren()
-				.get(x);
-			ChildrenBean mChildrenBean = new ChildrenBean();
-			mChildrenBean.setTitle(childrenBean.getTitle());
-			mChildrenBean.setAccountName(accountVosBean.getAccountName());
-			mChildrenBean.save();
-			mChildrenBeanX.getChildren().add(mChildrenBean);
+		   if (null!=homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+			for (int x = 0; x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+				   .get(0)
+				   .getChildren()
+				   .get(x);
+			   ChildrenBean mChildrenBean = new ChildrenBean();
+			   mChildrenBean.setTitle(childrenBean.getTitle());
+			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
+			   mChildrenBean.save();
+			   mChildrenBeanX.getChildren().add(mChildrenBean);
+			}
 		   }
 		   mChildrenBeanX.save();
 		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
@@ -985,7 +984,7 @@ public class LoginActivity extends SimpleActivity {
    public static void setMenuDateAndStart(
 	   List<HomeAuthorityMenuBean> fromJson, Gson mGson, Activity activity) {
 	if (fromJson.size() > 0 && null != fromJson.get(0) && null != fromJson.get(0).getChildren() &&
-	    fromJson.get(0).getChildren().size() > 0) {
+	    fromJson.get(0).getChildren().get(0).getTitle().equals("选择操作")){
 	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
 	   List<ChildrenBean> children = fromJson.get(0).getChildren().get(0).getChildren();
 	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -31,7 +32,6 @@ import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
@@ -118,7 +118,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private String mSurgeryId;
    private String mHisPatientId;
    private String mTempPatientId;
-   private Map<String, List<TagInfo>> mEPCDate = new TreeMap<>();
+   private Map<String, List<EpcInfo>> mEPCDate = new TreeMap<>();
    private LoadingDialog.Builder mLoading;
    int k = 0;
    private int    mAllPage = 1;
@@ -425,10 +425,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    /**
     * 扫描后传值
     */
-   private void getDeviceDate(String deviceId, Map<String, List<TagInfo>> epcs) {
+   private void getDeviceDate(String deviceId, Map<String, List<EpcInfo>> epcs) {
 	InventoryDto inventoryDto = new InventoryDto();
 	List<Inventory> epcList = new ArrayList<>();
-	for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+	for (Map.Entry<String, List<EpcInfo>> v : epcs.entrySet()) {
 	   Inventory inventory = new Inventory();
 	   inventory.setEpc(v.getKey());
 	   epcList.add(inventory);

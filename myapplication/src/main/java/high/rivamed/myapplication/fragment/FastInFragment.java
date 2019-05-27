@@ -57,7 +57,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 项目名称:    Android_PV_2.6.3
  * 创建者:      DanMing
  * 创建时间:    2018/12/7 10:07
- * 描述:        TODO:
+ * 描述:        快速开柜入柜
  * 包名:        high.rivamed.myapplication.fragment
  * <p>
  * 更新者：     $$Author$$
@@ -124,8 +124,8 @@ public class FastInFragment extends SimpleFragment {
    private       int            mInSize;
    public        InventoryDto   mInOutDto;
    public static CountDownTimer mStarts;
-   public static boolean mOnResume = false;
-   public static boolean mStartsType =false;
+   public static boolean mOnResume   = false;
+   public static boolean mStartsType = false;
    public  boolean mIsClick;
    private int     mCountTwoin;
    private int     mCountMoveIn;
@@ -136,11 +136,25 @@ public class FastInFragment extends SimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	mIsClick = event.isClick;
 	if (event.isClick) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mIsClick){
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+		if (mAllOutText != null) {
+		   mAllOutText.setText("请关闭柜门后进行操作！");
+		} else {
+		   mAllOutText.setText("");
+		}
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
+		}
+		return;
+	   }
 	} else {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
@@ -152,12 +166,26 @@ public class FastInFragment extends SimpleFragment {
 	if (event.type) {
 	   if (!event.bing) {//绑定的按钮转换
 		for (InventoryVo b : mInOutDto.getInInventoryVos()) {
+		   if (mIsClick){
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			if (mAllOutText != null) {
+			   mAllOutText.setText("请关闭柜门后进行操作！");
+			} else {
+			   mAllOutText.setText("");
+			}
+			if (mStarts != null) {
+			   mStarts.cancel();
+			   mTimelyRight.setText("确认并退出登录");
+			}
+			return;
+		   }
 		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 			  b.getExpireStatus() != 0)) {
 			mTimelyLeft.setEnabled(false);
 			mTimelyRight.setEnabled(false);
-			if (mAllOutText != null ) {
+			if (mAllOutText != null) {
 			   mAllOutText.setText(R.string.fast_in_error_string);
 			} else {
 			   mAllOutText.setText("");
@@ -277,18 +305,20 @@ public class FastInFragment extends SimpleFragment {
 	}
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
+	   mStartsType = true;
 	}
 	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	setInBoxDate(mInOutDto.getInInventoryVos());
 	if (mFastViewpager.getCurrentItem() == 0) {
 	   mStarts.cancel();
 	}
    }
+
    @Override
    public void onBindViewBefore(View view) {
 	mTimelyRight = view.findViewById(R.id.timely_right);
 	mTimelyLeft = view.findViewById(R.id.timely_left);
    }
+
    @Override
    public void onPause() {
 	super.onPause();
@@ -300,7 +330,13 @@ public class FastInFragment extends SimpleFragment {
     * 设置提交值
     */
    private void setDate(int mIntentType) {
-
+	mTimelyLeft.setEnabled(false);
+	mTimelyRight.setEnabled(false);
+	LogUtils.i(TAG, "SelInOutBoxTwoActivity   cancel");
+	if (mStarts != null) {
+	   mStarts.cancel();
+	   mTimelyRight.setText("确认并退出登录");
+	}
 	InventoryDto dto = new InventoryDto();
 	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
@@ -313,34 +349,59 @@ public class FastInFragment extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-		if (mIntentType == 2) {
-		   if (mInOutDto.getOutInventoryVos().size() == 0) {
-			UIUtils.putOrderId(mContext);
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-		   } else {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			if (mStarts!=null){
-			   mStarts.cancel();
+		InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
+		if (inventoryDto.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+		   if (mIntentType == 2) {
+			if (mInOutDto.getOutInventoryVos().size() == 0) {
+			   UIUtils.putOrderId(mContext);
+			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			} else {
+			   mTimelyLeft.setEnabled(false);
+			   mTimelyRight.setEnabled(false);
+			   EventBusUtils.post(new Event.EventFastMoreScan(true));
+			   if (mStarts != null) {
+				mStarts.cancel();
+				mTimelyRight.setText("确认并退出登录");
+			   }
 			}
-		   }
-		} else {
-		   if (mInOutDto.getOutInventoryVos().size() == 0) {
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
-			mContext.startActivity(new Intent(mContext, HomeActivity.class));
 		   } else {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			if (mStarts!=null){
-			   mStarts.cancel();
-			}
-		   }
+			if (mInOutDto.getOutInventoryVos().size() == 0) {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			   mContext.startActivity(new Intent(mContext, HomeActivity.class));
+			} else {
+			   mTimelyLeft.setEnabled(false);
+			   mTimelyRight.setEnabled(false);
+			   EventBusUtils.post(new Event.EventFastMoreScan(true));
+			   if (mStarts != null) {
+				mStarts.cancel();
+				mTimelyRight.setText("确认并退出登录");
 
+			   }
+			}
+
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
+		} else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mStarts.start();
+		   }
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
+	   }
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mStarts.start();
+		}
 	   }
 	});
    }
@@ -382,6 +443,20 @@ public class FastInFragment extends SimpleFragment {
 	   LogUtils.i(TAG, "b.getIsErrorOperation()    " + b.getIsErrorOperation() + "   " +
 				 b.getDeleteCount() + "b.getExpireStatus()  " + b.getExpireStatus() +
 				 "   " + mDtoOperation);
+	   if (mIsClick){
+		mTimelyLeft.setEnabled(false);
+		mTimelyRight.setEnabled(false);
+		if (mAllOutText != null) {
+		   mAllOutText.setText("请关闭柜门后进行操作！");
+		} else {
+		   mAllOutText.setText("");
+		}
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
+		}
+		return;
+	   }
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
 		  mDtoOperation != 8) ||
@@ -404,7 +479,7 @@ public class FastInFragment extends SimpleFragment {
 		} else {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
-		   if (mAllOutText != null ) {
+		   if (mAllOutText != null) {
 			mAllOutText.setText(R.string.fast_in_error_string);
 		   } else {
 			mAllOutText.setText("");
@@ -416,7 +491,6 @@ public class FastInFragment extends SimpleFragment {
 		   return;
 		}
 	   } else {
-		LogUtils.i(TAG, "SelInOutBoxTwoActivity.mStart   " + (mStarts == null));
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
 		if (mAllOutText != null && mInOutDto.getOutInventoryVos().size() != 0) {
@@ -439,7 +513,7 @@ public class FastInFragment extends SimpleFragment {
    private void setInBoxTitles(InventoryDto mInOutDto) {
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mInOutDto.getInInventoryVos()) {
-	   if(vosBean.getCstId()!=null){
+	   if (vosBean.getCstId() != null) {
 		strings.add(vosBean.getCstId());
 	   }
 	}
@@ -464,23 +538,27 @@ public class FastInFragment extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+		   EventBusUtils.post(new Event.EventFastMoreScan(true));
 		   mStarts.cancel();
 		   mTimelyRight.setText("确认并退出登录");
 		}
 		break;
 	   case R.id.timely_open_door:
-		if (!UIUtils.isFastDoubleClick()) {
-		   EventBusUtils.postSticky(new Event.EventFastOpenDoor(true));
+		if (!UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
+		   EventBusUtils.post(new Event.EventFastOpenDoor(true));
 		}
 		break;
 	   case R.id.timely_left:
-		//确认
-		mIntentType = 1;
-		if (mInOutDto.getInInventoryVos() != null) {
-		   setDate(mIntentType);
+		if (UIUtils.isFastDoubleClick(R.id.timely_left)) {
+		   return;
 		} else {
-		   ToastUtils.showShort("数据异常");
+		   //确认
+		   mIntentType = 1;
+		   if (mInOutDto.getInInventoryVos() != null) {
+			setDate(mIntentType);
+		   } else {
+			ToastUtils.showShort("数据异常");
+		   }
 		}
 		break;
 	   case R.id.timely_right:
@@ -534,14 +612,13 @@ public class FastInFragment extends SimpleFragment {
 	}
    }
 
-
-
    @Override
    public void onDestroyView() {
 	super.onDestroyView();
 	mInOutDto.getInInventoryVos().clear();
 	mInOutDto.getOutInventoryVos().clear();
 	mInOutDto = null;
+	mStarts = null;
 	EventBusUtils.unregister(this);
    }
 }

@@ -8,9 +8,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.ruihua.reader.ReaderCallback;
+import com.ruihua.reader.ReaderManager;
+import com.ruihua.reader.ReaderProducerType;
+import com.ruihua.reader.net.NetReaderManager;
+import com.ruihua.reader.net.bean.AntInfo;
+import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -25,10 +34,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
-import cn.rivamed.callback.DeviceCallBack;
-import cn.rivamed.device.DeviceType;
-import cn.rivamed.model.TagInfo;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistReaderAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
@@ -36,11 +41,15 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
-import static cn.rivamed.DeviceManager.getInstance;
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.getAppContext;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 
 /**
@@ -79,9 +88,17 @@ public class RegisteReaderFrag extends SimpleFragment {
    TextView     mItemSettingTime;
    @BindView(R.id.gone_ll)
    LinearLayout mGoneLl;
+
+   @BindView(R.id.reader_left)
+   RadioButton mReaderLeft;
+   @BindView(R.id.radioproup)
+   RadioGroup  mRadioGroup;
+   @BindView(R.id.reader_right)
+   RadioButton mReaderRight;
    private String mDiviceId;
    List<String> mDate = new ArrayList<>();
    private RegistReaderAdapter mAdapter;
+   private int                 mType;
 
    /**
     * adapter显示
@@ -90,11 +107,11 @@ public class RegisteReaderFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClick(Event.EventTestIdAndPower event) {
-      if (event.readerId==null){
+	if (event.readerId == null) {
 	   AppendLog(event.readerPower);
-	}else {
-	   getInstance().StartUhfScan(event.readerId, READER_TIME);
-	   AppendLog("启动持续扫描,设备ID=" + event.readerId + "，扫描时间为" + READER_TIME + "s ;");
+	} else {
+	   ReaderManager.getManager().startScan(event.readerId, READER_TIME);
+	   AppendLog("启动持续扫描,设备ID=" + event.readerId + "，扫描完成后" + READER_TIME + " ms 停止扫描;");
 	}
    }
 
@@ -111,8 +128,50 @@ public class RegisteReaderFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	initCallBack();
+	if (SPUtils.getString(getAppContext(), READER_NAME) == null || SPUtils.getString(getAppContext(), READER_NAME)
+		.equals(READER_NAME_RODINBELL)) {
+	   SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+	   mRadioGroup.check(R.id.reader_right);
+	} else if (SPUtils.getString(getAppContext(), READER_NAME) != null &&
+		     SPUtils.getString(getAppContext(), READER_NAME)
+			     .equals(READER_NAME_COLU)) {
+	   mRadioGroup.check(R.id.reader_left);
+	}
+	initReader();
 	mGoneLl.setVisibility(View.GONE);
+	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+	   @Override
+	   public void onCheckedChanged(RadioGroup group, int checkedId) {
+		ToastUtils.showLongSafe("Reader启动中，请勿频繁切换，稍后点击 开始检测");
+		switch (checkedId) {
+		   case R.id.reader_left:
+			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);
+			new Thread(new Runnable() {
+			   @Override
+			   public void run() {
+
+				NetReaderManager.getManager().stopService();
+				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+			   }
+			}).start();
+
+			break;
+		   case R.id.reader_right:
+			SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+
+			new Thread(new Runnable() {
+			   @Override
+			   public void run() {
+				Log.i("reader","启动罗丹");
+				NetReaderManager.getManager().stopService();
+				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+			   }
+			}).start();
+			break;
+		}
+	   }
+	});
+
    }
 
    @Override
@@ -138,88 +197,37 @@ public class RegisteReaderFrag extends SimpleFragment {
 	});
    }
 
-   private void initCallBack() {
-	getInstance().RegisterDeviceCallBack(new DeviceCallBack() {
+   /**
+    * 初始化罗丹贝尔回调
+    */
+   private void initReader() {
+	//设置回调
+	ReaderManager.getManager().registerCallback(new ReaderCallback() {
 	   @Override
-	   public void OnDeviceConnected(DeviceType deviceType, String deviceIndentify) {
+	   public void onConnectState(String deviceId, boolean isConnect) {
 
 	   }
 
 	   @Override
-	   public void OnDeviceDisConnected(DeviceType deviceType, String deviceIndentify) {
-		AppendLog("设备已断开：" + deviceType + ":::ID=" + deviceIndentify);
-	   }
-
-	   @Override
-	   public void OnCheckState(DeviceType deviceType, String deviceId, Integer code) {
-	   }
-
-	   @Override
-	   public void OnIDCard(String deviceId, String idCard) {
-	   }
-
-	   @Override
-	   public void OnFingerFea(String deviceId, String fingerFea) {
-	   }
-
-	   @Override
-	   public void OnFingerRegExcuted(String deviceId, boolean success) {
-	   }
-
-	   @Override
-	   public void OnFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-	   }
-
-	   @Override
-	   public void OnDoorOpened(String deviceIndentify, boolean success) {
-	   }
-
-	   @Override
-	   public void OnDoorClosed(String deviceIndentify, boolean success) {
-	   }
-
-	   @Override
-	   public void OnDoorCheckedState(String deviceIndentify, boolean opened) {
-	   }
-
-	   @Override
-	   public void OnUhfScanRet(boolean success, String deviceId, String userInfo, Map<String, List<TagInfo>> epcs) {
+	   public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("UHF Reader (" + deviceId + ")扫描完成\n");
-		stringBuilder.append("\t EPC数量" + epcs.size() + "个:\n");
-		for (Map.Entry<String, List<TagInfo>> v : epcs.entrySet()) {
+		stringBuilder.append("Reader (" + deviceId + ")扫描完成\n");
+		stringBuilder.append("\t EPC数量" + result.size() + "个:\n");
+		for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
 		   stringBuilder.append(v.getKey() + ";");
 		}
 		AppendLog(stringBuilder.toString());
 	   }
 
 	   @Override
-	   public void OnUhfScanComplete(boolean success, String deviceId) {
-		AppendLog("RFID扫描结束：" + deviceId + ";");
-	   }
-
-	   /**
-	    * 获取UHF Reader 的天线状态
-	    * <p>
-	    * 仅标识已使能的天线 （开启）
-	    * <p>
-	    * 无法获取 天线是否连接；
-	    * <p>
-	    * 对部分reader,连接即意味着使能
-	    * 但部分Reader，连接并不意味着使能，使能也并不意味着连接
-	    *
-	    * @param deviceId
-	    * @param success
-	    * @param ants
-	    */
-	   @Override
-	   public void OnGetAnts(String deviceId, boolean success, List<Integer> ants) {
-
+	   public void onScanNewEpc(String deviceId, String epc, int ant) {
+				String string;
+				string = ("\t EPC数量:1" + "个:" + epc + ", 被第" + ant + "根天线扫到");
+				AppendLog(string);
 	   }
 
 	   @Override
-	   public void OnUhfSetPowerRet(String deviceId, boolean success) {
+	   public void onSetPower(String deviceId, boolean success) {
 		if (success) {
 		   AppendLog("RFID设置功率结果：标识: " + deviceId + "----成功！");
 		} else {
@@ -228,41 +236,73 @@ public class RegisteReaderFrag extends SimpleFragment {
 	   }
 
 	   @Override
-	   public void OnUhfQueryPowerRet(String deviceId, boolean success, int power) {
-		if (success) {
-		   AppendLog("RFID读取功率结果：标识: " + deviceId + "; 功率 = " + power);
-		} else {
-		   AppendLog("RFID读取功率结果：标识: " + deviceId + "; 功率获取失败！");
-		}
+	   public void onGetPower(String deviceId, int power) {
+		AppendLog("RFID读取功率结果：标识: " + deviceId + "; 功率 = " + power);
+	   }
+
+	   @Override
+	   public void onGetFrequency(String deviceId, String frequency) {
+		AppendLog("设备：：" + deviceId + "的频率值是::" + frequency);
+	   }
+
+	   @Override
+	   public void onCheckAnt(String deviceId, List<AntInfo> ant) {
+		//nothing（暂未完成）
+	   }
+
+	   @Override
+	   public void onLockOpen(String deviceId, boolean isSuccess) {
+		AppendLog("设备：：" + deviceId + "开锁是否成功::" + isSuccess);
+	   }
+
+	   @Override
+	   public void onLockClose(String deviceId, boolean isSuccess) {
+		AppendLog("设备：：" + deviceId + "关锁是否成功::" + isSuccess);
+	   }
+
+	   @Override
+	   public void onLightOpen(String deviceId, boolean isSuccess) {
+		AppendLog("设备：：" + deviceId + "开灯是否成功::" + isSuccess);
+	   }
+
+	   @Override
+	   public void onLightClose(String deviceId, boolean isSuccess) {
+		AppendLog("设备：：" + deviceId + "关灯是否成功::" + isSuccess);
+	   }
+
+	   @Override
+	   public void onLockState(String deviceId, boolean isOpened) {
+		AppendLog("设备：：" + deviceId + "检测所的状态::" + isOpened);
+	   }
+
+	   @Override
+	   public void onLightState(String deviceId, boolean isOpened) {
+		AppendLog("设备：：" + deviceId + "检测灯的状态::" + isOpened);
 	   }
 	});
-
    }
 
    @OnClick({R.id.frag_start, R.id.item_setting_time})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
-	      if (mDate!=null){
+		if (mDate != null) {
 		   mDate.clear();
 		   mGoneLl.setVisibility(View.GONE);
 		   mTxtLog.setText("");
 		}
-
-		List<DeviceManager.DeviceInfo> deviceInfos = getInstance().QueryConnectedDevice();
+		List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
 		String s = "";
-		for (DeviceManager.DeviceInfo d : deviceInfos) {
-		   if (d.getDeviceType() == DeviceType.UHFREADER) {
-			mDiviceId = d.getIdentifition();
-			mDate.add(mDiviceId);
-			getInstance().getUhfReaderPower(mDiviceId);
-			s += "\t  设备类型 \t" + d.getDeviceType() + ";\t\t设备ID \t" + d.getIdentifition() +
-			     "\n";
-		   }
+		for (DeviceInfo de : connectedDevice) {
+
+		   mDiviceId = de.getIdentification();
+		   mDate.add(mDiviceId);
+		   ReaderManager.getManager().getPower(mDiviceId);
+		   s += "\t  设备类型 \t" + de.getProduct() + ";\t\t设备ID \t" + de.getIdentification() +
+			  "\n";
 		}
-
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无reader连接" : ("已连接设备如下：\n" + s));
-
+		mGoneLl.setVisibility(StringUtils.isEmpty(s) ?View.GONE :View.VISIBLE);
 		int mLayout = R.layout.item_reader_layout;
 		if (mAdapter != null) {
 		   mAdapter.notifyDataSetChanged();
@@ -275,14 +315,16 @@ public class RegisteReaderFrag extends SimpleFragment {
 		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		   mRecyclerview.setAdapter(mAdapter);
 		}
-		mGoneLl.setVisibility(View.VISIBLE);
+
+
+
 		break;
 	   case R.id.item_setting_time:
 		try {
 		   int time = Integer.parseInt(mItemTimeText.getText().toString().trim());
-		   SPUtils.putInt(UIUtils.getContext(), SAVE_READER_TIME,time);
+		   SPUtils.putInt(UIUtils.getContext(), SAVE_READER_TIME, time);
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
-		   AppendLog("设置RFID reader扫描时长为：" + READER_TIME);
+		   AppendLog("设置RFID reader扫描完成：" + READER_TIME + " ms 后停止扫描！");
 		} catch (Exception ex) {
 		}
 		break;
@@ -294,4 +336,5 @@ public class RegisteReaderFrag extends SimpleFragment {
 	super.onDestroy();
 	EventBusUtils.unregister(this);
    }
+
 }

@@ -299,11 +299,12 @@ public class NetRequest {
    /**
     * 查询单个耗材
     */
-   public void getStockDetailDate(
+   public void getStockDetailDate(int mExpireStatus,
 	   String deviceCode, String cstId, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_STOCK_DETAIL;
 	Map<String, String> map = new HashMap<>();
 	map.put("cstId", cstId);
+	map.put("expireStatus", mExpireStatus+"");
 	map.put("deviceId", deviceCode);
 	map.put("thingId", sThingCode);
 	GetRequest(urls, map, tag, netResult);
@@ -519,6 +520,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FIND_PATIENT;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", string);
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("pageSize", rows + "");
 	map.put("pageNo", page + "");
 	map.put("thingId", sThingCode);
