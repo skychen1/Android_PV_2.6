@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2018 Baidu, Inc. All Rights Reserved.
+  -->
+<resources>
+    <color name="face_colorPrimary">#3F51B5</color>
+    <color name="face_colorPrimaryDark">#303F9F</color>
+    <color name="face_colorAccent">#FF4081</color>
+
+    <color name="face_buttonColor">#FF6600</color>
+    <color name="face_white">#FFFFFF</color>
+    <color name="face_black">#000000</color>
+</resources>

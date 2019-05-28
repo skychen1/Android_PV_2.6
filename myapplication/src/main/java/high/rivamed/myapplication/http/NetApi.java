@@ -114,4 +114,7 @@ public interface NetApi {
 
     String URL_CONNECT = "/rmApi/userManage/account/connect";//测试连接提示
 
+
+    //视频上传
+    String URL_VIDEO_UPLOAD_RECORD="/video/video/videoUpload";
 }

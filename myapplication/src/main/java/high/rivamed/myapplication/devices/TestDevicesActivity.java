@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.ruihua.face.recognition.ui.FaceGatewayActivity;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.net.bean.AntInfo;
@@ -626,12 +627,8 @@ public class TestDevicesActivity extends SimpleActivity {
             }
         });
 
-//        mBtnFace.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FaceGatewayActivity.launch(TestDevicesActivity.this);
-//            }
-//        });
+        //人脸识别
+        mBtnFace.setOnClickListener(view -> FaceGatewayActivity.launch(this));
     }
 
     @Override

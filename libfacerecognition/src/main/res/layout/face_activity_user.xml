@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2018 Baidu, Inc. All Rights Reserved.
+  -->
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+    <TextView android:id="@+id/user_id_tv"
+            android:layout_width="250dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+              android:gravity="center_vertical"
+            android:textSize="16dp"
+            />
+    <TextView android:id="@+id/user_info_tv"
+              android:layout_width="250dip"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:textSize="16dp"/>
+    <TextView android:id="@+id/group_id_tv"
+              android:layout_width="250dip"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:textSize="16dp"/>
+    <TextView android:id="@+id/feature_tv"
+              android:layout_width="250dip"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:textSize="16dp"/>
+    <ImageView android:id="@+id/face_iv"
+              android:layout_width="250dip"
+              android:layout_height="250dip"
+              android:layout_margin="10dp"
+              android:textSize="16dp"/>
+
+
+</LinearLayout>

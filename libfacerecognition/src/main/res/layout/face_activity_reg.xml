@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2018 Baidu, Inc. All Rights Reserved.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/username_et"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:hint="请输入你的姓名"
+        android:maxLines="1" />
+
+    <ImageView
+        android:id="@+id/avatar_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/face_avatar" />
+
+    <Button
+        android:id="@+id/auto_detect_btn"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:text="自动检测" />
+
+    <Button
+        android:id="@+id/submit_btn"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:text="注册" />
+</LinearLayout>
+
+

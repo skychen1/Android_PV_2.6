@@ -5,7 +5,7 @@
 			  android:layout_height="match_parent"
 	android:background="@color/bg_f"
 	android:focusableInTouchMode="true"
-	>
+	android:focusable="true">
 	<EditText
 		android:id="@+id/login_name"
 		style="@style/login_edittext"
