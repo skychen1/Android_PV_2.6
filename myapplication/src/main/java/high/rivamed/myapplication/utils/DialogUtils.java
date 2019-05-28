@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
@@ -31,6 +32,7 @@ import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.ExceptionOperatorBean;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
@@ -52,9 +54,11 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
+import high.rivamed.myapplication.views.OutBoxConnectDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.RvDialog2;
+import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
 import high.rivamed.myapplication.views.StoreRoomDialog;
 import high.rivamed.myapplication.views.TempPatientDialog;
@@ -146,7 +150,6 @@ public class DialogUtils {
                         String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
                         String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
                         String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
-                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
                         LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)
@@ -267,7 +270,9 @@ public class DialogUtils {
             Context context, int mNumColumn, int mType, HospNameBean hospNameBean, int mIntentType) {
         StoreRoomDialog.Builder builder = new StoreRoomDialog.Builder(context, mNumColumn, mType,
                 hospNameBean, mIntentType);
-        if (mType == 2) {
+        if (mType == 104) {
+            builder.setTitle("处理选择");
+        } else if (mType == 2) {
             builder.setTitle("请选择退货原因");
         } else if (mType == 1) {
             builder.setTitle("请选择库房");
@@ -287,6 +292,27 @@ public class DialogUtils {
         builder.create().show();
     }
 
+
+    /**
+     * 出柜关联操作
+     * @param context
+     * @param hasNext 是否有下一步
+     * @param mNumColumn 列数
+     * @param mIntentType
+     */
+    public static void showOutBoxConnectDialog(Context context,boolean hasNext, int mNumColumn,  int mIntentType) {
+        OutBoxConnectDialog.Builder builder = new OutBoxConnectDialog.Builder(context,hasNext, mNumColumn, mIntentType);
+        builder.setTitle("关联操作");
+        builder.setLeft("", (dialog, i) -> {
+            if (mStarts != null) {
+                mStarts.start();
+            }
+            dialog.dismiss();
+        });
+
+        builder.create().show();
+    }
+
     /**
      * 盘亏原因
      *
@@ -300,7 +326,7 @@ public class DialogUtils {
         builder.create().show();
     }
 
-    public static void showTwoDialog(Activity activity,Context context, int mType, String title, String msg) {
+    public static void showTwoDialog(Activity activity, Context context, int mType, String title, String msg) {
         TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
         if (mType == 1) {
             builder.setTwoMsg(msg);
@@ -334,7 +360,7 @@ public class DialogUtils {
                 @Override
                 public void onClick(DialogInterface dialog, int i) {
                     dialog.dismiss();
-                    if (context instanceof Activity){
+                    if (context instanceof Activity) {
                         UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
                         App.getInstance().removeALLActivity_();
@@ -755,5 +781,14 @@ public class DialogUtils {
             }
         });
         builder.create().show();
+    }
+
+    /**
+     * 异常处理：关联操作人
+     */
+    public static void showSelectOperatorDialog(Context context, List<ExceptionOperatorBean> list,SelectExceptionOperatorDialog.Builder.OnSelectOperatorListener listener) {
+        new SelectExceptionOperatorDialog.Builder(context)
+                .setDate(list)
+                .setOnSelectListener(listener).create().show();
     }
 }

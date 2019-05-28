@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.ruihua.reader.ReaderManager;
 
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
@@ -17,6 +18,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.Eth002Manager;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
@@ -159,5 +161,12 @@ public class RegisteActivity extends SimpleActivity {
 	public int getCount() {
 	   return mKeys == null ? 0 : mKeys.length;
 	}
+   }
+
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	ReaderManager.getManager().unRegisterCallback();
+	Eth002Manager.getEth002Manager().unRegisterCallBack();
    }
 }

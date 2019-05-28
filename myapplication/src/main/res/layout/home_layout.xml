@@ -17,10 +17,11 @@
 		android:layout_marginLeft="@dimen/x180"
 		android:background="@mipmap/left_yinying"/>
 
+
 	<LinearLayout
 		android:id="@+id/rg_ll"
 		android:layout_width="@dimen/x195"
-		android:layout_height="match_parent"
+		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		>
 
@@ -36,42 +37,54 @@
 			android:background="@mipmap/hckg_logo"
 			/>
 
-		<RadioGroup
-			android:id="@+id/home_rg"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:layout_gravity="center_horizontal"
-			android:gravity="top"
-			android:orientation="vertical">
 
-			<RadioButton
-				android:id="@+id/content_consume_operate"
-				style="@style/content_rb_style"
-				android:drawableTop="@drawable/hccz_cz_sel"
-				android:text="@string/content_consume_operate"/>
+		<ScrollView
+			android:overScrollMode="never"
+			android:scrollbars="none"
+			android:layout_width="@dimen/x195"
+			android:layout_height="match_parent">
+			<RadioGroup
+				android:id="@+id/home_rg"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:gravity="top"
+				android:orientation="vertical">
 
-			<RadioButton
-				android:id="@+id/content_running_wate"
-				style="@style/content_rb_style"
-				android:drawableTop="@drawable/hcls_ic_sel"
-				android:text="@string/content_running_wate"/>
-			<RadioButton
-				android:id="@+id/content_stock_status"
-				style="@style/content_rb_style"
-				android:drawableTop="@drawable/hccz_kc_sel"
-				android:text="@string/content_stock_status"/>
+				<RadioButton
+					android:id="@+id/content_consume_operate"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hccz_cz_sel"
+					android:text="@string/content_consume_operate"/>
 
-			<RadioButton
-				android:id="@+id/content_timely_check"
-				style="@style/content_rb_style"
-				android:drawableTop="@drawable/hccz_pd_sel"
-				android:text="@string/content_timely_check"/>
-			<RadioButton
-				android:id="@+id/content_syjl"
-				style="@style/content_rb_style"
-				android:drawableTop="@drawable/hccz_jl_sel"
-				android:text="@string/content_take_notes"/>
-		</RadioGroup>
+				<RadioButton
+					android:id="@+id/content_running_wate"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hcls_ic_sel"
+					android:text="@string/content_running_wate"/>
+				<RadioButton
+					android:id="@+id/content_stock_status"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hccz_kc_sel"
+					android:text="@string/content_stock_status"/>
+
+				<RadioButton
+					android:id="@+id/content_timely_check"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hccz_pd_sel"
+					android:text="@string/content_timely_check"/>
+				<RadioButton
+					android:id="@+id/content_syjl"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hccz_jl_sel"
+					android:text="@string/content_take_notes"/>
+				<RadioButton
+					android:id="@+id/content_exception_deal"
+					style="@style/content_rb_style"
+					android:drawableTop="@drawable/hccz_excp_sel"
+					android:text="@string/content_exception_deal"/>
+			</RadioGroup>
+		</ScrollView>
 
 	</LinearLayout>
 	<View

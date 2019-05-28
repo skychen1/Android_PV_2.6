@@ -134,6 +134,7 @@ public class FastOutFragment extends SimpleFragment {
 
    }
 
+   }
    /**
     * dialog操作数据
     *
@@ -444,7 +445,6 @@ public class FastOutFragment extends SimpleFragment {
    private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
 	mInOutDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	mInOutDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mTCstInventoryDtoJson = setNewDate(mInOutDto);
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);

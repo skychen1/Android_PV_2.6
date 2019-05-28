@@ -123,6 +123,32 @@
 					/>
 
 			</RadioGroup>
+			<!--增加异常处理tab-->
+			<RadioGroup
+				android:id="@+id/rg_group3"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_centerVertical="true"
+				android:gravity="center_horizontal"
+				android:orientation="horizontal"
+				android:visibility="gone">
+
+				<RadioButton
+					android:id="@+id/excp_rdbtn_left"
+					style="@style/all_title_rb_style"
+					android:checked="true"
+					android:background="@drawable/title_stock_bg_middle_sel"
+					android:text="异常处理"
+					/>
+
+				<RadioButton
+					android:id="@+id/excp_rdbtn_right"
+					style="@style/all_title_rb_style"
+					android:background="@drawable/title_stock_bg_middle_sel"
+					android:text="处理记录"
+					/>
+
+			</RadioGroup>
 
 			<RelativeLayout
 				android:id="@+id/base_tab_ll"

@@ -36,6 +36,9 @@ public class Constants {
     public static final int FRAGMENT = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI = "act_type_confirm_haocai";//确认耗材领用界面
 
+    public static final String STYPE_EXCEPTION_LEFT = "exception_left";//异常处理
+    public static final String STYPE_EXCEPTION_RIGHT = "exception_right";//异常处理-异常记录
+
     public static final int ACT_TYPE_HCCZ_OUT = 4;
     public static final int ACT_TYPE_TEMPORARY_BING = 9;//创建临时患者
     public static final int ACT_TYPE_ALL_IN = 12;//入柜 快速开柜
@@ -59,6 +62,7 @@ public class Constants {
     public static final String LEFT_MENU_KCZT = "库存状态";//库存状态
     public static final String LEFT_MENU_SSPD = "实时盘点";//实时盘点
     public static final String LEFT_MENU_SYJL = "使用记录";//使用记录
+    public static final String LEFT_MENU_YCCL = "异常处理";//使用记录
 
     public static final String DOWN_MENU_LY = "领用";//领用
     public static final String DOWN_MENU_RK = "入库";//入库
@@ -114,4 +118,10 @@ public class Constants {
     public static final String ERROR_1001 = "1001";//刷新Token过期
     public static final String ERROR_1000 = "1000";//Token过期
 
+    //选择原因
+    public static final String[] REASON = {"清理库存", "耗材过期", "型号错误", "包装破损", "厂家召回", "其他"};
+    //异常处理：连续移除处理选择
+    public static final String [] EXCEPTION_DEAL_REMOVE_JUDGE={"标签损坏","取消异常标记","出柜关联"};
+    //异常处理：出柜关联
+    public static final String [] EXCEPTION_DEAL_OUT_BOX_CONNECT={"领用","移出","调拨出库", "退货"};
 }

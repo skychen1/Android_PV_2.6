@@ -618,7 +618,6 @@ public class FastInFragment extends SimpleFragment {
 	mInOutDto.getInInventoryVos().clear();
 	mInOutDto.getOutInventoryVos().clear();
 	mInOutDto = null;
-	mStarts = null;
 	EventBusUtils.unregister(this);
    }
 }

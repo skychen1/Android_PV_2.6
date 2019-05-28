@@ -10,6 +10,7 @@
     <string name="content_running_wate">耗材流水</string>
     <string name="content_take_notes">使用记录</string>
     <string name="content_timely_check">实时盘点</string>
+    <string name="content_exception_deal">异常处理</string>
 
     <string name="seven_name">名称</string>
     <string name="seven_epc">EPC</string>

@@ -68,6 +68,8 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public RadioButton mStockRdbtnRight;
     @BindView(R.id.rg_group)
     public RadioGroup mRgGroup;
+    @BindView(R.id.rg_group3)
+    public RadioGroup mRgGroup3;
     @BindView(R.id.base_tab_tv_name)
     public TextView mBaseTabTvName;
     @BindView(R.id.base_tab_icon_right)
