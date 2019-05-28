@@ -35,15 +35,14 @@ public class VideoRecordTask {
     private String startDate;//开始录制时间
     private String endDate;//结束录制时间
     private Object tag;
+    private String cacheVideoDir;
 
     public VideoRecordTask(String rtspUrl, String deviceCode, Object tag) {
         this.rtspUrl = rtspUrl;
         this.deviceCode = deviceCode;
         this.tag = tag;
         //初始化视频缓存路径：/storage/emulated/0/Android/data/high.rivamed.myapplication/cache/VID_20190306_182403.mp4
-        String cacheVideoDir = FileUtils.getDiskCacheDir(UIUtils.getContext());
-        String cacheVideoName = "VID_" + PowerDateUtils.dateSimpleFormat(new Date(), new SimpleDateFormat("yyyyMMdd_HHmmss")) + ".mp4";
-        filePath = cacheVideoDir + "/" + cacheVideoName;
+        cacheVideoDir = FileUtils.getDiskCacheDir(UIUtils.getContext())+"/video";
 
         //注册视频录制回调，录制成功时上传录制视频
         RtspManager.getManager().registerOnRecordCallback(rtspUrl, isSuccess -> {
@@ -121,6 +120,8 @@ public class VideoRecordTask {
             if (isSuccess) {
                 //2.连接成功，开启视频录制
                 startDate = PowerDateUtils.getDates();
+                String cacheVideoName = "VID_" + PowerDateUtils.dateSimpleFormat(new Date(), new SimpleDateFormat("yyyyMMdd_HHmmss")) + ".mp4";
+                filePath = cacheVideoDir + "/" + cacheVideoName;
                 RtspManager.getManager().startEncode(rtspUrl, filePath);
             } else {
 
