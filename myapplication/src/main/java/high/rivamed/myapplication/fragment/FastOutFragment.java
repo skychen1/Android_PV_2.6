@@ -133,8 +133,6 @@ public class FastOutFragment extends SimpleFragment {
 	}
 
    }
-
-   }
    /**
     * dialog操作数据
     *

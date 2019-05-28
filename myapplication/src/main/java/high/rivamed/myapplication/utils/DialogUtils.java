@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
@@ -150,6 +149,7 @@ public class DialogUtils {
                         String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
                         String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
                         String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
+                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
                         LogUtils.i("OutBoxBingActivity", " name " + name);
 //                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
 //                                checkedPosition)

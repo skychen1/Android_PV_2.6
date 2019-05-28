@@ -38,15 +38,7 @@ public class Event {
          this.type = type;
       }
    }
-   /*
-  快速开柜清理界面数据
-   */
-   public static class FastOutDataClear {
-      public boolean type;
-      public FastOutDataClear(boolean type){
-         this.type = type;
-      }
-   }
+
    /*
   快速开柜清理界面数据
    */
