@@ -43,6 +43,7 @@ import com.ruihua.face.recognition.manager.FaceSDKManager;
 import com.ruihua.face.recognition.ui.RgbDetectActivity;
 import com.ruihua.face.recognition.ui.RgbVideoIdentityActivity;
 import com.ruihua.face.recognition.utils.FeatureUtils;
+import com.ruihua.face.recognition.utils.FileUitls;
 import com.ruihua.face.recognition.utils.GlobalFaceTypeModel;
 import com.ruihua.face.recognition.utils.LogUtils;
 import com.ruihua.face.recognition.utils.PreferencesUtil;
@@ -89,6 +90,14 @@ public class FaceManager {
     private Paint paint;
     private RectF rectF;
     private FaceDetectManager faceDetectManager;
+    /**
+     * 检测app是否授权
+     *
+     * @return 是否授权 true 已授权， false 未授权；
+     */
+    public boolean hasActivation(Context context) {
+        return FileUitls.checklicense(context, FaceSDKManager.LICENSE_NAME);
+    }
 
     /**
      * 初始化设备，检测权限，初始化数据库

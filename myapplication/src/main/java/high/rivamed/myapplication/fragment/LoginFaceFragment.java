@@ -49,7 +49,8 @@ public class LoginFaceFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         //识别成功的回调 回调用户的编号userId，唯一标识，回调速度可能会很快，需要自己加标识控制处理；
-        FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, this::loginFace);
+        if (FaceManager.getManager().getInitStatus()== FaceCode.SDK_INITED)
+            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, this::loginFace);
     }
 
     /**
