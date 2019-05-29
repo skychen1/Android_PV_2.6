@@ -107,37 +107,44 @@ public class SplashActivity extends Activity {
 	   }
 	}).start();
 
-		//启动页初始化人脸识别sdk
-	   FaceManager.getManager().init(this, new InitListener() {
-		   @Override
-		   public void initSuccess() {
-			   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
-			   //初始化分组
-			   boolean b = FaceManager.getManager().initGroup();
-			   if (!b) {
-				   ToastUtils.showShortSafe("创建人脸照分组失败");
-				   return;
+	   //检测设备是否授权
+	   boolean b = FaceManager.getManager().hasActivation(this);
+//	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
+	   if (b){//启动页初始化人脸识别sdk
+		   FaceManager.getManager().init(this, new InitListener() {
+			   @Override
+			   public void initSuccess() {
+				   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+				   //初始化分组
+				   boolean b = FaceManager.getManager().initGroup();
+				   if (!b) {
+					   ToastUtils.showShortSafe("创建人脸照分组失败");
+					   return;
+				   }
+				   //设置是否需要活体
+				   FaceManager.getManager().setNeedLive(false);
+				   //初始化完成后跳转页面
+				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+				   finish();
 			   }
-			   //设置是否需要活体
-			   FaceManager.getManager().setNeedLive(false);
-				//初始化完成后跳转页面
-			   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-			   finish();
-		   }
 
-		   @Override
-		   public void initFail(int errorCode, String msg) {
-			   ToastUtils.showShortSafe("SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
-			   //初始化完成后跳转页面
-			   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-			   finish();
-		   }
-	   });
-//	new Handler().postDelayed(new Runnable() {
-//	   public void run() {
-//		startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-//		finish();
-//	   }
-//	}, 2000);
+			   @Override
+			   public void initFail(int errorCode, String msg) {
+				   ToastUtils.showShortSafe("SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+				   //初始化完成后跳转页面
+				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+				   finish();
+			   }
+		   });
+	   }else {
+		   new Handler().postDelayed(new Runnable() {
+			   public void run() {
+				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+				   finish();
+			   }
+		   }, 2000);
+	   }
+
+
    }
 }
