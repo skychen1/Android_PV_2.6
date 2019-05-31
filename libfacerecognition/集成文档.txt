@@ -1,33 +1,33 @@
-1����moudle��libdevicesbase���͸�moudleһ������Ҫʹ�õ���Ŀ��
-2������Ҫʹ�õ���Ŀ������moudle��
-3����1���ڳ�ʼ��ҳ�棨��Ϊ������Ҫ������ʾ��������Ҫ��ĳ��ҳ���ϳ�ʼ��������������ҳ�ϳ�ʼ������Ϊ��ʼ��sdk��Ҫһ����ʱ�䣩���ο�moudle�����FaceGatewayActivityҳ�棩
-   ��2�����յ��ɹ��Ļص��Ժ���� FaceManager.getManager().initGroup() �������飬��ʼ�����ݿ⣻�з���ֵ�����жϴ������ݿ��Ƿ�ɹ�������ʧ�����ܽ��к������в����� 
-   ��3����������ɹ��Ժ�������Ƿ���Ҫ������FaceManager.getManager().setNeedLive(true);trueΪ��Ҫ��falseΪ����Ҫ������ʵ��Ӧ�����ã��л�����Է����ף��޻���ʶ���ٶȿ죩
-   ���÷���FaceManager.getManager().init( activity, new InitListener() {
+1，将moudle（libdevicesbase）和该moudle一起烤至需要使用的项目；
+2，在需要使用的项目依赖该moudle；
+3，（1）在初始化页面（因为可能需要弹出提示框，所以需要再某个页面上初始化，建议在启动页上初始化，因为初始化sdk需要一定的时间）（参考moudle下面的FaceGatewayActivity页面）
+   （2）在收到成功的回调以后调用 FaceManager.getManager().initGroup() 创建分组，初始化数据库；有返回值，可判断创建数据库是否成功，创建失败则不能进行后续所有操作； 
+   （3）创建分组成功以后就设置是否需要活体检测FaceManager.getManager().setNeedLive(true);true为需要，false为不需要，根据实际应用设置（有活体可以防作弊，无活体识别速度快）
+   调用方法FaceManager.getManager().init( activity, new InitListener() {
             @Override
             public void initSuccess() {
-			//sdk��ʼ���ɹ��Ļص�
-			 boolean b = FaceManager.getManager().initGroup()��
+			//sdk初始化成功的回调
+			 boolean b = FaceManager.getManager().initGroup()；
 			FaceManager.getManager().setNeedLive(true);
 		
             }
             @Override
             public void initFail(int errorCode, String msg) {
-               //ʧ�ܻ᷵�ش�����
+               //失败会返回错误码
             }
         })
 		
-4����ʼ����ɺ�Ϳ��Ե�����������������������������ǰ���������FaceManager.getManager().getInitStatus()�������鿴SDK�ĳ�ʼ��״̬�����ο�moudle�����FaceGatewayActivityҳ�棩��		
+4，初始化完成后就可以调用其他方法，在条用其他方法以前，建议调用FaceManager.getManager().getInitStatus()方法，查看SDK的初始化状态，（参考moudle下面的FaceGatewayActivity页面）。		
 
-5�������׿�ע�᷽���ĵ��ã�
-    ��1������ץȡ�ϸ��������Ƭ������ע�᣺
-	    ��������ķ��������Զ���ת����װ�õ�������Ƭץȡ���ü���ҳ�棬�з���ֵ�������Ƭ����Ϊ�գ����ܵ���ҳ�棬����ֵ��false��
+5，人脸底库注册方法的调用：
+    （1）本地抓取合格的人脸照片，进行注册：
+	    调用下面的方法，会自动跳转到封装好的人脸照片抓取，裁剪的页面，有返回值，如果照片名称为空，则不能调起页面，返回值是false；
 	    boolean facePicture = FaceManager.getManager().getFacePicture(RegActivity.this, imageName);
                 if (!facePicture) {
-                    toast("��Ƭ���Ʋ���Ϊ��");
+                    toast("照片名称不能为空");
                 }
-	    ��ת������ץȡҳ��������⵽�ϸ�����������Զ�������Ƭ�ı����·���������ʱ��û�м�⵽�ϸ��������Ƿ�Ҫ����ʱ������������������Ҫ����ʱ�������������ӣ�Ŀǰû�У�
-		ץȡ����Ƭ�󷵻��Ժ���onActivityResult�����н�����Ƭ·����Ϣ�����ο�moudle�����RegActivityҳ�棩
+	    跳转到人脸抓取页面后，如果检测到合格的人脸，会自动返回照片的保存的路径；如果长时间没有检测到合格人脸，是否要做超时处理？？？？？（需要做超时处理后续再添加，目前没有）
+		抓取到照片后返回以后，在onActivityResult（）中接收照片路径信息；（参考moudle下面的RegActivity页面）
 		 @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -36,64 +36,64 @@
            
         }
     }
-	��2����ȡ���ϸ��������Ƭ�Ժ󣬵������·�������ע����Ƭ���ο�moudle�����RegActivityҳ�棩
-	  ���������壺userId �û���ţ�Ψһ��ʶ��ע���Ժ�ʶ��Ҳֻ���ظ�ֵ��
-	              username �û�����������������ʾ��
-				  faceImagePath ��Ƭ�����·��;
-				  FaceRegisterCallback ע�����ص��Ľӿ�  code ����ע�������룬msg��������
+	（2）获取到合格的人脸照片以后，调用以下方法进行注册照片（参考moudle下面的RegActivity页面）
+	  参数的意义：userId 用户编号，唯一标识，注册以后识别也只返回该值，
+	              username 用户的姓名，（可做显示）
+				  faceImagePath 照片保存的路径;
+				  FaceRegisterCallback 注册结果回调的接口  code 返回注册结果代码，msg提醒内容
 	   FaceManager.getManager().registerFace(userId, username, faceImagePath, new FaceRegisterCallback() {
                 @Override
                 public void onRegisterResult(int code, String msg) {
-                    toast("����ע��������code=" + code + ":::msg=" + msg);
+                    toast("人脸注册结果：：code=" + code + ":::msg=" + msg);
                     finish();
                 }
             });
-    ��3�����ֱ������Ƭע�ᣬ��ֱ�Ӳ�������ģ�2�����輴�ɣ�
+    （3）如果直接用照片注册，可直接采用上面的（2）步骤即可；
 	
-6��ɾ�������׿�ֱ�ӵ��÷����� FaceManager.getManager().deleteFace��String userId�����з���ֵ������֪��ɾ���Ƿ�ɹ���
+6，删除人脸底库直接调用方法： FaceManager.getManager().deleteFace（String userId），有返回值，可以知道删除是否成功；
 
-7������Ѿ�����ʶ��Ĺ����г���ע�����ɾ�������׿⣬�����߳��н����ڴ��е������׿�ͬ�������ܻ��������ӳ٣�����û����ʶ���ʱ�����ӣ���
+7，如果已经开启识别的过程中出现注册或者删除人脸底库，会在线程中进行内存中的人脸底库同步，可能会有稍许延迟（会在没有人识别的时候添加）；
 
 
-8  ��ȡ�����׿�����:getFaceLibraryNum();
-    ע�⣺�������ڿ�������ʶ����ǰ��Ҫ��ȡ������Ƭ���������Ϊ0��ʾû�е׿⣬�ǲ��ܿ���ʶ��ģ�
+8  获取人脸底库数量:getFaceLibraryNum();
+    注意：：：：在开启人脸识别以前需要获取人脸照片数量，如果为0表示没有底库，是不能开启识别的；
 
-9������ʶ�������moudle�Դ��Ľ��棨ȫ��������ʶ�����FaceManager.getManager().identityFace(@NonNull Activity activity)��������  ������FaceGatewayActivityҳ�棩��
-   ���ʶ��ĳ���ˣ��ͻ��Զ����أ���ʱ��û��ʶ���ˣ��Ƿ�Ҫ����ʱ������Ŀǰû�У�
-   ���غ���onActivityResult�����н���ʶ�𵽵���Ա��ţ�userId����Ψһ��ʶ�����£�
+9，人脸识别，如果有moudle自带的界面（全屏）进行识别调用FaceManager.getManager().identityFace(@NonNull Activity activity)方法即可  （参照FaceGatewayActivity页面）；
+   如果识别到某个人，就会自动返回（长时间没有识别到人，是否要做超时处理，目前没有）
+   返回后在onActivityResult（）中接收识别到的人员编号（userId），唯一标识，如下：
    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //��֤���ݻص�
+        //验证身份回调
         if (requestCode == resultCode && resultCode == RgbVideoIdentityActivity.CODE_RECOGNISE && data != null) {
-            //�õ�ʶ�����Ա��id
+            //拿到识别的人员的id
             String userId = data.getStringExtra(RgbVideoIdentityActivity.USER_ID);
             User user = FaceManager.getManager().getUserById(userId);
             if (user != null) {
-                toast("ʶ�𵽣�����" + user.getUserInfo());
+                toast("识别到：：：" + user.getUserInfo());
             }
         }
     }
 	
 	
-10������ʶ���Զ�����棺������RgbVideoIdentityActivityҳ�棩
-   ��Ҫ�����ؼ����ο���ҳ��Ĳ��֣������ؼ���Ҫ��ȫ�غϣ�
-   ��ʼ���ý����Ժ���Ҫ��ʼ������ʶ��
+10，人脸识别，自定义界面：（参照RgbVideoIdentityActivity页面）
+   需要两个控件，参考本页面的布局，两个控件需要完全重合；
+   初始化好界面以后，需要初始化人脸识别，
    FaceManager.getManager().initIdentityFace(this, previewView, textureView, new FaceIdentityCallback() {
             @Override
             public void onIdentityResult(String userId) {
-                //ʶ��ɹ��Ļص� �ص��û��ı�ţ�Ψһ��ʶ���ص��ٶȿ��ܻ�ܿ죬��Ҫ�Լ��ӱ�ʶ���ƴ�����
+                //识别成功的回调 回调用户的编号，唯一标识，回调速度可能会很快，需要自己加标识控制处理；
             }
         });
 		
-	�ں��ʵĵط�����ʶ��
+	在合适的地方开启识别，
 	  FaceManager.getManager().startIdentity();
 	  
-	ֹͣʶ���ʱ�����ֹͣʶ�𷽷���������Ƶ�������ر�ʶ�𣬿����ڻص����Լ������ʶ����ʶ��ɹ��Ĵ����߼���
+	停止识别的时候调用停止识别方法（不建议频繁开启关闭识别，可以在回调中自己加入标识控制识别成功的处理逻辑）
 	 FaceManager.getManager().stopIdentity();
 	 
-	��ȷ����ʱ�䲻ʹ������ʶ�𣬻�����Ҫʹ���������ע�������׿�ʱ��Ҫ��������ʶ���ʼ�����÷�����FaceManager.getManager().destroyIdentity();
-	���¼�ɹ��󣬼�������ʹ������ʶ���˾���Ҫ���٣��������̲ο�RgbVideoIdentityActivityҳ�棻
+	在确定长时间不使用人脸识别，或者需要使用人脸检测注册人脸底库时，要销毁人脸识别初始，调用方法：FaceManager.getManager().destroyIdentity();
+	如登录成功后，几乎不会使用人脸识别了就需要销毁；具体流程参考RgbVideoIdentityActivity页面；
 	 
 	 
 	 

@@ -142,7 +142,7 @@ public class Activation {
         deviceIdParams.leftMargin = dip2px(30);
         keyEt = new EditText(context);
         keyEt.setHint("输入序列号");
-        keyEt.setText(PreferencesUtil.getString("activate_key", "HNM5-KFMH-DXF4-JJV4"));
+        keyEt.setText(PreferencesUtil.getString("activate_key", ""));
         LinearLayout.LayoutParams keyParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         keyParams.gravity = Gravity.CENTER;

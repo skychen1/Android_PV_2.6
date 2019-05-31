@@ -111,7 +111,7 @@ public class SplashActivity extends Activity {
 	   boolean b = FaceManager.getManager().hasActivation(this);
 //	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
 	   if (b){//启动页初始化人脸识别sdk
-		   FaceManager.getManager().init(this, new InitListener() {
+		   FaceManager.getManager().init(this,false, new InitListener() {
 			   @Override
 			   public void initSuccess() {
 				   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
@@ -119,10 +119,10 @@ public class SplashActivity extends Activity {
 				   boolean b = FaceManager.getManager().initGroup();
 				   if (!b) {
 					   ToastUtils.showShortSafe("创建人脸照分组失败");
-					   return;
+				   }else {
+					   //设置是否需要活体
+					   FaceManager.getManager().setNeedLive(false);
 				   }
-				   //设置是否需要活体
-				   FaceManager.getManager().setNeedLive(false);
 				   //初始化完成后跳转页面
 				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
 				   finish();
@@ -130,7 +130,7 @@ public class SplashActivity extends Activity {
 
 			   @Override
 			   public void initFail(int errorCode, String msg) {
-				   ToastUtils.showShortSafe("SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+				   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
 				   //初始化完成后跳转页面
 				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
 				   finish();

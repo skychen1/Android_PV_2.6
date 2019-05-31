@@ -68,15 +68,17 @@ public class RgbDetectActivity extends Activity {
     private TextView tipTv;
     private Handler handler = new Handler();
     private String fileName = "";
+    private boolean isMirror;
 
     /**
      * 启动方法
      *
      * @param act 启动页
      */
-    public static void launch(Activity act, String fileName) {
+    public static void launch(Activity act, String fileName, boolean isMirror) {
         Intent intent = new Intent(act, RgbDetectActivity.class);
         intent.putExtra("fileName", fileName);
+        intent.putExtra("isMirror", isMirror);
         act.startActivityForResult(intent, CODE_PICK_PHOTO);
     }
 
@@ -112,6 +114,7 @@ public class RgbDetectActivity extends Activity {
             return;
         }
         fileName = intent.getStringExtra("fileName");
+        isMirror = intent.getBooleanExtra("isMirror", false);
         if (TextUtils.isEmpty(fileName)) {
             toast("请传入正确的图片名");
             finish();
@@ -153,13 +156,15 @@ public class RgbDetectActivity extends Activity {
 
     private void setCameraType(CameraImageSource cameraImageSource) {
         // TODO 选择使用前置摄像头
-        // cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
+//         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
 
         // TODO 选择使用usb摄像头
         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
-        // 如果不设置，人脸框会镜像，显示不准
-        previewView.getTextureView().setScaleX(-1);
-
+        if (isMirror) {
+            //如果有镜像需要设置镜像
+            // 如果不设置，人脸框会镜像，显示不准
+            previewView.getTextureView().setScaleX(-1);
+        }
         // TODO 选择使用后置摄像头
 //        cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_BACK);
 //        previewView.getTextureView().setScaleX(-1);
@@ -254,7 +259,7 @@ public class RgbDetectActivity extends Activity {
             if (rgbLiveness(imageFrame, faceInfo) > FaceConfig.FACE_LIVE) {
                 saveFace(faceInfo, imageFrame);
             } else {
-                toast("rgb活体分数过低");
+//                toast("rgb活体分数过低");
             }
         }
         return tip;

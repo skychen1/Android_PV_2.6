@@ -14,6 +14,7 @@ import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.rivamed.libdevicesbase.utils.LogUtils;
+import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
 
@@ -89,6 +90,8 @@ public class App extends Application {
 	instance = this;
 	initOkGo();
 	LogUtils.setDebugMode(false);
+	//设备基础module中有使用，需要注册初始化
+	ToastUtils.register(this);
    }
 
    public static void initPush(String id) {

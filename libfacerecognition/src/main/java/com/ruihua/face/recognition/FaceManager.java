@@ -18,6 +18,7 @@ import android.view.TextureView;
 
 import com.baidu.idl.facesdk.FaceInfo;
 import com.baidu.idl.facesdk.FaceTracker;
+import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ThreadPoolProxyFactory;
 import com.ruihua.face.recognition.api.FaceApi;
 import com.ruihua.face.recognition.callback.FaceIdentityCallback;
@@ -45,7 +46,6 @@ import com.ruihua.face.recognition.ui.RgbVideoIdentityActivity;
 import com.ruihua.face.recognition.utils.FeatureUtils;
 import com.ruihua.face.recognition.utils.FileUitls;
 import com.ruihua.face.recognition.utils.GlobalFaceTypeModel;
-import com.ruihua.face.recognition.utils.LogUtils;
 import com.ruihua.face.recognition.utils.PreferencesUtil;
 
 import java.io.File;
@@ -85,11 +85,14 @@ public class FaceManager {
     private static final int FEATURE_DATAS_UNREADY = 1;
     private static final int IDENTITY_IDLE = 2;
     private static final int IDENTITYING = 3;
+    private boolean isMirror = false;
     private ExecutorService es;
     private int liveType;
     private Paint paint;
     private RectF rectF;
     private FaceDetectManager faceDetectManager;
+
+
     /**
      * 检测app是否授权
      *
@@ -99,12 +102,15 @@ public class FaceManager {
         return FileUitls.checklicense(context, FaceSDKManager.LICENSE_NAME);
     }
 
+
     /**
      * 初始化设备，检测权限，初始化数据库
      *
-     * @param context 初始化的页面
+     * @param context  初始化的页面
+     * @param isMirror 是否需要镜像
+     * @param listener 数据回调监听
      */
-    public void init(@NonNull Activity context, InitListener listener) {
+    public void init(@NonNull Activity context, boolean isMirror, InitListener listener) {
         //申请文件读取权限
         int permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -121,6 +127,7 @@ public class FaceManager {
         DBManager.getInstance().init(context);
         //初始化sp工具类
         PreferencesUtil.initPrefs(context);
+        this.isMirror = isMirror;
         //sdk初始化监听
         FaceSDKManager.getInstance().setSdkInitListener(new FaceSDKManager.SdkInitListener() {
             @Override
@@ -205,6 +212,7 @@ public class FaceManager {
         return status;
     }
 
+
     /**
      * 跳转到人脸检测界面
      *
@@ -216,7 +224,7 @@ public class FaceManager {
             return false;
         }
         //跳转到人脸注册页面
-        RgbDetectActivity.launch(activity, fileName);
+        RgbDetectActivity.launch(activity, fileName, isMirror);
         return true;
     }
 
@@ -225,12 +233,12 @@ public class FaceManager {
      * 注意：该方法的结果回调可能在子线程中，所以处理数据时请注意
      *
      * @param userId   用户的id
-     * @param username 用户的姓名
-     * @param filePath 照片名字未知
+     * @param userName 用户的姓名
+     * @param filePath 照片名字
      * @param callback 注册成功与否的回调
      */
-    public void registerFace(String userId, String username, final String filePath, FaceRegisterCallback callback) {
-        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(username) || TextUtils.isEmpty(filePath)) {
+    public void registerFace(String userId, String userName, final String filePath, FaceRegisterCallback callback) {
+        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(userName) || TextUtils.isEmpty(filePath)) {
             if (callback != null) {
                 callback.onRegisterResult(FaceCode.CODE_REGISTER_PARAM_ERROR, "所有参数都不能为空");
             }
@@ -252,7 +260,7 @@ public class FaceManager {
         }
         final User user = new User();
         user.setUserId(userId);
-        user.setUserInfo(username);
+        user.setUserInfo(userName);
         user.setGroupId(FaceConfig.USE_GROUP);
         //注册失耗时操作，所以异步进行
         ThreadPoolProxyFactory.getThreadPoolProxy().execute(new Runnable() {
@@ -403,8 +411,7 @@ public class FaceManager {
      * @param textureView 画脸框控件
      * @param callback    回调
      */
-    public void initIdentityFace(Context context, PreviewView previewView, TextureView
-            textureView, FaceIdentityCallback callback) {
+    public void initIdentityFace(Context context, PreviewView previewView, TextureView textureView, FaceIdentityCallback callback) {
         //先拿到模式
         liveType = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS, GlobalFaceTypeModel.TYPE_NO_LIVENSS);
         //初始化画笔
@@ -504,12 +511,17 @@ public class FaceManager {
         // cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
         // TODO 选择使用usb摄像头
         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
-        // 如果不设置，人脸框会镜像，显示不准
-        previewView.getTextureView().setScaleX(-1);
+        if (isMirror) {
+            //如果有镜像需要设置镜像
+            // 如果不设置，人脸框会镜像，显示不准
+            previewView.getTextureView().setScaleX(-1);
+        }
         // TODO 选择使用后置摄像头
         //cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_BACK);
         //previewView.getTextureView().setScaleX(-1);
     }
+
+    private long ll = 0;
 
     /**
      * 设置人脸检测回调
@@ -518,8 +530,7 @@ public class FaceManager {
      * @param textureView 画框
      * @param callback    回调
      */
-    private void addListener(PreviewView previewView, TextureView
-            textureView, FaceIdentityCallback callback) {
+    private void addListener(PreviewView previewView, TextureView textureView, FaceIdentityCallback callback) {
         // 设置回调，回调人脸检测结果。
         faceDetectManager.setOnFaceDetectListener(new FaceDetectManager.OnFaceDetectListener() {
             @Override
@@ -551,8 +562,7 @@ public class FaceManager {
         });
     }
 
-    private void asyncIdentity(final ImageFrame imageFrame,
-                               final FaceInfo[] faceInfos, FaceIdentityCallback callback) {
+    private void asyncIdentity(final ImageFrame imageFrame, final FaceInfo[] faceInfos, FaceIdentityCallback callback) {
         if (identityStatus != IDENTITY_IDLE) {
             return;
         }
@@ -622,9 +632,14 @@ public class FaceManager {
         //生活照模式识别
         IdentifyRet identifyRet = FaceApi.getInstance().identity(argb, rows, cols, landmarks, FaceConfig.USE_GROUP);
         LogUtils.e("识别分数" + identifyRet.getScore());
-        if (identifyRet.getScore() > FaceConfig.FACE_RECOGNISE_SCORE) {
-            if (callback != null) {
-                callback.onIdentityResult(identifyRet.getUserId());
+        //如果有回调才处理数据
+        if (callback != null) {
+            //分数大于设置分数，回调成功和人员id，小于分数设置识别失败
+            if (identifyRet.getScore() >= FaceConfig.FACE_RECOGNISE_SCORE) {
+                callback.onIdentityResult(true, identifyRet.getUserId());
+            } else {
+                LogUtils.e("回调识别失败");
+                callback.onIdentityResult(false, "");
             }
         }
         //识别完成，就直接修改标识
