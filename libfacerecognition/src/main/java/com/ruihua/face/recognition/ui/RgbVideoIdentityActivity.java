@@ -5,40 +5,15 @@ package com.ruihua.face.recognition.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.TextureView;
-import android.widget.Toast;
 
-import com.baidu.idl.facesdk.FaceInfo;
-import com.baidu.idl.facesdk.FaceTracker;
+import com.rivamed.libdevicesbase.utils.LogUtils;
+import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.face.recognition.FaceManager;
 import com.ruihua.face.recognition.R;
-import com.ruihua.face.recognition.api.FaceApi;
 import com.ruihua.face.recognition.callback.FaceIdentityCallback;
-import com.ruihua.face.recognition.config.FaceConfig;
-import com.ruihua.face.recognition.entity.IdentifyRet;
-import com.ruihua.face.recognition.entity.ImageFrame;
-import com.ruihua.face.recognition.face.CameraImageSource;
-import com.ruihua.face.recognition.face.FaceDetectManager;
 import com.ruihua.face.recognition.face.PreviewView;
-import com.ruihua.face.recognition.face.camera.CameraView;
-import com.ruihua.face.recognition.face.camera.ICameraControl;
-import com.ruihua.face.recognition.manager.FaceLiveness;
-import com.ruihua.face.recognition.manager.FaceSDKManager;
-import com.ruihua.face.recognition.utils.GlobalFaceTypeModel;
-import com.ruihua.face.recognition.utils.LogUtils;
-import com.ruihua.face.recognition.utils.PreferencesUtil;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 人脸识别页面
@@ -68,7 +43,11 @@ public class RgbVideoIdentityActivity extends Activity {
         findView();
         FaceManager.getManager().initIdentityFace(this, previewView, textureView, new FaceIdentityCallback() {
             @Override
-            public void onIdentityResult(String userId) {
+            public void onIdentityResult(boolean isSuccess, String userId) {
+                if (!isSuccess) {
+                    LogUtils.e("识别到，陌生人");
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.putExtra(USER_ID, userId);
                 setResult(CODE_RECOGNISE, intent);
@@ -90,8 +69,6 @@ public class RgbVideoIdentityActivity extends Activity {
         super.onStart();
         // 开始检测
         FaceManager.getManager().startIdentity();
-//        faceDetectManager.start();
-//        faceDetectManager.setUseDetect(true);
     }
 
     @Override
@@ -99,13 +76,13 @@ public class RgbVideoIdentityActivity extends Activity {
         super.onStop();
         // 结束检测。
         FaceManager.getManager().stopIdentity();
-//        faceDetectManager.stop();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        faceDetectManager.stop();
+
         FaceManager.getManager().destroyIdentity();
     }
 

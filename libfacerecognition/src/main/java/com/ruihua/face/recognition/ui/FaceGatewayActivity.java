@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.face.recognition.FaceManager;
 import com.ruihua.face.recognition.R;
 import com.ruihua.face.recognition.callback.InitListener;
@@ -51,8 +52,12 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
         registerFaceBtn.setOnClickListener(this);
         identifyFaceBtn.setOnClickListener(this);
         groupFaceBtn.setOnClickListener(this);
+        //检测设备是否授权
+        boolean b = FaceManager.getManager().hasActivation(this);
+        ToastUtils.show(b ? "设备已授权" : "设备未授权");
+
         //初始化sdk
-        FaceManager.getManager().init(this, new InitListener() {
+        FaceManager.getManager().init(this, false, new InitListener() {
             @Override
             public void initSuccess() {
                 toast("SDK初始化成功");

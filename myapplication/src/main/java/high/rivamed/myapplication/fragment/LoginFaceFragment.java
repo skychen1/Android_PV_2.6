@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.ruihua.face.recognition.FaceManager;
+import com.ruihua.face.recognition.callback.FaceIdentityCallback;
 import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.face.TexturePreviewView;
 
@@ -39,6 +41,8 @@ public class LoginFaceFragment extends SimpleFragment {
     TexturePreviewView previewView;
     @BindView(R.id.texture_view)
     TextureView textureView;
+    @BindView(R.id.tv_hint)
+    TextView textHint;
     private String TAG = "高Face";
 
     @Override
@@ -49,7 +53,12 @@ public class LoginFaceFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         //识别成功的回调 回调用户的编号userId，唯一标识，回调速度可能会很快，需要自己加标识控制处理；
-        FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, this::loginFace);
+        if (FaceManager.getManager().getInitStatus()== FaceCode.SDK_INITED)
+            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
+                if (isSuccess){
+                    loginFace(userId);
+                }
+            });
     }
 
     /**
@@ -80,29 +89,31 @@ public class LoginFaceFragment extends SimpleFragment {
         if (isShow){
             int initStatus = FaceManager.getManager().getInitStatus();
             if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-                ToastUtils.showShort("SDK还未激活，请先激活");
+                textHint.setText("人脸识别SDK还未激活，请先激活");
                 return;
             } else if (initStatus == FaceCode.SDK_NOT_INIT) {
-                ToastUtils.showShort("SDK还未初始化完成，请先初始化");
+                textHint.setText("人脸识别SDK还未初始化，请先初始化");
                 return;
             } else if (initStatus == FaceCode.SDK_INITING) {
-                ToastUtils.showShort("SDK正在初始化，请稍后再试");
+                textHint.setText("人脸识别SDK正在初始化，请稍后再试");
                 return;
             } else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-                ToastUtils.showShort("SDK初始化失败，请重新初始化SDK");
+                textHint.setText("人脸识别SDK初始化失败，请重新初始化");
                 return;
             }
             //在开启人脸识别以前需要获取人脸照片数量，
             //如果为0表示没有底库，是不能开启识别的；
             if (0==FaceManager.getManager().getFaceLibraryNum()){
-                ToastUtils.showShortSafe("人脸识别底库无数据");
+                textHint.setText("人脸识别底库无数据");
             }else {
                 //可以开启识别
                 FaceManager.getManager().startIdentity();
+                textHint.setText("");
             }
         }else {
             // 停止检测
             FaceManager.getManager().stopIdentity();
+            textHint.setText("");
         }
     }
 
