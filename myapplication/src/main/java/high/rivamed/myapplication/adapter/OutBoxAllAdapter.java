@@ -67,6 +67,7 @@ public class OutBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	mSeven_four.setText(item.getCstSpec());
 	mSeven_five.setText(item.getDeviceName());
 	mSeven_six.setText(item.getExpiryDate());
+	mSeven_six.setBackgroundResource(R.color.bg_f);
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
 						mSeven_six);

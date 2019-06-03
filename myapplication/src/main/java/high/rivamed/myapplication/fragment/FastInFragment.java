@@ -491,17 +491,31 @@ public class FastInFragment extends SimpleFragment {
 		   return;
 		}
 	   } else {
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
-		if (mAllOutText != null && mInOutDto.getOutInventoryVos().size() != 0) {
-		   mAllOutText.setText(R.string.fast_in_more_string);
-		} else {
-		   mAllOutText.setText("");
-		}
-		if (mStarts != null) {
-		   LogUtils.i(TAG, "true  mObject mObject ss mObject ");
-		   mStarts.cancel();
-		   mStarts.start();
+		if (mFastViewpager.getCurrentItem()==1){
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   if (mAllOutText != null && mInOutDto.getOutInventoryVos().size() != 0) {
+			mAllOutText.setText(R.string.fast_in_more_string);
+		   } else {
+			mAllOutText.setText("");
+		   }
+		   if (mStarts != null) {
+			LogUtils.i(TAG, "true  mObject mObject ss mObject ");
+			mStarts.cancel();
+			mStarts.start();
+		   }
+		}else {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   if (mAllOutText != null) {
+			mAllOutText.setText(R.string.fast_in_error_string);
+		   } else {
+			mAllOutText.setText("");
+		   }
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
 		}
 	   }
 	}

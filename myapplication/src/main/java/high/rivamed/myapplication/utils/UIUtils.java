@@ -425,7 +425,6 @@ public class UIUtils {
 
    /**
     * 是否包含epc
-    *
     * @return
     */
    public static boolean getVosType(List<InventoryVo> vos, String epc) {

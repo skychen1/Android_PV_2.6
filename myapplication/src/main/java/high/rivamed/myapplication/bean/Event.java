@@ -28,7 +28,7 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 public class Event {
 
    /**
-    * 门锁的检测消息
+    * 门锁的检测消息 TYPE true没关门，false关门
     */
    public static class EventDoorStatus {
       public boolean type;

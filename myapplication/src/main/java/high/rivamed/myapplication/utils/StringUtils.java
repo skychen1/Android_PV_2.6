@@ -262,7 +262,6 @@ public class StringUtils {
    }
    /**
     * 将列表中重复的用户移除，重复指的是EPC相同
-    *
     * @param userList
     * @return
     */

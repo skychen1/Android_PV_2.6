@@ -60,7 +60,6 @@ import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
-import high.rivamed.myapplication.fragment.LoginFaceFragment;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
@@ -483,7 +482,8 @@ public class LoginActivity extends SimpleActivity {
 		// TODO: 2019/5/21 判断是否配置人脸识别登录
 //		return UIUtils.getConfigType(mContext, CONFIG_099);
 		//测试时默认开启，真实情况需要根据后台配置
-		return true;
+//		return true;
+		return false;
 	}
 
 	/**
@@ -738,7 +738,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-	   mFragments.add(new LoginFaceFragment());//人脸识别登录
+//	   mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
 	   mFragments.add(new LoginPassWordFragment());//用户名登录
 	   mFragments.add(new LoginPassFragment());//紧急登录
 	   mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
