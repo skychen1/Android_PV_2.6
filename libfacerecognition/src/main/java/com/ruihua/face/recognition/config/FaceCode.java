@@ -15,6 +15,8 @@ public class FaceCode {
      */
     public static final int CODE_REGISTER_SUCCESS = 0;
 
+    public static final int CODE_HAVE_NOT_PERMISSION = 99;
+
     /**
      * 人脸注册参数错误
      */
@@ -31,6 +33,8 @@ public class FaceCode {
      * 注册失败，原因未知
      */
     public static final int CODE_REGISTER_FAILED = 103;
+
+    public static final int CODE_HAS_REGISTERED = 104;
 
     /**
      * SDK初始化的状态返回值

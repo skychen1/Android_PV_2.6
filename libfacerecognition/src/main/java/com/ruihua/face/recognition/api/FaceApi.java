@@ -108,8 +108,10 @@ public class FaceApi {
             return null;
         }
         User user = DBManager.getInstance().queryUser(groupId, userId);
-        List<Feature> featureList = DBManager.getInstance().queryFeature(groupId, userId);
-        user.setFeatureList(featureList);
+        if(user!=null){
+            List<Feature> featureList = DBManager.getInstance().queryFeature(groupId, userId);
+            user.setFeatureList(featureList);
+        }
         return user;
     }
 

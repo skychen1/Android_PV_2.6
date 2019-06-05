@@ -60,6 +60,7 @@ import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.fragment.LoginFaceFragment;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
@@ -268,6 +269,7 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
 	mLoginPass.setVisibility(View.GONE);
+	mLoginFace.setVisibility(View.GONE);
 	mLoginViewpager.setScanScroll(false);
    }
 
@@ -738,7 +740,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-//	   mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
+	   mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
 	   mFragments.add(new LoginPassWordFragment());//用户名登录
 	   mFragments.add(new LoginPassFragment());//紧急登录
 	   mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -17,7 +18,12 @@ import com.ruihua.face.recognition.callback.InitListener;
 import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.entity.User;
 import com.ruihua.face.recognition.manager.FaceSDKManager;
+import com.ruihua.face.recognition.utils.FileUitls;
 import com.ruihua.face.recognition.utils.LogUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 人脸识别导航页面
@@ -28,6 +34,7 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
     private Button registerFaceBtn;
     private Button identifyFaceBtn;
     private Button groupFaceBtn;
+    private Button file_register_face_btn;
     private Handler handler = new Handler(Looper.getMainLooper());
 
     /**
@@ -48,10 +55,12 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
         registerFaceBtn = (Button) findViewById(R.id.register_face_btn);
         identifyFaceBtn = (Button) findViewById(R.id.identify_face_btn);
         groupFaceBtn = (Button) findViewById(R.id.group_face_btn);
+        file_register_face_btn = (Button) findViewById(R.id.file_register_face_btn);
         settingBtn.setOnClickListener(this);
         registerFaceBtn.setOnClickListener(this);
         identifyFaceBtn.setOnClickListener(this);
         groupFaceBtn.setOnClickListener(this);
+        file_register_face_btn.setOnClickListener(this);
         //检测设备是否授权
         boolean b = FaceManager.getManager().hasActivation(this);
         ToastUtils.show(b ? "设备已授权" : "设备未授权");
@@ -110,7 +119,80 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
             Intent intent = new Intent(FaceGatewayActivity.this, UserListActivity.class);
             intent.putExtra("group_id", USE_GROUP);
             startActivity(intent);
+        } else if (v == file_register_face_btn) {
+            //使用照片注册人脸
+            new Thread(() -> getAllFiles()).start();
         }
+    }
+
+    /**
+     * 获取指定目录内所有文件路径
+     */
+    public void getAllFiles() {
+        imageFiles.clear();
+        imageNames.clear();
+        //人脸照缓存路径
+        File f = FileUitls.getBatchFaceDirectory("face_library");
+        Log.d("LOGCAT", "cachePath:" + f.getAbsolutePath());
+        if (!f.exists()) {//判断路径是否存在
+            Log.d("LOGCAT", "cachePath not exist" );
+            toast("文件路径不存在");
+            return;
+        }
+        File[] files = f.listFiles();
+        if (files == null) {//判断权限
+            Log.d("LOGCAT", "files is null" );
+            toast("文件路径为空");
+            return;
+        }
+        for (File _file : files) {//遍历目录
+            if (_file.isFile()) {
+                String _name = _file.getName();
+                String filePath = _file.getAbsolutePath();//获取文件路径
+
+                int end=_file.getName().lastIndexOf('.');
+                String fileName = _file.getName().substring(0,end);//获取文件名
+                Log.d("LOGCAT", "_name:" + _name);
+                Log.d("LOGCAT", "fileName:" + fileName);
+                Log.d("LOGCAT", "filePath:" + filePath);
+                imageFiles.add(_file);
+                imageNames.add(fileName);
+            }
+        }
+        if (imageNames.size() == 0 || imageFiles.size() == 0) {
+            LogUtils.d("LoginFace:暂时没有人脸照");
+            toast("文件路径下没有图片");
+            return;
+        }
+        index = 0;
+        registerFaceLibrary();
+    }
+
+    //记录当前缓存的图片
+    private int index = 0;
+    //图片列表
+    private List<File> imageFiles = new ArrayList<>();
+    private List<String> imageNames = new ArrayList<>();
+
+    private void registerFaceLibrary() {
+        String userId = imageNames.get(index);
+        String userName = imageNames.get(index);
+        File file = imageFiles.get(index);
+        FaceManager.getManager().registerFace(userId, userName, file.getAbsolutePath(),
+                (code, msg) -> {
+                    LogUtils.d("LoginFace:人脸注册结果：：code=" + code + ":::msg=" + msg+":::userId="+userId);
+                    if (code == FaceCode.CODE_REGISTER_SUCCESS) {
+                        //注册成功即可删除缓存照片
+//                        file.delete();
+                    }
+                    //注册完成，继续注册下一张
+                    if (imageFiles.size() - 1 > index) {
+                        index++;
+                        registerFaceLibrary();
+                    }else {
+                        toast("注册完成");
+                    }
+                });
     }
 
     private void toast(final String text) {

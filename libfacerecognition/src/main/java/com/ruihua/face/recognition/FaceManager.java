@@ -111,18 +111,16 @@ public class FaceManager {
      * @param listener 数据回调监听
      */
     public void init(@NonNull Activity context, boolean isMirror, InitListener listener) {
-        //申请文件读取权限
+        //检测文件读取权限
         int permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            // 请求权限
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, FaceConfig.EXTERNAL_STORAGE_REQ_CODE);
+            // 如果没有读取权限就直接回调初始化失败,不再初始化
+            if (listener != null) {
+                listener.initFail(FaceCode.CODE_HAVE_NOT_PERMISSION, "没有权限");
+            }
+            return;
         }
-        //申请相机权限
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest
-                .permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 100);
-        }
+
         //初始化数据库
         DBManager.getInstance().init(context);
         //初始化sp工具类
@@ -238,12 +236,14 @@ public class FaceManager {
      * @param callback 注册成功与否的回调
      */
     public void registerFace(String userId, String userName, final String filePath, FaceRegisterCallback callback) {
+        //判断参数是否为空
         if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(userName) || TextUtils.isEmpty(filePath)) {
             if (callback != null) {
                 callback.onRegisterResult(FaceCode.CODE_REGISTER_PARAM_ERROR, "所有参数都不能为空");
             }
             return;
         }
+        //判断id命名规则
         Matcher matcher = pattern.matcher(userId);
         if (!matcher.matches()) {
             if (callback != null) {
@@ -251,10 +251,20 @@ public class FaceManager {
             }
             return;
         }
+        //判断照片是否存在
         final File file = new File(filePath);
         if (!file.exists()) {
             if (callback != null) {
                 callback.onRegisterResult(FaceCode.CODE_REGISTER_PARAM_ERROR, "照片文件不存在");
+            }
+            return;
+        }
+        //判断该人员是否在注册，如果注册了就提示已经注册
+        //控制一个人只能注册一张照片，如果允许注册多张，需要再后面加入逻辑；
+        User userById = getUserById(userId);
+        if (userById != null) {
+            if (callback != null) {
+                callback.onRegisterResult(FaceCode.CODE_HAS_REGISTERED, "该人员已注册，如需更改，请删除原有底库");
             }
             return;
         }
@@ -521,7 +531,6 @@ public class FaceManager {
         //previewView.getTextureView().setScaleX(-1);
     }
 
-    private long ll = 0;
 
     /**
      * 设置人脸检测回调

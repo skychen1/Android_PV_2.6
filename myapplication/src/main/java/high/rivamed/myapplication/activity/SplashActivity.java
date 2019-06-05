@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.orhanobut.logger.AndroidLogAdapter;
@@ -18,6 +19,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.LogcatHelper;
+import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -42,7 +44,7 @@ import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class SplashActivity extends Activity {
+public class SplashActivity extends FragmentActivity {
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,44 +109,51 @@ public class SplashActivity extends Activity {
 	   }
 	}).start();
 
-	   //检测设备是否授权
-	   boolean b = FaceManager.getManager().hasActivation(this);
-//	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
-	   if (b){//启动页初始化人脸识别sdk
-		   FaceManager.getManager().init(this,false, new InitListener() {
-			   @Override
-			   public void initSuccess() {
-				   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
-				   //初始化分组
-				   boolean b = FaceManager.getManager().initGroup();
-				   if (!b) {
-					   ToastUtils.showShortSafe("创建人脸照分组失败");
-				   }else {
-					   //设置是否需要活体
-					   FaceManager.getManager().setNeedLive(false);
-				   }
-				   //初始化完成后跳转页面
-				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-				   finish();
-			   }
+		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
+	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
+		   if (hasPermission) {
+			   //检测设备是否授权
+			   boolean hasActivation = FaceManager.getManager().hasActivation(SplashActivity.this);
+			   //	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
+			   if (hasActivation) {//启动页初始化人脸识别sdk
+				   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
+					   @Override
+					   public void initSuccess() {
+						   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+						   //初始化分组
+						   boolean b = FaceManager.getManager().initGroup();
+						   if (!b) {
+							   ToastUtils.showShortSafe("创建人脸照分组失败");
+						   } else {
+							   //设置是否需要活体
+							   FaceManager.getManager().setNeedLive(false);
+						   }
+						   //初始化完成后跳转页面
+                           launchLogin();
+                       }
 
-			   @Override
-			   public void initFail(int errorCode, String msg) {
-				   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
-				   //初始化完成后跳转页面
-				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-				   finish();
+					   @Override
+					   public void initFail(int errorCode, String msg) {
+						   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+						   //初始化完成后跳转页面
+                           launchLogin();
+                       }
+				   });
+			   } else {
+				   new Handler().postDelayed(new Runnable() {
+					   public void run() {
+                           launchLogin();
+                       }
+				   }, 2000);
 			   }
-		   });
-	   }else {
-		   new Handler().postDelayed(new Runnable() {
-			   public void run() {
-				   startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-				   finish();
-			   }
-		   }, 2000);
-	   }
-
-
+		   }else {
+               launchLogin();
+           }
+	   });
    }
+
+    private void launchLogin() {
+        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+        finish();
+    }
 }
