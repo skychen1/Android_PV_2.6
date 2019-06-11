@@ -134,6 +134,13 @@
                     android:layout_weight="1"
                     android:text="人脸识别" />
 
+                <Button
+                    android:id="@+id/btn_face_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="网络人脸注册" />
+
             </LinearLayout>
 
             <LinearLayout

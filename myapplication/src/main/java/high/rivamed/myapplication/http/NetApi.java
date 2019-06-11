@@ -117,4 +117,8 @@ public interface NetApi {
 
     //视频上传
     String URL_VIDEO_UPLOAD_RECORD="/video/video/videoUpload";
+    //人脸识别初始化:获取所有人脸
+    String URL_FACE_GET_ALL="/rmApi/restLogin/faceRecognition";
+    //人脸绑定
+    String URL_FACE_BIND="/restLogin/boundFace";
 }

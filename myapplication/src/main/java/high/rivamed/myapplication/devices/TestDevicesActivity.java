@@ -28,6 +28,8 @@ import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.utils.FaceTask;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
@@ -629,6 +631,13 @@ public class TestDevicesActivity extends SimpleActivity {
 
         //人脸识别
         mBtnFace.setOnClickListener(view -> FaceGatewayActivity.launch(this));
+        findViewById(R.id.btn_face_register).setOnClickListener(view -> {
+            FaceTask faceTask = new FaceTask(this);
+            faceTask.setCallBack((hasRegister, msg) -> {
+                LogUtils.d("faceTask", "initListener: "+msg );
+            });
+            faceTask.getAllFaceAndRegister();
+        });
     }
 
     @Override

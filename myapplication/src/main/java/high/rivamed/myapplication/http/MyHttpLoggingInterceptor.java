@@ -181,7 +181,7 @@ public class MyHttpLoggingInterceptor implements Interceptor {
      */
     private static boolean isPlaintext(MediaType mediaType) {
         if (mediaType == null) return false;
-        if (mediaType.type() != null && mediaType.type().equals("text")) {
+        if (mediaType.type() != null &&( mediaType.type().equals("text")|| mediaType.type().equals("image"))) {
             return true;
         }
         String subtype = mediaType.subtype();

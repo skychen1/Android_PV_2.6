@@ -18,6 +18,8 @@ import org.litepal.LitePal;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.service.ScanService;
+import high.rivamed.myapplication.utils.FaceTask;
+import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -111,44 +113,44 @@ public class SplashActivity extends FragmentActivity {
 
 		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
 	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-		   if (hasPermission) {
-			   //检测设备是否授权
-			   boolean hasActivation = FaceManager.getManager().hasActivation(SplashActivity.this);
-			   //	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
-			   if (hasActivation) {//启动页初始化人脸识别sdk
-				   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
-					   @Override
-					   public void initSuccess() {
-						   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
-						   //初始化分组
-						   boolean b = FaceManager.getManager().initGroup();
-						   if (!b) {
-							   ToastUtils.showShortSafe("创建人脸照分组失败");
-						   } else {
-							   //设置是否需要活体
-							   FaceManager.getManager().setNeedLive(false);
-						   }
+		   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
+			   //检测设备是否激活授权码
+			   //启动页初始化人脸识别sdk
+			   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
+				   @Override
+				   public void initSuccess() {
+					   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+					   //初始化分组
+					   boolean b = FaceManager.getManager().initGroup();
+					   if (!b) {
+						   ToastUtils.showShortSafe("创建人脸照分组失败");
 						   //初始化完成后跳转页面
-                           launchLogin();
-                       }
+						   launchLogin();
+					   } else {
+						   //设置是否需要活体
+						   FaceManager.getManager().setNeedLive(false);
+						   //从服务器更新人脸底库并注册至本地
+						   FaceTask faceTask = new FaceTask(SplashActivity.this);
+						   faceTask.setCallBack((hasRegister, msg) -> {
+							   LogUtils.d("faceTask", "initListener: " + msg);
+							   ToastUtils.showShortSafe(msg);
+						   });
+						   faceTask.getAllFaceAndRegister();
+						   //初始化完成后跳转页面
+						   launchLogin();
+					   }
+				   }
 
-					   @Override
-					   public void initFail(int errorCode, String msg) {
-						   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
-						   //初始化完成后跳转页面
-                           launchLogin();
-                       }
-				   });
-			   } else {
-				   new Handler().postDelayed(new Runnable() {
-					   public void run() {
-                           launchLogin();
-                       }
-				   }, 2000);
-			   }
-		   }else {
-               launchLogin();
-           }
+				   @Override
+				   public void initFail(int errorCode, String msg) {
+					   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+					   //初始化完成后跳转页面
+					   launchLogin();
+				   }
+			   });
+		   } else {
+			   new Handler().postDelayed(this::launchLogin, 2000);
+		   }
 	   });
    }
 

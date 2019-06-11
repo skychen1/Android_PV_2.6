@@ -775,6 +775,29 @@ public class NetRequest {
 		PostTokenRequestWithFile(urls,map,"file",file,tag,netResult);
 	}
 
+
+
+	/**
+	 * 获取所有人脸照
+	 */
+	public void getAllFace(Object tag, NetResult netResult) {
+		String urls = MAIN_URL + NetApi.URL_FACE_GET_ALL;
+		Map<String, String> map = new HashMap<>();
+		map.put("systemType", SYSTEMTYPE);
+		GetRequest(urls, map, tag, netResult);
+	}
+
+	/**
+	 * 绑定人脸
+	 */
+	public void bindFace(String faceBase64 , Object tag, NetResult netResult) {
+		String urls = MAIN_URL + NetApi.URL_FACE_BIND;
+		Map<String, String> map = new HashMap<>();
+		map.put("faceBase64", faceBase64);
+		String json = mGson.toJson(map);
+		PostTokenRequest(urls, json, tag, netResult);
+	}
+
    private class MyCallBack extends StringCallback {
 
 	private String    url;
