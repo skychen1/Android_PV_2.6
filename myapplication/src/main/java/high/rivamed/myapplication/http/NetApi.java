@@ -54,7 +54,9 @@ public interface NetApi {
 
     //耗材操作
     String URL_OPERATE_QUERY = "/consumables/inventory/findInventory";//查询扫描出来的耗材和数据库耗材情况    新
+    String URL_OPERATE_QUERY_LYTH = "/consumables/inventory/findTwooutOrBackInventory";//查询扫描出来的耗材和数据库耗材情况    领用/退回新加接口查询epc信息
     String URL_OPERATE_INOUTBOX_YES = "/consumables/inventory/operateInventory";//查询后入柜出柜的确认操作     新
+    String URL_OPERATE_INOUTBOX_YES_LYTH = "/consumables/inventory/operateTwoOutOrBackInventory";//查询后入柜出柜的确认操作     领用/退回新加接口确认操作
     String URL_OPERATE_DB_YES = "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查  暂停使用
 
     //快速开柜

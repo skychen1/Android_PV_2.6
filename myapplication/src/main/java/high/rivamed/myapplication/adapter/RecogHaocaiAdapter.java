@@ -128,13 +128,9 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 
 	} else {
-//	   if (helper.getAdapterPosition() % 2 == 0) {
-//		mLl.setBackgroundResource(R.color.bg_color);
-//		mSeven_seven.setBackgroundResource(R.color.bg_color);
-//	   } else {
+
 	   mLl.setBackgroundResource(R.color.bg_f);
 	   mSeven_seven.setBackgroundResource(R.color.bg_f);
-//	   }
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
@@ -143,17 +139,19 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 
 	}
-
-	if (item.getPatientName() == null || item.getPatientName().length() < 1) {
-	   mSeven_six.setText("");
-	} else {
-	   if (item.getPatientId().equals("virtual")) {
-		mSeven_six.setText(item.getPatientName());
+	if (item.getOperationStatus()==7){
+	   mSeven_six.setText("/");
+	}else {
+	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
+		mSeven_six.setText("");
 	   } else {
-		mSeven_six.setText(item.getPatientName() + " / " + item.getHisPatientId());
+		if (item.getPatientId().equals("virtual")) {
+		   mSeven_six.setText(item.getPatientName());
+		} else {
+		   mSeven_six.setText(item.getPatientName() + " / " + item.getHisPatientId());
+		}
 	   }
 	}
-
 	setDeleteView(item.isDelete(), swipe);
 	if (item.getDeleteCount() > 0) {
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -172,9 +170,17 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.bg_f));
 	   mSeven_seven.setBackgroundResource(R.drawable.bg_text_red);
 	}
+
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
 						mSeven_four);
+	}
+	if (item.getOperationStatus()==99){
+	   mSeven_one.setText("/");
+	   mSeven_three.setText("/");
+	   mSeven_four.setText("/");
+	   mSeven_six.setText("/");
+	   mSeven_seven.setText("断网放入");
 	}
    }
 
@@ -196,6 +202,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_three.setTextColor(Color.parseColor("#333333"));
 	   mSeven_five.setTextColor(Color.parseColor("#333333"));
 	   mSeven_six.setTextColor(Color.parseColor("#333333"));
+	   mSeven_four.setTextColor(Color.parseColor("#333333"));
 	   mSeven_four.setBackgroundResource(R.color.bg_f);
 	   swipe.setSwipeEnabled(true);
 	}

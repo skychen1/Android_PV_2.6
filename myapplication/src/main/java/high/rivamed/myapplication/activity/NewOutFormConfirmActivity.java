@@ -52,7 +52,6 @@ import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.bean.SureReciveOrder;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -578,8 +577,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   ordersBean.setOrderId(mPrePageDate.getOrderId());
 	   mPushFormOrders.add(ordersBean);
 	} else if (mPushFormOrders != null && mPushFormOrders.size() != 0) {
-	   for (PushFormDateBean.OrdersBean s : mPushFormOrders) {
-		if (!s.getOrderId().equals(mPrePageDate.getOrderId())) {
+	   for (int x=0;x<mPushFormOrders.size();x++){
+		if (!mPushFormOrders.get(x).getOrderId().equals(mPrePageDate.getOrderId())) {
 		   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
 		   ordersBean.setOrderId(mPrePageDate.getOrderId());
 		   mPushFormOrders.add(ordersBean);
@@ -602,7 +601,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
-	AllDeviceCallBack.getInstance().initCallBack();
+//	AllDeviceCallBack.getInstance().initCallBack();
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {

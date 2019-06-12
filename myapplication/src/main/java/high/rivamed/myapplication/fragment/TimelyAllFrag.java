@@ -46,7 +46,6 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
@@ -106,7 +105,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		mLoading = null;
 	   }
 
-	   AllDeviceCallBack.getInstance().initCallBack();
+//	   AllDeviceCallBack.getInstance().initCallBack();
 	} else {
 	   mPauseS = true;
 	}
@@ -235,7 +234,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			   k = 0;
 			   if (!mPauseS) {
 				LogUtils.i(TAG, "mEPCDate  zou l  ");
-				AllDeviceCallBack.getInstance().initCallBack();
+//				AllDeviceCallBack.getInstance().initCallBack();
 				getDeviceDate(event.deviceId, mEPCDate);
 			   }
 			}
@@ -243,7 +242,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		   } else {
 			if (!mPauseS) {
 			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-			   AllDeviceCallBack.getInstance().initCallBack();
+//			   AllDeviceCallBack.getInstance().initCallBack();
 			   getDeviceDate(event.deviceId, event.epcs);
 			}
 		   }
@@ -280,7 +279,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	}
 	initDateAll();
 	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
-	AllDeviceCallBack.getInstance().initCallBack();
+//	AllDeviceCallBack.getInstance().initCallBack();
    }
 
    @Override
@@ -417,8 +416,8 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
-		   AllDeviceCallBack.getInstance().initCallBack();
+//		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
+//		   AllDeviceCallBack.getInstance().initCallBack();
 		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);

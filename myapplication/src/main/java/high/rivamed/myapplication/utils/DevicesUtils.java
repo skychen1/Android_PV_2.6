@@ -79,7 +79,6 @@ public class DevicesUtils {
    }
    /**
     * 检测所有门锁是否关闭 true 关闭，false未关闭
-    *
     * @return
     */
    public static void getDoorStatus() {

@@ -406,13 +406,12 @@ public class NetRequest {
    }
 
    /**
-    * 耗材操作开柜扫描提交数据
+    * 耗材操作开柜扫描查询数据
     */
    public void putEPCDate(String deviceInventoryVos, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_OPERATE_QUERY;
 	PostTokenRequest(urls, deviceInventoryVos, tag, netResult);
    }
-
    /**
     * 耗材操作确认操作
     */
@@ -420,6 +419,21 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_OPERATE_INOUTBOX_YES;
 	PostTokenRequest(urls, operateTCstInventory, tag, netResult);
    }
+   /**
+    * 耗材操作开柜扫描查询数据(领用退回)
+    */
+   public void putEPCLyThDate(String deviceInventoryVos, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_OPERATE_QUERY_LYTH;
+	PostTokenRequest(urls, deviceInventoryVos, tag, netResult);
+   }
+   /**
+    * 耗材操作确认操作(领用退回)
+    */
+   public void putOperateLyThYes(String operateTCstInventory, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_OPERATE_INOUTBOX_YES_LYTH;
+	PostTokenRequest(urls, operateTCstInventory, tag, netResult);
+   }
+
 
    /**
     * 耗材操作确认操作(快速开柜)
@@ -732,7 +746,6 @@ public class NetRequest {
 
    /**
     * 无网后来网的登录
-    *
     * @param tag
     * @param netResult
     */

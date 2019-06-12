@@ -87,6 +87,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 	mString="";
 	loadTempBingDate("");
 	initDate();
+	initlistener();
    }
 
    @Override
@@ -97,7 +98,6 @@ public class PatientConnActivity extends BaseSimpleActivity {
 	mBaseTabTvTitle.setText("选择临时患者");
 	mStockSearch.setVisibility(View.VISIBLE);
 	mBaseTabBack.setVisibility(View.VISIBLE);
-	initlistener();
    }
 
    private void initDate() {

@@ -36,6 +36,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 
@@ -176,8 +177,11 @@ public class TempPatientDialog extends Dialog {
             mAddressTwo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadRoomNum();
-
+                    if (mTitleConn) {
+                        loadRoomNum();
+                    }else {
+                        setErrorOperationRooms("-1");
+                    }
                 }
             });
             mAddressThree.setOnClickListener(new View.OnClickListener() {
@@ -260,19 +264,26 @@ public class TempPatientDialog extends Dialog {
 
                 @Override
                 public void onError(String result) {
-                    if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")){
-			     List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
-			     List<SelectBean> list = new ArrayList<>();
-			     for (OperationRoomsBean s:roomsBeans){
-				  list.add(new SelectBean(s.getRoomName(),s.getOptRoomId()));
-			     }
-			     setAdapterDate(list, mAddressTwo, mGoneTwoType);
-			  }
+                    setErrorOperationRooms(result);
                 }
             });
 
         }
 
+        /**
+         * 无网得到的手术间
+         * @param result
+         */
+        private void setErrorOperationRooms(String result) {
+            if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")){
+		   List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+		   List<SelectBean> list = new ArrayList<>();
+		   for (OperationRoomsBean s:roomsBeans){
+			list.add(new SelectBean(s.getRoomName(),s.getOptRoomId()));
+		   }
+		   setAdapterDate(list, mAddressTwo, mGoneTwoType);
+		}
+        }
 
         private SettingListener myListener = null;
 

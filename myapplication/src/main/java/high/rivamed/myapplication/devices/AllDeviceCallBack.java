@@ -83,9 +83,7 @@ public class AllDeviceCallBack {
    private void StrongOpenScanStart() {
 	List<String> deviceId = DevicesUtils.getReaderDeviceId();
 	for (String s : deviceId) {//记录强开后未关门
-	   Log.i("FAFAS", "StrongOpenScanStart   " + s);
 	   int i =  ReaderManager.getManager().startScan(s, READER_TIME);
-	   Log.i("FAFAS", "xxx   " + i);
 	}
    }
 
@@ -173,7 +171,7 @@ public class AllDeviceCallBack {
 	if (mTbaseDevices.size() > 1 && eth002DeviceIdList.size() > 1) {
 	   if (position == 0) {//第一个为全部开柜
 		LogUtils.i(TAG, " position   " + position);
-		initCallBack();
+//		initCallBack();
 		for (int i = 0; i < eth002DeviceIdList.size(); i++) {
 		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   Eth002Manager.getEth002Manager().openDoor((String) eth002DeviceIdList.get(i));
@@ -263,11 +261,12 @@ public class AllDeviceCallBack {
     * 初始化罗丹贝尔回调
     */
    public void initReader() {
+
 	//设置回调
 	ReaderManager.getManager().registerCallback(new ReaderCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-
+		Log.e("FAFAS", "ReaderManager   "+deviceId  +isConnect);
 	   }
 
 	   @Override
@@ -412,20 +411,19 @@ public class AllDeviceCallBack {
 		   for (BoxIdBean s : mBoxIdBeans) {
 			Eth002Manager.getEth002Manager().checkDoorState(s.getDevice_id());
 		   }
-		   Log.i("FAFAS", "OnDoorClosed   " + deviceIndentify);
 		} else {//正常开门
 		   for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
 			if (mEthDeviceIdBack2.get(i).equals(deviceIndentify)) {
 			   mEthDeviceIdBack2.remove(i);
 			}
 		   }
-//		   clossDoorStartScan(deviceIndentify);
 		}
 	   }
 
 	   @Override
 	   public void onDoorCheckedState(String deviceIndentify, boolean opened) {
-		EventBusUtils.post(new Event.EventDoorStatus(deviceIndentify,opened));
+
+		EventBusUtils.postSticky(new Event.EventDoorStatus(deviceIndentify,opened));
 	   }
 	});
    }

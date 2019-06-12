@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -57,7 +58,6 @@ import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
 import high.rivamed.myapplication.dbmodel.RoomsBean;
 import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.fragment.LoginFaceFragment;
@@ -125,6 +125,8 @@ public class LoginActivity extends SimpleActivity {
    ImageView       mLoginLogo;
    @BindView(R.id.login_face)
    RadioButton     mLoginFace;
+   @BindView(R.id.login_password)
+   RadioButton     mLoginPassword;
    @BindView(R.id.login_pass)
    RadioButton     mLoginPass;
    @BindView(R.id.login_radiogroup)
@@ -231,9 +233,17 @@ public class LoginActivity extends SimpleActivity {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		AllDeviceCallBack.getInstance().initCallBack();
+//		AllDeviceCallBack.getInstance().initCallBack();
 		if (mTitleConn) {
 		   getAllCstDate(mGson, this);
+		}
+		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
+		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+		if (all.size() == 0) {
+		   getUnNetUseDate();
+		}
+		if (roomsBeans.size() == 0) {
+		   getUnEntFindOperation();
 		}
 	   }
 	}).start();
@@ -269,7 +279,6 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
 	mLoginPass.setVisibility(View.GONE);
-	mLoginFace.setVisibility(View.GONE);
 	mLoginViewpager.setScanScroll(false);
    }
 
@@ -318,7 +327,6 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		deleteLitepal();
-		//		LogUtils.w(TAG, "getUnNetUseDate    " + result);
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
 		new Thread(new Runnable() {
 		   @Override
@@ -425,22 +433,30 @@ public class LoginActivity extends SimpleActivity {
    public void getConfigDate(int configType, String loginType) {
 
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   LogUtils.i(TAG, "result   " + result);
-		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
-		   setConfigBean(result, configType, loginType);
-		}
-
-		@Override
-		public void onError(String result) {
-		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
-			String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
-			setConfigBean(string, configType, loginType);
+	   if (mTitleConn) {
+		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+			LogUtils.i(TAG, "result   " + result);
+			SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+			setConfigBean(result, configType, loginType);
 		   }
+
+		   @Override
+		   public void onError(String result) {
+			if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
+			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			   setConfigBean(string, configType, loginType);
+			}
+		   }
+		});
+	   } else {
+		if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null) {
+		   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+		   setConfigBean(string, configType, loginType);
 		}
-	   });
+	   }
+
 	}
    }
 
@@ -455,40 +471,46 @@ public class LoginActivity extends SimpleActivity {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 	//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
-	getUpDateVer(tCstConfigVos, configType, loginType);
+	if (mTitleConn) {
+	   getUpDateVer(tCstConfigVos, configType, loginType);
+	} else {
+	   loginEnjoin(tCstConfigVos, configType, loginType);
+	}
 	if (UIUtils.getConfigType(mContext, CONFIG_017)) {
 	   mLoginPass.setVisibility(View.VISIBLE);
 	   mLoginViewpager.setScanScroll(true);
-		if (isConfigFace()) {
-			mLoginFace.setVisibility(View.VISIBLE);
-		} else {
-			mLoginFace.setVisibility(View.GONE);
-		}
-
+	   if (isConfigFace()) {
+		mLoginFace.setVisibility(View.VISIBLE);
+		mLoginViewpager.setCurrentItem(0);
+	   } else {
+		mLoginFace.setVisibility(View.GONE);
+	   }
 	} else {
 	   mLoginPass.setVisibility(View.GONE);
-		if (isConfigFace()) {
-			mLoginFace.setVisibility(View.VISIBLE);
-			mLoginViewpager.setScanScroll(true);
-		} else {
-			mLoginFace.setVisibility(View.GONE);
-			mLoginViewpager.setScanScroll(false);
-		}
+	   if (isConfigFace()) {
+		mLoginFace.setVisibility(View.VISIBLE);
+		mLoginViewpager.setScanScroll(true);
+		mLoginViewpager.setCurrentItem(0);
+	   } else {
+		mLoginFace.setVisibility(View.GONE);
+		mLoginViewpager.setScanScroll(false);
+		mLoginViewpager.setCurrentItem(1);
+	   }
 	}
 	//	} else {
 	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	//	}
    }
 
-	private boolean isConfigFace() {
-		// TODO: 2019/5/21 判断是否配置人脸识别登录
-//		return UIUtils.getConfigType(mContext, CONFIG_099);
-		//测试时默认开启，真实情况需要根据后台配置
-//		return true;
-		return false;
-	}
+   private boolean isConfigFace() {
+	// TODO: 2019/5/21 判断是否配置人脸识别登录
+	//		return UIUtils.getConfigType(mContext, CONFIG_099);
+	//测试时默认开启，真实情况需要根据后台配置
+	//		return true;
+	return false;
+   }
 
-	/**
+   /**
     * 是否禁止使用
     *
     * @param tCstConfigVos
@@ -740,59 +762,62 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-	   mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
-	   mFragments.add(new LoginPassWordFragment());//用户名登录
-	   mFragments.add(new LoginPassFragment());//紧急登录
-	   mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
-	   mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
-	   mLoginRadiogroup.setOnCheckedChangeListener((radioGroup, i) -> {
-		   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-			   if (isConfigFace()) {
-				   switch (radioGroup.getCheckedRadioButtonId()) {
-					   case R.id.login_face:
-						   mLoginViewpager.setCurrentItem(0);
-						   break;
-					   case R.id.login_password:
-						   mLoginViewpager.setCurrentItem(1);
-						   break;
-					   case R.id.login_pass:
-						   mLoginViewpager.setCurrentItem(2);
-						   break;
-				   }
-			   } else {
-				   switch (radioGroup.getCheckedRadioButtonId()) {
-					   case R.id.login_password:
-						   mLoginViewpager.setCurrentItem(1);
-						   break;
-					   case R.id.login_pass:
-						   mLoginViewpager.setCurrentItem(2);
-						   break;
-				   }
-			   }
-		   } else {
-			   if (isConfigFace()) {
-				   switch (radioGroup.getCheckedRadioButtonId()) {
-					   case R.id.login_face:
-						   mLoginViewpager.setCurrentItem(0);
-						   break;
-					   case R.id.login_password:
-						   mLoginViewpager.setCurrentItem(1);
-						   break;
-				   }
-			   } else {
-				   switch (radioGroup.getCheckedRadioButtonId()) {
-					   case R.id.login_password:
-						   mLoginViewpager.setCurrentItem(1);
-						   break;
-				   }
-			   }
+	mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
+	mFragments.add(new LoginPassWordFragment());//用户名登录
+	mFragments.add(new LoginPassFragment());//紧急登录
+	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
+	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
+	mLoginRadiogroup.setOnCheckedChangeListener((radioGroup, i) -> {
+	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+		if (isConfigFace()) {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_face:
+			   mLoginViewpager.setCurrentItem(0);
+			   break;
+			case R.id.login_password:
+			   mLoginViewpager.setCurrentItem(1);
+			   break;
+			case R.id.login_pass:
+			   mLoginViewpager.setCurrentItem(2);
+			   break;
 		   }
-	   });
-	   if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_face) {
-		   mLoginViewpager.setCurrentItem(0);
+		} else {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_password:
+			   mLoginViewpager.setCurrentItem(1);
+			   break;
+			case R.id.login_pass:
+			   mLoginViewpager.setCurrentItem(2);
+			   break;
+		   }
+		}
 	   } else {
-		   mLoginViewpager.setCurrentItem(1);
+		if (isConfigFace()) {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_face:
+			   mLoginViewpager.setCurrentItem(0);
+			   break;
+			case R.id.login_password:
+			   mLoginPassword.setChecked(true);
+			   break;
+		   }
+		} else {
+		   switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.login_password:
+			   mLoginViewpager.setCurrentItem(1);
+			   break;
+		   }
+		}
 	   }
+	   mLoginRadiogroup.check(radioGroup.getCheckedRadioButtonId());
+	});
+	if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_face) {
+	   mLoginViewpager.setCurrentItem(0);
+	} else if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_password){
+	   mLoginViewpager.setCurrentItem(1);
+	}else {
+	   mLoginViewpager.setCurrentItem(2);
+	}
    }
 
    /**
@@ -927,29 +952,6 @@ public class LoginActivity extends SimpleActivity {
 	android.os.Process.killProcess(android.os.Process.myPid());
    }
 
-   //   public void getBoxSize() {
-   //	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-   //	   @Override
-   //	   public void onSucceed(String result) {
-   //		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
-   //		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-   //		LogUtils.i(TAG, "result  " + result);
-   //		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
-   //		if (devices.size() > 1) {
-   //		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-   //		   tbaseDevicesBean.setDeviceName("全部开柜");
-   //		   devices.add(0, tbaseDevicesBean);
-   //		}
-   //		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,mGson.toJson(devices));
-   //	   }
-   //
-   //	   @Override
-   //	   public void onError(String result) {
-   //
-   //	   }
-   //	});
-   //   }
-
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 
 	@Override
@@ -960,45 +962,45 @@ public class LoginActivity extends SimpleActivity {
 	@Override
 	public void onPageSelected(int position) {
 	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-		   if (isConfigFace()) {
-			   switch (position) {
-				   case 0:
-					   mLoginRadiogroup.check(R.id.login_face);
-					   break;
-				   case 1:
-					   mLoginRadiogroup.check(R.id.login_password);
-					   break;
-				   case 2:
-					   mLoginRadiogroup.check(R.id.login_pass);
-					   break;
-			   }
-		   } else {
-			   switch (position) {
-				   case 1:
-					   mLoginRadiogroup.check(R.id.login_password);
-					   break;
-				   case 2:
-					   mLoginRadiogroup.check(R.id.login_pass);
-					   break;
-			   }
+		if (isConfigFace()) {
+		   switch (position) {
+			case 0:
+			   mLoginRadiogroup.check(R.id.login_face);
+			   break;
+			case 1:
+			   mLoginRadiogroup.check(R.id.login_password);
+			   break;
+			case 2:
+			   mLoginRadiogroup.check(R.id.login_pass);
+			   break;
 		   }
+		} else {
+		   switch (position) {
+			case 1:
+			   mLoginRadiogroup.check(R.id.login_password);
+			   break;
+			case 2:
+			   mLoginRadiogroup.check(R.id.login_pass);
+			   break;
+		   }
+		}
 	   } else {
-		   if (isConfigFace()) {
-			   switch (position) {
-				   case 0:
-					   mLoginRadiogroup.check(R.id.login_face);
-					   break;
-				   case 1:
-					   mLoginRadiogroup.check(R.id.login_password);
-					   break;
-			   }
-		   } else {
-			   switch (position) {
-				   case 1:
-					   mLoginRadiogroup.check(R.id.login_password);
-					   break;
-			   }
+		if (isConfigFace()) {
+		   switch (position) {
+			case 0:
+			   mLoginRadiogroup.check(R.id.login_face);
+			   break;
+			case 1:
+			   mLoginRadiogroup.check(R.id.login_password);
+			   break;
 		   }
+		} else {
+		   switch (position) {
+			case 1:
+			   mLoginRadiogroup.check(R.id.login_password);
+			   break;
+		   }
+		}
 	   }
 	}
 
@@ -1052,7 +1054,7 @@ public class LoginActivity extends SimpleActivity {
    public static void setMenuDateAndStart(
 	   List<HomeAuthorityMenuBean> fromJson, Gson mGson, Activity activity) {
 	if (fromJson.size() > 0 && null != fromJson.get(0) && null != fromJson.get(0).getChildren() &&
-	    fromJson.get(0).getChildren().get(0).getTitle().equals("选择操作")){
+	    fromJson.get(0).getChildren().get(0).getTitle().equals("选择操作")) {
 	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, true);
 	   List<ChildrenBean> children = fromJson.get(0).getChildren().get(0).getChildren();
 	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, mGson.toJson(children));

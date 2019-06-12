@@ -47,6 +47,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -96,51 +97,60 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     }
 
-    @OnClick(R.id.login_button)
-    public void onViewClicked() {
-        if (UIUtils.isFastDoubleClick(R.id.login_button)) {
-            return;
-        } else {
-            if (isvalidate()) {
-			getConfigDate();
-
-            } else {
-                Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     * 获取配置项
-     */
-    public void getConfigDate() {
-        if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-            NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
-                @Override
-                public void onSucceed(String result) {
-                    SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
-                    ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-                    List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-//                    if (tCstConfigVos.size()!=0){
-                        getUpDateVer(tCstConfigVos);
-//                    }else {
-//                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
-//                    }
-                }
-
-		   @Override
-		   public void onError(String result) {
-			if (SPUtils.getString(mContext, SAVE_SEVER_IP)!=null&&result.equals("-1")){
-			   String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
-			   LogUtils.i("LoginA","string   "+string);
-			   ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
-			   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-			   loginEnjoin(tCstConfigVos,false);
-			}
+   @OnClick(R.id.login_button)
+   public void onViewClicked() {
+	if (UIUtils.isFastDoubleClick(R.id.login_button)) {
+	   return;
+	} else {
+	   if (isvalidate()) {
+		if (mTitleConn) {
+		   getConfigDate();
+		} else {
+		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null) {
+			String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
+			List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+			loginEnjoin(tCstConfigVos, false);
 		   }
-		});
-        }
-    }
+		}
+
+	   } else {
+		Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+	   }
+	}
+   }
+
+   /**
+    * 获取配置项
+    */
+   public void getConfigDate() {
+	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+		   ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+		   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+		   //                    if (tCstConfigVos.size()!=0){
+		   getUpDateVer(tCstConfigVos);
+		   //                    }else {
+		   //                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
+		   //                    }
+		}
+
+		@Override
+		public void onError(String result) {
+		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
+			String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			LogUtils.i("LoginA", "string   " + string);
+			ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
+			List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+			loginEnjoin(tCstConfigVos, false);
+		   }
+		}
+	   });
+	}
+   }
 
     /**
      * 是否禁止使用
@@ -175,12 +185,12 @@ public class LoginPassWordFragment extends SimpleFragment {
     private boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
 
-            if (s.getCode()!=null&&s.getCode().equals(CONFIG_013)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	   if (s.getCode() != null && s.getCode().equals(CONFIG_013)) {
+		return true;
+	   }
+	}
+	return false;
+   }
 
     private boolean isvalidate() {
         // 获取控件输入的值
@@ -255,12 +265,12 @@ public class LoginPassWordFragment extends SimpleFragment {
                 }
             }
 
-	     @Override
-	     public void onError(String result) {
-		  loginEnjoin(tCstConfigVos,true);
-	     }
-	  });
-    }
+	   @Override
+	   public void onError(String result) {
+		loginEnjoin(tCstConfigVos, true);
+	   }
+	});
+   }
 
     /**
      * 展现更新的dialog

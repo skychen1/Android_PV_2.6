@@ -24,8 +24,10 @@ import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.StringUtils;
 
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 
 /**
@@ -47,6 +49,41 @@ public class ScanService extends Service {
    int size = 0;
    private Map<String, List<EpcInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
+   public static boolean           mDoorStatusType =false;
+   private List<String>      mDeviceSizeList = new ArrayList<>();
+   private ArrayList<String> mListDevices;
+   private ArrayList<String> mEthDevices     = new ArrayList<>();
+   /**
+    * 门锁的状态检测回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventDoorStatus(Event.EventDoorStatus event) {
+//	Log.i("FAFAS", "EventDoorStatus   "+event.type);
+	if (event.type) {//门没关
+	   mDoorStatusType = false;
+	   mEthDevices.clear();
+	   if (mListDevices != null) {
+		mListDevices.clear();
+	   }
+
+	   return;
+	}
+	if (!event.type) {//门关了
+	   for (Object o : mDeviceSizeList) {
+		String s = (String) o;
+		if (s.equals(event.id) && !event.type) {
+		   mEthDevices.add(s);
+		   mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
+		}
+	   }
+	   if (mDeviceSizeList.size() == mListDevices.size()) {
+		mDoorStatusType = true;
+		mListDevices.clear();
+		mEthDevices.clear();
+	   }
+	}
+   }
 
    /**
     * 扫描后EPC准备传值
@@ -108,7 +145,6 @@ public class ScanService extends Service {
 
    /**
     * 提交epc数据
-    *
     * @param epcDatess
     */
    private void putEPC(Map<String, String> epcDatess) {
@@ -126,21 +162,17 @@ public class ScanService extends Service {
 		   inventory.setEpc(v.getKey());
 		   inventory.setDeviceId(v.getValue());
 		   inventory.setRenewTime(getDates());
-		   inventory.setStatus("2");
-		   inventory.setOperationStatus("2");
-//		   if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID) != null &&
-//			 !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID).equals("")){
-//			inventory.setAccountId(SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-//			inventory.setUserName(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-//		   }
+		   inventory.setStatus("2");//入柜
+		   inventory.setOperationStatus(99);
 		   inventory.save();
 		}
 	   }
 	}
 	for (InventoryVo s:mInVo){
 	   ContentValues values = new ContentValues();
-	   values.put("status", "3");
-	   values.put("operationstatus", "3");
+	   values.put("status", "3");//出柜
+	   values.put("operationstatus", 98);
+	   values.put("renewtime", getDates());
 	   values.put("renewtime", getDates());
 //	   values.put("accountid", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
 //	   values.put("username", SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
@@ -157,7 +189,16 @@ public class ScanService extends Service {
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
-	Log.e("FAFAS", "onStartCommand   ");
+	return START_STICKY;
+   }
+
+   @Override
+   public void onCreate() {
+	super.onCreate();
+	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean idBean : boxIdBeans) {
+	   mDeviceSizeList.add(idBean.getDevice_id());
+	}
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
@@ -165,16 +206,7 @@ public class ScanService extends Service {
 		Log.e("FAFAS", "发起   ");
 	   }
 	}).start();
-
-	return START_STICKY;
-   }
-
-   @Override
-   public void onCreate() {
-	super.onCreate();
-//	AllDeviceCallBack.getInstance().initCallBack();
 	EventBusUtils.register(this);
-	Log.i("FAFAS", "onCreate   ");
    }
 
    @Override

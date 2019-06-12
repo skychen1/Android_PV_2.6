@@ -118,14 +118,14 @@ public class FastInFragment extends SimpleFragment {
    @BindView(R.id.activity_down_btnll)
    LinearLayout mActivityDownBtnTwoll;
    Unbinder unbinder;
-   private       int            mDtoOperation;
-   private       int            mIntentType;
-   private       int            mOutSize;
-   private       int            mInSize;
-   public        InventoryDto   mInOutDto;
-   public static CountDownTimer mStarts;
-   public static boolean mOnResume   = false;
-   public static boolean mStartsType = false;
+   private int          mDtoOperation;
+   private int          mIntentType;
+   private int          mOutSize;
+   private int          mInSize;
+   public  InventoryDto mInOutDto;
+   public static CountDownTimer mStarts     = null;
+   public static boolean        mOnResume   = false;
+   public static boolean        mStartsType = false;
    public  boolean mIsClick;
    private int     mCountTwoin;
    private int     mCountMoveIn;
@@ -140,7 +140,7 @@ public class FastInFragment extends SimpleFragment {
    public void onHomeNoClick(Event.HomeNoClickEvent event) {
 	mIsClick = event.isClick;
 	if (event.isClick) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+//	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   if (mIsClick){
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
@@ -156,8 +156,9 @@ public class FastInFragment extends SimpleFragment {
 		return;
 	   }
 	} else {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+//	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
+
 	EventBusUtils.removeStickyEvent(getClass());
    }
 
@@ -253,7 +254,6 @@ public class FastInFragment extends SimpleFragment {
 
    /**
     * 选中入柜的界面开始倒计时
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -312,13 +312,11 @@ public class FastInFragment extends SimpleFragment {
 	   mStarts.cancel();
 	}
    }
-
    @Override
    public void onBindViewBefore(View view) {
 	mTimelyRight = view.findViewById(R.id.timely_right);
 	mTimelyLeft = view.findViewById(R.id.timely_left);
    }
-
    @Override
    public void onPause() {
 	super.onPause();
@@ -608,7 +606,6 @@ public class FastInFragment extends SimpleFragment {
 	public void onFinish() {// 计时完毕时触发
 	   LogUtils.i(TAG, "onFinish     ");
 	   EventBusUtils.post(new Event.EventOverPut(true));
-
 	}
 
 	@Override
@@ -632,6 +629,8 @@ public class FastInFragment extends SimpleFragment {
 	mInOutDto.getInInventoryVos().clear();
 	mInOutDto.getOutInventoryVos().clear();
 	mInOutDto = null;
+//	mStarts = null;
+	mStartsType = false;
 	EventBusUtils.unregister(this);
    }
 }

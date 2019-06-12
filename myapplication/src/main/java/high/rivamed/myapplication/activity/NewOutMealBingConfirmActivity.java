@@ -52,7 +52,6 @@ import high.rivamed.myapplication.bean.FindBillOrderBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -658,7 +657,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void scanEPCResult(Event.EventDeviceCallBack event) {
-	AllDeviceCallBack.getInstance().initCallBack();
+//	AllDeviceCallBack.getInstance().initCallBack();
 	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,11 +88,14 @@ public class MealPopupWindow extends PopupWindow {
                 String trim = mEditText.getText().toString().trim();
                 mMovies1.clear();
 
-                for (int i = 0; i < mMovies.size() - 1; i++) {
+                for (int i = 0; i < mMovies.size(); i++) {
                     String string = mMovies.get(i).getSuiteName();
+                    Log.i("mela","string    "+string);
+                    Log.i("mela","trim    "+trim);
                     if (string.contains(trim)) {
                         mMovies1.add(mMovies.get(i));
                     }
+                    Log.i("mela","mMovies1    "+mMovies1.size());
                 }
                 if (trim.equals("")) {
                     mMovies1.clear();

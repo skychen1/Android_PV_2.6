@@ -65,6 +65,7 @@ public class Constants {
     public static final String LEFT_MENU_SYJL = "使用记录";//使用记录
     public static final String LEFT_MENU_YCCL = "异常处理";//使用记录
 
+    public static final String DOWN_MENU_LYTH = "领用退回";//领用/退回
     public static final String DOWN_MENU_LY = "领用";//领用
     public static final String DOWN_MENU_RK = "入库";//入库
     public static final String DOWN_MENU_YC = "移出";//移出

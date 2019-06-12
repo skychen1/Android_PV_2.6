@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,14 +18,13 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.LogcatHelper;
-import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
@@ -54,11 +52,13 @@ public class SplashActivity extends FragmentActivity {
 	Log.e("版本号：", UIUtils.getVersionName(this));
 	initData();
    }
+
    @Override
    public void onWindowFocusChanged(boolean hasFocus) {
 	super.onWindowFocusChanged(hasFocus);
 	fullScreenImmersive(this.getWindow().getDecorView());
    }
+
    private void initData() {
 	Logger.addLogAdapter(new AndroidLogAdapter());
 	setDate();//设置默认值
@@ -67,15 +67,13 @@ public class SplashActivity extends FragmentActivity {
 	startAct();//页面跳转
    }
 
-
-
    private void setDate() {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
-//		   READER_TIME = 3000;
+		   //		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -102,58 +100,53 @@ public class SplashActivity extends FragmentActivity {
    }
 
    private void startAct() {
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		startService(new Intent(SplashActivity.this, ScanService.class));
-	   }
-	}).start();
+	new Thread(() -> startService(new Intent(SplashActivity.this, ScanService.class))).start();
 
-		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
-	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-		   if (hasPermission) {
-			   //检测设备是否授权
-			   boolean hasActivation = FaceManager.getManager().hasActivation(SplashActivity.this);
-			   //	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
-			   if (hasActivation) {//启动页初始化人脸识别sdk
-				   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
-					   @Override
-					   public void initSuccess() {
-						   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
-						   //初始化分组
-						   boolean b = FaceManager.getManager().initGroup();
-						   if (!b) {
-							   ToastUtils.showShortSafe("创建人脸照分组失败");
-						   } else {
-							   //设置是否需要活体
-							   FaceManager.getManager().setNeedLive(false);
-						   }
-						   //初始化完成后跳转页面
-                           launchLogin();
-                       }
+	//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
+	//	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
+	//		   if (hasPermission) {
+	//检测设备是否授权
+	boolean hasActivation = FaceManager.getManager().hasActivation(SplashActivity.this);
+	//	   ToastUtils.showShort(b?"设备已授权":"设备未授权");
+	if (hasActivation) {//启动页初始化人脸识别sdk
+	   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
+		@Override
+		public void initSuccess() {
+		   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+		   //初始化分组
+		   boolean b = FaceManager.getManager().initGroup();
+		   if (!b) {
+			ToastUtils.showShortSafe("创建人脸照分组失败");
+		   } else {
+			//设置是否需要活体
+			FaceManager.getManager().setNeedLive(false);
+		   }
+		   //初始化完成后跳转页面
+		   launchLogin();
+		}
 
-					   @Override
-					   public void initFail(int errorCode, String msg) {
-						   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
-						   //初始化完成后跳转页面
-                           launchLogin();
-                       }
-				   });
-			   } else {
-				   new Handler().postDelayed(new Runnable() {
-					   public void run() {
-                           launchLogin();
-                       }
-				   }, 2000);
-			   }
-		   }else {
-               launchLogin();
-           }
+		@Override
+		public void initFail(int errorCode, String msg) {
+		   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+		   //初始化完成后跳转页面
+		   launchLogin();
+		}
 	   });
+	} else {
+	   new Handler().postDelayed(new Runnable() {
+		public void run() {
+		   launchLogin();
+		}
+	   }, 2000);
+	}
+	//		   }else {
+	//               launchLogin();
+	//           }
+	//	   });
    }
 
-    private void launchLogin() {
-        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-        finish();
-    }
+   private void launchLogin() {
+	startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+	finish();
+   }
 }

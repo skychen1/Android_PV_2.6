@@ -84,7 +84,6 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseView
 	   mSeven_five.setText(item.getExpiryDate());
 	   mSeven_five.setBackgroundResource(R.color.bg_f);
 	}
-
    }
 
 
