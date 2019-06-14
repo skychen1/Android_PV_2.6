@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.utils;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -16,8 +17,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
-import static high.rivamed.myapplication.utils.UIUtils.getVosType;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 
 /**
  * 项目名称:    Android_PV_2.6.5New
@@ -69,11 +69,11 @@ public class UnNetCstUtils {
 		   for (int i = 0; i < vos.size(); i++) {
 			vos.get(i).setDateNetType(true);
 			if (!getVosType(voList,vos.get(i).getEpc())){
-			   vos.get(i).save();
+			   boolean save = vos.get(i).save();
+			   Log.i("UnNetc","结束save     "+ save);
 			}
 		   }
 		}
-		Log.i("UnNetc","结束 "+getDates());
 	   }
 	});
    }
@@ -129,5 +129,22 @@ public class UnNetCstUtils {
 		});
 	   }
 	}
+   }
+   /**
+    * 删除数据库已有的已经操作过的耗材
+    * @param result
+    */
+   public static void deleteVo(Gson mGson, String result, Activity activity) {
+	List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+	InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
+	List<InventoryVo> vos = inventoryDto.getInventoryVos();
+	for (InventoryVo vo : vos) {
+	   for (int i = 0; i < voList.size(); i++) {
+		if (voList.get(i).getEpc().equals(vo.getEpc())) {
+		   voList.get(i).delete();
+		}
+	   }
+	}
+	getAllCstDate(mGson, activity);
    }
 }

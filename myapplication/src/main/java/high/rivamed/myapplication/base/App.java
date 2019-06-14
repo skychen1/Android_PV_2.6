@@ -149,7 +149,7 @@ public class App extends Application {
 	//超时时间设置，默认60秒
 	builder.readTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
 	builder.writeTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
-	builder.connectTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
+	builder.connectTimeout(Constants.DEFAULT_CONNECTMILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
 
 	//自动管理cookie（或者叫session的保持），以下几种任选其一就行
 	//builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));            //使用sp保持cookie，如果cookie不过期，则一直有效

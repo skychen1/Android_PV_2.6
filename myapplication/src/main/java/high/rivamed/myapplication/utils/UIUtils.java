@@ -29,8 +29,6 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
-import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
@@ -400,41 +398,11 @@ public class UIUtils {
 
    /**
     * 恢复点击
-    *
     * @param testRadioGroup
     */
    public static void enableRadioGroup(RadioGroup testRadioGroup) {
 	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
 	   testRadioGroup.getChildAt(i).setEnabled(true);
 	}
-   }
-
-   /**
-    * 是否包含epc
-    * @return
-    */
-   public static boolean getVosType(List<InventoryVo> vos, String epc) {
-	if (vos != null) {
-	   for (int i = 0; i < vos.size(); i++) {
-		if (vos.get(i).getEpc().equals(epc)) {
-		   return true;
-		}
-	   }
-	}
-	return false;
-   }
-   /**
-    * 是否包含柜号
-    * @return
-    */
-   public static boolean getVosBoxId(List<DeviceInventoryVo> vos, String box_id) {
-	if (vos != null) {
-	   for (int i = 0; i < vos.size(); i++) {
-		if (vos.get(i).getDeviceId().equals(box_id)) {
-		   return true;
-		}
-	   }
-	}
-	return false;
    }
 }

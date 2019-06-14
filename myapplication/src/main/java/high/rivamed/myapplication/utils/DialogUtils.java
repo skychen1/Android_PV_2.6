@@ -29,7 +29,6 @@ import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
-import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.ExceptionOperatorBean;
 import high.rivamed.myapplication.bean.HospNameBean;
@@ -37,7 +36,6 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
-import high.rivamed.myapplication.fragment.ContentConsumeOperateFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -55,7 +53,6 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.OutBoxConnectDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
-import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.RvDialog2;
 import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
@@ -66,7 +63,6 @@ import high.rivamed.myapplication.views.WifiDialog;
 
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
-import static high.rivamed.myapplication.views.RvDialog.sTableTypeView;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -119,87 +115,87 @@ public class DialogUtils {
         builder.create().show();
     }
 
-    public static RvDialog.Builder showRvDialog(
-          Activity activity, final Context context,
-          List<BingFindSchedulesBean.PatientInfoVos> patientInfos, String type, int position,
-          List<BoxSizeBean.DevicesBean> mTbaseDevices) {
-        RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
-        builder.setMsg("耗材中包含过期耗材，请查看！");
-        builder.setLeft("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
-        builder.setRight("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-
-                int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
-                if (type.equals("firstBind")) {//先绑定患者
-                    LogUtils.i("OutBoxBingActivity", "先绑定患者");
-                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
-                        Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
-                    } else {
-                        ContentConsumeOperateFrag.mPause = false;
-                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-                        String id = patientInfos.get(checkedPosition).getPatientId();
-                        String name = patientInfos.get(checkedPosition).getPatientName();
-                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
-                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
-                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
-                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
-                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
-                        LogUtils.i("OutBoxBingActivity", " name " + name);
-//                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-//                                checkedPosition)
-//                                .findViewById(R.id.seven_two)).getText().toString();
-//                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-//                                checkedPosition)
-//                                .findViewById(R.id.seven_three)).getText().toString();
-                        EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, "firstBind", position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
-                    }
-                    dialog.dismiss();
-                } else {//后绑定
-                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
-                        Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
-                    } else {
-//                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-//                                checkedPosition)
-//                                .findViewById(R.id.seven_two)).getText().toString();
-//                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
-//                                checkedPosition)
-//                                .findViewById(R.id.seven_three)).getText().toString();
-                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-                        String id = patientInfos.get(checkedPosition).getPatientId();
-                        String name = patientInfos.get(checkedPosition).getPatientName();
-                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
-                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
-                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
-                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
-                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
-                        EventBusUtils.postSticky(
-                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
-                        dialog.dismiss();
-                    }
-                    LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
-
-                }
-            }
-        });
-        Log.e("DialogUtils", " RvDialog rvDialog = builder.create();");
-        RvDialog rvDialog = builder.create();
-        rvDialog.show();
-        WindowManager windowManager = activity.getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        Window window = rvDialog.getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = (int) (display.getWidth()); //设置宽度
-        window.setBackgroundDrawableResource(android.R.color.transparent);
-        window.setAttributes(lp);
-        return builder;
-    }
+//    public static RvDialog.Builder showRvDialog(
+//          Activity activity, final Context context,
+//          List<BingFindSchedulesBean.PatientInfoVos> patientInfos, String type, int position,
+//          List<BoxSizeBean.DevicesBean> mTbaseDevices) {
+//        RvDialog.Builder builder = new RvDialog.Builder(activity, context, patientInfos);
+//        builder.setMsg("耗材中包含过期耗材，请查看！");
+//        builder.setLeft("取消", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int i) {
+//                dialog.dismiss();
+//            }
+//        });
+//        builder.setRight("确认", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int i) {
+//
+//                int checkedPosition = sTableTypeView.mBingOutAdapter.getCheckedPosition();
+//                if (type.equals(TEMP_FIRSTBIND)) {//先绑定患者
+//                    LogUtils.i("OutBoxBingActivity", "先绑定患者");
+//                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
+//                        Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        ContentConsumeOperateFrag.mPause = false;
+//                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+//                        String id = patientInfos.get(checkedPosition).getPatientId();
+//                        String name = patientInfos.get(checkedPosition).getPatientName();
+//                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
+//                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
+//                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
+//                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
+//                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
+//                        LogUtils.i("OutBoxBingActivity", " name " + name);
+////                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+////                                checkedPosition)
+////                                .findViewById(R.id.seven_two)).getText().toString();
+////                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+////                                checkedPosition)
+////                                .findViewById(R.id.seven_three)).getText().toString();
+//                        EventBusUtils.postSticky(
+//                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, TEMP_FIRSTBIND, position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
+//                    }
+//                    dialog.dismiss();
+//                } else {//后绑定
+//                    if ((patientInfos != null && patientInfos.size() == 0) || patientInfos.get(checkedPosition) == null) {
+//                        Toast.makeText(UIUtils.getContext(), "无患者信息，操作无效！", Toast.LENGTH_SHORT).show();
+//                    } else {
+////                        String name = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+////                                checkedPosition)
+////                                .findViewById(R.id.seven_two)).getText().toString();
+////                        String id = ((TextView) sTableTypeView.mRecyclerview.getChildAt(
+////                                checkedPosition)
+////                                .findViewById(R.id.seven_three)).getText().toString();
+//                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
+//                        String id = patientInfos.get(checkedPosition).getPatientId();
+//                        String name = patientInfos.get(checkedPosition).getPatientName();
+//                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
+//                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
+//                        String mSurgeryId = patientInfos.get(checkedPosition).getSurgeryId();
+//                        String mHisPatientId = patientInfos.get(checkedPosition).getHisPatientId();
+//                        String mOperatingRoomNo = patientInfos.get(checkedPosition).getOperatingRoomNo();
+//                        EventBusUtils.postSticky(
+//                                new Event.EventCheckbox(name, id, mTempPatientId, operationScheduleId, type, position, mTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
+//                        dialog.dismiss();
+//                    }
+//                    LogUtils.i("OutBoxBingActivity", "后绑定   " + patientInfos.size() + "type:" + type);
+//
+//                }
+//            }
+//        });
+//        Log.e("DialogUtils", " RvDialog rvDialog = builder.create();");
+//        RvDialog rvDialog = builder.create();
+//        rvDialog.show();
+//        WindowManager windowManager = activity.getWindowManager();
+//        Display display = windowManager.getDefaultDisplay();
+//        Window window = rvDialog.getWindow();
+//        WindowManager.LayoutParams lp = window.getAttributes();
+//        lp.width = (int) (display.getWidth()); //设置宽度
+//        window.setBackgroundDrawableResource(android.R.color.transparent);
+//        window.setAttributes(lp);
+//        return builder;
+//    }
 
     /**
      * 腕带解绑

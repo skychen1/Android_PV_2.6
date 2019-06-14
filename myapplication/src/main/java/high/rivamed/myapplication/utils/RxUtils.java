@@ -16,7 +16,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
-import static high.rivamed.myapplication.utils.UIUtils.getVosBoxId;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosBoxId;
 
 /**
  * @ProjectName: InterOfficeBilling

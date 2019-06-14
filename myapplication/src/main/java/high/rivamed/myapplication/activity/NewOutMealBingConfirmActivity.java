@@ -79,6 +79,7 @@ import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
@@ -460,7 +461,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
 			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("type", TEMP_AFTERBIND);
 			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
 			intent.putExtra("position", -1000);
 			intent.putExtra("GoneType", "VISIBLE");
@@ -468,7 +469,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   } else {
 			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("type", TEMP_AFTERBIND);
 			intent.putExtra("position", -1000);
 			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
 			intent.putExtra("GoneType", "GONE");
@@ -627,24 +628,24 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRvCheckBindEvent(Event.EventCheckbox event) {
-	mUseCstOrderRequest.setPatientId(event.id);
+	mUseCstOrderRequest.setPatientId(event.vo.getPatientId());
 	for (InventoryVo item : mBillOrderResultBean.getInventoryVos()) {
-	   item.setPatientId(event.id);
-	   item.setSurgeryId(event.mSurgeryId);
-	   item.setMedicalId(event.mMedicalId);
-	   item.setPatientName(event.mString);
-	   LogUtils.i(TAG, "EventCheckbox    " + event.create);
-	   if ("virtual".equals(event.id)) {
-		LogUtils.i(TAG, "EventCheckbox    " + event.id);
-		item.setOperationScheduleId(event.operationScheduleId);
-		item.setOperatingRoomName(event.operatingRoomNoName);
-		item.setOperatingRoomNo(event.operatingRoomNo);
-		item.setIdNo(event.idNo);
-		item.setSurgeryTime(event.scheduleDateTime);
-		item.setSex(event.sex);
-		item.setCreate(event.create);
-		item.setTempPatientId(event.mTempPatientId);
-		item.setMedicalId(event.mMedicalId);
+	   item.setPatientId(event.vo.getPatientId());
+	   item.setSurgeryId(event.vo.getSurgeryId());
+	   item.setMedicalId(event.vo.getMedicalId());
+	   item.setPatientName(event.vo.getPatientName());
+
+	   if ("virtual".equals(event.vo.getPatientId())) {
+
+		item.setOperationScheduleId(event.vo.getOperationScheduleId());
+		item.setOperatingRoomName(event.vo.getOperatingRoomName());
+		item.setOperatingRoomNo(event.vo.getOperatingRoomNo());
+		item.setIdNo(event.vo.getIdNo());
+		item.setSurgeryTime(event.vo.getSurgeryTime());
+		item.setSex(event.vo.getSex());
+		item.setCreate(event.vo.isCreate());
+		item.setTempPatientId(event.vo.getTempPatientId());
+		item.setMedicalId(event.vo.getMedicalId());
 	   }
 
 	   EventBusUtils.post(new Event.EventButton(true,true));

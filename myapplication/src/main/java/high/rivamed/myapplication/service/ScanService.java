@@ -57,7 +57,7 @@ public class ScanService extends Service {
     * 门锁的状态检测回调
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN)
+   @Subscribe(threadMode = ThreadMode.MAIN,sticky =true)
    public void onEventDoorStatus(Event.EventDoorStatus event) {
 //	Log.i("FAFAS", "EventDoorStatus   "+event.type);
 	if (event.type) {//门没关

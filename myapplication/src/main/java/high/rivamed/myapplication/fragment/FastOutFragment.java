@@ -49,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -477,7 +478,7 @@ public class FastOutFragment extends SimpleFragment {
 	   for (InventoryVo c : mInOutDto.getOutInventoryVos()) {
 		c.setSelected(true);
 	   }
-	   inventoryDto.setBindType("afterBind");
+	   inventoryDto.setBindType(TEMP_AFTERBIND);
 	   EventBusUtils.postSticky(new Event.EventButGone(true));
 	   startActivity(new Intent(mContext, OutBoxBingActivity.class));
 	   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(inventoryDto));

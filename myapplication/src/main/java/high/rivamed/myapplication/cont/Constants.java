@@ -14,7 +14,8 @@ package high.rivamed.myapplication.cont;
 
 public class Constants {
 
-    public static final long DEFAULT_MILLISECONDS = 15000;      //默认的超时时间
+    public static final long DEFAULT_MILLISECONDS = 16000;      //默认的超时时间
+    public static final long DEFAULT_CONNECTMILLISECONDS = 30000;      //默认的超时时间
     public static final long FINISH_TIME = 1500;      //退出操作页面的时间
     public static final String TYPE_TIMELY = "timely";
     public static final String STYPE_STOCK_LEFT = "stock_left";
@@ -35,6 +36,9 @@ public class Constants {
     public static final int ACTIVITY = 1;
     public static final int FRAGMENT = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI = "act_type_confirm_haocai";//确认耗材领用界面
+
+    public static final String TEMP_AFTERBIND = "afterBind";//后绑定患者
+    public static final String TEMP_FIRSTBIND = "firstBind";//后绑定患者
 
     public static final String STYPE_EXCEPTION_LEFT = "exception_left";//异常处理
     public static final String STYPE_EXCEPTION_RIGHT = "exception_right";//异常处理-异常记录

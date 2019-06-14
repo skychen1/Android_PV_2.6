@@ -38,18 +38,18 @@ import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
-import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
-import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.fragment.TimelyAllFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
+import high.rivamed.myapplication.utils.RxUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -62,7 +62,6 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
-import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
@@ -70,21 +69,24 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
-import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
-import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
+import static high.rivamed.myapplication.cont.Constants.TEMP_FIRSTBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
+import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
-import static high.rivamed.myapplication.utils.UIUtils.getVosType;
-import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
+import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
+import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -120,7 +122,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private LoadingDialog.Builder mLoading;
    private RvDialog.Builder      mAfterBind;
    private       String  mIdNo                = "";
-   private       String  mScheduleDateTime    = "";
+   private       String  mSurgeryTime         = "";
    private       String  mOperatingRoomNo     = "";
    private       String  mOperatingRoomNoName = "";
    private       String  mSex                 = "";
@@ -154,82 +156,177 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    LinearLayout       mActivityDownBtnTwoll;
    public InventoryDto mInventoryDto;
    public InventoryDto mPatientDto;
-   public List<InventoryVo>                          mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
-   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos  = new ArrayList<>();
-   private int           mDtoOperation;
-   public  TableTypeView mTypeView;
+   //   public List<InventoryVo>                          mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
+   public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
+   public TableTypeView mTypeView;
    List<String> titeleList = null;
    public  int    mSize;
    private String mBingType;
 
+   private int    mOperationType;
+   private String mClossEthId;
+   private String mBindType;
+
+   private Handler  mHandler;
+   private Runnable mRunnable;
+   private Runnable mRunnableW;
+   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private RxUtils.BaseEpcObservable mObs;
+   private InventoryDto mDto = new InventoryDto();
+   private InventoryVo mPatientVo;
+   private InventoryVo mCheckBoxVo;
+
    /**
-    * (检测没有关门)语音
+    * 门锁的提示
     *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onHomeNoClick(Event.HomeNoClickEvent event) {
-	LogUtils.i(TAG, "ssssssss");
-	mIsClick = event.isClick;
-	if (event.isClick) {
+   public void onDialogEvent(Event.PopupEvent event) {
+	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   mTimelyLeft.setEnabled(false);
 	   mTimelyRight.setEnabled(false);
+	   mTimelyOpenDoorRight.setEnabled(false);
+	   mTimelyStartBtnRight.setEnabled(false);
+	   if (mLyBingBtnRight != null) {
+		mLyBingBtnRight.setEnabled(false);
+	   }
 	   if (mStarts != null) {
 		mStarts.cancel();
 		mTimelyRight.setText("确认并退出登录");
 	   }
-	} else {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	}
-	EventBusUtils.post(new Event.EventButton(true, true));
-	EventBusUtils.removeStickyEvent(getClass());
+	if (!event.isMute) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   startScan(mBoxInventoryVos, mObs, event.mEthId);
+	}
+	if (mDoorStatusType) {
+	   setTitleRightNum();
+	}
+	setTimeStart();
+   }
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventBing(Event.EventCheckbox event) {
+	mCheckBoxVo = event.vo;
+	getCheckBoxDate(mCheckBoxVo);
+	LogUtils.i(TAG, "EventCheckbox" + mGson.toJson(mCheckBoxVo));
+	if (mBingType != null && mBingType.equals(TEMP_AFTERBIND)) {
+	   if (!TextUtils.isEmpty(mPatient)) {
+		for (InventoryVo vo : mBoxInventoryVos) {
+		   vo.setPatientName(mPatient);
+		   vo.setCreate(mIsCreate);
+		   vo.setPatientId(mPatientId);
+		   vo.setTempPatientId(mTempPatientId);
+		   vo.setIdNo(mIdNo);
+		   vo.setOperationScheduleId(mOperationScheduleId);
+		   vo.setSurgeryTime(mSurgeryTime);
+		   vo.setOperatingRoomNo(mOperatingRoomNo);
+		   vo.setOperatingRoomName(mOperatingRoomNoName);
+		   vo.setSex(mSex);
+		   vo.setDeptId(mDeptId);
+		   vo.setMedicalId(mMedicalId);
+		   vo.setSurgeryId(mSurgeryId);
+		   vo.setHisPatientId(mHisPatientId);
+		}
+
+		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
+		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+		}
+
+		for (InventoryVo b : mBoxInventoryVos) {
+		   ArrayList<String> strings = new ArrayList<>();
+		   strings.add(b.getCstCode());
+		   if ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+			 (b.getPatientName() == null || b.getPatientName().equals(""))) {
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			mTimelyNumberText.setVisibility(View.VISIBLE);
+			setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+			if (mStarts != null) {
+			   mStarts.cancel();
+			}
+			mTimelyRight.setText("确认并退出登录");
+			return;
+		   }
+
+		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+			 (b.getExpireStatus() == 0 && b.getDeleteCount() == 0)) {
+			mTimelyLeft.setEnabled(false);
+			mTimelyRight.setEnabled(false);
+			setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+			mTimelyNumberText.setVisibility(View.VISIBLE);
+
+			if (mStarts != null) {
+			   mStarts.cancel();
+			}
+			mTimelyRight.setText("确认并退出登录");
+			return;
+		   } else {
+			LogUtils.i(TAG, "我走了falsesss");
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
+			mTimelyNumberText.setVisibility(View.GONE);
+			if (mStarts != null) {
+			   mStarts.cancel();
+			   mStarts.start();
+			}
+		   }
+		}
+	   }
+	}
+   }
+
+   private void getCheckBoxDate(InventoryVo inventoryVo) {
+	mPatient = inventoryVo.getPatientName();
+	mPatientId = inventoryVo.getPatientId();
+	mTempPatientId = inventoryVo.getTempPatientId();
+	mOperationScheduleId = inventoryVo.getOperationScheduleId();
+	mIdNo = inventoryVo.getIdNo();
+	mSurgeryTime = inventoryVo.getSurgeryTime();
+	mOperatingRoomNo = inventoryVo.getOperatingRoomNo();
+	mOperatingRoomNoName = inventoryVo.getOperatingRoomName();
+	mSex = inventoryVo.getSex();
+	mDeptId = inventoryVo.getDeptId();
+	mIsCreate = inventoryVo.isCreate();
+	mBingType = inventoryVo.getBindType();
+	mMedicalId = inventoryVo.getMedicalId();
+	mSurgeryId = inventoryVo.getSurgeryId();
+	mHisPatientId = inventoryVo.getHisPatientId();
    }
 
    /**
-    * 接收数据
+    * EPC扫描返回数据（单个返回）
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onOutBoxBingEvent(Event.EventOutBoxBingDto event) {
-	if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
+	Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
+	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
+		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+		   mBoxInventoryVos.remove(i);
+		}
+	   }
+	   for (InventoryVo vo : mBoxInventoryVos) {
+		if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
+		   vo.setStatus(mOperationType + "");
+		   if (mOperationType == 4 && vo.isDateNetType()) {
+			vo.setOperationStatus(3);
+		   }
+		} else {
+		   if (vo.isDateNetType() && !mTitleConn) {
+			vo.setIsErrorOperation(1);
+		   }
+		}
+	   }
+	   setTitleRightNum();
 	   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-	}
-	LogUtils.i(TAG, "mTitleConn  " + mTitleConn);
-	if (mInventoryDto != null && mInventoryVos != null) {
-	   mInventoryDto = event.mInventoryDto;
-	   List<InventoryVo> inventoryVos = event.mInventoryDto.getInventoryVos();
-	   mInventoryVos.clear();
-	   mInventoryVos.addAll(inventoryVos);//选择开柜
-	   setAfterBing();
-	} else {
-	   mInventoryDto = event.mInventoryDto;
-	   mInventoryVos = event.mInventoryDto.getInventoryVos();//选择开柜
-	}
-	mDtoOperation = mInventoryDto.getOperation();
-	mPatient = mInventoryDto.getPatientName();
-	mPatientId = mInventoryDto.getPatientId();
-	mMedicalId = mInventoryDto.getMedicalId();
-	mSurgeryId = mInventoryDto.getSurgeryId();
-	mHisPatientId = mInventoryDto.getHisPatientId();
-	LogUtils.i(TAG, "mHisPatientId     " + mHisPatientId);
-	mPatientDto = event.mPatientDto;
-	if (mPatientDto != null) {
-	   mDtoOperation = mPatientDto.getOperation();
-	   mPatient = mPatientDto.getPatientName();
-	   mPatientId = mPatientDto.getPatientId();
-	   mOperationScheduleId = mPatientDto.getOperationScheduleId();
-	   mTempPatientId = mPatientDto.getTempPatientId();
-	   mOperatingRoomNoName = mPatientDto.getOperatingRoomNoName();
-	   mScheduleDateTime = mPatientDto.getSurgeryTime();
-	   mIsCreate = mPatientDto.isCreate();
-	   mIdNo = mPatientDto.getIdNo();
-	   mOperatingRoomNo = mPatientDto.getOperatingRoomNo();
-	   mSex = mPatientDto.getSex();
-	   mDeptId = mPatientDto.getDeptId();
-	   mMedicalId = mPatientDto.getMedicalId();
-	   mHisPatientId = mPatientDto.getHisPatientId();
+	   setTimeStart();
+	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
+	   mObs.getScanEpc(event.deviceId, event.epc);
 	}
    }
 
@@ -242,17 +339,19 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    private void setButtonType(Event.EventButton event) {
 	if (event.bing) {//绑定的按钮转换
-	   for (InventoryVo b : mInventoryVos) {
+	   for (InventoryVo b : mBoxInventoryVos) {
 		ArrayList<String> strings = new ArrayList<>();
 		strings.add(b.getCstCode());
 		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
 		    ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-		     (b.getPatientName() == null || b.getPatientName().equals(""))) || mIsClick) {
+		     (b.getPatientName() == null || b.getPatientName().equals(""))) ||
+		    !mDoorStatusType) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
-		   setPointOutText(b, mInventoryVos, mIsClick);
-		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel"+b.getPatientName().equals("")+(b.getPatientName() == null ));
+		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel" + b.getPatientName().equals("") +
+					 (b.getPatientName() == null));
 		   if (mStarts != null) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
@@ -263,11 +362,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		     b.getExpireStatus() == 0) ||
 		    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null) ||
-		    mIsClick) {
+		    !mDoorStatusType) {
 		   mTimelyLeft.setEnabled(false);
 		   mTimelyRight.setEnabled(false);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
-		   setPointOutText(b, mInventoryVos, mIsClick);
+		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 		   LogUtils.i(TAG, "OutBoxBingActivity   cancel");
 		   if (mStarts != null) {
 			mStarts.cancel();
@@ -299,6 +398,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	} else {
 	   mTimelyNumberText.setText(R.string.op_error_ly);
 	}
+   }
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onRvEvent(Event.EventString event) {
+	mRvEventString = event.mString;
+	mAllPage = 1;
+	patientInfos.clear();
    }
 
    /**
@@ -344,56 +450,73 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
    }
 
-   /**
-    * 扫描后EPC准备传值
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onCallBackEvent(Event.EventDeviceCallBack event) {
-	if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
-	   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+   @Override
+   public void initDataAndEvent(Bundle savedInstanceState) {
+	super.initDataAndEvent(savedInstanceState);
+	EventBusUtils.register(this);
+
+	if (mStarts == null && !mOnBtnGone) {
+	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
+	   mStarts.cancel();
 	}
-	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack2.size() + "    mOnBtnGone    " + mOnBtnGone);
-	if (!mOnBtnGone) {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	mOperationType = getIntent().getIntExtra("OperationType", -3);
+	mClossEthId = getIntent().getStringExtra("mEthId");
+	mBindType = getIntent().getStringExtra("bindType");
+	mPatientVo = (InventoryVo) getIntent().getSerializableExtra("basePatientVo");
+	if (mPatientVo != null) {
+	   getCheckBoxDate(mPatientVo);
+	}
+	setAfterBing();
+	initRxJavaSearch();
+   }
+
+   @Override
+   protected int getContentLayoutId() {
+	return R.layout.activity_outboxbing_layout;
+   }
+
+   /**
+    * 500ms进行网络请求一次RXJAVA的处理
+    */
+   private void initRxJavaSearch() {
+	mObs = new RxUtils.BaseEpcObservable() {};
+	RxUtils.getInstance().setEpcResultListener(mObs, new RxUtils.EpcDebounceResultListener() {
+	   @Override
+	   public void goEpcSearch(List<DeviceInventoryVo> vos) {
+		Log.i("SelSelfff", "mGson.toJson(vos)   " + mGson.toJson(vos));
+		if (mTitleConn) {
+		   getDeviceDate(vos);
+		} else {
+		   new Thread(() -> setScanDateInBoxVo(vos)).start();
+		}
 	   }
-	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean boxIdBean : boxIdBeanss) {
-		String box_id = boxIdBean.getBox_id();
-		if (box_id != null) {
-		   List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-										READER_TYPE).find(BoxIdBean.class);
-		   if (boxIdBeansss.size() > 1) {
-			for (BoxIdBean BoxIdBean : boxIdBeansss) {
-			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-				mEPCDate.putAll(event.epcs);
-				k++;
-				LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
-			   }
-			}
-			if (k == boxIdBeansss.size()) {
-			   k = 0;
-			   if (!mPause) {
-				LogUtils.i(TAG, "mEPCDate  zou l  ");
-				getDeviceDate(event.deviceId, mEPCDate);
-			   }
-			}
-		   } else {
-			if (!mPause) {
-			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-			   getDeviceDate(event.deviceId, event.epcs);
-			}
+	});
+   }
+
+   /**
+    * 断网放入的EPC将显示在界面上
+    *
+    * @param vos
+    */
+   private void setScanDateInBoxVo(List<DeviceInventoryVo> vos) {
+	if (mBoxInventoryVos.size() > 0) {
+	   for (int x = 0; x < vos.size(); x++) {
+		String deviceId = vos.get(x).getDeviceId();
+		for (int i = 0; i < mBoxInventoryVos.size(); i++) {
+		   String id = mBoxInventoryVos.get(i).getDeviceId();
+		   if (id.equals(deviceId)) {
+			setInventoryVoDate(mBoxInventoryVos, vos, x);
+			setTitleRightNum();
 		   }
 		}
 	   }
+	} else {
+	   for (int x = 0; x < vos.size(); x++) {
+		setInventoryVoDate(mBoxInventoryVos, vos, x);
+		setTitleRightNum();
+	   }
 	}
-
+	runOnUiThread(() -> mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged());
    }
 
    @Override
@@ -415,121 +538,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
 	super.onResume();
 
-   }
-
-   @Override
-   public void initDataAndEvent(Bundle savedInstanceState) {
-	super.initDataAndEvent(savedInstanceState);
-	EventBusUtils.register(this);
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
-	if (mStarts == null && !mOnBtnGone) {
-	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
-	   mStarts.cancel();
-	}
-	setAfterBing();
-
-   }
-
-   @Override
-   protected int getContentLayoutId() {
-	return R.layout.activity_outboxbing_layout;
-   }
-
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventBing(Event.EventCheckbox event) {
-	mPatient = event.mString;
-	mPatientId = event.id;
-	mTempPatientId = event.mTempPatientId;
-	mOperationScheduleId = event.operationScheduleId;
-	mIdNo = event.idNo;
-	mScheduleDateTime = event.scheduleDateTime;
-	mOperatingRoomNo = event.operatingRoomNo;
-	mOperatingRoomNoName = event.operatingRoomNoName;
-	mSex = event.sex;
-	mDeptId = event.deptId;
-	mIsCreate = event.create;
-	mBingType = event.type;
-	mMedicalId = event.mMedicalId;
-	mSurgeryId = event.mSurgeryId;
-	mHisPatientId = event.mHisPatientId;
-	Log.i(TAG, "mMovie  " + mPatient);
-	LogUtils.i(TAG, "mOperatingRoomNoName  " + mOperatingRoomNoName);
-	if (mBingType != null && mBingType.equals("afterBindTemp")) {
-	   Log.i(TAG, "mMovie DDD " + mPatient);
-	   if (!TextUtils.isEmpty(mPatient)) {
-		for (int i = 0; i < mInventoryVos.size(); i++) {
-		   mInventoryVos.get(i).setPatientName(mPatient);
-		   mInventoryVos.get(i).setPatientId(mPatientId);
-		   mInventoryVos.get(i).setTempPatientId(mTempPatientId);
-		   mInventoryVos.get(i).setIdNo(mIdNo);
-		   mInventoryVos.get(i).setOperationScheduleId(mOperationScheduleId);
-		   mInventoryVos.get(i).setSurgeryTime(mScheduleDateTime);
-		   mInventoryVos.get(i).setOperatingRoomNo(mOperatingRoomNo);
-		   mInventoryVos.get(i).setOperatingRoomName(mOperatingRoomNoName);
-		   mInventoryVos.get(i).setSex(mSex);
-		   mInventoryVos.get(i).setDeptId(mDeptId);
-		   mInventoryVos.get(i).setCreate(mIsCreate);
-		   mInventoryVos.get(i).setMedicalId(mMedicalId);
-		   mInventoryVos.get(i).setSurgeryId(mSurgeryId);
-		   mInventoryVos.get(i).setHisPatientId(mHisPatientId);
-		}
-		if (mTypeView != null && mTypeView.mRecogHaocaiAdapter != null) {
-		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-		}
-
-		for (InventoryVo b : mInventoryVos) {
-		   ArrayList<String> strings = new ArrayList<>();
-		   strings.add(b.getCstCode());
-		   if ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			 (b.getPatientName() == null || b.getPatientName().equals(""))) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			mTimelyNumberText.setVisibility(View.VISIBLE);
-			setPointOutText(b, mInventoryVos, mIsClick);
-			if (mStarts != null) {
-			   mStarts.cancel();
-			}
-			mTimelyRight.setText("确认并退出登录");
-			return;
-		   }
-
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-			 (b.getExpireStatus() == 0 && b.getDeleteCount() == 0)) {
-			mTimelyLeft.setEnabled(false);
-			mTimelyRight.setEnabled(false);
-			setPointOutText(b, mInventoryVos, mIsClick);
-			mTimelyNumberText.setVisibility(View.VISIBLE);
-
-			if (mStarts != null) {
-			   mStarts.cancel();
-			}
-			mTimelyRight.setText("确认并退出登录");
-			return;
-		   } else {
-			LogUtils.i(TAG, "我走了falsesss");
-			mTimelyLeft.setEnabled(true);
-			mTimelyRight.setEnabled(true);
-			mTimelyNumberText.setVisibility(View.GONE);
-			if (mStarts != null) {
-			   mStarts.cancel();
-			   mStarts.start();
-			}
-		   }
-		}
-	   }
-	}
-   }
-
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onRvEvent(Event.EventString event) {
-	mRvEventString = event.mString;
-	mAllPage = 1;
-	patientInfos.clear();
-	//	loadBingDate(mRvEventString);
    }
 
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
@@ -587,12 +595,18 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   case R.id.timely_start_btn_right://重新扫描
 		if (mStarts != null) {
 		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
 		}
-		mTimelyRight.setText("确认并退出登录");
-		moreStartScan();
+		if (UIUtils.getConfigType(mContext, CONFIG_009)) {
+		   mPatient = null;
+		   mPatientId = null;
+		}
+		TimelyAllFrag.mPauseS = true;
+		mBoxInventoryVos.clear();
+		moreStartScan(mBoxInventoryVos, mObs);
 		break;
 	   case R.id.timely_open_door_right://重新开门
-		if (!mIsClick) {
+		if (mDoorStatusType) {
 		   if (mStarts != null) {
 			mStarts.cancel();
 		   }
@@ -621,7 +635,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_left)) {
 		   return;
 		} else {
-		   if (!mIsClick) {
+		   if (mDoorStatusType) {
 			mIntentType = 1;//确认
 			loadBingFistDate(mIntentType);
 		   } else {
@@ -633,7 +647,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_right)) {
 		   return;
 		} else {
-		   if (!mIsClick) {
+		   if (mDoorStatusType) {
 			mIntentType = 2;//2确认并退出
 			loadBingFistDate(mIntentType);
 		   } else {
@@ -645,13 +659,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.ly_bing_btn_right)) {
 		   return;
 		} else {
-		   if (!mIsClick) {
-			if (StringUtils.isExceedTime(mInventoryVos)) {
-			   DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump", null);
+		   if (mDoorStatusType) {
+			if (StringUtils.isExceedTime(mBoxInventoryVos)) {
+			   DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump",
+							    null);
 			} else {
-			   if (mTitleConn){
+			   if (mTitleConn) {
 				goToFirstBindAC(-2);
-			   }else {
+			   } else {
 				setErrorBindDate("-1", -2);
 			   }
 			}
@@ -660,29 +675,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   }
 		}
 		break;
-	}
-   }
-
-   private void moreStartScan() {
-	mEPCDate.clear();
-//	mTimelyLeft.setEnabled(true);
-//	mTimelyRight.setEnabled(true);
-	if (UIUtils.getConfigType(mContext, CONFIG_009)) {
-	   mPatient = null;
-	   mPatientId = null;
-	}
-
-	List<DeviceInventoryVo> deviceInventoryVos = mInventoryDto.getDeviceInventoryVos();
-	mInventoryDto.getInventoryVos().clear();
-	if (deviceInventoryVos != null) {
-	   deviceInventoryVos.clear();
-	}
-	//	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-	TimelyAllFrag.mPauseS = true;
-	for (String deviceInventoryVo : mEthDeviceIdBack) {
-	   String deviceCode = deviceInventoryVo;
-	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-	   startScan(deviceCode);
 	}
    }
 
@@ -700,15 +692,15 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			startActivity(
 				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
 					"position", position)
-					.putExtra("type", "afterBindTemp")
-					.putExtra("mRbKey", mDtoOperation)
+					.putExtra("type", TEMP_AFTERBIND)
+					.putExtra("mRbKey", mOperationType)
 					.putExtra("GoneType", "VISIBLE"));
 		   } else {
 			startActivity(
 				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
 					"position", position)
-					.putExtra("type", "afterBindTemp")
-					.putExtra("mRbKey", mDtoOperation)
+					.putExtra("type", TEMP_AFTERBIND)
+					.putExtra("mRbKey", mOperationType)
 					.putExtra("GoneType", "GONE"));
 		   }
 		} else {
@@ -716,8 +708,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			startActivity(
 				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
 					"position", position)
-					.putExtra("type", "afterBindTemp")
-					.putExtra("mRbKey", mDtoOperation)
+					.putExtra("type", TEMP_AFTERBIND)
+					.putExtra("mRbKey", mOperationType)
 					.putExtra("GoneType", "VISIBLE"));
 		   } else {
 			ToastUtils.showShort("没有患者数据");
@@ -734,6 +726,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    /**
     * 断网没有患者直接跳转
+    *
     * @param result
     * @param position
     */
@@ -743,8 +736,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		startActivity(
 			new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(
 				"position", position)
-				.putExtra("type", "afterBindTemp")
-				.putExtra("mRbKey", mDtoOperation)
+				.putExtra("type", TEMP_AFTERBIND)
+				.putExtra("mRbKey", mOperationType)
 				.putExtra("GoneType", "VISIBLE"));
 	   } else {
 		ToastUtils.showShort("请开启管理端临时患者创建");
@@ -754,17 +747,21 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    /**
     * 绑定患者用操作耗材接口
+    *
     * @param mIntentType
     */
    private void loadBingFistDate(int mIntentType) {
-	mInventoryDto.setOperationScheduleId(mOperationScheduleId);
-	mInventoryDto.setPatientName(mPatient);
-	mInventoryDto.setPatientId(mPatientId);
-	mInventoryDto.setOperatingRoomNo(mOperatingRoomNo);
-	mInventoryDto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	mInventoryDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-	mInventoryDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
-	String toJson = mGson.toJson(mInventoryDto);
+	InventoryDto dto = new InventoryDto();
+	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	dto.setInventoryVos(mBoxInventoryVos);
+	dto.setOperation(mOperationType);
+	dto.setOperationScheduleId(mOperationScheduleId);
+	dto.setPatientName(mPatient);
+	dto.setPatientId(mPatientId);
+	dto.setOperatingRoomNo(mOperatingRoomNo);
+	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
+	String toJson = mGson.toJson(dto);
 	LogUtils.i(TAG, "toJson  " + toJson);
 
 	if (mOnBtnGone) {
@@ -779,7 +776,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   });
 	} else {
-	   if (mDtoOperation == 4) {
+	   if (mOperationType == 4) {
 		if (mTitleConn) {
 		   putEpcLyThDate(mIntentType, toJson);
 		} else {
@@ -809,7 +806,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
@@ -840,7 +837,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
@@ -859,11 +856,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    /**
     * 请求失败的错误数据存储
+    *
     * @param mIntentType
     */
    private void setErrorDate(int mIntentType, String result, int type) {
 	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
-	    mDtoOperation == type) {
+	    mOperationType == type) {
 	   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
 	   ContentValues values = new ContentValues();
 	   for (InventoryVo s : mInventoryDto.getInventoryVos()) {
@@ -889,7 +887,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   }
 	   ToastUtils.showShort("操作成功");
-	   MusicPlayer.playSoundByOperation(mDtoOperation);//播放操作成功提示音
+	   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 
 	   if (mIntentType == 2) {
 		UIUtils.putOrderId(mContext);
@@ -902,93 +900,35 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
    }
 
-   @Override
-   protected void onDestroy() {
-	mOnBtnGone = false;
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
-	if (mPatientDto != null) {
-	   mPatientDto = null;
-	}
-	EventBusUtils.postSticky(new Event.EventFrag("START1"));
-	EventBusUtils.unregister(this);
-	if (mStarts != null) {
-	   mStarts.cancel();
-	   mStarts = null;
-	}
-	mOnBtnGone = false;
-	super.onDestroy();
-   }
-
-   private void startScan(String deviceIndentify) {
-	EventBusUtils.postSticky(new Event.EventLoading(true));
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 UHF_TYPE).find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		   .find(BoxIdBean.class);
-
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-		LogUtils.i(TAG, "开始扫描了状态    " + i);
-	   }
-
-	}
-   }
-
    /**
     * 扫描后传值
     */
 
-   private void getDeviceDate(String deviceId, Map<String, List<EpcInfo>> epcs) {
+   private void getDeviceDate(List<DeviceInventoryVo> vos) {
+	mDto.setThingId(SPUtils.getString(mContext, THING_CODE));
+	mDto.setOperation(mOperationType);
+	mDto.setDeviceInventoryVos(vos);
+	mDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 
-	InventoryDto inventoryDto = new InventoryDto();
-	List<Inventory> epcList = new ArrayList<>();
-
-	for (Map.Entry<String, List<EpcInfo>> v : epcs.entrySet()) {
-	   Inventory inventory = new Inventory();
-	   inventory.setEpc(v.getKey());
-	   epcList.add(inventory);
-	}
-	DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
-	List<DeviceInventoryVo> deviceList = new ArrayList<>();
-
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ?", deviceId).find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   Log.i(TAG, "device_id   " + box_id);
-	   deviceInventoryVo.setDeviceId(box_id);
-	}
-	deviceInventoryVo.setInventories(epcList);
-	deviceList.add(deviceInventoryVo);
-	inventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
-	inventoryDto.setOperation(mInventoryDto.getOperation());
-	inventoryDto.setDeviceInventoryVos(deviceList);
-	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-	inventoryDto.setPatientName(mInventoryDto.getPatientName());
-	inventoryDto.setPatientId(mInventoryDto.getPatientId());
-	inventoryDto.setMedicalId(mInventoryDto.getMedicalId());
-	inventoryDto.setSurgeryId(mInventoryDto.getSurgeryId());
-	inventoryDto.setHisPatientId(mInventoryDto.getHisPatientId());
-	String toJson = mGson.toJson(inventoryDto);
+	String toJson = mGson.toJson(mDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
-	mEPCDate.clear();
-	if (mInventoryDto.getOperation() == 4) {
+	if (mOperationType == 4) {
 	   if (mTitleConn) {
 		getEpcDtoLyThDate(toJson);
 	   } else {
-		setUnNetDate(toJson, "-1");
+		InventoryDto dto = setUnNetDate(mContext, mGson, mOperationType, toJson, "-1");
+		if (dto!=null){
+		   setDateEpc(dto);
+		}
 	   }
 	} else {
 	   if (mTitleConn) {
 		getEpcDate(toJson);
 	   } else {
-		setUnNetDate(toJson, "-1");
+		InventoryDto dto = setUnNetDate(mContext, mGson, mOperationType, toJson, "-1");
+		if (dto!=null){
+		   setDateEpc(dto);
+		}
 	   }
 	}
    }
@@ -1007,12 +947,16 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTCstInventoryTwoDto = null;
 		}
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
-		setDateEpc(mTCstInventoryTwoDto, true);
+		setDateEpc(mTCstInventoryTwoDto);
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setUnNetDate(toJson, result);
+		EventBusUtils.postSticky(new Event.EventLoading(false));
+		InventoryDto dto = setUnNetDate(mContext, mGson, mOperationType, toJson, result);
+		if (dto!=null){
+		   setDateEpc(dto);
+		}
 	   }
 	});
    }
@@ -1031,165 +975,354 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTCstInventoryTwoDto = null;
 		}
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
-		setDateEpc(mTCstInventoryTwoDto, true);
+		setDateEpc(mTCstInventoryTwoDto);
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setUnNetDate(toJson, result);
+		EventBusUtils.postSticky(new Event.EventLoading(false));
+		InventoryDto dto = setUnNetDate(mContext, mGson, mOperationType, toJson, result);
+		if (dto!=null){
+		   setDateEpc(dto);
+		}
 	   }
 	});
    }
 
    /**
-    * 无网的扫描后的EPC信息赋值
-    *
-    * @param toJson
+    * 扫描EPC返回后进行赋值
     */
-   private void setUnNetDate(String toJson, String result) {
-	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
-	   List<InventoryVo> mInVo = new ArrayList<>();
-	   InventoryDto cc = LitePal.findFirst(InventoryDto.class);
-	   InventoryDto inventoryDto = new InventoryDto();
-	   inventoryDto.setOperation(mDtoOperation);
-	   inventoryDto.setThingId(cc.getThingId());
-	   InventoryDto dto = mGson.fromJson(toJson, InventoryDto.class);
-	   if (dto.getDeviceInventoryVos().size() > 0) {
-		List<Inventory> list = dto.getDeviceInventoryVos().get(0).getInventories();
-		String deviceId = dto.getDeviceInventoryVos().get(0).getDeviceId();
-		List<InventoryVo> vos = LitePal.where("deviceid = ? and status = ?", deviceId, "2")
-			.find(InventoryVo.class);
-		BoxIdBean boxIdBean = LitePal.where("device_id = ? ", deviceId)
-			.findFirst(BoxIdBean.class);
-		mInVo.addAll(vos);
-		if (list.size() != 0) {
-		   for (Inventory s : list) {
-			InventoryVo first = LitePal.where("epc = ? and deviceid = ?", s.getEpc(),
-								    deviceId).findFirst(InventoryVo.class);
-			if (!getVosType(vos, s.getEpc())) {//无网放入
-			   InventoryVo inventoryVo = new InventoryVo();
-			   inventoryVo.setEpc(s.getEpc());
-			   inventoryVo.setDeviceId(deviceId);
-			   inventoryVo.setDeviceName(boxIdBean.getName());
-			   inventoryVo.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-			   inventoryVo.setUserName(SPUtils.getString(mContext, KEY_USER_NAME));
-			   inventoryVo.setIsErrorOperation(0);
-			   inventoryVo.setOperationStatus(99);
-			   inventoryVo.setStatus("2");
-			   inventoryVo.setRenewTime(getDates());
-			   if (!getVosType(mInVo, s.getEpc())) {//避免重复加入
-				mInVo.add(inventoryVo);
-			   }
-			} else {
-			   if (first != null) {
-				mInVo.remove(first);
-			   }
-			}
-		   }
+   private void setDateEpc(InventoryDto mTCstInventoryTwoDto) {
+
+	if (UIUtils.getConfigType(mContext, CONFIG_009)) {
+	   mTCstInventoryTwoDto.setBindType(TEMP_AFTERBIND);
+	} else {
+	   mTCstInventoryTwoDto.setBindType(TEMP_FIRSTBIND);
+	}
+	if (mTCstInventoryTwoDto.getInventoryVos() != null &&
+	    mTCstInventoryTwoDto.getInventoryVos().size() > 0) {
+	   setBoxVosDate(mTCstInventoryTwoDto.getInventoryVos());
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	}
+	setTitleRightNum();
+	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+	setTimeStart();
+
+   }
+
+   /**
+    * 请求结束后的数据放入显示在界面上
+    *
+    * @param vos
+    */
+   private void setBoxVosDate(List<InventoryVo> vos) {
+	if (mBoxInventoryVos.size() > 0) {
+	   for (int x = 0; x < vos.size(); x++) {
+		if (!getVosType(mBoxInventoryVos, vos.get(x).getEpc())) {
+		   InventoryVo inventoryVo = vos.get(x);
+		   inventoryVo.setDateNetType(false);
+		   setTemPatientDate(inventoryVo);
+		   mBoxInventoryVos.add(inventoryVo);
 		}
 	   }
-	   for (InventoryVo vo : mInVo) {
-		if (vo.getExpireStatus() == 0) {
-		   vo.setStatus("已过期");
-		}
+	} else {
+	   for (int x = 0; x < vos.size(); x++) {
+		InventoryVo inventoryVo = vos.get(x);
+		inventoryVo.setDateNetType(false);
+		setTemPatientDate(inventoryVo);
+		mBoxInventoryVos.add(inventoryVo);
 	   }
-	   inventoryDto.setInventoryVos(mInVo);
-	   setDateEpc(inventoryDto, false);
+	}
+   }
+
+   private void setTemPatientDate(InventoryVo inventoryVo) {
+	if (mCheckBoxVo != null) {
+	   if ((UIUtils.getConfigType(mContext, CONFIG_010) &&
+		  UIUtils.getConfigType(mContext, CONFIG_012)) ||
+		 (mPatientId != null && mPatientId.equals("virtual"))) {
+		setVoPatient(inventoryVo);
+		inventoryVo.setCreate(mIsCreate);
+		inventoryVo.setTempPatientId(mTempPatientId);
+		inventoryVo.setIdNo(mIdNo);
+		inventoryVo.setSurgeryTime(mSurgeryTime);
+		inventoryVo.setOperatingRoomNo(mOperatingRoomNo);
+		inventoryVo.setOperatingRoomName(mOperatingRoomNoName);
+		inventoryVo.setSex(mSex);
+		inventoryVo.setDeptId(mDeptId);
+
+	   } else {
+		setVoPatient(inventoryVo);
+	   }
+	}
+	if (inventoryVo.getOperationStatus() == 7 || inventoryVo.getOperationStatus() == 99) {
+	   inventoryVo.setPatientName("vr");
+	   inventoryVo.setPatientId("vr");
 	}
    }
 
    /**
-    * 扫描EPC返回后进行赋值
+    * 设置患者信息抽取后的部分
+    * @param inventoryVo
     */
-   private void setDateEpc(InventoryDto mTCstInventoryTwoDto, boolean type) {
+   private void setVoPatient(InventoryVo inventoryVo) {
+	inventoryVo.setPatientName(mPatient);
+	inventoryVo.setPatientId(mPatientId);
+	inventoryVo.setOperationScheduleId(mOperationScheduleId);
+	inventoryVo.setMedicalId(mMedicalId);
+	inventoryVo.setSurgeryId(mSurgeryId);
+	inventoryVo.setHisPatientId(mHisPatientId);
+   }
 
-	List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
-	List<InventoryVo> inventoryVos1 = mTCstInventoryTwoDto.getInventoryVos();
-	if (UIUtils.getConfigType(mContext, CONFIG_009)) {
-	   mTCstInventoryTwoDto.setBindType("afterBind");
+   /**
+    * 绑定患者
+    */
+   private void setAfterBing() {
+	if (mOperationType == 4) {
+	   mBaseTabTvTitle.setText("耗材领用/退回");
 	} else {
-	   mTCstInventoryTwoDto.setBindType("firstBind");
+	   mBaseTabTvTitle.setText("耗材领用");
+	}
+	mTimelyNumberLeft.setVisibility(View.VISIBLE);
+	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
+	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
+	mBaseTabIconRight.setEnabled(false);
+	mBaseTabTvName.setEnabled(false);
+	mBaseTabBtnMsg.setEnabled(false);
+	mBaseTabOutLogin.setEnabled(false);
+	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
+	   backBind();
+	} else if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定
+	   firstBind();
 	}
 
-	inventoryVos1.addAll(inventoryVos);
-	for (InventoryVo ff : inventoryVos1) {
-	   LogUtils.i(TAG, "ff   " + mPatient);
-	   if (UIUtils.getConfigType(mContext, CONFIG_010) &&
-		 UIUtils.getConfigType(mContext, CONFIG_012)) {
-		LogUtils.i(TAG, "virtual  CONFIG_012 " + mHisPatientId);
-		ff.setPatientName(mPatient);
-		ff.setCreate(mIsCreate);
-		ff.setPatientId(mPatientId);
-		ff.setTempPatientId(mTempPatientId);
-		ff.setIdNo(mIdNo);
-		ff.setOperationScheduleId(mOperationScheduleId);
-		ff.setSurgeryTime(mScheduleDateTime);
-		ff.setOperatingRoomNo(mOperatingRoomNo);
-		ff.setOperatingRoomName(mOperatingRoomNoName);
-		ff.setSex(mSex);
-		ff.setDeptId(mDeptId);
-		ff.setMedicalId(mMedicalId);
-		ff.setSurgeryId(mSurgeryId);
-		ff.setHisPatientId(mHisPatientId);
-	   } else {
-		if (mPatientId != null && mPatientId.equals("virtual")) {
-		   LogUtils.i(TAG, "virtual   " + mTempPatientId);
-		   ff.setPatientName(mPatient);
-		   ff.setCreate(mIsCreate);
-		   ff.setPatientId(mPatientId);
-		   ff.setTempPatientId(mTempPatientId);
-		   ff.setIdNo(mIdNo);
-		   ff.setOperationScheduleId(mOperationScheduleId);
-		   ff.setSurgeryTime(mScheduleDateTime);
-		   ff.setOperatingRoomNo(mOperatingRoomNo);
-		   ff.setOperatingRoomName(mOperatingRoomNoName);
-		   ff.setSex(mSex);
-		   ff.setDeptId(mDeptId);
-		   ff.setMedicalId(mMedicalId);
-		   ff.setSurgeryId(mSurgeryId);
-		   ff.setHisPatientId(mHisPatientId);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_title_bing_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	setTableTypeDate(mClossEthId);
+	setTimeStart();
+   }
 
-		} else {
-		   LogUtils.i(TAG, "ZHENGSHI   ");
-		   ff.setPatientName(mPatient);
-		   ff.setPatientId(mPatientId);
-		   ff.setOperationScheduleId(mOperationScheduleId);
-		   ff.setMedicalId(mMedicalId);
-		   ff.setSurgeryId(mSurgeryId);
-		   ff.setHisPatientId(mHisPatientId);
+   /**
+    * 界面显示的数据
+    *
+    * @param mClossEthId
+    */
+   private void setTableTypeDate(String mClossEthId) {
+	if (mBoxInventoryVos != null) {
+	   setTitleRightNum();
+	} else {
+	   mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
+								 "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								 0 + "</big></font>"));
+	}
+	if (mTypeView == null) {
+	   mTypeView = new TableTypeView(this, this, mBoxInventoryVos, titeleList, mSize,
+						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
+						   ACT_TYPE_CONFIRM_HAOCAI, -10);
+	} else {
+	   mTypeView.mRecogHaocaiAdapter.getData().clear();
+	   mTypeView.mRecogHaocaiAdapter.getData().addAll(mBoxInventoryVos);
+	   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+	}
+	startScan(mBoxInventoryVos, mObs, mClossEthId);
+   }
+
+   private void setTitleRightNum() {
+	ArrayList<String> strings = new ArrayList<>();
+	for (InventoryVo vosBean : mBoxInventoryVos) {
+	   if (mCheckBoxVo != null) {
+		vosBean.setPatientName(mPatient);
+		vosBean.setCreate(mIsCreate);
+		vosBean.setPatientId(mPatientId);
+		vosBean.setTempPatientId(mTempPatientId);
+		vosBean.setIdNo(mIdNo);
+		vosBean.setOperationScheduleId(mOperationScheduleId);
+		vosBean.setSurgeryTime(mSurgeryTime);
+		vosBean.setOperatingRoomNo(mOperatingRoomNo);
+		vosBean.setOperatingRoomName(mOperatingRoomNoName);
+		vosBean.setSex(mSex);
+		vosBean.setDeptId(mDeptId);
+		vosBean.setMedicalId(mMedicalId);
+		vosBean.setSurgeryId(mSurgeryId);
+		vosBean.setHisPatientId(mHisPatientId);
+	   }
+
+	   if (vosBean.getCstId() != null) {
+		strings.add(vosBean.getCstId());
+	   }
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							    mBoxInventoryVos.size() + "</big></font>"));
+	setHandlerToastAndFinish();
+   }
+
+   /**
+    * 没有扫到数据，就弹出toast和关闭本页
+    */
+   private void setHandlerToastAndFinish() {
+	mHandler = new Handler();
+	if (mRunnableW == null) {
+	   mRunnableW = new Runnable() {
+		@Override
+		public void run() {
+		   if (mBoxInventoryVos.size() == 0 && ScanService.mDoorStatusType && !mPause) {
+			if (mTimelyLeft != null && mTimelyRight != null) {
+			   mTimelyLeft.setEnabled(false);
+			   mTimelyRight.setEnabled(false);
+			   mStarts.cancel();
+			   mTimelyRight.setText("确认并退出登录");
+			}
+			EventBusUtils.postSticky(new Event.EventLoading(false));
+			Toast.makeText(OutBoxBingActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
+					   Toast.LENGTH_SHORT).show();
+
+			mRunnable = new Runnable() {
+			   @Override
+			   public void run() {
+				EventBusUtils.postSticky(new Event.EventFrag("START1"));
+				finish();
+			   }
+			};
+			mHandler.postDelayed(mRunnable, 3000);
+		   } else {
+			if (mHandler != null && mRunnableW != null) {
+			   mHandler.removeCallbacks(mRunnableW);
+			   mRunnableW = null;
+			}
+		   }
 		}
-	   }
-	   if (ff.getOperationStatus() == 7 || ff.getOperationStatus() == 99) {
-		ff.setPatientName("vr");
-		ff.setPatientId("vr");
+	   };
+	   mHandler.postDelayed(mRunnableW, 3000);
+	} else {
+	   mHandler.removeCallbacks(mRunnableW);
+	   mRunnableW = null;
+	   if (mHandler != null && mRunnable != null) {
+		mHandler.removeCallbacks(mRunnable);
+		mRunnable = null;
 	   }
 	}
-	mTCstInventoryTwoDto.setInventoryVos(inventoryVos1);
-	EventBusUtils.postSticky(new Event.EventOutBoxBingDto(mTCstInventoryTwoDto));
-	String toJson = mGson.toJson(mTCstInventoryTwoDto);
-	LogUtils.i(TAG, "dddddddd    " + toJson);
-	if (!mIsClick && (mTCstInventoryTwoDto.getInventoryVos() == null ||
-				mTCstInventoryTwoDto.getInventoryVos().size() < 1)) {
-	   if (mTimelyLeft != null && mTimelyRight != null) {
+   }
+
+   /**
+    * 后绑定患者
+    */
+   private void backBind() {
+	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
+	mTimelyLeft.setEnabled(false);
+	mTimelyRight.setEnabled(false);
+	mTimelyNumberText.setVisibility(View.VISIBLE);
+	mTimelyNumberText.setText(R.string.bind_error_string);
+	if (mStarts != null) {
+	   mStarts.cancel();
+	   mTimelyRight.setText("确认并退出登录");
+	}
+	mLyBingBtnRight.setVisibility(View.VISIBLE);
+   }
+
+   /**
+    * 先绑定患者
+    */
+   private void firstBind() {
+	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
+	mLyBingBtnRight.setVisibility(View.GONE);
+	mTimelyLeft.setEnabled(true);
+	mTimelyRight.setEnabled(true);
+	mTimelyNumberText.setVisibility(View.GONE);
+	for (InventoryVo vosBean : mBoxInventoryVos) {
+	   if ((vosBean.getIsErrorOperation() == 0 && vosBean.getExpireStatus() != 0) ||
+		 (vosBean.getIsErrorOperation() == 1 && vosBean.getDeleteCount() != 0 &&
+		  vosBean.getExpireStatus() == 0)) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
+		mTimelyNumberText.setVisibility(View.GONE);
+	   } else {
+		LogUtils.i(TAG, "我走了falsesss");
 		mTimelyLeft.setEnabled(false);
 		mTimelyRight.setEnabled(false);
-	   }
-	   EventBusUtils.postSticky(new Event.EventLoading(false));
-	   Toast.makeText(this, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
-	   mTimelyOpenDoorRight.setEnabled(false);
-	   mTimelyStartBtnRight.setEnabled(false);
-	   new Handler().postDelayed(new Runnable() {
-		public void run() {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
-		   finish();
+		mTimelyNumberText.setVisibility(View.VISIBLE);
+		setPointOutText(vosBean, mBoxInventoryVos, !mDoorStatusType);
+		if (mStarts != null) {
+		   mStarts.cancel();
+		   mTimelyRight.setText("确认并退出登录");
 		}
-	   }, FINISH_TIME);
-	} else {
-	   EventBusUtils.postSticky(new Event.EventLoading(false));
-	   mTimelyOpenDoorRight.setEnabled(true);
-	   mTimelyStartBtnRight.setEnabled(true);
+		break;
+	   }
 	}
-	//	}
+   }
+
+   private void setTimeStart() {
+	for (InventoryVo b : mBoxInventoryVos) {
+	   //这代码自己看的都蛋疼，优化优化优化 TODO
+	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
+		  mOperationType != 8) || ((mOperationType == 3 || mOperationType == 4) &&
+						   UIUtils.getConfigType(mContext, CONFIG_007) &&
+						   (b.getPatientName() == null ||
+						    ((b.getOperationStatus() == 7 ||
+							b.getOperationStatus() == 99) &&
+						     b.getPatientName().equals("vr"))))) {
+		if ((mOperationType == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+		     b.getExpireStatus() == 0) ||
+		    (b.getIsErrorOperation() != 1 && b.getDeleteCount() == 0 &&
+		     b.getExpireStatus() != 0 &&
+		     ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
+			(b.getPatientName() == null ||
+			 ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
+			  b.getPatientName().equals("vr")))))) {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   mTimelyNumberText.setVisibility(View.GONE);
+
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mStarts.start();
+		   }
+		} else {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   mTimelyNumberText.setVisibility(View.VISIBLE);
+		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		   return;
+		}
+	   } else {
+		LogUtils.i(TAG, "我走了false");
+		if (!mDoorStatusType) {
+		   mTimelyLeft.setEnabled(false);
+		   mTimelyRight.setEnabled(false);
+		   mTimelyOpenDoorRight.setEnabled(false);
+		   mTimelyStartBtnRight.setEnabled(false);
+		   if (mLyBingBtnRight != null) {
+			mLyBingBtnRight.setEnabled(false);
+		   }
+		   mTimelyNumberText.setVisibility(View.VISIBLE);
+		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mTimelyRight.setText("确认并退出登录");
+		   }
+		} else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   mTimelyOpenDoorRight.setEnabled(true);
+		   mTimelyStartBtnRight.setEnabled(true);
+		   if (mLyBingBtnRight != null) {
+			mLyBingBtnRight.setEnabled(true);
+		   }
+		   mTimelyNumberText.setVisibility(View.GONE);
+		   if (mStarts != null) {
+			mStarts.cancel();
+			mStarts.start();
+		   }
+		}
+
+	   }
+	}
    }
 
    /**
@@ -1232,214 +1365,24 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	return super.dispatchTouchEvent(ev);
    }
 
-   /**
-    * 绑定患者
-    */
-   private void setAfterBing() {
-	if (mDtoOperation == 4) {
-	   mBaseTabTvTitle.setText("耗材领用/退回");
-	} else {
-	   mBaseTabTvTitle.setText("耗材领用");
+   @Override
+   protected void onDestroy() {
+	mOnBtnGone = false;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
 	}
-	mTimelyNumberLeft.setVisibility(View.VISIBLE);
-	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	mActivityDownBtnTwoll.setVisibility(View.VISIBLE);
-	mBaseTabIconRight.setEnabled(false);
-	mBaseTabTvName.setEnabled(false);
-	mBaseTabBtnMsg.setEnabled(false);
-	mBaseTabOutLogin.setEnabled(false);
-	if (UIUtils.getConfigType(mContext, CONFIG_009)) {//后绑定
-	   backBind();
-	} else if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定
-	   firstBind();
-	} else {//hua
-	   mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	   mLyBingBtnRight.setVisibility(View.VISIBLE);
-	   mTimelyLeft.setEnabled(false);
-	   mTimelyRight.setEnabled(false);
-	   if (mStarts != null) {
-		mStarts.cancel();
-		mTimelyRight.setText("确认并退出登录");
-	   }
+	if (mPatientDto != null) {
+	   mPatientDto = null;
 	}
-	ArrayList<String> strings = new ArrayList<>();
-	for (InventoryVo vosBean : mInventoryVos) {
-	   if (vosBean.getCstId() != null) {
-		strings.add(vosBean.getCstId());
-	   }
-	   if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-		 ((vosBean.getPatientId() == null || vosBean.getPatientId().equals("")) ||
-		  (vosBean.getPatientName() == null || vosBean.getPatientName().equals("")))) {
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		mTimelyNumberText.setVisibility(View.VISIBLE);
-		mTimelyNumberText.setText(R.string.bind_error_string);
-		if (mStarts != null) {
-		   mStarts.cancel();
-		   mTimelyRight.setText("确认并退出登录");
-		}
-		break;
-	   }
-	}
-	setTableTypeDate(strings);
-	setTimeStart();
-   }
-
-   /**
-    * 界面显示的数据
-    *
-    * @param strings
-    */
-   private void setTableTypeDate(ArrayList<String> strings) {
-	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							    mInventoryVos.size() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_title_bing_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	if (mTypeView == null) {
-	   mTypeView = new TableTypeView(this, this, mInventoryVos, titeleList, mSize, mLinearLayout,
-						   mRecyclerview, mRefreshLayout, ACTIVITY,
-						   ACT_TYPE_CONFIRM_HAOCAI, -10);
-	}
-	mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
-   }
-
-   /**
-    * 后绑定患者
-    */
-   private void backBind() {
-	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	mTimelyLeft.setEnabled(false);
-	mTimelyRight.setEnabled(false);
-	mTimelyNumberText.setVisibility(View.VISIBLE);
-	mTimelyNumberText.setText(R.string.bind_error_string);
+	EventBusUtils.postSticky(new Event.EventFrag("START1"));
+	EventBusUtils.unregister(this);
 	if (mStarts != null) {
 	   mStarts.cancel();
-	   mTimelyRight.setText("确认并退出登录");
+	   mStarts = null;
 	}
-	mLyBingBtnRight.setVisibility(View.VISIBLE);
-   }
-
-   /**
-    * 先绑定患者
-    */
-   private void firstBind() {
-	mTimelyLlGoneRight.setVisibility(View.VISIBLE);
-	mLyBingBtnRight.setVisibility(View.GONE);
-	mTimelyLeft.setEnabled(true);
-	mTimelyRight.setEnabled(true);
-	mTimelyNumberText.setVisibility(View.GONE);
-	for (InventoryVo vosBean : mInventoryVos) {
-	   if ((vosBean.getIsErrorOperation() == 0 && vosBean.getExpireStatus() != 0) ||
-		 (vosBean.getIsErrorOperation() == 1 && vosBean.getDeleteCount() != 0 &&
-		  vosBean.getExpireStatus() == 0)) {
-		mTimelyLeft.setEnabled(true);
-		mTimelyRight.setEnabled(true);
-		mTimelyNumberText.setVisibility(View.GONE);
-	   } else {
-		LogUtils.i(TAG, "我走了falsesss");
-		mTimelyLeft.setEnabled(false);
-		mTimelyRight.setEnabled(false);
-		mTimelyNumberText.setVisibility(View.VISIBLE);
-		setPointOutText(vosBean, mInventoryVos, mIsClick);
-		if (mStarts != null) {
-		   mStarts.cancel();
-		   mTimelyRight.setText("确认并退出登录");
-		}
-		break;
-	   }
-	}
-   }
-
-   private void setTimeStart() {
-	for (InventoryVo b : mInventoryVos) {
-	   //这代码自己看的都蛋疼，优化优化优化 TODO
-	   if (isError(b)) {
-		if (isSuccess(b)) {
-		   mTimelyLeft.setEnabled(true);
-		   mTimelyRight.setEnabled(true);
-		   mTimelyNumberText.setVisibility(View.GONE);
-
-		   if (mStarts != null) {
-			LogUtils.i(TAG, "true  ssssssfafafa mObject ss mObject ");
-			mStarts.cancel();
-			mStarts.start();
-		   }
-		} else {
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		   mTimelyNumberText.setVisibility(View.VISIBLE);
-		   setPointOutText(b, mInventoryVos, mIsClick);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mTimelyRight.setText("确认并退出登录");
-		   }
-		   return;
-		}
-	   } else {
-		LogUtils.i(TAG, "我走了false");
-		if (mIsClick) {
-		   mTimelyLeft.setEnabled(false);
-		   mTimelyRight.setEnabled(false);
-		   mTimelyNumberText.setVisibility(View.VISIBLE);
-		   setPointOutText(b, mInventoryVos, mIsClick);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mTimelyRight.setText("确认并退出登录");
-		   }
-		} else {
-		   mTimelyLeft.setEnabled(true);
-		   mTimelyRight.setEnabled(true);
-		   mTimelyNumberText.setVisibility(View.GONE);
-		   if (mStarts != null) {
-			mStarts.cancel();
-			mStarts.start();
-		   }
-		}
-
-	   }
-	}
-   }
-
-   private boolean isSuccess(InventoryVo b) {
-	return (mDtoOperation == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		  b.getExpireStatus() == 0) ||
-		 (b.getIsErrorOperation() != 1 && b.getDeleteCount() == 0 && b.getExpireStatus() != 0 &&
-		  ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
-		   (b.getPatientName() == null ||
-		    ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
-		     b.getPatientName().equals("vr")))));
-   }
-
-   private boolean isError(InventoryVo b) {
-	return (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
-		  mDtoOperation != 8) || ((mDtoOperation == 3 || mDtoOperation == 4) &&
-						  UIUtils.getConfigType(mContext, CONFIG_007) &&
-						  (b.getPatientName() == null ||
-						   ((b.getOperationStatus() == 7 ||
-						     b.getOperationStatus() == 99) &&
-						    b.getPatientName().equals("vr"))));
-   }
-
-   /**
-    * 删除数据库已有的已经操作过的耗材
-    *
-    * @param result
-    */
-   private void deleteVo(String result) {
-	List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
-	InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
-	List<InventoryVo> vos = inventoryDto.getInventoryVos();
-	for (InventoryVo vo : vos) {
-	   for (int i = 0; i < voList.size(); i++) {
-		if (voList.get(i).getEpc().equals(vo.getEpc())) {
-		   voList.get(i).delete();
-		}
-	   }
-	}
-	getAllCstDate(mGson, this);
+	mOnBtnGone = false;
+	super.onDestroy();
    }
 }
