@@ -1,26 +1,13 @@
 package high.rivamed.myapplication.fragment;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
-import com.lzy.okgo.model.Progress;
-import com.lzy.okgo.model.Response;
-import com.ruihua.face.recognition.ui.FaceGatewayActivity;
-
 import org.litepal.LitePal;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,31 +16,21 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
-import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
-import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.Coder;
-import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.PackageUtils;
+import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.UpDateDialog;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.mTitleConn;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
-import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -102,41 +79,17 @@ public class LoginPassWordFragment extends SimpleFragment {
 	   return;
 	} else {
 	   if (isvalidate()) {
-		if (mTitleConn) {
-		   getConfigDate();
-		} else {
-		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null) {
-			String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
-			ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
-			List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-			loginEnjoin(tCstConfigVos, false);
-		   }
-		}
-
+           //获取配置项并登陆
+           LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) -> {
+               if (canLogin) {
+                   loginEnjoin(canDevice,hasNet);
+               }
+           });
 	   } else {
 		Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
 	   }
 	}
    }
-    @OnClick(R.id.login_button)
-    public void onViewClicked() {
-        if (UIUtils.isFastDoubleClick(R.id.login_button)) {
-            return;
-        } else {
-            if (isvalidate()) {
-//			getConfigDate();
-                //获取配置项并登陆
-                LoginUtils.getConfigDate(mContext, (canLogin,canDevice, hasNet) -> {
-                    if (canLogin) {
-                        loginEnjoin(canDevice,hasNet);
-                    }
-                });
-            } else {
-                Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     /**
      * 是否禁止使用

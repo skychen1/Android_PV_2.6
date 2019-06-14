@@ -1,21 +1,14 @@
 package high.rivamed.myapplication.activity;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -25,19 +18,12 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
-import com.lzy.okgo.model.Progress;
-import com.lzy.okgo.model.Response;
 
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +34,7 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
-import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
-import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
@@ -66,17 +50,12 @@ import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.TimerService;
-import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
-import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
-import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -85,12 +64,10 @@ import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -104,7 +81,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 
@@ -126,8 +102,6 @@ public class LoginActivity extends SimpleActivity {
    ImageView       mLoginLogo;
    @BindView(R.id.login_face)
    RadioButton     mLoginFace;
-   @BindView(R.id.login_password)
-   RadioButton     mLoginPassword;
    @BindView(R.id.login_pass)
    RadioButton     mLoginPass;
    @BindView(R.id.login_radiogroup)
@@ -278,8 +252,6 @@ public class LoginActivity extends SimpleActivity {
 
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
-	mLoginPass.setVisibility(View.GONE);
-	mLoginViewpager.setScanScroll(false);
    }
 
    @Override
@@ -458,36 +430,19 @@ public class LoginActivity extends SimpleActivity {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 	//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
-	if (mTitleConn) {
-	   getUpDateVer(tCstConfigVos, configType, loginType);
-	} else {
-	   loginEnjoin(tCstConfigVos, configType, loginType);
-	}
-//	getUpDateVer(tCstConfigVos, configType, loginType);
+	   //	getUpDateVer(tCstConfigVos, configType, loginType);
 	   LoginUtils.getUpDateVer(this, tCstConfigVos, (canLogin,canDevice, hasNet) ->
 			   loginEnjoin(canDevice,configType,loginType));
 
-	if (UIUtils.getConfigType(mContext, CONFIG_017)) {
-	   mLoginPass.setVisibility(View.VISIBLE);
-	   mLoginViewpager.setScanScroll(true);
-	   if (isConfigFace()) {
-		mLoginFace.setVisibility(View.VISIBLE);
-		mLoginViewpager.setCurrentItem(0);
-	   } else {
-		mLoginFace.setVisibility(View.GONE);
-	   }
-	} else {
-	   mLoginPass.setVisibility(View.GONE);
-	   if (isConfigFace()) {
-		mLoginFace.setVisibility(View.VISIBLE);
-		mLoginViewpager.setScanScroll(true);
-		mLoginViewpager.setCurrentItem(0);
-	   } else {
-		mLoginFace.setVisibility(View.GONE);
-		mLoginViewpager.setScanScroll(false);
-		mLoginViewpager.setCurrentItem(1);
-	   }
-	}
+	   //控制紧急登录tab的显示
+	   mLoginPass.setVisibility(UIUtils.getConfigType(mContext, CONFIG_017)?View.VISIBLE:View.GONE);
+	   //有人脸识别，显示人脸识别tab，默认选中人脸识别tab
+	   //没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
+	   mLoginFace.setVisibility(isConfigFace()?View.VISIBLE:View.GONE);
+	   mLoginViewpager.setCurrentItem(isConfigFace()?0:1);
+	   //有人脸识别或紧急登录时，可滑动
+	   mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
+
 	//	} else {
 	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	//	}
@@ -497,8 +452,8 @@ public class LoginActivity extends SimpleActivity {
 		// TODO: 2019/5/21 判断是否配置人脸识别登录
 //		return UIUtils.getConfigType(mContext, CONFIG_099);
 		//测试时默认开启，真实情况需要根据后台配置
+//		return true;
 		return true;
-//		return false;
 	}
 
    /**
@@ -720,7 +675,7 @@ public class LoginActivity extends SimpleActivity {
 			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_password:
-			   mLoginPassword.setChecked(true);
+				mLoginViewpager.setCurrentItem(1);
 			   break;
 		   }
 		} else {
@@ -733,37 +688,13 @@ public class LoginActivity extends SimpleActivity {
 	   }
 	   mLoginRadiogroup.check(radioGroup.getCheckedRadioButtonId());
 	});
-	if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_face) {
-	   mLoginViewpager.setCurrentItem(0);
-	} else if (mLoginRadiogroup.getCheckedRadioButtonId() == R.id.login_password){
-	   mLoginViewpager.setCurrentItem(1);
-	}else {
-	   mLoginViewpager.setCurrentItem(2);
-	}
-   }
 
-   //   public void getBoxSize() {
-   //	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-   //	   @Override
-   //	   public void onSucceed(String result) {
-   //		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
-   //		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-   //		LogUtils.i(TAG, "result  " + result);
-   //		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
-   //		if (devices.size() > 1) {
-   //		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-   //		   tbaseDevicesBean.setDeviceName("全部开柜");
-   //		   devices.add(0, tbaseDevicesBean);
-   //		}
-   //		SPUtils.putString(getAppContext(),BOX_SIZE_DATE,mGson.toJson(devices));
-   //	   }
-   //
-   //	   @Override
-   //	   public void onError(String result) {
-   //
-   //	   }
-   //	});
-   //   }
+	   //初始状态只显示用户密码登录
+	   mLoginPass.setVisibility(View.GONE);
+	   mLoginFace.setVisibility(View.GONE);
+	   mLoginViewpager.setScanScroll(false);
+	   mLoginViewpager.setCurrentItem(1);
+   }
 
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
 

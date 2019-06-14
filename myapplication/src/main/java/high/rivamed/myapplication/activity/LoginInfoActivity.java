@@ -36,7 +36,6 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.FileEncoder;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
-import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -383,8 +382,9 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	@OnClick(R.id.top_icon)
 	void onFacePhoto() {
 		//绑定人脸照
-		RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
-			if (hasPermission) {
+		// TODO: 2019/6/14 检测权限申请
+//		RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
+//			if (hasPermission) {
 				int initStatus = FaceManager.getManager().getInitStatus();
 				if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
 					ToastUtils.showShort("人脸识别SDK还未激活，请先激活");
@@ -405,8 +405,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 					isTakeFacePhoto=true;
 					FaceManager.getManager().getFacePicture(LoginInfoActivity.this, SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID)+".jpg");
 				}
-			}
-		});
+//			}
+//		});
 	}
 
 	@Override

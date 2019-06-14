@@ -2,10 +2,7 @@ package high.rivamed.myapplication.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -13,13 +10,11 @@ import com.ruihua.face.recognition.FaceManager;
 import com.ruihua.face.recognition.callback.InitListener;
 import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.entity.User;
-import com.ruihua.face.recognition.ui.FaceGatewayActivity;
 import com.ruihua.face.recognition.ui.RgbVideoIdentityActivity;
+import com.ruihua.face.recognition.utils.PreferencesUtil;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.utils.FaceTask;
@@ -69,6 +64,8 @@ public class RegisteFaceFrag extends SimpleFragment {
         hasInit = FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED;
         fragmentBtnActive.setEnabled(!hasInit);
         fragmentBtnActive.setText(hasInit ? "已初始化人脸识别SDK" : "初始化人脸识别SDK");
+        //初始化sp工具类
+        PreferencesUtil.initPrefs(UIUtils.getContext());
         switchBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             //设置是否需要活体
             FaceManager.getManager().setNeedLive(isChecked);
@@ -87,30 +84,37 @@ public class RegisteFaceFrag extends SimpleFragment {
         if (UIUtils.isFastDoubleClick(R.id.fragment_btn_active)) {
             return;
         } else {
-            FaceManager.getManager().init(_mActivity, false, new InitListener() {
+            new Thread(new Runnable() {
                 @Override
-                public void initSuccess() {
-                    ToastUtils.showShortSafe("人脸识别SDK初始化成功");
-                    hasInit = true;
-                    fragmentBtnActive.setEnabled(false);
-                    fragmentBtnActive.setText("已初始化成功");
+                public void run() {
+                    FaceManager.getManager().init(_mActivity, false, new InitListener() {
+                        @Override
+                        public void initSuccess() {
+                            ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+                            fragmentBtnActive.post(() -> {
+                                hasInit = true;
+                                fragmentBtnActive.setEnabled(false);
+                                fragmentBtnActive.setText("已初始化成功");
+                            });
 
-                    //初始化分组
-                    boolean b = FaceManager.getManager().initGroup();
-                    if (!b) {
-                        ToastUtils.showShortSafe("创建人脸照分组失败");
-                        //初始化完成后跳转页面
-                    } else {
-                        //设置是否需要活体
-                        FaceManager.getManager().setNeedLive(switchBtn.isChecked());
-                    }
-                }
+                            //初始化分组
+                            boolean b = FaceManager.getManager().initGroup();
+                            if (!b) {
+                                ToastUtils.showShortSafe("创建人脸照分组失败");
+                                //初始化完成后跳转页面
+                            } else {
+                                //设置是否需要活体
+                                FaceManager.getManager().setNeedLive(switchBtn.isChecked());
+                            }
+                        }
 
-                @Override
-                public void initFail(int errorCode, String msg) {
-                    ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+                        @Override
+                        public void initFail(int errorCode, String msg) {
+                            ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+                        }
+                    });
                 }
-            });
+            }).start();
         }
     }
 

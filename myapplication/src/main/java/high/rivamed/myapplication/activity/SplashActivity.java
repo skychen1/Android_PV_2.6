@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,14 +20,13 @@ import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.FaceTask;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
-import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
@@ -107,8 +105,9 @@ public class SplashActivity extends FragmentActivity {
 	new Thread(() -> startService(new Intent(SplashActivity.this, ScanService.class))).start();
 
 		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
-	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-		   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
+//	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
+//		   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
+		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
 			   //检测设备是否激活授权码
 			   //启动页初始化人脸识别sdk
 			   new Thread(() -> FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
@@ -146,7 +145,7 @@ public class SplashActivity extends FragmentActivity {
 		   } else {
 			   new Handler().postDelayed(this::launchLogin, 2000);
 		   }
-	   });
+//	   });
    }
 
    private void launchLogin() {

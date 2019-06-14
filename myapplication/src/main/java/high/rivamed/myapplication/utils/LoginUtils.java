@@ -38,6 +38,7 @@ import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -69,69 +70,84 @@ public class LoginUtils {
      * 获取配置项
      */
     public static void getConfigDate(Activity mContext, LoginCallback callback) {
-        if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-            NetRequest.getInstance().findThingConfigDate(mContext, new BaseResult() {
-                @Override
-                public void onSucceed(String result) {
-                    SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
-                    ConfigBean configBean = new Gson().fromJson(result, ConfigBean.class);
-                    List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+        if (mTitleConn) {
+            if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+                NetRequest.getInstance().findThingConfigDate(mContext, new BaseResult() {
+                    @Override
+                    public void onSucceed(String result) {
+                        SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+                        ConfigBean configBean = new Gson().fromJson(result, ConfigBean.class);
+                        List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 //                    if (tCstConfigVos.size()!=0){
-                    getUpDateVer(mContext, tCstConfigVos, callback);
+                        getUpDateVer(mContext, tCstConfigVos, callback);
 //                    }else {
 //                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 //                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null && result.equals("-1")) {
-                        String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
-                        LogUtils.i("LoginA", "string   " + string);
-                        ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
-                        List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-                        callback.onLogin(true, getConfigTrue(tCstConfigVos), false);
-                    } else {
-                        callback.onLogin(false, false, false);
                     }
-                }
-            });
-        } else {
-            callback.onLogin(false, false, false);
-        }
 
+                    @Override
+                    public void onError(String result) {
+                        if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null && result.equals("-1")) {
+                            String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+                            LogUtils.i("LoginA", "string   " + string);
+                            ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
+                            List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                            callback.onLogin(true, getConfigTrue(tCstConfigVos), false);
+                        } else {
+                            callback.onLogin(false, false, false);
+                        }
+                    }
+                });
+            } else {
+                callback.onLogin(false, false, false);
+            }
+        }else {
+            if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null ) {
+                String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+                LogUtils.i("LoginA", "string   " + string);
+                ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
+                List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                callback.onLogin(true, getConfigTrue(tCstConfigVos), false);
+            } else {
+                callback.onLogin(false, false, false);
+            }
+        }
     }
 
     /**
      * 检测版本更新
      */
     public static void getUpDateVer(Activity mContext, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, LoginCallback callback) {
-        NetRequest.getInstance().checkVer(mContext, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                VersionBean versionBean = new Gson().fromJson(result, VersionBean.class);
-                if (versionBean.isOperateSuccess()) {
-                    // 本地版本号
-                    String localVersion = PackageUtils.getVersionName(UIUtils.getContext());
-                    // 网络版本
-                    String netVersion = versionBean.getSystemVersion().getVersion();
-                    if (netVersion != null && 1 == StringUtils.compareVersion(netVersion, localVersion)) {
-                        String mDesc = versionBean.getSystemVersion().getDescription();
-                        showUpdateDialog(mContext, tCstConfigVos, mDesc, callback);
+        if (mTitleConn) {
+            NetRequest.getInstance().checkVer(mContext, new BaseResult() {
+                @Override
+                public void onSucceed(String result) {
+                    VersionBean versionBean = new Gson().fromJson(result, VersionBean.class);
+                    if (versionBean.isOperateSuccess()) {
+                        // 本地版本号
+                        String localVersion = PackageUtils.getVersionName(UIUtils.getContext());
+                        // 网络版本
+                        String netVersion = versionBean.getSystemVersion().getVersion();
+                        if (netVersion != null && 1 == StringUtils.compareVersion(netVersion, localVersion)) {
+                            String mDesc = versionBean.getSystemVersion().getDescription();
+                            showUpdateDialog(mContext, tCstConfigVos, mDesc, callback);
+                        } else {
+                            // 不需要更新
+                            loginEnjoin(tCstConfigVos, true, callback);
+                        }
                     } else {
-                        // 不需要更新
                         loginEnjoin(tCstConfigVos, true, callback);
                     }
-                } else {
+                }
+
+                @Override
+                public void onError(String result) {
                     loginEnjoin(tCstConfigVos, true, callback);
                 }
-            }
-
-            @Override
-            public void onError(String result) {
-                loginEnjoin(tCstConfigVos, true, callback);
-            }
-        });
+            });
+        }else {
+            loginEnjoin(tCstConfigVos, false, callback);
+        }
     }
 
 
@@ -279,7 +295,7 @@ public class LoginUtils {
     /**
      * 检测设备是否禁用
      */
-    private static boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
+    public static boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         if (tCstConfigVos.size() == 0)
             return false;
         for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
