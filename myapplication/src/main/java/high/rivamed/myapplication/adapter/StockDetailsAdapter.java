@@ -51,6 +51,10 @@ public class StockDetailsAdapter extends
 	mSeven_four.setText(item.getExpiryDate());
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), four, mSeven_four);
+	}if (item.getExpireStatus()==0){
+	   mSeven_four.setText("已过期");
+	   mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
+	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.bg_f));
 	}
 	if (item.getExpireStatus()==0){
 	   mSeven_four.setText("已过期");

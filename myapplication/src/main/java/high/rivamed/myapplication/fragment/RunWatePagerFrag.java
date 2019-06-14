@@ -169,7 +169,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 	mSearchTypeDb.setVisibility(View.GONE);
 	initDate();
-	initlistener();
+
    }
 
    private void initDate() {
@@ -442,4 +442,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 //	mRefreshLayout.setNoMoreData(true);
    }
 
+   @Override
+   public void onResume() {
+	super.onResume();
+	initlistener();
+   }
 }

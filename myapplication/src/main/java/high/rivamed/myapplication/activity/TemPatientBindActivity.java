@@ -61,23 +61,30 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
+import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
+import static high.rivamed.myapplication.utils.UIUtils.getVosType;
 
 /*
  * 患者列表页面,可以创建临时患者
+ * TODO: 该界面代码后续优化
  * */
 public class TemPatientBindActivity extends BaseSimpleActivity {
 
    private static final String TAG    = "TemPatientBindActivity";
-   private              int    mRbKey = 3;
+   private              int    mRbKey;
 
    @BindView(R.id.dialog_right)
    TextView           mDialogRight;
@@ -162,6 +169,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	AllDeviceCallBack.getInstance().initCallBack();
 	mTemPTbaseDevices = (List<BoxSizeBean.DevicesBean>) getIntent().getSerializableExtra("mTemPTbaseDevices");
 	mPosition = getIntent().getIntExtra("position", -1);
+	mRbKey = getIntent().getIntExtra("mRbKey", -2);
 	mType = getIntent().getStringExtra("type");
 	mGoneType = getIntent().getStringExtra("GoneType");
 	if (null != mType && mType.equals("afterBindTemp")){
@@ -191,8 +199,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mStockSearch.setVisibility(View.VISIBLE);
 	mStockSearchRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
+	if (mTitleConn){
+	   loadBingDate("","");
+	}else {
+	   setTemporaryBing(null);
+	}
 
-	loadBingDate("","");
 
 
    }
@@ -297,45 +309,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 	   }
 	});
-	mSearchEt.addTextChangedListener(new TextWatcher() {
-	   @Override
-	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-	   }
-
-	   @Override
-	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-		mTrim = charSequence.toString().trim();
-		mAllPage = 1;
-		patientInfos.clear();
-		loadBingDate(mTrim,mTrims);
-	   }
-
-	   @Override
-	   public void afterTextChanged(Editable editable) {
-
-	   }
-	});
-
-	mSearchRight.addTextChangedListener(new TextWatcher() {
-	   @Override
-	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-	   }
-
-	   @Override
-	   public void onTextChanged(CharSequence s, int start, int before, int count) {
-		mTrims = s.toString().trim();
-		mAllPage = 1;
-		patientInfos.clear();
-		loadBingDate(mTrim,mTrims);
-	   }
-
-	   @Override
-	   public void afterTextChanged(Editable s) {
-
-	   }
-	});
 	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
@@ -360,6 +334,47 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    protected void onResume() {
 	mPause = false;
 	super.onResume();
+	mSearchEt.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+		Log.i("FFASD","XXAFAFAFA");
+		mTrim = charSequence.toString().trim();
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim,mTrims);
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable editable) {
+
+	   }
+	});
+
+	mSearchRight.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		Log.i("FFASD","onTextChanged");
+		mTrims = s.toString().trim();
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim,mTrims);
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
+
+	   }
+	});
    }
 
    @Override
@@ -371,13 +386,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
    /**
     * 扫描后EPC准备传值
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 	LogUtils.i(TAG, "TAG   " + mEthDeviceIdBack.size());
-	AllDeviceCallBack.getInstance().initCallBack();
+//	AllDeviceCallBack.getInstance().initCallBack();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -448,13 +462,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	inventoryDto.setThingId(SPUtils.getString(mContext, THING_CODE));
 	inventoryDto.setDeviceInventoryVos(deviceList);
 	inventoryDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-	if (mRbKey == 3 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
-	    mRbKey == 7 || mRbKey == 8) {
-	   inventoryDto.setOperation(mRbKey);
-	} else {
-	   inventoryDto.setOperation(mRbKey);
-	}
-	if (mRbKey == 3) {
+	inventoryDto.setOperation(mRbKey);
+	if (mRbKey == 3||mRbKey == 4) {
 	   if (patientInfos != null) {
 		mPause = false;
 		mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientName();
@@ -480,111 +489,225 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	String toJson = mGson.toJson(inventoryDto);
 	LogUtils.i(TAG, "toJson    " + toJson);
 	mEPCDate.clear();
+	if (mRbKey == 4){
+	   if (mTitleConn) {
+		queryEpcLyThDate(toJson);
+	   }else {
+		queryErrorEpcLyTh("-1", toJson,4);
+	   }
+	}else {
+	   if (mTitleConn) {
+		queryEpcLyDate(toJson);
+	   }else {
+		queryErrorEpc("-1", toJson,3);
+	   }
+	}
+
+   }
+
+   /**
+    * 查询EPC信息领用
+    * @param toJson
+    */
+   private void queryEpcLyDate(String toJson) {
 	NetRequest.getInstance().putEPCDate(toJson, this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
-		String string = null;
-//		if (cstInventoryDto.getErrorEpcs() != null &&
-//		    cstInventoryDto.getErrorEpcs().size() > 0) {
-//		   string = StringUtils.listToString(cstInventoryDto.getErrorEpcs());
-//		   ToastUtils.showLong(string);
-//		   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-//		   return;
-//		}
 		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.getInventoryVos() == null));
-		//先绑定患者
-		if (mRbKey == 3) {
-		   String patientName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getPatientName();
-		   boolean create = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .isCreate();
-		   String patientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getPatientId();
-		   String tempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getTempPatientId();
-		   String idNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo();
-		   String operationScheduleId = patientInfos.get(
-			   mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
-		   String scheduleDateTime = patientInfos.get(
-			   mTypeView.mTempPatientAdapter.mSelectedPos).getSurgeryTime();
-		   String operatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getOperatingRoomNo();
-		   String operatingRoomNoName = patientInfos.get(
-			   mTypeView.mTempPatientAdapter.mSelectedPos).getRoomName();
-		   String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
-		   String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getDeptId();
-		   String medicalId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getMedicalId();
-		   String surgeryId=null;
-		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-			   .getSurgeryId()!=null){
-			 surgeryId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-				.getSurgeryId();
-		   }
-		   String hisPatientId=null;
-		   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-				 .getHisPatientId()!=null){
-			hisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-				.getHisPatientId();
-		   }
-		   for (InventoryVo inventoryVo : cstInventoryDto.getInventoryVos()) {
-
-			inventoryVo.setPatientName(patientName);
-			inventoryVo.setCreate(create);
-			inventoryVo.setPatientId(patientId);
-			inventoryVo.setTempPatientId(tempPatientId);
-			inventoryVo.setIdNo(idNo);
-			inventoryVo.setOperationScheduleId(operationScheduleId);
-			inventoryVo.setSurgeryTime(scheduleDateTime);
-			inventoryVo.setOperatingRoomNo(operatingRoomNo);
-			inventoryVo.setOperatingRoomName(operatingRoomNoName);
-			inventoryVo.setSex(sex);
-			inventoryVo.setDeptId(deptId);
-			inventoryVo.setMedicalId(medicalId);
-			inventoryVo.setSurgeryId(surgeryId);
-			inventoryVo.setHisPatientId(hisPatientId);
-		   }
-		   InventoryDto dto = new InventoryDto();
-		   dto.setPatientName(patientName);
-		   dto.setCreate(create);
-		   dto.setPatientId(patientId);
-		   dto.setTempPatientId(tempPatientId);
-		   dto.setIdNo(idNo);
-		   dto.setOperationScheduleId(operationScheduleId);
-		   dto.setSurgeryTime(scheduleDateTime);
-		   dto.setOperatingRoomNo(operatingRoomNo);
-		   dto.setOperatingRoomNoName(operatingRoomNoName);
-		   dto.setSex(sex);
-		   dto.setDeptId(deptId);
-		   dto.setBindType("firstBind");
-		   dto.setOperation(mRbKey);
-		   dto.setMedicalId(medicalId);
-		   dto.setSurgeryId(surgeryId);
-		   dto.setHisPatientId(hisPatientId);
-		   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto,dto));
-		   if (cstInventoryDto.getInventoryVos() != null &&
-			 cstInventoryDto.getInventoryVos().size() != 0) {
-			EventBusUtils.post(new Event.EventButton(true, true));
-			EventBusUtils.postSticky(new Event.EventLoading(false));
-
-			mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
-			finish();
-		   } else {
-			EventBusUtils.postSticky(new Event.EventLoading(false));
-
-			Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
-		   }
-		}
-
+		//绑定患者
+		   setTempPatientDate(cstInventoryDto);
 	   }
 	   @Override
 	   public void onError(String result) {
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+		queryErrorEpc(result, toJson,3);
 	   }
 	});
+   }
+
+   /**
+    * 断网查询EPC
+    * @param result
+    * @param toJson
+    * @param type
+    */
+   private void queryErrorEpc(String result, String toJson,int type) {
+	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
+	    mRbKey == type) {
+	   queryErrorEpcDate(toJson);
+	}
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+   }
+
+   /**
+    * 查询EPC信息（领用退回）
+    * @param toJson
+    */
+   private void queryEpcLyThDate(String toJson) {
+	NetRequest.getInstance().putEPCLyThDate(toJson, this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		Log.i(TAG, "result    " + result);
+		InventoryDto cstInventoryDto = mGson.fromJson(result, InventoryDto.class);
+		LogUtils.i(TAG, "我跳转    " + (cstInventoryDto.getInventoryVos() == null));
+		//绑定患者
+		setTempPatientDate(cstInventoryDto);
+	   }
+	   @Override
+	   public void onError(String result) {
+		queryErrorEpcLyTh(result, toJson,4);
+	   }
+	});
+   }
+
+   /**
+    * 断网查询领用退回
+    * @param result
+    * @param toJson
+    * @param type
+    */
+   private void queryErrorEpcLyTh(String result, String toJson,int type) {
+	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
+	    mRbKey == type) {
+	   queryErrorEpcDate(toJson);
+	}
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+   }
+
+   /**
+    * 断网查询后的数据
+    * @param toJson
+    */
+   private void queryErrorEpcDate(String toJson) {
+	List<InventoryVo> mInVo = new ArrayList<>();
+	InventoryDto cc = LitePal.findFirst(InventoryDto.class);
+	InventoryDto inventoryDto = new InventoryDto();
+	inventoryDto.setThingId(cc.getThingId());
+	inventoryDto.setOperation(mRbKey);
+	LogUtils.i(TAG, "FDFDF0   " + mGson.toJson(inventoryDto));
+	InventoryDto dto = mGson.fromJson(toJson, InventoryDto.class);
+	if (dto.getDeviceInventoryVos().size() > 0) {
+	   List<Inventory> list = dto.getDeviceInventoryVos().get(0).getInventories();
+	   String deviceId = dto.getDeviceInventoryVos().get(0).getDeviceId();
+
+	   List<InventoryVo> vos = LitePal.where("deviceid = ? and status = ?", deviceId,
+							     "2").find(InventoryVo.class);
+	   BoxIdBean boxIdBean = LitePal.where("device_id = ? ", deviceId)
+		   .findFirst(BoxIdBean.class);
+	   mInVo.addAll(vos);
+	   if (list.size() != 0) {
+		for (Inventory s : list) {
+		   InventoryVo first = LitePal.where("epc = ? and deviceid = ?", s.getEpc(),
+								 deviceId).findFirst(InventoryVo.class);
+		   if (!getVosType(vos, s.getEpc())) {//无网放入
+			InventoryVo inventoryVo = new InventoryVo();
+			inventoryVo.setEpc(s.getEpc());
+			inventoryVo.setDeviceId(deviceId);
+			inventoryVo.setDeviceName(boxIdBean.getName());
+			inventoryVo.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
+			inventoryVo.setUserName(SPUtils.getString(mContext, KEY_USER_NAME));
+			inventoryVo.setIsErrorOperation(0);
+			inventoryVo.setOperationStatus(99);
+			inventoryVo.setStatus("2");
+			inventoryVo.setRenewTime(getDates());
+			mInVo.add(inventoryVo);
+		   } else {
+			if (first != null) {
+			   mInVo.remove(first);
+			}
+		   }
+		}
+	   }
+	}
+	inventoryDto.setInventoryVos(mInVo);
+	setTempPatientDate(inventoryDto);
+   }
+
+   /**
+    * 查询EPC信息后设置date
+    * @param cstInventoryDto
+    */
+   private void setTempPatientDate(InventoryDto cstInventoryDto) {
+	String patientName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getPatientName();
+	boolean create = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.isCreate();
+	String patientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getPatientId();
+	String tempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getTempPatientId();
+	String idNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo();
+	String operationScheduleId = patientInfos.get(
+		mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
+	String scheduleDateTime = patientInfos.get(
+		mTypeView.mTempPatientAdapter.mSelectedPos).getSurgeryTime();
+	String operatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getOperatingRoomNo();
+	String operatingRoomNoName = patientInfos.get(
+		mTypeView.mTempPatientAdapter.mSelectedPos).getRoomName();
+	String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
+	String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getDeptId();
+	String medicalId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getMedicalId();
+	String surgeryId=null;
+	if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		.getSurgeryId()!=null){
+	    surgeryId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		   .getSurgeryId();
+	}
+	String hisPatientId=null;
+	if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		    .getHisPatientId()!=null){
+	   hisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
+		   .getHisPatientId();
+	}
+	for (InventoryVo inventoryVo : cstInventoryDto.getInventoryVos()) {
+
+	   inventoryVo.setPatientName(patientName);
+	   inventoryVo.setCreate(create);
+	   inventoryVo.setPatientId(patientId);
+	   inventoryVo.setTempPatientId(tempPatientId);
+	   inventoryVo.setIdNo(idNo);
+	   inventoryVo.setOperationScheduleId(operationScheduleId);
+	   inventoryVo.setSurgeryTime(scheduleDateTime);
+	   inventoryVo.setOperatingRoomNo(operatingRoomNo);
+	   inventoryVo.setOperatingRoomName(operatingRoomNoName);
+	   inventoryVo.setSex(sex);
+	   inventoryVo.setDeptId(deptId);
+	   inventoryVo.setMedicalId(medicalId);
+	   inventoryVo.setSurgeryId(surgeryId);
+	   inventoryVo.setHisPatientId(hisPatientId);
+	}
+	InventoryDto dto = new InventoryDto();
+	dto.setPatientName(patientName);
+	dto.setCreate(create);
+	dto.setPatientId(patientId);
+	dto.setTempPatientId(tempPatientId);
+	dto.setIdNo(idNo);
+	dto.setOperationScheduleId(operationScheduleId);
+	dto.setSurgeryTime(scheduleDateTime);
+	dto.setOperatingRoomNo(operatingRoomNo);
+	dto.setOperatingRoomNoName(operatingRoomNoName);
+	dto.setSex(sex);
+	dto.setDeptId(deptId);
+	dto.setBindType("firstBind");
+	dto.setOperation(mRbKey);
+	dto.setMedicalId(medicalId);
+	dto.setSurgeryId(surgeryId);
+	dto.setHisPatientId(hisPatientId);
+	EventBusUtils.postSticky(new Event.EventOutBoxBingDto(cstInventoryDto, dto));
+	if (cstInventoryDto.getInventoryVos() != null &&
+	    cstInventoryDto.getInventoryVos().size() != 0) {
+	   EventBusUtils.post(new Event.EventButton(true, true));
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	   mContext.startActivity(new Intent(mContext, OutBoxBingActivity.class));
+	   finish();
+	} else {
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	   Toast.makeText(mContext, "未扫描到操作耗材,请重新操作", Toast.LENGTH_SHORT).show();
+	}
    }
 
    @OnClick({ R.id.dialog_left, R.id.base_tab_tv_name,
@@ -777,6 +900,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				data.setOperatingRoomNo(bean.getRows().get(i).getOperatingRoomNo());
+				data.setDeptType(bean.getRows().get(i).getDeptType());
 				if (bean.getRows().get(i).getSurgeryId()!=null){
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				}

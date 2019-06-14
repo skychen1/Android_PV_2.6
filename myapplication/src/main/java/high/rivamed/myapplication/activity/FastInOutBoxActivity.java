@@ -97,6 +97,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventOpenDoor(Event.EventFastOpenDoor event) {
+	EventBusUtils.post(new Event.EventFastTimeStart(false));
 	if (event.b) {
 	   if (!mIsClick) {
 		mInOutDto=null;

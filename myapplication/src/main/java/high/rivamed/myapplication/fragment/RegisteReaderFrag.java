@@ -137,7 +137,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 			     .equals(READER_NAME_COLU)) {
 	   mRadioGroup.check(R.id.reader_left);
 	}
-	initReader();
+//	initReader();
 	mGoneLl.setVisibility(View.GONE);
 	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override

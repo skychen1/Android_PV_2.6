@@ -65,6 +65,7 @@ public class TimelyAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(UIUtils.getContext(), item.getIsErrorOperation(), item.getExpireStatus(), mSeven_three);
 	}
+
    }
 
    private void findId(BaseViewHolder helper) {

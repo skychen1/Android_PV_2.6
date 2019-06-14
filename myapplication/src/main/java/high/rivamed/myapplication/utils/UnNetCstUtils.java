@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.utils;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.litepal.LitePal;
@@ -14,6 +16,8 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
+import static high.rivamed.myapplication.utils.UIUtils.getVosType;
 
 /**
  * 项目名称:    Android_PV_2.6.5New
@@ -39,19 +43,37 @@ public class UnNetCstUtils {
 	NetRequest.getInstance().getUnEntCstDate(activity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		LitePal.deleteAll(InventoryDto.class);
-		LitePal.deleteAll(InventoryVo.class);
 		type=0;
 		InventoryDto dto = mGson.fromJson(result, InventoryDto.class);
+		List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
 		InventoryDto localDto = new InventoryDto();
+		List<InventoryVo> vos = dto.getInventoryVos();
 		List<InventoryVo> tVos = new ArrayList<>();
 		localDto.setThingId(dto.getThingId());
 		localDto.setAccount(dto.getAccount());
 		localDto.setTotalCount(dto.getTotalCount());
-		localDto.setInventoryVos(dto.getInventoryVos());
-		localDto.save();
-		tVos.addAll(dto.getInventoryVos());
-		LitePal.saveAll(tVos);
+		if (voList.size()==0){
+		   localDto.setInventoryVos(vos);
+		   localDto.save();
+		   tVos.addAll(vos);
+		   for (InventoryVo tVo : tVos) {
+		      tVo.setDateNetType(true);
+		   }
+		   LitePal.saveAll(tVos);
+		}else {
+		   List<InventoryVo> list = LitePal.where("operationstatus > ? ", "0")
+			   .find(InventoryVo.class);
+		   if (list.size()> 0){
+			LitePal.deleteAll(InventoryVo.class,"operationstatus > ? ", "0");
+		   }
+		   for (int i = 0; i < vos.size(); i++) {
+			vos.get(i).setDateNetType(true);
+			if (!getVosType(voList,vos.get(i).getEpc())){
+			   vos.get(i).save();
+			}
+		   }
+		}
+		Log.i("UnNetc","结束 "+getDates());
 	   }
 	});
    }

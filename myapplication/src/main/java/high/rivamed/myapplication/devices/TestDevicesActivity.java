@@ -102,10 +102,10 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnFingerRegisterNew = findViewById(R.id.bt_fingerregister);
         mBtnFace = findViewById(R.id.btn_face);
         initListener();
-        initReader();
+//        initReader();
 //        initIdCard();
 //        initFinger();
-        initEth002();
+//        initEth002();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         if (wm != null) {
             DisplayMetrics dm = new DisplayMetrics();
@@ -653,9 +653,9 @@ public class TestDevicesActivity extends SimpleActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ReaderManager.getManager().unRegisterCallback();
-        ReaderManager.getManager().disConnectReader(readerId);
-        Eth002Manager.getEth002Manager().unRegisterCallBack();
+//        ReaderManager.getManager().unRegisterCallback();
+//        ReaderManager.getManager().disConnectReader(readerId);
+//        Eth002Manager.getEth002Manager().unRegisterCallBack();
 //        RtspManager.getManager().stopEncode("rtsp://192.168.11.96:8554/live");
 //        RtspManager.getManager().stopRtsp("rtsp://192.168.11.96:8554/live");
 

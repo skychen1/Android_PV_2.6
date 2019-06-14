@@ -39,7 +39,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.Coder;
 import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.PackageUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
@@ -48,6 +47,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -96,6 +96,28 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     }
 
+   @OnClick(R.id.login_button)
+   public void onViewClicked() {
+	if (UIUtils.isFastDoubleClick(R.id.login_button)) {
+	   return;
+	} else {
+	   if (isvalidate()) {
+		if (mTitleConn) {
+		   getConfigDate();
+		} else {
+		   if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null) {
+			String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
+			ConfigBean configBean = mGson.fromJson(string, ConfigBean.class);
+			List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+			loginEnjoin(tCstConfigVos, false);
+		   }
+		}
+
+	   } else {
+		Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+	   }
+	}
+   }
     @OnClick(R.id.login_button)
     public void onViewClicked() {
         if (UIUtils.isFastDoubleClick(R.id.login_button)) {

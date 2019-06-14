@@ -53,11 +53,13 @@ android {
     allprojects {
         repositories {
             jcenter()
+            google()
             maven { url "https://jitpack.io" }
             maven {
                 url 'http://dl.bintray.com/dev-fingerlinks/maven'
             }
             mavenCentral()
+
         }
     }
     compileOptions {
@@ -114,9 +116,10 @@ dependencies {
     //视频录制
     implementation project(':libvideorecord')
     //6.0动态权限申请
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-    api 'io.reactivex.rxjava2:rxjava:2.1.5'
-    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
+//    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

@@ -29,6 +29,7 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -166,34 +167,21 @@ public class UIUtils {
    public static void initTermOfValidity(
 	   Context mContext, int IsErrorOperation, int type, TextView textview) {
 	if (type == 0) {
-	   //	   textview.setBackgroundResource(R.drawable.bg_text_red);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_overdue_prompt));
 	} else if (type == 3) {
-	   //	   textview.setBackgroundResource(R.drawable.bg_text_yellow1);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_100_prompt));
 	} else if (type == 2) {
-	   //	   textview.setBackgroundResource(R.drawable.bg_text_yellow2);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_70_prompt));
 	} else if (type == 1) {
-	   //	   textview.setBackgroundResource(R.drawable.bg_text_orange);
 	   textview.setTextColor(mContext.getResources().getColor(R.color.color_28_prompt));
 	} else if (type == 4) {
-	   //	   if (helper.getAdapterPosition() % 2 == 0) {
-	   //		textview.setBackgroundResource(R.color.bg_color);
-	   //	   } else {
-	   //		textview.setBackgroundResource(R.color.bg_f);
-	   //	   }
+
 	   if (IsErrorOperation == 1) {
 		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   } else {
 		textview.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   }
-
-	} else {
-	   LogUtils.i("SSS", "type   " + type);
-	   textview.setVisibility(View.GONE);
 	}
-
    }
 
    /**
@@ -290,7 +278,6 @@ public class UIUtils {
 
    /**
     * 获取权限配置主按钮
-    *
     * @param context
     * @param title
     * @return
@@ -313,7 +300,6 @@ public class UIUtils {
 
    /**
     * 获取权限配置主按钮
-    *
     * @param context
     * @param title
     * @return
@@ -431,6 +417,20 @@ public class UIUtils {
 	if (vos != null) {
 	   for (int i = 0; i < vos.size(); i++) {
 		if (vos.get(i).getEpc().equals(epc)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
+   /**
+    * 是否包含柜号
+    * @return
+    */
+   public static boolean getVosBoxId(List<DeviceInventoryVo> vos, String box_id) {
+	if (vos != null) {
+	   for (int i = 0; i < vos.size(); i++) {
+		if (vos.get(i).getDeviceId().equals(box_id)) {
 		   return true;
 		}
 	   }

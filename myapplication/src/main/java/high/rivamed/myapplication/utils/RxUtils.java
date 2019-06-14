@@ -16,6 +16,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
+import static high.rivamed.myapplication.utils.UIUtils.getVosBoxId;
+
 /**
  * @ProjectName: InterOfficeBilling
  * @Package: com.rivamed.interofficebilling.utils
@@ -157,7 +159,7 @@ public class RxUtils {
 	private DeviceInventoryVo       inventoryVo  = new DeviceInventoryVo();//每个设备ID对应epc信息；
 	private List<Inventory>         epcList      = new ArrayList<>();//epc的list
 	private Inventory               inventory    = new Inventory();  //epc
-	private String                                     sBox_id;
+	private String                  sBox_id      = "";
 	private ObservableEmitter<List<DeviceInventoryVo>> observableEmitter;
 	private String mDev = null;
 
@@ -171,10 +173,12 @@ public class RxUtils {
 	   e.onNext(Vos);
 	}
 
-	public void removeVos(){
+	public void removeVos() {
 	   inventoryVos.clear();
 	   mDev = null;
+	   sBox_id = "";
 	}
+
 	/**
 	 * 扫描的EPC
 	 *
@@ -188,15 +192,11 @@ public class RxUtils {
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		sBox_id = boxIdBean.getBox_id();
 	   }
-	   if (mDev == null) {
-		mDev = sBox_id;
-	   }
 	   inventory.setEpc(epc);
 	   epcList.add(inventory);
-
 	   if (inventoryVos.size() > 0) {
-		if (mDev.equals(sBox_id)) {
-		   for (int i = 0; i < inventoryVos.size(); i++) {
+		if (getVosBoxId(inventoryVos, sBox_id)) {
+		   for (int i = inventoryVos.size() - 1; i >= 0; i--) {
 			if (inventoryVos.get(i).getDeviceId().equals(sBox_id)) {
 			   inventoryVos.get(i).getInventories().addAll(epcList);
 			}
@@ -211,7 +211,6 @@ public class RxUtils {
 		inventoryVo.setInventories(epcList);
 		inventoryVos.add(inventoryVo);
 	   }
-	   mDev = sBox_id;
 	   addEpc(inventoryVos, observableEmitter);
 	}
 

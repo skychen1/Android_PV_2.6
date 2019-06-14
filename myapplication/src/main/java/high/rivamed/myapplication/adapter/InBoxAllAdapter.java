@@ -58,11 +58,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   BaseViewHolder helper, InventoryVo item) {
 
 	 mLl=((LinearLayout) helper.getView(R.id.seven_ll));
-//	if (helper.getAdapterPosition() % 2 == 0) {
-//	   mLl.setBackgroundResource(R.color.bg_color);
-//	} else {
 	   mLl.setBackgroundResource(R.color.bg_f);
-//	}
 	 mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	 mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	 mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -92,13 +88,22 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	mSeven_three.setText(item.getCstSpec());
 	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
-	if (status!=null&&status.equals("2")){
-	   mSeven_six.setText("领用");
+	if (status!=null&&((status.equals("3")&&item.getOperationStatus()!=98)||status.equals("4"))){
+	   if (item.getExpireStatus()==0){
+		mSeven_six.setText("已过期");
+	   }else {
+		mSeven_six.setText("领用");
+	   }
 	}else if (null==status){
 	   mSeven_six.setText("异常耗材");
+	}else if (status!=null&&status.equals("2")){
+	   mSeven_six.setText("已入库");
+	}else if (status!=null&&status.equals("9")){
+	   mSeven_six.setText("移出");
+	}else if (status!=null&&status.equals("8")){
+	   mSeven_six.setText("退货");
 	}else {
 	   mSeven_six.setText(status);
-
 	}
 	delete.setOnClickListener(new View.OnClickListener() {
 	   @Override
@@ -141,9 +146,6 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
-
-
-
 	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
 	if (item.getDeleteCount()>0){
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -164,16 +166,12 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	if (item.getExpireStatus()!=null){
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_four);
 	}
-
-//	else if (item.getExpireStatus() == 0 && mOperation == 8){
-//	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-//	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-//	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-//	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-//	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
-//	}
-
-
+	if (item.getOperationStatus()==99){
+	   mSeven_one.setText("/");
+	   mSeven_three.setText("/");
+	   mSeven_four.setText("/");
+	   mSeven_six.setText("断网放入");
+	}
    }
 
    public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {

@@ -1,8 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -26,7 +23,6 @@ import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 import high.rivamed.myapplication.fragment.ContentTakeNotesFrag;
 import high.rivamed.myapplication.fragment.ContentTimelyCheckFrag;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.NotificationsUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -38,8 +34,8 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_YCCL;
+import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -62,8 +58,8 @@ public class HomeActivity extends SimpleActivity {
 
    @BindView(R.id.content_syjl)
    RadioButton mContentSyjl;
-   public static RadioGroup  mHomeRg;
-  public static View        mHomeRgGone;
+   public static RadioGroup mHomeRg;
+   public static View       mHomeRgGone;
    @BindView(R.id.content_consume_operate)
    RadioButton mContentConsumeOperate;
    @BindView(R.id.content_running_wate)
@@ -82,7 +78,7 @@ public class HomeActivity extends SimpleActivity {
    public static final int CHECK   = 3;
    public static final int SYJL    = 4;
    public static final int YCCL    = 5;
-   private int     LastId;
+   private int LastId;
    private boolean           mDoorStatus     = true;
    private ArrayList<String> mEthDevices     = new ArrayList<>();
    private List<String>      mDeviceSizeList = new ArrayList<>();
@@ -114,51 +110,52 @@ public class HomeActivity extends SimpleActivity {
 	setMenu();
 	initData();
 	initListener();
-//	initPushService();
-//	initMessageIcon();
+	//	initPushService();
+	//	initMessageIcon();
    }
 
    /**
     * 设置左侧按钮
     */
    private void setMenu() {
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_HCCZ)){//耗材操作
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_HCCZ)) {//耗材操作
 	   mContentConsumeOperate.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mContentConsumeOperate.setVisibility(View.GONE);
 	}
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_HCLS)){//耗材流水
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_HCLS)) {//耗材流水
 	   mContentRunningWate.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mContentRunningWate.setVisibility(View.GONE);
 	}
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_KCZT)){//库存状态
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_KCZT)) {//库存状态
 	   mContentStockStatus.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mContentStockStatus.setVisibility(View.GONE);
 	}
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SSPD)){//实时盘点
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_SSPD)) {//实时盘点
 	   mContentTimelyCheck.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mContentTimelyCheck.setVisibility(View.GONE);
 	}
-	if (UIUtils.getMenuLeftType(this,LEFT_MENU_SYJL)&&(UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))){//使用记录
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_SYJL) &&
+	    (UIUtils.getConfigType(mContext, CONFIG_007) ||
+	     UIUtils.getConfigType(mContext, CONFIG_019))) {//使用记录
 	   mContentSyjl.setVisibility(View.VISIBLE);
-	}else {
+	} else {
 	   mContentSyjl.setVisibility(View.GONE);
 	}
-//	if (UIUtils.getMenuLeftType(this, LEFT_MENU_YCCL)) {//异常处理
-//		mContentExceptionDeal.setVisibility(View.VISIBLE);
-//	} else {
-//		mContentExceptionDeal.setVisibility(View.GONE);
-//	}
+	if (UIUtils.getMenuLeftType(this, LEFT_MENU_YCCL)) {//异常处理
+	   mContentExceptionDeal.setVisibility(View.VISIBLE);
+	} else {
+	   mContentExceptionDeal.setVisibility(View.GONE);
+	}
    }
-
 
    @Override
    public void onBindViewBefore() {
-	mHomeRgGone =findViewById(R.id.rg_gone);
-	mHomeRg =findViewById(R.id.home_rg);
+	mHomeRgGone = findViewById(R.id.rg_gone);
+	mHomeRg = findViewById(R.id.home_rg);
 
    }
 
@@ -259,7 +256,5 @@ public class HomeActivity extends SimpleActivity {
    public Object newP() {
 	return null;
    }
-
-
 
 }

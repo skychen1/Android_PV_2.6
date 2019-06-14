@@ -289,6 +289,10 @@
 						android:textColor="@color/selector_login_tab_text"
 						android:textSize="@dimen/x30"
 						/>
+					<View
+						android:layout_width="@dimen/x2"
+						android:layout_height="@dimen/y75"
+						android:background="@color/bg_e"/>
 				</RadioGroup>
 
 				<high.rivamed.myapplication.views.CustomViewPager

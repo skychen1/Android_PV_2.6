@@ -33,7 +33,7 @@ public class Inventory implements Serializable {
 	private String cstId;
 
 	//耗材所在设备部件编码
-	private String deviceCode;
+	private String deviceId;
 
 	private String epc;
 
@@ -97,12 +97,12 @@ public class Inventory implements Serializable {
 	this.cstId = cstId;
    }
 
-   public String getDeviceCode() {
-	return deviceCode;
+   public String getDeviceId() {
+	return deviceId;
    }
 
-   public void setDeviceCode(String deviceCode) {
-	this.deviceCode = deviceCode;
+   public void setDeviceId(String deviceId) {
+	this.deviceId = deviceId;
    }
 
    public String getEpc() {

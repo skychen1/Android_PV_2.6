@@ -75,7 +75,6 @@ public class StockLeftListenerFrag extends SimpleFragment {
 
    /**
     * 重新加载数据
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

@@ -32,8 +32,10 @@
     <string name="fast_out_error_string">注意：异常耗材禁止领用和移出！</string>
     <string name="epc_error_string">注意：请开柜取出异常耗材再进行操作！</string>
     <string name="bind_error_string">注意：请先绑定患者再进行操作！</string>
+    <string name="open_error_string">注意：请先关闭柜门再进行操作！</string>
     <string name="outform_error_string">注意：非请领单耗材禁止领用！</string>
 
+    <string name="op_error_lyth">注意：异常耗材禁止领用/退回，请开柜重新操作！</string>
     <string name="op_error_ly">注意：异常耗材禁止领用，请开柜重新操作！</string>
     <string name="op_error_rk">注意：异常耗材禁止入库，请开柜重新操作！</string>
     <string name="op_error_yc">注意：异常耗材禁止移出，请开柜重新操作！</string>

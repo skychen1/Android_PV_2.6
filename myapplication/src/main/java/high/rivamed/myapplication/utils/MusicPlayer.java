@@ -74,14 +74,19 @@ public class MusicPlayer {
             case 2://入库
                 MusicPlayer.getInstance().play(MusicPlayer.Type.IN_BOX_SUC);
                 break;
+            case 4://领用退回
+                MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+                break;
             case 10://移入
                 MusicPlayer.getInstance().play(MusicPlayer.Type.MOVE_IN_SUC);
                 break;
             case 7://退回
+//                MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
                 MusicPlayer.getInstance().play(MusicPlayer.Type.RETURN_SUC);
                 break;
             case 3://领用
                 MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
+//                MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
                 break;
             case 9://移出
                 MusicPlayer.getInstance().play(MusicPlayer.Type.MOVE_OUT_SUC);

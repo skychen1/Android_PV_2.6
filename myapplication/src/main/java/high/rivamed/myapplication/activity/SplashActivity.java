@@ -56,11 +56,13 @@ public class SplashActivity extends FragmentActivity {
 	Log.e("版本号：", UIUtils.getVersionName(this));
 	initData();
    }
+
    @Override
    public void onWindowFocusChanged(boolean hasFocus) {
 	super.onWindowFocusChanged(hasFocus);
 	fullScreenImmersive(this.getWindow().getDecorView());
    }
+
    private void initData() {
 	Logger.addLogAdapter(new AndroidLogAdapter());
 	setDate();//设置默认值
@@ -69,15 +71,13 @@ public class SplashActivity extends FragmentActivity {
 	startAct();//页面跳转
    }
 
-
-
    private void setDate() {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
-//		   READER_TIME = 3000;
+		   //		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -104,12 +104,7 @@ public class SplashActivity extends FragmentActivity {
    }
 
    private void startAct() {
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		startService(new Intent(SplashActivity.this, ScanService.class));
-	   }
-	}).start();
+	new Thread(() -> startService(new Intent(SplashActivity.this, ScanService.class))).start();
 
 		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
 	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
@@ -154,8 +149,8 @@ public class SplashActivity extends FragmentActivity {
 	   });
    }
 
-    private void launchLogin() {
-        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-        finish();
-    }
+   private void launchLogin() {
+	startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+	finish();
+   }
 }

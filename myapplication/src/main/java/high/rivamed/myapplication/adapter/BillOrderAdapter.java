@@ -160,6 +160,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             if (item.getExpireStatus() != 0 ){
                 mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
                 mSeven_four.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
+                mSeven_four.setBackgroundResource(R.drawable.bg_text_red);
             }
         }else {
             mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_3));

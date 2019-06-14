@@ -178,61 +178,79 @@
 					android:textSize="@dimen/textsize_20"
 					android:textStyle="bold"/>
 
-				<RadioGroup
-					android:id="@+id/content_rg"
+				<HorizontalScrollView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:paddingTop="@dimen/y25"
-					android:orientation="horizontal">
+					android:fadingEdge="none"
+					android:overScrollMode="never"
+					android:scrollbars="none">
 
-					<RadioButton
-						android:id="@+id/content_rb_ly"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_ly_sel"
-						android:text="领用"/>
+					<RadioGroup
+						android:id="@+id/content_rg"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:paddingTop="@dimen/y25">
 
-					<RadioButton
-						android:id="@+id/content_rb_rk"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_rk_sel"
-						android:text="入库"/>
+						<RadioButton
+							android:id="@+id/content_rb_lyth"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_lyth_sel"
+							android:text="领用/退回"/>
 
-					<RadioButton
-						android:id="@+id/content_rb_yc"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_yc_sel"
-						android:text="移出"/>
-					<RadioButton
-						android:id="@+id/content_rb_tb"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_tb_sel"
-						android:text="调拨"/>
-					<RadioButton
-						android:id="@+id/content_rb_yr"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_yr_sel"
-						android:text="移入"/>
+						<RadioButton
+							android:id="@+id/content_rb_ly"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_ly_sel"
+							android:text="领用"/>
 
-					<RadioButton
-						android:id="@+id/content_rb_tuihui"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_tuihui_sel"
-						android:text="退回"/>
+						<RadioButton
+							android:id="@+id/content_rb_tuihui"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_tuihui_sel"
+							android:text="退回"/>
 
-					<RadioButton
-						android:id="@+id/content_rb_tuihuo"
-						style="@style/consume_rb_style"
-						android:drawablePadding="@dimen/x15"
-						android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
-						android:text="退货"/>
+						<RadioButton
+							android:id="@+id/content_rb_rk"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_rk_sel"
+							android:text="入库"/>
 
-				</RadioGroup>
+						<RadioButton
+							android:id="@+id/content_rb_yc"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_yc_sel"
+							android:text="移出"/>
+
+						<RadioButton
+							android:id="@+id/content_rb_tb"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_tb_sel"
+							android:text="调拨"/>
+
+						<RadioButton
+							android:id="@+id/content_rb_yr"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_yr_sel"
+							android:text="移入"/>
+
+						<RadioButton
+							android:id="@+id/content_rb_tuihuo"
+							style="@style/consume_rb_style"
+							android:drawablePadding="@dimen/x15"
+							android:drawableTop="@drawable/hccz_ic_tuihuo_sel"
+							android:text="退货"/>
+
+					</RadioGroup>
+
+				</HorizontalScrollView>
 
 			</LinearLayout>
 			<View

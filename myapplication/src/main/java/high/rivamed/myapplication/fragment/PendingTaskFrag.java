@@ -144,8 +144,6 @@ public class PendingTaskFrag extends SimpleFragment {
                         mMessagesList.addAll(emergencyBean.getMessages());
                         mTvTaskNum.setText("任务 (" + mMessagesList.size() + "个进行中)");
                         mAdapter.notifyDataSetChanged();
-
-
                     }
                     if (emergencyBean.getMessages().size()==0){
                         LogUtils.i(TAG,"mMessagesList.size()   "+mMessagesList.size());

@@ -218,7 +218,7 @@ public class FastOutFragment extends SimpleFragment {
 	mActivityDownBtnFourLl.setVisibility(View.VISIBLE);
 	mBtnFourTb.setVisibility(View.GONE);//隐藏调拨
 	LogUtils.i(TAG, "setOutBoxDate    " + 2);
-//	setOutBoxDate(mInOutDto.getOutInventoryVos());
+	setOutBoxDate(mInOutDto.getOutInventoryVos());
 
    }
 
@@ -443,6 +443,7 @@ public class FastOutFragment extends SimpleFragment {
    private void setLyDate() {
 	String mTCstInventoryDtoJson = null;
 	mInOutDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	mInOutDto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	mTCstInventoryDtoJson = setNewDate(mInOutDto);
 	LogUtils.i(TAG, " 领用 " + mTCstInventoryDtoJson);
 	InventoryDto inventoryDtos = mGson.fromJson(mTCstInventoryDtoJson, InventoryDto.class);

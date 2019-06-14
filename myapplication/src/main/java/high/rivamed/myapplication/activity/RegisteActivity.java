@@ -18,7 +18,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
@@ -169,7 +168,7 @@ public class RegisteActivity extends SimpleActivity {
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	ReaderManager.getManager().unRegisterCallback();
-	Eth002Manager.getEth002Manager().unRegisterCallBack();
+//	ReaderManager.getManager().unRegisterCallback();
+//	Eth002Manager.getEth002Manager().unRegisterCallBack();
    }
 }

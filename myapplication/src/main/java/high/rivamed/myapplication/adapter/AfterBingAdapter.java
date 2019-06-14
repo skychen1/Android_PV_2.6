@@ -86,6 +86,10 @@ public class AfterBingAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
 						mSeven_five);
+	}if (item.getExpireStatus()==0){
+	   mSeven_five.setText("已过期");
+	   mSeven_five.setBackgroundResource(R.drawable.bg_text_red);
+	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.bg_f));
 	}
    }
 }
