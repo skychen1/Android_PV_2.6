@@ -195,6 +195,14 @@ public class NetRequest {
    }
 
    /**
+    * 用户登录:userId
+    */
+   public void userLoginByUserId(String account, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_USER_LOGIN_BY_USER_ID;
+	PostRequest(urls, account, tag, netResult);
+   }
+
+   /**
     * 绑定指纹
     */
    public void registerFinger(String json, Object tag, NetResult netResult) {

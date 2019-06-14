@@ -121,4 +121,6 @@ public interface NetApi {
     String URL_FACE_GET_ALL="/rmApi/restLogin/faceRecognition";
     //人脸绑定
     String URL_FACE_BIND="/restLogin/boundFace";
+    //人脸识别后userId登录
+    String URL_USER_LOGIN_BY_USER_ID = "/rmApi/restLogin/validateLoginUserId";
 }

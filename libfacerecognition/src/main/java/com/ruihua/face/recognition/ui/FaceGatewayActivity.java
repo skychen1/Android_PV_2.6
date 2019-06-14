@@ -77,7 +77,7 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
                     return;
                 }
                 //设置需要活体
-                FaceManager.getManager().setNeedLive(true);
+//                FaceManager.getManager().setNeedLive(true);
             }
 
             @Override

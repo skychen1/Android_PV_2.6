@@ -130,7 +130,7 @@ public class Activation {
         titleParams.leftMargin = dip2px(30);
         deviceIdTv = new TextView(context);
         deviceIdTv.setTextIsSelectable(true);
-        deviceIdTv.setText("设备指纹：" + device);
+        deviceIdTv.setText("设备ID：" + device);
         deviceIdTv.setTextSize(dip2px(12));
         deviceIdTv.setTextColor(context.getResources().getColor(R.color.face_black));
         LinearLayout.LayoutParams deviceIdParams = new LinearLayout.LayoutParams(

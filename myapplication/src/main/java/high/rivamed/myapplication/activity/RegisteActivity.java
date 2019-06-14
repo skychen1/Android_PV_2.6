@@ -22,6 +22,7 @@ import cn.rivamed.Eth002Manager;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.fragment.RegisteFaceFrag;
 import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
 import high.rivamed.myapplication.fragment.RegisteReaderFrag;
@@ -60,7 +61,7 @@ public class RegisteActivity extends SimpleActivity {
    SlidingTabLayout mRegisteTl;
    public ImageView mBaseTabBtnConn;
    public static ViewPager mRegisteViewpager;
-   private String[] mKeys = {"设备注册/激活", "数据恢复","Reader设置","锁/IC卡/指纹仪"};
+   private String[] mKeys = {"设备注册/激活", "数据恢复","Reader设置","锁/IC卡/指纹仪","人脸设置"};
    private RegistePagerAdapter mPagerAdapter;
    /**
     * 设备title连接状态
@@ -147,8 +148,10 @@ public class RegisteActivity extends SimpleActivity {
 		return RegisteRecoverFrag.newInstance();
 	   }else if (position ==2){
 		return RegisteReaderFrag.newInstance();
-	   }else {
+	   }else if (position == 3){
 		return RegisteLockFrag.newInstance();
+	   }else{
+		return RegisteFaceFrag.newInstance();
 	   }
 	}
 

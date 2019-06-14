@@ -111,7 +111,7 @@ public class FaceTask {
                 //没有新照片
                 if (updatePhotoList.size() == 0){
                     if (callBack != null)
-                        callBack.finishRegister(false,"暂时没有新的待注册人脸照数据");
+                        callBack.finishRegister(false,"暂时没有待注册人脸照数据");
                     return;
                 }
                 cacheFace();
@@ -121,7 +121,7 @@ public class FaceTask {
             public void onError(String result) {
                 ToastUtils.showShort(R.string.connection_fails);
                 if (callBack != null)
-                    callBack.finishRegister(false,"获取人脸照数据出错");
+                    callBack.finishRegister(false,"获取人脸照链接失败，请检查网络！");
             }
         });
     }

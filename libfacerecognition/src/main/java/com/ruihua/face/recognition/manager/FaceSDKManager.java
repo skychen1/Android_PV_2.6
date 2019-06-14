@@ -99,13 +99,7 @@ public class FaceSDKManager {
                 }
                 Log.e("FaceSDK", "初始化授权");
                 FaceSDK.initLicense(context, key, LICENSE_NAME, false);
-                if (!sdkInitStatus()) {
-                    return;
-                }
-                Log.e("FaceSDK", "初始化sdk");
-                faceDetector.init(context);
-                faceFeature.init(context);
-                initLiveness(context);
+                sdkInitStatus();
             }
         });
     }
@@ -125,10 +119,14 @@ public class FaceSDKManager {
         boolean success = false;
         int status = FaceSDK.getAuthorityStatus();
         if (status == AndroidLicenser.ErrorCode.SUCCESS.ordinal()) {
+            Log.e("FaceSDK", "授权成功");
+            Log.e("FaceSDK", "初始化sdk");
+            faceDetector.init(context);
+            faceFeature.init(context);
+            initLiveness(context);
             initStatus = SDK_INITED;
             success = true;
             faceDetector.setInitStatus(initStatus);
-            Log.e("FaceSDK", "授权成功");
             if (sdkInitListener != null) {
                 sdkInitListener.initSuccess();
             }

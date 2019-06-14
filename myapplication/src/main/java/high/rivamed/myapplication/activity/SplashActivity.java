@@ -116,7 +116,7 @@ public class SplashActivity extends FragmentActivity {
 		   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
 			   //检测设备是否激活授权码
 			   //启动页初始化人脸识别sdk
-			   FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
+			   new Thread(() -> FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
 				   @Override
 				   public void initSuccess() {
 					   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
@@ -127,17 +127,17 @@ public class SplashActivity extends FragmentActivity {
 						   //初始化完成后跳转页面
 						   launchLogin();
 					   } else {
-						   //设置是否需要活体
-						   FaceManager.getManager().setNeedLive(false);
 						   //从服务器更新人脸底库并注册至本地
 						   FaceTask faceTask = new FaceTask(SplashActivity.this);
 						   faceTask.setCallBack((hasRegister, msg) -> {
 							   LogUtils.d("faceTask", "initListener: " + msg);
 							   ToastUtils.showShortSafe(msg);
+							   //初始化完成后跳转页面
+							   launchLogin();
 						   });
 						   faceTask.getAllFaceAndRegister();
 						   //初始化完成后跳转页面
-						   launchLogin();
+						   //launchLogin();
 					   }
 				   }
 
@@ -147,7 +147,7 @@ public class SplashActivity extends FragmentActivity {
 					   //初始化完成后跳转页面
 					   launchLogin();
 				   }
-			   });
+			   })).start();
 		   } else {
 			   new Handler().postDelayed(this::launchLogin, 2000);
 		   }
