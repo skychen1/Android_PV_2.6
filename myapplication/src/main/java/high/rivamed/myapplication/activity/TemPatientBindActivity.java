@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -151,9 +152,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	  if (null == mType || !mType.equals(TEMP_AFTERBIND)){//后绑定患者
+	   Log.i("FFASD","mType   "+mType );
+
+	   if (null == mType || !mType.equals(TEMP_AFTERBIND)){//后绑定患者
 	     setTempPatientDate(event.mEthId);
 	  }
+
 	}
 
    }
@@ -269,7 +273,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-		Log.i("FFASD","XXAFAFAFA");
+
 		mTrim = charSequence.toString().trim();
 		mAllPage = 1;
 		patientInfos.clear();
@@ -510,55 +514,16 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     * 先绑定患者，关门后获取选中的患者信息，并跳转界面
     */
    private void setTempPatientDate(String mEthId) {
-	String patientName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getPatientName();
-	boolean create = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.isCreate();
-	String patientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getPatientId();
-	String tempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getTempPatientId();
-	String idNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getIdNo();
-	String operationScheduleId = patientInfos.get(
-		mTypeView.mTempPatientAdapter.mSelectedPos).getOperationScheduleId();
-	String scheduleDateTime = patientInfos.get(
-		mTypeView.mTempPatientAdapter.mSelectedPos).getSurgeryTime();
-	String operatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getOperatingRoomNo();
-	String operatingRoomNoName = patientInfos.get(
-		mTypeView.mTempPatientAdapter.mSelectedPos).getRoomName();
-	String sex = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getSex();
-	String deptId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getDeptId();
-	String medicalId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getMedicalId();
-	String surgeryId=null;
-	if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		.getSurgeryId()!=null){
-	    surgeryId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		   .getSurgeryId();
-	}
-	String hisPatientId=null;
-	if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		    .getHisPatientId()!=null){
-	   hisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-		   .getHisPatientId();
-	}
-	InventoryVo vo = new InventoryVo();
-	vo.setPatientName(patientName);
-	vo.setCreate(create);
-	vo.setPatientId(patientId);
-	vo.setTempPatientId(tempPatientId);
-	vo.setIdNo(idNo);
-	vo.setOperationScheduleId(operationScheduleId);
-	vo.setSurgeryTime(scheduleDateTime);
-	vo.setOperatingRoomNo(operatingRoomNo);
-	vo.setOperatingRoomName(operatingRoomNoName);
-	vo.setSex(sex);
-	vo.setDeptId(deptId);
-	vo.setMedicalId(medicalId);
-	vo.setSurgeryId(surgeryId);
-	vo.setHisPatientId(hisPatientId);
+	BingFindSchedulesBean.PatientInfoVos patientInfoVos = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos);
+	InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
+	vo.setCreate(patientInfoVos.isCreate());
+	vo.setIdNo(patientInfoVos.getIdNo());
+	vo.setSurgeryTime(patientInfoVos.getSurgeryTime());
+	vo.setOperatingRoomName(patientInfoVos.getRoomName());
+	vo.setSex(patientInfoVos.getSex());
+	vo.setDeptId(patientInfoVos.getDeptId());
+	vo.setBindType(mType);
+	EventBusUtils.post(new Event.EventCheckbox(vo));
 
 	startActivity(new Intent(mContext, OutBoxBingActivity.class).putExtra("basePatientVo",vo).putExtra("OperationType", mRbKey)
 				  .putExtra("bindType", TEMP_FIRSTBIND)
@@ -721,46 +686,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	if (patientInfos != null && patientInfos.size() > 0) {
 	   mPause = false;
 	   BingFindSchedulesBean.PatientInfoVos patientInfoVos = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos);
-	   InventoryVo vo = new InventoryVo();
-	   vo.setPatientName(patientInfoVos.getPatientName());
-	   vo.setPatientId(patientInfoVos.getPatientId());
-	   vo.setTempPatientId(patientInfoVos.getTempPatientId());
-	   vo.setOperationScheduleId(patientInfoVos.getOperationScheduleId());
-	   vo.setOperatingRoomNo(patientInfoVos.getOperatingRoomNo());
-	   vo.setMedicalId(patientInfoVos.getMedicalId());
-	   if (patientInfoVos.getSurgeryId()!=null){
-		vo.setSurgeryId(patientInfoVos.getSurgeryId());
-	   }
-	   vo.setHisPatientId(patientInfoVos.getHisPatientId());
-//	   mName = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getPatientName();
-//	   mId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getPatientId();
-//	   mOperationScheduleId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getOperationScheduleId();
-//	   mTempPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getTempPatientId();
-//	   mMedicalId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getMedicalId();
-//	   mOperatingRoomNo = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getOperatingRoomNo();
-//	   mHisPatientId = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//		   .getHisPatientId();
-//	   if (patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//			 .getSurgeryId()!=null){
-//		mSurgeryId= patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos)
-//			.getSurgeryId();
-//	   }
-
+	   InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
 	   if (null != mType && mType.equals(TEMP_AFTERBIND)) {
 		//后绑定患者
 		if (patientInfoVos.getPatientId().equals("virtual")) {
 		   if (mPatientBean == null) {
 			vo.setBindType(mType);
 			EventBusUtils.post(new Event.EventCheckbox(vo));
-//			EventBusUtils.postSticky(new Event.EventCheckbox(mName, mId, mTempPatientId,
-//											 mOperationScheduleId,
-//											 mType, mPosition,
-//											 mTemPTbaseDevices, mMedicalId, null, null, mOperatingRoomNo));
 		   } else {
 			CreatTempPatientBean.TTransOperationScheduleBean schedule = mPatientBean.getTTransOperationSchedule();
 			InventoryVo vvo = new InventoryVo();
@@ -778,40 +710,41 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			vvo.setPatientId(patientInfoVos.getPatientId());
 			EventBusUtils.post(new Event.EventCheckbox(vvo));
 
-//			String deptId = mPatientBean.getTTransOperationSchedule().getDeptId();
-//			String name = mPatientBean.getTTransOperationSchedule().getName();
-//			String idNo = mPatientBean.getTTransOperationSchedule().getIdNo();
-//			String scheduleDateTime = mPatientBean.getTTransOperationSchedule()
-//				.getSurgeryTime();
-//			String operatingRoomNo = mPatientBean.getTTransOperationSchedule()
-//				.getOperatingRoomNo();
-//			String operatingRoomNoName = mPatientBean.getTTransOperationSchedule()
-//				.getOperatingRoomNoName();
-//			String sex = mPatientBean.getTTransOperationSchedule().getSex();
-//			String medicalId = mPatientBean.getTTransOperationSchedule().getMedicalId();
-//			boolean create = mPatientBean.getTTransOperationSchedule().isCreate();
-//			EventBusUtils.postSticky(
-//				new Event.EventCheckbox(name, mId, idNo, scheduleDateTime,
-//								operatingRoomNo, operatingRoomNoName, sex,
-//								deptId, create, mType, mPosition,
-//								mTemPTbaseDevices,medicalId));
-
 		   }
 		} else {
 		   EventBusUtils.post(new Event.EventCheckbox(vo));
-//		   EventBusUtils.postSticky(
-//			   new Event.EventCheckbox(mName, mId, mTempPatientId, mOperationScheduleId,
-//							   mType, mPosition, mTemPTbaseDevices,mMedicalId,mSurgeryId,mHisPatientId,mOperatingRoomNo));
 		}
 		finish();
 	   } else {
 		//先绑定患者
+
 		EventBusUtils.post(new Event.EventButton(true, true));
 		AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+
 	   }
 	} else {
 	   ToastUtils.showShort("暂无数据，请创建后再试！");
 	}
+   }
+
+   @NonNull
+   private InventoryVo setBingPatientInfoDate(BingFindSchedulesBean.PatientInfoVos patientInfoVos) {
+	InventoryVo vo = new InventoryVo();
+	vo.setPatientName(patientInfoVos.getPatientName());
+	vo.setPatientId(patientInfoVos.getPatientId());
+	vo.setTempPatientId(patientInfoVos.getTempPatientId());
+	vo.setOperationScheduleId(patientInfoVos.getOperationScheduleId());
+	vo.setOperatingRoomNo(patientInfoVos.getOperatingRoomNo());
+	vo.setMedicalId(patientInfoVos.getMedicalId());
+
+	if (patientInfoVos.getSurgeryId()!=null){
+	   vo.setSurgeryId(patientInfoVos.getSurgeryId());
+	}
+	if (patientInfoVos.getHisPatientId()!=null){
+	   vo.setHisPatientId(patientInfoVos.getHisPatientId());
+	}
+
+	return vo;
    }
 
    /*

@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,9 +56,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.RvDialog;
-import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
-import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -174,7 +171,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private RxUtils.BaseEpcObservable mObs;
    private InventoryDto mDto = new InventoryDto();
    private InventoryVo mPatientVo;
-   private InventoryVo mCheckBoxVo;
 
    /**
     * 门锁的提示
@@ -209,9 +205,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventBing(Event.EventCheckbox event) {
-	mCheckBoxVo = event.vo;
-	getCheckBoxDate(mCheckBoxVo);
-	LogUtils.i(TAG, "EventCheckbox" + mGson.toJson(mCheckBoxVo));
+	mPatientVo = event.vo;
+	getCheckBoxDate(mPatientVo);
+	LogUtils.i(TAG, "EventCheckbox" + mGson.toJson(mPatientVo));
 	if (mBingType != null && mBingType.equals(TEMP_AFTERBIND)) {
 	   if (!TextUtils.isEmpty(mPatient)) {
 		for (InventoryVo vo : mBoxInventoryVos) {
@@ -540,58 +536,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.timely_left, R.id.timely_right,
+   @OnClick({ R.id.timely_left, R.id.timely_right,
 	   R.id.timely_start_btn_right, R.id.timely_open_door_right, R.id.ly_bing_btn_right})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-				break;
-			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-				break;
 
-			}
-		   }
-		});
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		mContext.startActivity(new Intent(this, MessageActivity.class));
-
-		break;
-	   case R.id.base_tab_back:
-		finish();
-		break;
 	   case R.id.timely_start_btn_right://重新扫描
 		if (mStarts != null) {
 		   mStarts.cancel();
@@ -611,20 +560,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mStarts.cancel();
 		   }
 		   mTimelyRight.setText("确认并退出登录");
-		   List<DeviceInventoryVo> deviceInventoryVoss = mInventoryDto.getDeviceInventoryVos();
-		   mInventoryDto.getInventoryVos().clear();
-		   if (deviceInventoryVoss != null) {
-			deviceInventoryVoss.clear();
-		   }
+
 		   TimelyAllFrag.mPauseS = true;
 		   if (UIUtils.getConfigType(mContext, CONFIG_009)) {
 			mPatient = null;
 			mPatientId = null;
 		   }
-		   //		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
-			LogUtils.i(TAG, "deviceCode    " + deviceCode);
 			DeviceManager.getInstance().OpenDoor(deviceCode);
 		   }
 		} else {
@@ -1036,7 +979,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    }
 
    private void setTemPatientDate(InventoryVo inventoryVo) {
-	if (mCheckBoxVo != null) {
+	if (mPatientVo != null) {
 	   if ((UIUtils.getConfigType(mContext, CONFIG_010) &&
 		  UIUtils.getConfigType(mContext, CONFIG_012)) ||
 		 (mPatientId != null && mPatientId.equals("virtual"))) {
@@ -1130,7 +1073,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private void setTitleRightNum() {
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mBoxInventoryVos) {
-	   if (mCheckBoxVo != null) {
+	   if (mPatientVo != null) {
 		vosBean.setPatientName(mPatient);
 		vosBean.setCreate(mIsCreate);
 		vosBean.setPatientId(mPatientId);
