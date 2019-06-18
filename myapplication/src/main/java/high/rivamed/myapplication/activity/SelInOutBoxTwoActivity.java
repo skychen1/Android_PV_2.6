@@ -281,7 +281,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (!event.isMute) {
 	   Log.i("SelSelfff", event.mEthId);
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (ScanService.mDoorStatusType) {

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
-import com.ruihua.reader.net.bean.EpcInfo;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -81,7 +80,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    private FastPagerAdapter mFastPagerAdapter;
 
    public  ArrayList<String>          mDoorList  = new ArrayList<>();
-   private Map<String, List<EpcInfo>> mEPCDate   = new TreeMap<>();
+   private List<String> mEPCDate   = new ArrayList<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
    int k = 0;
    private int                   mOperation;
@@ -229,7 +228,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
 			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-			   mEPCDate.putAll(event.epcs);
+			   mEPCDate.addAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			}
@@ -240,9 +239,10 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 			if (mEPCDate.size() == 0) {
 			   mEPCDatess.put("", box_id);//没有空格
 			}
-			for (Map.Entry<String, List<EpcInfo>> v : mEPCDate.entrySet()) {
-			   mEPCDatess.put(v.getKey(), box_id);
+			for (String s : mEPCDate) {
+			   mEPCDatess.put(s, box_id);
 			}
+
 			LogUtils.i(TAG, "mEPCDates.mEPCDates()多reader  " + mEPCDatess.size());
 		   } else {
 			return;
@@ -251,9 +251,10 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   if (event.epcs.size() == 0) {
 			mEPCDatess.put(" ", box_id);//1个空格
 		   }
-		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
-			mEPCDatess.put(v.getKey(), box_id);
+		   for (String s : event.epcs) {
+			mEPCDatess.put(s, box_id);
 		   }
+
 		   LogUtils.i(TAG, "mEPCDates.mEPCDates()单reader  " + mEPCDatess.size());
 		}
 	   }

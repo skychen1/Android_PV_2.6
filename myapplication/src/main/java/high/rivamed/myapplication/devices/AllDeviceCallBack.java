@@ -266,19 +266,23 @@ public class AllDeviceCallBack {
 	ReaderManager.getManager().registerCallback(new ReaderCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-		Log.e("FAFAS", "ReaderManager   "+deviceId  +isConnect);
+
 	   }
 
 	   @Override
 	   public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0&&!mTimelyOnResume) {//强开
+		   Log.e("FAFAS", "result1   "+result.size());
 		   EventBusUtils.post(new Event.EventStrongOpenDeviceCallBack(deviceId, result));
 		} else {
-		   EventBusUtils.postSticky(new Event.EventDeviceCallBack(deviceId, result));
+		   List<String> epcs =  new ArrayList<>();
+		   for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
+			epcs.add(v.getKey());
+		   }
+		   EventBusUtils.post(new Event.EventDeviceCallBack(deviceId, epcs));
 		}
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
 		} else {
-
 		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
 	   }

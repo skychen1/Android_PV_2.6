@@ -653,9 +653,9 @@ public class Event {
    public static class EventDeviceCallBack {
 
 	public String                     deviceId;
-	public Map<String, List<EpcInfo>> epcs;
+	public List<String>  epcs;
 
-	public EventDeviceCallBack(String deviceId, Map<String, List<EpcInfo>> epcs) {
+	public EventDeviceCallBack(String deviceId, List<String>  epcs) {
 	   this.deviceId = deviceId;
 	   this.epcs = epcs;
 	}

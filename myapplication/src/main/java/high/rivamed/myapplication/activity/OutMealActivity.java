@@ -18,7 +18,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,6 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderCstResultBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.OutMealBean;
-import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
@@ -49,6 +47,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
+import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -56,7 +55,6 @@ import static android.widget.LinearLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 
@@ -97,7 +95,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     private int mSize;
     public static String mMealbing;
     private List<String> titeleList = null;
-
+    private NoDialog.Builder   mBuilder;
     /**
      * 套餐列表
      */
@@ -138,20 +136,7 @@ public class OutMealActivity extends BaseSimpleActivity {
 
         EventBusUtils.removeStickyEvent(getClass());
     }
-    /**
-     * (检测没有关门)语音
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onHomeNoClick(Event.HomeNoClickEvent event) {
-        if (event.isClick) {
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-        } else {
-            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-        }
-        EventBusUtils.removeStickyEvent(getClass());
-    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onActString(Event.EventAct event) {
@@ -419,55 +404,88 @@ public class OutMealActivity extends BaseSimpleActivity {
         });
     }
 
-
+    /**
+     * 门锁的提示
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void isDoorOpened(Event.HomeNoClickEvent event) {
-        if (event.isClick) {
-            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+    public void onDialogEvent(Event.PopupEvent event) {
+        if (mIsCanSkipToSurePage && event.isMute) {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+        }
+        if (mIsCanSkipToSurePage && !event.isMute) {
+            MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+            startActSetDate(event.mEthId);
+        }
+        if (event.isMute) {
+            if (mBuilder == null) {
+                mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "form", null);
+            }
+        } else {
+            if (mBuilder != null) {
+                mBuilder.mDialog.dismiss();
+                mBuilder = null;
+            }
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void isDoorClosed(Event.HomeNoClickEvent event) {
-        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.door)
-              .find(BoxIdBean.class);
-        for (BoxIdBean boxIdBean : boxIdBeanss) {
-            String box_id = boxIdBean.getBox_id();
-            List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE).find(BoxIdBean.class);
-            for (BoxIdBean BoxIdBean : boxIdDoor) {
-                String device_id = BoxIdBean.getDevice_id();
-                for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
-                    if (device_id.equals(mEthDeviceIdBack3.get(x))) {
-                        mEthDeviceIdBack3.remove(x);
-                    }
-                }
-            }
-        }
-        if (mIsCanSkipToSurePage) {
-            if (!event.isClick) {
-                // 统一数据格式
-                OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
-                orderSheetBean.setSuiteId("" + mOrderCstResult.getSuiteId());
-                orderSheetBean.cstType = "" + mOrderCstResult.getKindsOfCst();
-                orderSheetBean.cstNumber = "" + mOrderCstResult.getCountNum();
-                List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList = new ArrayList<>();
-                for (OrderCstResultBean.SuiteVosBean item : movies) {
-                    BillStockResultBean.OrderDetailVo info = new BillStockResultBean.OrderDetailVo();
-                    info.setNeedNum(item.getNeedNum());
-                    info.setCstId(item.getCstId());
-                    info.setCstName(item.getCstName());
-                    info.setCstSpec(item.getCstSpec());
-                    info.setPatientName("");
-                    info.setDeviceNames(item.getDeviceNames());
-                    transReceiveOrderDetailVosList.add(info);
-                }
-                Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("DATA", new Event.EventBillStock(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        }
+//    private void intentActType(String ethId) {
+//
+//    }
+    //    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void isDoorOpened(Event.HomeNoClickEvent event) {
+//        if (event.isClick) {
+//            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+//        }
+//    }
+
+
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void isDoorClosed(Event.HomeNoClickEvent event) {
+//        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.door)
+//              .find(BoxIdBean.class);
+//        for (BoxIdBean boxIdBean : boxIdBeanss) {
+//            String box_id = boxIdBean.getBox_id();
+//            List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE).find(BoxIdBean.class);
+//            for (BoxIdBean BoxIdBean : boxIdDoor) {
+//                String device_id = BoxIdBean.getDevice_id();
+//                for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
+//                    if (device_id.equals(mEthDeviceIdBack3.get(x))) {
+//                        mEthDeviceIdBack3.remove(x);
+//                    }
+//                }
+//            }
+//        }
+//        if (mIsCanSkipToSurePage) {
+//            if (!event.isClick) {
+//                // 统一数据格式
+//                startActSetDate();
+//            }
+//        }
+//    }
+
+    private void startActSetDate(String mEthId) {
+        OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();
+        orderSheetBean.setSuiteId("" + mOrderCstResult.getSuiteId());
+        orderSheetBean.cstType = "" + mOrderCstResult.getKindsOfCst();
+        orderSheetBean.cstNumber = "" + mOrderCstResult.getCountNum();
+        List<BillStockResultBean.OrderDetailVo> transReceiveOrderDetailVosList = new ArrayList<>();
+        for (OrderCstResultBean.SuiteVosBean item : movies) {
+		BillStockResultBean.OrderDetailVo info = new BillStockResultBean.OrderDetailVo();
+		info.setNeedNum(item.getNeedNum());
+		info.setCstId(item.getCstId());
+		info.setCstName(item.getCstName());
+		info.setCstSpec(item.getCstSpec());
+		info.setPatientName("");
+		info.setDeviceNames(item.getDeviceNames());
+		transReceiveOrderDetailVosList.add(info);
+	  }
+        Intent intent = new Intent(mContext, NewOutMealBingConfirmActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("mEthId", mEthId);
+        bundle.putSerializable("DATA", new Event.EventBillStock(orderSheetBean, transReceiveOrderDetailVosList, mTbaseDevicesFromEvent));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

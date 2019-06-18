@@ -49,7 +49,7 @@ public class ScanService extends Service {
    int size = 0;
    private Map<String, List<EpcInfo>> mEPCDate   = new TreeMap<>();
    private Map<String, String>        mEPCDatess = new TreeMap<>();
-   public static boolean           mDoorStatusType =false;
+   public static boolean           mDoorStatusType =false;//false 没关  true已经关了
    private List<String>      mDeviceSizeList = new ArrayList<>();
    private ArrayList<String> mListDevices;
    private ArrayList<String> mEthDevices     = new ArrayList<>();

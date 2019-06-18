@@ -241,6 +241,7 @@ public class RegisteFrag extends SimpleFragment {
 	LitePal.deleteAll(InventoryDto.class);
 	LitePal.deleteAll(InventoryVo.class);
 	LitePal.deleteDatabase("rivamedhigh");
+	LitePal.initialize(mContext);//数据库初始化
 	setRegiestDate(s);
 
 	putDbDate(mSnRecoverBean);

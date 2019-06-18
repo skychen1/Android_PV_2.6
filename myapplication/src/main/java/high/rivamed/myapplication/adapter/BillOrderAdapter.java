@@ -73,16 +73,21 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             mSeven_seven = null;
         }
         ImageView view =(ImageView) helper.getView(R.id.seven_six);;
-
+//        Drawable drawable = mContext.getResources().getDrawable(R.mipmap.gcms_ic_yc);
 
         if (item.getRemark() != null) {
             if (item.getRemark().equals("1")) {
                 view.setVisibility(View.VISIBLE);
+                view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
             } else {
                 view.setVisibility(View.INVISIBLE);
             }
         } else {
             view.setVisibility(View.INVISIBLE);
+        }
+        if (item.getIsErrorOperation()==1){
+            view.setVisibility(View.VISIBLE);
+            view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
         }
 
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);

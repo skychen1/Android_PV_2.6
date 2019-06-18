@@ -181,7 +181,6 @@ public class RxUtils {
 
 	/**
 	 * 扫描的EPC
-	 *
 	 * @return
 	 */
 	public void getScanEpc(String device, String epc) {//这个方法需要把new的对象放外面后续改;todo

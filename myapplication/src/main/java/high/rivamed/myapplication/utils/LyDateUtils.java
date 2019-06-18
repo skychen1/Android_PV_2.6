@@ -2,6 +2,7 @@ package high.rivamed.myapplication.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.ruihua.reader.ReaderManager;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.base.App;
+import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -70,7 +72,34 @@ public class LyDateUtils {
 	}
 	return false;
    }
-
+   /**
+    * 是否包含柜号
+    * @return
+    */
+   public static boolean getVosBoxIdVo(List<InventoryVo> vos, String box_id) {
+	if (vos != null) {
+	   for (int i = 0; i < vos.size(); i++) {
+		if (null==vos.get(i).getDeviceId()||vos.get(i).getDeviceId().equals(box_id)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
+   /**
+    * 是否是套餐内的
+    * @return
+    */
+   public static boolean getVosRemark(List<BillStockResultBean.OrderDetailVo> vos, String box_id) {
+	if (vos != null) {
+	   for (int i = 0; i < vos.size(); i++) {
+		if (vos.get(i).getCstId().equals(box_id)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
    /**
     * 给显示的vos赋值（区分各个柜子）
     * @param box_id
@@ -123,6 +152,7 @@ public class LyDateUtils {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = ReaderManager.getManager().startScan(device_id, 10000);
+		Log.i("SelSelfff", "i   " + i);
 		if (i == 2) {
 		   ReaderManager.getManager().stopScan(device_id);
 		   ReaderManager.getManager().startScan(device_id, 10000);

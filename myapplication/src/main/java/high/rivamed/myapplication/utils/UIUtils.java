@@ -265,11 +265,14 @@ public class UIUtils {
 	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
 	if (configBean != null) {
 	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	   for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
-		if (code.equals(configType.getCode())) {
-		   return true;
+	   if (tCstConfigVos!=null){
+		for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
+		   if (code.equals(configType.getCode())) {
+			return true;
+		   }
 		}
 	   }
+	   return false;
 	}
 	return false;
    }

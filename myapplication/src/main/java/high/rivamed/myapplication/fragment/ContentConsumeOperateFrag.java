@@ -168,7 +168,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 门锁的状态检测回调
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)

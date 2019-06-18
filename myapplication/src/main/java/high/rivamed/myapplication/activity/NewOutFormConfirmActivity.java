@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -34,8 +33,6 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -207,7 +204,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   private Map<String, List<EpcInfo>> mEPCMapDate = new TreeMap<>();
+   private  List<String> mEPCMapDate = new ArrayList<>();
 
    private static boolean mIsFirst = true;
 
@@ -623,7 +620,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
 			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-			   mEPCMapDate.putAll(event.epcs);
+			   mEPCMapDate.addAll(event.epcs);
 			   k++;
 			   LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
 			}
@@ -631,24 +628,25 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   if (k == boxIdBeansss.size()) {
 			LogUtils.i(TAG, "mEPCDate  zou l  ");
 			k = 0;
-			for (Map.Entry<String, List<EpcInfo>> v : mEPCMapDate.entrySet()) {
-			   if (!mFindBillOrderBean.getEpcs().equals(v.getKey())) {
-				mFindBillOrderBean.getEpcs().add(v.getKey());
+			for (String epc :mEPCMapDate){
+			   if (!mFindBillOrderBean.getEpcs().equals(epc)) {
+				mFindBillOrderBean.getEpcs().add(epc);
 			   }
 			}
+
 			mFindBillOrderBean.getDeviceIds().add(box_id);
 //			getBillStockByEpc(mFindBillOrderBean);
 
 		   }
 		} else {
 		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
-		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
-			if (!mFindBillOrderBean.getEpcs().equals(v.getKey())) {
-			   mFindBillOrderBean.getEpcs().add(v.getKey());
+		   for (String epc :event.epcs){
+			if (!mFindBillOrderBean.getEpcs().equals(epc)) {
+			   mFindBillOrderBean.getEpcs().add(epc);
 			}
 		   }
+
 		   mFindBillOrderBean.getDeviceIds().add(box_id);
-//		   getBillStockByEpc(mFindBillOrderBean);
 		}
 
 	   }
