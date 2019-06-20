@@ -48,6 +48,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
@@ -182,7 +183,6 @@ public class ReciveBillFrag extends SimpleFragment {
         initlistener();
     }
 
-
     /**
      * 数据加载
      */
@@ -224,35 +224,6 @@ public class ReciveBillFrag extends SimpleFragment {
             mRecyclerview.setAdapter(mPublicAdapter);
             mLinearLayout.addView(mHeadView);
         }
-//        mPublicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//                String six = mPublicAdapter.getItem(position).getReceivedStatus();
-//
-//                if (!six.equals("已领取")) {
-//                    mTbaseDevices.clear();
-//                    List<String> deviceCodes = mPublicAdapter.getItem(position).getDeviceIds();
-//                    for (String deviceCode : deviceCodes) {
-//                        BoxSizeBean.DevicesBean oneDoor = new BoxSizeBean.DevicesBean();
-//                        oneDoor.setDeviceId(deviceCode);
-//                        if (!TextUtils.isEmpty(deviceCode)) {
-//                            mTbaseDevices.add(oneDoor);
-//                        }
-//                    }
-//                    LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
-//                    if (mTbaseDevices.size() > 0) {
-//                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
-//                    } else {
-//                        ToastUtils.showShort("无柜子信息！");
-//                    }
-//                } else if (six.equals("已领取")){
-//                    ToastUtils.showShort("此项已领取！");
-//                }else if (mPublicAdapter.getItem(position).getCounts()==0){
-//                    ToastUtils.showShort("库存不足，请补充库存");
-//                }
-//            }
-//        });
-
     }
 
     private void initlistener() {
@@ -319,7 +290,6 @@ public class ReciveBillFrag extends SimpleFragment {
                     }
                 }
                 if (mTbaseDevices.size() > 0) {
-                    Log.e("xb", "mTbaseDevices:" + mTbaseDevices.size());
                     AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                 } else {
                     ToastUtils.showShort("无耗材柜数据");
@@ -332,18 +302,23 @@ public class ReciveBillFrag extends SimpleFragment {
         }
 
     }
-
+    /**
+     * 门锁的提示
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void isDoorOpened(Event.HomeNoClickEvent event) {
+    public void isDoorOpened(Event.PopupEvent event) {
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
-            LogUtils.i(TAG,"isDoorOpened   "+event.isClick);
-            if (event.isClick) {
+            if (event.isMute) {
+                MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
                 DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
             }else {
                 if (mIsCanSkipToSurePage) {
-                    if (!event.isClick) {
+                    if (!event.isMute) {
+			     MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
                         Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
                         Bundle bundle = new Bundle();
+                        bundle.putString("mEthId", event.mEthId);
                         bundle.putSerializable("DATA", new Event.EventBillStock(mPrePageDate,
                                                                                 mBillStockResultBean.getOrderDetailVos(),
                                                                                 mTbaseDevices));
@@ -354,7 +329,9 @@ public class ReciveBillFrag extends SimpleFragment {
                 }
             }
         }
+
     }
+
 
 
     @Override

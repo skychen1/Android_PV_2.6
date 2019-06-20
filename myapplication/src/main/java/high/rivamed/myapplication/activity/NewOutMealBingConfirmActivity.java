@@ -7,7 +7,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -51,7 +49,6 @@ import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -69,17 +66,17 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosBoxIdVo;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosRemark;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
+import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
+import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -96,7 +93,6 @@ import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    private String TAG = "NewOutMealBingConfirmActivity";
-   public int      my_id;
    public int      mSize;
    @BindView(R.id.timely_start_btn)
    public TextView mTimelyStartBtn;
@@ -208,11 +204,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private Handler           mHandler;
    private Runnable          mRunnable;
    private Runnable          mRunnableW;
-   /**
-    * 传输的EPC
-    *
-    * @param event
-    */
+
    private LoadingDialog.Builder     mLoading;
    private String                    mClossEthId;
    private RxUtils.BaseEpcObservable mObs;
@@ -232,12 +224,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mClossEthId = getIntent().getStringExtra("mEthId");
 	mPrePageDate = data.orderSheetBean;
 	mTransReceiveOrderDetailVos = data.transReceiveOrderDetailVosList;
-	Log.i("SelSelfff", mClossEthId);
 	mTbaseDevices = data.tbaseDevices;
 	mFindBillOrderBean = new FindBillOrderBean();
 	mFindBillOrderBean.setSuiteId(mPrePageDate.getSuiteId());
 	mFindBillOrderBean.setInventoryVos(new ArrayList<>());
 	mFindBillOrderBean.setDeviceIds(new ArrayList<>());
+	setRunnable();
 	initRxJavaSearch();
 	initData();
 
@@ -248,7 +240,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    }
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onEventButton(Event.EventButton event) {
-	Log.i("fadddf", "OutBoxBing     "+mGson.toJson(mBoxInventoryVos));
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
 		for (InventoryVo b : mBoxInventoryVos) {
@@ -266,7 +257,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 				   mAllOutText.setText(R.string.op_error_newoutmeal);
 				}
 			   }else {
-				Log.i("fadddf", "3");
 				mAllOutText.setVisibility(View.VISIBLE);
 				mAllOutText.setText(R.string.op_error_newoutmeal);
 			   }
@@ -287,7 +277,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 				   mAllOutText.setText(R.string.op_error_newoutmeal);
 				}
 			   }else {
-				Log.i("fadddf", "6");
 				mAllOutText.setVisibility(View.VISIBLE);
 				mAllOutText.setText(R.string.op_error_newoutmeal);
 			   }
@@ -306,7 +295,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			mLyBingBtn.setEnabled(false);
 			mBindPatient.setEnabled(false);
 			mAllOutText.setVisibility(View.VISIBLE);
-			Log.i("fadddf", "7");
 			mAllOutText.setText(R.string.open_error_string);
 		   }
 
@@ -348,12 +336,18 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   mAllOutText.setText(R.string.open_error_string);
 	}
 	if (!event.isMute) {
-	   Log.i("SelSelfff", event.mEthId);
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (mDoorStatusType) {
 	   setTitleRightNum();
+	}else {
+	   mDownBtnOne.setEnabled(false);
+	   mTimelyOpenDoor.setEnabled(false);
+	   mLyBingBtn.setEnabled(false);
+	   mBindPatient.setEnabled(false);
+	   mAllOutText.setVisibility(View.VISIBLE);
+	   mAllOutText.setText(R.string.open_error_string);
 	}
    }
    /**
@@ -362,7 +356,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
 		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
@@ -377,7 +370,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		}
 	   }
 	   setTitleRightNum();
-	   mPublicAdapter.notifyDataSetChanged();
+	   setNotifyData();
 	   EventBusUtils.post(new Event.EventButton(true,true));
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   mObs.getScanEpc(event.deviceId, event.epc);
@@ -391,7 +384,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	RxUtils.getInstance().setEpcResultListener(mObs, new RxUtils.EpcDebounceResultListener() {
 	   @Override
 	   public void goEpcSearch(List<DeviceInventoryVo> vos) {
-		Log.i("SelSelfff", "mGson.toJson(vos)   " + mGson.toJson(vos));
 		for (DeviceInventoryVo vo : vos) {
 		   if (mFindBillOrderBean.getDeviceIds().size()==0||!getVosBoxIdVo(mFindBillOrderBean.getInventoryVos(),vo.getDeviceId())){
 			mFindBillOrderBean.getDeviceIds().add(vo.getDeviceId());
@@ -425,20 +417,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mBaseTabTvName.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
 	mBaseTabBtnMsg.setEnabled(false);
-	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nan)
-		   .error(R.mipmap.hccz_mrtx_nan)
-		   .into(mBaseTabIconRight);
-	} else {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nv)
-		   .error(R.mipmap.hccz_mrtx_nv)
-		   .into(mBaseTabIconRight);
-	}
 
 	if (mUseCstOrderRequest == null) {
 	   mUseCstOrderRequest = new UseCstOrderBean();
@@ -511,21 +489,21 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   return;
 		} else {
+		   mBoxInventoryVos.clear();
 		   reOpenDoor();
 		}
 		break;
 	   case R.id.ly_bing_btn:
-
-
-		LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
-				    mGson.toJson(mTransReceiveOrderDetailVos));
-		DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos,
-								     mPrePageDate);
+		if (!UIUtils.isFastDoubleClick(R.id.ly_bing_btn)) {
+		   LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
+					 mGson.toJson(mTransReceiveOrderDetailVos));
+		   DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos,
+									  mPrePageDate);
+		}
 		break;
 	   case R.id.activity_btn_one:
-		if (UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
-		   return;
-		} else {
+		if (!UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
+		   setRemoveRunnable();
 		   useOrderCst();
 		}
 		break;
@@ -587,7 +565,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.removeView(mHeadView);
 	if (mPublicAdapter != null) {
-	   mPublicAdapter.notifyDataSetChanged();
+	   setNotifyData();
 	} else {
 	   mPublicAdapter = new BillOrderAdapter(mLayout, mSize,
 							     mBoxInventoryVos);
@@ -622,22 +600,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
 
 			setDateEpc(mBillOrderResultBean);
-//
-//			if (mBillOrderResultBean.getInventoryVos() == null ||
-//			    mBillOrderResultBean.getInventoryVos().size() == 0) {
-//			   mDownBtnOne.setEnabled(false);
-//			   Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
-//			   new Handler().postDelayed(new Runnable() {
-//				public void run() {
-//				   finish();
-//				}
-//			   }, FINISH_TIME);
-//			} else {
-//			   if (mBillOrderResultBean.getMsg() != null) {
-//				ToastUtils.showLong(mBillOrderResultBean.getMsg());
-//			   }
-//			   setTitleRightNum();
-//			}
 		   }
 
 		   @Override
@@ -657,39 +619,19 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
 	if (mBillOrderResultBean.getInventoryVos() != null &&
 	    mBillOrderResultBean.getInventoryVos().size() > 0) {
-	   setBoxVosDate(mBillOrderResultBean.getInventoryVos());
+	   setBoxVosDate(mBoxInventoryVos,mBillOrderResultBean.getInventoryVos());
 	   EventBusUtils.postSticky(new Event.EventLoading(false));
 	}
 	setTitleRightNum();
    }
-   /**
-    * 请求结束后的数据放入显示在界面上
-    * @param vos
-    */
-   private void setBoxVosDate(List<InventoryVo> vos) {
-	if (mBoxInventoryVos.size() > 0) {
-	   for (int x = 0; x < vos.size(); x++) {
-		if (!getVosType(mBoxInventoryVos, vos.get(x).getEpc())) {
-		   InventoryVo inventoryVo = vos.get(x);
-		   inventoryVo.setDateNetType(false);
-		   mBoxInventoryVos.add(inventoryVo);
-		}
-	   }
-	} else {
-	   for (int x = 0; x < vos.size(); x++) {
-		InventoryVo inventoryVo = vos.get(x);
-		inventoryVo.setDateNetType(false);
-		mBoxInventoryVos.add(inventoryVo);
-	   }
-	}
-   }
+
    private void setTitleRightNum() {
 
 	if (mPublicAdapter == null) {
 	   initView();
 	} else {
 	   mPublicAdapter.setNewData(mBoxInventoryVos);
-	   mPublicAdapter.notifyDataSetChanged();
+	   setNotifyData();
 	}
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mBoxInventoryVos) {
@@ -704,55 +646,73 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 							mBoxInventoryVos.size() +
 							"</big></font>"));
 	EventBusUtils.post(new Event.EventButton(true, true));
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+   }
+
+   /**
+    * adapter数据的刷新
+    */
+   private void setNotifyData() {
+	mPublicAdapter.notifyDataSetChanged();
 	setHandlerToastAndFinish();
+   }
+   /**
+    * 没有数据就跳转到主界面
+    */
+   private void setRunnable() {
+	mRunnable = new Runnable() {
+	   @Override
+	   public void run() {
+		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
+		   finish();
+		} else {
+		   mHandler.removeCallbacks(mRunnable);
+		}
+	   }
+	};
+
+	mRunnableW = new Runnable() {
+	   @Override
+	   public void run() {
+		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
+		   mDownBtnOne.setEnabled(false);
+		   mTimelyOpenDoor.setEnabled(false);
+		   mLyBingBtn.setEnabled(false);
+		   mBindPatient.setEnabled(false);
+
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   Toast.makeText(NewOutMealBingConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
+					Toast.LENGTH_SHORT).show();
+		   mHandler.postDelayed(mRunnable, 3000);
+		} else {
+		   setRemoveRunnable();
+		}
+	   }
+	};
    }
    /**
     * 没有扫到数据，就弹出toast和关闭本页
     */
    private void setHandlerToastAndFinish() {
 	mHandler = new Handler();
-	if (mRunnableW == null) {
-	   mRunnableW = new Runnable() {
-		@Override
-		public void run() {
-		   if (mBoxInventoryVos.size() == 0 && ScanService.mDoorStatusType && mResume) {
-			Log.i("SelSelfff", "  加来了  ");
-			   mDownBtnOne.setEnabled(false);
-			   mTimelyOpenDoor.setEnabled(false);
-			   mLyBingBtn.setEnabled(false);
-			   mBindPatient.setEnabled(false);
-
-			EventBusUtils.postSticky(new Event.EventLoading(false));
-			Toast.makeText(NewOutMealBingConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
-					   Toast.LENGTH_SHORT).show();
-
-			mRunnable = new Runnable() {
-			   @Override
-			   public void run() {
-				EventBusUtils.postSticky(new Event.EventFrag("START1"));
-				finish();
-			   }
-			};
-			mHandler.postDelayed(mRunnable, 3000);
-		   } else {
-			if (mHandler != null && mRunnableW != null) {
-			   mHandler.removeCallbacks(mRunnableW);
-			   mRunnableW = null;
-			}
-		   }
-		}
-	   };
+	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 	   mHandler.postDelayed(mRunnableW, 3000);
 	} else {
-	   Log.i("SelSelfff", "  mRunnableW 下坡处  ");
-	   mHandler.removeCallbacks(mRunnableW);
-	   mRunnableW = null;
-	   if (mHandler != null && mRunnable != null) {
-		mHandler.removeCallbacks(mRunnable);
-		mRunnable = null;
-	   }
+	   setRemoveRunnable();
 	}
    }
+   /**
+    * 取消runnable
+    */
+   private void setRemoveRunnable() {
+	if (mHandler != null && mRunnableW != null) {
+	   mHandler.removeCallbacks(mRunnableW);
+	}
+	if (mHandler != null && mRunnable != null) {
+	   mHandler.removeCallbacks(mRunnable);
+	}
+   }
+
    /**
     * 确认套组领用
     */
@@ -764,6 +724,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   ToastUtils.showShort("无耗材，无法领用");
 	   return;
 	}
+	stopScan();
+
 	LogUtils.i(TAG, "JSON  " + mGson.toJson(mUseCstOrderRequest));
 	NetRequest.getInstance()
 		.useOrderCst(mGson.toJson(mUseCstOrderRequest), this,  new BaseResult() {
@@ -775,6 +737,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			EventBusUtils.post(new Event.EventMealType(inventoryVos));//用来判断套组是否已经领取
 			if (info.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+			   new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
 			   ToastUtils.showShort(info.getMsg());
 			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 			   finish();
@@ -813,7 +776,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   EventBusUtils.post(new Event.EventButton(true,true));
 	}
 	initView();
-	mPublicAdapter.notifyDataSetChanged();
+	setNotifyData();
    }
 
 
@@ -830,6 +793,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	mEthDeviceIdBack3.clear();
+	mBoxInventoryVos.clear();
+	mFindBillOrderBean.getInventoryVos().clear();
+	mFindBillOrderBean.getDeviceIds().clear();
+	mEthDeviceIdBack.clear();
    }
 }

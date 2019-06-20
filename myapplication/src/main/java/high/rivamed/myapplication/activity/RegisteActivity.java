@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
-import com.ruihua.reader.ReaderManager;
 
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,6 +27,7 @@ import high.rivamed.myapplication.fragment.RegisteReaderFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
 import high.rivamed.myapplication.utils.WifiUtils;
 
+import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 
 /**
@@ -84,7 +84,6 @@ public class RegisteActivity extends SimpleActivity {
 		mBaseTabBtnConn.setEnabled(false);
 	   }
 	}
-
    }
    @Override
    public int getLayoutId() {
@@ -100,6 +99,7 @@ public class RegisteActivity extends SimpleActivity {
 	mBaseTabTvName.setVisibility(View.GONE);
 	mBaseTabBtnMsg.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("工程模式");
+	stopService(mIntentService);
 
 	if (WifiUtils.isWifi(mContext) == 0) {
 	   hasNetWork(false);

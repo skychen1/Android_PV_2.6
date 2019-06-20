@@ -123,10 +123,7 @@ public class OutMealActivity extends BaseSimpleActivity {
     public void getCstDate(Event.EventMealType event) {
         for (InventoryVo s:event.inventoryVos){
 	     String cstId = s.getCstId();
-	     LogUtils.i(TAG,"cstId   "+cstId);
 	     for(OrderCstResultBean.SuiteVosBean k:movies){
-               LogUtils.i(TAG,"k.getCstId()     "+k.getCstId());
-               LogUtils.i(TAG,"cstId   "+cstId);
 	        if (k.getCstId().equals(cstId)){
 		     k.setStatus("已领取");
 		  }
@@ -368,7 +365,6 @@ public class OutMealActivity extends BaseSimpleActivity {
 
             @Override
             public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
             }
         });
     }
@@ -399,7 +395,6 @@ public class OutMealActivity extends BaseSimpleActivity {
 
             @Override
             public void onError(String result) {
-                Log.e(TAG, "Erorr：" + result);
             }
         });
     }
@@ -428,41 +423,6 @@ public class OutMealActivity extends BaseSimpleActivity {
             }
         }
     }
-
-//    private void intentActType(String ethId) {
-//
-//    }
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void isDoorOpened(Event.HomeNoClickEvent event) {
-//        if (event.isClick) {
-//            DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
-//        }
-//    }
-
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void isDoorClosed(Event.HomeNoClickEvent event) {
-//        List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.door)
-//              .find(BoxIdBean.class);
-//        for (BoxIdBean boxIdBean : boxIdBeanss) {
-//            String box_id = boxIdBean.getBox_id();
-//            List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE).find(BoxIdBean.class);
-//            for (BoxIdBean BoxIdBean : boxIdDoor) {
-//                String device_id = BoxIdBean.getDevice_id();
-//                for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
-//                    if (device_id.equals(mEthDeviceIdBack3.get(x))) {
-//                        mEthDeviceIdBack3.remove(x);
-//                    }
-//                }
-//            }
-//        }
-//        if (mIsCanSkipToSurePage) {
-//            if (!event.isClick) {
-//                // 统一数据格式
-//                startActSetDate();
-//            }
-//        }
-//    }
 
     private void startActSetDate(String mEthId) {
         OrderSheetBean.RowsBean orderSheetBean = new OrderSheetBean.RowsBean();

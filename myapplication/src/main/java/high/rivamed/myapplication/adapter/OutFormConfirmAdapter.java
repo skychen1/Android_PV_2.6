@@ -45,7 +45,6 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
     public String TAG = "OutFormConfirmAdapter";
     public int mSize;
     public String mType;
-    private boolean mRemark;
 
     public OutFormConfirmAdapter(
             int layout, List<InventoryVo> data) {
@@ -71,18 +70,22 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
         ImageView view = (ImageView) helper.getView(R.id.seven_six);
 
+
         if (item.getRemark() != null) {
             if (item.getRemark().equals("1")) {
-                mRemark = true;
                 view.setVisibility(View.VISIBLE);
+                view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
             } else {
-                mRemark = false;
                 view.setVisibility(View.INVISIBLE);
             }
         } else {
-            mRemark = false;
             view.setVisibility(View.INVISIBLE);
         }
+        if (item.getIsErrorOperation()==1){
+            view.setVisibility(View.VISIBLE);
+            view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
+        }
+
 
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
         swipe.setShowMode(SwipeLayout.ShowMode.LayDown);

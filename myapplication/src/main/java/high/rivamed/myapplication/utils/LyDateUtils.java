@@ -14,6 +14,7 @@ import java.util.List;
 
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -104,7 +105,7 @@ public class LyDateUtils {
     * 给显示的vos赋值（区分各个柜子）
     * @param box_id
     */
-   public static void setAllBoxVosDate(List<InventoryVo> mBoxInventoryVos, String box_id) {
+   public static List<InventoryVo> setAllBoxVosDate(List<InventoryVo> mBoxInventoryVos, String box_id) {
 	List<InventoryVo> cstVos = getLocalAllCstVos();
 	if (cstVos.size() > 0) {
 	   for (int i = cstVos.size() - 1; i >= 0; i--) {
@@ -121,6 +122,7 @@ public class LyDateUtils {
 		}
 	   }
 	}
+	return mBoxInventoryVos;
    }
 
    /**
@@ -135,6 +137,15 @@ public class LyDateUtils {
    }
 
    /**
+    * 重新扫描
+    */
+   public static void stopScan() {
+	for (String deviceInventoryVo : mEthDeviceIdBack) {
+	   String deviceCode = deviceInventoryVo;
+	   ReaderManager.getManager().stopScan(deviceCode);
+	}
+   }
+   /**
     * 开始扫描
     * @param mBoxInventoryVos
     * @param mObs
@@ -143,6 +154,7 @@ public class LyDateUtils {
    public static void startScan(
 	   List<InventoryVo> mBoxInventoryVos, RxUtils.BaseEpcObservable mObs,
 	   String deviceIndentify) {
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -247,5 +259,27 @@ public class LyDateUtils {
 	}
 	inventoryDto.setInventoryVos(mInVo);
 	return inventoryDto;
+   }
+
+   /**
+    * 请求结束后的数据放入显示在界面上
+    * @param vos
+    */
+   public static void setBoxVosDate(List<InventoryVo> mBoxInventoryVos,List<InventoryVo> vos) {
+	if (mBoxInventoryVos.size() > 0) {
+	   for (int x = 0; x < vos.size(); x++) {
+		if (!getVosType(mBoxInventoryVos, vos.get(x).getEpc())) {
+		   InventoryVo inventoryVo = vos.get(x);
+		   inventoryVo.setDateNetType(false);
+		   mBoxInventoryVos.add(inventoryVo);
+		}
+	   }
+	} else {
+	   for (int x = 0; x < vos.size(); x++) {
+		InventoryVo inventoryVo = vos.get(x);
+		inventoryVo.setDateNetType(false);
+		mBoxInventoryVos.add(inventoryVo);
+	   }
+	}
    }
 }

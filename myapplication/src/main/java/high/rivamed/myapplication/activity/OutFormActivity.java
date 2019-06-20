@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,9 +17,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseViewHolder;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,26 +24,19 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutFormAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.fragment.ReciveBillFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.SettingPopupWindow;
-import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
+
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -103,20 +91,6 @@ public class OutFormActivity extends BaseSimpleActivity {
     */
    private String mReceiveOrderId = "";
 
-   /**
-    * (检测没有关门)语音
-    *
-    * @param event
-    */
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onHomeNoClick(Event.HomeNoClickEvent event) {
-	if (event.isClick) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	} else {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	}
-	EventBusUtils.removeStickyEvent(getClass());
-   }
 
    @Override
    protected int getContentLayoutId() {
@@ -156,26 +130,6 @@ public class OutFormActivity extends BaseSimpleActivity {
 	   initFromMsgDate(mReceiveOrderId);
 	}
    }
-//
-//   @Override
-//   public void onStart() {
-//	super.onStart();
-//	mEthDeviceIdBack3.clear();
-//	mEthDeviceIdBack.clear();
-//
-//
-//	if (TextUtils.isEmpty(mReceiveOrderId)) {
-//	   //不是从消息页面跳转过来
-//	   if (mAllOrderSheetList != null) {
-//		mAllOrderSheetList.clear();
-//
-//	   }
-//	   getTopOrderSheetDate(mPageNo, PAGE_SIZE);
-//	} else {
-//	   //从消息页面跳转过来
-//	   initFromMsgDate(mReceiveOrderId);
-//	}
-//   }
 
    /*
 	 初始化从消息界面跳转过来的数据
@@ -199,19 +153,7 @@ public class OutFormActivity extends BaseSimpleActivity {
 
 		   }
 		});
-	//        NetRequest.getInstance().findOrderDetailByOrderId(mReceiveOrderId, this, new BaseResult() {
-	//            @Override
-	//            public void onSucceed(String result) {
-	//                OrderSheetFromMsgBean orderSheetBean = mGson.fromJson(result, OrderSheetFromMsgBean.class);
-	//                mAllOrderSheetList.addAll(orderSheetBean.getPageModel().getRows());
-	//                if (mOutFormAdapter == null) {
-	//                    initData();
-	//                } else {
-	//                    mOutFormAdapter.notifyDataSetChanged();
-	//                    mPagerAdapter.notifyDataSetChanged();
-	//                }
-	//            }
-	//        });
+
    }
 
    private void initData() {
@@ -299,53 +241,8 @@ public class OutFormActivity extends BaseSimpleActivity {
    @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
 	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.tv_open_all})
    public void onViewClicked(View view) {
+      super.onViewClicked(view);
 	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-				break;
-			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-				break;
-
-			}
-		   }
-		});
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		break;
-	   case R.id.base_tab_back:
-		mEthDeviceIdBack3.clear();
-		mEthDeviceIdBack.clear();
-		finish();
-		break;
 	   case R.id.tv_open_all:
 		if (mCurrentFragment != null) {
 		   mCurrentFragment.openAllDoor();
@@ -419,12 +316,5 @@ public class OutFormActivity extends BaseSimpleActivity {
 	 * 加载更多回调
 	 */
 	public abstract void onLoadMore();
-   }
-
-   @Override
-   protected void onDestroy() {
-	super.onDestroy();
-	mEthDeviceIdBack3.clear();
-	mEthDeviceIdBack.clear();
    }
 }

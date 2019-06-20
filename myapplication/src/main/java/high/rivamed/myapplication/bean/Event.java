@@ -3,12 +3,9 @@ package high.rivamed.myapplication.bean;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
-import com.ruihua.reader.net.bean.EpcInfo;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
@@ -26,7 +23,17 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
-
+   /**
+    * 强开后的扫描 true
+    */
+   public static class EventStartScan {
+	public boolean type;
+	public String deviceIndentify;
+	public EventStartScan(boolean type,String deviceIndentify) {
+	   this.type = type;
+	   this.deviceIndentify = deviceIndentify;
+	}
+   }
    /**
     * 门锁的检测消息 TYPE true没关门，false关门
     */
@@ -695,9 +702,9 @@ public class Event {
    public static class EventStrongOpenDeviceCallBack {
 
 	public String                     deviceId;
-	public Map<String, List<EpcInfo>> epcs;
+	public List<String> epcs;
 
-	public EventStrongOpenDeviceCallBack(String deviceId, Map<String, List<EpcInfo>> epcs) {
+	public EventStrongOpenDeviceCallBack(String deviceId,List<String>  epcs) {
 	   this.deviceId = deviceId;
 	   this.epcs = epcs;
 	}

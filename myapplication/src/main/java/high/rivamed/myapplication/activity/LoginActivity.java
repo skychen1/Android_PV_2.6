@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -57,6 +58,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
 
+import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
@@ -204,10 +206,14 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	Log.i("fffa","xxxxx   "+UIUtils.isServiceRunning(this,"high.rivamed.myapplication.service.ScanService"));
+	if (!UIUtils.isServiceRunning(this,"high.rivamed.myapplication.service.ScanService")){
+	   startService(mIntentService);
+	}
+
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-//		AllDeviceCallBack.getInstance().initCallBack();
 		if (mTitleConn) {
 		   getAllCstDate(mGson, this);
 		}

@@ -52,6 +52,9 @@ public class UnNetCstUtils {
 		localDto.setThingId(dto.getThingId());
 		localDto.setAccount(dto.getAccount());
 		localDto.setTotalCount(dto.getTotalCount());
+		if (vos.size()==0){
+		   LitePal.deleteAll(InventoryVo.class);
+		}
 		if (voList.size()==0){
 		   localDto.setInventoryVos(vos);
 		   localDto.save();
