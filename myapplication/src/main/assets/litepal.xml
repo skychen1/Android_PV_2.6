@@ -20,7 +20,7 @@
     	<version value="1" ></version>
     -->
     <!--<version value="3" />-->
-    <version value="5" />
+    <version value="6" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -36,6 +36,7 @@
         <!--柜子和柜子内部的id绑定的类-->
         <mapping class="high.rivamed.myapplication.dbmodel.BoxIdBean" />
         <mapping class="high.rivamed.myapplication.dto.vo.InventoryVo" />
+        <mapping class="high.rivamed.myapplication.dto.vo.InventoryVoError" />
         <mapping class="high.rivamed.myapplication.dto.InventoryDto" />
         <mapping class="high.rivamed.myapplication.dbmodel.UserBean" />
         <mapping class="high.rivamed.myapplication.dbmodel.AccountVosBean" />

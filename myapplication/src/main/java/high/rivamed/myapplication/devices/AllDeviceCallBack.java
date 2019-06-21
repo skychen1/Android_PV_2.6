@@ -206,31 +206,29 @@ public class AllDeviceCallBack {
 
    /**
     * 正式开始扫描
-    *
     * @param deviceIndentify
     */
    public void startScan(String deviceIndentify) {
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 UHF_TYPE).find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		   .find(BoxIdBean.class);
+	LogUtils.i(TAG, "deviceIndentify    " + deviceIndentify + "    ");
+	BoxIdBean boxIdBean = LitePal.where("device_id = ? and name = ?", deviceIndentify, UHF_TYPE)
+		.findFirst(BoxIdBean.class);
 
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
-		if (i == 1) {
-		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-		   ReaderManager.getManager().startScan(device_id, READER_TIME);
-		}
-		if (i == 2) {
-		   ReaderManager.getManager().stopScan(device_id);
-		   ReaderManager.getManager().startScan(device_id, READER_TIME);
-		}
-		LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
-	   }
+	String box_id = boxIdBean.getBox_id();
+	BoxIdBean deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+		.findFirst(BoxIdBean.class);
+
+	String device_id = deviceBean.getDevice_id();
+	int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
+	if (i == 1) {
+	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+	   ReaderManager.getManager().startScan(device_id, READER_TIME);
 	}
+	if (i == 2) {
+	   ReaderManager.getManager().stopScan(device_id);
+	   ReaderManager.getManager().startScan(device_id, READER_TIME);
+	}
+	LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
+
    }
 
    public void initCallBack() {
@@ -274,7 +272,7 @@ public class AllDeviceCallBack {
 	   public void onScanNewEpc(String deviceId, String epc, int ant) {
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0 &&
 		    !mTimelyOnResume) {//强开
-		   EventBusUtils.post(new Event.EventOneEpcStrongOpenDeviceCallBack(deviceId, epc));
+		   //		   EventBusUtils.post(new Event.EventOneEpcStrongOpenDeviceCallBack(deviceId, epc));
 		} else {
 		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 		}

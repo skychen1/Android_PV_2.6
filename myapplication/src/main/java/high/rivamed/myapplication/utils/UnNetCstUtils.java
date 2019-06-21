@@ -94,8 +94,12 @@ public class UnNetCstUtils {
     * @return
     */
    public static boolean getSqlChangeType(){
-	sVos = LitePal.where("operationstatus > ? ", "0").find(InventoryVo.class);
+	sVos = LitePal.where("operationstatus > ? ", "0").order("renewtime desc").find(InventoryVo.class);
 	LogUtils.i("UNCC","sVos   "+sVos.size());
+	LogUtils.i("UNCC","sVos   "+new Gson().toJson(sVos));
+	for (InventoryVo vo : sVos) {
+	   LogUtils.i("UNCC","getRenewTime   "+vo.getRenewTime());
+	}
 	if (sVos != null && sVos.size() > 0){
 	   return true;
 	}
