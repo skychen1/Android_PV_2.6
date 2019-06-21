@@ -866,7 +866,7 @@ public class NetRequest {
 	   if(!mTitleConn){
 		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
 	   }
-	   UnNetCstUtils.putUnNetOperateYes(mGson, tag);//提交离线耗材和重新获取在库耗材数据
+	   UnNetCstUtils.putUnNetOperateYes(tag);//提交离线耗材和重新获取在库耗材数据
 
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());

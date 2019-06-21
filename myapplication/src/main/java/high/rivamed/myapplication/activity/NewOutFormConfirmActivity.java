@@ -553,7 +553,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
 			if (sureReciveOrder.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-			   new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+			   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			   if (sureReciveOrder.getMsg().equals("") ||
 				 sureReciveOrder.getMsg().contains("您已领取请领单中所有耗材")) {
 				DialogUtils.showTwoDialog(mContext, mContext, 3, "耗材领用成功",
@@ -562,7 +562,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 				DialogUtils.showTwoDialog(mContext, mContext, 2, "耗材领用成功",
 								  sureReciveOrder.getMsg());
 			   }
-			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
+			   UnNetCstUtils.putUnNetOperateYes( NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 
 			} else {
 			   ToastUtils.showShort(sureReciveOrder.getMsg());

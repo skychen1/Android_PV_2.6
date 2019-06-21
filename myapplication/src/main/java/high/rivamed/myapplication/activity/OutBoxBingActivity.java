@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +39,7 @@ import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVoError;
 import high.rivamed.myapplication.fragment.TimelyAllFrag;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -84,6 +84,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -716,32 +717,31 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	dto.setPatientId(mPatientId);
 	dto.setOperatingRoomNo(mOperatingRoomNo);
 	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	String toJson = mGson.toJson(dto);
-	LogUtils.i(TAG, "toJson  " + toJson);
+//	String toJson = mGson.toJson(dto);
 	stopScan();
 	if (mOnBtnGone) {
-	   NetRequest.getInstance().putAllOperateYes(toJson, this, new BaseResult() {
+	   NetRequest.getInstance().putAllOperateYes(mGson.toJson(dto), this, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
-		   UnNetCstUtils.putUnNetOperateYes(mGson, OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   UnNetCstUtils.putUnNetOperateYes( OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}
 	   });
 	} else {
 	   if (mOperationType == 4) {
 		if (mTitleConn) {
-		   putEpcLyThDate(mIntentType, toJson);
+		   putEpcLyThDate(mIntentType, dto);
 		} else {
-		   setErrorDate(mIntentType, "-1", 4);
+		   setErrorDate(dto,mIntentType, "-1", 4);
 		}
 	   } else {
 		if (mTitleConn) {
-		   putEpcDate(mIntentType, toJson);
+		   putEpcDate(mIntentType, dto);
 		} else {
-		   setErrorDate(mIntentType, "-1", 3);
+		   setErrorDate(dto,mIntentType, "-1", 3);
 		}
 	   }
 
@@ -754,27 +754,26 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * @param mIntentType
     * @param toJson
     */
-   private void putEpcDate(int mIntentType, String toJson) {
-	NetRequest.getInstance().putOperateYes(toJson, this, new BaseResult() {
+   private void putEpcDate(int mIntentType, InventoryDto dto) {
+	NetRequest.getInstance().putOperateYes(mGson.toJson(dto), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
-		new Thread(() -> deleteVo(mGson, result, mContext)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		finish();
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setErrorDate(mIntentType, result, 3);
-
+		setErrorDate(dto,mIntentType, result, 3);
 	   }
 	});
    }
@@ -785,26 +784,26 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * @param mIntentType
     * @param toJson
     */
-   private void putEpcLyThDate(int mIntentType, String toJson) {
-	NetRequest.getInstance().putOperateLyThYes(toJson, this, new BaseResult() {
+   private void putEpcLyThDate(int mIntentType, InventoryDto dto) {
+	NetRequest.getInstance().putOperateLyThYes(mGson.toJson(dto), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-		new Thread(() -> deleteVo(mGson, result, mContext)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		finish();
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setErrorDate(mIntentType, result, 4);
+		setErrorDate(dto,mIntentType, result, 4);
 	   }
 	});
    }
@@ -813,31 +812,32 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * 请求失败的错误数据存储
     * @param mIntentType
     */
-   private void setErrorDate(int mIntentType, String result, int type) {
+   private void setErrorDate(InventoryDto dto,int mIntentType, String result, int type) {
 	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 	    mOperationType == type) {
 	   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
-	   ContentValues values = new ContentValues();
-	   for (InventoryVo s : mInventoryDto.getInventoryVos()) {
+	   for (InventoryVo s : dto.getInventoryVos()) {
 		if (!getVosType(voList, s.getEpc())) {
-		   s.save();
+		   s.save();//放入，存入库存
+		   saveErrorVo(s.getEpc(),s.getDeviceId(),true,false,true);//放入，存入error流水表
 		} else {
-		   values.put("status", "3");
-		   values.put("operationstatus", 98);
-		   values.put("renewtime", getDates());
-		   values.put("idNo", s.getIdNo());
-		   values.put("isCreate", s.isCreate());
-		   values.put("medicalId", s.getMedicalId());
-		   values.put("operatingRoomName", s.getOperatingRoomName());
-		   values.put("operatingRoomNo", s.getOperatingRoomNo());
-		   values.put("patientId", s.getPatientId());
-		   values.put("patientName", s.getPatientName());
-		   values.put("sex", s.getSex());
-		   values.put("surgerytime", s.getSurgeryTime());
-		   values.put("accountid", SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-		   values.put("username", SPUtils.getString(mContext, KEY_USER_NAME));
-		   Log.e(TAG, "s.getEpc()   " + s.getEpc());
-		   LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
+		   deleteVo(voList,s.getEpc());//拿出时，删除库存表内的该条数据
+		   InventoryVoError inventory = new InventoryVoError();//拿出，存入error流水表
+		   inventory.setStatus("3");
+		   inventory.setOperationStatus(98);
+		   inventory.setRenewTime(getDates());
+		   inventory.setIdNo(s.getIdNo());
+		   inventory.setCreate(s.isCreate());
+		   inventory.setMedicalId(s.getMedicalId());
+		   inventory.setOperatingRoomName(s.getOperatingRoomName());
+		   inventory.setOperatingRoomNo( s.getOperatingRoomNo());
+		   inventory.setPatientId(s.getPatientId());
+		   inventory.setPatientName(s.getPatientName());
+		   inventory.setSex(s.getSex());
+		   inventory.setSurgeryTime(s.getSurgeryTime());
+		   inventory.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
+		   inventory.setUserName(SPUtils.getString(mContext, KEY_USER_NAME));
+		   inventory.save();
 		}
 	   }
 	   ToastUtils.showShort("操作成功");

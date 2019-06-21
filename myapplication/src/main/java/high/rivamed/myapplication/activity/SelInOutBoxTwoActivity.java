@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,7 +57,6 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
@@ -76,6 +74,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -689,7 +688,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "result  " + result);
 		   ToastUtils.showShort("操作成功");
 		   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
-		   new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
 			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
@@ -697,8 +696,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(mGson,
-								SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}
 
@@ -747,7 +745,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   ToastUtils.showShort("操作成功");
 
 		   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
-		   new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
 			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
@@ -755,8 +753,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(mGson,
-								SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}
 
@@ -793,17 +790,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void putErrorEpcDate(InventoryDto dto, int mIntentType) {
 	List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
-	ContentValues values = new ContentValues();
 	for (InventoryVo s : dto.getInventoryVos()) {
 	   if (!getVosType(voList, s.getEpc())) {
-		s.save();
+		s.save();//放入，存入库存
+		saveErrorVo(s.getEpc(),s.getDeviceId(),true,false,true);//放入，存入error流水表
 	   } else {
-		values.put("status", "3");
-		values.put("operationstatus", 98);
-		values.put("renewtime", getDates());
-		values.put("accountid", SPUtils.getString(mContext, KEY_ACCOUNT_ID));
-		values.put("username", SPUtils.getString(mContext, KEY_USER_NAME));
-		LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
+		deleteVo(voList,s.getEpc());//拿出时，删除库存表内的该条数据
+		saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,true);//拿出，存入error流水表
 	   }
 	}
 
@@ -932,14 +925,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result移出   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (event.mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		finish();
 	   }
 
@@ -1029,14 +1022,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result退货   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (event.mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		finish();
 	   }
 
@@ -1076,14 +1069,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result调拨   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (event.mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
 		} else {
 		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		}
-		UnNetCstUtils.putUnNetOperateYes(mGson, SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		finish();
 	   }
 

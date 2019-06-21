@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.service;
 
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -23,10 +22,14 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RxUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 
+import static high.rivamed.myapplication.base.App.getAppContext;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
-import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
  * 项目名称:    Android_PV_2.6.5New
@@ -92,7 +95,7 @@ public class ScanService extends Service {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventStrongOpenDeviceCallBack event) {
-      mEPCDatess.clear();
+	mEPCDatess.clear();
 
 	LogUtils.i(TAG, "EventStrongOpenDeviceCallBack    " + event.epcs.size());
 	BoxIdBean boxIdBean = LitePal.where("device_id = ?", event.deviceId)
@@ -107,17 +110,56 @@ public class ScanService extends Service {
 	   }
 	}
 	LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
-	putEPC(mEPCDatess,box_id);
+	putEPC(mEPCDatess, box_id);
    }
+
+   //   /**
+   //    * 提交epc数据
+   //    *
+   //    * @param epcDatess
+   //    */
+   //   private void putEPC(Map<String, String> epcDatess,String boxid) {
+   //	List<InventoryVo> mInVo = new ArrayList<>();
+   //	List<InventoryVo> vos = setAllBoxVosDate(LitePal.findAll(InventoryVo.class), boxid);
+   //	mInVo.addAll(vos);
+   //	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
+   //	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
+   //	   if (vo != null) {
+   //		mInVo.remove(vo);
+   //	   } else {
+   //		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
+   //		    v.getValue() != null) {
+   //		   InventoryVo inventory = new InventoryVo();
+   //		   inventory.setEpc(v.getKey());
+   //		   inventory.setDeviceId(v.getValue());
+   //		   inventory.setRenewTime(getDates());
+   //		   inventory.setStatus("2");//入柜
+   //		   inventory.setOperationStatus(99);
+   //		   boolean save = inventory.save();
+   //		   LogUtils.i(TAG, "Scan 入柜存入 " + save);
+   //		}
+   //	   }
+   //	}
+   //	for (InventoryVo s : mInVo) {
+   //	   ContentValues values = new ContentValues();
+   //	   values.put("status", "3");//出柜
+   //	   values.put("operationstatus", 98);
+   //	   values.put("renewtime", getDates());
+   //	   //	   values.put("accountid", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
+   //	   //	   values.put("username", SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
+   //	   LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
+   //	}
+   //   }
 
    /**
     * 提交epc数据
     *
     * @param epcDatess
     */
-   private void putEPC(Map<String, String> epcDatess,String boxid) {
+   private void putEPC(Map<String, String> epcDatess, String boxid) {
 	List<InventoryVo> mInVo = new ArrayList<>();
-	List<InventoryVo> vos = setAllBoxVosDate(LitePal.findAll(InventoryVo.class), boxid);
+	List<InventoryVo> allVo = LitePal.findAll(InventoryVo.class);
+	List<InventoryVo> vos = setAllBoxVosDate(allVo, boxid);
 	mInVo.addAll(vos);
 	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
 	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
@@ -126,25 +168,19 @@ public class ScanService extends Service {
 	   } else {
 		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
 		    v.getValue() != null) {
-		   InventoryVo inventory = new InventoryVo();
-		   inventory.setEpc(v.getKey());
-		   inventory.setDeviceId(v.getValue());
-		   inventory.setRenewTime(getDates());
-		   inventory.setStatus("2");//入柜
-		   inventory.setOperationStatus(99);
-		   boolean save = inventory.save();
-		   LogUtils.i(TAG, "Scan 入柜存入 " + save);
+		   boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
+		   boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
+		   LogUtils.i(TAG, "Scan 入柜存入库存 " + save+ "     Scan 入柜存入error  "+saveError);
 		}
 	   }
 	}
 	for (InventoryVo s : mInVo) {
-	   ContentValues values = new ContentValues();
-	   values.put("status", "3");//出柜
-	   values.put("operationstatus", 98);
-	   values.put("renewtime", getDates());
-	   //	   values.put("accountid", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-	   //	   values.put("username", SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	   LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
+	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
+	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
+	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
+	}
+	if (mTitleConn){
+	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
 	}
    }
 

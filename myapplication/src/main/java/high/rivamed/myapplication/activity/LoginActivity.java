@@ -56,6 +56,7 @@ import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
 
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
@@ -84,7 +85,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
-import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -157,7 +157,7 @@ public class LoginActivity extends SimpleActivity {
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
-		   getAllCstDate(mGson, this);
+		   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 		   getUnNetUseDate();
 		   getUnEntFindOperation();
 		}
@@ -215,7 +215,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void run() {
 		if (mTitleConn) {
-		   getAllCstDate(mGson, this);
+		   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 		}
 		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
 		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
@@ -232,7 +232,7 @@ public class LoginActivity extends SimpleActivity {
 
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_d");
+		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_c");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -782,7 +782,9 @@ public class LoginActivity extends SimpleActivity {
    protected void onPause() {
 	super.onPause();
 	mOnStart = false;
-
+	if (mTitleConn){
+	   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
+	}
    }
 
    @Override

@@ -737,9 +737,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			EventBusUtils.post(new Event.EventMealType(inventoryVos));//用来判断套组是否已经领取
 			if (info.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
-			   new Thread(() -> deleteVo(mGson,result,mContext)).start();//数据库删除已经操作过的EPC
+			   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			   ToastUtils.showShort(info.getMsg());
-			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
+			   UnNetCstUtils.putUnNetOperateYes(NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 			   finish();
 			} else {
 			   ToastUtils.showShort(info.getMsg());
