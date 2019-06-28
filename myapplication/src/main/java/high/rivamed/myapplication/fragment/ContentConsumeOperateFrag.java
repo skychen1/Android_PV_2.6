@@ -85,6 +85,7 @@ import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -167,7 +168,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 门锁的状态检测回调
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -249,7 +249,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 门锁的提示
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -410,7 +409,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	else if (UIUtils.getConfigType(mContext, CONFIG_009) && (mRbKey == 3 || mRbKey == 4)) {
 	   mContext.startActivity(
 		   new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
-			   .putExtra("bindType", "afterBind")
+			   .putExtra("bindType", TEMP_AFTERBIND)
 			   .putExtra("mEthId", mEthId));
 	}
 	//正常的领用或者其他正常操作
@@ -549,9 +548,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mPause = false;
 	switch (id) {
 	   case R.id.content_rb_lyth://领用或者退回
+		ToastUtils.showShort("领用/退回！");//拿出
 		lingYongAndBack(position, 4);
 		break;
 	   case R.id.content_rb_ly://领用
+		ToastUtils.showShort("领用！");//拿出
 		lingYongAndBack(position, 3);
 		break;
 	   case R.id.content_rb_rk://入库
@@ -664,11 +665,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     * */
    private void lingYongAndBack(int position, int mkey) {
 	mRbKey = mkey;
-	if (mRbKey == 3) {
-	   ToastUtils.showShort("领用！");//拿出
-	}else {
-	   ToastUtils.showShort("领用/退回！");//拿出
-	}
 
 	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
 	     UIUtils.getConfigType(mContext, CONFIG_019)) &&

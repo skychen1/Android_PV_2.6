@@ -36,6 +36,7 @@ import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryVoError;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
@@ -240,9 +241,10 @@ public class RegisteFrag extends SimpleFragment {
 	LitePal.deleteAll(BoxIdBean.class);
 	LitePal.deleteAll(InventoryDto.class);
 	LitePal.deleteAll(InventoryVo.class);
+	LitePal.deleteAll(InventoryVoError.class);
 	LitePal.deleteDatabase("rivamedhigh");
+	LitePal.initialize(mContext);//数据库初始化
 	setRegiestDate(s);
-
 	putDbDate(mSnRecoverBean);
 	initData();
    }

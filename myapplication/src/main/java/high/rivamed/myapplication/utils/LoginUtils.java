@@ -299,7 +299,7 @@ public class LoginUtils {
      * 检测设备是否禁用
      */
     public static boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
-        if (tCstConfigVos.size() == 0)
+        if (tCstConfigVos==null||tCstConfigVos.size() == 0)
             return false;
         for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
             if (s.getCode().equals(CONFIG_013)) {

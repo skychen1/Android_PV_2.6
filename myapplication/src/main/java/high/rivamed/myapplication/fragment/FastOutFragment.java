@@ -49,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_OUT;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**
@@ -319,7 +320,7 @@ public class FastOutFragment extends SimpleFragment {
     */
    private void overFinish() {
 	EventBusUtils.post(new Event.EventFastMoreScan(true));
-	UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
+	UnNetCstUtils.putUnNetOperateYes(_mActivity);//提交离线耗材和重新获取在库耗材数据
    }
 
    /**
@@ -477,7 +478,7 @@ public class FastOutFragment extends SimpleFragment {
 	   for (InventoryVo c : mInOutDto.getOutInventoryVos()) {
 		c.setSelected(true);
 	   }
-	   inventoryDto.setBindType("afterBind");
+	   inventoryDto.setBindType(TEMP_AFTERBIND);
 	   EventBusUtils.postSticky(new Event.EventButGone(true));
 	   startActivity(new Intent(mContext, OutBoxBingActivity.class));
 	   EventBusUtils.postSticky(new Event.EventOutBoxBingDto(inventoryDto));
@@ -594,7 +595,7 @@ public class FastOutFragment extends SimpleFragment {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result调拨   " + result);
 		ToastUtils.showShort("操作成功");
-		UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
+		UnNetCstUtils.putUnNetOperateYes( _mActivity);//提交离线耗材和重新获取在库耗材数据
 	   }
 
 	   @Override

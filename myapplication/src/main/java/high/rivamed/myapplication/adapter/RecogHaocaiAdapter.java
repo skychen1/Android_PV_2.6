@@ -46,11 +46,11 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
 	mLl = ((LinearLayout) helper.getView(R.id.seven_ll));
-//	if (helper.getAdapterPosition() % 2 == 0) {
-//	   mLl.setBackgroundResource(R.color.bg_color);
-//	} else {
-	   mLl.setBackgroundResource(R.color.bg_f);
-//	}
+	//	if (helper.getAdapterPosition() % 2 == 0) {
+	//	   mLl.setBackgroundResource(R.color.bg_color);
+	//	} else {
+	mLl.setBackgroundResource(R.color.bg_f);
+	//	}
 	mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -112,9 +112,31 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	mSeven_three.setText(item.getCstSpec());
 	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
-	if (status.equals("2")) {
-	   mSeven_seven.setText("领用");
-	} else {
+	//	if (status.equals("2")) {
+	//	   mSeven_seven.setText("领用");
+	//	} else {
+	//	   mSeven_seven.setText(status);
+	//	}
+	if (status != null && ((status.equals("3") && item.getOperationStatus() != 98) ||
+				     (status.equals("4") && (item.getOperationStatus() == 99 ||
+								     item.getOperationStatus() == 3)))) {
+	   if (item.getExpireStatus() == 0) {
+		mSeven_seven.setText("已过期");
+	   } else {
+		mSeven_seven.setText("领用");
+	   }
+	} else if (null == status) {
+	   mSeven_seven.setText("异常耗材");
+	} else if (status != null && status.equals("2")) {
+	   mSeven_seven.setText("已入库");
+	} else if (status != null && status.equals("9")) {
+	   mSeven_seven.setText("移出");
+	} else if (status != null && status.equals("8")) {
+	   mSeven_seven.setText("退货");
+	} else if (status!=null&&(status.equals("4") && (item.getOperationStatus() == 98 ||
+									 item.getOperationStatus() == 7))){
+	   mSeven_seven.setText("退回");
+	}else {
 	   mSeven_seven.setText(status);
 	}
 
@@ -139,9 +161,9 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 
 	}
-	if (item.getOperationStatus()==7){
+	if (item.getOperationStatus() == 7) {
 	   mSeven_six.setText("/");
-	}else {
+	} else {
 	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
 		mSeven_six.setText("");
 	   } else {
@@ -162,7 +184,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mLl.setBackgroundResource(R.color.bg_color);
 	   mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_seven.setBackgroundResource(R.color.bg_color);
-	}else if (item.getIsErrorOperation() == 1&&item.getDeleteCount()==0){
+	} else if (item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) {
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_three.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -171,11 +193,11 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_seven.setBackgroundResource(R.drawable.bg_text_red);
 	}
 
-	if (item.getExpireStatus()!=null) {
+	if (item.getExpireStatus() != null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(),
 						mSeven_four);
 	}
-	if (item.getOperationStatus()==99){
+	if (item.getOperationStatus() == 99) {
 	   mSeven_one.setText("/");
 	   mSeven_three.setText("/");
 	   mSeven_four.setText("/");

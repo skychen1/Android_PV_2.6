@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,7 +7,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,28 +18,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.litepal.LitePal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BillOrderAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BillOrderResultBean;
 import high.rivamed.myapplication.bean.BillStockResultBean;
@@ -51,8 +43,9 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindBillOrderBean;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UseCstOrderBean;
-import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.entity.Inventory;
+import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -60,29 +53,30 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
+import high.rivamed.myapplication.utils.RxUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.RvDialog;
-import high.rivamed.myapplication.views.SettingPopupWindow;
-import high.rivamed.myapplication.views.TwoDialog;
 
-import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
-import static high.rivamed.myapplication.cont.Constants.FINISH_TIME;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
-import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
-import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
+import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosBoxIdVo;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosRemark;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
+import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
+import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -99,7 +93,6 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
 public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    private String TAG = "NewOutMealBingConfirmActivity";
-   public int      my_id;
    public int      mSize;
    @BindView(R.id.timely_start_btn)
    public TextView mTimelyStartBtn;
@@ -182,7 +175,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public String   mData;
    List<String> titeleList = null;
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos  = new ArrayList<>();
-   public List<String> boxList  = new ArrayList<>();
    private int                                     mLayout;
    private int                                     mTitleLayout;
    private View                                    mHeadView;
@@ -208,19 +200,16 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     */
    private UseCstOrderBean                         mUseCstOrderRequest;
 
-   private int mNoTemPage = 1;
-   private int mRows      = 20;
-   private RvDialog.Builder mShowRvDialog2;
-   private List<BingFindSchedulesBean.PatientInfoVos> mPatientInfos = new ArrayList<>();
    private List<BoxSizeBean.DevicesBean> mTbaseDevices;
-   /**
-    * 传输的EPC
-    *
-    * @param event
-    */
-   private Map<String, List<EpcInfo>> mEPCMapDate = new TreeMap<>();
-   private LoadingDialog.Builder mLoading;
+   private Handler           mHandler;
+   private Runnable          mRunnable;
+   private Runnable          mRunnableW;
 
+   private LoadingDialog.Builder     mLoading;
+   private String                    mClossEthId;
+   private RxUtils.BaseEpcObservable mObs;
+   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private boolean mResume;
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -232,53 +221,83 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	EventBusUtils.register(this);
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
 		.getSerializable("DATA");
+	mClossEthId = getIntent().getStringExtra("mEthId");
 	mPrePageDate = data.orderSheetBean;
 	mTransReceiveOrderDetailVos = data.transReceiveOrderDetailVosList;
-
 	mTbaseDevices = data.tbaseDevices;
 	mFindBillOrderBean = new FindBillOrderBean();
 	mFindBillOrderBean.setSuiteId(mPrePageDate.getSuiteId());
 	mFindBillOrderBean.setInventoryVos(new ArrayList<>());
 	mFindBillOrderBean.setDeviceIds(new ArrayList<>());
+	setRunnable();
+	initRxJavaSearch();
 	initData();
+
 	if (mPublicAdapter != null && mBillOrderResultBean.getInventoryVos() != null) {
 	   initView();
 	}
+
    }
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onEventButton(Event.EventButton event) {
-	LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel");
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
-		for (InventoryVo b : mBillOrderResultBean.getInventoryVos()) {
-		   if (UIUtils.getConfigType(mContext, CONFIG_009)&&!UIUtils.getConfigType(mContext, CONFIG_019) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
-			mDownBtnOne.setEnabled(false);
-			if (b.getPatientName() == null || b.getPatientName().equals("")){
-			   mAllOutText.setVisibility(View.VISIBLE);
-			   mAllOutText.setText(R.string.bind_error_string);
-			}else {
-			   mAllOutText.setVisibility(View.VISIBLE);
-			   mAllOutText.setText(R.string.fast_out_error_string);
+		for (InventoryVo b : mBoxInventoryVos) {
+		   if (mDoorStatusType){
+			if (UIUtils.getConfigType(mContext, CONFIG_009)&&!UIUtils.getConfigType(mContext, CONFIG_019) && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+																			  (b.getPatientName() == null || b.getPatientName().equals("")))) {
+			   mDownBtnOne.setEnabled(false);
+			   mTimelyOpenDoor.setEnabled(true);
+			   mLyBingBtn.setEnabled(true);
+			   mBindPatient.setEnabled(true);
+			   if (b.getPatientName() == null || b.getPatientName().equals("")){
+				mAllOutText.setVisibility(View.VISIBLE);
+				mAllOutText.setText(R.string.bind_error_string);
+				if (StringUtils.isExceedTime(mBoxInventoryVos)){
+				   mAllOutText.setText(R.string.op_error_newoutmeal);
+				}
+			   }else {
+				mAllOutText.setVisibility(View.VISIBLE);
+				mAllOutText.setText(R.string.op_error_newoutmeal);
+			   }
+			   return;
 			}
-			return;
-		   }
-		   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-			 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-			  b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
-			mDownBtnOne.setEnabled(false);
-			if (b.getPatientName() == null || b.getPatientName().equals("")){
-			   mAllOutText.setVisibility(View.VISIBLE);
-			   mAllOutText.setText(R.string.bind_error_string);
-			}else {
-			   mAllOutText.setVisibility(View.VISIBLE);
-			   mAllOutText.setText(R.string.fast_out_error_string);
+			if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
+			    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+			     b.getExpireStatus() == 0) || (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
+			   mDownBtnOne.setEnabled(false);
+			   mTimelyOpenDoor.setEnabled(true);
+			   mLyBingBtn.setEnabled(true);
+			   mBindPatient.setEnabled(true);
+
+			   if (b.getPatientName() == null || b.getPatientName().equals("")){
+				mAllOutText.setVisibility(View.VISIBLE);
+				mAllOutText.setText(R.string.bind_error_string);
+				if (StringUtils.isExceedTime(mBoxInventoryVos)){
+				   mAllOutText.setText(R.string.op_error_newoutmeal);
+				}
+			   }else {
+				mAllOutText.setVisibility(View.VISIBLE);
+				mAllOutText.setText(R.string.op_error_newoutmeal);
+			   }
+
+			   return;
+			} else {
+			   mDownBtnOne.setEnabled(true);
+			   mTimelyOpenDoor.setEnabled(true);
+			   mLyBingBtn.setEnabled(true);
+			   mBindPatient.setEnabled(true);
+			   mAllOutText.setVisibility(View.GONE);
 			}
-			return;
-		   } else {
-			mDownBtnOne.setEnabled(true);
-			mAllOutText.setVisibility(View.GONE);
+		   }else {
+			mDownBtnOne.setEnabled(false);
+			mTimelyOpenDoor.setEnabled(false);
+			mLyBingBtn.setEnabled(false);
+			mBindPatient.setEnabled(false);
+			mAllOutText.setVisibility(View.VISIBLE);
+			mAllOutText.setText(R.string.open_error_string);
 		   }
+
 		}
 	   }
 	}
@@ -301,30 +320,103 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+   /**
+    * 门锁的提示
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onDialogEvent(Event.PopupEvent event) {
+	if (event.isMute) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   mDownBtnOne.setEnabled(false);
+	   mTimelyOpenDoor.setEnabled(false);
+	   mLyBingBtn.setEnabled(false);
+	   mBindPatient.setEnabled(false);
+	   mAllOutText.setVisibility(View.VISIBLE);
+	   mAllOutText.setText(R.string.open_error_string);
+	}
+	if (!event.isMute) {
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   startScan(mBoxInventoryVos,mObs,event.mEthId);
+	}
+	if (mDoorStatusType) {
+	   setTitleRightNum();
+	}else {
+	   mDownBtnOne.setEnabled(false);
+	   mTimelyOpenDoor.setEnabled(false);
+	   mLyBingBtn.setEnabled(false);
+	   mBindPatient.setEnabled(false);
+	   mAllOutText.setVisibility(View.VISIBLE);
+	   mAllOutText.setText(R.string.open_error_string);
+	}
+   }
+   /**
+    * EPC扫描返回数据（单个返回）
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
+	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
+		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+		   mBoxInventoryVos.remove(i);
+		}
+	   }
+	   for (InventoryVo vo : mBoxInventoryVos) {
+	      if (getVosRemark(mTransReceiveOrderDetailVos,vo.getCstId())){
+		   vo.setRemark("1");
+		}else {
+		   vo.setRemark("0");
+		}
+	   }
+	   setTitleRightNum();
+	   setNotifyData();
+	   EventBusUtils.post(new Event.EventButton(true,true));
+	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
+	   mObs.getScanEpc(event.deviceId, event.epc);
+	}
+   }
+   /**
+    * 500ms进行网络请求一次RXJAVA的处理
+    */
+   private void initRxJavaSearch() {
+	mObs = new RxUtils.BaseEpcObservable() {};
+	RxUtils.getInstance().setEpcResultListener(mObs, new RxUtils.EpcDebounceResultListener() {
+	   @Override
+	   public void goEpcSearch(List<DeviceInventoryVo> vos) {
+		for (DeviceInventoryVo vo : vos) {
+		   if (mFindBillOrderBean.getDeviceIds().size()==0||!getVosBoxIdVo(mFindBillOrderBean.getInventoryVos(),vo.getDeviceId())){
+			mFindBillOrderBean.getDeviceIds().add(vo.getDeviceId());
+		   }
+		   for (Inventory inventory : vo.getInventories()) {
+		      if (!getVosType(mFindBillOrderBean.getInventoryVos(),inventory.getEpc())){
+			   InventoryVo item = new InventoryVo();
+			   item.setEpc(inventory.getEpc());
+			   mFindBillOrderBean.getInventoryVos().add(item);
+			}
+		   }
+		}
+		if (mTitleConn) {
+		   findBillOrder(mFindBillOrderBean);
+		}
+//		else {
+//		   new Thread(() -> setScanDateInBoxVo(vos)).start();
+//		}
+
+	   }
+	});
+   }
 
    /**
     * 数据加载
     */
    private void initData() {
+	startScan(mBoxInventoryVos,mObs,mClossEthId);
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
 	mBaseTabOutLogin.setEnabled(false);
 	mBaseTabBtnMsg.setEnabled(false);
-	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nan)
-		   .error(R.mipmap.hccz_mrtx_nan)
-		   .into(mBaseTabIconRight);
-	} else {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nv)
-		   .error(R.mipmap.hccz_mrtx_nv)
-		   .into(mBaseTabIconRight);
-	}
 
 	if (mUseCstOrderRequest == null) {
 	   mUseCstOrderRequest = new UseCstOrderBean();
@@ -364,70 +456,32 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mBindPatient.setEnabled(false);
    }
 
-   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-	   R.id.base_tab_btn_msg, R.id.base_tab_back, R.id.ly_bing_btn_right, R.id.ly_bing_btn,
+   @Override
+   protected void onResume() {
+	super.onResume();
+	mResume=true;
+   }
+
+   @Override
+   protected void onPause() {
+	super.onPause();
+	mResume=false;
+   }
+
+   @OnClick({R.id.ly_bing_btn_right, R.id.ly_bing_btn,
 	   R.id.timely_start_btn, R.id.ly_bind_patient, R.id.timely_open_door, R.id.activity_btn_one})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
-				break;
-			   case 1:
-				mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
-				break;
-			}
-		   }
-		});
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-			dialog.dismiss();
-		   }
-		});
-		builder.create().show();
-		break;
-	   case R.id.base_tab_btn_msg:
-		mContext.startActivity(new Intent(this, MessageActivity.class));
-		break;
-	   case R.id.base_tab_back:
-		finish();
-		break;
+
 	   case R.id.timely_start_btn:
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   mEPCMapDate.clear();
-		   if (mFindBillOrderBean.getInventoryVos()!=null){
-			mFindBillOrderBean.getInventoryVos().clear();
-			mFindBillOrderBean.getDeviceIds().clear();
-		   }
-		   mEthDeviceIdBack3.clear();
-		   mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
+
+		   mBoxInventoryVos.clear();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
-			LogUtils.i(TAG, "deviceCode    " + deviceCode);
-			startScan(deviceCode);
+			startScan(mBoxInventoryVos,mObs,deviceCode);
 		   }
 		}
 		break;
@@ -435,32 +489,32 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   return;
 		} else {
+		   mBoxInventoryVos.clear();
 		   reOpenDoor();
 		}
 		break;
 	   case R.id.ly_bing_btn:
-
-
-		LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
-				    mGson.toJson(mTransReceiveOrderDetailVos));
-		DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos,
-								     mPrePageDate);
+		if (!UIUtils.isFastDoubleClick(R.id.ly_bing_btn)) {
+		   LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
+					 mGson.toJson(mTransReceiveOrderDetailVos));
+		   DialogUtils.showLookUpDetailedListDialog(mContext, false, mTransReceiveOrderDetailVos,
+									  mPrePageDate);
+		}
 		break;
 	   case R.id.activity_btn_one:
-		if (UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
-		   return;
-		} else {
+		if (!UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
+		   setRemoveRunnable();
 		   useOrderCst();
 		}
 		break;
 	   case R.id.ly_bind_patient:
-	      if (StringUtils.isExceedTime(mBillOrderResultBean.getInventoryVos())){
+	      if (StringUtils.isExceedTime(mBoxInventoryVos)){
 		   DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump", null);
 		}else {
 		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
 			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("type", TEMP_AFTERBIND);
 			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
 			intent.putExtra("position", -1000);
 			intent.putExtra("GoneType", "VISIBLE");
@@ -468,7 +522,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   } else {
 			EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			Intent intent = new Intent(mContext, TemPatientBindActivity.class);
-			intent.putExtra("type", "afterBindTemp");
+			intent.putExtra("type", TEMP_AFTERBIND);
 			intent.putExtra("position", -1000);
 			intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
 			intent.putExtra("GoneType", "GONE");
@@ -511,10 +565,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.removeView(mHeadView);
 	if (mPublicAdapter != null) {
-	   mPublicAdapter.notifyDataSetChanged();
+	   setNotifyData();
 	} else {
 	   mPublicAdapter = new BillOrderAdapter(mLayout, mSize,
-							     mBillOrderResultBean.getInventoryVos());
+							     mBoxInventoryVos);
 
 	   mRecyclerview.addItemDecoration(
 		   new DividerItemDecoration(mContext, LinearLayout.VERTICAL));
@@ -533,50 +587,19 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    /**
     * 根据EPC查询的套组耗材信息
     */
-   private void findBillOrder() {
+   private void findBillOrder(FindBillOrderBean mDto) {
 
 	NetRequest.getInstance()
-		.findOrderCstListByEpc(mGson.toJson(mFindBillOrderBean), this, null, new BaseResult() {
+		.findOrderCstListByEpc(mGson.toJson(mDto), this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			EventBusUtils.postSticky(new Event.EventLoading(false));
 			LogUtils.i(TAG, "result   " + result);
+			mFindBillOrderBean.getInventoryVos().clear();
+			mFindBillOrderBean.getDeviceIds().clear();
 			mBillOrderResultBean = mGson.fromJson(result, BillOrderResultBean.class);
-			mTimelyOpenDoor.setEnabled(true);
-			mLyBingBtn.setEnabled(true);
-			mBindPatient.setEnabled(true);
-//			if (mBillOrderResultBean.getErrorEpcs() != null &&
-//			    mBillOrderResultBean.getErrorEpcs().size() > 0) {
-//			   String string = StringUtils.listToString(mBillOrderResultBean.getErrorEpcs());
-//			   ToastUtils.showLong(string);
-//			   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-//			}
-			if (mBillOrderResultBean.getInventoryVos() == null ||
-			    mBillOrderResultBean.getInventoryVos().size() == 0) {
-			   mDownBtnOne.setEnabled(false);
-			   Toast.makeText(mContext, "未扫描到操作的耗材,即将返回主界面，请重新操作", Toast.LENGTH_SHORT).show();
-			   new Handler().postDelayed(new Runnable() {
-				public void run() {
-				   finish();
-				}
-			   }, FINISH_TIME);
-			} else {
-			   if (mBillOrderResultBean.getMsg() != null) {
-				ToastUtils.showLong(mBillOrderResultBean.getMsg());
-			   }
-			   if (mPublicAdapter == null) {
-				initView();
-			   } else {
-				mPublicAdapter.setNewData(mBillOrderResultBean.getInventoryVos());
-				mPublicAdapter.notifyDataSetChanged();
-			   }
-			   mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" +
-									   mBillOrderResultBean.getKindsOfCst() +
-									   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-									   mBillOrderResultBean.getCountNum() +
-									   "</big></font>"));
-			   EventBusUtils.post(new Event.EventButton(true,true));
-			}
+
+			setDateEpc(mBillOrderResultBean);
 		   }
 
 		   @Override
@@ -589,18 +612,120 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   }
 		});
    }
+   /**
+    * 扫描EPC返回后进行赋值
+    */
+   private void setDateEpc(BillOrderResultBean mBillOrderResultBean) {
+
+	if (mBillOrderResultBean.getInventoryVos() != null &&
+	    mBillOrderResultBean.getInventoryVos().size() > 0) {
+	   setBoxVosDate(mBoxInventoryVos,mBillOrderResultBean.getInventoryVos());
+	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	}
+	setTitleRightNum();
+   }
+
+   private void setTitleRightNum() {
+
+	if (mPublicAdapter == null) {
+	   initView();
+	} else {
+	   mPublicAdapter.setNewData(mBoxInventoryVos);
+	   setNotifyData();
+	}
+	ArrayList<String> strings = new ArrayList<>();
+	for (InventoryVo vosBean : mBoxInventoryVos) {
+	   if (vosBean.getCstId() != null) {
+		strings.add(vosBean.getCstId());
+	   }
+	}
+	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
+	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" +
+							list.size() +
+							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							mBoxInventoryVos.size() +
+							"</big></font>"));
+	EventBusUtils.post(new Event.EventButton(true, true));
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+   }
+
+   /**
+    * adapter数据的刷新
+    */
+   private void setNotifyData() {
+	mPublicAdapter.notifyDataSetChanged();
+	setHandlerToastAndFinish();
+   }
+   /**
+    * 没有数据就跳转到主界面
+    */
+   private void setRunnable() {
+	mRunnable = new Runnable() {
+	   @Override
+	   public void run() {
+		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
+		   finish();
+		} else {
+		   mHandler.removeCallbacks(mRunnable);
+		}
+	   }
+	};
+
+	mRunnableW = new Runnable() {
+	   @Override
+	   public void run() {
+		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
+		   mDownBtnOne.setEnabled(false);
+		   mTimelyOpenDoor.setEnabled(false);
+		   mLyBingBtn.setEnabled(false);
+		   mBindPatient.setEnabled(false);
+
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   Toast.makeText(NewOutMealBingConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
+					Toast.LENGTH_SHORT).show();
+		   mHandler.postDelayed(mRunnable, 3000);
+		} else {
+		   setRemoveRunnable();
+		}
+	   }
+	};
+   }
+   /**
+    * 没有扫到数据，就弹出toast和关闭本页
+    */
+   private void setHandlerToastAndFinish() {
+	mHandler = new Handler();
+	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
+	   mHandler.postDelayed(mRunnableW, 3000);
+	} else {
+	   setRemoveRunnable();
+	}
+   }
+   /**
+    * 取消runnable
+    */
+   private void setRemoveRunnable() {
+	if (mHandler != null && mRunnableW != null) {
+	   mHandler.removeCallbacks(mRunnableW);
+	}
+	if (mHandler != null && mRunnable != null) {
+	   mHandler.removeCallbacks(mRunnable);
+	}
+   }
 
    /**
     * 确认套组领用
     */
    private void useOrderCst() {
 	mUseCstOrderRequest.getInventoryVos().clear();
-	mUseCstOrderRequest.setInventoryVos(mBillOrderResultBean.getInventoryVos());
+	mUseCstOrderRequest.setInventoryVos(mBoxInventoryVos);
 	mUseCstOrderRequest.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	if (mUseCstOrderRequest.getInventoryVos().size() == 0) {
 	   ToastUtils.showShort("无耗材，无法领用");
 	   return;
 	}
+	stopScan();
+
 	LogUtils.i(TAG, "JSON  " + mGson.toJson(mUseCstOrderRequest));
 	NetRequest.getInstance()
 		.useOrderCst(mGson.toJson(mUseCstOrderRequest), this,  new BaseResult() {
@@ -612,8 +737,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			EventBusUtils.post(new Event.EventMealType(inventoryVos));//用来判断套组是否已经领取
 			if (info.isOperateSuccess()) {
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+			   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			   ToastUtils.showShort(info.getMsg());
-			   UnNetCstUtils.putUnNetOperateYes(mGson, NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
+			   UnNetCstUtils.putUnNetOperateYes(NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 			   finish();
 			} else {
 			   ToastUtils.showShort(info.getMsg());
@@ -627,138 +753,49 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onRvCheckBindEvent(Event.EventCheckbox event) {
-	mUseCstOrderRequest.setPatientId(event.id);
-	for (InventoryVo item : mBillOrderResultBean.getInventoryVos()) {
-	   item.setPatientId(event.id);
-	   item.setSurgeryId(event.mSurgeryId);
-	   item.setMedicalId(event.mMedicalId);
-	   item.setPatientName(event.mString);
-	   LogUtils.i(TAG, "EventCheckbox    " + event.create);
-	   if ("virtual".equals(event.id)) {
-		LogUtils.i(TAG, "EventCheckbox    " + event.id);
-		item.setOperationScheduleId(event.operationScheduleId);
-		item.setOperatingRoomName(event.operatingRoomNoName);
-		item.setOperatingRoomNo(event.operatingRoomNo);
-		item.setIdNo(event.idNo);
-		item.setSurgeryTime(event.scheduleDateTime);
-		item.setSex(event.sex);
-		item.setCreate(event.create);
-		item.setTempPatientId(event.mTempPatientId);
-		item.setMedicalId(event.mMedicalId);
+	mUseCstOrderRequest.setPatientId(event.vo.getPatientId());
+	for (InventoryVo item : mBoxInventoryVos) {
+	   item.setPatientId(event.vo.getPatientId());
+	   item.setSurgeryId(event.vo.getSurgeryId());
+	   item.setMedicalId(event.vo.getMedicalId());
+	   item.setPatientName(event.vo.getPatientName());
+
+	   if ("virtual".equals(event.vo.getPatientId())) {
+
+		item.setOperationScheduleId(event.vo.getOperationScheduleId());
+		item.setOperatingRoomName(event.vo.getOperatingRoomName());
+		item.setOperatingRoomNo(event.vo.getOperatingRoomNo());
+		item.setIdNo(event.vo.getIdNo());
+		item.setSurgeryTime(event.vo.getSurgeryTime());
+		item.setSex(event.vo.getSex());
+		item.setCreate(event.vo.isCreate());
+		item.setTempPatientId(event.vo.getTempPatientId());
+		item.setMedicalId(event.vo.getMedicalId());
 	   }
 
 	   EventBusUtils.post(new Event.EventButton(true,true));
 	}
 	initView();
-	mPublicAdapter.notifyDataSetChanged();
+	setNotifyData();
    }
 
-   int k = 0;
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void scanEPCResult(Event.EventDeviceCallBack event) {
-//	AllDeviceCallBack.getInstance().initCallBack();
-	List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
-		.find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeanss) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean BoxIdBean : boxIdDoor) {
-		String device_id = BoxIdBean.getDevice_id();
-		for (int x = 0; x < mEthDeviceIdBack3.size(); x++) {
-		   if (device_id.equals(mEthDeviceIdBack3.get(x))) {
-			mEthDeviceIdBack3.remove(x);
-		   }
-		}
-	   }
-	   if (box_id != null) {
-		List<BoxIdBean> boxIdBeansss = LitePal.where("box_id = ? and name = ?", box_id,
-									   READER_TYPE).find(BoxIdBean.class);
-		Log.e("xb", "boxIdBeansss.size" + boxIdBeansss.size());
-		if (boxIdBeansss.size() > 1) {
-		   for (BoxIdBean BoxIdBean : boxIdBeansss) {
-			LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
-			if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-			   mEPCMapDate.putAll(event.epcs);
-			   k++;
-			   LogUtils.i(TAG, "mEPCDate   " + mEPCMapDate.size());
-			}
-		   }
-		   if (k == boxIdBeansss.size()) {
-			k = 0;
-			for (Map.Entry<String, List<EpcInfo>> v : mEPCMapDate.entrySet()) {
-			   InventoryVo item = new InventoryVo();
-			   item.setEpc(v.getKey());
-			   if (!mFindBillOrderBean.getInventoryVos().contains(item)) {
-				mFindBillOrderBean.getInventoryVos().add(item);
-			   }
-			}
-			mFindBillOrderBean.getDeviceIds().add(box_id);
-//			findBillOrder();
-		   }
-		} else {
-		   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
-		   for (Map.Entry<String, List<EpcInfo>> v : event.epcs.entrySet()) {
-			InventoryVo item = new InventoryVo();
-			item.setEpc(v.getKey());
-			if (!mFindBillOrderBean.getInventoryVos().contains(item)) {
-			   mFindBillOrderBean.getInventoryVos().add(item);
-			}
-		   }
-		   mFindBillOrderBean.getDeviceIds().add(box_id);
-//		   findBillOrder();
-		}
-	   }
-	   LogUtils.i(TAG, "mEthDeviceIdBack3.size()  "+mEthDeviceIdBack3.size()+"   mIsClick   "+mIsClick);
-	   if (mIsClick || mEthDeviceIdBack3.size() != 0) {
-		return;
-	   }
-	   findBillOrder();
-	}
-   }
    /**
     * 重新打开柜门
     */
    private void reOpenDoor() {
-	if (mFindBillOrderBean != null) {
-	   mFindBillOrderBean.getInventoryVos().clear();
-	   mFindBillOrderBean.getDeviceIds().clear();
-	}
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
-	   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-	   DeviceManager.getInstance().OpenDoor(deviceCode);
-	}
-   }
-
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void isDoorOpened(Event.HomeNoClickEvent event) {
-	if (event.isClick) {
-	   DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
-	}
-   }
-
-   private void startScan(String deviceIndentify) {
-	EventBusUtils.postSticky(new Event.EventLoading(true));
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 UHF_TYPE).find(BoxIdBean.class);
-	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		   .find(BoxIdBean.class);
-
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-		LogUtils.i(TAG, "开始扫描了状态    " + i);
-	   }
+	   Eth002Manager.getEth002Manager().openDoor(deviceCode);
 	}
    }
 
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	mEthDeviceIdBack3.clear();
+	mBoxInventoryVos.clear();
+	mFindBillOrderBean.getInventoryVos().clear();
+	mFindBillOrderBean.getDeviceIds().clear();
+	mEthDeviceIdBack.clear();
    }
 }

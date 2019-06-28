@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.androidpn.utils.XmppEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
@@ -29,8 +32,6 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
-import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
-import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
@@ -267,11 +268,14 @@ public class UIUtils {
 	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
 	if (configBean != null) {
 	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	   for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
-		if (code.equals(configType.getCode())) {
-		   return true;
+	   if (tCstConfigVos!=null){
+		for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
+		   if (code.equals(configType.getCode())) {
+			return true;
+		   }
 		}
 	   }
+	   return false;
 	}
 	return false;
    }
@@ -400,7 +404,6 @@ public class UIUtils {
 
    /**
     * 恢复点击
-    *
     * @param testRadioGroup
     */
    public static void enableRadioGroup(RadioGroup testRadioGroup) {
@@ -408,33 +411,26 @@ public class UIUtils {
 	   testRadioGroup.getChildAt(i).setEnabled(true);
 	}
    }
+   /**
+    * 判断服务是否开启
+    *
+    * @return
+    */
+   public static boolean isServiceRunning(Context context, String ServiceName) {
+	if (TextUtils.isEmpty(ServiceName)) {
+	   return false;
+	}
+	ActivityManager myManager = (ActivityManager) context
+		.getSystemService(Context.ACTIVITY_SERVICE);
+	ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+		.getRunningServices(100);
+	for (int i = 0; i < runningService.size(); i++) {
+	   if (runningService.get(i).service.getClassName().toString()
+		   .equals(ServiceName)) {
+		return true;
+	   }
+	}
+	return false;
+   }
 
-   /**
-    * 是否包含epc
-    * @return
-    */
-   public static boolean getVosType(List<InventoryVo> vos, String epc) {
-	if (vos != null) {
-	   for (int i = 0; i < vos.size(); i++) {
-		if (vos.get(i).getEpc().equals(epc)) {
-		   return true;
-		}
-	   }
-	}
-	return false;
-   }
-   /**
-    * 是否包含柜号
-    * @return
-    */
-   public static boolean getVosBoxId(List<DeviceInventoryVo> vos, String box_id) {
-	if (vos != null) {
-	   for (int i = 0; i < vos.size(); i++) {
-		if (vos.get(i).getDeviceId().equals(box_id)) {
-		   return true;
-		}
-	   }
-	}
-	return false;
-   }
 }

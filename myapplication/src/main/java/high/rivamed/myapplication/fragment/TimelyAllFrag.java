@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.ReaderManager;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -31,12 +31,9 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.TimelyDetailsActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
@@ -104,8 +101,6 @@ public class TimelyAllFrag extends SimpleFragment {
 		mLoading.mDialog.dismiss();
 		mLoading = null;
 	   }
-
-//	   AllDeviceCallBack.getInstance().initCallBack();
 	} else {
 	   mPauseS = true;
 	}
@@ -173,7 +168,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private TimelyAllAdapter  mTimelyAllAdapter;
    private String            mToJson;
    public static boolean                    mPauseS  = true;
-   private       Map<String, List<EpcInfo>> mEPCDate = new TreeMap<>();
+   private       List<String>  mEPCDate = new ArrayList<>();
    int k = 0;
 
    private LoadingDialog.Builder mLoading;
@@ -200,13 +195,15 @@ public class TimelyAllFrag extends SimpleFragment {
 
    }
 
+
    /**
     * 扫描后EPC准备传值
-    *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
+
+	Log.e("FAFAS", "epc   "+event.deviceId+"     "+event.epcs);
 	if (!mPauseS) {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
@@ -225,7 +222,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			for (BoxIdBean BoxIdBean : boxIdBeansss) {
 			   LogUtils.i(TAG, "BoxIdBean.getDevice_id()   " + BoxIdBean.getDevice_id());
 			   if (BoxIdBean.getDevice_id().equals(event.deviceId)) {
-				mEPCDate.putAll(event.epcs);
+				mEPCDate.addAll(event.epcs);
 				k++;
 				LogUtils.i(TAG, "mEPCDate   " + mEPCDate.size());
 			   }
@@ -234,15 +231,13 @@ public class TimelyAllFrag extends SimpleFragment {
 			   k = 0;
 			   if (!mPauseS) {
 				LogUtils.i(TAG, "mEPCDate  zou l  ");
-//				AllDeviceCallBack.getInstance().initCallBack();
 				getDeviceDate(event.deviceId, mEPCDate);
 			   }
 			}
 
 		   } else {
 			if (!mPauseS) {
-			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs);
-//			   AllDeviceCallBack.getInstance().initCallBack();
+			   LogUtils.i(TAG, "event.epcs直接走   " + event.epcs.size());
 			   getDeviceDate(event.deviceId, event.epcs);
 			}
 		   }
@@ -278,15 +273,12 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mLoading = null;
 	}
 	initDateAll();
-	LogUtils.i(TAG, "initDataAndEvent  mDeviceCode   " + mDeviceCode);
-//	AllDeviceCallBack.getInstance().initCallBack();
    }
 
    @Override
    public void onPause() {
 	mPauseS = true;
 	mTimelyOnResume = false;
-	EventBusUtils.unregister(this);
 	super.onPause();
 
    }
@@ -299,7 +291,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mLoading = null;
 	}
 	mTimelyOnResume = true;
-	EventBusUtils.register(this);
 	super.onResume();
    }
 
@@ -416,8 +407,6 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-//		   DeviceManager.getInstance().UnRegisterDeviceCallBack();
-//		   AllDeviceCallBack.getInstance().initCallBack();
 		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
@@ -449,12 +438,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘盈 result   " + result);
 				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
-//				if (inventoryDto.getErrorEpcs() != null &&
-//				    inventoryDto.getErrorEpcs().size() > 0) {
-//				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
-//				   ToastUtils.showLong(string);
-//				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-//				}
+
 				if (inventoryDto.getInventoryVos() != null &&
 				    inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyProfitActivity.class));
@@ -481,12 +465,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			   public void onSucceed(String result) {
 				LogUtils.i(TAG, "盘亏 result   " + result);
 				InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
-//				if (inventoryDto.getErrorEpcs() != null &&
-//				    inventoryDto.getErrorEpcs().size() > 0) {
-//				   String string = StringUtils.listToString(inventoryDto.getErrorEpcs());
-//				   ToastUtils.showLong(string);
-//				   MusicPlayer.getInstance().play(MusicPlayer.Type.NOT_NORMAL);
-//				}
+
 				if (inventoryDto.getInventoryVos().size() > 0) {
 				   mContext.startActivity(new Intent(mContext, TimelyLossActivity.class));
 				   EventBusUtils.postSticky(new Event.timelyDate("盘亏", inventoryDto));
@@ -520,12 +499,15 @@ public class TimelyAllFrag extends SimpleFragment {
 		ToastUtils.showShort("reader未启动，请稍后重新扫描");
 	   }
 	   for (String readerCode : mReaderDeviceId) {
-		DeviceManager.getInstance().StartUhfScan(readerCode, READER_TIME);
+		int x = ReaderManager.getManager().startScan(readerCode, READER_TIME);
+		if (x == 2) {
+		   ReaderManager.getManager().stopScan(readerCode);
+		   ReaderManager.getManager().startScan(readerCode, READER_TIME);
+		}
 	   }
 	} else {
 	   mBoxIdListss = new ArrayList<String>();
 	   mBoxIdListss.add(mDeviceCode);
-	   LogUtils.i(TAG, "deviceCode   " + mDeviceCode + " READER_TYPE  " + READER_TYPE);
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
 								    READER_TYPE).find(BoxIdBean.class);
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -537,7 +519,11 @@ public class TimelyAllFrag extends SimpleFragment {
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
-			DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+			int x = ReaderManager.getManager().startScan(device_id, READER_TIME);
+			if (x == 2) {
+			   ReaderManager.getManager().stopScan(device_id);
+			   ReaderManager.getManager().startScan(device_id, READER_TIME);
+			}
 		   }
 		}
 	   }
@@ -548,7 +534,7 @@ public class TimelyAllFrag extends SimpleFragment {
     * 扫描后传值
     */
 
-   private void getDeviceDate(String deviceId, Map<String, List<EpcInfo>> epcs) {
+   private void getDeviceDate(String deviceId, List<String>  epcs) {
 	if (mBoxIdListss != null) {
 	   for (String s : mBoxIdListss) {
 		LogUtils.i(TAG, "mBoxIdListss   " + s);
@@ -561,11 +547,12 @@ public class TimelyAllFrag extends SimpleFragment {
 			DeviceInventoryVo deviceInventoryVo = new DeviceInventoryVo();
 			mEpcList = new ArrayList<>();
 			mEpcsNumber += epcs.size();
-			for (Map.Entry<String, List<EpcInfo>> v : epcs.entrySet()) {
+			for (String epc : epcs) {
 			   Inventory inventory = new Inventory();
-			   inventory.setEpc(v.getKey());
+			   inventory.setEpc(epc);
 			   mEpcList.add(inventory);
 			}
+
 			deviceInventoryVo.setDeviceId(box_id);
 			deviceInventoryVo.setInventories(mEpcList);
 			mDeviceList.add(deviceInventoryVo);
@@ -751,4 +738,9 @@ public class TimelyAllFrag extends SimpleFragment {
 
    }
 
+   @Override
+   public void onDestroyView() {
+	super.onDestroyView();
+	EventBusUtils.unregister(this);
+   }
 }

@@ -43,6 +43,8 @@
     <string name="op_error_th">注意：异常耗材禁止退回，请开柜重新操作！</string>
     <string name="op_error_tuihuo">注意：异常耗材禁止退货，请开柜重新操作！</string>
 
+    <string name="op_error_newoutmeal">注意：请取出异常耗材再进行操作！</string>
+
     <string name="log_closs">全日志收集关闭，请重新启动APP，只收集部分警告和崩溃日志！</string>
     <string name="log_open">请重新启动APP，才会进行全日志收集</string>
 

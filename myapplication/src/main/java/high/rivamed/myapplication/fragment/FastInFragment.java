@@ -381,7 +381,7 @@ public class FastInFragment extends SimpleFragment {
 			}
 
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(mGson, _mActivity);//提交离线耗材和重新获取在库耗材数据
+		   UnNetCstUtils.putUnNetOperateYes( _mActivity);//提交离线耗材和重新获取在库耗材数据
 		} else {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);

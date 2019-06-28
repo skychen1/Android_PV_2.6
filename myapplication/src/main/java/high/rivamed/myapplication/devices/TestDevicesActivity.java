@@ -33,6 +33,8 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
+import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
+
 public class TestDevicesActivity extends SimpleActivity {
 
     private TextView mTvLog;
@@ -76,6 +78,7 @@ public class TestDevicesActivity extends SimpleActivity {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
+        stopService(mIntentService);
         mTvLog = findViewById(R.id.txt_log);
         mBtnStartScan = findViewById(R.id.bt_startscan);
         mBtnFingerReg = findViewById(R.id.bt_fingerreg);
@@ -102,10 +105,10 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnFingerRegisterNew = findViewById(R.id.bt_fingerregister);
         mBtnFace = findViewById(R.id.btn_face);
         initListener();
-//        initReader();
+        initReader();
 //        initIdCard();
 //        initFinger();
-//        initEth002();
+        initEth002();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         if (wm != null) {
             DisplayMetrics dm = new DisplayMetrics();

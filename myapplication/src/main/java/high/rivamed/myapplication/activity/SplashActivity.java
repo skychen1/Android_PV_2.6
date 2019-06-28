@@ -46,6 +46,8 @@ import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
  */
 public class SplashActivity extends FragmentActivity {
 
+   public static Intent mIntentService;
+
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -62,6 +64,7 @@ public class SplashActivity extends FragmentActivity {
    }
 
    private void initData() {
+	mIntentService = new Intent(SplashActivity.this, ScanService.class);
 	Logger.addLogAdapter(new AndroidLogAdapter());
 	setDate();//设置默认值
 	initLitePal();//数据库
@@ -102,7 +105,8 @@ public class SplashActivity extends FragmentActivity {
    }
 
    private void startAct() {
-	new Thread(() -> startService(new Intent(SplashActivity.this, ScanService.class))).start();
+
+	new Thread(() -> startService(mIntentService)).start();
 
 		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
 //	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {

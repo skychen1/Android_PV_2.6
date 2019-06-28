@@ -8,11 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -253,6 +251,24 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   }
 	});
+	mSearchEt.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		mTerm = s.toString().trim();
+		UIUtils.hideSoftInput(_mActivity, mSearchEt);
+		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
+
+	   }
+	});
    }
 
    private void loadDate(String mDeviceCode) {
@@ -304,18 +320,18 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   }
 	});
 
-	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-	   @Override
-	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-		   mTerm = mSearchEt.getText().toString().trim();
-		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		   return true;
-		}
-		return false;
-	   }
-	});
+//	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//	   @Override
+//	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//		   mTerm = mSearchEt.getText().toString().trim();
+//		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
+//		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+//		   return true;
+//		}
+//		return false;
+//	   }
+//	});
    }
 
    private void loadRunWateDate(
