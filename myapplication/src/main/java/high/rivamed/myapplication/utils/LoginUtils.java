@@ -64,8 +64,6 @@ import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
  * 描述：登录相关操作
  */
 public class LoginUtils {
-
-
     /**
      * 获取配置项
      */
@@ -92,7 +90,7 @@ public class LoginUtils {
                             LogUtils.i("LoginA", "string   " + string);
                             ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
                             List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-                            callback.onLogin(true, getConfigTrue(tCstConfigVos), false);
+                            callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
                         } else {
                             callback.onLogin(false, false, false);
                         }
@@ -107,7 +105,7 @@ public class LoginUtils {
                 LogUtils.i("LoginA", "string   " + string);
                 ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
                 List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-                callback.onLogin(true, getConfigTrue(tCstConfigVos), false);
+                callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
             } else {
                 callback.onLogin(false, false, false);
             }

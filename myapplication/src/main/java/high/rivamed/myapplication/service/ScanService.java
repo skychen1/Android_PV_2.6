@@ -27,6 +27,7 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
@@ -168,9 +169,12 @@ public class ScanService extends Service {
 	   } else {
 		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
 		    v.getValue() != null) {
+		   if (!getVosType(allVo,v.getKey())){
+			boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
+			LogUtils.i(TAG, "     Scan 入柜存入error  "+saveError);
+		   }
 		   boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
-		   boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
-		   LogUtils.i(TAG, "Scan 入柜存入库存 " + save+ "     Scan 入柜存入error  "+saveError);
+		   LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
 		}
 	   }
 	}

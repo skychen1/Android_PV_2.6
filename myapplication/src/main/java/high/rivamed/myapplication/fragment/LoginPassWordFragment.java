@@ -97,6 +97,7 @@ public class LoginPassWordFragment extends SimpleFragment {
      */
     private void loginEnjoin(boolean canDevice, boolean type) {
         if (canDevice) {//设备未禁用
+            LoginActivity.mLoginGone.setVisibility(View.GONE);
             if (type) {//有网登录
                 loadLogin();
             } else {//离线登录

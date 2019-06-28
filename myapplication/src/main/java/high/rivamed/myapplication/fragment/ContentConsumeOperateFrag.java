@@ -77,6 +77,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LYTH;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_RK;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_THUI;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_THUO;
@@ -168,6 +169,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 门锁的状态检测回调
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -249,6 +251,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    /**
     * 门锁的提示
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -324,11 +327,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     * 设置选择操作的权限
     */
    private void setDownType() {
-	//	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LYTH)) {//领用、退回合并按钮
-	//	   mContentRbLyTh.setVisibility(View.VISIBLE);
-	//	} else {
-	//	   mContentRbLyTh.setVisibility(View.GONE);
-	//	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LYTH)) {//领用、退回合并按钮
+	   mContentRbLyTh.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbLyTh.setVisibility(View.GONE);
+	}
 	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LY)) {//领用
 	   mContentRbLy.setVisibility(View.VISIBLE);
 	} else {

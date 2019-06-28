@@ -22,7 +22,6 @@ import high.rivamed.myapplication.bean.DialogBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.cont.Constants;
-import high.rivamed.myapplication.fragment.PublicExceptionFrag;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -135,13 +134,6 @@ public class StoreRoomDialog extends Dialog {
 	   mTitle.setText(mMsgTitle);
 	   sGridView.setNumColumns(mNumColumn);
 
-//	   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//		   LinearLayout.LayoutParams.MATCH_PARENT, mContext.getResources().getDimensionPixelSize(R.dimen.y80));
-//	   lp.setMargins(mContext.getResources().getDimensionPixelSize(R.dimen.x80),
-//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80),
-//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80),
-//			     mContext.getResources().getDimensionPixelSize(R.dimen.x80));
-//	   mRigtht.setLayoutParams(lp);
 	   if(mType==104){
 	   	//异常处理：连续移除处理选择
 		   for (int i = 0; i < Constants.EXCEPTION_DEAL_REMOVE_JUDGE.length; i++) {
@@ -156,26 +148,7 @@ public class StoreRoomDialog extends Dialog {
 			   dialogBean.setName(Constants.REASON[i]);
 			   list.add(dialogBean);
 		   }
-//		   String one;
-//		for (int i = 1; i < 7; i++) {
-//		   if (i == 1) {
-//			one = "清理库存";
-//		   } else if (i == 2) {
-//			one = "耗材过期";
-//		   } else if (i == 3) {
-//			one = "型号错误";
-//		   } else if (i == 4) {
-//			one = "包装破损";
-//		   } else if (i == 5) {
-//			one = "厂家召回";
-//		   } else {
-//			one = "其他";
-//		   }
-//
-//		   DialogBean dialogBean = new DialogBean();
-//		   dialogBean.setName(one);
-//		   list.add(dialogBean);
-//		}
+
 
 	   } else if (mType == 1) {//1.6移出
 		List<HospNameBean.StoreHousesBean> storehouses = mHospNameBean.getStorehouses();
@@ -240,6 +213,7 @@ public class StoreRoomDialog extends Dialog {
 	   mLeft.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
+		   LogUtils.i("OutBoxFoutActivity", "xxxxxx");
 		   mLeftBtn.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
 		}
 	   });

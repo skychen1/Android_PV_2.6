@@ -296,7 +296,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			vo.setOperationStatus(3);
 		   }
 		} else {
-		   if (vo.isDateNetType() && !mTitleConn) {
+		   if (vo.isDateNetType() || !mTitleConn) {
 			vo.setIsErrorOperation(1);
 		   }
 		}

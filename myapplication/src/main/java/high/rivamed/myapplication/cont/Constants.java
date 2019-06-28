@@ -60,7 +60,7 @@ public class Constants {
     public static final String CONFIG_017 = "017";//是否启用紧急登录
     public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
     public static final String CONFIG_026 = "026";//启用未确认耗材
-    public static final String CONFIG_099 = "099";//todo 是否启用人脸识别登录，替换成后台真实code
+    public static final String CONFIG_031 = "031";//启用人脸识别登录
 
     public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
     public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水
@@ -130,5 +130,5 @@ public class Constants {
     //异常处理：连续移除处理选择
     public static final String [] EXCEPTION_DEAL_REMOVE_JUDGE={"标签损坏","取消异常标记","出柜关联"};
     //异常处理：出柜关联
-    public static final String [] EXCEPTION_DEAL_OUT_BOX_CONNECT={"领用","移出","调拨出库", "退货"};
+    public static final String [] EXCEPTION_DEAL_OUT_BOX_CONNECT={"领用","移出", "退货"};
 }

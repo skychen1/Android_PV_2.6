@@ -65,7 +65,6 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
-import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
@@ -299,11 +298,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			vo.setOperationStatus(3);
 		   }
 		} else {
-		   if (vo.isDateNetType() && !mTitleConn) {
+		   if (vo.isDateNetType() || !mTitleConn) {
 			vo.setIsErrorOperation(1);
 		   }
 		}
 	   }
+	   Log.i("xxf"," mTitleConn "+mTitleConn);
+	   Log.i("xxf","mBoxInventoryVos  mTitleConn "+mGson.toJson(mBoxInventoryVos));
 	   setTitleRightNum();
 	   setNotifyData();
 	   setTimeStart();

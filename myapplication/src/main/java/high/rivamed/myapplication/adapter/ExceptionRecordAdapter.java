@@ -17,18 +17,24 @@ import high.rivamed.myapplication.utils.UIUtils;
  * 创建时间：2019/5/13
  * 描述：异常处理-异常记录
  */
-public class ExceptionRecordAdapter extends BaseQuickAdapter<ExceptionRecordBean, BaseViewHolder> {
-    public ExceptionRecordAdapter(@Nullable List<ExceptionRecordBean> data) {
+public class ExceptionRecordAdapter extends BaseQuickAdapter<ExceptionRecordBean.RowsBean, BaseViewHolder> {
+    public ExceptionRecordAdapter(@Nullable List<ExceptionRecordBean.RowsBean> data) {
         super(R.layout.item_excp_record_nine_layout, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ExceptionRecordBean item) {
-        // TODO: 2019/5/17 设置数据
-        String exceptContent = item.getExceptContent();
-        int resId = exceptContent.equals("连续移除") ? R.color.card_stock_text : R.color.color_28_prompt;
+    protected void convert(BaseViewHolder helper, ExceptionRecordBean.RowsBean item) {
+//        int resId = item.get.equals("连续移除") ? R.color.card_stock_text : R.color.color_28_prompt;
         //异常内容:未操作与异常做样式区分
-        helper.setText(R.id.nine_record_seven1, exceptContent)
-                .setTextColor(R.id.nine_record_seven1, UIUtils.getColor(resId));
+        helper.setText(R.id.nine_record_one, item.getUserName());
+        helper.setText(R.id.nine_record_two, item.getCstName());
+        helper.setText(R.id.nine_record_three, item.getEpc());
+        helper.setText(R.id.nine_record_four, item.getCstSpec());
+        helper.setText(R.id.nine_record_five, item.getExpiryDate());
+        helper.setText(R.id.nine_record_six, item.getDeviceName());
+        helper.setText(R.id.nine_record_seven1, item.getUnNormalContent()).setTextColor(R.id.nine_record_seven1,UIUtils.getColor(R.color.color_y));
+        helper.setText(R.id.nine_record_eight, item.getOperationResult());
+        helper.setText(R.id.nine_record_nine, item.getUnNormalOperationTime());
+
     }
 }

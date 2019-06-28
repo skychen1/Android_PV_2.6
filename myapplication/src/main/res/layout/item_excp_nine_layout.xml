@@ -5,12 +5,31 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal">
+    <View
+        style="@style/view_line_style"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <CheckBox
+            android:id="@+id/nine_zero"
+            android:layout_height="@dimen/x35"
+            android:enabled="false"
+            android:gravity="center_horizontal"
+            android:button="@drawable/checkbox_dialog_sel"
+            android:layout_width="@dimen/x35"
+            />
 
+    </LinearLayout>
+    <View style="@style/view_line_style" />
     <TextView
         android:id="@+id/nine_one"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.4" />
+        android:layout_weight="1.6"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -26,7 +45,9 @@
         android:id="@+id/nine_three"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="4" />
+        android:layout_weight="4"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -42,7 +63,9 @@
         android:id="@+id/nine_five"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3" />
+        android:layout_weight="2"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -50,26 +73,15 @@
         android:id="@+id/nine_six"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1.5" />
 
     <View style="@style/view_line_style" />
 
     <TextView
         android:id="@+id/nine_seven1"
+        style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        android:layout_weight="2"
-        android:background="@drawable/bg_btn_gray_sel"
-        android:gravity="center"
-        android:paddingLeft="@dimen/x10"
-        android:paddingTop="@dimen/y10"
-        android:paddingRight="@dimen/x10"
-        android:paddingBottom="@dimen/y10"
-        android:text="Unknown"
-        android:textColor="@color/bg_f"
-        android:textSize="16sp" />
+        android:layout_weight="2" />
 
     <View style="@style/view_line_style" />
 
@@ -77,26 +89,19 @@
         android:id="@+id/nine_eight"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3" />
+        android:layout_weight="2"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
 
     <TextView
         android:id="@+id/nine_nine1"
+        style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        android:layout_weight="2"
-        android:background="@drawable/bg_btn_gray_sel"
-        android:gravity="center"
-        android:paddingLeft="@dimen/x10"
-        android:paddingTop="@dimen/y10"
-        android:paddingRight="@dimen/x10"
-        android:paddingBottom="@dimen/y10"
-        android:text="操作"
-        android:textColor="@color/bg_f"
-        android:textSize="16sp" />
-
+        android:layout_weight="1.6"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
+    <View style="@style/view_line_style" />
 </LinearLayout>
