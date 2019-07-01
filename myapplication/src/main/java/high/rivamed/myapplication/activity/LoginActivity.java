@@ -68,6 +68,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_031;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
@@ -216,7 +217,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void run() {
 		if (mTitleConn) {
-		   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
+		   UnNetCstUtils.getAllCstDate(this);//重新获取在库耗材数据
 		}
 		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
 		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
@@ -456,11 +457,10 @@ public class LoginActivity extends SimpleActivity {
    }
 
 	private boolean isConfigFace() {
-		// TODO: 2019/5/21 判断是否配置人脸识别登录
-//		return UIUtils.getConfigType(mContext, CONFIG_099);
+		return UIUtils.getConfigType(mContext, CONFIG_031);
 		//测试时默认开启，真实情况需要根据后台配置
 //		return true;
-		return true;
+//		return true;
 	}
 
    /**

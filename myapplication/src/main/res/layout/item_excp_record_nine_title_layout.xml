@@ -10,7 +10,7 @@
         android:id="@+id/nine_one"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.6"
         android:text="处理人" />
 
     <View style="@style/view_title_line_style" />
@@ -37,7 +37,7 @@
         android:id="@+id/nine_four"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:text="型号规格" />
 
     <View style="@style/view_title_line_style" />
@@ -46,7 +46,7 @@
         android:id="@+id/nine_five"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3"
+        android:layout_weight="2"
         android:text="效期" />
 
     <View style="@style/view_title_line_style" />
@@ -55,18 +55,16 @@
         android:id="@+id/nine_six"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.4"
         android:text="柜号" />
 
     <View style="@style/view_title_line_style" />
 
     <TextView
         android:id="@+id/nine_seven"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2.4"
+        android:layout_weight="1.9"
         android:text="异常内容" />
 
 
@@ -76,7 +74,7 @@
         android:id="@+id/nine_eight"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.8"
         android:text="处理结果" />
 
     <View style="@style/view_title_line_style" />
@@ -85,7 +83,7 @@
         android:id="@+id/nine_nine"
         style="@style/text_title_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3"
+        android:layout_weight="2"
         android:text="处理时间" />
 
 </LinearLayout>

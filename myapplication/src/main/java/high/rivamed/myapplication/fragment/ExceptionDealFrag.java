@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -14,7 +13,6 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -32,18 +30,11 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
 public class ExceptionDealFrag extends SimpleFragment {
     @BindView(R.id.ecpt_deal_tab)
     SlidingTabLayout ecptDealTab;
-    @BindView(R.id.tv_open_door)
-    TextView tvOpenDoor;
     @BindView(R.id.ecpt_deal_viewpager)
     ViewPager ecptDealViewpager;
     private List<BoxSizeBean.DevicesBean> mTbaseDevices;
     public ExceptionLeftPagerAdapter mPagerAdapter;
     public static int CURRENT_TAB=0;
-
-    @OnClick(R.id.tv_open_door)
-    void onOpenDoorClick(){
-        // TODO: 2019/5/17 开柜查验：和打开柜门流程相同，关闭后回到此界面
-    }
 
     @Override
     public int getLayoutId() {

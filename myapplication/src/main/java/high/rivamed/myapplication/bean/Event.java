@@ -24,6 +24,17 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
+    * ExceptionDialog
+    */
+   public static class EventExceptionDialog {
+
+	public boolean type;
+
+	public EventExceptionDialog(boolean type) {
+	   this.type = type;
+	}
+   }
+   /**
     * 强开后的扫描 true
     */
    public static class EventStartScan {

@@ -69,8 +69,6 @@ import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
  *  离线登录
  */
 public class LoginUtils {
-
-
     /**
      * 获取配置项
      */

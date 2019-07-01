@@ -5,12 +5,12 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal">
-
+    <View style="@style/view_line_style" />
     <TextView
         android:id="@+id/nine_record_one"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2" />
+        android:layout_weight="1.6" />
 
     <View style="@style/view_line_style" />
 
@@ -26,7 +26,9 @@
         android:id="@+id/nine_record_three"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="4" />
+        android:layout_weight="4"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -34,7 +36,9 @@
         android:id="@+id/nine_record_four"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2" />
+        android:layout_weight="2.5"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -42,7 +46,9 @@
         android:id="@+id/nine_record_five"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3" />
+        android:layout_weight="2"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -50,23 +56,18 @@
         android:id="@+id/nine_record_six"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1.4" />
 
     <View style="@style/view_line_style" />
 
     <TextView
         android:id="@+id/nine_record_seven1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/x10"
-        android:layout_marginRight="@dimen/x10"
-        android:layout_weight="2.4"
-        android:gravity="center"
-        android:paddingLeft="@dimen/x10"
-        android:paddingTop="@dimen/y10"
-        android:paddingRight="@dimen/x10"
-        android:paddingBottom="@dimen/y10"
-        android:textSize="16sp" />
+        style="@style/text_title_content_style"
+        android:layout_weight="1.9"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"
+        />
 
     <View style="@style/view_line_style" />
 
@@ -74,7 +75,9 @@
         android:id="@+id/nine_record_eight"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2" />
+        android:layout_weight="1.8"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
 
     <View style="@style/view_line_style" />
 
@@ -83,6 +86,8 @@
         android:id="@+id/nine_record_nine"
         style="@style/text_title_content_style"
         android:layout_width="0dp"
-        android:layout_weight="2.3" />
-
+        android:layout_weight="2"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"/>
+    <View style="@style/view_line_style" />
 </LinearLayout>

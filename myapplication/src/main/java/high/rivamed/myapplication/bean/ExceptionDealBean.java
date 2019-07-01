@@ -9,22 +9,22 @@ import java.io.Serializable;
  * 描述：异常处理
  */
 public class ExceptionDealBean  implements Serializable {
-    private String operate;
-    private String operator;
+   private String operate;
+   private String operator;
 
-    public String getOperate() {
-        return operate;
-    }
+   public String getOperate() {
+	return operate;
+   }
 
-    public void setOperate(String operate) {
-        this.operate = operate;
-    }
+   public void setOperate(String operate) {
+	this.operate = operate;
+   }
 
-    public String getOperator() {
-        return operator;
-    }
+   public String getOperator() {
+	return operator;
+   }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
+   public void setOperator(String operator) {
+	this.operator = operator;
+   }
 }

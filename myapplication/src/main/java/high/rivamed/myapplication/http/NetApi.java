@@ -125,4 +125,11 @@ public interface NetApi {
     String URL_FACE_BIND="/restLogin/boundFace";
     //人脸识别后userId登录
     String URL_USER_LOGIN_BY_USER_ID = "/rmApi/restLogin/validateLoginUserId";
+
+    //异常处理
+    String URL_EXCEPTION_LEFT = "/consumables/inventory/rmApi/unNormalHandPage";//异常处理分页
+    String URL_EXCEPTION_RIGHT = "/consumables/inventory/rmApi/unNormalHandRecordPage";//处理记录分页
+    String URL_EXCEPTION_OOERATEUNKNOW = "/consumables/inventory/operateUnKnow";//异常处理关联操作人
+    String URL_EXCEPTION_RELEVANCE = "/consumables/inventory/operateUnNormal";//出柜关联，绑定患者，连续移除
+    String URL_EXCEPTION_OPERATOR = "/rmApi/userManage/account/listOperator";//查询要绑定的操作人信息
 }

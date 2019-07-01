@@ -30,18 +30,18 @@
             tl:tl_textUnselectColor="@color/text_color_3"
             tl:tl_textsize="@dimen/textsize_18" />
 
-        <TextView
-            android:id="@+id/tv_open_door"
-            android:layout_width="@dimen/x220"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:layout_marginRight="@dimen/x30"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/bg_btn_gray_sel"
-            android:gravity="center"
-            android:text="开柜查验"
-            android:textColor="@color/bg_f"
-            android:textSize="@dimen/textsize_17" />
+        <!--<TextView-->
+            <!--android:id="@+id/tv_open_door"-->
+            <!--android:layout_width="@dimen/x220"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="end"-->
+            <!--android:layout_marginRight="@dimen/x30"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:background="@drawable/bg_btn_gray_sel"-->
+            <!--android:gravity="center"-->
+            <!--android:text="开柜查验"-->
+            <!--android:textColor="@color/bg_f"-->
+            <!--android:textSize="@dimen/textsize_17" />-->
     </FrameLayout>
 
     <android.support.v4.view.ViewPager

@@ -107,10 +107,7 @@ public class UnNetCstUtils {
 		.order("renewtime desc")
 		.find(InventoryVoError.class);
 	LogUtils.i("UNCC", "voErrors   " + voErrors.size());
-	LogUtils.i("UNCC", "voErrors   " + new Gson().toJson(voErrors));
-	for (InventoryVoError vo : voErrors) {
-	   LogUtils.i("UNCC", "getRenewTime   " + vo.getRenewTime());
-	}
+
 	if (voErrors != null && voErrors.size() > 0) {
 	   return true;
 	}
@@ -137,6 +134,7 @@ public class UnNetCstUtils {
     * 来网后判断然后进行数据提交
     */
    public static void putUnNetOperateYes(Object activity) {
+	LogUtils.i("UNCC", "putUnNetOperateYes   " );
 	if (getSqlChangeType()) {//判断数据库是否有改变
 	   type++;
 	   if (type == 1) {
@@ -153,8 +151,9 @@ public class UnNetCstUtils {
 			   }
 			});
 	   }
-	}else {
-	   getAllCstDate(activity);      //重新获取在库耗材数据
+	}
+	else {
+//	   getAllCstDate(activity);      //重新获取在库耗材数据
 	}
    }
 
@@ -169,7 +168,7 @@ public class UnNetCstUtils {
 	List<InventoryVo> vos = inventoryDto.getInventoryVos();
 	for (InventoryVo vo : vos) {
 	   for (int i = voList.size() - 1; i >= 0; i--) {
-		if (voList.get(i).getEpc().equals(vo.getEpc())) {
+		if (voList.get(i).getEpc().equals(vo.getEpc())&&vo.getDeleteCount()==0) {
 		   voList.get(i).delete();
 		}
 	   }

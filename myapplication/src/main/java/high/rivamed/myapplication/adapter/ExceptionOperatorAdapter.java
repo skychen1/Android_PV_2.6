@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -17,30 +16,30 @@ import high.rivamed.myapplication.bean.ExceptionOperatorBean;
  * 创建时间：2019/5/13
  * 描述：异常处理-关联操作人
  */
-public class ExceptionOperatorAdapter extends BaseQuickAdapter<ExceptionOperatorBean, BaseViewHolder> {
-    public ExceptionOperatorAdapter(@Nullable List<ExceptionOperatorBean> data) {
+public class ExceptionOperatorAdapter extends BaseQuickAdapter<ExceptionOperatorBean.PageModelBean.RowsBean, BaseViewHolder> {
+    public ExceptionOperatorAdapter(@Nullable List<ExceptionOperatorBean.PageModelBean.RowsBean> data) {
         super(R.layout.item_excpbing_operator_seven_layout, data);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ExceptionOperatorBean item) {
-        // TODO: 2019/5/17 设置数据
-        helper.setChecked(R.id.seven_one, item.isCheck())
-                .setText(R.id.seven_two, item.getOperator())
-                .setText(R.id.seven_three, item.getId());
+    protected void convert(BaseViewHolder helper, ExceptionOperatorBean.PageModelBean.RowsBean item) {
+        helper.setChecked(R.id.seven_one, item.isSelected())
+                .setText(R.id.seven_two, item.getName())
+                .setText(R.id.seven_three, item.getDbCenterUserId())
+                .setText(R.id.seven_four, item.getRoleName());
         helper.getView(R.id.seven_one).setClickable(false);
         helper.getView(R.id.seven_ll).setOnClickListener(v -> {
             for (int i = 0; i < getData().size(); i++) {
-                getData().get(i).setCheck(false);
+                getData().get(i).setSelected(false);
             }
-            getData().get(helper.getAdapterPosition()).setCheck(!item.isCheck());
+            getData().get(helper.getAdapterPosition()).setSelected(!item.isSelected());
             notifyDataSetChanged();
         });
     }
 
-    public ExceptionOperatorBean getSelect() {
+    public ExceptionOperatorBean.PageModelBean.RowsBean getSelect() {
         for (int i = 0; i < getData().size(); i++) {
-            if (getData().get(i).isCheck()) {
+            if (getData().get(i).isSelected()) {
                 return getData().get(i);
             }
         }

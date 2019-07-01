@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
 
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -31,8 +30,8 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_RIGHT;
 public class ExceptionRecordFrag extends SimpleFragment {
     @BindView(R.id.ecpt_deal_tab)
     SlidingTabLayout ecptDealTab;
-    @BindView(R.id.tv_open_door)
-    TextView tvOpenDoor;
+//    @BindView(R.id.tv_open_door)
+//    TextView tvOpenDoor;
     @BindView(R.id.ecpt_deal_viewpager)
     ViewPager ecptDealViewpager;
     private List<BoxSizeBean.DevicesBean> mTbaseDevices;
@@ -47,12 +46,10 @@ public class ExceptionRecordFrag extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        tvOpenDoor.setVisibility(View.GONE);
         getBoxData();
     }
 
     public void getBoxData() {
-        // TODO: 2019/5/17 加载柜子数据
         NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
             @Override
             public void onSucceed(String result) {

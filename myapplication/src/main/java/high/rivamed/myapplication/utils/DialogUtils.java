@@ -30,7 +30,7 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.ExceptionOperatorBean;
+import high.rivamed.myapplication.bean.ExceptionRecordBean;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
@@ -782,9 +782,9 @@ public class DialogUtils {
     /**
      * 异常处理：关联操作人
      */
-    public static void showSelectOperatorDialog(Context context, List<ExceptionOperatorBean> list,SelectExceptionOperatorDialog.Builder.OnSelectOperatorListener listener) {
+    public static void showSelectOperatorDialog(Context context, List<ExceptionRecordBean.RowsBean> Rowslist, SelectExceptionOperatorDialog.Builder.OnSelectOperatorListener listener) {
         new SelectExceptionOperatorDialog.Builder(context)
-                .setDate(list)
+                .setDate(Rowslist)
                 .setOnSelectListener(listener).create().show();
     }
 }
