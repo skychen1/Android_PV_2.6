@@ -357,7 +357,7 @@ public class LoginUtils {
 
                     @Override
                     public void downloadProgress(Progress progress) {
-                        mDialog.setProgress((int) (progress.fraction / -1024));
+                        mDialog.setProgress((int) (progress.fraction *100));
                         super.downloadProgress(progress);
 
                     }
