@@ -14,9 +14,14 @@ package org.androidpn.utils;
 public class XmppEvent {
    public static class XmmppConnect {
 	public boolean connect;
+	public boolean net;
 
 	public XmmppConnect(boolean connect) {
 	   this.connect = connect;
+	}
+	public XmmppConnect(boolean connect, boolean net) {
+	   this.connect = connect;
+	   this.net = net;
 	}
    }
    /**

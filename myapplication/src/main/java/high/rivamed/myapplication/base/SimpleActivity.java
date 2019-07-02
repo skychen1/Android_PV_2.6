@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -31,7 +32,6 @@ import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -71,8 +71,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    WindowManager              mLogWindowManager;
    WindowManager.LayoutParams mLayoutParams;
    WindowManager.LayoutParams mLayoutParamsLog;
-   public NetWorkReceiver netWorkReceiver;
    public static Intent mIntent;
+   private boolean mNet;
 
    /**
     * 设备title连接状态
@@ -83,7 +83,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 //	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
-	hasNetWork(mTitleConn);
+	mNet = event.net;
+	hasNetWork(mTitleConn,mNet);
    }
 
    /**
@@ -147,7 +148,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     *
     * @param has:true
     */
-   public void hasNetWork(boolean has) {
+   public void hasNetWork(boolean has,boolean net) {
 	if (mWindowManager != null) {
 	   if (has) {
 		if (mTipView != null && mTipView.getParent() != null) {
@@ -157,6 +158,12 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 		if (mTipView.getParent() == null) {
 		   try {
 			mWindowManager.addView(mTipView, mLayoutParams);
+			if (!net){
+			   ((TextView)mTipView.getRootView().findViewById(R.id.tip_text)).setText("未连接到网络，请检查网络设备");
+			}else {
+			   ((TextView)mTipView.getRootView().findViewById(R.id.tip_text)).setText("网络正常，未连接到服务器！");
+			}
+
 		   } catch (Exception e) {
 
 		   }
@@ -271,7 +278,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    protected void onResume() {
 	super.onResume();
 	if (!mTitleConn) {
-	   hasNetWork(mTitleConn);
+	   hasNetWork(mTitleConn,mNet);
 	}
 	getvDelegate().resume();
 

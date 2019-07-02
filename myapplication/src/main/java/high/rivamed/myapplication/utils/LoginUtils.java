@@ -47,6 +47,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
@@ -207,6 +208,8 @@ public class LoginUtils {
                         loginResultBean.getAccessToken().getTokenId());
                 SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN,
                         loginResultBean.getAccessToken().getRefreshToken());
+                SPUtils.putString(UIUtils.getContext(), PATIENT_TYPE,
+                                  loginResultBean.getPatientType());
                 //			SPUtils.getString(UIUtils.getContext(), KEY_USER_ICON,loginResultBean.getAppAccountInfoVo().getHeadIcon());
 
 //		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());

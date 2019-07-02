@@ -29,7 +29,16 @@ public class LoginResultBean implements Serializable {
     private AppAccountInfoVoBean appAccountInfoVo;
     private String               systemType;
     private String               loginTime;
+    private String               patientType;//2,3手术，1是非手术
     private AccessTokenBean      accessToken;
+
+    public String getPatientType() {
+        return patientType;
+    }
+
+    public void setPatientType(String patientType) {
+        this.patientType = patientType;
+    }
 
     public String getMsg() {
         return msg;

@@ -72,7 +72,7 @@ public class RegisteActivity extends SimpleActivity {
 //	Log.e("xxb", "RegisteActivity     " + event.connect);
 	mTitleConn = event.connect;
 	selTitleIcon();
-	hasNetWork(mTitleConn);
+	hasNetWork(mTitleConn,event.net);
    }
    public void selTitleIcon() {
 	if (mTitleConn) {
@@ -102,7 +102,7 @@ public class RegisteActivity extends SimpleActivity {
 	stopService(mIntentService);
 
 	if (WifiUtils.isWifi(mContext) == 0) {
-	   hasNetWork(false);
+	   hasNetWork(false,false);
 	   mBaseTabBtnConn.setEnabled(false);
 	}
 	mPagerAdapter = new RegistePagerAdapter(getSupportFragmentManager());

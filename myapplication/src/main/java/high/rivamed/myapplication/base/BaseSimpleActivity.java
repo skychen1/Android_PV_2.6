@@ -109,7 +109,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 	mTitleConn = event.connect;
 	selTitleIcon();
-	hasNetWork(mTitleConn);
+	hasNetWork(mTitleConn,event.net);
    }
 
    /**

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
@@ -69,6 +71,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueDate;
+import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueUnKnownDate;
 
 /**
  * 项目名称：高值
@@ -135,6 +138,8 @@ public class PublicExceptionFrag extends SimpleFragment {
    private View                               empty;//空白页
    private boolean                            hasNextPage;//分页：是否有下一页
    private int                                curPosition;//异常处理：当前操作的数据项
+   private NoDialog.Builder                   mNoDialog;
+   private String mSearchTypeInt =""; //对数据进行筛选
 
    /**
     * 重新加载数据
@@ -154,10 +159,18 @@ public class PublicExceptionFrag extends SimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialog(Event.EventExceptionDialog event) {
 	if (event.type){
-	   DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2, "noJump", "");
+	   if (mNoDialog==null){
+		mNoDialog = DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2,
+								 "noJump", "");
+	   }else {
+		mNoDialog.mDialog.dismiss();
+		mNoDialog=null;
+	   }
+
+
 	   PAGE = 1;
 	   if (showDealList != null) {
 		showDealList.clear();
@@ -207,7 +220,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		break;
 	   case R.id.exception_unknow_btn://关联操作人    8  完成
 		if (!UIUtils.isFastDoubleClick(R.id.exception_unknow_btn)) {
-		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueUnKnownDate(showDealList);
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectOperator(trueDate);
 		   } else {
@@ -216,8 +229,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.exception_outlink_btn://出柜关联   7
+		mSearchTypeInt = "7";
 		if (!UIUtils.isFastDoubleClick(R.id.exception_outlink_btn)) {
-		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectOutBox();
 		   } else {
@@ -226,8 +240,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.exception_bind_btn://绑定患者  3   完成
+		mSearchTypeInt = "3";
 		if (!UIUtils.isFastDoubleClick(R.id.exception_bind_btn)) {
-		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectPatient(trueDate);
 		   } else {
@@ -236,8 +251,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.exception_yichu_btn://移除判断  1
+		mSearchTypeInt = "1";
 		if (!UIUtils.isFastDoubleClick(R.id.exception_yichu_btn)) {
-		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
 		   if (trueDate != null && trueDate.size() > 0) {
 			removeJudge();
 		   } else {
@@ -260,7 +276,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 	mType_size = arguments.getInt(TYPE_SIZE);
 	mType_page = arguments.getString(TYPE_PAGE);
 	mDeviceCode = arguments.getString(DEVICECODE);
+
 	empty = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	searchTypeRg.check(R.id.search_type_all);
 	initListener();
 	if (mType_page.equals(STYPE_EXCEPTION_LEFT)) {
 	   //异常处理
@@ -530,10 +548,11 @@ public class PublicExceptionFrag extends SimpleFragment {
    public void onEvent(Event.outBoxEvent event) {
 	//只更新异常处理tab，过滤掉其他tab
 	if (mType_page.equals(STYPE_EXCEPTION_LEFT) && ExceptionDealFrag.CURRENT_TAB == mType_size) {
-	   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+
 	   switch (event.type) {
 		case "104": //连续移除
 		   //移除判断
+		   List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
 		   event.dialog.dismiss();
 		   onRemoveJudgeEvent(event, trueDate);
 		   break;
@@ -544,12 +563,15 @@ public class PublicExceptionFrag extends SimpleFragment {
 		case "106":
 		   //出柜关联-下一步-绑定患者
 		   event.dialog.dismiss();
-		   goToFirstBindAC(trueDate);
+		   Log.i("ffad","showDealList   "+mGson.toJson(showDealList));
+		   List<ExceptionRecordBean.RowsBean> trueDates = getTrueDate(showDealList,mSearchTypeInt);
+		   goToFirstBindAC(trueDates);
 		   break;
 		case "x":
 		   //选择库房结果处理
 		   if (event.mIntentType == INTENT_TYPE) {
-			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDate, event.context,"9");//设置值  移出
+			List<ExceptionRecordBean.RowsBean> trueDatess = getTrueDate(showDealList,mSearchTypeInt);
+			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context,"9");//设置值  移出
 			putExceptionDate(handleVo);
 			event.dialog.dismiss();
 		   }
@@ -557,7 +579,8 @@ public class PublicExceptionFrag extends SimpleFragment {
 		case "2":
 		   //选择原因结果处理  退货
 		   if (event.mIntentType == INTENT_TYPE) {
-			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDate, event.context,"8");//设置值  退货
+			List<ExceptionRecordBean.RowsBean> trueDatess = getTrueDate(showDealList,mSearchTypeInt);
+			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context,"8");//设置值  退货
 			putExceptionDate(handleVo);
 			event.dialog.dismiss();
 		   }
@@ -579,7 +602,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	String deptId = SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE);
 	switch (event.context) {
 	   case "0"://领用
-		List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList);
+		List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
 		inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDate, null,"3");//设置值  领用
 		putExceptionDate(handleVo);
 		event.dialog.dismiss();
@@ -804,5 +827,11 @@ public class PublicExceptionFrag extends SimpleFragment {
 			   .putExtra("GoneType", "GONE")
 			   .putExtra("ExceptionDate", (Serializable) trueDate));
 	}
+   }
+
+   @Override
+   public void onDestroyView() {
+	super.onDestroyView();
+	mSearchTypeInt="";
    }
 }

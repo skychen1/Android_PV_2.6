@@ -61,7 +61,12 @@ public class RunWatePageAdapter extends BaseQuickAdapter<RunWateBean.RowsBean, B
         }
         mSeven_six.setText(item.getDeviceName());
         mSeven_seven.setText(item.getOperationTime());
-        mSeven_eight.setText(item.getName());
+        if(item.getName()==null||item.getName().equals("")){
+            mSeven_eight.setText("unknown");
+        }else {
+            mSeven_eight.setText(item.getName());
+        }
+
 
 //        UIUtils.initTermOfValidity(mContext, helper, five, mSeven_five);
 

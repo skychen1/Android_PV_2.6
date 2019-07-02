@@ -60,6 +60,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
+import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
@@ -118,7 +119,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
    List<String> titeleList = null;
    public  int                                mSize;
-   private String                             mDeptType;
+   private String                             mDeptType = "2";   //2,3手术排版，1是非手术
    private boolean                            mException;
    private List<ExceptionRecordBean.RowsBean> mExceptionDate;
 
@@ -147,7 +148,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
+	mDeptType = SPUtils.getString(this, PATIENT_TYPE);
 	mTemPTbaseDevices = (List<BoxSizeBean.DevicesBean>) getIntent().getSerializableExtra(
 		"mTemPTbaseDevices");
 	mExceptionDate = (List<ExceptionRecordBean.RowsBean>) getIntent().getSerializableExtra(
@@ -187,7 +188,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	if (mTitleConn) {
 	   loadBingDate("", "");
 	} else {
-	   setTemporaryBing(null);
+	   setTemporaryBing("2");
 	}
    }
 
@@ -201,14 +202,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     */
    private void setTemporaryBing(String deptType) {
 	String[] array;
-	if (deptType == null || deptType.equals("2") || deptType.equals("")) {
-	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
-	   mSearchDept.setText("查询手术间：");
-	   mSearchRight.setHint("请输入手术间名称、编号、拼音码");
-	} else {
+	if (deptType.equals("1")) {
 	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays2);
 	   mSearchDept.setText("查询申请科室：");
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
+	} else {
+	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	   mSearchDept.setText("查询手术间：");
+	   mSearchRight.setHint("请输入手术间名称、编号、拼音码");
 	}
 	titeleList = Arrays.asList(array);
 	mSize = titeleList.size();
@@ -624,11 +625,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		.findSchedulesDate(optienNameOrId, deptName, mAllPage, mRows, this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
+
 			LogUtils.i(TAG, "result   " + result);
 			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			setTemporaryBing(mDeptType);
 			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
-			   mDeptType = bean.getRows().get(0).getDeptType();
-			   setTemporaryBing(mDeptType);
 			   boolean isClear;
 			   if (patientInfos.size() == 0) {
 				isClear = true;
@@ -660,7 +661,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   }
 			   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
 			} else {
-			   setTemporaryBing("2");
 			   if (mAllPage == 1 && mTypeView != null &&
 				 mTypeView.mTempPatientAdapter != null) {
 				mTypeView.mTempPatientAdapter.getData().clear();
@@ -672,7 +672,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onError(String result) {
 			super.onError(result);
-			setTemporaryBing(null);
+			setTemporaryBing("2");
 		   }
 		});
    }

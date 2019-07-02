@@ -84,6 +84,8 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getSqlChangeType;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
@@ -752,7 +754,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * 绑定患者的领用数据提交
     *
     * @param mIntentType
-    * @param toJson
     */
    private void putEpcDate(int mIntentType, InventoryDto dto) {
 	NetRequest.getInstance().putOperateYes(mGson.toJson(dto), this, new BaseResult() {
@@ -761,13 +762,18 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
+
 		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
+		if (!getSqlChangeType()){
+		   getAllCstDate(this);
+		}
 		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+
 		finish();
 	   }
 
@@ -782,7 +788,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * 确认提交领用退回
     *
     * @param mIntentType
-    * @param toJson
     */
    private void putEpcLyThDate(int mIntentType, InventoryDto dto) {
 	NetRequest.getInstance().putOperateLyThYes(mGson.toJson(dto), this, new BaseResult() {
@@ -791,13 +796,19 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		ToastUtils.showShort("操作成功");
 		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+
 		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+
 		if (mIntentType == 2) {
 		   UIUtils.putOrderId(mContext);
 		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
 		   App.getInstance().removeALLActivity_();
 		}
+		if (!getSqlChangeType()){
+		   getAllCstDate(this);
+		}
 		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+
 		finish();
 	   }
 
@@ -1191,7 +1202,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTimelyNumberText.setVisibility(View.GONE);
 		   setFalseEnabled(true, false);
 		} else {
-		   setFalseEnabled(false, false);
+		   setFalseEnabled(false, true);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 		   return;
@@ -1231,9 +1242,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mTimelyLeft.setEnabled(b);
 	   mTimelyRight.setEnabled(b);
 	}
-	if (mLyBingBtnRight != null && type) {
-	   mLyBingBtnRight.setEnabled(b);
-	}
+//	if (mLyBingBtnRight != null && type) {
+//	   mLyBingBtnRight.setEnabled(b);
+//	}
 	if (mStarts != null && !b) {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
@@ -1276,8 +1287,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		break;
 	   //否则其他动作计时取消
 	   default:
-		if (mStarts != null) {
-		   mStarts.cancel();
+	      if (mTimelyRight.isEnabled() && mTimelyRight.getVisibility() == View.VISIBLE){
+		   if (mStarts != null) {
+			mStarts.cancel();
+		   }
 		}
 		break;
 	}

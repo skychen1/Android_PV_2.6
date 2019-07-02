@@ -265,7 +265,7 @@ public class RegisteFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 	//	applyNet();
 
-	mRecyclerview = mContext.findViewById(R.id.recyclerview);
+	mRecyclerview = mContext.findViewById(R.id.recyclerviewc);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
 	mFragRegisteNameEdit.setHint("2.6.7高值柜");
 	mFragRegisteModelEdit.setHint("rivamed");

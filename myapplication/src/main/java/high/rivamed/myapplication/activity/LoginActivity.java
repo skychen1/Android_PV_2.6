@@ -45,6 +45,7 @@ import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.fragment.LoginFaceFragment;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
@@ -75,6 +76,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -85,7 +87,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -128,7 +130,7 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   public static int    mConfigType;
+   public static int mConfigType;
    private boolean mOnStart = false;
 
    /**
@@ -153,11 +155,15 @@ public class LoginActivity extends SimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
 	mTitleConn = event.connect;
-	hasNetWork(event.connect);
+	hasNetWork(event.connect, event.net);
 	if (mTitleConn && mOnStart) {
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
+		   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+		   if (voList == null || voList.size() == 0) {
+			getAllCstDate(this);
+		   }
 		   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 		   getUnNetUseDate();
 		   getUnEntFindOperation();
@@ -177,7 +183,6 @@ public class LoginActivity extends SimpleActivity {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
-	LogUtils.i(TAG, "getDates()   " + getDates());
 	initTab();
    }
 
@@ -207,17 +212,16 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-	Log.i("fffa","xxxxx   "+UIUtils.isServiceRunning(this,"high.rivamed.myapplication.service.ScanService"));
-	if (!UIUtils.isServiceRunning(this,"high.rivamed.myapplication.service.ScanService")){
+	Log.i("fffa", "xxxxx   " + UIUtils.isServiceRunning(this,
+									    "high.rivamed.myapplication.service.ScanService"));
+	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   startService(mIntentService);
 	}
 
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		if (mTitleConn) {
-		   UnNetCstUtils.getAllCstDate(this);//重新获取在库耗材数据
-		}
+		getAllCstDate(this);//重新获取在库耗材数据
 		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
 		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
 		if (all.size() == 0) {
@@ -255,6 +259,7 @@ public class LoginActivity extends SimpleActivity {
 	   SPUtils.putString(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE, "");
 	   SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN, "");
 	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
+	   SPUtils.putString(UIUtils.getContext(), PATIENT_TYPE, "");
 	}
 
 	mConfigType = 0;//默认获取
@@ -356,8 +361,9 @@ public class LoginActivity extends SimpleActivity {
 		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
 		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
 		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
-		   if (null!=homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
-			for (int x = 0; x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+			for (int x = 0;
+			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
 			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
 				   .get(0)
 				   .getChildren()
@@ -437,30 +443,32 @@ public class LoginActivity extends SimpleActivity {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 	//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
-	   //	getUpDateVer(tCstConfigVos, configType, loginType);
-	   LoginUtils.getUpDateVer(this, tCstConfigVos, (canLogin,canDevice, hasNet) ->
-			   loginEnjoin(canDevice,configType,loginType));
+	//	getUpDateVer(tCstConfigVos, configType, loginType);
+	LoginUtils.getUpDateVer(this, tCstConfigVos,
+					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
+												   loginType));
 
-	   //控制紧急登录tab的显示
-	   mLoginPass.setVisibility(UIUtils.getConfigType(mContext, CONFIG_017)?View.VISIBLE:View.GONE);
-	   //有人脸识别，显示人脸识别tab，默认选中人脸识别tab
-	   //没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
-	   mLoginFace.setVisibility(isConfigFace()?View.VISIBLE:View.GONE);
-	   mLoginViewpager.setCurrentItem(isConfigFace()?0:1);
-	   //有人脸识别或紧急登录时，可滑动
-	   mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
+	//控制紧急登录tab的显示
+	mLoginPass.setVisibility(
+		UIUtils.getConfigType(mContext, CONFIG_017) ? View.VISIBLE : View.GONE);
+	//有人脸识别，显示人脸识别tab，默认选中人脸识别tab
+	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
+	mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
+	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
+	//有人脸识别或紧急登录时，可滑动
+	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
 
 	//	} else {
 	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	//	}
    }
 
-	private boolean isConfigFace() {
-		return UIUtils.getConfigType(mContext, CONFIG_031);
-		//测试时默认开启，真实情况需要根据后台配置
-//		return true;
-//		return true;
-	}
+   private boolean isConfigFace() {
+	return UIUtils.getConfigType(mContext, CONFIG_031);
+	//测试时默认开启，真实情况需要根据后台配置
+	//		return true;
+	//		return true;
+   }
 
    /**
     * 是否禁止使用
@@ -510,7 +518,7 @@ public class LoginActivity extends SimpleActivity {
 	   String accountName = beans.get(0).getAccountName();
 	   List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
 	   LogUtils.i(TAG, " menus1     " + mGson.toJson(fromJson));
-	   LoginUtils.setMenuDateAndStart(fromJson, mGson, this,null);
+	   LoginUtils.setMenuDateAndStart(fromJson, mGson, this, null);
 	} else {
 	   ToastUtils.showShortToast("登录失败，暂无登录信息！");
 	}
@@ -529,7 +537,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
-		LoginUtils.loginSpDate(result, mContext, mGson,null);
+		LoginUtils.loginSpDate(result, mContext, mGson, null);
 	   }
 	});
 
@@ -549,7 +557,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
-		LoginUtils.loginSpDate(result, mContext, mGson,null);
+		LoginUtils.loginSpDate(result, mContext, mGson, null);
 	   }
 	});
 
@@ -681,7 +689,7 @@ public class LoginActivity extends SimpleActivity {
 			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_password:
-				mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 		   }
 		} else {
@@ -695,11 +703,11 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginRadiogroup.check(radioGroup.getCheckedRadioButtonId());
 	});
 
-	   //初始状态只显示用户密码登录
-	   mLoginPass.setVisibility(View.GONE);
-	   mLoginFace.setVisibility(View.GONE);
-	   mLoginViewpager.setScanScroll(false);
-	   mLoginViewpager.setCurrentItem(1);
+	//初始状态只显示用户密码登录
+	mLoginPass.setVisibility(View.GONE);
+	mLoginFace.setVisibility(View.GONE);
+	mLoginViewpager.setScanScroll(false);
+	mLoginViewpager.setCurrentItem(1);
    }
 
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
@@ -777,12 +785,11 @@ public class LoginActivity extends SimpleActivity {
 	}
    }
 
-
    @Override
    protected void onPause() {
 	super.onPause();
 	mOnStart = false;
-	if (mTitleConn){
+	if (mTitleConn) {
 	   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 	}
    }

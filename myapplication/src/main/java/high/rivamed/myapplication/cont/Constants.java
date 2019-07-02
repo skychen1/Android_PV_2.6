@@ -112,6 +112,7 @@ public class Constants {
     public static final String BOX_SIZE_DATE = "BOX_SIZE_DATE";//柜子的信息
     public static final String LOGCAT_OPEN = "LOG_CAT_OPEN";//日志记录
     public static final String FACE_PHOTO = "face_photo";//人脸照
+    public static final String PATIENT_TYPE = "PatientType";///2,3手术，1是非手术
 
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN

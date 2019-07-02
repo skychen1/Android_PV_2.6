@@ -182,6 +182,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_six.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mLl.setBackgroundResource(R.color.bg_color);
+	   mSeven_four.setBackgroundResource(R.color.bg_color);
 	   mSeven_seven.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_seven.setBackgroundResource(R.color.bg_color);
 	} else if (item.getIsErrorOperation() == 1 && item.getDeleteCount() == 0) {

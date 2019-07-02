@@ -37,7 +37,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
  */
 public class UnNetCstUtils {
 
-   private static List<InventoryVo> mAllCstVos = new ArrayList<>();
+//   private static List<InventoryVo> mAllCstVos;
    static         int               type       = 0;//控制第一次请求，然后需要等到重新获取新的耗材后才重置
    private static Gson sGson = new Gson();;
 
@@ -51,7 +51,7 @@ public class UnNetCstUtils {
 	   public void onSucceed(String result) {
 		type = 0;
 		InventoryDto dto = sGson.fromJson(result, InventoryDto.class);
-		List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+		List<InventoryVo> mAllCstVos = getLocalAllCstVos();
 		InventoryDto localDto = new InventoryDto();
 		List<InventoryVo> vos = dto.getInventoryVos();
 		List<InventoryVo> tVos = new ArrayList<>();
@@ -60,8 +60,9 @@ public class UnNetCstUtils {
 		localDto.setTotalCount(dto.getTotalCount());
 		if (vos.size() == 0) {
 		   LitePal.deleteAll(InventoryVo.class);
+		   mAllCstVos.clear();
 		}
-		if (voList.size() == 0) {
+		if (mAllCstVos.size() == 0) {
 		   localDto.setInventoryVos(vos);
 		   localDto.save();
 		   tVos.addAll(vos);
@@ -77,7 +78,7 @@ public class UnNetCstUtils {
 		   }
 		   for (int i = 0; i < vos.size(); i++) {
 			vos.get(i).setDateNetType(true);
-			if (!getVosType(voList, vos.get(i).getEpc())) {
+			if (!getVosType(mAllCstVos, vos.get(i).getEpc())) {
 			   boolean save = vos.get(i).save();
 			   Log.i("UnNetc", "结束save     " + save);
 			}
@@ -93,8 +94,8 @@ public class UnNetCstUtils {
     * @return
     */
    public static List<InventoryVo> getLocalAllCstVos() {
-	mAllCstVos.clear();
-	mAllCstVos = LitePal.findAll(InventoryVo.class);
+//	mAllCstVos.clear();
+	List<InventoryVo>  mAllCstVos = LitePal.findAll(InventoryVo.class);
 	return mAllCstVos;
    }
 

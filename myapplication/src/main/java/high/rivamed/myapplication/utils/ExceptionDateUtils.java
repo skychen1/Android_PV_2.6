@@ -21,11 +21,27 @@ public class ExceptionDateUtils  {
     * 是否有选择操作的耗材
     * @return
     */
-   public static List<ExceptionRecordBean.RowsBean> getTrueDate(List<ExceptionRecordBean.RowsBean> rows ) {
+   public static List<ExceptionRecordBean.RowsBean> getTrueDate(List<ExceptionRecordBean.RowsBean> rows ,String type) {
 	List<ExceptionRecordBean.RowsBean> rowList = new ArrayList<>();
 	if (rows != null) {
 	   for (int i = 0; i < rows.size(); i++) {
-		if (rows.get(i).isSelected()) {
+		if (rows.get(i).isSelected()&&rows.get(i).getUnNormalSource().equals(type)) {
+		   rowList.add(rows.get(i));
+		}
+	   }
+	   return rowList;
+	}
+	return null;
+   }
+   /**
+    * 是否有选择操作的耗材
+    * @return
+    */
+   public static List<ExceptionRecordBean.RowsBean> getTrueUnKnownDate(List<ExceptionRecordBean.RowsBean> rows) {
+	List<ExceptionRecordBean.RowsBean> rowList = new ArrayList<>();
+	if (rows != null) {
+	   for (int i = 0; i < rows.size(); i++) {
+		if (rows.get(i).isSelected()&&rows.get(i).getOperatorName().equals("unknown")) {
 		   rowList.add(rows.get(i));
 		}
 	   }

@@ -73,6 +73,8 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getSqlChangeType;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
@@ -698,6 +700,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   if (!getSqlChangeType()){
+			getAllCstDate(this);
+		   }
 		   finish();
 		}
 
@@ -755,6 +760,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   if (!getSqlChangeType()){
+			getAllCstDate(this);
+		   }
 		   finish();
 		}
 
@@ -1134,7 +1142,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		break;
 	   //否则其他动作计时取消
 	   default:
-		mStarts.cancel();
+		if (mTimelyRight.isEnabled()){
+		   if (mStarts != null) {
+			mStarts.cancel();
+		   }
+		}
 		break;
 	}
 	return super.dispatchTouchEvent(ev);

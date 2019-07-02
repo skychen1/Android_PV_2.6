@@ -2,6 +2,8 @@ package high.rivamed.myapplication.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -18,6 +20,7 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RxUtils;
@@ -30,6 +33,7 @@ import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
@@ -57,6 +61,7 @@ public class ScanService extends Service {
    private ArrayList<String> mEthDevices = new ArrayList<>();
    private RxUtils.BaseEpcObservable mObs;
    public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private NetWorkReceiver mWorkReceiver;
 
    /**
     * 门锁的状态检测回调
@@ -114,44 +119,6 @@ public class ScanService extends Service {
 	putEPC(mEPCDatess, box_id);
    }
 
-   //   /**
-   //    * 提交epc数据
-   //    *
-   //    * @param epcDatess
-   //    */
-   //   private void putEPC(Map<String, String> epcDatess,String boxid) {
-   //	List<InventoryVo> mInVo = new ArrayList<>();
-   //	List<InventoryVo> vos = setAllBoxVosDate(LitePal.findAll(InventoryVo.class), boxid);
-   //	mInVo.addAll(vos);
-   //	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
-   //	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
-   //	   if (vo != null) {
-   //		mInVo.remove(vo);
-   //	   } else {
-   //		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
-   //		    v.getValue() != null) {
-   //		   InventoryVo inventory = new InventoryVo();
-   //		   inventory.setEpc(v.getKey());
-   //		   inventory.setDeviceId(v.getValue());
-   //		   inventory.setRenewTime(getDates());
-   //		   inventory.setStatus("2");//入柜
-   //		   inventory.setOperationStatus(99);
-   //		   boolean save = inventory.save();
-   //		   LogUtils.i(TAG, "Scan 入柜存入 " + save);
-   //		}
-   //	   }
-   //	}
-   //	for (InventoryVo s : mInVo) {
-   //	   ContentValues values = new ContentValues();
-   //	   values.put("status", "3");//出柜
-   //	   values.put("operationstatus", 98);
-   //	   values.put("renewtime", getDates());
-   //	   //	   values.put("accountid", SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));
-   //	   //	   values.put("username", SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-   //	   LitePal.updateAll(InventoryVo.class, values, "epc = ?", s.getEpc());
-   //	}
-   //   }
-
    /**
     * 提交epc数据
     *
@@ -159,7 +126,8 @@ public class ScanService extends Service {
     */
    private void putEPC(Map<String, String> epcDatess, String boxid) {
 	List<InventoryVo> mInVo = new ArrayList<>();
-	List<InventoryVo> allVo = LitePal.findAll(InventoryVo.class);
+
+	List<InventoryVo> allVo = getLocalAllCstVos();
 	List<InventoryVo> vos = setAllBoxVosDate(allVo, boxid);
 	mInVo.addAll(vos);
 	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
@@ -173,8 +141,10 @@ public class ScanService extends Service {
 			boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
 			LogUtils.i(TAG, "     Scan 入柜存入error  "+saveError);
 		   }
-		   boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
-		   LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
+		   if (!mTitleConn){
+			boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
+			LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
+		   }
 		}
 	   }
 	}
@@ -207,6 +177,7 @@ public class ScanService extends Service {
 	for (BoxIdBean idBean : boxIdBeans) {
 	   mDeviceSizeList.add(idBean.getDevice_id());
 	}
+	initReceiver();
 	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
 
    }
@@ -214,7 +185,26 @@ public class ScanService extends Service {
    @Override
    public void onDestroy() {
 	EventBusUtils.unregister(this);
+	if (mWorkReceiver != null) {
+	   unregisterReceiver(mWorkReceiver);
+	   mWorkReceiver = null;
+	}
 	super.onDestroy();
 
    }
+   /**
+    * 注册网络监听的广播
+    */
+   private void initReceiver() {
+	mWorkReceiver = new NetWorkReceiver();
+	IntentFilter timeFilter = new IntentFilter();
+	timeFilter.addAction("android.net.ethernet.ETHERNET_STATE_CHANGED");
+	timeFilter.addAction("android.net.ethernet.STATE_CHANGE");
+	timeFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+	timeFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+	timeFilter.addAction("android.net.wifi.STATE_CHANGE");
+	timeFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+	registerReceiver(mWorkReceiver, timeFilter);
+   }
+
 }
