@@ -63,6 +63,11 @@ import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
  * 创建者：chenyanling
  * 创建时间：2019/6/12
  * 描述：登录相关操作
+ * getConfigTrue=true 设备禁用 显示遮罩
+ *  不可登录
+ * getConfigTrue=false 设备可用 隐藏遮罩
+ *  有网登录
+ *  离线登录
  */
 public class LoginUtils {
     /**
@@ -248,9 +253,11 @@ public class LoginUtils {
             Intent intent = new Intent(UIUtils.getContext(), HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             UIUtils.getContext().startActivity(intent);
-            if (callback != null)
+            if (callback != null){
                 callback.onMenu(true);
-            activity.finish();
+            }else {
+                activity.finish();
+            }
         } else {
             if (callback != null)
                 callback.onMenu(false);
@@ -286,11 +293,7 @@ public class LoginUtils {
      * 登录检测回调：检测1.是否能够登录 2.设备是否禁用 3.登录模式：有网还是离线
      */
     private static void loginEnjoin(List<ConfigBean.ThingConfigVosBean> tCstConfigVos, boolean hasNet, LoginCallback callback) {
-        if (getConfigTrue(tCstConfigVos)) {
-            callback.onLogin(true, false, hasNet);
-        } else {
-            callback.onLogin(true, true, hasNet);
-        }
+        callback.onLogin(true, !getConfigTrue(tCstConfigVos), hasNet);
     }
 
     /**
@@ -357,7 +360,7 @@ public class LoginUtils {
 
                     @Override
                     public void downloadProgress(Progress progress) {
-                        mDialog.setProgress((int) (progress.fraction / -1024));
+                        mDialog.setProgress((int) (progress.fraction *100));
                         super.downloadProgress(progress);
 
                     }

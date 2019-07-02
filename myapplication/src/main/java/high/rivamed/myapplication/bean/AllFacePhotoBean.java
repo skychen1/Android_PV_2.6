@@ -1,5 +1,7 @@
 package high.rivamed.myapplication.bean;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 /**
@@ -143,7 +145,7 @@ public class AllFacePhotoBean {
         }
 
         public String getUpdateTime() {
-            return updateTime;
+            return TextUtils.isEmpty(updateTime)?"":updateTime;
         }
 
         public void setUpdateTime(String updateTime) {
@@ -191,7 +193,7 @@ public class AllFacePhotoBean {
         }
 
         public String getFaceUpdateTime() {
-            return faceUpdateTime;
+            return  TextUtils.isEmpty(faceUpdateTime)?"":faceUpdateTime;
         }
 
         public void setFaceUpdateTime(String faceUpdateTime) {

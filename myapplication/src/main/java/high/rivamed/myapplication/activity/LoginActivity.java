@@ -132,8 +132,9 @@ public class LoginActivity extends SimpleActivity {
    long[] mHits = new long[COUNTS];
    public static int mConfigType;
    private boolean mOnStart = false;
+	private LoginFaceFragment faceFragment;
 
-   /**
+	/**
     * ic卡和指纹仪登陆回调
     *
     * @param event
@@ -480,7 +481,11 @@ public class LoginActivity extends SimpleActivity {
 	   boolean canDevice, int configType, String loginType) {
 	if (!canDevice) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
-		mLoginGone.setVisibility(View.VISIBLE);
+		   mLoginGone.setVisibility(View.VISIBLE);
+		   if (mLoginFace.isChecked() && isConfigFace()) {
+			   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
+			   faceFragment.onTabShowPreview(false);
+		   }
 	   } else if (configType == 1) {//IC卡登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
 		ToastUtils.showShort("正在维护，请到管理端启用");
@@ -492,6 +497,10 @@ public class LoginActivity extends SimpleActivity {
 	} else {
 	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.GONE);
+		if (mLoginFace.isChecked() && isConfigFace()) {
+			   //设备禁用切换至设备可用时当前选中显示的是人脸识别页面，开启人脸识别的预览
+			   faceFragment.onTabShowPreview(true);
+		   }
 	   } else if (configType == 1) {//IC卡登录限制
 		if (mTitleConn) {
 		   validateLoginIdCard(loginType);
@@ -653,7 +662,8 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-	mFragments.add(new LoginFaceFragment());//人脸识别登录 TODO
+	   faceFragment = new LoginFaceFragment();
+	   mFragments.add(faceFragment);//人脸识别登录 TODO
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));

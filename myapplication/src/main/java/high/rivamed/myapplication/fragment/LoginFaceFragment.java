@@ -48,6 +48,7 @@ public class LoginFaceFragment extends SimpleFragment {
     TextView textHint;
     private String TAG = "Face";
     private String userId;
+    private boolean startIdentity;
 
     @Override
     public int getLayoutId() {
@@ -76,13 +77,12 @@ public class LoginFaceFragment extends SimpleFragment {
             onTabShowPreview(false);
             userId = Id;
             //获取配置项并登陆
-            LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) -> {
-                if (canLogin) {
-                    loginEnjoin(canDevice, hasNet);
-                } else {
-                    onTabShowPreview(true);
-                }
-            });
+            LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) ->
+                    textHint.post(() -> {
+                        if (canLogin) {
+                            loginEnjoin(canDevice, hasNet);
+                        }
+                    }));
         }
     }
 
@@ -94,6 +94,7 @@ public class LoginFaceFragment extends SimpleFragment {
      */
     private void loginEnjoin(boolean canDevice, boolean hasNet) {
         if (canDevice) {
+            textHint.setText("");
             LoginActivity.mLoginGone.setVisibility(View.GONE);
             if (hasNet) {
                 //有网
@@ -110,6 +111,7 @@ public class LoginFaceFragment extends SimpleFragment {
                         if (hasMenu) {
                             //销毁人脸识别sdk
                             destroyFaceSDK();
+                            _mActivity.finish();
                         } else {
                             //开启重新预览
                             onTabShowPreview(true);
@@ -122,6 +124,7 @@ public class LoginFaceFragment extends SimpleFragment {
                 }
             }
         } else {
+            textHint.setText("正在维护，请到管理端启用");
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
             ToastUtils.showShort("正在维护，请到管理端启用");
         }
@@ -145,6 +148,7 @@ public class LoginFaceFragment extends SimpleFragment {
                     if (hasMenu) {
                         //销毁人脸识别sdk
                         destroyFaceSDK();
+                        _mActivity.finish();
                     } else {
                         //开启重新预览
                         onTabShowPreview(true);
@@ -176,13 +180,15 @@ public class LoginFaceFragment extends SimpleFragment {
 
     public void destroyFaceSDK() {
         //在确定长时间不使用人脸识别，或者需要使用人脸检测注册人脸底库时，要销毁人脸识别初始
-        FaceManager.getManager().destroyIdentity();
         LogUtils.d(TAG, "destroyIdentity---::::::::::: ");
+        FaceManager.getManager().destroyIdentity();
     }
 
     //控制相机预览，开启人脸识别
     public void onTabShowPreview(boolean isShow) {
-        if (isShow) {
+        if (isShow && LoginActivity.mLoginGone.getVisibility() == View.GONE) {
+            if (startIdentity)
+                return;
             userId = "";
             int initStatus = FaceManager.getManager().getInitStatus();
             if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
@@ -204,15 +210,16 @@ public class LoginFaceFragment extends SimpleFragment {
                 textHint.post(() -> textHint.setText("人脸识别底库无数据"));
             } else {
                 //可以开启识别
-                FaceManager.getManager().startIdentity();
-                textHint.post(() -> textHint.setText(""));
                 LogUtils.d(TAG, "startIdentity---::::::::::: ");
+                startIdentity = FaceManager.getManager().startIdentity();
+                textHint.post(() -> textHint.setText(""));
             }
         } else {
             // 停止检测
-            FaceManager.getManager().stopIdentity();
-            textHint.post(() -> textHint.setText(""));
             LogUtils.d(TAG, "stopIdentity---::::::::::: ");
+            FaceManager.getManager().stopIdentity();
+            startIdentity=false;
+            textHint.post(() -> textHint.setText(""));
         }
     }
 
