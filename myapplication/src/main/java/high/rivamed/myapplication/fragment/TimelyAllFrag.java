@@ -497,6 +497,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   getBoxIdList();
 	   if (mReaderDeviceId.size() == 0) {
 		ToastUtils.showShort("reader未启动，请稍后重新扫描");
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	   for (String readerCode : mReaderDeviceId) {
 		int x = ReaderManager.getManager().startScan(readerCode, READER_TIME);
@@ -515,6 +516,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
 		if (mReaderDeviceId.size() == 0) {
 		   ToastUtils.showShort("reader未启动，请稍后重新扫描");
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));

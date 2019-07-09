@@ -31,6 +31,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.fragment.TimelyAllFrag.mTimelyOnResume;
 import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
+import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -151,7 +152,7 @@ public class AllDeviceCallBack {
 	   int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
 	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-
+	stopScan();
 	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
 	String mDeviceCode = devicesBean.getDeviceId();
 

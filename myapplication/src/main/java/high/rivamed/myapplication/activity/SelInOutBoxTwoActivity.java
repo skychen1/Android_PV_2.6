@@ -596,6 +596,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			setFalseEnabled(false);
 			mBoxInventoryVos.clear();
+			stopScan();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
 			   Eth002Manager.getEth002Manager().openDoor(deviceCode);
@@ -689,21 +690,24 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result  " + result);
-		   ToastUtils.showShort("操作成功");
-		   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
-		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		   if (mIntentType == 2) {
-			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-		   } else {
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		   if (fromJson.isOperateSuccess()) {
+			ToastUtils.showShort("操作成功");
+			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
+			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+			if (mIntentType == 2) {
+			   UIUtils.putOrderId(mContext);
+			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			} else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			}
+			UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+			if (!getSqlChangeType()) {
+			   getAllCstDate(this);
+			}
+			finish();
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-		   if (!getSqlChangeType()){
-			getAllCstDate(this);
-		   }
-		   finish();
 		}
 
 		@Override
@@ -748,22 +752,25 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result  " + result);
-		   ToastUtils.showShort("操作成功");
+		   InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		   if (fromJson.isOperateSuccess()) {
+			ToastUtils.showShort("操作成功");
 
-		   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
-		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		   if (mIntentType == 2) {
-			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
-		   } else {
-			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
+			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+			if (mIntentType == 2) {
+			   UIUtils.putOrderId(mContext);
+			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			   App.getInstance().removeALLActivity_();
+			} else {
+			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+			}
+			UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+			if (!getSqlChangeType()) {
+			   getAllCstDate(this);
+			}
+			finish();
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-		   if (!getSqlChangeType()){
-			getAllCstDate(this);
-		   }
-		   finish();
 		}
 
 		@Override
@@ -853,7 +860,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
-		setDateEpc(mTCstInventoryTwoDto);
+		if (mTCstInventoryTwoDto.isOperateSuccess()){
+		   setDateEpc(mTCstInventoryTwoDto);
+		}
 	   }
 
 	   @Override
@@ -872,7 +881,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onSucceed(String result) {
 		Log.i(TAG, "result    " + result);
 		mTCstInventoryTwoDto = mGson.fromJson(result, InventoryDto.class);
-		setDateEpc(mTCstInventoryTwoDto);
+		if (mTCstInventoryTwoDto.isOperateSuccess()){
+		   setDateEpc(mTCstInventoryTwoDto);
+		}
+
 	   }
 
 	   @Override
@@ -932,17 +944,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result移出   " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		if (event.mIntentType == 2) {
-		   UIUtils.putOrderId(mContext);
-		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-		} else {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		if (fromJson.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		   if (event.mIntentType == 2) {
+			UIUtils.putOrderId(mContext);
+			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+		   } else {
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   finish();
 		}
-		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-		finish();
 	   }
 
 	   @Override
@@ -1029,17 +1044,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result退货   " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		if (event.mIntentType == 2) {
-		   UIUtils.putOrderId(mContext);
-		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-		} else {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		if (fromJson.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		   if (event.mIntentType == 2) {
+			UIUtils.putOrderId(mContext);
+			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+		   } else {
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   finish();
 		}
-		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-		finish();
 	   }
 
 	   @Override
@@ -1076,17 +1094,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result调拨   " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		if (event.mIntentType == 2) {
-		   UIUtils.putOrderId(mContext);
-		   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-		} else {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		if (fromJson.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		   if (event.mIntentType == 2) {
+			UIUtils.putOrderId(mContext);
+			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+		   } else {
+			EventBusUtils.postSticky(new Event.EventFrag("START1"));
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   finish();
 		}
-		UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-		finish();
 	   }
 
 	   @Override
