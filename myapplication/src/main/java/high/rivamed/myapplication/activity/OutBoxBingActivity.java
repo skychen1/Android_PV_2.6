@@ -102,33 +102,33 @@ import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 public class OutBoxBingActivity extends BaseSimpleActivity {
 
-   private static final String TAG = "OutBoxBingActivity";
-   private String       mRvEventString;
-   private int          mIntentType;
-   private InventoryDto mTCstInventoryTwoDto;
-   private String                     mPatient             = "";
-   private String                     mPatientId           = "";
-   private String                     mTempPatientId       = "";
-   private String                     mOperationScheduleId = "";
-   private String                     mMedicalId           = "";
-   private String                     mSurgeryId           = "";
-   private String                     mHisPatientId        = "";
-   private boolean                    mPause               = true;
-   private Map<String, List<EpcInfo>> mEPCDate             = new TreeMap<>();
-   private int                        mAllPage             = 1;
-   private int                        mRows                = 20;
+   private static final String                     TAG                  = "OutBoxBingActivity";
+   private              String                     mRvEventString;
+   private              int                        mIntentType;
+   private              InventoryDto               mTCstInventoryTwoDto;
+   private              String                     mPatient             = "";
+   private              String                     mPatientId           = "";
+   private              String                     mTempPatientId       = "";
+   private              String                     mOperationScheduleId = "";
+   private              String                     mMedicalId           = "";
+   private              String                     mSurgeryId           = "";
+   private              String                     mHisPatientId        = "";
+   private              boolean                    mPause               = true;
+   private              Map<String, List<EpcInfo>> mEPCDate             = new TreeMap<>();
+   private              int                        mAllPage             = 1;
+   private              int                        mRows                = 20;
    int k = 0;
 
-   private LoadingDialog.Builder mLoading;
-   private RvDialog.Builder      mAfterBind;
-   private       String  mIdNo                = "";
-   private       String  mSurgeryTime         = "";
-   private       String  mOperatingRoomNo     = "";
-   private       String  mOperatingRoomNoName = "";
-   private       String  mSex                 = "";
-   private       String  mDeptId              = "";
-   private       boolean mIsCreate            = false;
-   public static boolean mOnBtnGone           = false;
+   private       LoadingDialog.Builder mLoading;
+   private       RvDialog.Builder      mAfterBind;
+   private       String                mIdNo                = "";
+   private       String                mSurgeryTime         = "";
+   private       String                mOperatingRoomNo     = "";
+   private       String                mOperatingRoomNoName = "";
+   private       String                mSex                 = "";
+   private       String                mDeptId              = "";
+   private       boolean               mIsCreate            = false;
+   public static boolean               mOnBtnGone           = false;
    @BindView(R.id.timely_start_btn_right)
    TextView mTimelyStartBtnRight;
    @BindView(R.id.timely_open_door_right)
@@ -154,11 +154,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    TextView           mLyBingBtnRight;
    @BindView(R.id.activity_down_btnll)
    LinearLayout       mActivityDownBtnTwoll;
-   public InventoryDto mInventoryDto;
-   public InventoryDto mPatientDto;
+   public InventoryDto                               mInventoryDto;
+   public InventoryDto                               mPatientDto;
    //   public List<InventoryVo>                          mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
-   public TableTypeView mTypeView;
+   public TableTypeView                              mTypeView;
    List<String> titeleList = null;
    public  int    mSize;
    private String mBingType;
@@ -167,13 +167,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String mClossEthId;
    private String mBindType;
 
-   private Handler  mHandler;
-   private Runnable mRunnable;
-   private Runnable mRunnableW;
-   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private Handler                   mHandler;
+   private Runnable                  mRunnable;
+   private Runnable                  mRunnableW;
+   public  List<InventoryVo>         mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
    private RxUtils.BaseEpcObservable mObs;
-   private InventoryDto mDto = new InventoryDto();
-   private InventoryVo mPatientVo;
+   private InventoryDto              mDto             = new InventoryDto();
+   private InventoryVo               mPatientVo;
 
    /**
     * 门锁的提示
@@ -290,7 +290,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   }
 	   for (InventoryVo vo : mBoxInventoryVos) {
 		if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-		   if (vo.getIsErrorOperation()!=1){
+		   if (vo.getIsErrorOperation() != 1) {
 			vo.setStatus(mOperationType + "");
 		   }
 		   if (mOperationType == 4 && vo.isDateNetType()) {
@@ -575,6 +575,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mTimelyRight.setText("确认并退出登录");
 		   TimelyAllFrag.mPauseS = true;
 		   mBoxInventoryVos.clear();
+		   stopScan();
 		   if (UIUtils.getConfigType(mContext, CONFIG_009)) {
 			mPatient = null;
 			mPatientId = null;
@@ -719,17 +720,20 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	dto.setPatientId(mPatientId);
 	dto.setOperatingRoomNo(mOperatingRoomNo);
 	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-//	String toJson = mGson.toJson(dto);
+	//	String toJson = mGson.toJson(dto);
 	stopScan();
 	if (mOnBtnGone) {
 	   NetRequest.getInstance().putAllOperateYes(mGson.toJson(dto), this, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
 		   LogUtils.i(TAG, "result   " + result);
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
-		   EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
-		   UnNetCstUtils.putUnNetOperateYes( OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
-		   finish();
+		   InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		   if (fromJson.isOperateSuccess()) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
+			EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
+			UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+			finish();
+		   }
 		}
 	   });
 	} else {
@@ -737,13 +741,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (mTitleConn) {
 		   putEpcLyThDate(mIntentType, dto);
 		} else {
-		   setErrorDate(dto,mIntentType, "-1", 4);
+		   setErrorDate(dto, mIntentType, "-1", 4);
 		}
 	   } else {
 		if (mTitleConn) {
 		   putEpcDate(mIntentType, dto);
 		} else {
-		   setErrorDate(dto,mIntentType, "-1", 3);
+		   setErrorDate(dto, mIntentType, "-1", 3);
 		}
 	   }
 
@@ -760,26 +764,28 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-		if (mIntentType == 2) {
-		   UIUtils.putOrderId(mContext);
-		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		   App.getInstance().removeALLActivity_();
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		if (fromJson.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		   if (mIntentType == 2) {
+			UIUtils.putOrderId(mContext);
+			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+		   }
+		   if (!getSqlChangeType()) {
+			getAllCstDate(this);
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+		   finish();
 		}
-		if (!getSqlChangeType()){
-		   getAllCstDate(this);
-		}
-		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
-
-		finish();
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setErrorDate(dto,mIntentType, result, 3);
+		setErrorDate(dto, mIntentType, result, 3);
 	   }
 	});
    }
@@ -794,45 +800,49 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
-		ToastUtils.showShort("操作成功");
-		MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		if (fromJson.isOperateSuccess()) {
+		   ToastUtils.showShort("操作成功");
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 
-		new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
+		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 
-		if (mIntentType == 2) {
-		   UIUtils.putOrderId(mContext);
-		   startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		   App.getInstance().removeALLActivity_();
+		   if (mIntentType == 2) {
+			UIUtils.putOrderId(mContext);
+			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
+			App.getInstance().removeALLActivity_();
+		   }
+		   if (!getSqlChangeType()) {
+			getAllCstDate(this);
+		   }
+		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
+
+		   finish();
 		}
-		if (!getSqlChangeType()){
-		   getAllCstDate(this);
-		}
-		UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
-
-		finish();
 	   }
 
 	   @Override
 	   public void onError(String result) {
-		setErrorDate(dto,mIntentType, result, 4);
+		setErrorDate(dto, mIntentType, result, 4);
 	   }
 	});
    }
 
    /**
     * 请求失败的错误数据存储
+    *
     * @param mIntentType
     */
-   private void setErrorDate(InventoryDto dto,int mIntentType, String result, int type) {
+   private void setErrorDate(InventoryDto dto, int mIntentType, String result, int type) {
 	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
 	    mOperationType == type) {
 	   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
 	   for (InventoryVo s : dto.getInventoryVos()) {
 		if (!getVosType(voList, s.getEpc())) {
 		   s.save();//放入，存入库存
-		   saveErrorVo(s.getEpc(),s.getDeviceId(),true,false,true);//放入，存入error流水表
+		   saveErrorVo(s.getEpc(), s.getDeviceId(), true, false, true);//放入，存入error流水表
 		} else {
-		   deleteVo(voList,s.getEpc());//拿出时，删除库存表内的该条数据
+		   deleteVo(voList, s.getEpc());//拿出时，删除库存表内的该条数据
 		   InventoryVoError inventory = new InventoryVoError();//拿出，存入error流水表
 		   inventory.setStatus("3");
 		   inventory.setOperationStatus(98);
@@ -841,7 +851,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   inventory.setCreate(s.isCreate());
 		   inventory.setMedicalId(s.getMedicalId());
 		   inventory.setOperatingRoomName(s.getOperatingRoomName());
-		   inventory.setOperatingRoomNo( s.getOperatingRoomNo());
+		   inventory.setOperatingRoomNo(s.getOperatingRoomNo());
 		   inventory.setPatientId(s.getPatientId());
 		   inventory.setPatientName(s.getPatientName());
 		   inventory.setSex(s.getSex());
@@ -908,8 +918,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);
-
-		setDateEpc(mGson.fromJson(result, InventoryDto.class));
+		InventoryDto dto = mGson.fromJson(result, InventoryDto.class);
+		if (dto.isOperateSuccess()){
+		   setDateEpc(dto);
+		}
 	   }
 
 	   @Override
@@ -957,13 +969,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	} else {
 	   mTCstInventoryTwoDto.setBindType(TEMP_FIRSTBIND);
 	}
-	LogUtils.i(TAG,"  11111   "+mGson.toJson(mBoxInventoryVos));
+	LogUtils.i(TAG, "  11111   " + mGson.toJson(mBoxInventoryVos));
 	if (mTCstInventoryTwoDto.getInventoryVos() != null &&
 	    mTCstInventoryTwoDto.getInventoryVos().size() > 0) {
 	   setBoxVosDate(mTCstInventoryTwoDto.getInventoryVos());
 	   EventBusUtils.postSticky(new Event.EventLoading(false));
 	}
-	LogUtils.i(TAG," 222222   "+mGson.toJson(mBoxInventoryVos));
+	LogUtils.i(TAG, " 222222   " + mGson.toJson(mBoxInventoryVos));
 	setTitleRightNum();
 	setNotifyData();
 	setTimeStart();
@@ -1242,9 +1254,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mTimelyLeft.setEnabled(b);
 	   mTimelyRight.setEnabled(b);
 	}
-//	if (mLyBingBtnRight != null && type) {
-//	   mLyBingBtnRight.setEnabled(b);
-//	}
+	//	if (mLyBingBtnRight != null && type) {
+	//	   mLyBingBtnRight.setEnabled(b);
+	//	}
 	if (mStarts != null && !b) {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
@@ -1287,7 +1299,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		break;
 	   //否则其他动作计时取消
 	   default:
-	      if (mTimelyRight.isEnabled() && mTimelyRight.getVisibility() == View.VISIBLE){
+		if (mTimelyRight.isEnabled() && mTimelyRight.getVisibility() == View.VISIBLE) {
 		   if (mStarts != null) {
 			mStarts.cancel();
 		   }

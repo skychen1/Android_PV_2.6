@@ -145,6 +145,7 @@ public class LyDateUtils {
 	   ReaderManager.getManager().stopScan(deviceCode);
 	}
    }
+
    /**
     * 开始扫描
     * @param mBoxInventoryVos

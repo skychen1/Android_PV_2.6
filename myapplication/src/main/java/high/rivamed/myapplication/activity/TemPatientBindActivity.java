@@ -510,10 +510,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   BingFindSchedulesBean.PatientInfoVos patientInfoVos = patientInfos.get(
 		   mTypeView.mTempPatientAdapter.mSelectedPos);
 	   InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
+	   vo.setBindType(mType);
 	   Log.i("ffad", "ccccc    " + mGson.toJson(vo));
 	   if (null != mType && mType.equals(TEMP_AFTERBIND)) {
 		//后绑定患者
-		vo.setBindType(mType);
+
 		if (patientInfoVos.getPatientId().equals("virtual")) {
 		   if (mPatientBean == null) {
 			EventBusUtils.post(new Event.EventButton(true, true));
@@ -546,7 +547,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
 		EventBusUtils.post(new Event.EventButton(true, true));
 		AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
-
+		EventBusUtils.post(new Event.EventCheckbox(vo));
 	   }
 	} else {
 	   ToastUtils.showShort("暂无数据，请创建后再试！");

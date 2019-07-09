@@ -633,7 +633,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     * 重新打开柜门
     */
    private void reOpenDoor() {
-
+	stopScan();
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
 	   Eth002Manager.getEth002Manager().openDoor(deviceCode);
