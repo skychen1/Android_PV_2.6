@@ -101,7 +101,7 @@
 					android:layout_height="match_parent"
 					android:layout_gravity="center_vertical"
 					android:layout_marginBottom="@dimen/y10"
-					android:layout_marginLeft="@dimen/x30"
+					android:layout_marginLeft="@dimen/x10"
 					android:layout_marginTop="@dimen/y10"
 					android:background="@drawable/bg_edit_e_nor"
 					android:hint="扫描时间:3000 ms"

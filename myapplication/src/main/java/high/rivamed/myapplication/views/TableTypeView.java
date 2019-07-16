@@ -34,10 +34,12 @@ import high.rivamed.myapplication.adapter.TimelyPublicAdapter;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.utils.SPUtils;
 
 import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
+import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG2;
@@ -370,6 +372,7 @@ public class TableTypeView extends LinearLayout {
                                 });
 
                     } else if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
+                       String mDeptType = SPUtils.getString(mContext, PATIENT_TYPE);
                         List<BingFindSchedulesBean.PatientInfoVos> patientInfos =(List<BingFindSchedulesBean.PatientInfoVos>) mObject;
                         mLayout = R.layout.item_temp_seven_layout;
                         mHeadView = mActivity.getLayoutInflater()
@@ -387,7 +390,7 @@ public class TableTypeView extends LinearLayout {
                         if (mTempPatientAdapter != null) {
                             mTempPatientAdapter.notifyDataSetChanged();
                         } else {
-                            mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos);
+                            mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,mDeptType);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));

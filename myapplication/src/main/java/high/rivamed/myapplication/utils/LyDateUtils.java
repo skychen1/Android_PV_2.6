@@ -140,7 +140,8 @@ public class LyDateUtils {
     * 重新扫描
     */
    public static void stopScan() {
-	for (String deviceInventoryVo : mEthDeviceIdBack) {
+	List<String> readerDeviceId = DevicesUtils.getReaderDeviceId();
+	for (String deviceInventoryVo : readerDeviceId) {
 	   String deviceCode = deviceInventoryVo;
 	   ReaderManager.getManager().stopScan(deviceCode);
 	}

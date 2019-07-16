@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.ruihua.reader.ReaderManager;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class RegistReaderAdapter extends BaseQuickAdapter<String, BaseViewHolder
       EditText   powe_text = ((EditText) helper.getView(R.id.item_powe_text));
       TextView   setting_powe = ((TextView) helper.getView(R.id.item_setting_powe));
       TextView   itemScan = ((TextView) helper.getView(R.id.item_scan));
+      TextView   itemStopScan = ((TextView) helper.getView(R.id.item_stopscan));
 
       id.setText(item);
 
@@ -56,6 +58,18 @@ public class RegistReaderAdapter extends BaseQuickAdapter<String, BaseViewHolder
             }
          }
       });
+      itemStopScan.setOnClickListener(view->{
+
+         List<DeviceInfo> connectedDevices = ReaderManager.getManager().getConnectedDevice();
+         String ss = "";
+         for (DeviceInfo de : connectedDevices) {
+            String  mDiviceId = de.getIdentification();
+            EventBusUtils.post(new Event.EventTestStopScan(mDiviceId));
+
+         }
+
+      });
+
       itemScan.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {

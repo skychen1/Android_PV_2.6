@@ -135,6 +135,7 @@ public class SelectExceptionOperatorDialog extends Dialog {
 		   if (!TextUtils.isEmpty(mSearchText)) {
 			//加载数据
 			PAGE = 1;
+			mRowsOperators.clear();
 			loadData();
 		   }
 		}
