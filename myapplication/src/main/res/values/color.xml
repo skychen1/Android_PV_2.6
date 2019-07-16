@@ -45,6 +45,7 @@
 	<color name="color_text_line">#7C8188</color>
 	<color name="color_navy_blue">#00354B</color>
 	<color name="color_y">#FF9408</color>
+	<color name="color_o">#FF7316</color>
 	<color name="toast_text">#ffc600</color>
 
 	<color name="card_stock_text">#FF0000</color>

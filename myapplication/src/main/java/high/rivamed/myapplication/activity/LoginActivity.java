@@ -121,6 +121,8 @@ public class LoginActivity extends SimpleActivity {
    TextView        mStockStatus;
    @BindView(R.id.left_guo_text)
    TextView        mTextGuo;
+   @BindView(R.id.login_unconfirmcst)
+   TextView        mTVLoginUnConfirmCst;
    @BindView(R.id.left_jin_text)
    TextView        mTextJin;
    public static View mLoginGone;
@@ -645,6 +647,13 @@ public class LoginActivity extends SimpleActivity {
 		   ToastUtils.showShortToast("网络异常，请检查网络!");
 		}
 
+	   }
+	});
+	mTVLoginUnConfirmCst.setOnClickListener(view-> {
+	   if (mTitleConn) {
+		startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
+	   } else {
+		ToastUtils.showShortToast("网络异常，请检查网络!");
 	   }
 	});
    }

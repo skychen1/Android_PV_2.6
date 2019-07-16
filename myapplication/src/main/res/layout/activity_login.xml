@@ -26,27 +26,61 @@
 		android:orientation="horizontal"
 		>
 
-		<LinearLayout
+		<RelativeLayout
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_centerVertical="true"
 			android:layout_marginLeft="@dimen/x210"
 			android:orientation="vertical"
 			>
-
-			<TextView
-				android:layout_width="wrap_content"
+			<LinearLayout
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="@dimen/x90"
-				android:layout_marginLeft="@dimen/x30"
-				android:layout_marginTop="@dimen/y80"
-				android:text="耗材效期监控"
-				android:textColor="@color/bg_f"
-				android:textSize="@dimen/x36"/>
+				android:orientation="horizontal">
+				<!--login_unknow_icon-->
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="@dimen/x100"
+					android:layout_marginLeft="@dimen/x30"
+					android:layout_marginTop="@dimen/y100"
+					android:text="耗材效期监控"
+					android:textColor="@color/bg_f"
+					android:textSize="@dimen/x36"/>
+				<RelativeLayout
+					android:layout_width="@dimen/x280"
+					android:layout_height="@dimen/y130"
+					android:layout_marginLeft="@dimen/x130"
+					android:background="@mipmap/login_unknow_icon"
+					android:layout_gravity="bottom"
+					>
+					<TextView
+						android:id="@+id/login_unconfirmcst"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="未确认耗材（6）"
+						android:paddingTop="@dimen/y16"
+						android:textSize="@dimen/x28"
+						android:textColor="@color/color_o"
+						android:paddingBottom="@dimen/y16"
+						android:paddingLeft="@dimen/x16"
+						/>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="@dimen/y12"
+						android:layout_alignParentRight="true"
+						android:layout_marginRight="@dimen/x16"
+						android:textColor="@color/color_o"
+						android:textSize="@dimen/x30"
+						android:text=">>"/>
+				</RelativeLayout>
+			</LinearLayout>
 
 			<RelativeLayout
 				android:layout_width="@dimen/x716"
-				android:layout_height="@dimen/y413"
+				android:layout_height="@dimen/y423"
+			android:layout_marginTop="@dimen/y244"
 				android:background="@mipmap/login_left_bg">
 
 				<LinearLayout
@@ -139,13 +173,26 @@
 				android:id="@+id/login_stock_status"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/y90"
+				android:layout_marginBottom="@dimen/x50"
 				android:layout_marginLeft="@dimen/x30"
 				android:text="查看库存详情  〉"
 				android:padding="@dimen/y15"
+				android:layout_alignParentBottom="true"
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
-		</LinearLayout>
+			<TextView
+				android:id="@+id/login_stock"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/x50"
+				android:layout_marginLeft="@dimen/x30"
+				android:layout_toRightOf="@+id/login_stock_status"
+				android:text="查看未入库耗材  〉"
+				android:padding="@dimen/y15"
+				android:layout_alignParentBottom="true"
+				android:textColor="@color/toast_text"
+				android:textSize="@dimen/x36"/>
+		</RelativeLayout>
 
 
 		<LinearLayout
