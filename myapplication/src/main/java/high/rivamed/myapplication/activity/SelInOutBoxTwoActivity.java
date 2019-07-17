@@ -293,7 +293,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   for (InventoryVo vo : mBoxInventoryVos) {
 		if (mOperationType == 9 || mOperationType == 8 ||
 		    (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-		   if (vo.getIsErrorOperation()!=1){
+		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
 			vo.setStatus(mOperationType + "");
 		   }
 		   if (mOperationType == 4) {

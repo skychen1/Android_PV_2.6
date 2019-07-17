@@ -28,7 +28,7 @@
 			style="@style/view_line_style"/>
 		<TextView
 			android:id="@+id/id_text"
-			android:layout_width="@dimen/x420"
+			android:layout_width="@dimen/x320"
 			android:textStyle="bold"
 			android:textColor="@color/black"
 			android:textSize="@dimen/textsize_17"
@@ -43,7 +43,7 @@
 			android:id="@+id/item_powe_text"
 			android:layout_width="@dimen/x200"
 			android:layout_height="match_parent"
-			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginLeft="@dimen/x10"
 			android:layout_marginTop="@dimen/y10"
 			android:layout_marginBottom="@dimen/y10"
 			android:paddingLeft="@dimen/x10"
@@ -59,7 +59,8 @@
 		<TextView
 			android:id="@+id/item_setting_powe"
 			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x30"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
 			android:text="功率保存"
 			/>
 		<View
@@ -67,8 +68,18 @@
 		<TextView
 			android:id="@+id/item_scan"
 			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x30"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
 			android:text="开始扫描"
+			/>
+		<View
+			style="@style/view_line_style"/>
+		<TextView
+			android:id="@+id/item_stopscan"
+			style="@style/btn_style_sel"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:text="停止扫描"
 			/>
 	</LinearLayout>
 	<View

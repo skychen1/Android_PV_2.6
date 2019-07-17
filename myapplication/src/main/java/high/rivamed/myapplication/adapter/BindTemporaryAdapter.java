@@ -26,23 +26,21 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     private TextView mSeven_six;
     private TextView mSeven_seven;
     public int mSelectedPos;
+    public String mDeptType;
     private List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
 
 
     public BindTemporaryAdapter(
-            int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
+            int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos,String mDeptType) {
         super(layout, patientInfos);
         this.patientInfos = patientInfos;
+        this.mDeptType = mDeptType;
     }
 
     @Override
     protected void convert(
             BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
-//        if (helper.getAdapterPosition() % 2 == 0) {
-//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//        } else {
             ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//        }
         if (mSelectedPos == 0 && patientInfos.size() > 0) {
             patientInfos.get(mSelectedPos).setSelected(true);
         }
@@ -73,7 +71,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
                 mSeven_three.setText("/");
                 mSeven_seven.setText("是");
                 mSeven_five.setText("/");
-                if (null!=item.getDeptType()&&item.getDeptType().equals("2")){
+                if (mDeptType.equals("2")){
                     mSeven_four.setText(item.getSurgeryTime());
                     mSeven_six.setText(item.getRoomName());
                 }else {
@@ -84,7 +82,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
                 mSeven_seven.setText("否");
                 mSeven_three.setText(item.getHisPatientId());
 
-		   if (item.getDeptType()==null||item.getDeptType().equals("2")||item.getDeptType().equals("")){
+		   if (mDeptType.equals("2")){
 			mSeven_six.setText(item.getRoomName());
 		   }else {
 			mSeven_six.setText(item.getDeptName());

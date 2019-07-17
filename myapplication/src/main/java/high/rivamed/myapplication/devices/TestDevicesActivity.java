@@ -403,20 +403,13 @@ public class TestDevicesActivity extends SimpleActivity {
             }
         });
 
-//        mBtnStopScan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                RtspManager.getManager().startRtsp("rtsp://192.168.11.96:8554/live", new OnRtspConnectCallback() {
-//                    @Override
-//                    public void onConnect(boolean isSuccess, int code, String msg) {
-//                        LogUtils.e("设备连接：：：" + isSuccess);
-//                        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "test.mp4";
-//                        RtspManager.getManager().startEncode("rtsp://192.168.11.96:8554/live", path);
-//                    }
-//                });
-////                appendLog("停止持续扫描了：" + ";RET=" + i);
-//            }
-//        });
+        mBtnStopScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int i = ReaderManager.getManager().stopScan(readerId);
+                appendLog("停止持续扫描了：" + ";RET=" + i);
+            }
+        });
 
         mBtnFingerReg.setOnClickListener(new View.OnClickListener() {
 

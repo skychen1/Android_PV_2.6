@@ -114,6 +114,17 @@ public class RegisteReaderFrag extends SimpleFragment {
 	   AppendLog("启动持续扫描,设备ID=" + event.readerId + "，扫描完成后" + READER_TIME + " ms 停止扫描;");
 	}
    }
+   /**
+    * adapter显示
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onHomeNoClicks(Event.EventTestStopScan event) {
+	int i = ReaderManager.getManager().stopScan(event.readerId);
+	AppendLog("停止扫描,设备ID=" + event.readerId +"   "+i);
+
+   }
 
    @Override
    public int getLayoutId() {
@@ -315,10 +326,8 @@ public class RegisteReaderFrag extends SimpleFragment {
 		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 		   mRecyclerview.setAdapter(mAdapter);
 		}
-
-
-
 		break;
+
 	   case R.id.item_setting_time:
 		try {
 		   int time = Integer.parseInt(mItemTimeText.getText().toString().trim());

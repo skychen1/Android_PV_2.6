@@ -119,7 +119,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
    List<String> titeleList = null;
    public  int                                mSize;
-   private String                             mDeptType = "2";   //2,3手术排版，1是非手术
+   public String                             mDeptType = "2";   //2,3手术排版，1是非手术
    private boolean                            mException;
    private List<ExceptionRecordBean.RowsBean> mExceptionDate;
 
@@ -589,7 +589,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	bean.setCreate(true);
 	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
 	bean.setMedicalId("virtual");
-	bean.setDeptType(mDeptType);
+//	bean.setDeptType(mDeptType);
 	mPatientBean.setTTransOperationSchedule(bean);
 	if (patientInfos != null) {
 	   BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
@@ -603,7 +603,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   data2.setSex(event.userSex);
 	   data2.setMedicalId("virtual");
 	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
-	   data2.setDeptType(mDeptType);
+//	   data2.setDeptType(mDeptType);
 	   patientInfos.add(0, data2);
 	   ToastUtils.showShort("创建成功");
 	   event.dialog.dismiss();

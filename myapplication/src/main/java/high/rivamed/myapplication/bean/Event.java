@@ -237,7 +237,7 @@ public class Event {
    }
 
    /**
-    * 耗材的明细数据
+    * 工程模式的
     */
    public static class EventTestIdAndPower {
 
@@ -247,6 +247,17 @@ public class Event {
 	public EventTestIdAndPower(String readerId, String readerPower) {
 	   this.readerId = readerId;
 	   this.readerPower = readerPower;
+	}
+   }
+   /**
+    * 工程模式的
+    */
+   public static class EventTestStopScan {
+
+	public String readerId;
+
+	public EventTestStopScan(String readerId) {
+	   this.readerId = readerId;
 	}
    }
 
