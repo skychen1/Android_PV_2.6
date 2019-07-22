@@ -42,6 +42,7 @@ import high.rivamed.myapplication.adapter.TimelyAllAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.SavePadPdBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.entity.Inventory;
@@ -61,7 +62,9 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -86,6 +89,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private List<Inventory> mEpcList;
    private int mEpcsNumber = 0;
    public static boolean mTimelyOnResume;
+   private SavePadPdBean mPutSavePadPdDto;
 
    /**
     * 重新加载数据
@@ -112,6 +116,8 @@ public class TimelyAllFrag extends SimpleFragment {
    TextView mTimelyLoss;
    @BindView(R.id.timely_start_btn)
    TextView mTimelyStartBtn;
+   @BindView(R.id.timely_put_btn)
+   TextView mTimelyPutBtn;
    @BindView(R.id.timely_book)
    TextView mTimelyBook;
    @BindView(R.id.timely_reality)
@@ -348,7 +354,11 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mTimelyAllAdapter.getData().clear();
 	   mTimelyAllAdapter.getData().addAll(mInventoryVos);
 	}
-
+	if (mDeviceCode == null || mDeviceCode.equals("")||mTbaseDevices.size()==1) {//全部的柜子详情
+	   mTimelyPutBtn.setVisibility(View.VISIBLE);
+	}else {
+	   mTimelyPutBtn.setVisibility(View.GONE);
+	}
 	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
 	mTimelyAllAdapter.notifyDataSetChanged();
@@ -400,7 +410,7 @@ public class TimelyAllFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss})
+   @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss,R.id.timely_put_btn})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
@@ -477,6 +487,26 @@ public class TimelyAllFrag extends SimpleFragment {
 		   }
 		}
 		break;
+	   case R.id.timely_put_btn://提交盘点单
+		if (!UIUtils.isFastDoubleClick(R.id.timely_put_btn)) {
+		   if (mPutSavePadPdDto!=null){
+			NetRequest.getInstance().putSavePadPdDate(mGson.toJson(mPutSavePadPdDto),this,new BaseResult(){
+			   @Override
+			   public void onSucceed(String result) {
+				SavePadPdBean padPdBean = mGson.fromJson(result, SavePadPdBean.class);
+				if (padPdBean.isOperateSuccess()){
+				   ToastUtils.showShort("盘点单保存成功！");
+				}else {
+				   ToastUtils.showShort("盘点单保存失败，请重新操作！");
+				}
+			   }
+			});
+		   }else {
+		      ToastUtils.showShort("请盘点后进行保存！");
+		   }
+
+		}
+	      break;
 	}
    }
 
@@ -582,6 +612,14 @@ public class TimelyAllFrag extends SimpleFragment {
 		mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		if (mCstInventoryDto.isOperateSuccess()){
 		   setScanTimelyDate(mCstInventoryDto, epcs, deviceId);
+
+		   if (mDeviceCode == null || mDeviceCode.equals("")||mTbaseDevices.size()==1) {
+			mPutSavePadPdDto = new SavePadPdBean();
+			mPutSavePadPdDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+			mPutSavePadPdDto.setThingId(sThingCode);
+			mPutSavePadPdDto.setDeviceIds(mCstInventoryDto.getDeviceIds());
+			mPutSavePadPdDto.setEpcs(mCstInventoryDto.getEpcs());
+		   }
 		}
 	   }
 	});

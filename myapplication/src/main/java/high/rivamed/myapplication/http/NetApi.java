@@ -68,6 +68,7 @@ public interface NetApi {
     String URL_TIMELY_PROFIT = "/consumables/inventory/inventoryProfit";//库存盘盈情况    新
     String URL_TIMELY_LOSSES = "/consumables/inventory/inventoryLosses";//库存盘亏情况    新
     String URL_TIMELY_DETAIL = "/consumables/inventory/inventoryCompareDetail";//耗材对比详情    新
+    String URL_TIMELY_PUTSAVEPADPD = "/order/order/savePadPd";//盘点信息提交   新
 
     //患者绑定
     String URL_PATIENTS_FIND = "/consumables/surgeryInfo/findAllOperationSchedulePatients";//查询本科室下24小时的手术预约患者（包含临时患者）    新

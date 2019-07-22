@@ -3,6 +3,7 @@ package high.rivamed.myapplication.views;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,10 @@ public class LoadingDialog extends Dialog {
 
    public static class Builder {
 
-	private Context       mContext;
-	private ImageView     mLoading;
-	public  LoadingDialog mDialog;
-	public AnimationDrawable mAnimationDrawable;
+	private Context           mContext;
+	private ImageView         mLoading;
+	public  LoadingDialog     mDialog;
+	public  AnimationDrawable mAnimationDrawable;
 
 	public Builder(Context context) {
 	   this.mContext = context;
@@ -57,13 +58,15 @@ public class LoadingDialog extends Dialog {
 	   mAnimationDrawable = (AnimationDrawable) mLoading.getBackground();
 	   mAnimationDrawable.start();
 	   EventBusUtils.post(new Event.EventHomeEnable(true));
-//	   new Handler().postDelayed(new Runnable() {
-//		@Override
-//		public void run() {
-//		   mAnimationDrawable.stop();
-//		   mDialog.dismiss();
-//		}
-//	   }, READER_TIME);
+	   new Handler().postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (mDialog.isShowing()) {
+			mAnimationDrawable.stop();
+			mDialog.dismiss();
+		   }
+		}
+	   }, 15000);
 	   return mDialog;
 	}
 

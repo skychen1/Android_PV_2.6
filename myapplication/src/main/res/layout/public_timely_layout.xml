@@ -42,7 +42,6 @@
                 android:id="@+id/timely_profit"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/x50"
-                android:layout_marginRight="@dimen/x25"
                 android:background="@drawable/bg_btn_line_circle_nor"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/x22"
@@ -51,6 +50,16 @@
                 android:layout_toRightOf="@+id/timely_loss"
                 android:textColor="@color/text_color_58"
                 android:textSize="@dimen/textsize_15"
+                />
+            <TextView
+                android:id="@+id/timely_put_btn"
+                style="@style/btn_style_sel"
+                android:layout_width="wrap_content"
+                android:paddingLeft="@dimen/x20"
+                android:paddingRight="@dimen/x20"
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/timely_profit"
+                android:text="保存盘点单"
                 />
 
         </RelativeLayout>
