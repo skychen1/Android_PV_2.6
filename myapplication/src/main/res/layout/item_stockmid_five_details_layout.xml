@@ -18,7 +18,15 @@
 
 	<View
 		style="@style/view_line_style"/>
-
+	<TextView
+		android:id="@+id/seven_five"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:textColor="@color/bg_green"
+		/>
+	<View
+		style="@style/view_line_style"/>
 	<TextView
 		android:id="@+id/seven_two"
 		style="@style/text_title_content_style"

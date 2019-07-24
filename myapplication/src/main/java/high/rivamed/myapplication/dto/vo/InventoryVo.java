@@ -63,6 +63,15 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String  renewTime;
    private String  updateDateTime;
    private boolean dateNetType;//判断是否是本地的还是(查询出来的false)
+   private String barcode;
+
+   public String getBarcode() {
+	return barcode;
+   }
+
+   public void setBarcode(String barcode) {
+	this.barcode = barcode;
+   }
 
    public boolean isDateNetType() {
 	return dateNetType;

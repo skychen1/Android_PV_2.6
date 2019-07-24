@@ -1069,7 +1069,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   firstBind();
 	}
 
-	String[] array = mContext.getResources().getStringArray(R.array.seven_title_bing_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.eight_title_bing_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	setTableTypeDate(mClossEthId);

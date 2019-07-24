@@ -18,9 +18,11 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
 
 import static android.view.View.GONE;
 import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 识别耗材页面adapter
@@ -34,6 +36,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
    private TextView mSeven_six;
    private TextView mSeven_seven;
    private TextView mSeven_one;
+   private TextView mSeven_eight;
    LinearLayout mLl;
    LinearLayout mSeven_sevenl;
 
@@ -46,11 +49,8 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
 	mLl = ((LinearLayout) helper.getView(R.id.seven_ll));
-	//	if (helper.getAdapterPosition() % 2 == 0) {
-	//	   mLl.setBackgroundResource(R.color.bg_color);
-	//	} else {
 	mLl.setBackgroundResource(R.color.bg_f);
-	//	}
+
 	mSeven_one = ((TextView) helper.getView(R.id.seven_one));
 	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
 	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
@@ -58,6 +58,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	mSeven_five = ((TextView) helper.getView(R.id.seven_five));
 	mSeven_six = (TextView) helper.getView(R.id.seven_six);
 	mSeven_seven = (TextView) helper.getView(R.id.seven_seven);
+	mSeven_eight = (TextView) helper.getView(R.id.seven_eight);
 	mSeven_sevenl = (LinearLayout) helper.getView(R.id.seven_seven_l);
 
 	if (mOnBtnGone) {
@@ -112,11 +113,13 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	mSeven_three.setText(item.getCstSpec());
 	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
-	//	if (status.equals("2")) {
-	//	   mSeven_seven.setText("领用");
-	//	} else {
-	//	   mSeven_seven.setText(status);
-	//	}
+	mSeven_eight.setText("展开");
+
+	helper.getView(R.id.seven_eight).setOnClickListener(view ->{
+	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+	   window.showPopupWindow(helper.getView(R.id.seven_eight),mDm.widthPixels);
+	});
+
 	if (status != null && ((status.equals("3") && item.getOperationStatus() != 98) ||
 				     (status.equals("4") && (item.getOperationStatus() == 99 ||
 								     item.getOperationStatus() == 3)))) {
@@ -205,6 +208,7 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_six.setText("/");
 	   mSeven_seven.setText("断网放入");
 	}
+
    }
 
    public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {

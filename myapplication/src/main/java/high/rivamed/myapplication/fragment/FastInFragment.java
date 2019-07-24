@@ -417,7 +417,7 @@ public class FastInFragment extends SimpleFragment {
 	   mTimelyRight.setEnabled(false);
 	   mTimelyLeft.setEnabled(false);
 	}
-	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	setInBoxTitles(mInOutDto);

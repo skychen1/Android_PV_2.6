@@ -45,6 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
             </intent-filter>
         </activity>
         <activity
@@ -112,13 +113,12 @@
             android:name=".devices.TestDevicesActivity"
             android:screenOrientation="sensorLandscape" />
 
-        <!-- <receiver android:name=".utils.NetWorkReceiver" android:enabled="true" android:exported="true"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.net.wifi.STATE_CHANGE"/> -->
-        <!-- <action android:name="android.Net.wifi.WIFI_STATE_CHANGED"/> -->
-        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        <activity
+            android:name=".activity.LoginUnconfirmActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.LoginToBePutInStorageActivity"
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.TemPatientBindActivity"
             android:launchMode="singleTask"
@@ -150,6 +150,7 @@
             android:label="NotificationService">
             <intent-filter>
                 <action android:name="org.androidpn.client.NotificationService" />
+
             </intent-filter>
         </service>
         <!--androidpnclient 结束-->

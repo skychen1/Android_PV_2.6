@@ -21,10 +21,12 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -70,7 +72,7 @@ public class LoginFaceFragment extends SimpleFragment {
      * 使用人脸特征id进行登录
      */
     private void loginFace(String Id) {
-        // TODO: 2019/5/21 处理userId登录
+        EventBusUtils.postSticky(new Event.EventLoading(true));
         Log.e(TAG, "loginFace: " + Id);
         if (!TextUtils.isEmpty(Id)) {
             //停止识别
@@ -122,8 +124,10 @@ public class LoginFaceFragment extends SimpleFragment {
                     //开启重新预览
                     onTabShowPreview(true);
                 }
+                EventBusUtils.postSticky(new Event.EventLoading(false));
             }
         } else {
+            EventBusUtils.postSticky(new Event.EventLoading(false));
             textHint.setText("正在维护，请到管理端启用");
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
             ToastUtils.showShort("正在维护，请到管理端启用");
@@ -143,6 +147,7 @@ public class LoginFaceFragment extends SimpleFragment {
         NetRequest.getInstance().userLoginByUserId(mGson.toJson(param), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
+                EventBusUtils.postSticky(new Event.EventLoading(false));
                 LogUtils.i("getAppAccountInfoVo", "result  " + result);
                 LoginUtils.loginSpDate(result, mContext, mGson, hasMenu -> {
                     if (hasMenu) {
@@ -158,6 +163,7 @@ public class LoginFaceFragment extends SimpleFragment {
 
             @Override
             public void onError(String result) {
+                EventBusUtils.postSticky(new Event.EventLoading(false));
                 LogUtils.i("BaseSimpleFragment", "登录失败  " + result);
                 Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
                 //开启重新预览

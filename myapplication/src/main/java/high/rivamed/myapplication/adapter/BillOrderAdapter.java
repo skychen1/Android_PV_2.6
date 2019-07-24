@@ -18,8 +18,10 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
 
 import static android.view.View.GONE;
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -66,28 +68,29 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
         mSeven_three = ((TextView) helper.getView(R.id.seven_three));
         mSeven_four = ((TextView) helper.getView(R.id.seven_four));
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-        if ("7".equals(mType)) {
+
+        if ("8".equals(mType)) {
             mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
             mSeven_seven.setText(item.getPatientName());
         } else {
             mSeven_seven = null;
         }
-        ImageView view =(ImageView) helper.getView(R.id.seven_six);;
+        ImageView mImageView =(ImageView) helper.getView(R.id.seven_six);;
 //        Drawable drawable = mContext.getResources().getDrawable(R.mipmap.gcms_ic_yc);
 
         if (item.getRemark() != null) {
             if (item.getRemark().equals("1")) {
-                view.setVisibility(View.VISIBLE);
-                view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
+                mImageView.setVisibility(View.VISIBLE);
+                mImageView.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
             } else {
-                view.setVisibility(View.INVISIBLE);
+                mImageView.setVisibility(View.INVISIBLE);
             }
         } else {
-            view.setVisibility(View.INVISIBLE);
+            mImageView.setVisibility(View.INVISIBLE);
         }
         if (item.getIsErrorOperation()==1){
-            view.setVisibility(View.VISIBLE);
-            view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
+            mImageView.setVisibility(View.VISIBLE);
+            mImageView.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
         }
 
         SwipeLayout swipe = (SwipeLayout) helper.getView(R.id.swipe);
@@ -136,6 +139,13 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
         mSeven_four.setText(item.getExpiryDate());
         mSeven_five.setText(item.getDeviceName());
         mSeven_four.setBackgroundResource(R.color.bg_f);
+        helper.setText(R.id.seven_eight,"展开");
+
+        helper.getView(R.id.seven_eight).setOnClickListener(view ->{
+            OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+            window.showPopupWindow(helper.getView(R.id.seven_eight),mDm.widthPixels);
+        });
+
         if (item.getExpireStatus()!=null){
             UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_four);
         }

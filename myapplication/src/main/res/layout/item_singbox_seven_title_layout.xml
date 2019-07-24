@@ -14,7 +14,15 @@
 
 	<View
 		style="@style/view_title_line_style"/>
+	<TextView
+		android:id="@+id/seven_three"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		/>
 
+	<View
+		style="@style/view_title_line_style"/>
 	<TextView
 		android:id="@+id/seven_two"
 		style="@style/text_title_style"
@@ -26,15 +34,13 @@
 		style="@style/view_title_line_style"/>
 
 	<TextView
-		android:id="@+id/seven_three"
+		android:id="@+id/seven_seven"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="3"
+		android:layout_weight="1.5"
 		/>
-
 	<View
 		style="@style/view_title_line_style"/>
-
 	<TextView
 		android:id="@+id/seven_four"
 		style="@style/text_title_style"

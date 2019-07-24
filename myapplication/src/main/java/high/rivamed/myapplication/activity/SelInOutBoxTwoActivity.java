@@ -423,7 +423,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
-	String[] array = mContext.getResources().getStringArray(R.array.six_singbox_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_singbox_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 

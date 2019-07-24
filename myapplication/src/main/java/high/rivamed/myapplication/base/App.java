@@ -5,7 +5,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDex;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -45,7 +47,7 @@ public class App extends Application {
    private List<Activity> oList;//用于存放所有启动的Activity的集合
 
    public static final String TAG            = "BaseApplication";
-   public static       int    READER_TIME    = 3000;     //扫描时间
+   public static       int    READER_TIME    = 2000;     //扫描时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
    private static App instance;
    public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
@@ -61,7 +63,7 @@ public class App extends Application {
    public static boolean        mTitleMsg       = false;
    public static ServiceManager mServiceManager = null;
    private static Context mAppContext;
-
+   public static DisplayMetrics mDm;
    public static synchronized App getInstance() {
 	return instance;
    }
@@ -92,6 +94,12 @@ public class App extends Application {
 	LogUtils.setDebugMode(false);
 	//设备基础module中有使用，需要注册初始化
 	ToastUtils.register(this);
+
+	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+	if (wm != null) {
+	   mDm = new DisplayMetrics();
+	   wm.getDefaultDisplay().getMetrics(mDm);
+	}
    }
 
    public static void initPush(String id) {

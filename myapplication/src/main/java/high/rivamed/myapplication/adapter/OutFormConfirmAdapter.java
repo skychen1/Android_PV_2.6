@@ -18,8 +18,10 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
 
 import static android.view.View.GONE;
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -68,22 +70,22 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
         mSeven_three = ((TextView) helper.getView(R.id.seven_three));
         mSeven_four = ((TextView) helper.getView(R.id.seven_four));
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-        ImageView view = (ImageView) helper.getView(R.id.seven_six);
+        ImageView imageView = (ImageView) helper.getView(R.id.seven_six);
 
 
         if (item.getRemark() != null) {
             if (item.getRemark().equals("1")) {
-                view.setVisibility(View.VISIBLE);
-                view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
             } else {
-                view.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
             }
         } else {
-            view.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
         }
         if (item.getIsErrorOperation()==1){
-            view.setVisibility(View.VISIBLE);
-            view.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
         }
 
 
@@ -132,6 +134,13 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
         mSeven_four.setText(item.getExpiryDate());
         mSeven_five.setText(item.getDeviceName());
         mSeven_four.setBackgroundResource(R.color.bg_f);
+        helper.setText(R.id.seven_eight,"展开");
+
+        helper.getView(R.id.seven_eight).setOnClickListener(view ->{
+            OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+            window.showPopupWindow(helper.getView(R.id.seven_eight),mDm.widthPixels);
+        });
+
         if (item.getExpireStatus()!=null){
             UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_four);
         }

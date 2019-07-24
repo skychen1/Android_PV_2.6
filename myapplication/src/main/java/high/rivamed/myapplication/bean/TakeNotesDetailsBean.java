@@ -83,6 +83,15 @@ public class TakeNotesDetailsBean implements Serializable{
 	private String operationTime;
 	private String userName;
 	private String status;
+	private String barcode;
+
+	public String getBarcode() {
+	   return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+	   this.barcode = barcode;
+	}
 
 	public String getDeviceName() {
 	   return deviceName;

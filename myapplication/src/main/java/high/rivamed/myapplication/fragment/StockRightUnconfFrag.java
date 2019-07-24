@@ -36,7 +36,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
  */
 
 public class StockRightUnconfFrag extends SimpleFragment {
-    public int mStockNumber = 8;//列表的列数
+    public int mStockNumber = 9;//列表的列数
     @BindView(R.id.cttimecheck_rg)
     SlidingTabLayout mCttimeCheck_Rg;
     @BindView(R.id.cttimecheck_viewpager)

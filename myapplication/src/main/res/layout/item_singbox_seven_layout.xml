@@ -51,7 +51,15 @@
 
         <View
             style="@style/view_line_style"/>
+        <TextView
+            android:id="@+id/seven_three"
+            style="@style/text_title_content_style"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            />
 
+        <View
+            style="@style/view_line_style"/>
         <TextView
             android:id="@+id/seven_two"
             style="@style/text_title_content_style"
@@ -62,16 +70,16 @@
         <View
             style="@style/view_line_style"/>
 
+
         <TextView
-            android:id="@+id/seven_three"
+            android:id="@+id/seven_seven"
             style="@style/text_title_content_style"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="1.5"
+            android:textColor="@color/bg_green"
             />
-
         <View
             style="@style/view_line_style"/>
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

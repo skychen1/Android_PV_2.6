@@ -9,13 +9,21 @@
 		android:id="@+id/seven_one"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="5.4"
+		android:layout_weight="2"
 		/>
 
 	<View
 		style="@style/view_title_line_style"/>
 
+	<TextView
+		android:id="@+id/seven_two"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="2"
+		/>
 
+	<View
+		style="@style/view_title_line_style"/>
 
 	<TextView
 		android:id="@+id/seven_three"
@@ -26,29 +34,12 @@
 
 	<View
 		style="@style/view_title_line_style"/>
-	<TextView
-		android:id="@+id/seven_two"
-		style="@style/text_title_style"
-		android:layout_width="0dp"
-		android:layout_weight="5"
-		/>
 
-	<View
-		style="@style/view_title_line_style"/>
-	<TextView
-		android:id="@+id/seven_eight"
-		style="@style/text_title_style"
-		android:layout_width="0dp"
-		android:layout_weight="1.5"
-		/>
-
-	<View
-		style="@style/view_title_line_style"/>
 	<TextView
 		android:id="@+id/seven_four"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2.2"
+		android:layout_weight="1"
 		/>
 
 	<View
@@ -58,7 +49,7 @@
 		android:id="@+id/seven_five"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2"
+		android:layout_weight="1"
 		/>
 	<View
 		style="@style/view_title_line_style"/>
@@ -67,6 +58,6 @@
 		android:id="@+id/seven_six"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2.5"
+		android:layout_weight="1"
 		/>
 </LinearLayout>

@@ -11,6 +11,9 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.TakeNotesDetailsBean;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
+
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -23,49 +26,39 @@ import high.rivamed.myapplication.bean.TakeNotesDetailsBean;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class TakeNotesEpcAdapter extends BaseQuickAdapter<TakeNotesDetailsBean.JournalUseRecordDetailVos, BaseViewHolder> {
+public class TakeNotesEpcAdapter
+	extends BaseQuickAdapter<TakeNotesDetailsBean.JournalUseRecordDetailVos, BaseViewHolder> {
 
-    private TextView mSeven_one;
-    private TextView mSeven_two;
-    private TextView mSeven_three;
-    private TextView mSeven_four;
-    private TextView mSeven_five;
-    private TextView mSeven_six;
-    private TextView mSeven_seven;
-    private TextView mSeven_eight;
+   private TextView mSeven_one;
+   private TextView mSeven_two;
+   private TextView mSeven_three;
+   private TextView mSeven_four;
+   private TextView mSeven_five;
+   private TextView mSeven_six;
+   private TextView mSeven_seven;
+   private TextView mSeven_eight;
 
-    public TakeNotesEpcAdapter(
-            int layoutResId, @Nullable List<TakeNotesDetailsBean.JournalUseRecordDetailVos> data) {
-        super(layoutResId, data);
-    }
+   public TakeNotesEpcAdapter(
+	   int layoutResId, @Nullable List<TakeNotesDetailsBean.JournalUseRecordDetailVos> data) {
+	super(layoutResId, data);
+   }
 
-    @Override
-    protected void convert(
-            BaseViewHolder helper, TakeNotesDetailsBean.JournalUseRecordDetailVos item) {
-//        if (helper.getAdapterPosition() % 2 == 0) {
-//            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//        } else {
-            ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//        }
-        findId(helper);
-        mSeven_one.setText(item.getEpc());
-        mSeven_two.setText(item.getCstName());
-        mSeven_three.setText(item.getCstSpec());
-        mSeven_four.setText(item.getOperationTime());
-        mSeven_five.setText(item.getDeviceName());
-        mSeven_six.setText(item.getUserName());
-        mSeven_seven.setText(item.getStatus());
+   @Override
+   protected void convert(
+	   BaseViewHolder helper, TakeNotesDetailsBean.JournalUseRecordDetailVos item) {
+	((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
+	helper.setText(R.id.seven_one, item.getEpc());
+	helper.setText(R.id.seven_two, item.getCstName());
+	helper.setText(R.id.seven_three, item.getCstSpec());
+	helper.setText(R.id.seven_four, item.getOperationTime());
+	helper.setText(R.id.seven_five, item.getDeviceName());
+	helper.setText(R.id.seven_six, item.getUserName());
+	helper.setText(R.id.seven_seven, item.getStatus());
+	helper.setText(R.id.seven_eight,"展开");
+	helper.getView(R.id.seven_eight).setOnClickListener(view ->{
+	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+	   window.showPopupWindow(helper.getView(R.id.seven_eight),mDm.widthPixels);
+	});
+   }
 
-    }
-
-    private void findId(BaseViewHolder helper) {
-        mSeven_one = ((TextView) helper.getView(R.id.seven_one));
-        mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-        mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-        mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-        mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-        mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-        mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-
-    }
 }

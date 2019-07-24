@@ -48,7 +48,7 @@ public interface NetApi {
     //库存状态
     String URL_STOCKSTATUS_TOP = "/consumables/inventory/rmApi/expireStatistics";//库存监控 耗材效期监控     新
     String URL_STOCKSTATUS_DETAILS = "/consumables/inventory/rmApi/inventoryStatusAndDetails";//库存详情和耗材库存预警    新
-    String URL_STOCKUNCON_RIGHT = "/consumables/inventory/findNoConfirm";//未确认耗材
+    String URL_STOCKUNCON_RIGHT = "/consumables/inventory/rmApi/findNoConfirm";//未确认耗材
     String URL_STOCK_DETAIL = "/consumables/inventory/rmApi/detail";//查询单个耗材    新
 
 
@@ -132,4 +132,7 @@ public interface NetApi {
     String URL_EXCEPTION_OOERATEUNKNOW = "/consumables/inventory/operateUnKnow";//异常处理关联操作人
     String URL_EXCEPTION_RELEVANCE = "/consumables/inventory/operateUnNormal";//出柜关联，绑定患者，连续移除
     String URL_EXCEPTION_OPERATOR = "/rmApi/userManage/account/listOperator";//查询要绑定的操作人信息
+
+
+    String URL_LOGIN_CSTMSG = "/consumables/inventory/rmApi/findWaitInStoreCst";//查询待入库信息信息
 }

@@ -123,6 +123,15 @@ public class RunWateBean implements Serializable{
 	private Object count;
 	private String epc;
 	private String patientName;
+	private String barcode;
+
+	public String getBarcode() {
+	   return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+	   this.barcode = barcode;
+	}
 
 	public String getPatientName() {
 	   return patientName;

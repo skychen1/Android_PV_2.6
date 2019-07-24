@@ -166,11 +166,11 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 
    private void initDate() {
 
-	String[] array = mContext.getResources().getStringArray(R.array.six_takenotes_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.eight_takenotes_arrays);
 	titeleList = Arrays.asList(array);
 
-	mLayout = R.layout.item_takeepc_seven_layout;
-	mHeadView = LayoutInflater.from(this).inflate(R.layout.item_takeepc_seven_title_layout,
+	mLayout = R.layout.item_takeepc_eight_layout;
+	mHeadView = LayoutInflater.from(this).inflate(R.layout.item_takeepc_eight_title_layout,
 									    (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -179,6 +179,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
 	loadDate(mPatientId,mStatus);

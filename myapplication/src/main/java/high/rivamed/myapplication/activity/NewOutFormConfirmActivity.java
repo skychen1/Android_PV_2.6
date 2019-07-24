@@ -306,7 +306,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 							"</big></font>"));
 	mTimelyStartBtn.setVisibility(View.VISIBLE);
 	mDownBtnOneLL.setVisibility(View.VISIBLE);
-	String[] array = mContext.getResources().getStringArray(R.array.six_form_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_form_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	//重新扫描
@@ -473,16 +473,17 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     * 设置界面显示adapter
     */
    private void setLayoutDate() {
-	mLayout = R.layout.item_formcon_six_layout;
+	mLayout = R.layout.item_formcon_seven_layout;
 	mHeadView = mContext.getLayoutInflater()
-		.inflate(R.layout.item_formcon_six_title_layout, (ViewGroup) mLinearLayout.getParent(),
+		.inflate(R.layout.item_formcon_seven_title_layout, (ViewGroup) mLinearLayout.getParent(),
 			   false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(5));
+	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
 	mPublicAdapter = new OutFormConfirmAdapter(mLayout, mBoxInventoryVos);
 	mHeadView.setBackgroundResource(R.color.bg_green);
 

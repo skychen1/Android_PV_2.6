@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="four_arrays">
+	<string-array name="stock_five_arrays">
 		<item>EPC</item>
 		<item>操作时间</item>
 		<item>最近操作</item>
 		<item>效期</item>
+		<item>唯一码</item>
 	</string-array>
-	<string-array name="timely_four_arrays">
+	<string-array name="timely_five_arrays">
 		<item>EPC</item>
 		<item>效期</item>
 		<item>实际扫描</item>
 		<item>账面库存</item>
+		<item>唯一码</item>
 	</string-array>
 	<string-array name="five_arrays">
 		<item>名称</item>
@@ -37,7 +39,7 @@
 		<item>申请科室</item>
 		<item>是否为临时患者</item>
 	</string-array>
-	<string-array name="seven_title_bing_arrays">
+	<string-array name="eight_title_bing_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
@@ -45,6 +47,7 @@
 		<item>柜号</item>
 		<item>患者</item>
 		<item>操作</item>
+		<item>唯一码</item>
 	</string-array>
 	<string-array name="six_outbox_arrays">
 		<item>选择</item>
@@ -55,29 +58,34 @@
 		<item>效期</item>
 
 	</string-array>
-	<string-array name="six_singbox_arrays">
+	<string-array name="seven_singbox_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>操作</item>
+		<item>唯一码</item>
 	</string-array>
-	<string-array name="six_ic_arrays">
+	<string-array name="seven_nobindmeal_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
+		<item>唯一码</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>套餐包含</item>
+
 	</string-array>
-	<string-array name="six_form_arrays">
+	<string-array name="seven_form_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
+		<item>唯一码</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>请领单包含</item>
+
 	</string-array>
 	<string-array name="six_confirm_receive_arrays">
 		<item>名称</item>
@@ -129,14 +137,16 @@
 		<item>柜号</item>
 		<item>患者</item>
 	</string-array>
-	<string-array name="seven_meal_arrays">
+	<string-array name="eight_bindmeal_arrays">
 		<item>名称</item>
 		<item>EPC</item>
 		<item>规格型号</item>
+		<item>唯一码</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>患者</item>
 		<item>套餐包含</item>
+
 	</string-array>
 	<string-array name="eight_meal_arrays">
 		<item>选择</item>
@@ -197,18 +207,19 @@
 		<item>状态</item>
 		<item>操作</item>
 	</string-array>
-	<string-array name="eight_runwate_arrays">
+	<string-array name="nine_runwate_arrays">
 		<item>状态</item>
 		<item>名称</item>
-		<item>EPC</item>
 		<item>规格型号</item>
+		<item>EPC</item>
 		<item>患者</item>
 		<item>柜号</item>
 		<item>操作时间</item>
 		<item>操作人</item>
+		<item>唯一码</item>
 	</string-array>
 
-	<string-array name="eight_unconfirm_arrays">
+	<string-array name="nine_unconfirm_arrays">
 		<item>状态</item>
 		<item>名称</item>
 		<item>EPC</item>
@@ -217,6 +228,7 @@
 		<item>柜号</item>
 		<item>操作时间</item>
 		<item>操作人</item>
+		<item>唯一码</item>
 	</string-array>
 
 
@@ -238,7 +250,7 @@
 		<item>操作</item>
 	</string-array>
 
-	<string-array name="six_takenotes_arrays">
+	<string-array name="eight_takenotes_arrays">
 		<item>EPC</item>
 		<item>耗材名称</item>
 		<item>规格型号</item>
@@ -246,5 +258,14 @@
 		<item>柜号</item>
 		<item>操作人</item>
 		<item>操作</item>
+		<item>唯一码</item>
+	</string-array>
+	<string-array name="six_tobeputin_arrays">
+		<item>耗材名称</item>
+		<item>规格型号</item>
+		<item>EPC</item>
+		<item>唯一码</item>
+		<item>效期</item>
+		<item>状态</item>
 	</string-array>
 </resources>

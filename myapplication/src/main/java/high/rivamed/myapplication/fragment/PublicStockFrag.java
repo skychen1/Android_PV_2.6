@@ -70,7 +70,7 @@ public class PublicStockFrag extends SimpleFragment {
    private static final String TYPE_PAGE  = "TYPE_PAGE";
    private static final String DEVICECODE = "DEVICECODE";
    private static final int    FIVE       = 5;
-   private static final int    EIGHT      = 8;
+   private static final int    NINE      = 9;
    private static final String TAG        = "PublicStockFrag";
    @BindView(R.id.timely_reality2)
    TextView           mTimelyReality2;
@@ -179,10 +179,10 @@ public class PublicStockFrag extends SimpleFragment {
 		mPublicRl.setVisibility(View.GONE);
 		getLeftDownDate(mDeviceCode);
 	   }
-	} else if (mType_size == EIGHT && (mType_page.equals(STYPE_STOCK_RIGHT))) {
+	} else if (mType_size == NINE && (mType_page.equals(STYPE_STOCK_RIGHT))) {
 	   mRightTop.setVisibility(View.GONE);
 	   mRelativeLayout.setVisibility(View.GONE);
-	   String[] array = mContext.getResources().getStringArray(R.array.eight_unconfirm_arrays);
+	   String[] array = mContext.getResources().getStringArray(R.array.nine_unconfirm_arrays);
 	   titeleList = Arrays.asList(array);
 	   mSize = array.length;
 
@@ -466,9 +466,9 @@ public class PublicStockFrag extends SimpleFragment {
 		} else {
 		   InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
 		   mTCstStockRightList = socketRightBean.getInventoryVos();
-		   mLayout = R.layout.item_runwate_eight_layout;
+		   mLayout = R.layout.item_runwate_nine_layout;
 		   mHeadView = LayoutInflater.from(_mActivity)
-			   .inflate(R.layout.item_runwate_eight_title_layout,
+			   .inflate(R.layout.item_runwate_nine_title_layout,
 					(ViewGroup) mLinearLayout.getParent(), false);
 		   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 		   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -478,6 +478,7 @@ public class PublicStockFrag extends SimpleFragment {
 		   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
 		   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 		   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+		   ((TextView) mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
 
 		   mRightAdapter = new StockRightAdapter(mLayout, mTCstStockRightList);
 

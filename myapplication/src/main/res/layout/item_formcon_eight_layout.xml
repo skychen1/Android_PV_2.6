@@ -4,50 +4,51 @@
 								android:id="@+id/swipe"
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content">
-
-	<LinearLayout
-		android:id="@+id/ll_delete"
-		android:layout_width="@dimen/x140"
+<LinearLayout
+	android:id="@+id/ll_delete"
+	android:layout_width="@dimen/x140"
+	android:layout_height="wrap_content"
+	android:background="@color/bg_delete"
+	android:gravity="center"
+	android:orientation="horizontal">
+	<ImageView
+		android:id="@+id/iv_delete"
+		android:layout_width="@dimen/x40"
 		android:layout_height="wrap_content"
-		android:background="@color/bg_delete"
-		android:gravity="center"
-		android:orientation="horizontal">
-		<ImageView
-			android:id="@+id/iv_delete"
-			android:layout_width="@dimen/x40"
-			android:layout_height="wrap_content"
-			android:src="@mipmap/ic_slid_delete"
-			android:layout_marginRight="10dp"/>
-		<TextView
-			android:id="@+id/tv_delete"
-			android:layout_toRightOf="@id/iv_delete"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:text="移除"
-			android:textColor="@color/white"
-			android:textSize="@dimen/textsize_16"
-			android:textStyle="bold" />
-	</LinearLayout>
-	<LinearLayout
-		android:id="@+id/ll_delete2"
-		android:layout_width="@dimen/x140"
+		android:src="@mipmap/ic_slid_delete"
+		android:layout_marginRight="10dp"/>
+	<TextView
+		android:id="@+id/tv_delete"
+		android:layout_toRightOf="@id/iv_delete"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="@color/bg_green"
 		android:gravity="center"
-		android:orientation="horizontal">
+		android:text="移除"
+		android:textColor="@color/white"
+		android:textSize="@dimen/textsize_16"
+		android:textStyle="bold" />
+</LinearLayout>
+<LinearLayout
+android:id="@+id/ll_delete2"
+android:layout_width="@dimen/x140"
+android:layout_height="wrap_content"
+android:background="@color/bg_green"
+android:gravity="center"
+android:orientation="horizontal">
 
-		<TextView
-			android:id="@+id/tv_delete2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:text="解除移除"
-			android:textColor="@color/white"
-			android:textSize="@dimen/textsize_15"
-			android:textStyle="bold" />
-	</LinearLayout>
+<TextView
+	android:id="@+id/tv_delete2"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:gravity="center"
+	android:text="解除移除"
+	android:textColor="@color/white"
+	android:textSize="@dimen/textsize_15"
+	android:textStyle="bold" />
+</LinearLayout>
+
 <LinearLayout android:id="@+id/seven_ll"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:layout_width="match_parent"
 			  android:layout_height="@dimen/y80"
 			  android:gravity="center_vertical"
@@ -66,15 +67,6 @@
 	<View
 		style="@style/view_line_style"/>
 
-	<TextView
-		android:id="@+id/seven_two"
-		style="@style/text_title_content_style"
-		android:layout_width="0dp"
-		android:layout_weight="5.4"
-		/>
-
-	<View
-		style="@style/view_line_style"/>
 
 	<TextView
 		android:id="@+id/seven_three"
@@ -83,6 +75,25 @@
 		android:layout_weight="3"
 		/>
 
+	<View
+		style="@style/view_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_two"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="5"
+		/>
+
+	<View
+		style="@style/view_line_style"/>
+	<TextView
+	android:id="@+id/seven_eight"
+	style="@style/text_title_content_style"
+	android:layout_width="0dp"
+	android:layout_weight="1.5"
+	android:textColor="@color/bg_green"
+	/>
 	<View
 		style="@style/view_line_style"/>
 	<LinearLayout
@@ -111,10 +122,20 @@
 
 	<View
 		style="@style/view_line_style"/>
+	<TextView
+		android:id="@+id/seven_seven"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="2.5"
+		/>
+
+
+	<View
+		style="@style/view_line_style"/>
 	<ImageView
 		android:id="@+id/seven_six"
 		android:layout_width="0dp"
-		android:layout_weight="2.5"
+		android:layout_weight="2"
 		android:layout_height="wrap_content"
 		android:src="@mipmap/hccz_ic_tx"
 		android:visibility="invisible"
@@ -123,4 +144,4 @@
 	<View
 		style="@style/view_line_style"/>
 </LinearLayout>
-	</com.daimajia.swipe.SwipeLayout>
+</com.daimajia.swipe.SwipeLayout>

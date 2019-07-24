@@ -24,7 +24,7 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
-import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FOUR_DETAILS;
+import static high.rivamed.myapplication.cont.Constants.STYPE_TIMELY_FIVE_DETAILS;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -98,12 +98,12 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
 
 	mTimelyName.setVisibility(View.VISIBLE);
 	mTimelyName.setText("耗材名称：" + mDto.getEpcName() + "    规格型号：" + mDto.getCstSpec());
-	String[] array = mContext.getResources().getStringArray(R.array.timely_four_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.timely_five_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	mTypeView = new TableTypeView(this, this, inventoryVos, titeleList, mSize, mLinearLayout,
 						mRecyclerview, mRefreshLayout, ACTIVITY,
-						STYPE_TIMELY_FOUR_DETAILS, -10);
+						STYPE_TIMELY_FIVE_DETAILS, -10);
    }
 
 }

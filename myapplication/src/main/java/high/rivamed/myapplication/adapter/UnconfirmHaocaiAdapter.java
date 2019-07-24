@@ -12,6 +12,9 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
+
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -44,11 +47,8 @@ public class UnconfirmHaocaiAdapter
    @Override
    protected void convert(
 	   BaseViewHolder helper, InventoryVo item) {
-//	if (helper.getAdapterPosition() % 2 == 0) {
-//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//	} else {
+
 	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//	}
 	findId(helper);
 	int five = item.getExpireStatus();
 	mSeven_one.setText("未使用");
@@ -59,11 +59,15 @@ public class UnconfirmHaocaiAdapter
 	mSeven_six.setText(item.getDeviceName());
 	mSeven_seven.setText(item.getUpdateTime());
 	mSeven_eight.setText(item.getUserName());
+	helper.setText(R.id.seven_nine,"展开");
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), five, mSeven_five);
 	}
 	mSeven_one.setTextColor(mContext.getResources().getColor(R.color.color_red));
-
+	helper.getView(R.id.seven_nine).setOnClickListener(view->{
+	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+	   window.showPopupWindow(helper.getView(R.id.seven_nine),mDm.widthPixels);
+	});
    }
 
    private void findId(BaseViewHolder helper) {

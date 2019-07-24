@@ -67,8 +67,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
+        disable 'GoogleAppIndexingWarning'
+//        checkReleaseBuilds false
+//        abortOnError false
     }
 }
 

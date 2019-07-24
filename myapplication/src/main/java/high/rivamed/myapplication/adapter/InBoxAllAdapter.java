@@ -17,6 +17,9 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
+
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -88,6 +91,11 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	mSeven_three.setText(item.getCstSpec());
 	mSeven_four.setText(item.getExpiryDate());
 	mSeven_five.setText(item.getDeviceName());
+	helper.setText(R.id.seven_seven,"展开");
+	helper.getView(R.id.seven_seven).setOnClickListener(view ->{
+	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+	   window.showPopupWindow(helper.getView(R.id.seven_seven),mDm.widthPixels);
+	});
 	if (status!=null&&((status.equals("3")&&item.getOperationStatus()!=98)||status.equals("4"))){
 	   if (item.getExpireStatus()==0){
 		mSeven_six.setText("已过期");

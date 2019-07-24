@@ -31,6 +31,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_DETAILS;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -99,7 +100,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 	mBaseTabTvTitle.setText("耗材详情");
 	String deviceCode = mStockDetailsTopBean.getDeviceId();
 	String cstId = mStockDetailsTopBean.getCstCode();
-	String[] array = mContext.getResources().getStringArray(R.array.four_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.stock_five_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	NetRequest.getInstance().getStockDetailDate(mExpireStatus,deviceCode, cstId, mContext, new BaseResult() {
@@ -117,7 +118,7 @@ public class StockMidTypeActivity extends BaseSimpleActivity {
 					  mStockDetailsTopBean.getCstSpec());
 		mTypeView = new TableTypeView(mContext, mContext, mStockDetailsDownList, titeleList,
 							mSize, mLinearLayout, mRecyclerview, mRefreshLayout,
-							ACTIVITY, null, -10);
+							ACTIVITY, STYPE_STOCK_DETAILS, -10);
 	   }
 	});
 

@@ -48,17 +48,19 @@
 					android:textColor="@color/bg_f"
 					android:textSize="@dimen/x36"/>
 				<RelativeLayout
+					android:id="@+id/login_unrl"
 					android:layout_width="@dimen/x280"
 					android:layout_height="@dimen/y130"
 					android:layout_marginLeft="@dimen/x130"
 					android:background="@mipmap/login_unknow_icon"
 					android:layout_gravity="bottom"
+					android:visibility="invisible"
 					>
 					<TextView
 						android:id="@+id/login_unconfirmcst"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="未确认耗材（6）"
+						android:text="未确认耗材"
 						android:paddingTop="@dimen/y16"
 						android:textSize="@dimen/x28"
 						android:textColor="@color/color_o"
@@ -181,7 +183,7 @@
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
 			<TextView
-				android:id="@+id/login_stock"
+				android:id="@+id/login_uninbox"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="@dimen/x50"

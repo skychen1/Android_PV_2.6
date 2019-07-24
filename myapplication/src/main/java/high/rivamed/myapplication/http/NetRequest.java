@@ -327,9 +327,9 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_STOCKUNCON_RIGHT;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
-	map.put("deviceCode", deviceCode);
+	map.put("deviceId", deviceCode);
 	map.put("nameOrSpecQueryCon", mTrim);
-	GetTokenRequest(urls, map, tag, netResult);
+	GetRequest(urls, map, tag, netResult);
    }
 
    /**
@@ -869,6 +869,19 @@ public class NetRequest {
 	map.put("pageSize", size+"");
 	GetRequest(urls, map, tag, netResult);
    }
+
+   /**
+    * 查询待入库信息
+    */
+   public void getLoginCstMsg(int page,int size,Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_LOGIN_CSTMSG;
+	Map<String, String> map = new HashMap<>();
+	map.put("pageNo", page+"");
+	map.put("pageSize", size+"");
+	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	GetRequest(urls, map, tag, netResult);
+   }
+
    private class MyCallBack extends StringCallback {
 
 	private String    url;

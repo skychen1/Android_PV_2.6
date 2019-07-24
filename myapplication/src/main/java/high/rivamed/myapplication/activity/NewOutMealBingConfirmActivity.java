@@ -433,11 +433,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
 	   mBindPatient.setVisibility(View.VISIBLE);
 	   mDownBtnOne.setEnabled(false);
-	   array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
+	   array = mContext.getResources().getStringArray(R.array.eight_bindmeal_arrays);
 	} else {
 	   mBindPatient.setVisibility(View.GONE);
 	   mDownBtnOne.setEnabled(true);
-	   array = mContext.getResources().getStringArray(R.array.six_ic_arrays);
+	   array = mContext.getResources().getStringArray(R.array.seven_nobindmeal_arrays);
 	}
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -539,13 +539,13 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private void initView() {
 	String[] array;
 	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
-	   array = mContext.getResources().getStringArray(R.array.seven_meal_arrays);
+	   array = mContext.getResources().getStringArray(R.array.eight_bindmeal_arrays);
+	   mLayout = R.layout.item_formcon_eight_layout;
+	   mTitleLayout = R.layout.item_formcon_eight_title_layout;
+	} else {
+	   array = mContext.getResources().getStringArray(R.array.seven_nobindmeal_arrays);
 	   mLayout = R.layout.item_formcon_seven_layout;
 	   mTitleLayout = R.layout.item_formcon_seven_title_layout;
-	} else {
-	   array = mContext.getResources().getStringArray(R.array.six_ic_arrays);
-	   mLayout = R.layout.item_formcon_six_layout;
-	   mTitleLayout = R.layout.item_formcon_six_title_layout;
 	}
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -554,13 +554,15 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(5));
+
 	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||UIUtils.getConfigType(mContext, CONFIG_019))) {
-	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(5));
-	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(7));
 	} else {
-	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
 
 	}
 	mHeadView.setBackgroundResource(R.color.bg_green);

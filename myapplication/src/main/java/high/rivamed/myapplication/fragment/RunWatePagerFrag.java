@@ -179,13 +179,14 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mSearchTimeStart.setHint(PowerDateUtils.getTime());
 	mSearchTimeEnd.setHint(format);
 
-	mSearchEt.setHint("请输入耗材名称、操作人、EPC查询");
+	mSearchEt.setHint("请输入耗材名称、规格型号、操作人、EPC查询");
+
 	mStartTime=null;
 	mEndTime=null;
 	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode);
 
-	String[] array = mContext.getResources().getStringArray(R.array.eight_runwate_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.nine_runwate_arrays);
 	titeleList = Arrays.asList(array);
 
    }
@@ -351,23 +352,19 @@ public class RunWatePagerFrag extends SimpleFragment {
 			} else {
 			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
 			   mWateBeanRows = mRunWateBean.getRows();
-			   mLayout = R.layout.item_runwate_eight_layout;
+			   mLayout = R.layout.item_runwate_nine_layout;
 			   mHeadView = LayoutInflater.from(_mActivity).inflate(
-				   R.layout.item_runwate_eight_title_layout,
+				   R.layout.item_runwate_nine_title_layout,
 				   (ViewGroup) mLinearLayout.getParent(), false);
 			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 			   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-				   titeleList.get(2));
-			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-				   titeleList.get(3));
-			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-				   titeleList.get(4));
+			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(3));
+			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(2));
+			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 			   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
-				   titeleList.get(6));
-			   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(
-				   titeleList.get(7));
+			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+			   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+			   ((TextView) mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
 
 			   mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
 

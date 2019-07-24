@@ -16,12 +16,14 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.Coder;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -79,6 +81,7 @@ public class LoginPassWordFragment extends SimpleFragment {
 	   return;
 	} else {
 	   if (isvalidate()) {
+             EventBusUtils.postSticky(new Event.EventLoading(true));
            //获取配置项并登陆
            LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) -> {
                if (canLogin) {
@@ -153,12 +156,12 @@ public class LoginPassWordFragment extends SimpleFragment {
             @Override
             public void onSucceed(String result) {
                 LogUtils.i("getAppAccountInfoVo", "result  " + result);
-
                 LoginUtils.loginSpDate(result,mContext,mGson,null);
             }
 
             @Override
             public void onError(String result) {
+                EventBusUtils.postSticky(new Event.EventLoading(false));
                 LogUtils.i("BaseSimpleFragment", "登录失败  " + result);
                 Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
             }

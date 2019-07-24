@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
+import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.fragment.LoginFaceFragment;
 import high.rivamed.myapplication.fragment.LoginPassFragment;
@@ -52,6 +54,8 @@ import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.TimerService;
+import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -59,6 +63,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
+import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -69,6 +74,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_031;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
@@ -121,8 +127,12 @@ public class LoginActivity extends SimpleActivity {
    TextView        mStockStatus;
    @BindView(R.id.left_guo_text)
    TextView        mTextGuo;
+   @BindView(R.id.login_uninbox)
+   TextView        mTVLoginToBePutInStorage;
    @BindView(R.id.login_unconfirmcst)
    TextView        mTVLoginUnConfirmCst;
+   @BindView(R.id.login_unrl)
+   RelativeLayout  mLoginUnRL;
    @BindView(R.id.left_jin_text)
    TextView        mTextJin;
    public static View mLoginGone;
@@ -132,11 +142,30 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   public static int mConfigType;
-   private boolean mOnStart = false;
-	private LoginFaceFragment faceFragment;
+   public static int               mConfigType;
+   private       boolean           mOnStart = false;
+   private       LoginFaceFragment faceFragment;
+   private LoadingDialog.Builder   mLoading;
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	   if (event.loading) {
+		if (mLoading == null) {
+		   mLoading = DialogUtils.showLoading(mContext);
+		} else {
+		   if (!mLoading.mDialog.isShowing()) {
+			mLoading.create().show();
+		   }
+		}
+	   } else {
+		if (mLoading != null) {
+		   mLoading.mAnimationDrawable.stop();
+		   mLoading.mDialog.dismiss();
+		   mLoading = null;
+		}
+	   }
+   }
 
-	/**
+   /**
     * ic卡和指纹仪登陆回调
     *
     * @param event
@@ -215,6 +244,11 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	Log.i("fffa", "xxxxx   " + UIUtils.isServiceRunning(this,
 									    "high.rivamed.myapplication.service.ScanService"));
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
@@ -267,6 +301,22 @@ public class LoginActivity extends SimpleActivity {
 
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
+   }
+
+   /**
+    * 查询未确认耗材
+    */
+   private void getNoConfirm() {
+	NetRequest.getInstance().getRightUnconfDate("", "", mContext, new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
+		List<InventoryVo> inventoryVos = socketRightBean.getInventoryVos();
+		if (inventoryVos.size()>0){
+		   mTVLoginUnConfirmCst.setText("未确认耗材（"+inventoryVos.size()+"）");
+		}
+	   }
+	});
    }
 
    @Override
@@ -408,6 +458,7 @@ public class LoginActivity extends SimpleActivity {
    public void getConfigDate(int configType, String loginType) {
 
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+
 	   if (mTitleConn) {
 		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
 		   @Override
@@ -445,8 +496,6 @@ public class LoginActivity extends SimpleActivity {
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
-	//	getUpDateVer(tCstConfigVos, configType, loginType);
 	LoginUtils.getUpDateVer(this, tCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
 												   loginType));
@@ -460,10 +509,14 @@ public class LoginActivity extends SimpleActivity {
 	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
 	//有人脸识别或紧急登录时，可滑动
 	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
+	if (UIUtils.getConfigType(mContext, CONFIG_026)){
+	   mLoginUnRL.setVisibility(View.VISIBLE);
+	   mTVLoginUnConfirmCst.setText("未确认耗材（0）");
+	   getNoConfirm();
+	}else {
+	   mLoginUnRL.setVisibility(View.INVISIBLE);
+	}
 
-	//	} else {
-	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
-	//	}
    }
 
    private boolean isConfigFace() {
@@ -483,11 +536,11 @@ public class LoginActivity extends SimpleActivity {
 	   boolean canDevice, int configType, String loginType) {
 	if (!canDevice) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
-		   mLoginGone.setVisibility(View.VISIBLE);
-		   if (mLoginFace.isChecked() && isConfigFace()) {
-			   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
-			   faceFragment.onTabShowPreview(false);
-		   }
+		mLoginGone.setVisibility(View.VISIBLE);
+		if (mLoginFace.isChecked() && isConfigFace()) {
+		   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
+		   faceFragment.onTabShowPreview(false);
+		}
 	   } else if (configType == 1) {//IC卡登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
 		ToastUtils.showShort("正在维护，请到管理端启用");
@@ -500,9 +553,9 @@ public class LoginActivity extends SimpleActivity {
 	   if (configType == 0) {//正常登录密码登录限制
 		mLoginGone.setVisibility(View.GONE);
 		if (mLoginFace.isChecked() && isConfigFace()) {
-			   //设备禁用切换至设备可用时当前选中显示的是人脸识别页面，开启人脸识别的预览
-			   faceFragment.onTabShowPreview(true);
-		   }
+		   //设备禁用切换至设备可用时当前选中显示的是人脸识别页面，开启人脸识别的预览
+		   faceFragment.onTabShowPreview(true);
+		}
 	   } else if (configType == 1) {//IC卡登录限制
 		if (mTitleConn) {
 		   validateLoginIdCard(loginType);
@@ -533,6 +586,7 @@ public class LoginActivity extends SimpleActivity {
 	} else {
 	   ToastUtils.showShortToast("登录失败，暂无登录信息！");
 	}
+	EventBusUtils.postSticky(new Event.EventLoading(false));
    }
 
    private void validateLoginIdCard(String idCard) {
@@ -547,8 +601,14 @@ public class LoginActivity extends SimpleActivity {
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
 
@@ -569,6 +629,11 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
 
@@ -617,41 +682,45 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initlistener() {
-	mLoginLogo.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-		continuousClick();
-	   }
+	mLoginLogo.setOnClickListener(view -> {
+	   continuousClick();
 	});
-	mLoginGone.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-		if (mTitleConn) {
-		   ToastUtils.showShort("正在维护，请到管理端启用");
-		   mConfigType = 0;
-		   getConfigDate(mConfigType, null);
-		} else {
-		   ToastUtils.showShortToast("请检查网络");
-
-		}
+	mLoginGone.setOnClickListener(view -> {
+	   if (mTitleConn) {
+		ToastUtils.showShort("正在维护，请到管理端启用");
+		mConfigType = 0;
+		getConfigDate(mConfigType, null);
+	   } else {
+		ToastUtils.showShortToast("请检查网络");
 
 	   }
 	});
-	mStockStatus.setOnClickListener(new View.OnClickListener() {
-	   @Override
-	   public void onClick(View v) {
-
-		if (mTitleConn) {
-		   startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
-		} else {
-		   ToastUtils.showShortToast("网络异常，请检查网络!");
-		}
-
-	   }
-	});
-	mTVLoginUnConfirmCst.setOnClickListener(view-> {
+	/**
+	 * 库存详情
+	 */
+	mStockStatus.setOnClickListener(view -> {
 	   if (mTitleConn) {
 		startActivity(new Intent(LoginActivity.this, LoginStockStatusActivity.class));
+	   } else {
+		ToastUtils.showShortToast("网络异常，请检查网络!");
+	   }
+	});
+	/**
+	 * 未确认耗材
+	 */
+	mTVLoginUnConfirmCst.setOnClickListener(view -> {
+	   if (mTitleConn) {
+		startActivity(new Intent(LoginActivity.this, LoginUnconfirmActivity.class));
+	   } else {
+		ToastUtils.showShortToast("网络异常，请检查网络!");
+	   }
+	});
+	/**
+	 * 未入库耗材
+	 */
+	mTVLoginToBePutInStorage.setOnClickListener(view->{
+	   if (mTitleConn) {
+		startActivity(new Intent(LoginActivity.this, LoginToBePutInStorageActivity.class));
 	   } else {
 		ToastUtils.showShortToast("网络异常，请检查网络!");
 	   }
@@ -671,8 +740,8 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-	   faceFragment = new LoginFaceFragment();
-	   mFragments.add(faceFragment);//人脸识别登录 TODO
+	faceFragment = new LoginFaceFragment();
+	mFragments.add(faceFragment);//人脸识别登录 TODO
 	mFragments.add(new LoginPassWordFragment());//用户名登录
 	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
