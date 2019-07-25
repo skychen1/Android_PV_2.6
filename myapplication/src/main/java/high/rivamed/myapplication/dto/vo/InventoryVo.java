@@ -64,6 +64,15 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String  updateDateTime;
    private boolean dateNetType;//判断是否是本地的还是(查询出来的false)
    private String barcode;
+   private String noConfirmCount;
+
+   public String getNoConfirmCount() {
+	return noConfirmCount;
+   }
+
+   public void setNoConfirmCount(String noConfirmCount) {
+	this.noConfirmCount = noConfirmCount;
+   }
 
    public String getBarcode() {
 	return barcode;

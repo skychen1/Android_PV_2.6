@@ -158,15 +158,16 @@
 		<item>患者</item>
 		<item>套餐包含</item>
 	</string-array>
-	<string-array name="six_real_time_arrays">
+	<string-array name="seven_home_real_time_arrays">
 		<item>名称</item>
 		<item>规格型号</item>
 		<item>效期</item>
 		<item>柜号</item>
 		<item>实时扫描</item>
 		<item>账面库存</item>
+		<item>未确认数</item>
 	</string-array>
-	<string-array name="seven_real_time_arrays">
+	<string-array name="eight_real_time_arrays">
 		<!--<item>选择</item>-->
 		<!--<item>名称</item>-->
 		<!--<item>EPC</item>-->
@@ -181,6 +182,7 @@
 		<item>柜号</item>
 		<item>实时扫描</item>
 		<item>账面库存</item>
+		<item>唯一码</item>
 	</string-array>
 	<string-array name="six_meal_arrays">
 		<item>名称</item>

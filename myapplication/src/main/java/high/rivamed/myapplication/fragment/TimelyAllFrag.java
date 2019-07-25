@@ -61,6 +61,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -301,12 +302,12 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void initDateAll() {
-	String[] array = mContext.getResources().getStringArray(R.array.six_real_time_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_home_real_time_arrays);
 	titeleList = Arrays.asList(array);
 
-	mLayout = R.layout.item_realtime_six_layout;
+	mLayout = R.layout.item_realtimehome_seven_layout;
 	mHeadView = LayoutInflater.from(_mActivity)
-		.inflate(R.layout.item_realtime_six_title_layout, (ViewGroup) mLinearLayout.getParent(),
+		.inflate(R.layout.item_realtimehome_seven_title_layout, (ViewGroup) mLinearLayout.getParent(),
 			   false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -314,7 +315,12 @@ public class TimelyAllFrag extends SimpleFragment {
 	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-
+	if(UIUtils.getConfigType(mContext, CONFIG_026)){
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setVisibility(View.VISIBLE);
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	}else {
+	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setVisibility(View.GONE);
+	}
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
 	LogUtils.i(TAG, "第一次");

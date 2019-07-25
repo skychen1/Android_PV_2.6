@@ -84,7 +84,7 @@ public class TimelyLossActivity extends BaseSimpleActivity {
 
 	mTimelyNumber.setText(
 		Html.fromHtml("盘亏数：<font color='#262626'><big>" + mDto.getReduce() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.eight_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 

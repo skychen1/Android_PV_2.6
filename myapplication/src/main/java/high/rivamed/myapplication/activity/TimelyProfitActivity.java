@@ -82,7 +82,7 @@ public class TimelyProfitActivity extends BaseSimpleActivity{
 	List<InventoryVo> inventoryVos = mDto.getInventoryVos();
 	mTimelyNumber.setText(
 		Html.fromHtml("盘盈数：<font color='#262626'><big>" + mDto.getAdd() + "</big></font>"));
-	String[] array = mContext.getResources().getStringArray(R.array.seven_real_time_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.eight_real_time_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
 	mTypeView = new TableTypeView(this, this, inventoryVos, titeleList, mSize, mLinearLayout,

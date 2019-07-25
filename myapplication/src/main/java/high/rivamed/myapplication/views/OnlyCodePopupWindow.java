@@ -54,12 +54,11 @@ public class OnlyCodePopupWindow extends PopupWindow {
         // 点back键和其他地方使其消失,设置了这个才能触发OnDismisslistener ，设置其他控件变化等操作
         this.setBackgroundDrawable(dw);
         this.setAnimationStyle(R.style.social_pop_anim);
-
         if (!this.isShowing()) {
             showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0], mLocation[1]);
-
         } else {
             dismiss();
         }
+
     }
 }

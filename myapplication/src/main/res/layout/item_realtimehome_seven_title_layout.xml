@@ -9,7 +9,7 @@
 		android:id="@+id/seven_one"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="4"
+		android:layout_weight="6"
 		/>
 
 	<View
@@ -19,7 +19,7 @@
 		android:id="@+id/seven_two"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="4"
+		android:layout_weight="3.5"
 		/>
 
 	<View
@@ -29,7 +29,7 @@
 		android:id="@+id/seven_three"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2.5"
+		android:layout_weight="2"
 		/>
 
 	<View
@@ -39,7 +39,7 @@
 		android:id="@+id/seven_four"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="2.5"
+		android:layout_weight="1.8"
 		/>
 
 	<View
@@ -49,7 +49,7 @@
 		android:id="@+id/seven_five"
 		style="@style/text_title_style"
 		android:layout_width="0dp"
-		android:layout_weight="1.5"
+		android:layout_weight="2"
 		/>
 
 	<View
@@ -61,7 +61,6 @@
 		android:layout_width="0dp"
 		android:layout_weight="2"
 		/>
-
 	<View
 		style="@style/view_title_line_style"/>
 
@@ -71,4 +70,5 @@
 		android:layout_width="0dp"
 		android:layout_weight="2"
 		/>
+
 </LinearLayout>

@@ -374,60 +374,7 @@ public class TableTypeView extends LinearLayout {
                             mLinearLayout.addView(mHeadView);
                             mTempPatientAdapter.notifyDataSetChanged();
                         }
-                    } else  if (mDialog != null && mDialog.equals(STYPE_LOSS_TYPE)) {
-                        List<InventoryVo> mInventoryVos =( List<InventoryVo> ) mObject;
-                        //盘亏盘盈
-//			mLayout = R.layout.item_loss_seven_layout;//盘亏的提交的修改界面
-                        mLayout = R.layout.item_realtime_seven_layout;
-                        mHeadView = mActivity.getLayoutInflater()
-//				.inflate(R.layout.item_loss_seven_title_layout,//盘亏的提交的修改界面
-                                .inflate(R.layout.item_realtime_seven_title_layout,
-                                        (ViewGroup) mLinearLayout.getParent(), false);
-                        findId();
-                        mSeven_one.setText(titeleList.get(0));
-                        mSeven_two.setText(titeleList.get(1));
-                        mSeven_three.setText(titeleList.get(2));
-                        mSeven_four.setText(titeleList.get(3));
-                        mSeven_five.setText(titeleList.get(4));
-                        mSeven_six.setText(titeleList.get(5));
-                        mSeven_seven.setText(titeleList.get(6));
-//			mTimelyLossAdapter = new TimelyLossAdapter(mLayout, mInventoryVos);//盘亏的提交
-                        TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout,
-															mInventoryVos);
-                        mHeadView.setBackgroundResource(R.color.bg_green);
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(false);
-                        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-                        mRecyclerview.setAdapter(timelyProfitAdapter);
-                        mLinearLayout.addView(mHeadView);
-                    } else if (mDialog != null && mDialog.equals(STYPE_PROFIT_TYPE)) {
-                        List<InventoryVo> mInventoryVos =( List<InventoryVo> ) mObject;
-                        //盘亏盘盈
-                        mLayout = R.layout.item_realtime_seven_layout;
-                        mHeadView = mActivity.getLayoutInflater()
-                                .inflate(R.layout.item_realtime_seven_title_layout,
-                                        (ViewGroup) mLinearLayout.getParent(), false);
-                        findId();
-                        mSeven_one.setText(titeleList.get(0));
-                        mSeven_two.setText(titeleList.get(1));
-                        mSeven_three.setText(titeleList.get(2));
-                        mSeven_four.setText(titeleList.get(3));
-                        mSeven_five.setText(titeleList.get(4));
-                        mSeven_six.setText(titeleList.get(5));
-                        mSeven_seven.setText(titeleList.get(6));
-                        TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout,
-															mInventoryVos);
-                        mHeadView.setBackgroundResource(R.color.bg_green);
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(false);
-                        mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-                        mRecyclerview.setAdapter(timelyProfitAdapter);
-                        mLinearLayout.addView(mHeadView);
-                    }else if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
+                    } else  if (mDialog != null && mDialog.equals(STYPE_IN)) {//入柜的界面
                      List<InventoryVo> mInventoryVos =( List<InventoryVo> ) mObject;
                      mLayout = R.layout.item_singbox_seven_layout;
                      mHeadView = mActivity.getLayoutInflater()
@@ -495,6 +442,61 @@ public class TableTypeView extends LinearLayout {
                          mLinearLayout.removeView(mHeadView);
                          mLinearLayout.addView(mHeadView);
                      }
+                 }else if (mDialog != null && mDialog.equals(STYPE_LOSS_TYPE)) {
+                     List<InventoryVo> mInventoryVos =( List<InventoryVo> ) mObject;
+                     //盘亏盘盈
+                     //			mLayout = R.layout.item_loss_seven_layout;//盘亏的提交的修改界面
+                     mLayout = R.layout.item_realtime_eight_layout;
+                     mHeadView = mActivity.getLayoutInflater()
+                           //				.inflate(R.layout.item_loss_seven_title_layout,//盘亏的提交的修改界面
+                           .inflate(R.layout.item_realtime_eight_title_layout,
+                                    (ViewGroup) mLinearLayout.getParent(), false);
+                     findId();
+                     mSeven_one.setText(titeleList.get(0));
+                     mSeven_two.setText(titeleList.get(1));
+                     mSeven_three.setText(titeleList.get(2));
+                     mSeven_four.setText(titeleList.get(3));
+                     mSeven_five.setText(titeleList.get(4));
+                     mSeven_six.setText(titeleList.get(5));
+                     mSeven_seven.setText(titeleList.get(6));
+                     ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+                     //			mTimelyLossAdapter = new TimelyLossAdapter(mLayout, mInventoryVos);//盘亏的提交
+                     TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout,
+                                                                                       mInventoryVos);
+                     mHeadView.setBackgroundResource(R.color.bg_green);
+                     mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                     mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                     mRefreshLayout.setEnableAutoLoadMore(false);
+                     mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+                     mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                     mRecyclerview.setAdapter(timelyProfitAdapter);
+                     mLinearLayout.addView(mHeadView);
+                 } else if (mDialog != null && mDialog.equals(STYPE_PROFIT_TYPE)) {
+                     List<InventoryVo> mInventoryVos =( List<InventoryVo> ) mObject;
+                     //盘亏盘盈
+                     mLayout = R.layout.item_realtime_eight_layout;
+                     mHeadView = mActivity.getLayoutInflater()
+                           .inflate(R.layout.item_realtime_eight_title_layout,
+                                    (ViewGroup) mLinearLayout.getParent(), false);
+                     findId();
+                     mSeven_one.setText(titeleList.get(0));
+                     mSeven_two.setText(titeleList.get(1));
+                     mSeven_three.setText(titeleList.get(2));
+                     mSeven_four.setText(titeleList.get(3));
+                     mSeven_five.setText(titeleList.get(4));
+                     mSeven_six.setText(titeleList.get(5));
+                     mSeven_seven.setText(titeleList.get(6));
+                     ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+                     TimelyProfitAdapter timelyProfitAdapter = new TimelyProfitAdapter(mLayout,
+                                                                                       mInventoryVos);
+                     mHeadView.setBackgroundResource(R.color.bg_green);
+                     mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                     mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                     mRefreshLayout.setEnableAutoLoadMore(false);
+                     mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+                     mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+                     mRecyclerview.setAdapter(timelyProfitAdapter);
+                     mLinearLayout.addView(mHeadView);
                  }
              }
                 break;
