@@ -882,6 +882,13 @@ public class NetRequest {
 	GetRequest(urls, map, tag, netResult);
    }
 
+   /**
+    * 盘点单提交
+    */
+   public void putSavePadPdDate(String json , Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_TIMELY_PUTSAVEPADPD;
+	PostTokenRequest(urls, json, tag, netResult);
+   }
    private class MyCallBack extends StringCallback {
 
 	private String    url;
