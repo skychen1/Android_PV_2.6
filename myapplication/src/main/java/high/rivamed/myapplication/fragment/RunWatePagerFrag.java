@@ -47,7 +47,6 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -260,7 +259,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		mTerm = s.toString().trim();
-		UIUtils.hideSoftInput(_mActivity, mSearchEt);
+//		UIUtils.hideSoftInput(_mActivity, mSearchEt);
 		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	   }
 
