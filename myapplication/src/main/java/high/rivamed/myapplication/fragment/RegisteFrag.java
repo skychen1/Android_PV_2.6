@@ -39,7 +39,6 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVoError;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
@@ -109,6 +108,7 @@ public class RegisteFrag extends SimpleFragment {
    Switch   mSwitch;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
+
    public  RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
@@ -122,9 +122,9 @@ public class RegisteFrag extends SimpleFragment {
    private       DeviceNameBeanX                     mNameBean;
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
    private       ThingDto                            mSnRecoverBean;
-   public static List<ThingDto.DeviceVosBean> mDeviceVos = new ArrayList<>();//柜子list
-   public  NetWorkReceiver netWorkReceiver;
-   private String          mBoxCode;
+   public static List<ThingDto.DeviceVosBean>        mDeviceVos = new ArrayList<>();//柜子list
+
+   private       String                              mBoxCode;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -146,14 +146,6 @@ public class RegisteFrag extends SimpleFragment {
 	}
 
    }
-
-   //   private void applyNet() {
-   //	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-   //	netWorkReceiver = new NetWorkReceiver();
-   //	_mActivity.registerReceiver(netWorkReceiver, filter);
-   //	netWorkReceiver.setInteractionListener(this);
-   //
-   //   }
 
    /**
     * 激活
@@ -263,7 +255,6 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	//	applyNet();
 
 	mRecyclerview = mContext.findViewById(R.id.recyclerviewc);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
@@ -283,9 +274,9 @@ public class RegisteFrag extends SimpleFragment {
 
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
-	if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
+	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   mSwitch.setChecked(true);
-	}else {
+	} else {
 	   mSwitch.setChecked(false);
 	}
 	initData();
@@ -296,16 +287,16 @@ public class RegisteFrag extends SimpleFragment {
 	mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-	      if (isChecked){
-		   OkGo.<String>get(MAIN_URL+URL_OPEN).tag(mContext).execute(new StringCallback() {
+		if (isChecked) {
+		   OkGo.<String>get(MAIN_URL + URL_OPEN).tag(mContext).execute(new StringCallback() {
 			@Override
 			public void onSuccess(Response<String> response) {
 			   ToastUtils.showShortToast(getString(R.string.log_open));
-			   Log.i(TAG,"responseURL_OPEN   "+response.body());
+			   Log.i(TAG, "responseURL_OPEN   " + response.body());
 			   LogcatHelper.getInstance(App.getAppContext()).stop();
 			   LogcatHelper.getInstance(App.getAppContext()).start();
 			   EventBusUtils.post(new Event.EventLogType(true));
-			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
+			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, true);
 			}
 
 			@Override
@@ -315,19 +306,19 @@ public class RegisteFrag extends SimpleFragment {
 			   LogcatHelper.getInstance(App.getAppContext()).stop();
 			   LogcatHelper.getInstance(App.getAppContext()).start();
 			   EventBusUtils.post(new Event.EventLogType(true));
-			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,true);
+			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, true);
 			}
 		   });
-		}else {
-		   OkGo.<String>get(MAIN_URL+URL_CLOSE).tag(mContext).execute(new StringCallback() {
+		} else {
+		   OkGo.<String>get(MAIN_URL + URL_CLOSE).tag(mContext).execute(new StringCallback() {
 			@Override
 			public void onSuccess(Response<String> response) {
 			   ToastUtils.showShortToast(getString(R.string.log_closs));
-			   Log.i(TAG,"responseURL_CLOSE   "+response.body());
+			   Log.i(TAG, "responseURL_CLOSE   " + response.body());
 			   EventBusUtils.post(new Event.EventLogType(false));
 			   LogcatHelper.getInstance(App.getAppContext()).stop();
 			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
+			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, false);
 			}
 
 			@Override
@@ -337,32 +328,13 @@ public class RegisteFrag extends SimpleFragment {
 			   EventBusUtils.post(new Event.EventLogType(false));
 			   LogcatHelper.getInstance(App.getAppContext()).stop();
 			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   SPUtils.putBoolean(UIUtils.getContext(),LOGCAT_OPEN,false);
+			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, false);
 			}
 		   });
 		}
 	   }
 	});
    }
-
-   //   /**
-   //    * 获取本地和WIFI的IP  显示
-   //    *
-   //    * @param k
-   //    */
-   //   @Override
-   //   public void setInt(int k) {
-   //	LogUtils.i(TAG, "setInt   ");
-   //	if (k != -1) {
-   //	   if (k == 2) {
-   //		mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
-   //	   } else if (k == 0) {
-   //		mFragRegisteLocalipEdit.setText("");
-   //	   } else if (k == 1) {
-   //		mFragRegisteLocalipEdit.setText(WifiUtils.getHostIP());//获取本地IP地址显示
-   //	   }
-   //	}
-   //   }
 
    private void initData() {
 
@@ -674,6 +646,7 @@ public class RegisteFrag extends SimpleFragment {
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");
 		}
+		break;
 	}
    }
 

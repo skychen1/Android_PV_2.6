@@ -184,6 +184,11 @@
 					android:text="领用"/>
 
 				<RadioButton
+					android:id="@+id/search_type_binduse"
+					style="@style/runwate_btn_style"
+					android:text="患者领用"/>
+
+				<RadioButton
 					android:id="@+id/search_type_info"
 					style="@style/runwate_btn_style"
 					android:text="移入"/>
@@ -213,9 +218,15 @@
 					style="@style/runwate_btn_style"
 					android:text="退货暂存"/>
 				<RadioButton
-					android:id="@+id/search_type_yjf"
+					android:id="@+id/search_type_jf"
 					style="@style/runwate_btn_style"
-					android:text="已计费"/>
+					android:visibility="gone"
+					android:text="请求计费"/>
+				<RadioButton
+					android:id="@+id/search_type_tf"
+					style="@style/runwate_btn_style"
+					android:visibility="gone"
+					android:text="请求退费"/>
 			</RadioGroup>
 		</LinearLayout>
 	</LinearLayout>

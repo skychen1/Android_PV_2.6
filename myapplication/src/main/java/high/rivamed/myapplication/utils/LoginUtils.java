@@ -318,6 +318,22 @@ public class LoginUtils {
     }
 
     /**
+     * 检测epc过滤的问题
+     * @param tCstConfigVos
+     * @return
+     */
+    public static ConfigBean.ThingConfigVosBean getEpcFilte(List<ConfigBean.ThingConfigVosBean> tCstConfigVos,String CONFIG_x) {
+        if (tCstConfigVos==null||tCstConfigVos.size() == 0)
+            return null;
+        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
+            if (s.getCode().equals(CONFIG_x)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
      * apk更新的dialog
      */
     private static void showUpdateDialog(Activity mContext, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, String mDesc, LoginCallback callback) {

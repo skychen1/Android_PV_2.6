@@ -322,7 +322,26 @@ public class UIUtils {
 	}
 	return false;
    }
-
+   /**
+    * 获取权限配置主按钮只有领用退回的
+    * @param context
+    * @param title
+    * @return
+    */
+   public static boolean getMenuOnlyType(Context context, String title) {
+	Gson gson = new Gson();
+	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
+	List<ChildrenBean> fromJson = gson.fromJson(string,
+								  new TypeToken<List<ChildrenBean>>() {}.getType());
+	if (fromJson != null && fromJson.size() > 0) {
+	   for (ChildrenBean mType : fromJson) {
+		if (title.equals(mType.getTitle())) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
    public static String getRefreshToken() {
 	String RefreshToken = SPUtils.getString(UIUtils.getContext(), REFRESH_TOKEN);
 	return RefreshToken;
@@ -431,6 +450,17 @@ public class UIUtils {
 	   }
 	}
 	return false;
+   }
+
+   /**
+    * epc前面4个0的过滤
+    * @return
+    */
+   public static boolean isFourZeorType(String epc){
+      if (epc.length()==16||!epc.startsWith("0000")){
+         return true;
+	}
+      return false;
    }
 
 }

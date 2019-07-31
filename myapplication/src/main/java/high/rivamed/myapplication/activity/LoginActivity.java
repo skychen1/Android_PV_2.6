@@ -146,6 +146,8 @@ public class LoginActivity extends SimpleActivity {
    private       boolean           mOnStart = false;
    private       LoginFaceFragment faceFragment;
    private LoadingDialog.Builder   mLoading;
+   public static List<ConfigBean.ThingConfigVosBean> sTCstConfigVos;
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
 	   if (event.loading) {
@@ -244,6 +246,7 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
@@ -465,6 +468,7 @@ public class LoginActivity extends SimpleActivity {
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
 			SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
+
 			setConfigBean(result, configType, loginType);
 		   }
 
@@ -495,8 +499,8 @@ public class LoginActivity extends SimpleActivity {
     */
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	LoginUtils.getUpDateVer(this, tCstConfigVos,
+	sTCstConfigVos = configBean.getThingConfigVos();
+	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
 												   loginType));
 

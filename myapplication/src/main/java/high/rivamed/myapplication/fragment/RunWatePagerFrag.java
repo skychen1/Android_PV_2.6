@@ -47,8 +47,12 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_042;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -97,6 +101,8 @@ public class RunWatePagerFrag extends SimpleFragment {
    RadioButton        mSearchTypeHous;
    @BindView(R.id.search_type_use)
    RadioButton        mSearchTypeUse;
+   @BindView(R.id.search_type_binduse)
+   RadioButton        mSearchTypeBindUse;
    @BindView(R.id.search_type_info)
    RadioButton        mSearchTypeInfo;
    @BindView(R.id.search_type_out)
@@ -109,6 +115,10 @@ public class RunWatePagerFrag extends SimpleFragment {
    RadioButton        mSearchTypeReturnGoods;
    @BindView(R.id.search_type_thzc)
    RadioButton        mSearchTypeThzc;
+   @BindView(R.id.search_type_tf)
+   RadioButton        mSearchTypeTf;
+   @BindView(R.id.search_type_jf)
+   RadioButton        mSearchTypeJf;
    @BindView(R.id.search_type_rg)
    RadioGroup         mSearchTypeRg;
    @BindView(R.id.header)
@@ -170,7 +180,23 @@ public class RunWatePagerFrag extends SimpleFragment {
    }
 
    private void initDate() {
-
+      if (UIUtils.getConfigType(mContext, CONFIG_019)){
+	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
+	   mSearchTypeUse.setVisibility(View.VISIBLE);
+	}else if (UIUtils.getConfigType(mContext, CONFIG_007)){
+	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
+	   mSearchTypeUse.setVisibility(View.GONE);
+	}else if (!UIUtils.getConfigType(mContext, CONFIG_007)&&!UIUtils.getConfigType(mContext, CONFIG_019)){
+	   mSearchTypeBindUse.setVisibility(View.GONE);
+	   mSearchTypeUse.setVisibility(View.VISIBLE);
+	}
+	if (UIUtils.getConfigType(mContext, CONFIG_042)){
+	   mSearchTypeTf.setVisibility(View.VISIBLE);
+	   mSearchTypeJf.setVisibility(View.VISIBLE);
+	}else {
+	   mSearchTypeTf.setVisibility(View.GONE);
+	   mSearchTypeJf.setVisibility(View.GONE);
+	}
 	mSearchTypeThzc.setVisibility(View.GONE);
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -288,6 +314,10 @@ public class RunWatePagerFrag extends SimpleFragment {
 			mStatus = "3";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
+		   case R.id.search_type_binduse://患者领用
+			mStatus = "30";
+			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+			break;
 		   case R.id.search_type_info://移入
 			mStatus = "10";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
@@ -312,8 +342,12 @@ public class RunWatePagerFrag extends SimpleFragment {
 			mStatus = "12";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
-		   case R.id.search_type_yjf://已计费
-			mStatus = "5";
+		   case R.id.search_type_jf://计费请求
+			mStatus = "31";
+			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+			break;
+		   case R.id.search_type_tf://退费请求
+			mStatus = "32";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		}

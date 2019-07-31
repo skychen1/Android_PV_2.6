@@ -62,6 +62,10 @@ public class Constants {
     public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
     public static final String CONFIG_026 = "026";//启用未确认耗材
     public static final String CONFIG_031 = "031";//启用人脸识别登录
+    public static final String CONFIG_042 = "042";//启用是否领用即发起计费请求
+    public static final String CONFIG_043 = "043";//启用非x位的epc过滤
+    public static final String CONFIG_044 = "044";//启用前x位epc为y的过滤
+    public static final String CONFIG_045 = "045";//启用后x位epc为y的过滤
 
     public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
     public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水
