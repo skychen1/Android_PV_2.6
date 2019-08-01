@@ -281,7 +281,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	//	Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+//		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
 		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
@@ -294,7 +295,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			vo.setStatus(mOperationType + "");
 		   }
 		   if (mOperationType == 4 && vo.isDateNetType()) {
-
 			vo.setOperationStatus(3);
 		   }
 		} else {
@@ -307,7 +307,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   setNotifyData();
 	   setTimeStart();
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   mObs.getScanEpc(event.deviceId, event.epc);
+	   if (event.epc==null||event.epc.equals("0")){
+		setTitleRightNum();
+		setNotifyData();
+		setTimeStart();
+	   }else {
+		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
 	}
    }
 
@@ -420,7 +426,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
-
+	EventBusUtils.postSticky(new Event.EventLoading(true));
 	if (mStarts == null && !mOnBtnGone) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();

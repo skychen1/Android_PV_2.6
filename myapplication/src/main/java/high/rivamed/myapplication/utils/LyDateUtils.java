@@ -21,6 +21,7 @@ import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
+import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -51,7 +52,8 @@ public class LyDateUtils {
    public static boolean getVosType(List<InventoryVo> vos, String epc) {
 	if (vos != null) {
 	   for (int i = 0; i < vos.size(); i++) {
-		if (vos.get(i).getEpc().equals(epc)) {
+
+		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
 		   return true;
 		}
 	   }
@@ -165,11 +167,11 @@ public class LyDateUtils {
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
-		int i = ReaderManager.getManager().startScan(device_id, 10000);
+		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
 		Log.i("SelSelfff", "i   " + i);
 		if (i == 2) {
 		   ReaderManager.getManager().stopScan(device_id);
-		   ReaderManager.getManager().startScan(device_id, 10000);
+		   ReaderManager.getManager().startScan(device_id, READER_TIME);
 		}
 		setAllBoxVosDate(mBoxInventoryVos, box_id);
 		if (mObs != null) {

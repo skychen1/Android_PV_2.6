@@ -257,7 +257,6 @@ public class AllDeviceCallBack {
 		}
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0 &&
 		    !mTimelyOnResume) {//强开
-		   Log.e("FAFAS", "result1   " + result.size());
 		   EventBusUtils.post(new Event.EventStrongOpenDeviceCallBack(deviceId, epcs));
 		} else {
 
@@ -266,6 +265,9 @@ public class AllDeviceCallBack {
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
 		} else {
 		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		}
+		if (result==null||result.size()==0){
+		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, "0"));
 		}
 	   }
 

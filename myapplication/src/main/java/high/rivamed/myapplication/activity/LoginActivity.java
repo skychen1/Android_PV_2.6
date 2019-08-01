@@ -52,6 +52,8 @@ import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.TimerService;
+import high.rivamed.myapplication.utils.DialogUtils;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -59,6 +61,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
+import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -130,10 +133,28 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   public static int mConfigType;
-   private boolean mOnStart = false;
-	private LoginFaceFragment faceFragment;
-
+   public static int             mConfigType;
+   private boolean               mOnStart = false;
+   private LoginFaceFragment  faceFragment;
+   private LoadingDialog.Builder mLoading;
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoading event) {
+	if (event.loading) {
+	   if (mLoading == null) {
+		mLoading = DialogUtils.showLoading(mContext);
+	   } else {
+		if (!mLoading.mDialog.isShowing()) {
+		   mLoading.create().show();
+		}
+	   }
+	} else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
+	}
+   }
 	/**
     * ic卡和指纹仪登陆回调
     *
@@ -142,8 +163,10 @@ public class LoginActivity extends SimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventICFinger(Event.EventICAndFinger event) {
 	if (event.type == 1) {
+	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date);
 	} else if (event.type == 2) {
+	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date.trim().replaceAll("\n", ""));
 	}
    }
@@ -531,6 +554,7 @@ public class LoginActivity extends SimpleActivity {
 	} else {
 	   ToastUtils.showShortToast("登录失败，暂无登录信息！");
 	}
+	EventBusUtils.postSticky(new Event.EventLoading(false));
    }
 
    private void validateLoginIdCard(String idCard) {
@@ -547,6 +571,11 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
 
@@ -567,6 +596,10 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
+	   }
+	   @Override
+	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
 	   }
 	});
 

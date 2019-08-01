@@ -26,6 +26,7 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.VersionBean;
@@ -226,9 +227,11 @@ public class LoginUtils {
                     callback.onMenu(false);
                 Toast.makeText(UIUtils.getContext(), loginResultBean.getMsg(), Toast.LENGTH_SHORT)
                         .show();
+                EventBusUtils.postSticky(new Event.EventLoading(false));
             }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
+            EventBusUtils.postSticky(new Event.EventLoading(false));
         }
     }
 
@@ -263,6 +266,7 @@ public class LoginUtils {
                 callback.onMenu(false);
             Toast.makeText(UIUtils.getContext(), "此账号未配置权限，请联系管理员", Toast.LENGTH_SHORT).show();
         }
+        EventBusUtils.postSticky(new Event.EventLoading(false));
     }
 
 
@@ -283,6 +287,7 @@ public class LoginUtils {
 
             @Override
             public void onError(String result) {
+                EventBusUtils.postSticky(new Event.EventLoading(false));
                 if (callback != null)
                     callback.onMenu(false);
             }
