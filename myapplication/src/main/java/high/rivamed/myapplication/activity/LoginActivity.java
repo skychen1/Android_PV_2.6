@@ -175,8 +175,10 @@ public class LoginActivity extends SimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventICFinger(Event.EventICAndFinger event) {
 	if (event.type == 1) {
+	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date);
 	} else if (event.type == 2) {
+	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date.trim().replaceAll("\n", ""));
 	}
    }
