@@ -463,14 +463,12 @@ public class LoginActivity extends SimpleActivity {
    public void getConfigDate(int configType, String loginType) {
 
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-
 	   if (mTitleConn) {
 		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "result   " + result);
 			SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
-
 			setConfigBean(result, configType, loginType);
 		   }
 
@@ -607,7 +605,6 @@ public class LoginActivity extends SimpleActivity {
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-
 		LogUtils.i(TAG, "validateLoginIdCard  result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
 	   }

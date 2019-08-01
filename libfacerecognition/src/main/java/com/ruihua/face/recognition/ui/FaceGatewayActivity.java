@@ -17,7 +17,6 @@ import com.ruihua.face.recognition.R;
 import com.ruihua.face.recognition.callback.InitListener;
 import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.entity.User;
-import com.ruihua.face.recognition.manager.FaceSDKManager;
 import com.ruihua.face.recognition.utils.FileUitls;
 import com.ruihua.face.recognition.utils.LogUtils;
 
@@ -56,6 +55,7 @@ public class FaceGatewayActivity extends AppCompatActivity implements View.OnCli
         identifyFaceBtn = (Button) findViewById(R.id.identify_face_btn);
         groupFaceBtn = (Button) findViewById(R.id.group_face_btn);
         file_register_face_btn = (Button) findViewById(R.id.file_register_face_btn);
+        registerFaceBtn.setVisibility(View.GONE);
         settingBtn.setOnClickListener(this);
         registerFaceBtn.setOnClickListener(this);
         identifyFaceBtn.setOnClickListener(this);

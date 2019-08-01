@@ -163,6 +163,7 @@ public class SelectExceptionOperatorDialog extends Dialog {
 		public void onRefresh(RefreshLayout refreshLayout) {
 		   //刷新
 		   PAGE = 1;
+		   mRowsOperators.clear();
 		   loadData();
 		}
 	   });
@@ -205,6 +206,7 @@ public class SelectExceptionOperatorDialog extends Dialog {
 		   adapter.notifyDataSetChanged();
 		}
 	   });
+	   finishLoading();
 	}
 
 	/**

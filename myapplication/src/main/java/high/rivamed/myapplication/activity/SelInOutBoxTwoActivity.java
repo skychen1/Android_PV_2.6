@@ -259,7 +259,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mStarts.start();
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
 	   if (mLoading == null) {
@@ -284,6 +284,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
+	EventBusUtils.postSticky(new Event.EventLoading(false));
+
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
 		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
@@ -311,7 +313,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   setNotifyData();
 	   setTimeStart();
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   mObs.getScanEpc(event.deviceId, event.epc);
+	   if (event.epc==null||event.epc.equals("0")){
+		setTitleRightNum();
+		setNotifyData();
+		setTimeStart();
+	   }else {
+		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
 	}
    }
 
@@ -329,8 +337,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
 	EventBusUtils.post(new Event.EventLoading(true));
+
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
@@ -462,7 +470,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    }
 
    private void setTitleRightNum() {
-	EventBusUtils.post(new Event.EventLoading(false));
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mBoxInventoryVos) {
 	   if (vosBean.getCstId() != null) {
@@ -969,11 +976,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    @Override
    protected void onResume() {
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+
 	mResume = true;
 	super.onResume();
    }

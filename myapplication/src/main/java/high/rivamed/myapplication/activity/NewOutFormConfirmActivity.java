@@ -626,7 +626,13 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   setNotifyData();
 	   EventBusUtils.post(new Event.EventButton(true,true));
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   mObs.getScanEpc(event.deviceId, event.epc);
+	   if (event.epc==null||event.epc.equals("0")){
+		setTitleRightNum();
+		setNotifyData();
+		EventBusUtils.post(new Event.EventButton(true,true));
+	   }else {
+		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
 	}
    }
 
