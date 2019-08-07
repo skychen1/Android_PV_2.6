@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -315,5 +316,29 @@ public class StringUtils {
 	   }
 	}
 	return string;
+   }
+   //模糊查询
+   public List likeString(String likename,List<InventoryVo> list){
+	for(int i=0;i<list.size();i++){
+	   if(((list.get(i))).getCstName().indexOf(likename)<=-1)
+		list.remove(i);
+	}
+	return list;
+
+   }
+   public static List<InventoryVo>  search(String name,String cstId,List<InventoryVo> list) {
+	List<InventoryVo> results = new ArrayList();
+	Pattern pattern = Pattern.compile(name);
+	Pattern pattern3 = Pattern.compile(name,Pattern.CASE_INSENSITIVE);
+	Pattern pattern2 = Pattern.compile(cstId,Pattern.CASE_INSENSITIVE);
+	for(int i=0; i < list.size(); i++){
+	   Matcher matcher = pattern.matcher(list.get(i).getCstName());
+	   Matcher matcher2 = pattern2.matcher(list.get(i).getCstSpec());
+	   Matcher matcher4 = pattern3.matcher(Pinyin4jUtil.getFirstSpell(list.get(i).getCstName()));
+	   if(matcher4.lookingAt()||matcher.find()||matcher2.find()){
+		results.add(list.get(i));
+	   }
+	}
+	return results;
    }
 }

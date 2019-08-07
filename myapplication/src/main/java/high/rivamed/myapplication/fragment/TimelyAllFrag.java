@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
+import static high.rivamed.myapplication.utils.StringUtils.search;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -299,6 +302,41 @@ public class TimelyAllFrag extends SimpleFragment {
 	}
 	mTimelyOnResume = true;
 	super.onResume();
+
+	mSearchEt.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+	      if (mInventoryVos==null||mInventoryVos.size()==0){
+	         ToastUtils.showShortToast("暂无数据！请盘点后进行搜索");
+		}else {
+		   String trim = charSequence.toString().trim();
+
+		   getSearchData(trim);
+
+		}
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable editable) {
+
+	   }
+	});
+   }
+
+   /**
+    * 获取搜索的数据集
+    * @param trim
+    */
+   private void getSearchData(String trim)  {
+	List<InventoryVo> search = search(trim, trim, mInventoryVos);
+	mTimelyAllAdapter.getData().clear();
+	mTimelyAllAdapter.getData().addAll(search);
+	mTimelyAllAdapter.notifyDataSetChanged();
    }
 
    private void initDateAll() {
@@ -335,7 +373,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mTimelyReality.setText(
 		   Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + epcSize + "</big>&emsp</font>"));
 	}
-
 	mTimelyBook.setText(
 		Html.fromHtml("账面库存数：<font color='#262626'><big>" + count + "</big>&emsp</font>"));
 	if (reduce == 0) {
@@ -348,6 +385,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	} else {
 	   mTimelyProfit.setText(Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + add + "</font>"));
 	}
+
 	if (mTimelyAllAdapter == null) {
 	   mTimelyAllAdapter = new TimelyAllAdapter(mLayout, mInventoryVos);
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -646,7 +684,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			mInventoryVos = mCstInventoryDto.getInventoryVos();
 			mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
 			int number = 0;
-			for (high.rivamed.myapplication.dto.vo.InventoryVo InventoryVo : mInventoryVos) {
+			for (InventoryVo InventoryVo : mInventoryVos) {
 			   number += InventoryVo.getCountStock();
 			}
 			int Reduce = 0;

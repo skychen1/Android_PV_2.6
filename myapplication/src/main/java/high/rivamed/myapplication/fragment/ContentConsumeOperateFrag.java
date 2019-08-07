@@ -89,6 +89,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
@@ -477,6 +478,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	   mTbaseDevices.addAll(mGson.fromJson(strings,
 							   new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	}
+	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
+	if (mTbaseDevices.size()==1&&!UIUtils.getConfigType(mContext, CONFIG_016)&&!UIUtils.getConfigType(mContext, CONFIG_010)&&getMenuOnlyType(mContext, DOWN_MENU_LYTH)){
+	   doSelectOption(0, R.id.content_rb_lyth);
 	}
 	onSucceedDate();
    }

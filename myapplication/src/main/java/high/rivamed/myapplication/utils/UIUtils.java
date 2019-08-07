@@ -333,7 +333,7 @@ public class UIUtils {
 	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
 	List<ChildrenBean> fromJson = gson.fromJson(string,
 								  new TypeToken<List<ChildrenBean>>() {}.getType());
-	if (fromJson != null && fromJson.size() > 0) {
+	if (fromJson != null && fromJson.size() == 1) {
 	   for (ChildrenBean mType : fromJson) {
 		if (title.equals(mType.getTitle())) {
 		   return true;
