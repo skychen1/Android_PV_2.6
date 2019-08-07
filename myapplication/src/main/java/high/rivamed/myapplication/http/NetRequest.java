@@ -327,7 +327,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_STOCKUNCON_RIGHT;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
-	map.put("deviceCode", deviceCode);
+	map.put("deviceId", deviceCode);
 	map.put("nameOrSpecQueryCon", mTrim);
 	GetTokenRequest(urls, map, tag, netResult);
    }

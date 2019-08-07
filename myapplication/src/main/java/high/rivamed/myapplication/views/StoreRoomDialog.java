@@ -223,6 +223,7 @@ public class StoreRoomDialog extends Dialog {
 		   if (UIUtils.isFastDoubleClick(R.id.dialog_sure)) {
 			return;
 		   } else {
+			LogUtils.i("OutBoxFoutActivity", "mRigthtmName  " + mName + "   mCode " + mCode);
 			if (mType == 1) {
 			   EventBusUtils.post(new Event.outBoxEvent("x", mCode, dialog, mIntentType));
 			} else if (mType == 2) {

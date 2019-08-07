@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.gridviewAdapter;
 import high.rivamed.myapplication.bean.DialogBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -166,13 +164,8 @@ public class OutBoxConnectDialog extends Dialog {
             sGridView.setOnItemClickListener((parent, view, position, id) -> {
                 sAdapter.setSelected(position);
                 sAdapter.notifyDataSetChanged();
-                TextView textView = view.findViewById(R.id.tag);
-                TextView goneText = view.findViewById(R.id.gone_tag);
-                mName = textView.getText().toString();
-                mCode = goneText.getText().toString();
-                LogUtils.i("OutBoxFoutActivity", "mName  " + mName + "   mCode " + mCode);
-                //异常处理-出柜关联
-                EventBusUtils.post(new Event.outBoxEvent("105", mCode, dialog, hasNext?1:0));
+                mName = list.get(position).getName();
+                mCode = list.get(position).getCode();
             });
             if (mLeftTextColor != -1) {
                 mRigtht.setTextColor(mRightTextColor);
@@ -188,7 +181,7 @@ public class OutBoxConnectDialog extends Dialog {
                 //有下一步：点击列表项进行选择后，点击下一步，显示绑定患者操作
                 //无下一步：点击列表项进行选择后，对话框消失；
                 //          或者不点列表项直接点确定（默认选中第一项），对话框消失
-                if (hasNext){
+                if (hasNext&&mCode.equals("0")){
                     EventBusUtils.post(new Event.outBoxEvent("106", mCode, dialog, 0));
                 }else {
                     EventBusUtils.post(new Event.outBoxEvent("105", mCode, dialog, hasNext?1:0));

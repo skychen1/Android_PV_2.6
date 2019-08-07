@@ -465,8 +465,11 @@ public class LoginActivity extends SimpleActivity {
     */
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+	if (configBean==null){
+	   return;
+	}
 	List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-	//	if (tCstConfigVos!=null&&tCstConfigVos.size() != 0) {
+//		if (tCstConfigVos!=null) {
 	//	getUpDateVer(tCstConfigVos, configType, loginType);
 	LoginUtils.getUpDateVer(this, tCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
@@ -482,7 +485,8 @@ public class LoginActivity extends SimpleActivity {
 	//有人脸识别或紧急登录时，可滑动
 	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
 
-	//	} else {
+//		}
+		   //	else {
 	//	   ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 	//	}
    }

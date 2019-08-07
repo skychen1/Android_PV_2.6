@@ -181,7 +181,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mSearchEt.setHint("请输入耗材名称、操作人、EPC查询");
 	mStartTime=null;
 	mEndTime=null;
-	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+//	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode);
 
 	String[] array = mContext.getResources().getStringArray(R.array.eight_runwate_arrays);

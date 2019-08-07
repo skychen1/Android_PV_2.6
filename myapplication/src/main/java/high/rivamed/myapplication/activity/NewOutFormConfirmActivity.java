@@ -546,7 +546,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		.sureReceiveOrder(mGson.toJson(mBillOrderResultBean), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			mDownBtnOne.setEnabled(true);
+
 			LogUtils.i(TAG, "getBillStockByEpc2s   " + result);
 			SureReciveOrder sureReciveOrder = mGson.fromJson(result, SureReciveOrder.class);
 			SPUtils.putString(mContext, SAVE_RECEIVE_ORDERID, mPrePageDate.getOrderId());
@@ -565,6 +565,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			   UnNetCstUtils.putUnNetOperateYes( NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 
 			} else {
+			   mDownBtnOne.setEnabled(true);
 			   ToastUtils.showShort(sureReciveOrder.getMsg());
 			}
 			new Thread(new Runnable() {

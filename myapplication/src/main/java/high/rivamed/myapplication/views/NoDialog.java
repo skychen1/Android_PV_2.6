@@ -2,7 +2,6 @@ package high.rivamed.myapplication.views;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -105,7 +104,7 @@ public class NoDialog extends Dialog {
 	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
 	   mDialog = new NoDialog(mContext, R.style.Dialog);
-	   mDialog.setCancelable(true);
+//	   mDialog.setCancelable(true);
 	   View layout = inflater.inflate(R.layout.dialog_no_layout, null);
 	   mDialog.addContentView(layout,
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -131,20 +130,13 @@ public class NoDialog extends Dialog {
 	   }
 
 	   mDialogMsg.setText(mMsgText);
-
-
 	   mCloss.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   mLeftBtn.onClick(mDialog, DialogInterface.BUTTON_NEGATIVE);
+		   mDialog.dismiss();
 		}
 	   });
-	   mDialog.setOnDismissListener(new OnDismissListener() {
-		@Override
-		public void onDismiss(DialogInterface dialog) {
 
-		}
-	   });
 	   return mDialog;
 	}
 

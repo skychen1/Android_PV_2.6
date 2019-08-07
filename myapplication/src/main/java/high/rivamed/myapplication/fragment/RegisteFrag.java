@@ -418,7 +418,7 @@ public class RegisteFrag extends SimpleFragment {
    }
 
    //已有数据的时候   给激活之前添加界面数据
-   private void setRegiestDate(String string) {
+   private void  setRegiestDate(String string) {
 	mDeviceVos.clear();
 	ThingDto returnBean = mGson.fromJson(string, ThingDto.class);
 	List<ThingDto.DeviceVosBean> tBaseDeviceVos = returnBean.getDeviceVos();

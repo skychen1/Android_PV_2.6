@@ -173,6 +173,10 @@ public class LyDateUtils {
 		   ReaderManager.getManager().stopScan(device_id);
 		   ReaderManager.getManager().startScan(device_id, READER_TIME);
 		}
+		if (i == 1) {
+		   ReaderManager.getManager().restDevice(device_id);
+		   ReaderManager.getManager().startScan(device_id, READER_TIME);
+		}
 		setAllBoxVosDate(mBoxInventoryVos, box_id);
 		if (mObs != null) {
 		   mObs.removeVos();

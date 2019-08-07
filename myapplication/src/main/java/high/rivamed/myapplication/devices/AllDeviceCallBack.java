@@ -221,6 +221,7 @@ public class AllDeviceCallBack {
 	String device_id = deviceBean.getDevice_id();
 	int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
 	if (i == 1) {
+	   ReaderManager.getManager().restDevice(device_id);
 	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	   ReaderManager.getManager().startScan(device_id, READER_TIME);
 	}
