@@ -40,6 +40,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
@@ -76,8 +77,9 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    private int PAGE = 1;
    private int SIZE = 20;
    private String mTrim;
-   private List<TakeNotesBean.RowsBean> mRows=new ArrayList<>();
-
+   private List<TakeNotesBean.RowsBean> mRows;
+   private boolean                            hasNextPage;//分页：是否有下一页
+   private static final int loadTime    = 200;//上下拉加载时间
    public static ContentTakeNotesFrag newInstance() {
 	Bundle args = new Bundle();
 	ContentTakeNotesFrag fragment = new ContentTakeNotesFrag();
@@ -90,7 +92,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onStartFrag(Event.EventFrag event) {
       LogUtils.i(TAG,event.type);
 	if (event.type.equals("START5")) {
@@ -148,7 +150,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		titeleList.get(6));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
-
+	setDate();
 	loadDate("");
 
    }
@@ -163,7 +165,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		mTrim = charSequence.toString().trim();
 		PAGE = 1;
-		mRows.clear();
 		loadDate(mTrim);
 	   }
 
@@ -176,22 +177,29 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
-		mRefreshLayout.setNoMoreData(false);
+		//刷新
 		PAGE = 1;
-		mRows.clear();
 		loadDate(mTrim);
-		mRefreshLayout.finishRefresh();
 	   }
 	});
 
 	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
-		PAGE++;
-		loadMoreDate(mTrim);
-		mRefreshLayout.finishLoadMore();
+		//加载下一页
+		if (hasNextPage) {
+		   PAGE++;
+		   loadDate(mTrim);
+		} else {
+		   finishLoading();
+		   ToastUtils.showShort("暂无更多数据");
+		}
 	   }
 	});
+   }
+   private void finishLoading() {
+	mRefreshLayout.finishLoadMore(loadTime);
+	mRefreshLayout.finishRefresh(loadTime);
    }
 
    private void loadMoreDate(String trim) {
@@ -213,19 +221,21 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     * @param string
     */
    private void loadDate(String string) {
-
+	if (PAGE==1){
+	   mRows.clear();
+	}
 	NetRequest.getInstance().getFindPatientDate(string,PAGE,SIZE,_mActivity,new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
-		LogUtils.i(TAG,"result   "+result);
-		mRows.clear();
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
 		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
 		mRows.addAll(rows);
-		setDate();
+		hasNextPage = (rows.size() > SIZE - 1);
+		mNotesAdapter.notifyDataSetChanged();
 	   }
 	});
-
+	mNotesAdapter.notifyDataSetChanged();
+	finishLoading();
    }
 
    /**
@@ -235,6 +245,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	if (mNotesAdapter!=null){
 	   mNotesAdapter.notifyDataSetChanged();
 	}else {
+	   mRows=new ArrayList<>();
 	   mNotesAdapter = new TakeNotesAdapter(mLayout, mRows);
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
@@ -247,10 +258,14 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mNotesAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		String patientId = mRows.get(position).getPatientId();
-		int status = 3;
-		EventBusUtils.postSticky(new Event.EventPatientId(patientId,status));
-		mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
+	      if (mRows==null||null==mRows.get(position)||null==mRows.get(position).getPatientId()){
+		   ToastUtils.showShortToast("数据异常");
+		}else {
+		   String patientId = mRows.get(position).getPatientId();
+		   int status = 3;
+		   EventBusUtils.postSticky(new Event.EventPatientId(patientId,status));
+		   mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
+		}
 	   }
 	});
    }

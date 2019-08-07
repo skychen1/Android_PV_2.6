@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
-import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
@@ -106,12 +104,12 @@ public class ContentExceptionDealFrag extends BaseSimpleFragment {
                 case 0:
                     CURRENT_TAB=STYPE_EXCEPTION_LEFT;
                     mRgGroup3.check(R.id.excp_rdbtn_left);
-                    EventBusUtils.postSticky(new Event.EventFrag("START6"));
+//                    EventBusUtils.post(new Event.EventFrag("START7"));
                     break;
                 case 1:
                     CURRENT_TAB=STYPE_EXCEPTION_RIGHT;
                     mRgGroup3.check(R.id.excp_rdbtn_right);
-                    EventBusUtils.postSticky(new Event.EventFrag("START6"));
+//                    EventBusUtils.post(new Event.EventFrag("START8"));
                     break;
             }
         }

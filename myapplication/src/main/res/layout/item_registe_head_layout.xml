@@ -19,19 +19,28 @@
 			android:layout_height="wrap_content"/>
 		<EditText
 			android:id="@+id/head_left_name"
-			android:layout_width="@dimen/x400"
+			android:layout_width="@dimen/x300"
 			android:layout_height="wrap_content"
 			android:layout_centerVertical="true"
 			android:layout_gravity="center_vertical"
 			android:background="@color/bg_green"
 			android:maxLength="5"
-			android:hint="请输入柜体名称"
+			android:text="高值柜"
 			android:maxLines="1" android:singleLine="true"
 			android:paddingLeft="@dimen/x20"
 			android:textColor="@color/bg_f"
 			android:textColorHint="@color/bg_f"
 			android:textSize="@dimen/textsize_18"/>
-
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@+id/head_left_name"
+			android:textColor="@color/bg_f"
+			android:textColorHint="@color/bg_f"
+			android:textSize="@dimen/textsize_18"
+			android:layout_centerVertical="true"
+			android:layout_gravity="center_vertical"
+			android:hint="（左侧请输入柜体名称）"/>
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"

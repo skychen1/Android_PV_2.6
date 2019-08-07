@@ -716,6 +716,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     * @param mIntentType
     */
    private void loadBingFistDate(int mIntentType) {
+	mTimelyLeft.setEnabled(false);
+	mTimelyRight.setEnabled(false);
+	if (mStarts != null) {
+	   mStarts.cancel();
+	   mTimelyRight.setText("确认并退出登录");
+	}
 	InventoryDto dto = new InventoryDto();
 	dto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
@@ -739,6 +745,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
 			UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 			finish();
+		   }else {
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
 		   }
 		}
 	   });
@@ -786,6 +795,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
 		}
 	   }
 
@@ -824,6 +836,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 
 		   finish();
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
 		}
 	   }
 
@@ -877,6 +892,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   } else {
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	   }
+	   mTimelyLeft.setEnabled(true);
+	   mTimelyRight.setEnabled(true);
 	   finish();
 	}
    }

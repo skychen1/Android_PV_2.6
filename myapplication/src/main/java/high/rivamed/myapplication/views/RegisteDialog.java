@@ -29,6 +29,8 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.mDm;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -49,17 +51,20 @@ public class RegisteDialog extends Dialog {
 
    @Override
    public void show() {
-	super.show();
+
 	WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
 
 	layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-	layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+	layoutParams.height = mDm.heightPixels;
 	int left = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x530);
-	int top = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x200);
+	int top = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.y200);
 	int right = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x530);
-	int bottom = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x200);
-	getWindow().getDecorView().setPadding(left, top, right, bottom);
+//	int bottom = UIUtils.getContext().getResources().getDimensionPixelSize(R.dimen.x200);
+//	layoutParams.gravity = Gravity.c
+	getWindow().getDecorView().setPadding(left, top, right, 0);
+//	getWindow().getDecorView().setc(left, top, right, bottom);
 	getWindow().setAttributes(layoutParams);
+	super.show();
    }
 
    public static class Builder {

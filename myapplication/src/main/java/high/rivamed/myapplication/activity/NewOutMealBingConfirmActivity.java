@@ -510,6 +510,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		break;
 	   case R.id.activity_btn_one:
 		if (!UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
+		   mDownBtnOne.setEnabled(false);
 		   setRemoveRunnable();
 		   useOrderCst();
 		}
@@ -731,6 +732,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mUseCstOrderRequest.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	if (mUseCstOrderRequest.getInventoryVos().size() == 0) {
 	   ToastUtils.showShort("无耗材，无法领用");
+	   mDownBtnOne.setEnabled(true);
 	   return;
 	}
 	stopScan();
@@ -751,8 +753,14 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			   UnNetCstUtils.putUnNetOperateYes(NewOutMealBingConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 			   finish();
 			} else {
+			   mDownBtnOne.setEnabled(true);
 			   ToastUtils.showShort(info.getMsg());
 			}
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			mDownBtnOne.setEnabled(true);
 		   }
 		});
    }

@@ -158,6 +158,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mRbKey = getIntent().getIntExtra("mRbKey", -2);
 	mType = getIntent().getStringExtra("type");
 	mGoneType = getIntent().getStringExtra("GoneType");
+
 	if ((null != mType && mType.equals(TEMP_AFTERBIND)) || mException) {
 	   mBaseTabOutLogin.setEnabled(false);
 	   mBaseTabIconRight.setEnabled(false);
@@ -176,7 +177,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mDownBtnOneLL.setVisibility(View.GONE);
 	}
 	//无临时患者
-	if (mGoneType == null || mGoneType.equals("GONE")) {
+	if (mGoneType == null || mGoneType.equals("GONE")||mException) {
 	   mLyCreatTemporaryBtn.setVisibility(View.GONE);
 	} else {
 	   mLyCreatTemporaryBtn.setVisibility(View.VISIBLE);
@@ -482,6 +483,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			JSONObject jsonObject = JSON.parseObject(result);
 			if (null == jsonObject.getString("opFlg") ||
 			    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
+			   Log.i("FATRE","ERROR_200");
 			   EventBusUtils.post(new Event.EventExceptionDialog(true));
 			}else {
 			   EventBusUtils.post(new Event.EventExceptionDialog(false));

@@ -150,24 +150,23 @@ public class LoginActivity extends SimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
-	   if (event.loading) {
-		if (mLoading == null) {
-		   mLoading = DialogUtils.showLoading(mContext);
-		} else {
-		   if (!mLoading.mDialog.isShowing()) {
-			mLoading.create().show();
-		   }
-		}
+	if (event.loading) {
+	   if (mLoading == null) {
+		mLoading = DialogUtils.showLoading(mContext);
 	   } else {
-		if (mLoading != null) {
-		   mLoading.mAnimationDrawable.stop();
-		   mLoading.mDialog.dismiss();
-		   mLoading = null;
+		if (!mLoading.mDialog.isShowing()) {
+		   mLoading.create().show();
 		}
 	   }
+	} else {
+	   if (mLoading != null) {
+		mLoading.mAnimationDrawable.stop();
+		mLoading.mDialog.dismiss();
+		mLoading = null;
+	   }
+	}
    }
-
-   /**
+	/**
     * ic卡和指纹仪登陆回调
     *
     * @param event
@@ -248,12 +247,6 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
 	Log.i("fffa", "xxxxx   " + UIUtils.isServiceRunning(this,
 									    "high.rivamed.myapplication.service.ScanService"));
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
@@ -499,6 +492,9 @@ public class LoginActivity extends SimpleActivity {
     */
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
+	if (configBean==null){
+	   return;
+	}
 	sTCstConfigVos = configBean.getThingConfigVos();
 	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
@@ -633,7 +629,6 @@ public class LoginActivity extends SimpleActivity {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
 	   }
-
 	   @Override
 	   public void onError(String result) {
 		EventBusUtils.postSticky(new Event.EventLoading(false));

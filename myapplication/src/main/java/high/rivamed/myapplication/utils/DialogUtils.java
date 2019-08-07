@@ -251,13 +251,6 @@ public class DialogUtils {
             final Context context, String title, int mType, final String nojump, final String bing) {
         final NoDialog.Builder builder = new NoDialog.Builder(context, mType, nojump, bing);
         builder.setMsg(title);
-        builder.setLeft("", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-            }
-        });
-
         builder.create().show();
         return builder;
     }
@@ -649,6 +642,7 @@ public class DialogUtils {
         });
 
         builder.create().show();
+//        builder.create().getWindow().setGravity(Gravity.CENTER);
     }
 
     /*

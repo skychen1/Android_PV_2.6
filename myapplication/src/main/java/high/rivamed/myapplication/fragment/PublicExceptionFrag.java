@@ -140,13 +140,12 @@ public class PublicExceptionFrag extends SimpleFragment {
    private int                                curPosition;//异常处理：当前操作的数据项
    private NoDialog.Builder                   mNoDialog;
    private String mSearchTypeInt =""; //对数据进行筛选
-
    /**
     * 重新加载数据
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START6")) {
 	   PAGE = 1;
@@ -156,29 +155,25 @@ public class PublicExceptionFrag extends SimpleFragment {
 	}
    }  /**
     * 重新加载数据
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialog(Event.EventExceptionDialog event) {
+	Log.i("FATRE","event.type      "+event.type);
 	if (event.type){
-	   if (mNoDialog==null){
-		mNoDialog = DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2,
-								 "noJump", "");
-	   }else {
-		mNoDialog.mDialog.dismiss();
-		mNoDialog=null;
-	   }
-
-
 	   PAGE = 1;
-	   if (showDealList != null) {
-		showDealList.clear();
-		loadDealData();
-	   }
-	   if (showRecordList != null) {
-		showRecordList.clear();
-		loadRecordData();
+	   if (mType_page.equals(STYPE_EXCEPTION_LEFT)){
+		Log.i("FATRE","已完成关联");
+		mNoDialog = DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2, "noJump", "");
+		if (showDealList != null) {
+		   showDealList.clear();
+		   loadDealData();
+		}
+	   }else {
+		if (showRecordList != null) {
+		   showRecordList.clear();
+		   loadRecordData();
+		}
 	   }
 	}else {
 	   DialogUtils.showNoDialog(mContext, "关联失败，请重新操作！", 2, "noJump", "");
@@ -272,6 +267,7 @@ public class PublicExceptionFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
+	Log.i("FATRE","initDataAndEvent.type      ");
 	Bundle arguments = getArguments();
 	mType_size = arguments.getInt(TYPE_SIZE);
 	mType_page = arguments.getString(TYPE_PAGE);
@@ -773,6 +769,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	JSONObject jsonObject = JSON.parseObject(result);
 	if (null == jsonObject.getString("opFlg") ||
 	    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
+	   Log.i("FATRE","opFlg");
 	   EventBusUtils.post(new Event.EventExceptionDialog(true));
 	}else {
 	   EventBusUtils.post(new Event.EventExceptionDialog(false));
