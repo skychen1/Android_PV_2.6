@@ -534,15 +534,22 @@ public class TimelyAllFrag extends SimpleFragment {
 	   case R.id.timely_put_btn://提交盘点单
 		if (!UIUtils.isFastDoubleClick(R.id.timely_put_btn)) {
 		   if (mPutSavePadPdDto!=null){
+			mTimelyPutBtn.setEnabled(false);
 			NetRequest.getInstance().putSavePadPdDate(mGson.toJson(mPutSavePadPdDto),this,new BaseResult(){
 			   @Override
 			   public void onSucceed(String result) {
+				mTimelyPutBtn.setEnabled(true);
 				SavePadPdBean padPdBean = mGson.fromJson(result, SavePadPdBean.class);
 				if (padPdBean.isOperateSuccess()){
 				   ToastUtils.showShort("盘点单保存成功！");
 				}else {
 				   ToastUtils.showShort("盘点单保存失败，请重新操作！");
 				}
+			   }
+
+			   @Override
+			   public void onError(String result) {
+				mTimelyPutBtn.setEnabled(true);
 			   }
 			});
 		   }else {

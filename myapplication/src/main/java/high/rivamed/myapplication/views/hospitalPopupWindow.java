@@ -115,7 +115,8 @@ public class hospitalPopupWindow extends PopupWindow {
 	   int dimensionPixelSize = UIUtils.getContext()
 		   .getResources()
 		   .getDimensionPixelSize(R.dimen.y62);
-	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0] - 5, mLocation[1]+dimensionPixelSize );
+	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0] - 5, mLocation[1]+ parent.getHeight() );
+//	   showAtLocation(parent, Gravity.NO_GRAVITY, mLocation[0], mLocation[1] );
 	   //	   	   showAtLocation(parent, Gravity.NO_GRAVITY, 190,
 	   //					485);
 	} else {

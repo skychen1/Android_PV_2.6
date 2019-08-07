@@ -46,7 +46,7 @@
 				android:layout_gravity="center_vertical"
 				android:layout_toRightOf="@+id/one"
 				android:textColor="@color/text_color_58"
-				android:text="设备S/N码: "/>
+				android:text="设备序列号: "/>
 			<EditText
 				android:id="@+id/frag_registe_name_edit"
 				android:layout_width="@dimen/x550"

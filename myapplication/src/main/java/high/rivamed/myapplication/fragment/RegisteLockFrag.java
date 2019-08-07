@@ -69,7 +69,7 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	initEth002();
+	initEth002();
 //	initCallBack();
    }
 

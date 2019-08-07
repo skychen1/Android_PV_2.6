@@ -559,6 +559,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			stopScan();
 			setRemoveRunnable();
 			if (mInventoryVos != null) {
+
+			   mTimelyLeft.setEnabled(false);
+			   mTimelyRight.setEnabled(false);
+			   if (mStarts != null) {
+				mStarts.cancel();
+				mTimelyRight.setText("确认并退出登录");
+			   }
+
 			   if (mOperationType == 9) {//移出
 				setYcDate(mIntentType);
 			   } else if (mOperationType == 11) {//调拨
@@ -587,6 +595,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			setRemoveRunnable();
 			mIntentType = 2;
 			if (mInventoryVos != null) {
+			   mTimelyLeft.setEnabled(false);
+			   mTimelyRight.setEnabled(false);
+			   if (mStarts != null) {
+				mStarts.cancel();
+				mTimelyRight.setText("确认并退出登录");
+			   }
 			   putDateOutLogin(mIntentType);
 			} else {
 			   ToastUtils.showShort("数据异常");
@@ -677,6 +691,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mStarts.cancel();
 		mTimelyRight.setText("确认并退出登录");
 	   }
+
+	   @Override
+	   public void onError(String result) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
+	   }
 	});
    }
 
@@ -714,6 +734,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   getAllCstDate(this);
 			}
 			finish();
+		   }else {
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
 		   }
 		}
 
@@ -777,6 +800,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   getAllCstDate(this);
 			}
 			finish();
+		   }else {
+			mTimelyLeft.setEnabled(true);
+			mTimelyRight.setEnabled(true);
 		   }
 		}
 
@@ -832,6 +858,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	} else {
 	   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	}
+	mTimelyLeft.setEnabled(true);
+	mTimelyRight.setEnabled(true);
+
 	finish();
    }
 
@@ -964,11 +993,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
 		}
 	   }
 
 	   @Override
 	   public void onError(String result) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
 		ToastUtils.showShort("操作失败，请重试！");
 	   }
 	});
@@ -1060,11 +1094,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
 		}
 	   }
 
 	   @Override
 	   public void onError(String result) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
 		ToastUtils.showShort("操作失败，请重试！");
 	   }
 	});
@@ -1110,11 +1149,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
+		}else {
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
 		}
 	   }
 
 	   @Override
 	   public void onError(String result) {
+		mTimelyLeft.setEnabled(true);
+		mTimelyRight.setEnabled(true);
 		ToastUtils.showShort("操作失败，请重试！");
 	   }
 	});

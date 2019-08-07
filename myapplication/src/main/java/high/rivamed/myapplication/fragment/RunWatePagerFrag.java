@@ -208,7 +208,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	mStartTime=null;
 	mEndTime=null;
-	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+//	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode);
 
 	String[] array = mContext.getResources().getStringArray(R.array.nine_runwate_arrays);
