@@ -85,6 +85,29 @@ public class InventoryDto extends LitePalSupport implements Serializable {
    private List<String> unNetMoreEpcs;
    private List<String> epcs;
    private List<String> deviceIds;
+   /**
+    * pageNo : 1
+    * pageSize : 20
+    * inInventoryVos : []
+    * outInventoryVos : []
+    * inTypeCount : 0
+    * outTypeCount : 0
+    * inTotalCount : 0
+    * outTotalCount : 0
+    * errorEpcs : []
+    * notInStoreCstEpcs : []
+    * isCanRefundFee : true
+    * isRelatedCstAndStore : false
+    * cstSum : 1
+    * storageCstCountVo : [{"stockNum":2,"cstName":"麻醉咽喉镜窥视片","cstSpec":"中号"}]
+    * fuWai : false
+    */
+
+    private int pageNo;
+   private int pageSize;
+   private int inTypeCount;
+   private int cstSum;
+   private List<InventoryVo> storageCstCountVo;
 
    public List<String> getEpcs() {
       return epcs;
@@ -595,7 +618,28 @@ public class InventoryDto extends LitePalSupport implements Serializable {
         this.stopFlag = stopFlag;
     }
 
-    public static class InventorysBean {
+   public int getPageNo() { return pageNo;}
+
+   public void setPageNo(int pageNo) { this.pageNo = pageNo;}
+
+   public int getPageSize() { return pageSize;}
+
+   public void setPageSize(int pageSize) { this.pageSize = pageSize;}
+
+   public int getInTypeCount() { return inTypeCount;}
+
+   public void setInTypeCount(int inTypeCount) { this.inTypeCount = inTypeCount;}
+
+   public int getCstSum() { return cstSum;}
+
+   public void setCstSum(int cstSum) { this.cstSum = cstSum;}
+
+   public List<InventoryVo> getStorageCstCountVo() { return storageCstCountVo;}
+
+   public void setStorageCstCountVo(
+         List<InventoryVo> storageCstCountVo) { this.storageCstCountVo = storageCstCountVo;}
+
+   public static class InventorysBean {
 
         /**
          * epc : 00020820180613000014

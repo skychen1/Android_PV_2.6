@@ -39,6 +39,7 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String patientName;
    private String patientId;
    private int    size;
+   private int    stockNum;
 
    private int    isErrorOperation;
    private int    deleteCount;//移除次数 0表示从未移除过，大于1 代表移除次数 置灰
@@ -65,6 +66,14 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private boolean dateNetType;//判断是否是本地的还是(查询出来的false)
    private String barcode;
    private String noConfirmCount;
+
+   public int getStockNum() {
+	return stockNum;
+   }
+
+   public void setStockNum(int stockNum) {
+	this.stockNum = stockNum;
+   }
 
    public String getNoConfirmCount() {
 	return noConfirmCount;

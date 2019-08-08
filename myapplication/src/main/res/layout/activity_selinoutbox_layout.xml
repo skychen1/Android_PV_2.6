@@ -166,17 +166,30 @@
 					android:text="请选择患者绑定"
 					/>
 			</LinearLayout>
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/y70"
+				android:orientation="horizontal"
+				android:layout_alignParentRight="true">
+				<TextView
+					android:id="@+id/timely_inbox_list"
+					style="@style/btn_style_sel"
+				    android:layout_width="@dimen/x210"
+					android:text="查看入库统计"
+					android:visibility="gone"
+					android:layout_marginRight="@dimen/x30"
+					/>
+				<TextView
+					android:id="@+id/timely_number"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="right"
+					android:paddingTop="@dimen/x10"
+					android:text=""
+					android:textColor="@color/text_color_26"
+					android:textSize="@dimen/textsize_17" />
+			</LinearLayout>
 
-			<TextView
-				android:id="@+id/timely_number"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_alignParentRight="true"
-				android:gravity="right"
-				android:paddingTop="@dimen/x10"
-				android:text=""
-				android:textColor="@color/text_color_26"
-				android:textSize="@dimen/textsize_17" />
 
 			<TextView
 				android:id="@+id/ly_creat_temporary_btn"

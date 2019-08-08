@@ -36,6 +36,7 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
+import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -44,6 +45,7 @@ import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.BindIdCardDialog;
 import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
+import high.rivamed.myapplication.views.InBoxCountDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
@@ -780,5 +782,14 @@ public class DialogUtils {
         new SelectExceptionOperatorDialog.Builder(context)
                 .setDate(Rowslist)
                 .setOnSelectListener(listener).create().show();
+    }
+
+    /**
+     * 入库统计
+     */
+    public static InBoxCountDialog.Builder showInBoxCountDialog(Context context, InventoryDto dto) {
+        InBoxCountDialog.Builder builder = new InBoxCountDialog.Builder(context, dto);
+        builder.create().show();
+        return builder;
     }
 }

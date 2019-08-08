@@ -47,6 +47,7 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
+import high.rivamed.myapplication.views.InBoxCountDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -117,6 +118,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    SmartRefreshLayout mRefreshLayout;
    @BindView(R.id.timely_number)
    TextView           mTimelyNumber;
+   @BindView(R.id.timely_inbox_list)
+   TextView           mTimelyInboxList;
 
    public  TableTypeView mTypeView;
    List<String> titeleList = null;
@@ -133,6 +136,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private Runnable          mRunnableW;
    public int a = 0;
    private boolean mResume;
+   private InBoxCountDialog.Builder mShowInBoxCountBuilder;
 
    /**
     * 按钮的显示转换
@@ -364,6 +368,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
 		if (mTitleConn) {
 		   getDeviceDate(mDto);
+		   if (mOperationType == 2&&mShowInBoxCountBuilder!=null&&mShowInBoxCountBuilder.mDialog.isShowing()){
+			mShowInBoxCountBuilder.loadData();
+		   }
 		} else {
 		   new Thread(() -> setScanDateInBoxVo(vos)).start();
 		}
@@ -400,6 +407,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 
    private void setInBoxDate() {
+	mTimelyInboxList.setVisibility(View.GONE);
 	if (mOperationType == 8) {
 	   mBaseTabTvTitle.setText("耗材退货");
 	} else if (mOperationType == 4) {
@@ -408,6 +416,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mBaseTabTvTitle.setText("耗材领用");
 	} else if (mOperationType == 2) {
 	   mBaseTabTvTitle.setText("耗材入库");
+	   mTimelyInboxList.setVisibility(View.VISIBLE);
 	} else if (mOperationType == 9) {
 	   mBaseTabTvTitle.setText("耗材移出");
 	} else if (mOperationType == 11) {
@@ -531,7 +540,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    }
 
 
-   @OnClick({R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left, R.id.timely_right})
+   @OnClick({R.id.timely_start_btn, R.id.timely_open_door, R.id.timely_left, R.id.timely_right,R.id.timely_inbox_list})
    public void onViewClicked(View view) {
 	super.onViewClicked(view);
 	switch (view.getId()) {
@@ -627,6 +636,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		}
 		break;
+	   case R.id.timely_inbox_list://查看入库统计（入库才有）
+		if (!UIUtils.isFastDoubleClick(R.id.timely_inbox_list)) {
+		   mShowInBoxCountBuilder = DialogUtils.showInBoxCountDialog(mContext, mDto);
+		}
+	      break;
 	}
    }
 

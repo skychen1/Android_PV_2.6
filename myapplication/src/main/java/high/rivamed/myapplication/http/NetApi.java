@@ -58,6 +58,7 @@ public interface NetApi {
     String URL_OPERATE_INOUTBOX_YES = "/consumables/inventory/operateInventory";//查询后入柜出柜的确认操作     新
     String URL_OPERATE_INOUTBOX_YES_LYTH = "/consumables/inventory/operateTwoOutOrBackInventory";//查询后入柜出柜的确认操作     领用/退回新加接口确认操作
     String URL_OPERATE_DB_YES = "/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查  暂停使用
+    String URL_OPERATE_STORAGECST_COUNT = "/consumables/inventory/storageCstCount";//查入库统计的数据
 
     //快速开柜
     String URL_QUERY_ALL_YES = "/consumables/inventory/fastOperateTCstInventories";//快速开柜确认    新

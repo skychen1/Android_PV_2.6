@@ -889,6 +889,13 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_TIMELY_PUTSAVEPADPD;
 	PostTokenRequest(urls, json, tag, netResult);
    }
+   /**
+    * 入库统计
+    */
+   public void putInboxCountDate(String json , Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_OPERATE_STORAGECST_COUNT;
+	PostTokenRequest(urls, json, tag, netResult);
+   }
    private class MyCallBack extends StringCallback {
 
 	private String    url;
