@@ -60,7 +60,7 @@ public class LogcatHelper {
    private LogcatHelper(Context context) {
 	init(context);
 	mPId = android.os.Process.myPid();
-	//	LogFileUtils.reMoveLogFile(PATH_LOGCAT);
+	LogFileUtils.RemoveLogFile(PATH_LOGCAT);
    }
 
    public void start() {

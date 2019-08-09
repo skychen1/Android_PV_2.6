@@ -639,7 +639,7 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
-		   int time = Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim());
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
 		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
 		   COUNTDOWN_TIME = time;
 		   ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");

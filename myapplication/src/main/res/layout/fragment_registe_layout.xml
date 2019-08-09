@@ -319,7 +319,7 @@
 						android:layout_height="match_parent"
 						android:layout_toRightOf="@+id/text"
 						android:background="@drawable/bg_password_line_nor"
-						android:hint="20000"
+						android:hint="20"
 						android:inputType="number"
 						android:paddingLeft="@dimen/x10"
 						android:paddingRight="@dimen/x10"
@@ -333,7 +333,7 @@
 						android:layout_height="wrap_content"
 						android:layout_centerVertical="true"
 						android:layout_toRightOf="@+id/frag_registe_loginout_edit"
-						android:text="  毫秒后无操作自动退出(默认20s)"
+						android:text="  秒后无操作自动退出(默认20s)"
 						android:textColor="@color/text_color_58"
 						android:textSize="@dimen/textsize_16"/>
 
