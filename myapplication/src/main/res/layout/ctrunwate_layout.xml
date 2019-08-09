@@ -9,7 +9,7 @@
 			  android:orientation="vertical"
 	>
 
-	<com.flyco.tablayout.SlidingTabLayout
+	<net.lucode.hackware.magicindicator.MagicIndicator
 		android:id="@+id/home_runwate_rg"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/y65"
@@ -17,16 +17,7 @@
 		android:layout_marginTop="@dimen/y18"
 		android:layout_marginLeft="@dimen/x30"
 		android:layout_marginRight="@dimen/x30"
-
-		tl:tl_indicator_color="@color/bg_f"
-		tl:tl_indicator_height="@dimen/y65"
-		tl:tl_indicator_corner_radius="0dp"
-		tl:tl_indicator_style="NORMAL"
-		tl:tl_tab_padding="@dimen/x55"
-		tl:tl_textsize="@dimen/textsize_18"
-		tl:tl_textBold="SELECT"
-		tl:tl_textSelectColor="@color/text_color_0"
-		tl:tl_textUnselectColor="@color/text_color_3"/>
+/>
 
 	<LinearLayout
 		android:paddingTop="@dimen/y30"

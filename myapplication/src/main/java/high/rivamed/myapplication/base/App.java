@@ -62,7 +62,7 @@ public class App extends Application {
    public static boolean        mTitleConn      = false;
    public static boolean        mTitleMsg       = false;
    public static ServiceManager mServiceManager = null;
-   private static Context mAppContext;
+   public static Context mAppContext;
    public static DisplayMetrics mDm;
    public static synchronized App getInstance() {
 	return instance;

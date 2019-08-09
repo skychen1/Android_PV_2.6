@@ -7,8 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.flyco.tablayout.SlidingTabLayout;
-import com.flyco.tablayout.listener.OnTabSelectListener;
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.List;
 
@@ -18,6 +17,7 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_RIGHT;
 
@@ -29,11 +29,11 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_RIGHT;
  */
 public class ExceptionRecordFrag extends SimpleFragment {
     @BindView(R.id.ecpt_deal_tab)
-    SlidingTabLayout ecptDealTab;
+    MagicIndicator ecptDealTab;
 //    @BindView(R.id.tv_open_door)
 //    TextView tvOpenDoor;
     @BindView(R.id.ecpt_deal_viewpager)
-    ViewPager ecptDealViewpager;
+    ViewPager      ecptDealViewpager;
     private List<BoxSizeBean.DevicesBean> mTbaseDevices;
     public ExceptionRightPagerAdapter mPagerAdapter;
     public static int CURRENT_TAB=0;
@@ -63,23 +63,20 @@ public class ExceptionRecordFrag extends SimpleFragment {
     }
 
     private void onSucceedData() {
+        if (mTbaseDevices.size() > 1) {
+            BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
+            devicesBean1.setDeviceName("全部");
+            devicesBean1.setDeviceId("");
+            mTbaseDevices.add(0, devicesBean1);
+        }
         if (!isAdded()) return;
         mPagerAdapter = new ExceptionRightPagerAdapter(getChildFragmentManager());
         ecptDealViewpager.setAdapter(mPagerAdapter);
         ecptDealViewpager.setCurrentItem(0);
         ecptDealViewpager.setOffscreenPageLimit(6);
-        ecptDealTab.setViewPager(ecptDealViewpager);
-        ecptDealTab.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-                CURRENT_TAB=position;
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-
-            }
-        });
+//        ecptDealTab.setViewPager(ecptDealViewpager);
+        UIUtils.initPvTabLayout(mTbaseDevices, ecptDealViewpager, ecptDealTab);
+        ecptDealViewpager.addOnPageChangeListener(new PageChangeListener());
     }
 
     @Override
@@ -95,42 +92,38 @@ public class ExceptionRecordFrag extends SimpleFragment {
 
         @Override
         public Fragment getItem(int position) {
-            String deviceCode = null;
-            if (mTbaseDevices.size() > 1) {
-                if (position == 0) {
-                    deviceCode = null;
-                } else {
-                    deviceCode = mTbaseDevices.get(position - 1).getDeviceId();
-                }
-            } else {
-                deviceCode = mTbaseDevices.get(position).getDeviceId();
-            }
-            return PublicExceptionFrag.newInstance(position, STYPE_EXCEPTION_RIGHT, deviceCode);
+            return PublicExceptionFrag.newInstance(position, STYPE_EXCEPTION_RIGHT, mTbaseDevices.get(position).getDeviceId());
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            String deviceName = null;
-            if (mTbaseDevices.size() > 1) {
-                if (position == 0) {
-                    deviceName = "全部";
-                } else {
-                    deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-                }
-            } else {
-                deviceName = mTbaseDevices.get(position).getDeviceName();
-            }
-            return deviceName;
+
+            return mTbaseDevices.get(position).getDeviceName();
         }
 
         @Override
         public int getCount() {
-            if (mTbaseDevices.size() > 1) {
-                return mTbaseDevices == null ? 0 : mTbaseDevices.size() + 1;
-            } else {
-                return mTbaseDevices == null ? 0 : mTbaseDevices.size();
-            }
+            return mTbaseDevices == null ? 0 : mTbaseDevices.size();
         }
+
+
     }
 
+    private class PageChangeListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            CURRENT_TAB=position;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
 }

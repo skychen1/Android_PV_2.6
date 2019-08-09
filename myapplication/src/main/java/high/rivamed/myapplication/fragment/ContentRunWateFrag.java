@@ -14,7 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.flyco.tablayout.SlidingTabLayout;
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -52,9 +53,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 public class ContentRunWateFrag extends BaseSimpleFragment {
 
     @BindView(R.id.home_runwate_viewpager)
-    ViewPager mHomeRunWateViewpager;
+    ViewPager      mHomeRunWateViewpager;
     @BindView(R.id.home_runwate_rg)
-    SlidingTabLayout mHomeRunwateRg;
+    MagicIndicator mHomeRunwateRg;
 
     public static EditText mSearchEt;
     @BindView(R.id.search_iv_delete)
@@ -160,7 +161,8 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
                     mHomeRunWateViewpager.setAdapter(mPagerAdapter);
                     mHomeRunWateViewpager.setCurrentItem(0);
                     mHomeRunWateViewpager.setOffscreenPageLimit(6);
-                    mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
+//                  mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
+                    UIUtils.initPvTabLayout(mTbaseDevices,  mHomeRunWateViewpager, mHomeRunwateRg);
                     mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
                 }
             }

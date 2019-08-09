@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.flyco.tablayout.SlidingTabLayout;
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
@@ -38,9 +39,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 
    @BindView(R.id.cttimecheck_rg)
-   SlidingTabLayout mCttimeCheck_Rg;
+   MagicIndicator mCttimeCheck_Rg;
    @BindView(R.id.cttimecheck_viewpager)
-   ViewPager        mCttimecheckViewpager;
+   ViewPager      mCttimecheckViewpager;
    private CttimeCheckPagerAdapter            mPagerAdapter;
    public  List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
@@ -92,7 +93,8 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
 		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
 		   mCttimecheckViewpager.setCurrentItem(0);
 		   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
-		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+//		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);\
+		   UIUtils.initPvTabLayout(mTbaseDevices, mCttimecheckViewpager, mCttimeCheck_Rg);
 		}
 	   }
 	});

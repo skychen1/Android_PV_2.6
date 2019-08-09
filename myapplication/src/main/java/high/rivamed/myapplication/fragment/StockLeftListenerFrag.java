@@ -12,23 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.flyco.tablayout.SlidingTabLayout;
+
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.StockLeftAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
@@ -48,7 +52,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
 public class StockLeftListenerFrag extends SimpleFragment {
 	String TAG ="StockLeftListenerFrag";
    @BindView(R.id.cttimecheck_rg)
-   SlidingTabLayout mCttimeCheck_Rg;
+   MagicIndicator mCttimeCheck_Rg;
    @BindView(R.id.cttimecheck_viewpager)
    public ViewPager mCttimecheckViewpager;
    @BindView(R.id.stock_left_rv)
@@ -56,17 +60,19 @@ public class StockLeftListenerFrag extends SimpleFragment {
    @BindView(R.id.stock_left_alltop)
    LinearLayout mStockLeftAlltop;
    private List<Integer> mList;
-   private       int TOTAL_SIZE = 26;
-   private final int PAGE_SIZE  = 6;
-   private       int mCount     = 0;
-   public  StockMiddlePagerAdapter mPagerAdapter;
-   private List<String>            mTitles;
-   private String[]                mKeys;
-   public  int                     mStockNumber=5;//列表的列数
-   private StockLeftAdapter        mLeftAdapter;
-   private List                    mDates;
-   public  SocketLeftTopBean       mLeftTopBean;
-   private LoadingDialog.Builder   mBuilder;
+   private       int                    TOTAL_SIZE = 26;
+   private final int                    PAGE_SIZE  = 6;
+   private       int                    mCount     = 0;
+   public  StockMiddlePagerAdapter      mPagerAdapter;
+   private List<String>                 mTitles;
+   private String[]                     mKeys;
+   public  int                          mStockNumber=5;//列表的列数
+   private StockLeftAdapter             mLeftAdapter;
+   private List                         mDates;
+   public  SocketLeftTopBean            mLeftTopBean;
+   private LoadingDialog.Builder        mBuilder;
+   public List<BoxSizeBean.DevicesBean> mTbaseDevices;
+   private List<SocketLeftTopBean.CstExpirationVosBean> mCstExpirationVos;
 
    @Override
    public int getLayoutId() {
@@ -111,7 +117,16 @@ public class StockLeftListenerFrag extends SimpleFragment {
 //	mBuilder.mDialog.dismiss();
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+//	mCstExpirationVos = mLeftTopBean.getCstExpirationVos();
 	List<SocketLeftTopBean.CstExpirationVosBean> cstExpirationVos = mLeftTopBean.getCstExpirationVos();
+	mCstExpirationVos= new ArrayList<>();
+	if (cstExpirationVos.size() > 1){
+	   SocketLeftTopBean.CstExpirationVosBean vosBean = new SocketLeftTopBean.CstExpirationVosBean();
+	   vosBean.setDeviceName("全部");
+	   vosBean.setDeviceId("");
+	   mCstExpirationVos.add(0, vosBean);
+	}
+	mCstExpirationVos.addAll(cstExpirationVos);
 	mLeftAdapter = new StockLeftAdapter(R.layout.item_stock_lefttop_layout, cstExpirationVos);
 	mStockLeftRv.setLayoutManager(layoutManager);
 	mStockLeftRv.setAdapter(mLeftAdapter);
@@ -137,7 +152,9 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	   mCttimecheckViewpager.setAdapter(mPagerAdapter);
 	   mCttimecheckViewpager.setCurrentItem(0);
 	   mCttimecheckViewpager.setOffscreenPageLimit(6);
-	   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+//	   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+	UIUtils.initPvTabLayout2(mCstExpirationVos, mCttimecheckViewpager, mCttimeCheck_Rg);
+
    }
 
    @Override
@@ -154,41 +171,19 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	@Override
 	public Fragment getItem(int position) {
 
-	   String deviceCode = null;
-	   if (position == 0) {
-		deviceCode = null;
-	   } else {
-		deviceCode = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceId();
-	   }
 	   mStockLeftAlltop.setVisibility(View.VISIBLE);
-
-	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, deviceCode);
+	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, mLeftTopBean.getCstExpirationVos().get(position).getDeviceId());
 
 	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   String deviceName = null;
-
-	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
-		if (position == 0) {
-		   deviceName = "全部";
-		} else {
-		   deviceName = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceName();
-		}
-	   }else {
-		deviceName = mLeftTopBean.getCstExpirationVos().get(position).getDeviceName();
-	   }
-	   return deviceName;
+	   return mLeftTopBean.getCstExpirationVos().get(position).getDeviceName();
 	}
 
 	@Override
 	public int getCount() {
-	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
-		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size()+1 ;
-	   }else {
-		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size() ;
-	   }
+	   return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size() ;
 	}
    }
 

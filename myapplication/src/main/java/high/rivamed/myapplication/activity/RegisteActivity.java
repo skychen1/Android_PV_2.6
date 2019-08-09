@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.flyco.tablayout.SlidingTabLayout;
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,6 +25,7 @@ import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
 import high.rivamed.myapplication.fragment.RegisteReaderFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
@@ -57,7 +58,7 @@ public class RegisteActivity extends SimpleActivity {
    ImageView             mBaseTabBtnMsg;
 
    @BindView(R.id.registe_tl)
-   SlidingTabLayout mRegisteTl;
+   MagicIndicator mRegisteTl;
    public ImageView mBaseTabBtnConn;
    public static ViewPager mRegisteViewpager;
    private String[] mKeys = {"设备注册/激活", "数据恢复","Reader设置","锁/IC卡/指纹仪","人脸设置"};
@@ -109,7 +110,8 @@ public class RegisteActivity extends SimpleActivity {
 	mRegisteViewpager.setAdapter(mPagerAdapter);
 	mRegisteViewpager.setCurrentItem(0);
 	mRegisteViewpager.setOffscreenPageLimit(3);
-	mRegisteTl.setViewPager(mRegisteViewpager, mKeys);
+//	mRegisteTl.setViewPager(mRegisteViewpager, mKeys);
+	UIUtils.initPvTabLayouts(mKeys, mRegisteViewpager, mRegisteTl);
 
    }
 

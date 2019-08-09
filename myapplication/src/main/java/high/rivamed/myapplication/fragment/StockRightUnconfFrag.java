@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.flyco.tablayout.SlidingTabLayout;
+import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
@@ -38,7 +39,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
 public class StockRightUnconfFrag extends SimpleFragment {
     public int mStockNumber = 9;//列表的列数
     @BindView(R.id.cttimecheck_rg)
-    SlidingTabLayout mCttimeCheck_Rg;
+    MagicIndicator mCttimeCheck_Rg;
     @BindView(R.id.cttimecheck_viewpager)
     public ViewPager mCttimecheckViewpager;
     @BindView(R.id.stock_left_rv)
@@ -82,11 +83,17 @@ public class StockRightUnconfFrag extends SimpleFragment {
     }
 
     private void onSucceedDate() {
-
+        if (mTbaseDevices.size() > 1) {
+            BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
+            devicesBean1.setDeviceName("全部");
+            devicesBean1.setDeviceId("");
+            mTbaseDevices.add(0, devicesBean1);
+        }
         mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
         mCttimecheckViewpager.setAdapter(mPagerAdapter);
         mCttimecheckViewpager.setCurrentItem(0);
-        mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+//        mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+        UIUtils.initPvTabLayout(mTbaseDevices, mCttimecheckViewpager, mCttimeCheck_Rg);
     }
 
     @Override
@@ -102,45 +109,18 @@ public class StockRightUnconfFrag extends SimpleFragment {
 
         @Override
         public Fragment getItem(int position) {
-            String deviceCode = null;
-            if (mTbaseDevices.size() > 1) {
-                if (position == 0) {
-                    deviceCode = null;
-                } else {
-                    deviceCode = mTbaseDevices.get(position - 1).getDeviceId();
-                }
-            } else {
-                deviceCode = mTbaseDevices.get(position).getDeviceId();
-            }
-
             mStockLeftAlltop.setVisibility(View.GONE);
-            return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_RIGHT, deviceCode);
+            return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_RIGHT, mTbaseDevices.get(position).getDeviceId());
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            String deviceName = null;
-            if (mTbaseDevices.size() > 1) {
-                if (position == 0) {
-                    deviceName = "全部";
-                } else {
-                    deviceName = mTbaseDevices.get(position - 1).getDeviceName();
-                }
-            } else {
-                deviceName = mTbaseDevices.get(position).getDeviceName();
-
-            }
-            return deviceName;
+            return mTbaseDevices.get(position).getDeviceName();
         }
 
         @Override
         public int getCount() {
-            if (mTbaseDevices.size() > 1) {
-                return mTbaseDevices == null ? 0 : mTbaseDevices.size() + 1;
-            } else {
-                return mTbaseDevices == null ? 0 : mTbaseDevices.size();
-            }
-
+            return mTbaseDevices == null ? 0 : mTbaseDevices.size();
         }
     }
 }

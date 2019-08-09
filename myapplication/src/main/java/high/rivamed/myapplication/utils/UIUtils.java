@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -20,6 +22,16 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.ruihua.face.recognition.utils.ImageUtils;
+
+import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 
 import org.androidpn.utils.XmppEvent;
 
@@ -28,13 +40,16 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.App;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
+import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormDateBean;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
@@ -462,5 +477,188 @@ public class UIUtils {
 	}
       return false;
    }
+   /**
+    * 初始化耗材柜TabLayout
+    *
+    * @param mTitleDataList 标题列表
+    * @param mCttimecheckViewpager 关联Viewpager
+    * @param mMagicIndicator
+    */
+   public static void initPvTabLayout(List<BoxSizeBean.DevicesBean> mTitleDataList,ViewPager mCttimecheckViewpager, MagicIndicator mMagicIndicator) {
+	CommonNavigator mCommonNavigator = new CommonNavigator(mAppContext);
+	//        commonNavigator.setAdjustMode(true);
+	mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
 
+	   @Override
+	   public int getCount() {
+		return mTitleDataList == null ? 0 : mTitleDataList.size();
+	   }
+
+	   @Override
+	   public IPagerTitleView getTitleView(Context context, final int index) {
+		ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
+		colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
+		colorTransitionPagerTitleView.setSelectedColor(Color.BLACK);
+		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
+		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
+		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
+		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
+		   @Override
+		   public void onClick(View view) {
+			mCttimecheckViewpager.setCurrentItem(index);
+		   }
+		});
+		return colorTransitionPagerTitleView;
+	   }
+
+	   @Override
+	   public IPagerIndicator getIndicator(Context context) {
+		LinePagerIndicator indicator = new LinePagerIndicator(context);
+		//                indicator.setStartInterpolator(new AccelerateInterpolator());
+		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
+		indicator.setYOffset(ImageUtils.dip2px(context, 39));
+		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setColors(getResources().getColor(R.color.color_drak_green));
+		return indicator;
+	   }
+	});
+	setTiltleSelected(mCttimecheckViewpager, mMagicIndicator, mCommonNavigator);
+   }
+   /**
+    * 初始化耗材柜TabLayout
+    *
+    * @param mTitleDataList 标题列表
+    * @param mCttimecheckViewpager 关联Viewpager
+    * @param mMagicIndicator
+    */
+   public static void initPvTabLayout2(List<SocketLeftTopBean.CstExpirationVosBean> mTitleDataList, ViewPager mCttimecheckViewpager, MagicIndicator mMagicIndicator) {
+	CommonNavigator mCommonNavigator = new CommonNavigator(mAppContext);
+	//        commonNavigator.setAdjustMode(true);
+	mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
+
+	   @Override
+	   public int getCount() {
+		return mTitleDataList == null ? 0 : mTitleDataList.size();
+	   }
+
+	   @Override
+	   public IPagerTitleView getTitleView(Context context, final int index) {
+		ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
+		colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
+		colorTransitionPagerTitleView.setSelectedColor(Color.BLACK);
+		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
+		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
+		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
+		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
+		   @Override
+		   public void onClick(View view) {
+			mCttimecheckViewpager.setCurrentItem(index);
+		   }
+		});
+		return colorTransitionPagerTitleView;
+	   }
+
+	   @Override
+	   public IPagerIndicator getIndicator(Context context) {
+		LinePagerIndicator indicator = new LinePagerIndicator(context);
+		//                indicator.setStartInterpolator(new AccelerateInterpolator());
+		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
+		indicator.setYOffset(ImageUtils.dip2px(context, 39));
+		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setColors(getResources().getColor(R.color.color_drak_green));
+		return indicator;
+	   }
+	});
+	setTiltleSelected(mCttimecheckViewpager, mMagicIndicator, mCommonNavigator);
+   }
+   /**
+    * 初始化耗材柜TabLayout
+    *
+    * @param mTitleDataList 标题列表
+    * @param mCttimecheckViewpager 关联Viewpager
+    * @param mMagicIndicator
+    */
+   public static void initPvTabLayouts(String[] mTitleDataList,ViewPager mCttimecheckViewpager, MagicIndicator mMagicIndicator) {
+	CommonNavigator mCommonNavigator = new CommonNavigator(mAppContext);
+	//        commonNavigator.setAdjustMode(true);
+	mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
+
+	   @Override
+	   public int getCount() {
+		return mTitleDataList == null ? 0 : mTitleDataList.length;
+	   }
+
+	   @Override
+	   public IPagerTitleView getTitleView(Context context, final int index) {
+		ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
+		colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
+		colorTransitionPagerTitleView.setSelectedColor(Color.BLACK);
+		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
+		colorTransitionPagerTitleView.setText(mTitleDataList[index]);
+		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
+		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
+		   @Override
+		   public void onClick(View view) {
+			mCttimecheckViewpager.setCurrentItem(index);
+		   }
+		});
+		return colorTransitionPagerTitleView;
+	   }
+
+	   @Override
+	   public IPagerIndicator getIndicator(Context context) {
+		LinePagerIndicator indicator = new LinePagerIndicator(context);
+		//                indicator.setStartInterpolator(new AccelerateInterpolator());
+		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
+		indicator.setYOffset(ImageUtils.dip2px(context, 39));
+		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setColors(getResources().getColor(R.color.color_drak_green));
+		return indicator;
+	   }
+	});
+	setTiltleSelected(mCttimecheckViewpager, mMagicIndicator, mCommonNavigator);
+   }
+
+   private static void setTiltleSelected(
+	   ViewPager mCttimecheckViewpager, MagicIndicator mMagicIndicator,
+	   CommonNavigator mCommonNavigator) {
+	mMagicIndicator.setNavigator(mCommonNavigator);
+	//        LinearLayout titleContainer = mCommonNavigator.getTitleContainer(); // must after setNavigator
+	//        titleContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+	//        titleContainer.setDividerDrawable(getResources().getDrawable(R.drawable.bg_btn_gray_nor2));
+	ViewPagerHelper.bind(mMagicIndicator, mCttimecheckViewpager);
+	mCommonNavigator.getTitleContainer().setPadding(0, ImageUtils.dip2px(mAppContext, 2), 0, 0);
+	mCommonNavigator.getTitleContainer()
+		.getChildAt(0)
+		.setBackgroundColor(getResources().getColor(R.color.white));
+	mCttimecheckViewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+	   @Override
+	   public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+	   }
+
+	   @Override
+	   public void onPageSelected(int position) {
+		for (int i = 0; i < mCommonNavigator.getTitleContainer().getChildCount(); i++) {
+		   if (i == position) {
+			mCommonNavigator.getTitleContainer()
+				.getChildAt(i)
+				.setBackgroundColor(getResources().getColor(R.color.white));
+		   } else {
+			mCommonNavigator.getTitleContainer()
+				.getChildAt(i)
+				.setBackgroundColor(getResources().getColor(R.color.bg));
+		   }
+		}
+	   }
+
+	   @Override
+	   public void onPageScrollStateChanged(int state) {
+
+	   }
+	});
+   }
 }
