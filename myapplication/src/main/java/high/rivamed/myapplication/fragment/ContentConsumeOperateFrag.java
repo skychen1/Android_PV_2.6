@@ -737,6 +737,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
 														position)
 					.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
+					.putExtra("mRbKey", mRbKey)
 					.putExtra("GoneType", gonetype));
 		   } else {
 			ToastUtils.showShort("没有患者数据");
