@@ -66,7 +66,6 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
-import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType2;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
@@ -158,18 +157,22 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   for (InventoryVo b : mBoxInventoryVos) {
 		ArrayList<String> strings = new ArrayList<>();
 		strings.add(b.getCstCode());
+		String patientId = b.getPatientId();
+		String patientName = b.getPatientName();
+		int deleteCount = b.getDeleteCount();
+		int isErrorOperation = b.getIsErrorOperation();
 		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-		    ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-		     (b.getPatientName() == null || b.getPatientName().equals(""))) ||
+		    ((patientId == null || patientId.equals("")) ||
+		     (patientName == null || patientName.equals(""))) ||
 		    !ScanService.mDoorStatusType) {
 		   setFalseEnabled(false);
 		   setAllTextVis(ScanService.mDoorStatusType);
 		   return;
 		}
-		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+		if ((isErrorOperation == 1 && deleteCount == 0) ||
+		    (isErrorOperation == 1 && deleteCount == 0 &&
 		     b.getExpireStatus() == 0) ||
-		    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null) ||
+		    (UIUtils.getConfigType(mContext, CONFIG_007) && patientName == null) ||
 		    !ScanService.mDoorStatusType) {
 		   setFalseEnabled(false);
 		   setAllTextVis(ScanService.mDoorStatusType);
@@ -181,8 +184,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	} else {
 	   for (InventoryVo b : mBoxInventoryVos) {
-		if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && mOperationType != 8) ||
-		    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
+		int isErrorOperation = b.getIsErrorOperation();
+		int deleteCount = b.getDeleteCount();
+		if ((isErrorOperation == 1 && deleteCount == 0 && mOperationType != 8) ||
+		    (isErrorOperation == 1 && deleteCount == 0 &&
 		     b.getExpireStatus() != 0) || !ScanService.mDoorStatusType) {
 		   setFalseEnabled(false);
 		   setAllTextVis(ScanService.mDoorStatusType);
@@ -305,37 +310,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   break;
 		}
 		if (sizex < 3) {
-		   Log.i("LOGSCAN", "dfdfdfdfdaaaaaaaaaaaadfdfdfdfdf    " + getDates());
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart();
 		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
 	   }
-
-//	   Log.i("LOGSCAN","处理结束   "+getDates());
-//	   Log.i("xxf","mBoxInventoryVos  mTitleConn "+mGson.toJson(mBoxInventoryVos));
-//	   int size = mBoxInventoryVos.size();
-//	   for (int i = size; i > 0; i--) {
-//		Log.i("LOGSCAN","mBoxInventoryVos  mTitleConn      ");
-//		InventoryVo vo = mBoxInventoryVos.get(i);
-//		Log.i("LOGSCAN","mBoxInventoryVos  mTitleConn      "+mGson.toJson(vo));
-//		if (mOperationType == 9 || mOperationType == 8 ||
-//		    (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-//		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
-//			vo.setStatus(mOperationType + "");
-//		   }
-//		   if (mOperationType == 4) {
-//			vo.setOperationStatus(3);
-//		   }
-//		} else {
-//		   if (vo.isDateNetType() || !mTitleConn) {
-//			vo.setIsErrorOperation(1);
-//		   }
-//		}
-//	   }
-
-
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
 		setTitleRightNum();
@@ -347,105 +327,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	}
    }
-//   /**
-//    * EPC扫描返回数据（单个返回）
-//    * @param event
-//    */
-//   @Subscribe(threadMode = ThreadMode.MAIN)
-//   public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-//	EventBusUtils.postSticky(new Event.EventLoading(false));
-//	Log.i("LOGSCAN","获取时间   "+getDates());
-//	InventoryVo vosss = LitePal.where("epc = ?", event.epc).findFirst(InventoryVo.class);
-////	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-//	if (vosss!=null) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-//	   Log.i("LOGSCAN","开始处理   "+getDates());
-//	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
-//	   while (iterator.hasNext()){
-//		if (iterator.next().getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-//		   iterator.remove();
-//		   break;
-//		}
-//	   }
-//	   int size = mBoxInventoryVos.size();
-//	   for (int x = size - 1; x >= 0; x--) {
-//		InventoryVo vo = mBoxInventoryVos.get(x);
-//		int operationStatus = vo.getOperationStatus();
-//		int isErrorOperation = vo.getIsErrorOperation();
-//		Integer expireStatus = vo.getExpireStatus();
-//		if (mOperationType == 9 || mOperationType == 8 ||
-//		    (mOperationType == 3 && operationStatus != 98) || mOperationType == 4) {
-//		   if (isErrorOperation != 1||(isErrorOperation==1&&expireStatus==0)) {
-//			vo.setStatus(mOperationType + "");
-//		   }
-//		   if (mOperationType == 4) {
-//			vo.setOperationStatus(3);
-//		   }
-//		} else {
-//		   if (vo.isDateNetType() || !mTitleConn) {
-//			vo.setIsErrorOperation(1);
-//		   }
-//		}
-////	   }
-////	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
-////		InventoryVo vo = mBoxInventoryVos.get(i);
-////		String epc = vo.getEpc();
-////		if (epc.equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-////		   mBoxInventoryVos.remove(i);
-////		   break;
-////		}
-////		if (mOperationType == 9 || mOperationType == 8 ||
-////		    (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-////		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
-////			vo.setStatus(mOperationType + "");
-////		   }
-////		   if (mOperationType == 4) {
-////			vo.setOperationStatus(3);
-////		   }
-////		} else {
-////		   if (vo.isDateNetType() || !mTitleConn) {
-////			vo.setIsErrorOperation(1);
-////		   }
-////		}
-//
-//	   Log.i("LOGSCAN","处理结束   "+getDates());
-//
-////	   for (InventoryVo vo : mBoxInventoryVos) {
-////		if (mOperationType == 9 || mOperationType == 8 ||
-////		    (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-////		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
-////			vo.setStatus(mOperationType + "");
-////		   }
-////		   if (mOperationType == 4) {
-////			vo.setOperationStatus(3);
-////		   }
-////		} else {
-////		   if (vo.isDateNetType() || !mTitleConn) {
-////			vo.setIsErrorOperation(1);
-////		   }
-////		}
-//	   }
-//	   Log.i("xxf"," mTitleConn "+mTitleConn);
-//	   Log.i("xxf","mBoxInventoryVos  mTitleConn "+mGson.toJson(mBoxInventoryVos));
-//	   setTitleRightNum();
-//	   setNotifyData();
-//	   setTimeStart();
-//	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-//	   if (event.epc==null||event.epc.equals("0")){
-//		setTitleRightNum();
-//		setNotifyData();
-//		setTimeStart();
-//	   }else {
-//		mObs.getScanEpc(event.deviceId, event.epc);
-//	   }
-//	}
-//   }
-
 
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
-//	CEventCenter.registerEventListener(this,"getepc");
    }
 
    @Override
@@ -1354,68 +1240,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mStarts = null;
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();
-//	CEventCenter.unregisterEventListener(this,"getepc");
 	super.onDestroy();
    }
-
-//
-//   @Override
-//   public void onCEvent(String topic, int msgCode, int resultCode, Object obj) {
-//	Event.EventOneEpcDeviceCallBack event = (Event.EventOneEpcDeviceCallBack) obj;
-//	Log.i("LOGSCAN", "获取时间   " + getDates()+"           "+event.epc);
-//	if (topic.equals("getepc")) {
-////	   EventBusUtils.postSticky(new Event.EventLoading(false));
-//	   Log.i("LOGSCAN", "开始操作   " + getDates());
-////	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
-////	   while (iterator.hasNext()){
-////		if (iterator.next().getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-////		   iterator.remove();
-////		   break;
-////		}
-////	   }
-//	   if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-//		int size = mBoxInventoryVos.size();
-//		for (int i = 0; i < size; i++) {
-//
-//		   InventoryVo vo = mBoxInventoryVos.get(i);
-//		   String epc = vo.getEpc();
-//		   if (epc.equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-//			mBoxInventoryVos.remove(i);
-//			break;
-//		   }
-//		   int operationStatus = vo.getOperationStatus();
-//		   int isErrorOperation = vo.getIsErrorOperation();
-//		   Integer expireStatus = vo.getExpireStatus();
-//		   if (mOperationType == 9 || mOperationType == 8 ||
-//			 (mOperationType == 3 && operationStatus != 98) || mOperationType == 4) {
-//			if (isErrorOperation != 1||(isErrorOperation==1&&expireStatus==0)) {
-//			   vo.setStatus(mOperationType + "");
-//			}
-//			if (mOperationType == 4) {
-//			   vo.setOperationStatus(3);
-//			}
-//		   } else {
-//			if (vo.isDateNetType() || !mTitleConn) {
-//			   vo.setIsErrorOperation(1);
-//			}
-//		   }
-//		}
-//
-//		Log.i("LOGSCAN", "操作结束   " + getDates());
-//		Log.i("xxf"," mTitleConn "+mTitleConn);
-//		Log.i("xxf","mBoxInventoryVos  mTitleConn "+mGson.toJson(mBoxInventoryVos));
-//		setTitleRightNum();
-//		setNotifyData();
-//		setTimeStart();
-//	   } else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-//		if (event.epc==null||event.epc.equals("0")){
-//		   setTitleRightNum();
-//		   setNotifyData();
-//		   setTimeStart();
-//		}else {
-//		   mObs.getScanEpc(event.deviceId, event.epc);
-//		}
-//	   }
-//	}
-//   }
 }

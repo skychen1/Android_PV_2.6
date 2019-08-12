@@ -297,7 +297,7 @@
 					android:textSize="@dimen/textsize_15"
 					android:singleLine="true"
 					android:textColor="@color/text_color_58"
-					android:hint="20000"
+					android:hint="20"
 					android:background="@drawable/bg_password_line_nor"
 					/>
 				<TextView
@@ -307,7 +307,7 @@
 					android:textSize="@dimen/textsize_16"
 					android:textColor="@color/text_color_58"
 					android:layout_centerVertical="true"
-					android:text="  毫秒后无操作自动退出(默认20s)"/>
+					android:text="  秒后无操作自动退出(默认20s)"/>
 				<TextView
 					android:id="@+id/frag_registe_loginout_btn"
 					style="@style/btn_style_sel"

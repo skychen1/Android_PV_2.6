@@ -276,51 +276,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mHisPatientId = inventoryVo.getHisPatientId();
    }
 
-   //   /**
-   //    * EPC扫描返回数据（单个返回）
-   //    *
-   //    * @param event
-   //    */
-   //   @Subscribe(threadMode = ThreadMode.MAIN)
-   //   public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-   //	EventBusUtils.postSticky(new Event.EventLoading(false));
-   ////		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
-   //	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-   //	   Log.i("LOGSCAN","时间222   "+getDates());
-   //	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
-   //		String epc = mBoxInventoryVos.get(i).getEpc();
-   //		if (epc.equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-   //		   mBoxInventoryVos.remove(i);
-   //		}
-   //	   }
-   //	   for (InventoryVo vo : mBoxInventoryVos) {
-   //		if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-   //		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
-   //			vo.setStatus(mOperationType + "");
-   //		   }
-   //		   if (mOperationType == 4 && vo.isDateNetType()) {
-   //			vo.setOperationStatus(3);
-   //		   }
-   //		} else {
-   //		   if (vo.isDateNetType() || !mTitleConn) {
-   //			vo.setIsErrorOperation(1);
-   //		   }
-   //		}
-   //	   }
-   //	   setTitleRightNum();
-   //	   setNotifyData();
-   //	   setTimeStart();
-   //	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-   //	   if (event.epc==null||event.epc.equals("0")){
-   //		setTitleRightNum();
-   //		setNotifyData();
-   //		setTimeStart();
-   //	   }else {
-   //		mObs.getScanEpc(event.deviceId, event.epc);
-   //	   }
-   //	}
-   //   }
-
    /**
     * EPC扫描返回数据（单个返回）
     *
@@ -328,16 +283,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	//	EventBusUtils.postSticky(new Event.EventLoading(false));
-	//		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
-
+	Log.i("LOGSCAN", "开始----   "+event.epc );
 	if (getVosType3(mBoxInventoryVos, event.epc, mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   int sizex = mBoxInventoryVos.size();
 	   while (iterator.hasNext()) {
 		sizex--;
-		Log.i("LOGSCAN", "dfd   " + sizex);
 		InventoryVo next = iterator.next();
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
@@ -346,21 +297,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   break;
 		}
 		if (sizex < 3) {
-		   Log.i("LOGSCAN", "dfdfdfdfdaaaaaaaaaaaadfdfdfdfdf    " + sizex);
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart();
 		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
-
 	   }
-
-	   //	   Log.i("LOGSCAN","接ddddddd收   "+getDates()+"    "+event.epc);
-	   //	   new Thread(()->{
-	   //		setTitleRightNum();
-	   //		setNotifyData();
-	   //		setTimeStart();
-	   //	   });
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
 		setTitleRightNum();
@@ -1272,22 +1214,27 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private void setTimeStart() {
 	for (InventoryVo b : mBoxInventoryVos) {
 	   //这代码自己看的都蛋疼，优化优化优化 TODO
-	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
-		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
+	   int isErrorOperation = b.getIsErrorOperation();
+	   int deleteCount = b.getDeleteCount();
+	   Integer expireStatus = b.getExpireStatus();
+	   String patientName = b.getPatientName();
+	   int operationStatus = b.getOperationStatus();
+	   if ((isErrorOperation == 1 && deleteCount == 0) ||
+		 (isErrorOperation == 1 && deleteCount == 0 && expireStatus == 0 &&
 		  mOperationType != 8) || ((mOperationType == 3 || mOperationType == 4) &&
 						   UIUtils.getConfigType(mContext, CONFIG_007) &&
-						   (b.getPatientName() == null ||
-						    ((b.getOperationStatus() == 7 ||
-							b.getOperationStatus() == 99) &&
-						     b.getPatientName().equals("vr"))))) {
-		if ((mOperationType == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
-		     b.getExpireStatus() == 0) ||
-		    (b.getIsErrorOperation() != 1 && b.getDeleteCount() == 0 &&
-		     b.getExpireStatus() != 0 &&
-		     ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
-			(b.getPatientName() == null ||
-			 ((b.getOperationStatus() == 7 || b.getOperationStatus() == 99) &&
-			  b.getPatientName().equals("vr")))))) {
+						   (patientName == null ||
+						    ((operationStatus == 7 ||
+							operationStatus == 99) &&
+						     patientName.equals("vr"))))) {
+		if ((mOperationType == 8 && isErrorOperation == 1 && deleteCount == 0 &&
+		     expireStatus == 0) ||
+		    (isErrorOperation != 1 && deleteCount == 0 &&
+		     expireStatus != 0 &&
+		     ((operationStatus == 7 || operationStatus == 99) &&
+			(patientName == null ||
+			 ((operationStatus == 7 || operationStatus == 99) &&
+			  patientName.equals("vr")))))) {
 
 		   mTimelyNumberText.setVisibility(View.GONE);
 		   setFalseEnabled(true, false);

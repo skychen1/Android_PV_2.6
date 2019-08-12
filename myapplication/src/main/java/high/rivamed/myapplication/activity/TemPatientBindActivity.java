@@ -77,7 +77,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private static final String TAG = "TemPatientBindActivity";
    private int mRbKey;
 
-   @BindView(R.id.dialog_right)
+   @BindView(R.id.tempatient_right)
    TextView           mDialogRight;
    @BindView(R.id.search_et)
    EditText           mSearchEt;
@@ -328,7 +328,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
    }
 
-   @OnClick({R.id.dialog_left, R.id.dialog_right, R.id.base_tab_tv_name, R.id.base_tab_tv_outlogin,
+   @OnClick({R.id.dialog_left, R.id.tempatient_right, R.id.base_tab_tv_name, R.id.base_tab_tv_outlogin,
 	   R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_back,
 	   R.id.ly_creat_temporary_btn,})
    public void onViewClicked(View view) {
@@ -439,8 +439,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   finish();
 		}
 		break;
-	   case R.id.dialog_right://确认
-		if (!UIUtils.isFastDoubleClick(R.id.dialog_right)) {
+	   case R.id.tempatient_right://确认
+		if (!UIUtils.isFastDoubleClick(R.id.tempatient_right)) {
 		   if (mException) {
 			setExceptinEnter();
 		   } else {

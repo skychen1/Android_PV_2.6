@@ -667,10 +667,14 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
-		   int time = Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim());
-		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
-		   COUNTDOWN_TIME = time;
-		   ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
+		   if (time>=20000){
+			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
+			COUNTDOWN_TIME = time;
+			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   }else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于20秒，请重新设置！");
+		   }
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");
 		}
