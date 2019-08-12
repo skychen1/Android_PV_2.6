@@ -270,6 +270,9 @@ public class AllDeviceCallBack {
 		if (result==null||result.size()==0){
 		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, "0"));
 		}
+		if (result.size()>1){
+		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, "-1"));
+		}
 	   }
 
 	   @Override

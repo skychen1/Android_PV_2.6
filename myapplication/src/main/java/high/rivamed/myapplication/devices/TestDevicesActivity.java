@@ -149,6 +149,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 }
 //                appendLog(stringBuilder.toString());
                 setLog(stringBuilder.toString());
+                Log.i("ddddda",stringBuilder.toString());
                 // TODO: 2019/1/28 循环测试
                 mBtnStartScan.postDelayed(new Runnable() {
                     @Override

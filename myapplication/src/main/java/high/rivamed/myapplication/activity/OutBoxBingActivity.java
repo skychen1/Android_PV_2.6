@@ -23,6 +23,7 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -78,6 +79,7 @@ import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdB
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
+import static high.rivamed.myapplication.utils.LyDateUtils.getVosType3;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
@@ -274,6 +276,51 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mHisPatientId = inventoryVo.getHisPatientId();
    }
 
+   //   /**
+   //    * EPC扫描返回数据（单个返回）
+   //    *
+   //    * @param event
+   //    */
+   //   @Subscribe(threadMode = ThreadMode.MAIN)
+   //   public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
+   //	EventBusUtils.postSticky(new Event.EventLoading(false));
+   ////		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
+   //	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+   //	   Log.i("LOGSCAN","时间222   "+getDates());
+   //	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
+   //		String epc = mBoxInventoryVos.get(i).getEpc();
+   //		if (epc.equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+   //		   mBoxInventoryVos.remove(i);
+   //		}
+   //	   }
+   //	   for (InventoryVo vo : mBoxInventoryVos) {
+   //		if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
+   //		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
+   //			vo.setStatus(mOperationType + "");
+   //		   }
+   //		   if (mOperationType == 4 && vo.isDateNetType()) {
+   //			vo.setOperationStatus(3);
+   //		   }
+   //		} else {
+   //		   if (vo.isDateNetType() || !mTitleConn) {
+   //			vo.setIsErrorOperation(1);
+   //		   }
+   //		}
+   //	   }
+   //	   setTitleRightNum();
+   //	   setNotifyData();
+   //	   setTimeStart();
+   //	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
+   //	   if (event.epc==null||event.epc.equals("0")){
+   //		setTitleRightNum();
+   //		setNotifyData();
+   //		setTimeStart();
+   //	   }else {
+   //		mObs.getScanEpc(event.deviceId, event.epc);
+   //	   }
+   //	}
+   //   }
+
    /**
     * EPC扫描返回数据（单个返回）
     *
@@ -281,37 +328,46 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	EventBusUtils.postSticky(new Event.EventLoading(false));
-//		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
-	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
-		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-		   mBoxInventoryVos.remove(i);
+	//	EventBusUtils.postSticky(new Event.EventLoading(false));
+	//		Log.i("SelSelfff", "EventOneEpcDeviceCallBack    " + event.epc);
+
+	if (getVosType3(mBoxInventoryVos, event.epc, mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+
+	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
+	   int sizex = mBoxInventoryVos.size();
+	   while (iterator.hasNext()) {
+		sizex--;
+		Log.i("LOGSCAN", "dfd   " + sizex);
+		InventoryVo next = iterator.next();
+		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+		   iterator.remove();
+		   setTitleRightNum();
+		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+		   break;
 		}
-	   }
-	   for (InventoryVo vo : mBoxInventoryVos) {
-		if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-		   if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
-			vo.setStatus(mOperationType + "");
-		   }
-		   if (mOperationType == 4 && vo.isDateNetType()) {
-			vo.setOperationStatus(3);
-		   }
-		} else {
-		   if (vo.isDateNetType() || !mTitleConn) {
-			vo.setIsErrorOperation(1);
-		   }
+		if (sizex < 3) {
+		   Log.i("LOGSCAN", "dfdfdfdfdaaaaaaaaaaaadfdfdfdfdf    " + sizex);
+		   setTitleRightNum();
+		   setNotifyData();
+		   setTimeStart();
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		}
+
 	   }
-	   setTitleRightNum();
-	   setNotifyData();
-	   setTimeStart();
+
+	   //	   Log.i("LOGSCAN","接ddddddd收   "+getDates()+"    "+event.epc);
+	   //	   new Thread(()->{
+	   //		setTitleRightNum();
+	   //		setNotifyData();
+	   //		setTimeStart();
+	   //	   });
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc==null||event.epc.equals("0")){
+	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
 		setTitleRightNum();
 		setNotifyData();
 		setTimeStart();
-	   }else {
+		EventBusUtils.postSticky(new Event.EventLoading(false));
+	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
 	}
@@ -745,7 +801,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventFastMoreScan(true));
 			UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 			finish();
-		   }else {
+		   } else {
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
 		   }
@@ -795,7 +851,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   }
 		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
-		}else {
+		} else {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		}
@@ -836,7 +892,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   UnNetCstUtils.putUnNetOperateYes(OutBoxBingActivity.this);//提交离线耗材和重新获取在库耗材数据
 
 		   finish();
-		}else {
+		} else {
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		}
@@ -942,7 +998,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);
 		InventoryDto dto = mGson.fromJson(result, InventoryDto.class);
-		if (dto.isOperateSuccess()){
+		if (dto.isOperateSuccess()) {
 		   setDateEpc(dto);
 		}
 	   }
@@ -1137,7 +1193,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    }
 
    private void setTitleRightNum() {
-	EventBusUtils.post(new Event.EventLoading(false));
 	ArrayList<String> strings = new ArrayList<>();
 	for (InventoryVo vosBean : mBoxInventoryVos) {
 	   if (mPatientVo != null) {
