@@ -60,6 +60,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
@@ -210,6 +211,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private RxUtils.BaseEpcObservable mObs;
    public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
    private boolean mResume;
+   private OpenDoorDialog.Builder mBuilder;
+
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -328,6 +331,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	   mDownBtnOne.setEnabled(false);
 	   mTimelyOpenDoor.setEnabled(false);
 	   mLyBingBtn.setEnabled(false);
@@ -337,6 +343,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   if (mBuilder != null) {
+		mBuilder.mDialog.dismiss();
+		mBuilder = null;
+	   }
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (mDoorStatusType) {

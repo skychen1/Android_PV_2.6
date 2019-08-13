@@ -51,6 +51,7 @@ import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TempPatientDialog;
@@ -122,6 +123,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public String                             mDeptType = "2";   //2,3手术排版，1是非手术
    private boolean                            mException;
    private List<ExceptionRecordBean.RowsBean> mExceptionDate;
+   private OpenDoorDialog.Builder mBuilder;
 
    /**
     * 门锁的提示
@@ -132,11 +134,17 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   Log.i("FFASD", "mType   " + mType);
-
+	   if (mBuilder != null) {
+		mBuilder.mDialog.dismiss();
+		mBuilder = null;
+	   }
 	   if (null == mType || !mType.equals(TEMP_AFTERBIND)) {//后绑定患者
 		setTempPatientDate(event.mEthId);
 	   }

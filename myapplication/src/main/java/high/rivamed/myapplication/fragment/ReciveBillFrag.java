@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +49,7 @@ import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -132,6 +132,7 @@ public class ReciveBillFrag extends SimpleFragment {
      */
     private boolean mIsCanSkipToSurePage = true;
     private BillStockResultBean mBillStockResultBean;
+    private OpenDoorDialog.Builder mBuilder;
 
     /**
      * 重新加载数据
@@ -311,11 +312,17 @@ public class ReciveBillFrag extends SimpleFragment {
         if (((OutFormActivity) getActivity()).mCurrentFragment == ReciveBillFrag.this) {
             if (event.isMute) {
                 MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-                DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
+                if (mBuilder == null) {
+                    mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+                }
             }else {
                 if (mIsCanSkipToSurePage) {
                     if (!event.isMute) {
 			     MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+                        if (mBuilder != null) {
+                            mBuilder.mDialog.dismiss();
+                            mBuilder = null;
+                        }
                         Intent intent = new Intent(mContext, NewOutFormConfirmActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("mEthId", event.mEthId);

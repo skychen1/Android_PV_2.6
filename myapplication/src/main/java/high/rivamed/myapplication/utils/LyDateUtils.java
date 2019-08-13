@@ -10,6 +10,7 @@ import com.ruihua.reader.ReaderManager;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -192,14 +193,27 @@ public class LyDateUtils {
 	List<InventoryVo> cstVos = getLocalAllCstVos();
 	int size = cstVos.size();
 	if (size > 0) {
-	   for (int i = size - 1; i >= 0; i--) {
-		if (!box_id.equals(cstVos.get(i).getDeviceId())) {
-		   cstVos.remove(i);
+	   Iterator<InventoryVo> iterator = cstVos.iterator();
+	   while (iterator.hasNext()){
+		InventoryVo next = iterator.next();
+		if (!box_id.equals(next.getDeviceId())) {
+		   iterator.remove();
 		   break;
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-	   removeDuplicate(mBoxInventoryVos);
+	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
+	   while (iteratorx.hasNext()){
+		InventoryVo next = iteratorx.next();
+		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
+		while (voIterator.hasNext()){
+		   InventoryVo vo = voIterator.next();
+		   if (next.getEpc().equals(vo.getEpc())) {
+			iteratorx.remove();
+			break;
+		   }
+		}
+	   }
 //	   int size1 = mBoxInventoryVos.size();
 //	   for (int i = 0; i < size1 - 1; i++) {
 //		for (int x = mBoxInventoryVos.size() - 1; x > i; x--) {

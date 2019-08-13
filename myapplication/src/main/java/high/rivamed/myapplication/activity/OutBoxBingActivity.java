@@ -55,6 +55,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -176,6 +177,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private RxUtils.BaseEpcObservable mObs;
    private InventoryDto              mDto             = new InventoryDto();
    private InventoryVo               mPatientVo;
+   private OpenDoorDialog.Builder mBuilder;
 
    /**
     * 门锁的提示
@@ -188,11 +190,18 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   mTimelyOpenDoorRight.setEnabled(false);
 	   mTimelyStartBtnRight.setEnabled(false);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	   setFalseEnabled(false, true);
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos, mObs, event.mEthId);
+	   if (mBuilder != null) {
+		mBuilder.mDialog.dismiss();
+		mBuilder = null;
+	   }
 	}
 	if (mDoorStatusType) {
 	   setTitleRightNum();
