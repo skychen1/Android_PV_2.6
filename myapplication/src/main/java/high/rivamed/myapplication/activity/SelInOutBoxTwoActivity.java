@@ -49,6 +49,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -137,6 +138,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public int a = 0;
    private boolean mResume;
    private List<InventoryVo> mCstVos;
+   private OpenDoorDialog.Builder mBuilder;
 
    /**
     * 按钮的显示转换
@@ -242,9 +244,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   if (mBuilder != null) {
+		mBuilder.mDialog.dismiss();
+		mBuilder = null;
+	   }
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (ScanService.mDoorStatusType) {
