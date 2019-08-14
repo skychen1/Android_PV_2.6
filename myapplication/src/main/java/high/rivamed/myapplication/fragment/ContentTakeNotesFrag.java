@@ -94,7 +94,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onStartFrag(Event.EventFrag event) {
-      LogUtils.i(TAG,event.type);
 	if (event.type.equals("START5")) {
 	   PAGE = 1;
 	   if (mRows!=null){
@@ -107,14 +106,14 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
+	initData();
+	initListener();
    }
 
    @Override
    public void onResume() {
 	super.onResume();
-	initData();
-	initListener();
+
    }
 
 

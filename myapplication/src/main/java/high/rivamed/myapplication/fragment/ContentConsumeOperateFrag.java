@@ -59,7 +59,7 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.NoDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -153,17 +153,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private HomeFastOpenAdapter mHomeFastOpenTopAdapter;
    private HomeFastOpenAdapter mHomeFastOpenDownAdapter;
 
-   private NoDialog.Builder mBuilder;
+   private OpenDoorDialog.Builder        mBuilder;
    private List<BoxSizeBean.DevicesBean> mTbaseDevices = new ArrayList<>();
-   private int mRbKey;
-   public static boolean mPause   = true;
-   private       int     mAllPage = 1;
-   private       int     mRows    = 20;
-   private LoadingDialog.Builder mLoading;
-   private boolean           mDoorStatus     = true;
-   private ArrayList<String> mEthDevices     = new ArrayList<>();
-   private List<String>      mDeviceSizeList = new ArrayList<>();
-   private ArrayList<String> mListDevices;
+   private int                           mRbKey;
+   public static boolean                 mPause   = true;
+   private       int                     mAllPage = 1;
+   private       int                     mRows    = 20;
+   private LoadingDialog.Builder         mLoading;
+   private boolean                       mDoorStatus     = true;
+   private ArrayList<String>             mEthDevices     = new ArrayList<>();
+   private List<String>                  mDeviceSizeList = new ArrayList<>();
+   private ArrayList<String>             mListDevices;
    private String            mYesClossId;
    private boolean           mIsClick;
    private InventoryDto      mFastInOutDto;
@@ -259,21 +259,28 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (!mPause && event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	}
 	if (!mPause && !event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   intentActType(event.mEthId);
-	}
-	if (event.isMute) {
-	   if (mBuilder == null) {
-		mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "in", null);
-	   }
-	} else {
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
 	   }
+	   intentActType(event.mEthId);
 	}
+//	if (event.isMute) {
+//	   if (mBuilder == null) {
+//		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+//	   }
+//	} else {
+//	   if (mBuilder != null) {
+//		mBuilder.mDialog.dismiss();
+//		mBuilder = null;
+//	   }
+//	}
    }
 
    /**

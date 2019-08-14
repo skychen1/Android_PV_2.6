@@ -109,7 +109,7 @@ public class LogcatHelper {
 	   // cmds = "logcat  | grep \"(" + mPID + ")\"";//打印所有日志信息
 	   // cmds = "logcat -mObject way";//打印标签过滤信息
 	   if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
-	      cmds = "logcat OkGo:i *:e *:w | grep \"(" + mPID + ")\"";
+	      cmds = "logcat grep | "+ mPID +":i *:e *:w " ;
 	   }else {
 		cmds = "logcat *:e *:w ";
 	   }

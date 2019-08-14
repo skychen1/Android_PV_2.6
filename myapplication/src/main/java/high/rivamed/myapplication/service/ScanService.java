@@ -51,7 +51,7 @@ import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
  */
 public class ScanService extends Service {
 
-   String TAG = "ScanServicesss";
+   String TAG = "ScanService";
    private List<BoxIdBean> mBoxIdBeans;
    int k    = 0;
    int size = 0;
@@ -161,40 +161,6 @@ public class ScanService extends Service {
 	if (mTitleConn){
 	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
 	}
-//	for (InventoryVo s : mInVo) {
-//	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
-//	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
-//	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
-//	}
-
-
-//	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
-//	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
-//	   if (vo != null) {
-//		mInVo.remove(vo);
-//		return;
-//	   } else {
-//		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
-//		    v.getValue() != null) {
-//		   if (!getVosType(allVo,v.getKey())){
-//			boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
-//			LogUtils.i(TAG, "     Scan 入柜存入error  "+saveError);
-//		   }
-//		   if (!mTitleConn){
-//			boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
-//			LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
-//		   }
-//		}
-//	   }
-//	}
-//	for (InventoryVo s : mInVo) {
-//	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
-//	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
-//	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
-//	}
-//	if (mTitleConn){
-//	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
-//	}
    }
 
    @Nullable

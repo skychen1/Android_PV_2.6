@@ -54,6 +54,7 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 import high.rivamed.myapplication.views.OnePassWordDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.OutBoxConnectDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
 import high.rivamed.myapplication.views.RvDialog2;
@@ -253,6 +254,17 @@ public class DialogUtils {
     public static NoDialog.Builder showNoDialog(
             final Context context, String title, int mType, final String nojump, final String bing) {
         final NoDialog.Builder builder = new NoDialog.Builder(context, mType, nojump, bing);
+        builder.setMsg(title);
+        builder.create().show();
+        return builder;
+    }
+    /**
+     * @param context
+     * @param title 打开柜门
+     */
+    public static OpenDoorDialog.Builder showOpenDoorDialog(
+          final Context context, String title) {
+        final OpenDoorDialog.Builder builder = new OpenDoorDialog.Builder(context);
         builder.setMsg(title);
         builder.create().show();
         return builder;

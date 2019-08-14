@@ -62,12 +62,6 @@ public class LyDateUtils {
 		   return true;
 		}
 	   }
-//	   for (int x = size - 1; x >= 0; x--) {
-//		String epc1 = vos.get(x).getEpc();
-//		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
-//		   return true;
-//		}
-//	   }
 //	   for (int i = 0; i < size; i++) {
 //		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
 //		   return true;

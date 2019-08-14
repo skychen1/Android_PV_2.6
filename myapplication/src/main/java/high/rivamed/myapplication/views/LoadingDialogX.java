@@ -34,7 +34,7 @@ public class LoadingDialogX extends Dialog {
 
 	private Context        mContext;
 	public RadarView      mLoading;
-	private TextView       mLoadingText;
+	public TextView       mLoadingText;
 	public  LoadingDialogX mDialog;
 
 	public Builder(Context context) {

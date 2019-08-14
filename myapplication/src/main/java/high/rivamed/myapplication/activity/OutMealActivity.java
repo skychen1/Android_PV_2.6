@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -47,7 +46,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.MealPopupWindow;
-import high.rivamed.myapplication.views.NoDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
@@ -88,21 +87,21 @@ public class OutMealActivity extends BaseSimpleActivity {
     @BindView(R.id.public_ll)
     LinearLayout mPublicLl;
     List<OrderCstResultBean.SuiteVosBean> movies = new ArrayList<>();
-    private MealPopupWindow mPopupWindowSearch;
-    private OutMealTopSuitAdapter mPublicAdapter;
-    private View mHeadView;
-    private int mLayout;
-    private int mSize;
-    public static String mMealbing;
-    private List<String> titeleList = null;
-    private NoDialog.Builder   mBuilder;
+    private MealPopupWindow        mPopupWindowSearch;
+    private OutMealTopSuitAdapter  mPublicAdapter;
+    private View                   mHeadView;
+    private int                    mLayout;
+    private int                    mSize;
+    public static String           mMealbing;
+    private List<String>           titeleList = null;
+    private OpenDoorDialog.Builder mBuilder;
     /**
      * 套餐列表
      */
     /**
      * 一个套餐所包含的耗材列表
      */
-    private OrderCstResultBean mOrderCstResult;
+    private OrderCstResultBean     mOrderCstResult;
 
     /**
      * 开门柜子列表
@@ -407,21 +406,28 @@ public class OutMealActivity extends BaseSimpleActivity {
     public void onDialogEvent(Event.PopupEvent event) {
         if (mIsCanSkipToSurePage && event.isMute) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+            if (mBuilder == null) {
+                mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+            }
         }
         if (mIsCanSkipToSurePage && !event.isMute) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-            startActSetDate(event.mEthId);
-        }
-        if (event.isMute) {
-            if (mBuilder == null) {
-                mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "form", null);
-            }
-        } else {
             if (mBuilder != null) {
                 mBuilder.mDialog.dismiss();
                 mBuilder = null;
             }
+            startActSetDate(event.mEthId);
         }
+//        if (event.isMute) {
+//            if (mBuilder == null) {
+//                mBuilder = DialogUtils.showNoDialog(mContext, event.mString, 2, "form", null);
+//            }
+//        } else {
+//            if (mBuilder != null) {
+//                mBuilder.mDialog.dismiss();
+//                mBuilder = null;
+//            }
+//        }
     }
 
     private void startActSetDate(String mEthId) {

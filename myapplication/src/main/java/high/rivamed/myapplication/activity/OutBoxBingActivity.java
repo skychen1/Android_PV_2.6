@@ -54,6 +54,7 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.TableTypeView;
@@ -171,7 +172,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String mBindType;
 
    private Handler                   mHandler;
-
    private Runnable                  mRunnable;
    private Runnable                  mRunnableW;
    public  List<InventoryVo>         mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
@@ -180,6 +180,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private InventoryVo               mPatientVo;
    private int mLocalAllSize;
    private String mEpc;
+   private OpenDoorDialog.Builder    mBuildero;
 
    /**
     * 门锁的提示
@@ -188,16 +189,22 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
-
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   mTimelyOpenDoorRight.setEnabled(false);
 	   mTimelyStartBtnRight.setEnabled(false);
+	   if (mBuildero == null) {
+		mBuildero = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	   setFalseEnabled(false, true);
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos, mObs, event.mEthId);
+	   if (mBuildero != null) {
+		mBuildero.mDialog.dismiss();
+		mBuildero = null;
+	   }
 	}
 	if (mDoorStatusType) {
 	   setTitleRightNum();
@@ -312,12 +319,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
 		   setTitleRightNum();
-		   Log.i("LOGSCAN", "开始----   "+event.epc +"    "+mLocalAllSize);
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
 		}
 	   }
-
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
 		Log.i("LOGSCAN", "最后   ");
@@ -329,8 +334,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
 	}
-
-
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -352,8 +355,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
-		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel" + b.getPatientName().equals("") +
-					 (b.getPatientName() == null));
+
 		   setFalseEnabled(false, false);
 		   return;
 		}
@@ -1266,6 +1268,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		} else {
 		   setFalseEnabled(false, true);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
+		   mTimelyOpenDoorRight.setEnabled(true);
+		   mTimelyStartBtnRight.setEnabled(true);
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 		   return;
 		}

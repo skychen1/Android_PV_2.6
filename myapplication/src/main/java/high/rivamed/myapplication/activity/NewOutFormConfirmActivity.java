@@ -58,6 +58,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -203,6 +204,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    private Runnable          mRunnable;
    private Runnable          mRunnableW;
    private boolean mResume;
+   private OpenDoorDialog.Builder mBuildero;
+
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -682,14 +685,18 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   DialogUtils.showNoDialog(mContext, "柜门已开", 2, "form", null);
 	   mDownBtnOne.setEnabled(false);
-
 	   mAllOutText.setVisibility(View.VISIBLE);
 	   mAllOutText.setText(R.string.open_error_string);
+	   if (mBuildero == null) {
+		mBuildero = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   if (mBuildero != null) {
+		mBuildero.mDialog.dismiss();
+	   }
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (mDoorStatusType) {

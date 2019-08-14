@@ -3,6 +3,7 @@ package high.rivamed.myapplication.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +60,7 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LoadingDialogX;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
@@ -69,6 +70,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.StringUtils.search;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -94,6 +96,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private int mEpcsNumber = 0;
    public static boolean mTimelyOnResume;
    private SavePadPdBean mPutSavePadPdDto;
+   private TimeCounts mTimeCounts;
 
    /**
     * 重新加载数据
@@ -104,10 +107,9 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START4")) {
 	   mPauseS = false;
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	   if (mBuilder != null) {
+		mBuilder.mLoading.stop();
+		mBuilder.mDialog.dismiss();
 	   }
 	} else {
 	   mPauseS = true;
@@ -180,29 +182,35 @@ public class TimelyAllFrag extends SimpleFragment {
    public static boolean                    mPauseS  = true;
    private       List<String>  mEPCDate = new ArrayList<>();
    int k = 0;
-
-   private LoadingDialog.Builder mLoading;
+   private int mLocalAllSize;
+   private LoadingDialogX.Builder mBuilder;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventLoading(Event.EventLoading event) {
-	if (!mPauseS) {
-	   if (event.loading) {
-		if (mLoading == null) {
-		   mLoading = DialogUtils.showLoading(mContext);
-		} else {
-		   if (!mLoading.mDialog.isShowing()) {
-			mLoading.create().show();
+   public void onEventLoading(Event.EventLoadingX event) {
+	if (event.loading) {
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showRader(mContext);
+		if (mTimeCounts!=null){
+		   mTimeCounts.start();
+		}
+	   } else {
+		if (!mBuilder.mDialog.isShowing()) {
+		   mBuilder.create().show();
+		   if (mTimeCounts!=null){
+			mTimeCounts.start();
 		   }
 		}
 	   }
 	} else {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	   if (mBuilder != null) {
+		mBuilder.mLoading.stop();
+		if (mTimeCounts!=null){
+		   mTimeCounts.cancel();
+		}
+		mBuilder.mDialog.dismiss();
+
 	   }
 	}
-
    }
 
 
@@ -215,10 +223,12 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	Log.e("FAFAS", "epc   "+event.deviceId+"     "+event.epcs);
 	if (!mPauseS) {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	   if (mBuilder != null) {
+		mBuilder.mLoading.stop();
+		if (mTimeCounts!=null){
+		   mTimeCounts.cancel();
+		}
+		mBuilder.mDialog.dismiss();
 	   }
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		   .find(BoxIdBean.class);
@@ -277,10 +287,14 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
+	mLocalAllSize = getLocalAllCstVos().size();
+	mTimeCounts = new TimeCounts(500, 10);
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   if (mTimeCounts!=null){
+		mTimeCounts.cancel();
+	   }
+	   mBuilder.mDialog.dismiss();
 	}
 	initDateAll();
    }
@@ -295,10 +309,12 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Override
    public void onResume() {
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   if (mTimeCounts!=null){
+		mTimeCounts.cancel();
+	   }
+	   mBuilder.mDialog.dismiss();
 	}
 	mTimelyOnResume = true;
 	super.onResume();
@@ -461,6 +477,8 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
+
+		   mLocalAllSize = getLocalAllCstVos().size();
 		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
@@ -571,14 +589,14 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void startScan() {
-	EventBusUtils.postSticky(new Event.EventLoading(true));
+	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	List<String> mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 
 	if (mDeviceCode == null || mDeviceCode.equals("")) {
 	   getBoxIdList();
 	   if (mReaderDeviceId.size() == 0) {
 		ToastUtils.showShort("reader未启动，请稍后重新扫描");
-		EventBusUtils.postSticky(new Event.EventLoading(false));
+		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   }
 	   for (String readerCode : mReaderDeviceId) {
 		int x = ReaderManager.getManager().startScan(readerCode, READER_TIME);
@@ -597,7 +615,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
 		if (mReaderDeviceId.size() == 0) {
 		   ToastUtils.showShort("reader未启动，请稍后重新扫描");
-		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
@@ -672,6 +690,12 @@ public class TimelyAllFrag extends SimpleFragment {
 			mPutSavePadPdDto.setEpcs(mCstInventoryDto.getEpcs());
 		   }
 		}
+		EventBusUtils.postSticky(new Event.EventLoadingX(false));
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   }
 	});
    }
@@ -819,7 +843,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	   }
 
 	   mTimelyAllAdapter.notifyDataSetChanged();
-
 	}
 	mTimelyAllAdapter.notifyDataSetChanged();
    }
@@ -833,5 +856,25 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onDestroyView() {
 	super.onDestroyView();
 	EventBusUtils.unregister(this);
+   }
+
+   /* 定义一个倒计时的内部类 */
+   public class TimeCounts extends CountDownTimer {
+
+
+	public TimeCounts(
+		long millisInFuture, long countDownInterval) {
+	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+	}
+
+	@Override
+	public void onFinish() {// 计时完毕时触发
+
+	}
+
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
+	   mBuilder.setMsg( millisUntilFinished/50+"");
+	}
    }
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,7 +61,8 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LoadingDialogX;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
@@ -77,6 +80,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -205,11 +209,14 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private Runnable          mRunnable;
    private Runnable          mRunnableW;
 
-   private LoadingDialog.Builder     mLoading;
-   private String                    mClossEthId;
-   private RxUtils.BaseEpcObservable mObs;
-   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
-   private boolean mResume;
+   private       LoadingDialogX.Builder mBuilder;
+   private String                       mClossEthId;
+   private RxUtils.BaseEpcObservable    mObs;
+   public List<InventoryVo>             mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private boolean                      mResume;
+   private OpenDoorDialog.Builder       mBuildero;
+   private int                          mLocalAllSize;
+   private String                       mEpc;
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -219,6 +226,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
+	mLocalAllSize = getLocalAllCstVos().size();
+	EventBusUtils.postSticky(new Event.EventLoadingX(true));
+	mHandler = new Handler();
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
 		.getSerializable("DATA");
 	mClossEthId = getIntent().getStringExtra("mEthId");
@@ -302,21 +312,23 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventLoading(Event.EventLoading event) {
+   public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
-	   if (mLoading == null) {
-		mLoading = DialogUtils.showLoading(this);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showRader(this);
+		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
-		if (!mLoading.mDialog.isShowing()) {
-		   mLoading.create().show();
+		if (!mBuilder.mDialog.isShowing()) {
+		   mBuilder.setMsg(mLocalAllSize+"");
+		   mBuilder.create().show();
 		}
 	   }
 	} else {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	   if (mBuilder != null) {
+		mBuilder.mLoading.stop();
+		mBuilder.mDialog.dismiss();
 	   }
 	}
    }
@@ -328,6 +340,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (mBuildero == null) {
+		mBuildero = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
 	   mDownBtnOne.setEnabled(false);
 	   mTimelyOpenDoor.setEnabled(false);
 	   mLyBingBtn.setEnabled(false);
@@ -337,6 +352,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   if (mBuildero != null) {
+		mBuildero.mDialog.dismiss();
+	   }
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
 	if (mDoorStatusType) {
@@ -356,24 +374,41 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
+	mLocalAllSize--;
+	if (mLocalAllSize>0){
+	   mBuilder.setMsg(mLocalAllSize+"");
+	}
+	mEpc = event.epc;
+	mHandler.postDelayed(new Runnable() {
+	   @Override
+	   public void run() {
+		if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
+		   setTitleRightNum();
+		   setNotifyData();
+		   EventBusUtils.post(new Event.EventButton(true,true));
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+		}
+	   }
+	},600);
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
-		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-		   mBoxInventoryVos.remove(i);
+	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
+	   while (iterator.hasNext()) {
+		InventoryVo next = iterator.next();
+		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+		   iterator.remove();
+		   setTitleRightNum();
+		   break;
 		}
-	   }
-	   for (InventoryVo vo : mBoxInventoryVos) {
-	      if (getVosRemark(mTransReceiveOrderDetailVos,vo.getCstId())){
-		   vo.setRemark("1");
+		if (getVosRemark(mTransReceiveOrderDetailVos,next.getCstId())){
+		   next.setRemark("1");
 		}else {
-		   vo.setRemark("0");
+		   next.setRemark("0");
 		}
 	   }
-	   setTitleRightNum();
-	   setNotifyData();
-	   EventBusUtils.post(new Event.EventButton(true,true));
+
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc==null||event.epc.equals("0")){
+	   if (event.epc==null||event.epc.equals("0")||event.epc.equals("-1")){
 		setTitleRightNum();
 		setNotifyData();
 		EventBusUtils.post(new Event.EventButton(true,true));
@@ -381,6 +416,33 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
 	}
+
+//
+//      if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+//	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
+//		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+//		   mBoxInventoryVos.remove(i);
+//		}
+//	   }
+//	   for (InventoryVo vo : mBoxInventoryVos) {
+//	      if (getVosRemark(mTransReceiveOrderDetailVos,vo.getCstId())){
+//		   vo.setRemark("1");
+//		}else {
+//		   vo.setRemark("0");
+//		}
+//	   }
+//	   setTitleRightNum();
+//	   setNotifyData();
+//	   EventBusUtils.post(new Event.EventButton(true,true));
+//	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
+//	   if (event.epc==null||event.epc.equals("0")){
+//		setTitleRightNum();
+//		setNotifyData();
+//		EventBusUtils.post(new Event.EventButton(true,true));
+//	   }else {
+//		mObs.getScanEpc(event.deviceId, event.epc);
+//	   }
+//	}
    }
    /**
     * 500ms进行网络请求一次RXJAVA的处理
@@ -483,7 +545,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-
+		   mLocalAllSize = getLocalAllCstVos().size();
 		   mBoxInventoryVos.clear();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
@@ -603,7 +665,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		.findOrderCstListByEpc(mGson.toJson(mDto), this, null, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			EventBusUtils.postSticky(new Event.EventLoading(false));
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			LogUtils.i(TAG, "result   " + result);
 			mFindBillOrderBean.getInventoryVos().clear();
 			mFindBillOrderBean.getDeviceIds().clear();
@@ -615,7 +677,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onError(String result) {
 			super.onError(result);
-			EventBusUtils.postSticky(new Event.EventLoading(false));
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			mTimelyOpenDoor.setEnabled(true);
 			mLyBingBtn.setEnabled(true);
 			mBindPatient.setEnabled(true);
@@ -630,13 +692,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	if (mBillOrderResultBean.getInventoryVos() != null &&
 	    mBillOrderResultBean.getInventoryVos().size() > 0) {
 	   setBoxVosDate(mBoxInventoryVos,mBillOrderResultBean.getInventoryVos());
-	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	}
 	setTitleRightNum();
    }
 
    private void setTitleRightNum() {
-
 	if (mPublicAdapter == null) {
 	   initView();
 	} else {
@@ -655,8 +716,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 							mBoxInventoryVos.size() +
 							"</big></font>"));
-	EventBusUtils.post(new Event.EventButton(true, true));
-	EventBusUtils.postSticky(new Event.EventLoading(false));
    }
 
    /**
@@ -690,7 +749,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   mLyBingBtn.setEnabled(false);
 		   mBindPatient.setEnabled(false);
 
-		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   Toast.makeText(NewOutMealBingConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
 					Toast.LENGTH_SHORT).show();
 		   mHandler.postDelayed(mRunnable, 3000);
@@ -704,7 +763,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     * 没有扫到数据，就弹出toast和关闭本页
     */
    private void setHandlerToastAndFinish() {
-	mHandler = new Handler();
 	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 	   mHandler.postDelayed(mRunnableW, 3000);
 	} else {
@@ -801,6 +859,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     * 重新打开柜门
     */
    private void reOpenDoor() {
+	mLocalAllSize = getLocalAllCstVos().size();
 	stopScan();
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
