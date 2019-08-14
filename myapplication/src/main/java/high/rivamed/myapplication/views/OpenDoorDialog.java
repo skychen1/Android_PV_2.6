@@ -100,7 +100,7 @@ public class OpenDoorDialog extends Dialog {
 	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
 	   mDialog = new OpenDoorDialog(mContext, R.style.Dialog);
-//	   mDialog.setCancelable(true);
+	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_no_layout, null);
 	   mDialog.addContentView(layout,
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

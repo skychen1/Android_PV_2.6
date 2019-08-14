@@ -11,7 +11,6 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import high.rivamed.myapplication.base.App;
@@ -202,18 +201,23 @@ public class LyDateUtils {
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
-	   while (iteratorx.hasNext()){
-		InventoryVo next = iteratorx.next();
-		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
-		while (voIterator.hasNext()){
-		   InventoryVo vo = voIterator.next();
-		   if (next.getEpc().equals(vo.getEpc())) {
-			iteratorx.remove();
-			break;
-		   }
-		}
-	   }
+	   getBoxInVos(mBoxInventoryVos);
+
+//	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
+//	   while (iteratorx.hasNext()){
+//		InventoryVo next = iteratorx.next();
+//		Log.i("LOGSCAN", "next----   "+next.getEpc() );
+//		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
+//		while (voIterator.hasNext()){
+//		   InventoryVo vo = voIterator.next();
+//		   Log.i("LOGSCAN", "vo----   "+vo.getEpc() );
+//		   if (next.getEpc().equals(vo.getEpc())) {
+//			iteratorx.remove();
+//			break;
+//		   }
+//		}
+//	   }
+
 //	   int size1 = mBoxInventoryVos.size();
 //	   for (int i = 0; i < size1 - 1; i++) {
 //		for (int x = mBoxInventoryVos.size() - 1; x > i; x--) {
@@ -223,13 +227,20 @@ public class LyDateUtils {
 //		}
 //	   }
 	}
+	Log.i("LOGSCAN", "开始mBoxInventoryVos----   "+mBoxInventoryVos.size() );
 	return mBoxInventoryVos;
    }
-   private static void removeDuplicate(List<InventoryVo> list) {
-	LinkedHashSet<InventoryVo> set = new LinkedHashSet<InventoryVo>(list.size());
-	set.addAll(list);
-	list.clear();
-	list.addAll(set);
+   private static List<InventoryVo> getBoxInVos(List<InventoryVo> mBoxInventoryVos) {
+	Iterator<InventoryVo> it = mBoxInventoryVos.iterator();
+	InventoryVo next =null;
+	List<InventoryVo> newList = new ArrayList<InventoryVo>();
+	while(it.hasNext()){
+	   next = it.next();
+	   if(!newList.contains(next)){
+		newList.add(next);
+	   }
+	}
+	return newList;
    }
 
    /**

@@ -211,7 +211,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     */
    private void setTemporaryBing(String deptType) {
 	String[] array;
-	if (deptType.equals("1")) {
+	if (deptType!=null&&deptType.equals("1")) {
 	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays2);
 	   mSearchDept.setText("查询申请科室：");
 	   mSearchRight.setHint("请输入原科室名称、拼音码");

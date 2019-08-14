@@ -177,7 +177,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private RxUtils.BaseEpcObservable mObs;
    private InventoryDto              mDto             = new InventoryDto();
    private InventoryVo               mPatientVo;
-   private OpenDoorDialog.Builder mBuilder;
+   private OpenDoorDialog.Builder    mBuilder;
 
    /**
     * 门锁的提示
@@ -292,8 +292,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	Log.i("LOGSCAN", "开始----   "+event.epc );
+	Log.i("LOGSCAN", "开始----   " + mBoxInventoryVos.size() + "                " + event.epc);
 	if (getVosType3(mBoxInventoryVos, event.epc, mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
+
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   int sizex = mBoxInventoryVos.size();
 	   while (iterator.hasNext()) {
@@ -301,6 +302,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		InventoryVo next = iterator.next();
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
+		   Log.i("LOGSCAN", "开始mBoxInventoryVos----   " + mBoxInventoryVos.size());
 		   setTitleRightNum();
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
@@ -313,7 +315,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
+	   if (event.epc == null || event.epc.equals("0") || event.epc.equals("-1")) {
 		setTitleRightNum();
 		setNotifyData();
 		setTimeStart();
@@ -343,8 +345,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
-		   LogUtils.i(TAG, "OutBoxBingActivity   少时诵诗书 cancel" + b.getPatientName().equals("") +
-					 (b.getPatientName() == null));
+
 		   setFalseEnabled(false, false);
 		   return;
 		}
@@ -374,6 +375,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mTimelyNumberText.setText(R.string.bind_error_string);
 	} else if (type) {
 	   mTimelyNumberText.setText(R.string.open_error_string);
+	} else if (!type && mOperationType == 4) {
+	   mTimelyNumberText.setText(R.string.op_error_lyth);
 	} else {
 	   mTimelyNumberText.setText(R.string.op_error_ly);
 	}
@@ -1221,6 +1224,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    }
 
    private void setTimeStart() {
+	LogUtils.i(TAG, "setTimeStart    "+mBoxInventoryVos.size());
 	for (InventoryVo b : mBoxInventoryVos) {
 	   //这代码自己看的都蛋疼，优化优化优化 TODO
 	   int isErrorOperation = b.getIsErrorOperation();
@@ -1233,23 +1237,24 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		  mOperationType != 8) || ((mOperationType == 3 || mOperationType == 4) &&
 						   UIUtils.getConfigType(mContext, CONFIG_007) &&
 						   (patientName == null ||
-						    ((operationStatus == 7 ||
-							operationStatus == 99) &&
+						    ((operationStatus == 7 || operationStatus == 99) &&
 						     patientName.equals("vr"))))) {
 		if ((mOperationType == 8 && isErrorOperation == 1 && deleteCount == 0 &&
 		     expireStatus == 0) ||
-		    (isErrorOperation != 1 && deleteCount == 0 &&
-		     expireStatus != 0 &&
-		     ((operationStatus == 7 || operationStatus == 99) &&
-			(patientName == null ||
-			 ((operationStatus == 7 || operationStatus == 99) &&
-			  patientName.equals("vr")))))) {
+		    (isErrorOperation != 1 && deleteCount == 0 && expireStatus != 0 &&
+		     ((operationStatus == 7 || operationStatus == 99) && (patientName == null ||
+											    ((operationStatus == 7 ||
+												operationStatus == 99) &&
+											     patientName.equals(
+												     "vr")))))) {
 
 		   mTimelyNumberText.setVisibility(View.GONE);
 		   setFalseEnabled(true, false);
 		} else {
 		   setFalseEnabled(false, true);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
+		   mTimelyOpenDoorRight.setEnabled(true);
+		   mTimelyStartBtnRight.setEnabled(true);
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 		   return;
 		}
