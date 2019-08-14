@@ -7,7 +7,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -269,7 +268,6 @@ public class StringUtils {
    public static ArrayList<String> removeDuplicteUsers(ArrayList<String> userList) {
 	   try {
 		   Set<String> s = new TreeSet<String>(new Comparator<String>() {
-
               @Override
               public int compare(String o1, String o2) {
                return o1.compareTo(o2);

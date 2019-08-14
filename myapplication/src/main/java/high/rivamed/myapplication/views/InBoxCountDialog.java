@@ -30,6 +30,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -67,6 +68,7 @@ public class InBoxCountDialog extends Dialog {
 	private              int                SIZE        = 20;//分页：每页数据
 	private              InventoryDto       mDto;
 	private              InventoryDto       mPutDto;
+
 	public InBoxCountDialogAdapter mAdapter;
 	private Gson mGson;
 	public InBoxCountDialog mDialog;
@@ -106,7 +108,10 @@ public class InBoxCountDialog extends Dialog {
 		   loadData();
 		}
 	   });
-	   mDialogSure.setOnClickListener(view -> mDialog.dismiss());
+	   mDialogSure.setOnClickListener(view -> {mDialog.dismiss();
+	   if (mStarts != null) {
+		mStarts.start();
+	   }});
 	   return mDialog;
 	}
 

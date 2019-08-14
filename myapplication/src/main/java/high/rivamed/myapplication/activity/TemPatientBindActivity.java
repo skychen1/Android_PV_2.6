@@ -77,7 +77,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    private static final String TAG = "TemPatientBindActivity";
    private int mRbKey;
 
-   @BindView(R.id.dialog_right)
+   @BindView(R.id.tempatient_right)
    TextView           mDialogRight;
    @BindView(R.id.search_et)
    EditText           mSearchEt;
@@ -203,7 +203,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     */
    private void setTemporaryBing(String deptType) {
 	String[] array;
-	if (deptType.equals("1")) {
+	if (deptType!=null&&deptType.equals("1")) {
 	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays2);
 	   mSearchDept.setText("查询申请科室：");
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
@@ -328,7 +328,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
    }
 
-   @OnClick({R.id.dialog_left, R.id.dialog_right, R.id.base_tab_tv_name, R.id.base_tab_tv_outlogin,
+   @OnClick({R.id.dialog_left, R.id.tempatient_right, R.id.base_tab_tv_name, R.id.base_tab_tv_outlogin,
 	   R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_back,
 	   R.id.ly_creat_temporary_btn,})
    public void onViewClicked(View view) {
@@ -439,8 +439,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   finish();
 		}
 		break;
-	   case R.id.dialog_right://确认
-		if (!UIUtils.isFastDoubleClick(R.id.dialog_right)) {
+	   case R.id.tempatient_right://确认
+		if (!UIUtils.isFastDoubleClick(R.id.tempatient_right)) {
 		   if (mException) {
 			setExceptinEnter();
 		   } else {
@@ -630,6 +630,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   public void onSucceed(String result) {
 
 			LogUtils.i(TAG, "result   " + result);
+			LogUtils.i(TAG, "mDeptType   " + mDeptType);
 			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
 			setTemporaryBing(mDeptType);
 			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {

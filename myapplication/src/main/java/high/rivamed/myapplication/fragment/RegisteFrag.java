@@ -108,7 +108,6 @@ public class RegisteFrag extends SimpleFragment {
    Switch   mSwitch;
    @BindView(R.id.fragment_btn_one)
    TextView mFragmentBtnOne;
-
    public  RegisteSmallAdapter             mSmallAdapter;
    private List<TBaseDevices>              mTBaseDevicesAll;
    private List<TBaseDevices.tBaseDevices> mTBaseDevicesSmall;
@@ -640,9 +639,13 @@ public class RegisteFrag extends SimpleFragment {
 	   case R.id.frag_registe_loginout_btn:
 		try {
 		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
-		   SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
-		   COUNTDOWN_TIME = time;
-		   ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   if (time>=20000){
+			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
+			COUNTDOWN_TIME = time;
+			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   }else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于20秒，请重新设置！");
+		   }
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");
 		}

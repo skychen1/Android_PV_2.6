@@ -72,6 +72,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 public class UIUtils {
 
    private static Handler mHandler = new Handler();
+   private static Gson sGson =new Gson();
 
    /**
     * 在ui线程里面开启子线程
@@ -277,10 +278,9 @@ public class UIUtils {
     * @return
     */
    public static boolean getConfigType(Context context, String code) {
-	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_CONFIG_STRING);
 	//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
-	ConfigBean configBean = gson.fromJson(string, ConfigBean.class);
+	ConfigBean configBean = sGson.fromJson(string, ConfigBean.class);
 	if (configBean != null) {
 	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 	   if (tCstConfigVos!=null){
@@ -302,9 +302,8 @@ public class UIUtils {
     * @return
     */
    public static boolean getMenuLeftType(Context context, String title) {
-	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_MENU_LEFT_TYPE);
-	List<HomeAuthorityMenuBean> fromJson = gson.fromJson(string,
+	List<HomeAuthorityMenuBean> fromJson = sGson.fromJson(string,
 									     new TypeToken<List<HomeAuthorityMenuBean>>() {}
 										     .getType());
 	if (fromJson != null && fromJson.size() > 0) {
@@ -324,9 +323,9 @@ public class UIUtils {
     * @return
     */
    public static boolean getMenuDownType(Context context, String title) {
-	Gson gson = new Gson();
+
 	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
-	List<ChildrenBean> fromJson = gson.fromJson(string,
+	List<ChildrenBean> fromJson = sGson.fromJson(string,
 								  new TypeToken<List<ChildrenBean>>() {}.getType());
 	if (fromJson != null && fromJson.size() > 0) {
 	   for (ChildrenBean mType : fromJson) {
@@ -344,9 +343,8 @@ public class UIUtils {
     * @return
     */
    public static boolean getMenuOnlyType(Context context, String title) {
-	Gson gson = new Gson();
 	String string = SPUtils.getString(context, SAVE_MENU_DOWN_TYPE);
-	List<ChildrenBean> fromJson = gson.fromJson(string,
+	List<ChildrenBean> fromJson = sGson.fromJson(string,
 								  new TypeToken<List<ChildrenBean>>() {}.getType());
 	if (fromJson != null && fromJson.size() == 1) {
 	   for (ChildrenBean mType : fromJson) {
@@ -364,11 +362,10 @@ public class UIUtils {
 
    public static void putOrderId(Object tag) {
 	mPushFormDateBean.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
-	Gson gson = new Gson();
-	gson.toJson(mPushFormDateBean);
-	Log.i("twoDialog", gson.toJson(mPushFormDateBean));
+	sGson.toJson(mPushFormDateBean);
+	Log.i("twoDialog", sGson.toJson(mPushFormDateBean));
 	NetRequest.getInstance()
-		.submitOrderCstInfo(gson.toJson(mPushFormDateBean), tag, new BaseResult() {
+		.submitOrderCstInfo(sGson.toJson(mPushFormDateBean), tag, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			Log.i("twoDialog", "result：receiveOrderId上传成功");
@@ -404,12 +401,11 @@ public class UIUtils {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		Gson mGson = new Gson();
 		NetRequest.getInstance().getPendingTaskList(this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			try {
-			   PendingTaskBean emergencyBean = mGson.fromJson(result, PendingTaskBean.class);
+			   PendingTaskBean emergencyBean = sGson.fromJson(result, PendingTaskBean.class);
 			   int size = emergencyBean.getMessages().size();
 			   if (emergencyBean.getMessages().size() == 0) {
 				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
@@ -502,7 +498,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(18);
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -536,7 +532,6 @@ public class UIUtils {
 	CommonNavigator mCommonNavigator = new CommonNavigator(mAppContext);
 	//        commonNavigator.setAdjustMode(true);
 	mCommonNavigator.setAdapter(new CommonNavigatorAdapter() {
-
 	   @Override
 	   public int getCount() {
 		return mTitleDataList == null ? 0 : mTitleDataList.size();
@@ -550,7 +545,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(18);
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -598,7 +593,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList[index]);
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(mAppContext.getResources().getDimensionPixelSize(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(18);
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {

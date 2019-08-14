@@ -71,7 +71,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
                 mSeven_three.setText("/");
                 mSeven_seven.setText("是");
                 mSeven_five.setText("/");
-                if (mDeptType.equals("2")){
+                if (mDeptType==null||!mDeptType.equals("1")){
                     mSeven_four.setText(item.getSurgeryTime());
                     mSeven_six.setText(item.getRoomName());
                 }else {
@@ -82,7 +82,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
                 mSeven_seven.setText("否");
                 mSeven_three.setText(item.getHisPatientId());
 
-		   if (mDeptType.equals("2")){
+		   if (mDeptType==null||!mDeptType.equals("1")){
 			mSeven_six.setText(item.getRoomName());
 		   }else {
 			mSeven_six.setText(item.getDeptName());

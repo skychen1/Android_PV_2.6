@@ -10,6 +10,7 @@ import com.ruihua.reader.ReaderManager;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import high.rivamed.myapplication.base.App;
@@ -22,6 +23,7 @@ import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
@@ -51,16 +53,103 @@ public class LyDateUtils {
     */
    public static boolean getVosType(List<InventoryVo> vos, String epc) {
 	if (vos != null) {
-	   for (int i = 0; i < vos.size(); i++) {
-
-		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
+//	   int size = vos.size();
+	   Iterator<InventoryVo> iterator = vos.iterator();
+	   while (iterator.hasNext()){
+		InventoryVo next = iterator.next();
+		String epc1 = next.getEpc();
+		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
 		   return true;
 		}
 	   }
+//	   for (int x = size - 1; x >= 0; x--) {
+//		String epc1 = vos.get(x).getEpc();
+//		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+//		   return true;
+//		}
+//	   }
+//	   for (int i = 0; i < size; i++) {
+//		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
+//		   return true;
+//		}
+//	   }
 	}
 	return false;
    }
+   /**
+    * 是否包含epc
+    *
+    * @return
+    */
+   public static boolean getVosType3(List<InventoryVo> vos, String epc,int mOperationType) {
+	if (vos != null) {
+	   int size = vos.size();
+	   for (int x = size - 1; x >= 0; x--) {
+		String epc1 = vos.get(x).getEpc();
+		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+		   return true;
+		}else {
+		   InventoryVo vo = vos.get(x);
+		   if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
+			if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
+			   vo.setStatus(mOperationType + "");
+			}
+			if (mOperationType == 4 && vo.isDateNetType()) {
+			   vo.setOperationStatus(3);
+			}
+		   } else {
+			if (vo.isDateNetType() || !mTitleConn) {
+			   vo.setIsErrorOperation(1);
+			}
+		   }
+		}
+	   }
+	   //	   for (int i = 0; i < size; i++) {
+	   //		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
+	   //		   return true;
+	   //		}
+	   //	   }
+	}
+	return false;
+   }
+   /**
+    * 是否包含epc
+    *
+    * @return
+    */
+   public static boolean getVosType2(List<InventoryVo> vos, String epc,int mOperationType) {
+	if (vos != null) {
+	   int size = vos.size();
+	   for (int x = size - 1; x >= 0; x--) {
+		String epc1 = vos.get(x).getEpc();
+		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+		   return true;
+		}else {
+		   InventoryVo vo = vos.get(x);
+		   if (mOperationType == 9 || mOperationType == 8 ||
+			 (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
+			if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
+			   vo.setStatus(mOperationType + "");
+			}
+			if (mOperationType == 4) {
+			   vo.setOperationStatus(3);
+			}
+		   } else {
+			if (vo.isDateNetType() || !mTitleConn) {
+			   vo.setIsErrorOperation(1);
+			}
+		   }
+		}
+	   }
 
+	   //	   for (int i = 0; i < size; i++) {
+	   //		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
+	   //		   return true;
+	   //		}
+	   //	   }
+	}
+	return false;
+   }
    /**
     * 是否包含柜号
     * @return
@@ -109,24 +198,45 @@ public class LyDateUtils {
     */
    public static List<InventoryVo> setAllBoxVosDate(List<InventoryVo> mBoxInventoryVos, String box_id) {
 	List<InventoryVo> cstVos = getLocalAllCstVos();
-	if (cstVos.size() > 0) {
-	   for (int i = cstVos.size() - 1; i >= 0; i--) {
-		if (!box_id.equals(cstVos.get(i).getDeviceId())) {
-		   cstVos.remove(i);
+	int size = cstVos.size();
+	if (size > 0) {
+	   Iterator<InventoryVo> iterator = cstVos.iterator();
+	   while (iterator.hasNext()){
+		InventoryVo next = iterator.next();
+		if (!box_id.equals(next.getDeviceId())) {
+		   iterator.remove();
+		   break;
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-	   for (int i = 0; i < mBoxInventoryVos.size() - 1; i++) {
-		for (int x = mBoxInventoryVos.size() - 1; x > i; x--) {
-		   if (mBoxInventoryVos.get(x).getEpc().equals(mBoxInventoryVos.get(i).getEpc())) {
-			mBoxInventoryVos.remove(x);
-		   }
-		}
-	   }
+	   getBoxInVos(mBoxInventoryVos);
+//	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
+//	   while (iteratorx.hasNext()){
+//		InventoryVo next = iteratorx.next();
+//		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
+//		while (voIterator.hasNext()){
+//		   InventoryVo vo = voIterator.next();
+//		   if (next.getEpc().equals(vo.getEpc())) {
+//			iteratorx.remove();
+//			break;
+//		   }
+//		}
+//	   }
 	}
 	return mBoxInventoryVos;
    }
-
+   private static List<InventoryVo> getBoxInVos(List<InventoryVo> mBoxInventoryVos) {
+	Iterator<InventoryVo> it = mBoxInventoryVos.iterator();
+	InventoryVo next =null;
+	List<InventoryVo> newList = new ArrayList<InventoryVo>();
+	while(it.hasNext()){
+	   next = it.next();
+	   if(!newList.contains(next)){
+		newList.add(next);
+	   }
+	}
+	return newList;
+   }
    /**
     * 重新扫描
     */
@@ -158,7 +268,7 @@ public class LyDateUtils {
    public static void startScan(
 	   List<InventoryVo> mBoxInventoryVos, RxUtils.BaseEpcObservable mObs,
 	   String deviceIndentify) {
-	EventBusUtils.postSticky(new Event.EventLoading(true));
+	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {

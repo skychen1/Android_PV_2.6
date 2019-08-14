@@ -47,6 +47,7 @@ import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
 import high.rivamed.myapplication.views.InBoxCountDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
@@ -787,8 +788,21 @@ public class DialogUtils {
     /**
      * 入库统计
      */
-    public static InBoxCountDialog.Builder showInBoxCountDialog(Context context, InventoryDto dto) {
+    public static InBoxCountDialog.Builder showInBoxCountDialog(Context context, InventoryDto dto,TextView mTimelyRight) {
         InBoxCountDialog.Builder builder = new InBoxCountDialog.Builder(context, dto);
+        builder.create().show();
+        if (mStarts != null) {
+            mStarts.cancel();
+            mTimelyRight.setText("确认并退出登录");
+        }
+        return builder;
+    }
+
+    /**
+     * 雷达
+     */
+    public static LoadingDialogX.Builder showRader(Context context) {
+        LoadingDialogX.Builder builder = new LoadingDialogX.Builder(context);
         builder.create().show();
         return builder;
     }

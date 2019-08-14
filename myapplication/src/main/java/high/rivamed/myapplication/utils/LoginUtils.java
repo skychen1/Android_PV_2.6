@@ -21,6 +21,7 @@ import org.litepal.LitePal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
@@ -309,11 +310,18 @@ public class LoginUtils {
     public static boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
         if (tCstConfigVos==null||tCstConfigVos.size() == 0)
             return false;
-        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
-            if (s.getCode().equals(CONFIG_013)) {
+        Iterator<ConfigBean.ThingConfigVosBean> iterator = tCstConfigVos.iterator();
+        while (iterator.hasNext()){
+            ConfigBean.ThingConfigVosBean next = iterator.next();
+            if (next.getCode().equals(CONFIG_013)) {
                 return true;
             }
         }
+//        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
+//            if (s.getCode().equals(CONFIG_013)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
@@ -325,11 +333,18 @@ public class LoginUtils {
     public static ConfigBean.ThingConfigVosBean getEpcFilte(List<ConfigBean.ThingConfigVosBean> tCstConfigVos,String CONFIG_x) {
         if (tCstConfigVos==null||tCstConfigVos.size() == 0)
             return null;
-        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
-            if (s.getCode().equals(CONFIG_x)) {
-                return s;
+        Iterator<ConfigBean.ThingConfigVosBean> iterator = tCstConfigVos.iterator();
+        while (iterator.hasNext()){
+            ConfigBean.ThingConfigVosBean next = iterator.next();
+            if (next.getCode().equals(CONFIG_x)) {
+                return next;
             }
         }
+//        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
+//            if (s.getCode().equals(CONFIG_x)) {
+//                return s;
+//            }
+//        }
         return null;
     }
 

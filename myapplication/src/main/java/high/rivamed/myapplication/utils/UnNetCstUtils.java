@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import high.rivamed.myapplication.base.App;
@@ -181,9 +182,11 @@ public class UnNetCstUtils {
     * 强开删除数据库已有的已经操作过的耗材
     */
    public static void deleteVo(List<InventoryVo> voList,String epc) {
-	for (int i = voList.size() - 1; i >= 0; i--) {
-	   if (voList.get(i).getEpc().equals(epc)) {
-		voList.get(i).delete();
+	Iterator<InventoryVo> iterator = voList.iterator();
+	while (iterator.hasNext()){
+	   InventoryVo next = iterator.next();
+	   if (next.getEpc().equals(epc)) {
+		next.delete();
 	   }
 	}
    }

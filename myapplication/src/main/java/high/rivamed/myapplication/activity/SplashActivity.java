@@ -79,7 +79,6 @@ public class SplashActivity extends FragmentActivity {
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
-		   //		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);

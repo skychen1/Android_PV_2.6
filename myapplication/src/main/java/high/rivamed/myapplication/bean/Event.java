@@ -382,7 +382,14 @@ public class Event {
 	   this.loading = loading;
 	}
    }
+   public static class EventLoadingX {
 
+	public boolean loading;
+
+	public EventLoadingX(boolean loading) {
+	   this.loading = loading;
+	}
+   }
    /**
     * 触摸
     */

@@ -31,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
@@ -76,6 +77,9 @@ import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_031;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
@@ -147,7 +151,9 @@ public class LoginActivity extends SimpleActivity {
    private       LoginFaceFragment faceFragment;
    private LoadingDialog.Builder   mLoading;
    public static List<ConfigBean.ThingConfigVosBean> sTCstConfigVos;
-
+   public static          boolean           mConfigType043;
+   public static     boolean           mConfigType044;
+   public static          boolean           mConfigType045;
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -272,7 +278,7 @@ public class LoginActivity extends SimpleActivity {
 
 	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this) + "_c");
+		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -499,7 +505,9 @@ public class LoginActivity extends SimpleActivity {
 	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
 												   loginType));
-
+	mConfigType043 = UIUtils.getConfigType(App.getAppContext(), CONFIG_043);
+	mConfigType044 = UIUtils.getConfigType(App.getAppContext(), CONFIG_044);
+	mConfigType045 = UIUtils.getConfigType(App.getAppContext(), CONFIG_045);
 	//控制紧急登录tab的显示
 	mLoginPass.setVisibility(
 		UIUtils.getConfigType(mContext, CONFIG_017) ? View.VISIBLE : View.GONE);
@@ -519,7 +527,7 @@ public class LoginActivity extends SimpleActivity {
 
    }
 
-   private boolean isConfigFace() {
+   public boolean isConfigFace() {
 	return UIUtils.getConfigType(mContext, CONFIG_031);
 	//测试时默认开启，真实情况需要根据后台配置
 	//		return true;

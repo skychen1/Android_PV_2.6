@@ -6,6 +6,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +58,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
+import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
@@ -72,6 +75,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -170,15 +174,17 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    public TextView      mAllOutText;
    public TableTypeView mTypeView;
    List<String> titeleList = null;
-
+   private int                          mLocalAllSize;
+   private String                       mEpc;
+   private       LoadingDialogX.Builder mBuilder;
    /**
     * 根据EPC请求网络参数
     */
-   public  FindBillOrderBean       mFindBillOrderBean;
+   public  FindBillOrderBean            mFindBillOrderBean;
    /**
     * 确认领用使用参数
     */
-   private OrderSheetBean.RowsBean mPrePageDate;
+   private OrderSheetBean.RowsBean      mPrePageDate;
 
    /**
     * 柜子信息
@@ -236,21 +242,23 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	}
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onEventLoading(Event.EventLoading event) {
+
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
-	   if (mLoading == null) {
-		mLoading = DialogUtils.showLoading(this);
+	   if (mBuilder == null) {
+		mBuilder = DialogUtils.showRader(this);
+		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
-		if (!mLoading.mDialog.isShowing()) {
-		   mLoading.create().show();
+		if (!mBuilder.mDialog.isShowing()) {
+		   mBuilder.setMsg(mLocalAllSize+"");
+		   mBuilder.create().show();
 		}
 	   }
 	} else {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
+	   if (mBuilder != null) {
+		mBuilder.mLoading.stop();
+		mBuilder.mDialog.dismiss();
 	   }
 	}
    }
@@ -259,7 +267,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
-	EventBusUtils.postSticky(new Event.EventLoading(true));
+	EventBusUtils.postSticky(new Event.EventLoadingX(true));
+	mHandler = new Handler();
+	mLocalAllSize = getLocalAllCstVos().size();
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
 		.getSerializable("DATA");
 	mClossEthId = getIntent().getStringExtra("mEthId");
@@ -330,6 +340,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   mBoxInventoryVos.clear();
+		   mLocalAllSize = getLocalAllCstVos().size();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			startScan(mBoxInventoryVos, mObs, deviceCode);
@@ -341,6 +352,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   mBoxInventoryVos.clear();
+		   mLocalAllSize = getLocalAllCstVos().size();
 		   reOpenDoor();
 		}
 		break;
@@ -405,8 +417,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
 		mBoxInventoryVos.size() + "</big></font>"));
 
-	EventBusUtils.post(new Event.EventButton(true, true));
-	EventBusUtils.postSticky(new Event.EventLoading(false));
+
 
    }
    /**
@@ -436,7 +447,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   public void run() {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 		   mDownBtnOne.setEnabled(false);
-		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   Toast.makeText(NewOutFormConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
 					Toast.LENGTH_SHORT).show();
 		   mHandler.postDelayed(mRunnable, 3000);
@@ -508,7 +519,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		.findBillStockByEpc(mGson.toJson(findBillOrderBean), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			EventBusUtils.postSticky(new Event.EventLoading(false));
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			LogUtils.i(TAG, "getBillStockByEpc   " + result);
 			BillOrderResultBean resultBean = mGson.fromJson(result,
 												   BillOrderResultBean.class);
@@ -518,7 +529,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onError(String result) {
 			super.onError(result);
-			EventBusUtils.postSticky(new Event.EventLoading(false));
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		});
    }
@@ -530,7 +541,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	if (resultBean.getInventoryVos() != null &&
 	    resultBean.getInventoryVos().size() > 0) {
 	   setBoxVosDate(mBoxInventoryVos,resultBean.getInventoryVos());
-	   EventBusUtils.postSticky(new Event.EventLoading(false));
+	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	}
 	setTitleRightNum();
    }
@@ -609,25 +620,40 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	EventBusUtils.postSticky(new Event.EventLoading(false));
+	mLocalAllSize--;
+	if (mLocalAllSize>0){
+	   mBuilder.setMsg(mLocalAllSize+"");
+	}
+	mEpc = event.epc;
+	mHandler.postDelayed(new Runnable() {
+	   @Override
+	   public void run() {
+		if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
+		   setTitleRightNum();
+		   setNotifyData();
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+		}
+	   }
+	},600);
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-	   for (int i = 0; i < mBoxInventoryVos.size(); i++) {
-		if (mBoxInventoryVos.get(i).getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
-		   mBoxInventoryVos.remove(i);
+	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
+	   while (iterator.hasNext()) {
+		InventoryVo next = iterator.next();
+		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
+		   iterator.remove();
+		   setTitleRightNum();
+		   break;
 		}
-	   }
-	   for (InventoryVo vo : mBoxInventoryVos) {
-		if (getVosRemark(mTransReceiveOrderDetailVosBean,vo.getCstId())){
-		   vo.setRemark("1");
+		if (getVosRemark(mTransReceiveOrderDetailVosBean,next.getCstId())){
+		   next.setRemark("1");
 		}else {
-		   vo.setRemark("0");
+		   next.setRemark("0");
 		}
 	   }
-	   setTitleRightNum();
-	   setNotifyData();
-	   EventBusUtils.post(new Event.EventButton(true,true));
+
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc==null||event.epc.equals("0")){
+	   if (event.epc==null||event.epc.equals("0")||event.epc.equals("-1")){
 		setTitleRightNum();
 		setNotifyData();
 		EventBusUtils.post(new Event.EventButton(true,true));
@@ -675,28 +701,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	}
    }
 
-
-//   private void startScan(String deviceIndentify) {
-//	if (mFindBillOrderBean != null) {
-//	   mFindBillOrderBean.getDeviceIds().clear();
-//	   mFindBillOrderBean.getEpcs().clear();
-//	   mInventoryVoList.clear();
-//	}
-//	EventBusUtils.postSticky(new Event.EventLoading(true));
-//	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-//								 UHF_TYPE).find(BoxIdBean.class);
-//	for (BoxIdBean boxIdBean : boxIdBeans) {
-//	   String box_id = boxIdBean.getBox_id();
-//	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-//		   .find(BoxIdBean.class);
-//
-//	   for (BoxIdBean deviceid : deviceBean) {
-//		String device_id = deviceid.getDevice_id();
-//		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
-//		LogUtils.i(TAG, "开始扫描了状态    " + i);
-//	   }
-//	}
-//   }
    @Override
    protected void onDestroy() {
 	super.onDestroy();

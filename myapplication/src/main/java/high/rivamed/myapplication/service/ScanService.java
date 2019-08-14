@@ -6,12 +6,14 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -49,7 +51,7 @@ import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
  */
 public class ScanService extends Service {
 
-   String TAG = "ScanService";
+   String TAG = "ScanServicesss";
    private List<BoxIdBean> mBoxIdBeans;
    int k    = 0;
    int size = 0;
@@ -102,7 +104,6 @@ public class ScanService extends Service {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventStrongOpenDeviceCallBack event) {
 	mEPCDatess.clear();
-
 	LogUtils.i(TAG, "EventStrongOpenDeviceCallBack    " + event.epcs.size());
 	BoxIdBean boxIdBean = LitePal.where("device_id = ?", event.deviceId)
 		.findFirst(BoxIdBean.class);
@@ -126,36 +127,74 @@ public class ScanService extends Service {
     */
    private void putEPC(Map<String, String> epcDatess, String boxid) {
 	List<InventoryVo> mInVo = new ArrayList<>();
-
 	List<InventoryVo> allVo = getLocalAllCstVos();
 	List<InventoryVo> vos = setAllBoxVosDate(allVo, boxid);
 	mInVo.addAll(vos);
-	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
-	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
+	Iterator<Map.Entry<String, String>> iterator = epcDatess.entrySet().iterator();
+	while (iterator.hasNext()){
+	   Map.Entry<String, String> next = iterator.next();
+	   String key = next.getKey();
+	   String value = next.getValue();
+	   InventoryVo vo = LitePal.where("epc = ?", key).findFirst(InventoryVo.class);
 	   if (vo != null) {
-		mInVo.remove(vo);
+	      mInVo.remove(vo);
 	   } else {
-		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
-		    v.getValue() != null) {
-		   if (!getVosType(allVo,v.getKey())){
-			boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
-			LogUtils.i(TAG, "     Scan 入柜存入error  "+saveError);
+		if (key != null && !key.trim().equals("") && value != null) {
+		   if (!getVosType(allVo,key)){
+			boolean saveError = saveErrorVo(key,value,true,false,false);//放入，存入error流水表
+			Log.i(TAG, "     Scan 存入error流水表  "+saveError);
 		   }
 		   if (!mTitleConn){
-			boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
-			LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
+			boolean save = saveErrorVo(key,value,false,false,false);//放入，存入库存表
+			Log.i(TAG, "Scan 存入库存表    " + save);
 		   }
 		}
 	   }
 	}
-	for (InventoryVo s : mInVo) {
-	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
-	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
-	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
+	Iterator<InventoryVo> iteratorX = mInVo.iterator();
+	while (iteratorX.hasNext()){
+	   InventoryVo next = iteratorX.next();
+	   deleteVo(allVo,next.getEpc());//拿出时，删除库存表内的该条数据
+	   boolean save = saveErrorVo(next.getEpc(),next.getDeviceId(),true,true,false);//拿出时，存入到error流水表
+	   Log.i(TAG, "Scan 出柜存入 并删除   " + save);
 	}
 	if (mTitleConn){
 	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
 	}
+//	for (InventoryVo s : mInVo) {
+//	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
+//	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
+//	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
+//	}
+
+
+//	for (Map.Entry<String, String> v : epcDatess.entrySet()) {
+//	   InventoryVo vo = LitePal.where("epc = ?", v.getKey()).findFirst(InventoryVo.class);
+//	   if (vo != null) {
+//		mInVo.remove(vo);
+//		return;
+//	   } else {
+//		if (v.getKey() != null && !v.getKey().toString().trim().equals("") &&
+//		    v.getValue() != null) {
+//		   if (!getVosType(allVo,v.getKey())){
+//			boolean saveError = saveErrorVo(v.getKey(),v.getValue(),true,false,false);//放入，存入error流水表
+//			LogUtils.i(TAG, "     Scan 入柜存入error  "+saveError);
+//		   }
+//		   if (!mTitleConn){
+//			boolean save = saveErrorVo(v.getKey(),v.getValue(),false,false,false);//放入，存入库存表
+//			LogUtils.i(TAG, "Scan 入柜存入库存    " + save);
+//		   }
+//		}
+//	   }
+//	}
+//	for (InventoryVo s : mInVo) {
+//	   deleteVo(allVo,s.getEpc());//拿出时，删除库存表内的该条数据
+//	   boolean save = saveErrorVo(s.getEpc(),s.getDeviceId(),true,true,false);//拿出时，存入到error流水表
+//	   LogUtils.i(TAG, "Scan 出柜存入 并删除   " + save);
+//	}
+//	if (mTitleConn){
+//	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
+//	}
    }
 
    @Nullable

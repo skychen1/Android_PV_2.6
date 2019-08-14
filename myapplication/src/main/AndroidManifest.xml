@@ -24,7 +24,7 @@
 
 
     <application
-        android:name=".base.App"
+        android:name="high.rivamed.myapplication.base.App"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/myapplication_name"

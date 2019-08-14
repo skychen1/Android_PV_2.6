@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  >
+
+	<high.rivamed.myapplication.views.RadarView
+		android:id="@+id/radar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/y4"
+		app:circleColor="#0BF43C"
+		app:circleNum="2"
+		app:raindropNum="2"
+		app:showCross="false"
+		app:showRaindrop="false"
+		app:speed="1"
+		app:sweepColor="#0BF43C"/>
+
+	<TextView
+		android:id="@+id/radar_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="999"
+		android:textStyle="bold"
+		android:layout_centerHorizontal="true"
+		android:textSize="50sp"
+		android:textColor="@color/bg_f"
+		android:layout_marginTop="@dimen/x300"/>
+
+</RelativeLayout>
