@@ -44,7 +44,8 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 public class App extends Application {
 
-   private List<Activity> oList;//用于存放所有启动的Activity的集合
+   private List<Activity> oList;//用于存放所有启动的Activity的集合除开登录界面
+   private List<Activity> oListAll;//用于存放所有启动的Activity的集合
 
    public static final String TAG            = "BaseApplication";
    public static       int    READER_TIME    = 3000;     //扫描时间
@@ -85,6 +86,7 @@ public class App extends Application {
    public void onCreate() {
 	super.onCreate();
 	oList = new ArrayList<Activity>();
+	oListAll = new ArrayList<Activity>();
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
 	LitePal.initialize(this);//数据库初始化
@@ -189,6 +191,15 @@ public class App extends Application {
 	   Log.e(TAG, "Activity-------------->" + activity.getClass().getName());
 	}
    }
+   /**
+    * 添加Activity
+    */
+   public void addActivityAll(Activity activity) {
+	// 判断当前集合中不存在该Activity
+	if (!oListAll.contains(activity)) {
+	   oListAll.add(activity);//把当前Activity添加到集合中
+	}
+   }
 
    /**
     * 销毁单个Activity
@@ -209,8 +220,13 @@ public class App extends Application {
 	for (Activity activity : oList) {
 	   activity.finish();
 	}
+	for (Activity activity : oListAll) {
+	   activity.finish();
+	}
    }
-
+   public int getActivitySize(){
+      return oListAll.size();
+   }
    public boolean ifActivityRun(String className) {
 	Intent intent = new Intent();
 	intent.setClassName(getPackageName(), className);

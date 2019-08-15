@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ruihua.reader.ReaderManager;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -194,6 +197,9 @@ public class ScanService extends Service {
 	   unregisterReceiver(mWorkReceiver);
 	   mWorkReceiver = null;
 	}
+	ReaderManager.getManager().unRegisterCallback();
+	Eth002Manager.getEth002Manager().unRegisterCallBack();
+	Log.i("FADDDD", "管了   ");
 	super.onDestroy();
 
    }

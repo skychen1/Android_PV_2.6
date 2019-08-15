@@ -650,9 +650,9 @@ public class TestDevicesActivity extends SimpleActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        ReaderManager.getManager().unRegisterCallback();
+        ReaderManager.getManager().unRegisterCallback();
 //        ReaderManager.getManager().disConnectReader(readerId);
-//        Eth002Manager.getEth002Manager().unRegisterCallBack();
+        Eth002Manager.getEth002Manager().unRegisterCallBack();
 //        RtspManager.getManager().stopEncode("rtsp://192.168.11.96:8554/live");
 //        RtspManager.getManager().stopRtsp("rtsp://192.168.11.96:8554/live");
 
