@@ -5,7 +5,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,8 +74,6 @@ public class LoginToBePutInStorageActivity extends BaseSimpleActivity {
    private              boolean                 hasNextPage;//分页：是否有下一页
    private static final int                     loadTime = 200;//上下拉加载时间
    private              ToBePutInStorageAdapter mStorageAdapter;
-   private              int                     mTotal;
-
 
    /**
     * 盘点详情、盘亏、盘盈
@@ -155,13 +152,17 @@ public class LoginToBePutInStorageActivity extends BaseSimpleActivity {
 											     ToBePutInStorageBean.class);
 		List<ToBePutInStorageBean.PageModelBean.RowsBean> rows = toBePutInStorageBean.getPageModel()
 			.getRows();
-		mTotal = toBePutInStorageBean.getPageModel().getTotal();
+		int waitInStoreNumber = toBePutInStorageBean.getWaitInStoreNumber();
+		int outStoreNumber = toBePutInStorageBean.getOutStoreNumber();
+
 		mAllRows.addAll(rows);
 		hasNextPage = (rows.size() > SIZE - 1);
 		mStorageAdapter.notifyDataSetChanged();
 		if (mAllRows != null) {
 		   mTimelyNumber.setText(Html.fromHtml(
-			   "本次待入库数量：<font color='#262626'><big>" + mTotal + "</big>&emsp</font>"));
+			   "本次待入库数量：<font color='#262626'><big>" + waitInStoreNumber +
+			   "</big>&emsp</font>本次未入库数量：<font color='#262626'><big>" + outStoreNumber +
+			   "</big></font>"));
 		}
 	   }
 	});
@@ -171,11 +172,11 @@ public class LoginToBePutInStorageActivity extends BaseSimpleActivity {
 
    private void initData() {
 	mTimelyName.setText("当前库房：" + SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-	String[] array = mContext.getResources().getStringArray(R.array.six_tobeputin_arrays);
+	String[] array = mContext.getResources().getStringArray(R.array.seven_tobeputin_arrays);
 	titeleList = Arrays.asList(array);
 
 	mHeadView = LayoutInflater.from(this)
-		.inflate(R.layout.item_tobeputin_six_title_layout,
+		.inflate(R.layout.item_tobeputin_seven_title_layout,
 			   (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
@@ -183,6 +184,7 @@ public class LoginToBePutInStorageActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
 	setAdapterDates();
@@ -194,8 +196,9 @@ public class LoginToBePutInStorageActivity extends BaseSimpleActivity {
     * 设置数据
     */
    private void setAdapterDates() {
-	mTimelyNumber.setText(
-		Html.fromHtml("本次待入库数量：<font color='#262626'><big>" + 0 + "</big>&emsp</font>"));
+	mTimelyNumber.setText(Html.fromHtml("本次待入库数量：<font color='#262626'><big>" + 0 +
+							"</big>&emsp</font>本次未入库数量：<font color='#262626'><big>" +
+							0 + "</big></font>"));
 	if (mStorageAdapter == null) {
 	   mStorageAdapter = new ToBePutInStorageAdapter(mAllRows);
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));

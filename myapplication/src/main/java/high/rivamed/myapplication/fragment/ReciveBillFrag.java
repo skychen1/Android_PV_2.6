@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,8 +88,8 @@ public class ReciveBillFrag extends SimpleFragment {
     RelativeLayout mRelativeLayout;
     @BindView(R.id.stock_search)
     FrameLayout mStockSearch;
-    @BindView(R.id.search_et)
-    EditText mSearchEt;
+//    @BindView(R.id.search_etsss)
+//    EditText mSearchEt;
     @BindView(R.id.search_iv_delete)
     ImageView mSearchIvDelete;
     @BindView(R.id.right_top)

@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.ruihua.face.recognition.FaceManager;
@@ -16,6 +19,7 @@ import org.litepal.LitePal;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.FaceTask;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -28,6 +32,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
@@ -78,6 +83,18 @@ public class SplashActivity extends FragmentActivity {
 	   @Override
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+		String urls = MAIN_URL + NetApi.URL_CONNECT;
+		OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+		   @Override
+		   public void onSuccess(Response<String> response) {
+		      mTitleConn =true;
+		   }
+
+		   @Override
+		   public void onError(Response<String> response) {
+			mTitleConn =false;
+		   }
+		});
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);

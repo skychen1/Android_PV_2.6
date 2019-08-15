@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -142,10 +141,9 @@ public class TimelyAllFrag extends SimpleFragment {
    LinearLayout       mLinearLayout;
    @BindView(R.id.timely_title)
    RelativeLayout     mRelativeLayout;
-   @BindView(R.id.stock_search)
-   FrameLayout        mStockSearch;
-   @BindView(R.id.search_et)
-   EditText           mSearchEt;
+
+   @BindView(R.id.search_etsss)
+   EditText           mSearchEts;
    @BindView(R.id.search_iv_delete)
    ImageView          mSearchIvDelete;
    @BindView(R.id.right_top)
@@ -319,7 +317,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	mTimelyOnResume = true;
 	super.onResume();
 
-	mSearchEt.addTextChangedListener(new TextWatcher() {
+	mSearchEts.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -331,7 +329,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	         ToastUtils.showShortToast("暂无数据！请盘点后进行搜索");
 		}else {
 		   String trim = charSequence.toString().trim();
-
 		   getSearchData(trim);
 
 		}

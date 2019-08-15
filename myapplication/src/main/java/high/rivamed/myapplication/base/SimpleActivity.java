@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-//	Log.e("xxb", "SimpleActivity     " + event.connect);
+	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	mNet = event.net;
 	hasNetWork(mTitleConn,mNet);

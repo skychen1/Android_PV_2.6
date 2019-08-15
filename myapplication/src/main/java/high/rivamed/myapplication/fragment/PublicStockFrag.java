@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -19,7 +19,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -45,7 +44,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.StringUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
@@ -85,7 +83,7 @@ public class PublicStockFrag extends SimpleFragment {
    @BindView(R.id.stock_search)
    FrameLayout        mStockSearch;
    @BindView(R.id.search_et)
-   EditText           mSearchEt;
+   EditText           mSearchEts;
    @BindView(R.id.right_top)
    LinearLayout       mRightTop;
    @BindView(R.id.stock_right_btn)
@@ -157,6 +155,7 @@ public class PublicStockFrag extends SimpleFragment {
 	mType_size = arguments.getInt(TYPE_SIZE);//假数据   用来判断数据长度  表格的列表
 	mType_page = arguments.getString(TYPE_PAGE);
 	mDeviceCode = arguments.getString(DEVICECODE);
+	Log.i("ccc", "mType_size:  " + mType_size);
 	initData();
    }
 
@@ -168,18 +167,64 @@ public class PublicStockFrag extends SimpleFragment {
 	if (mType_size == FIVE) {
 	   Log.i("ccc", "ssfsfsf:  " + mDeviceCode);
 	   if (mType_page.equals(STYPE_STOCK_MIDDLE)) {
-		mSearchEt.setHint("请输入耗材名称、规格型号查询");
+		mSearchEts.setHint("请输入耗材名称、规格型号查询");
 		mRelativeLayout.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
 		mStockTimelyLl.setVisibility(View.VISIBLE);
 		mRightTop.setVisibility(View.GONE);
 		mStockLeftRg.check(R.id.stock_left_all);
-		getMiddleDate(mDeviceCode, mSearchEt);
+		getMiddleDate(mDeviceCode, mSearchEts);
+		mSearchEts.addTextChangedListener(new TextWatcher() {
+		   @Override
+		   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+		   }
+
+		   @Override
+		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			mTrim = charSequence.toString().trim();
+			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+		   }
+
+		   @Override
+		   public void afterTextChanged(Editable editable) {
+
+		   }
+		});
+		mStockLeftRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+		   @Override
+		   public void onCheckedChanged(RadioGroup group, int checkedId) {
+			switch (checkedId) {
+			   case R.id.stock_left_all://全部
+				mStopFlag = -1;
+				mInventoryDto = null;
+				Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
+				LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+				break;
+			   case R.id.stock_left_guoqi:
+				mStopFlag = 0;
+				mInventoryDto = null;
+				Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
+				LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+				break;
+			   case R.id.stock_left_jinqi:
+				mStopFlag = 1;
+				mInventoryDto = null;
+				LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+				break;
+			   //		   case R.id.stock_left_zhengchang:
+			   //			mStopFlag = 4;
+			   //			mInventoryDto = null;
+			   //			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+			   //			break;
+			}
+		   }
+		});
 	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {
 		mPublicRl.setVisibility(View.GONE);
 		getLeftDownDate(mDeviceCode);
 	   }
-	} else if (mType_size == NINE && (mType_page.equals(STYPE_STOCK_RIGHT))) {
+	} else if (mType_size == NINE && mType_page.equals(STYPE_STOCK_RIGHT)) {
 	   mRightTop.setVisibility(View.GONE);
 	   mRelativeLayout.setVisibility(View.GONE);
 	   String[] array = mContext.getResources().getStringArray(R.array.nine_unconfirm_arrays);
@@ -190,27 +235,44 @@ public class PublicStockFrag extends SimpleFragment {
 		mPublicRl.setVisibility(View.VISIBLE);
 		mStockRightLL.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
-		mSearchEt.setHint("请输入耗材名称、规格型号、操作人查询");
+		mSearchEts.setHint("请输入耗材名称、规格型号、操作人查询");
 		loadStockRightDate(mDeviceCode, "");
-		mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		mSearchEts.addTextChangedListener(new TextWatcher() {
 		   @Override
-		   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-			   mTrim = mSearchEt.getText().toString().trim();
+		   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-			   Toast.makeText(mContext, mTrim, Toast.LENGTH_SHORT).show();
-			   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-			   loadStockRightDate(mDeviceCode, mTrim);
-			   return true;
-			}
-			return false;
+		   }
+
+		   @Override
+		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			mTrim = charSequence.toString().trim();
+			loadStockRightDate(mDeviceCode, mTrim);
+		   }
+
+		   @Override
+		   public void afterTextChanged(Editable editable) {
+
 		   }
 		});
+//		mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//		   @Override
+//		   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//			if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//			   mTrim = mSearchEt.getText().toString().trim();
+//
+//			   Toast.makeText(mContext, mTrim, Toast.LENGTH_SHORT).show();
+//			   UIUtils.hideSoftInput(_mActivity, mSearchEt);
+//			   loadStockRightDate(mDeviceCode, mTrim);
+//			   return true;
+//			}
+//			return false;
+//		   }
+//		});
 
 	   } else {
-		mStockRightLL.setVisibility(View.GONE);
-		mPublicRl.setVisibility(View.GONE);
-	   }
+	   mStockRightLL.setVisibility(View.GONE);
+	   mPublicRl.setVisibility(View.GONE);
+	}
 	}
    }
 
@@ -289,7 +351,7 @@ public class PublicStockFrag extends SimpleFragment {
     *
     * @param mDeviceCode
     */
-   public void getMiddleDate(String mDeviceCode, EditText mSearchEt) {
+   public void getMiddleDate(String mDeviceCode, EditText mSearchEts) {
 	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
 	titeleList = Arrays.asList(array);
 	mSize = array.length;
@@ -298,49 +360,21 @@ public class PublicStockFrag extends SimpleFragment {
 	mStopFlag = -1;
 
 	LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
-	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-	   @Override
-	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-		   mTrim = mSearchEt.getText().toString().trim();
-		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-		   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-		   return true;
-		}
-		return false;
-	   }
-	});
 
-	mStockLeftRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-		switch (checkedId) {
-		   case R.id.stock_left_all://全部
-			mStopFlag = -1;
-			mInventoryDto = null;
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
-			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-			break;
-		   case R.id.stock_left_guoqi:
-			mStopFlag = 0;
-			mInventoryDto = null;
-			Log.i("ccc", "ssfsfsf:fef  " + mDeviceCode);
-			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-			break;
-		   case R.id.stock_left_jinqi:
-			mStopFlag = 1;
-			mInventoryDto = null;
-			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-			break;
-		   //		   case R.id.stock_left_zhengchang:
-		   //			mStopFlag = 4;
-		   //			mInventoryDto = null;
-		   //			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-		   //			break;
-		}
+//	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//	   @Override
+//	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+//		   mTrim = mSearchEt.getText().toString().trim();
+//		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
+//		   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+//		   return true;
+//		}
+//		return false;
+//	   }
+//	});
 
-	   }
-	});
+
 
    }
 

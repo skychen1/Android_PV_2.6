@@ -294,7 +294,23 @@ public class UIUtils {
 	}
 	return false;
    }
-
+   /**
+    * 获取配置项
+    *
+    * @param code
+    * @return
+    */
+   public static boolean getConfigLoginType( List<ConfigBean.ThingConfigVosBean> tCstConfigVos, String code) {
+	//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
+	   if (tCstConfigVos!=null){
+		for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
+		   if (code.equals(configType.getCode())) {
+			return true;
+		   }
+		}
+	   }
+	   return false;
+   }
    /**
     * 获取权限配置主按钮
     * @param context

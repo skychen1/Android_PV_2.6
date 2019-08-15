@@ -5,9 +5,7 @@ import android.view.View;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.fragment.PublicStockFrag;
-
-import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
+import high.rivamed.myapplication.fragment.StockRightUnconfFrag;
 
 /**
  * 项目名称:    Android_PV_2.6.4New
@@ -39,8 +37,8 @@ public class LoginUnconfirmActivity extends BaseSimpleActivity {
 	mBaseTabTvTitle.setText("未确认耗材");
 	getSupportFragmentManager()
 		.beginTransaction()
-		.add(R.id.login_stock_bg,
-		     PublicStockFrag.newInstance(9, STYPE_STOCK_RIGHT, ""))//9是数列量
+//		.add(R.id.login_stock_bg, PublicStockFrag.newInstance(9, STYPE_STOCK_RIGHT, ""))//9是数列量
+		.add(R.id.login_stock_bg, new StockRightUnconfFrag())
 		.commit();
    }
 

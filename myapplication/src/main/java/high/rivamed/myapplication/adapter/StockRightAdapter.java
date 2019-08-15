@@ -12,6 +12,9 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.UIUtils;
+import high.rivamed.myapplication.views.OnlyCodePopupWindow;
+
+import static high.rivamed.myapplication.base.App.mDm;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -57,6 +60,12 @@ public class StockRightAdapter
 	mSeven_six.setText(item.getDeviceName());
 	mSeven_seven.setText(item.getUpdateTime());
 	mSeven_eight.setText(item.getName());
+	mSeven_eight.setText(item.getName());
+	helper.setText(R.id.seven_nine,"展开");
+	helper.getView(R.id.seven_nine).setOnClickListener(view ->{
+	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
+	   window.showPopupWindow(helper.getView(R.id.seven_nine),mDm.widthPixels);
+	});
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), five, mSeven_five);
 	}

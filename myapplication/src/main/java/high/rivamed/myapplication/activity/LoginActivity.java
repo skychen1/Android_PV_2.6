@@ -30,7 +30,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
@@ -53,7 +52,6 @@ import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -79,6 +77,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_031;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_046;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
@@ -223,13 +222,21 @@ public class LoginActivity extends SimpleActivity {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
-	initTab();
+	mLoginGone = findViewById(R.id.login_gone);
+	faceFragment = new LoginFaceFragment();
+	mFragments.add(faceFragment);//人脸识别登录 TODO
+	mFragments.add(new LoginPassWordFragment());//用户名登录
+	mFragments.add(new LoginPassFragment());//紧急登录
+	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
+	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
+
    }
 
    public void getBoxSize() {
 	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
+		mTitleConn=true;
 		SPUtils.putString(getAppContext(), BOX_SIZE_DATE, "");
 		Gson gson = new Gson();
 		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
@@ -252,6 +259,7 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   startService(mIntentService);
 	}
@@ -272,8 +280,6 @@ public class LoginActivity extends SimpleActivity {
 	}).start();
 	mOnStart = true;
 	mPushFormOrders.clear();
-
-	mLoginGone = findViewById(R.id.login_gone);
 	mDownText.setText(
 		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
@@ -283,8 +289,8 @@ public class LoginActivity extends SimpleActivity {
 	   getLeftDate();
 	   getBoxSize();
 	}
+	initTab();
 	initlistener();
-
 	if (mTitleConn) {
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_DATA, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
@@ -299,7 +305,6 @@ public class LoginActivity extends SimpleActivity {
 	   SPUtils.putString(UIUtils.getContext(), REFRESH_TOKEN, "");
 	   SPUtils.putString(UIUtils.getContext(), PATIENT_TYPE, "");
 	}
-
 	mConfigType = 0;//默认获取
 	getConfigDate(mConfigType, null);
    }
@@ -318,15 +323,6 @@ public class LoginActivity extends SimpleActivity {
 		}
 	   }
 	});
-   }
-
-   @Override
-   protected void onResume() {
-	super.onResume();
-	if (MAIN_URL != null && mIntent == null) {
-	   mIntent = new Intent(this, TimerService.class);
-	   startService(mIntent);
-	}
    }
 
    /**
@@ -457,8 +453,9 @@ public class LoginActivity extends SimpleActivity {
     * 获取配置项
     */
    public void getConfigDate(int configType, String loginType) {
-
+	LogUtils.i(TAG, "getConfigDate   ");
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   LogUtils.i(TAG, "getConfigDate    ddd   "+mTitleConn);
 	   if (mTitleConn) {
 		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
 		   @Override
@@ -502,30 +499,31 @@ public class LoginActivity extends SimpleActivity {
 	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
 												   loginType));
-	mConfigType043 = UIUtils.getConfigType(App.getAppContext(), CONFIG_043);
-	mConfigType044 = UIUtils.getConfigType(App.getAppContext(), CONFIG_044);
-	mConfigType045 = UIUtils.getConfigType(App.getAppContext(), CONFIG_045);
+	mConfigType043 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_043);
+	mConfigType044 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_044);
+	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
 	//控制紧急登录tab的显示
 	mLoginPass.setVisibility(
-		UIUtils.getConfigType(mContext, CONFIG_017) ? View.VISIBLE : View.GONE);
+		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
 	//有人脸识别，显示人脸识别tab，默认选中人脸识别tab
 	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
 	mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
 	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
 	//有人脸识别或紧急登录时，可滑动
-	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigType(mContext, CONFIG_017));
-	if (UIUtils.getConfigType(mContext, CONFIG_026)){
+	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
+	LogUtils.i(TAG, "getConfigDatddffdfe   "+UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026));
+	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)){
 	   mLoginUnRL.setVisibility(View.VISIBLE);
 	   mTVLoginUnConfirmCst.setText("未确认耗材（0）");
 	   getNoConfirm();
 	}else {
 	   mLoginUnRL.setVisibility(View.INVISIBLE);
 	}
-
+	mTVLoginToBePutInStorage.setVisibility(UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046)?View.VISIBLE:View.GONE);
    }
 
    public boolean isConfigFace() {
-	return UIUtils.getConfigType(mContext, CONFIG_031);
+	return UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_031);
 	//测试时默认开启，真实情况需要根据后台配置
 	//		return true;
 	//		return true;
@@ -743,14 +741,9 @@ public class LoginActivity extends SimpleActivity {
    }
 
    private void initTab() {
-	faceFragment = new LoginFaceFragment();
-	mFragments.add(faceFragment);//人脸识别登录 TODO
-	mFragments.add(new LoginPassWordFragment());//用户名登录
-	mFragments.add(new LoginPassFragment());//紧急登录
-	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
-	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
+
 	mLoginRadiogroup.setOnCheckedChangeListener((radioGroup, i) -> {
-	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+	   if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017)) {
 		if (isConfigFace()) {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_face:
@@ -810,7 +803,7 @@ public class LoginActivity extends SimpleActivity {
 
 	@Override
 	public void onPageSelected(int position) {
-	   if (UIUtils.getConfigType(mContext, CONFIG_017)) {
+	   if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017)) {
 		if (isConfigFace()) {
 		   switch (position) {
 			case 0:

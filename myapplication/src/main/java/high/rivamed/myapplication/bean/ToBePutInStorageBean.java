@@ -53,6 +53,24 @@ public class ToBePutInStorageBean implements Serializable {
    private List<?>       outInventoryVos;
    private List<?>       errorEpcs;
    private List<?>       notInStoreCstEpcs;
+   private int waitInStoreNumber;
+   private int outStoreNumber;
+
+   public int getWaitInStoreNumber() {
+	return waitInStoreNumber;
+   }
+
+   public void setWaitInStoreNumber(int waitInStoreNumber) {
+	this.waitInStoreNumber = waitInStoreNumber;
+   }
+
+   public int getOutStoreNumber() {
+	return outStoreNumber;
+   }
+
+   public void setOutStoreNumber(int outStoreNumber) {
+	this.outStoreNumber = outStoreNumber;
+   }
 
    public boolean isOperateSuccess() { return operateSuccess;}
 
@@ -188,6 +206,15 @@ public class ToBePutInStorageBean implements Serializable {
 	   private int    deleteCount;
 	   private int    sortNum;
 	   private String       status;
+	   private String       waitInStoreNo;
+
+	   public String getWaitInStoreNo() {
+		return waitInStoreNo;
+	   }
+
+	   public void setWaitInStoreNo(String waitInStoreNo) {
+		this.waitInStoreNo = waitInStoreNo;
+	   }
 
 	   public String getStatus() {
 		return status;

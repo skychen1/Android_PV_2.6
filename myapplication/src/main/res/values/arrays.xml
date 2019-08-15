@@ -262,12 +262,13 @@
 		<item>操作</item>
 		<item>唯一码</item>
 	</string-array>
-	<string-array name="six_tobeputin_arrays">
+	<string-array name="seven_tobeputin_arrays">
 		<item>耗材名称</item>
 		<item>规格型号</item>
 		<item>EPC</item>
 		<item>唯一码</item>
 		<item>效期</item>
 		<item>状态</item>
+		<item>待入库单号</item>
 	</string-array>
 </resources>

@@ -24,23 +24,29 @@ import static high.rivamed.myapplication.base.App.mDm;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class ToBePutInStorageAdapter extends
-	BaseQuickAdapter<ToBePutInStorageBean.PageModelBean.RowsBean, BaseViewHolder> {
-   public ToBePutInStorageAdapter(@Nullable List<ToBePutInStorageBean.PageModelBean.RowsBean> data) {
-	super(R.layout.item_tobeputin_six_layout, data);
+public class ToBePutInStorageAdapter
+	extends BaseQuickAdapter<ToBePutInStorageBean.PageModelBean.RowsBean, BaseViewHolder> {
+
+   public ToBePutInStorageAdapter(
+	   @Nullable List<ToBePutInStorageBean.PageModelBean.RowsBean> data) {
+	super(R.layout.item_tobeputin_seven_layout, data);
    }
 
    @Override
    protected void convert(
 	   BaseViewHolder helper, ToBePutInStorageBean.PageModelBean.RowsBean item) {
-      helper.setText(R.id.seven_one,item.getCstName()).setText(R.id.seven_two,item.getCstSpec()).setText(R.id.seven_three,item.getEpc())
-	.setText(R.id.seven_four,"展开").setText(R.id.seven_five,item.getExpiryDate()).setText(R.id.seven_six,item.getStatus());
+	helper.setText(R.id.seven_one, item.getCstName())
+		.setText(R.id.seven_two, item.getCstSpec())
+		.setText(R.id.seven_three, item.getEpc())
+		.setText(R.id.seven_four, "展开")
+		.setText(R.id.seven_five, item.getExpiryDate())
+		.setText(R.id.seven_six, item.getStatus())
+		.setText(R.id.seven_seven, item.getWaitInStoreNo());
 
-	helper.getView(R.id.seven_four).setOnClickListener(view ->{
+	helper.getView(R.id.seven_four).setOnClickListener(view -> {
 	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
-	   window.showPopupWindow(helper.getView(R.id.seven_four),mDm.widthPixels);
+	   window.showPopupWindow(helper.getView(R.id.seven_four), mDm.widthPixels);
 	});
    }
-
 
 }

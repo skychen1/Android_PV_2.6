@@ -7,6 +7,8 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import java.util.regex.Pattern;
+
 /**
 * <p>标题: Pinyin4jUtil.java</p>
 * <p>业务描述:医疗物资综合管理系统 </p>
@@ -53,25 +55,40 @@ public   class Pinyin4jUtil {
    public static String getFirstSpell(String chinese) {
 	StringBuffer pybf = new StringBuffer();
 	char[] arr = chinese.toCharArray();
+
 	HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
 	defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
 	defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-	for (int i = 0; i < arr.length; i++) {
-	   if (arr[i] > 128) {
-		try {
-		   String[] temp = PinyinHelper.toHanyuPinyinStringArray(arr[i], defaultFormat);
-		   if (temp != null) {
-			pybf.append(temp[0].charAt(0));
+	for (char c : arr) {
+	   if (checkAccountMark(c+"")){
+		if (c > 128) {
+		   try {
+			String[] temp = PinyinHelper.toHanyuPinyinStringArray(c, defaultFormat);
+			if (temp != null) {
+			   pybf.append(temp[0].charAt(0));
+			}
+		   } catch (BadHanyuPinyinOutputFormatCombination e) {
+			e.printStackTrace();
 		   }
-		} catch (BadHanyuPinyinOutputFormatCombination e) {
-		   e.printStackTrace();
+		} else {
+		   pybf.append(c);
 		}
-	   } else {
-		pybf.append(arr[i]);
 	   }
 	}
 	return pybf.toString().replaceAll("\\W", "").trim();
    }
+
+   /**
+    * 非汉字，非数字，非字母
+    * @param account
+    * @return
+    */
+   public static boolean checkAccountMark(String account){
+	String all = "^[a-zA-Z0-9\\u4e00-\\u9fa5]+$";
+	Pattern pattern = Pattern.compile(all);
+	return pattern.matches(all,account);
+   }
+
    /**
     * 获取汉字串拼音，英文字符不变
     * @param chinese 汉字串

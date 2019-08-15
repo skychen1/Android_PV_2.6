@@ -3,6 +3,7 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -95,7 +96,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-//        Log.e("xxb", "BaseSimpleFragment     " + event.connect);
+        Log.e("xxb", "BaseSimpleFragment     " + event.connect);
         mTitleConn = event.connect;
 //        LogUtils.i(TAG, "Xmmppf  "+mTitleConn);
         selTitleIcon();

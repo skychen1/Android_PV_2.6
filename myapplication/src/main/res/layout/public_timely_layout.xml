@@ -27,7 +27,7 @@
                 >
 
                 <EditText
-                    android:id="@+id/search_et"
+                    android:id="@+id/search_etsss"
                     android:layout_width="@dimen/x450"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_search"
