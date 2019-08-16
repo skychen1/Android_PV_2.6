@@ -220,12 +220,12 @@ public class App extends Application {
 	for (Activity activity : oList) {
 	   activity.finish();
 	}
-	for (Activity activity : oListAll) {
-	   activity.finish();
-	}
+//	for (Activity activity : oListAll) {
+//	   activity.finish();
+//	}
    }
    public int getActivitySize(){
-      return oListAll.size();
+	return oListAll.size();
    }
    public boolean ifActivityRun(String className) {
 	Intent intent = new Intent();

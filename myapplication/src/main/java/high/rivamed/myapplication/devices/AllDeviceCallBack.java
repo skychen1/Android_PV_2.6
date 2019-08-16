@@ -471,7 +471,7 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onFingerFea(String deviceId, String fingerFea) {
 		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize==1){
+		if (activitySize>=1){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 2;//指纹登录
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, fingerFea, mConfigType));
@@ -498,7 +498,7 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onIDCard(String deviceId, String idCard) {
 		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize==1){
+		if (activitySize>=1){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 1;//IC卡
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, idCard, mConfigType));

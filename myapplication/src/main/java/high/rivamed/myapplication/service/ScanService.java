@@ -186,7 +186,8 @@ public class ScanService extends Service {
 	   mDeviceSizeList.add(idBean.getDevice_id());
 	}
 	initReceiver();
-	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
+	AllDeviceCallBack.getInstance().initCallBack();
+//	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
 
    }
 
