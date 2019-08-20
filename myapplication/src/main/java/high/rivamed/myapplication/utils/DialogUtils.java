@@ -36,6 +36,7 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -426,6 +427,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 onfingerprintBackListener.OnfingerprintBack(fingerList);
                 dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
             }
         });
 
@@ -498,6 +500,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 onBindIdCardListener.OnBindIdCard(mIdCard[0]);
                 dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
             }
         });
 
