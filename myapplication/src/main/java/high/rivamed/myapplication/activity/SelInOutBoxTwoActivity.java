@@ -146,6 +146,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private       LoadingDialogX.Builder mBuilder;
    private String mEpc;
    private OpenDoorDialog.Builder mBuildero;
+   private int mAllSize;
 
    /**
     * 按钮的显示转换
@@ -292,8 +293,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
-		   mBuilder.setMsg(mLocalAllSize+"");
 		   mBuilder.create().show();
+		   mBuilder.setMsg(mLocalAllSize+"");
 		}
 	   }
 	} else {
@@ -365,7 +366,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.post(new Event.EventLoadingX(true));
-	mLocalAllSize = getLocalAllCstVos().size();
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize=mAllSize;
 	mHandler = new Handler();
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
@@ -576,7 +578,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
 			mBoxInventoryVos.clear();
-			mLocalAllSize = getLocalAllCstVos().size();
+			mLocalAllSize = mAllSize;
+			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			moreStartScan(mBoxInventoryVos,mObs);
 		   } else {
 			ToastUtils.showShort("请关闭柜门，再进行操作！");
@@ -650,7 +653,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			setFalseEnabled(false);
 			mBoxInventoryVos.clear();
 			stopScan();
-			mLocalAllSize = getLocalAllCstVos().size();
+			mLocalAllSize = mAllSize;
+			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
 			   Eth002Manager.getEth002Manager().openDoor(deviceCode);

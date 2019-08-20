@@ -203,34 +203,20 @@ public class LyDateUtils {
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-	   getBoxInVos(mBoxInventoryVos);
-//	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
-//	   while (iteratorx.hasNext()){
-//		InventoryVo next = iteratorx.next();
-//		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
-//		while (voIterator.hasNext()){
-//		   InventoryVo vo = voIterator.next();
-//		   if (next.getEpc().equals(vo.getEpc())) {
-//			iteratorx.remove();
-//			break;
-//		   }
-//		}
-//	   }
+
+	   int size1 = mBoxInventoryVos.size();
+	   for (int i = 0; i < size1 - 1; i++) {
+		int size2 = mBoxInventoryVos.size();
+		for (int x = size2 - 1; x > i; x--) {
+		   if (mBoxInventoryVos.get(x).getEpc().equals(mBoxInventoryVos.get(i).getEpc())) {
+			mBoxInventoryVos.remove(x);
+		   }
+		}
+	   }
 	}
 	return mBoxInventoryVos;
    }
-   private static List<InventoryVo> getBoxInVos(List<InventoryVo> mBoxInventoryVos) {
-	Iterator<InventoryVo> it = mBoxInventoryVos.iterator();
-	InventoryVo next =null;
-	List<InventoryVo> newList = new ArrayList<InventoryVo>();
-	while(it.hasNext()){
-	   next = it.next();
-	   if(!newList.contains(next)){
-		newList.add(next);
-	   }
-	}
-	return newList;
-   }
+
    /**
     * 重新扫描
     */

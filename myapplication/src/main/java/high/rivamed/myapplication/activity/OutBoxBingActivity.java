@@ -181,6 +181,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private int mLocalAllSize;
    private String mEpc;
    private OpenDoorDialog.Builder    mBuildero;
+   private int mAllSize;
 
    /**
     * 门锁的提示
@@ -431,8 +432,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
-		   mBuilder.setMsg(mLocalAllSize+"");
 		   mBuilder.create().show();
+		   mBuilder.setMsg(mLocalAllSize+"");
 		}
 	   }
 	} else {
@@ -449,7 +450,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	EventBusUtils.register(this);
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mHandler = new Handler();
-	mLocalAllSize = getLocalAllCstVos().size();
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize = mAllSize;
 	if (mStarts == null && !mOnBtnGone) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
@@ -594,7 +596,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 		TimelyAllFrag.mPauseS = true;
 		mBoxInventoryVos.clear();
-		mLocalAllSize = getLocalAllCstVos().size();
+		mLocalAllSize = mAllSize;
 		moreStartScan(mBoxInventoryVos, mObs);
 		break;
 	   case R.id.timely_open_door_right://重新开门
@@ -602,7 +604,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   if (mStarts != null) {
 			mStarts.cancel();
 		   }
-		   mLocalAllSize = getLocalAllCstVos().size();
+		   mLocalAllSize = mAllSize;
 		   mTimelyRight.setText("确认并退出登录");
 		   TimelyAllFrag.mPauseS = true;
 		   mBoxInventoryVos.clear();

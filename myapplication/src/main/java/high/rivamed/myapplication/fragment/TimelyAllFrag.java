@@ -3,7 +3,6 @@ package high.rivamed.myapplication.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,7 +68,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.StringUtils.search;
-import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -95,7 +93,6 @@ public class TimelyAllFrag extends SimpleFragment {
    private int mEpcsNumber = 0;
    public static boolean mTimelyOnResume;
    private SavePadPdBean mPutSavePadPdDto;
-   private TimeCounts mTimeCounts;
 
    /**
     * 重新加载数据
@@ -188,25 +185,19 @@ public class TimelyAllFrag extends SimpleFragment {
 	if (event.loading) {
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showRader(mContext);
-		if (mTimeCounts!=null){
-		   mTimeCounts.start();
-		}
+		mBuilder.setMsgSize(30);
+		mBuilder.setMsg("扫描中...");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
 		   mBuilder.create().show();
-		   if (mTimeCounts!=null){
-			mTimeCounts.start();
-		   }
+		   mBuilder.setMsgSize(30);
+		   mBuilder.setMsg("扫描中...");
 		}
 	   }
 	} else {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
-		if (mTimeCounts!=null){
-		   mTimeCounts.cancel();
-		}
 		mBuilder.mDialog.dismiss();
-
 	   }
 	}
    }
@@ -223,9 +214,6 @@ public class TimelyAllFrag extends SimpleFragment {
 	if (!mPauseS) {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
-		if (mTimeCounts!=null){
-		   mTimeCounts.cancel();
-		}
 		mBuilder.mDialog.dismiss();
 	   }
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
@@ -285,13 +273,8 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	mLocalAllSize = getLocalAllCstVos().size();
-	mTimeCounts = new TimeCounts(500, 10);
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   if (mTimeCounts!=null){
-		mTimeCounts.cancel();
-	   }
 	   mBuilder.mDialog.dismiss();
 	}
 	initDateAll();
@@ -309,9 +292,6 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onResume() {
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   if (mTimeCounts!=null){
-		mTimeCounts.cancel();
-	   }
 	   mBuilder.mDialog.dismiss();
 	}
 	mTimelyOnResume = true;
@@ -475,7 +455,6 @@ public class TimelyAllFrag extends SimpleFragment {
 		   return;
 		} else {
 
-		   mLocalAllSize = getLocalAllCstVos().size();
 		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
@@ -586,6 +565,8 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void startScan() {
+
+
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	List<String> mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 
@@ -853,25 +834,5 @@ public class TimelyAllFrag extends SimpleFragment {
    public void onDestroyView() {
 	super.onDestroyView();
 	EventBusUtils.unregister(this);
-   }
-
-   /* 定义一个倒计时的内部类 */
-   public class TimeCounts extends CountDownTimer {
-
-
-	public TimeCounts(
-		long millisInFuture, long countDownInterval) {
-	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
-	}
-
-	@Override
-	public void onFinish() {// 计时完毕时触发
-
-	}
-
-	@Override
-	public void onTick(long millisUntilFinished) {// 计时过程显示
-	   mBuilder.setMsg( millisUntilFinished/50+"");
-	}
    }
 }

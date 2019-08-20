@@ -205,6 +205,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    private Runnable          mRunnableW;
    private boolean mResume;
    private OpenDoorDialog.Builder mBuildero;
+   private int mAllSize;
 
    @Override
    protected int getContentLayoutId() {
@@ -254,8 +255,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
-		   mBuilder.setMsg(mLocalAllSize+"");
 		   mBuilder.create().show();
+		   mBuilder.setMsg(mLocalAllSize+"");
 		}
 	   }
 	} else {
@@ -272,7 +273,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	EventBusUtils.register(this);
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mHandler = new Handler();
-	mLocalAllSize = getLocalAllCstVos().size();
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize = mAllSize;
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
 		.getSerializable("DATA");
 	mClossEthId = getIntent().getStringExtra("mEthId");
@@ -343,7 +345,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   mBoxInventoryVos.clear();
-		   mLocalAllSize = getLocalAllCstVos().size();
+		   mLocalAllSize = mAllSize;
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			startScan(mBoxInventoryVos, mObs, deviceCode);
@@ -355,7 +357,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   mBoxInventoryVos.clear();
-		   mLocalAllSize = getLocalAllCstVos().size();
+		   mLocalAllSize = mAllSize;
 		   reOpenDoor();
 		}
 		break;

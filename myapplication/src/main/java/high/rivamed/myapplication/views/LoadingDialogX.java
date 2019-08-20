@@ -45,7 +45,10 @@ public class LoadingDialogX extends Dialog {
 	   mLoadingText.setText(msg);
 	   return this;
 	}
-
+	public Builder setMsgSize(int size) {
+	   mLoadingText.setTextSize(size);
+	   return this;
+	}
 	public LoadingDialogX create() {
 	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
