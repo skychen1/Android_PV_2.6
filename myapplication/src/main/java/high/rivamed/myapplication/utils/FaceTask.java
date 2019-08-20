@@ -13,9 +13,7 @@ import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.utils.FileUitls;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
@@ -24,7 +22,6 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
 import static high.rivamed.myapplication.cont.Constants.FACE_PHOTO;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 
 /**
  * 项目名称：高值
@@ -89,24 +86,27 @@ public class FaceTask {
                 if (TextUtils.isEmpty(facePhotoJson)) {
                     updatePhotoList.addAll(facePhotoList);
                 } else {
-                    AllFacePhotoBean localFacePhotoBean = mGson.fromJson(facePhotoJson, AllFacePhotoBean.class);
+                    AllFacePhotoBean localFacePhotoBean = mGson.fromJson(facePhotoJson,
+                                                                         AllFacePhotoBean.class);
                     List<AllFacePhotoBean.UsersBean> localFacePhotoList = localFacePhotoBean.getUsers();
-                    for (int i = 0; i < facePhotoList.size(); i++) {
-                        AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
-                        int index = localFacePhotoList.indexOf(photoBean);
-                        if (index==-1) {
-                            //本地没有缓存
-                            updatePhotoList.add(photoBean);
-                        } else {
-                            //有本地缓存，但不是最新更新的图片，也需要重新更新
-                            AllFacePhotoBean.UsersBean bean = localFacePhotoList.get(index);
-                            if (bean.getFaceUpdateTime().compareTo(photoBean.getFaceUpdateTime()) < 0) {
-                                //最新更新时间大于本地更新时间，更新底库
-                                photoBean.setUpdate(true);
+                    new Thread(() -> {
+                        for (int i = 0; i < facePhotoList.size(); i++) {
+                            AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
+                            int index = localFacePhotoList.indexOf(photoBean);
+                            if (index == -1) {
+                                //本地没有缓存
                                 updatePhotoList.add(photoBean);
+                            } else {
+                                //有本地缓存，但不是最新更新的图片，也需要重新更新
+                                AllFacePhotoBean.UsersBean bean = localFacePhotoList.get(index);
+                                if (bean.getFaceUpdateTime().compareTo(photoBean.getFaceUpdateTime()) < 0) {
+                                    //最新更新时间大于本地更新时间，更新底库
+                                    photoBean.setUpdate(true);
+                                    updatePhotoList.add(photoBean);
+                                }
                             }
                         }
-                    }
+                    }).start();
                 }
                 //没有新照片
                 if (updatePhotoList.size() == 0){

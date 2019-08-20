@@ -201,47 +201,20 @@ public class LyDateUtils {
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-	   getBoxInVos(mBoxInventoryVos);
 
-//	   Iterator<InventoryVo> iteratorx = mBoxInventoryVos.iterator();
-//	   while (iteratorx.hasNext()){
-//		InventoryVo next = iteratorx.next();
-//		Log.i("LOGSCAN", "next----   "+next.getEpc() );
-//		Iterator<InventoryVo> voIterator = mBoxInventoryVos.iterator();
-//		while (voIterator.hasNext()){
-//		   InventoryVo vo = voIterator.next();
-//		   Log.i("LOGSCAN", "vo----   "+vo.getEpc() );
-//		   if (next.getEpc().equals(vo.getEpc())) {
-//			iteratorx.remove();
-//			break;
-//		   }
-//		}
-//	   }
-
-//	   int size1 = mBoxInventoryVos.size();
-//	   for (int i = 0; i < size1 - 1; i++) {
-//		for (int x = mBoxInventoryVos.size() - 1; x > i; x--) {
-//		   if (mBoxInventoryVos.get(x).getEpc().equals(mBoxInventoryVos.get(i).getEpc())) {
-//			mBoxInventoryVos.remove(x);
-//		   }
-//		}
-//	   }
-	}
-	Log.i("LOGSCAN", "开始mBoxInventoryVos----   "+mBoxInventoryVos.size() );
-	return mBoxInventoryVos;
-   }
-   private static List<InventoryVo> getBoxInVos(List<InventoryVo> mBoxInventoryVos) {
-	Iterator<InventoryVo> it = mBoxInventoryVos.iterator();
-	InventoryVo next =null;
-	List<InventoryVo> newList = new ArrayList<InventoryVo>();
-	while(it.hasNext()){
-	   next = it.next();
-	   if(!newList.contains(next)){
-		newList.add(next);
+	   int size1 = mBoxInventoryVos.size();
+	   for (int i = 0; i < size1 - 1; i++) {
+		int size2 = mBoxInventoryVos.size();
+		for (int x = size2 - 1; x > i; x--) {
+		   if (mBoxInventoryVos.get(x).getEpc().equals(mBoxInventoryVos.get(i).getEpc())) {
+			mBoxInventoryVos.remove(x);
+		   }
+		}
 	   }
 	}
-	return newList;
+	return mBoxInventoryVos;
    }
+
 
    /**
     * 重新扫描

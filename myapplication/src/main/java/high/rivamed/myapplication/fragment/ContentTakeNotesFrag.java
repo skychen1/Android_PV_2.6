@@ -107,13 +107,12 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
+	initData();
    }
 
    @Override
    public void onResume() {
 	super.onResume();
-	initData();
 	initListener();
    }
 
