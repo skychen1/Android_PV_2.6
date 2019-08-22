@@ -322,6 +322,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setTitleRightNum();
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
+		}else {
+		   setVosOperationType(next);
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
@@ -333,6 +335,24 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
+	}
+   }
+   /**
+    * 给vos数据设置特定值
+    * @param next
+    */
+   private void setVosOperationType(InventoryVo next) {
+	if ((mOperationType == 3 && next.getOperationStatus() != 98) || mOperationType == 4) {
+	   if (next.getIsErrorOperation() != 1||(next.getIsErrorOperation()==1&&next.getExpireStatus()==0)) {
+		next.setStatus(mOperationType + "");
+	   }
+	   if (mOperationType == 4 && next.isDateNetType()) {
+		next.setOperationStatus(3);
+	   }
+	} else {
+	   if (next.isDateNetType() || !mTitleConn) {
+		next.setIsErrorOperation(1);
 	   }
 	}
    }
@@ -418,7 +438,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOverEvent(Event.EventOverPut event) {
 	if (event.b && !mOnBtnGone) {
-	   LogUtils.i(TAG, "EventOverPut");
 	   mIntentType = 2;//2确认并退出
 	   loadBingFistDate(mIntentType);
 	}
@@ -1230,7 +1249,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mTimelyNumberText.setVisibility(View.GONE);
 		setFalseEnabled(true, false);
 	   } else {
-		LogUtils.i(TAG, "我走了falsesss");
 
 		mTimelyNumberText.setVisibility(View.VISIBLE);
 		setPointOutText(vosBean, mBoxInventoryVos, !mDoorStatusType);
@@ -1276,7 +1294,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   return;
 		}
 	   } else {
-		LogUtils.i(TAG, "我走了false");
 		if (!mDoorStatusType) {
 		   setFalseEnabled(false, false);
 		   mTimelyOpenDoorRight.setEnabled(false);
@@ -1285,7 +1302,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 
 		} else {
-		   LogUtils.i(TAG, "我走了false");
 		   mTimelyOpenDoorRight.setEnabled(true);
 		   mTimelyStartBtnRight.setEnabled(true);
 		   setFalseEnabled(true, true);

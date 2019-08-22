@@ -16,7 +16,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.OnlyCodePopupWindow;
 
@@ -74,12 +73,10 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	ImageView mdeleteIv = (ImageView) helper.getView(R.id.iv_delete);
 
 	if (item.getDeleteCount() > 0) {
-	   LogUtils.i("InBox", "解除移除");
 	   mdeleteTv.setText("取消移除");
 	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_greens));
 	   mdeleteIv.setVisibility(GONE);
 	} else {
-	   LogUtils.i("InBox", "移除");
 	   mdeleteTv.setText("移除");
 	   delete.setBackgroundColor(UIUtils.getContext().getResources().getColor(R.color.bg_delete));
 	   mdeleteIv.setVisibility(View.VISIBLE);

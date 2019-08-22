@@ -3,7 +3,6 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -27,7 +26,6 @@ import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -96,7 +94,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
-        Log.e("xxb", "BaseSimpleFragment     " + event.connect);
         mTitleConn = event.connect;
 //        LogUtils.i(TAG, "Xmmppf  "+mTitleConn);
         selTitleIcon();
@@ -110,7 +107,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
 
-        LogUtils.i("Notifier", "    "+event.num);
         if (event.num > 0) {
             mTitleMsg = true;
             if (mBaseTabBtnMsg != null) {
@@ -134,7 +130,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     public  void setTitleMsg(){
         if (mTitleMsg){
             if (mBaseTabBtnMsg!=null){
-                LogUtils.i("Notifier", "mBaseTabBtnMsg.setActivated(true)  ");
                 mBaseTabBtnMsg.setActivated(true);
             }
         }else {
@@ -208,12 +203,10 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
             case R.id.base_tab_tv_name:
                 mPopupWindow = new SettingPopupWindow(mContext);
                 mPopupWindow.showPopupWindow(mBaseTabIconRight);
-                LogUtils.i("sss", "base_tab_tv_name");
                 popupClick();
                 break;
             case R.id.base_tab_btn_msg:
                 mContext.startActivity(new Intent(mContext, MessageActivity.class));
-                LogUtils.i("sss", "base_tab_btn_msg");
                 break;
             case R.id.base_tab_tv_outlogin:
                 TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);

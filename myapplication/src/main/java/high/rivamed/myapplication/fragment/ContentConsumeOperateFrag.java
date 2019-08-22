@@ -257,7 +257,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
+	LogUtils.i(TAG, "开关门的接收    ");
 	if (!mPause && event.isMute) {
+	   LogUtils.i(TAG, "开门");
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
@@ -265,6 +267,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 	if (!mPause && !event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
+	   LogUtils.i(TAG, "关门");
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
@@ -495,8 +498,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    //赋值
    private void onSucceedDate() {
-
-	LogUtils.i(TAG, "onSucceedDate");
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("耗材操作");

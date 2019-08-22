@@ -52,6 +52,7 @@ import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -73,7 +74,7 @@ import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_031;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_034;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
@@ -261,7 +262,13 @@ public class LoginActivity extends SimpleActivity {
 	super.onStart();
 
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
-	   startService(mIntentService);
+	   if (mIntentService!=null){
+		startService(mIntentService);
+	   }else {
+		mIntentService = new Intent(this, ScanService.class);
+		startService(mIntentService);
+	   }
+
 	}
 
 	new Thread(new Runnable() {
@@ -523,7 +530,7 @@ public class LoginActivity extends SimpleActivity {
    }
 
    public boolean isConfigFace() {
-	return UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_031);
+	return UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_034);
 	//测试时默认开启，真实情况需要根据后台配置
 	//		return true;
 	//		return true;

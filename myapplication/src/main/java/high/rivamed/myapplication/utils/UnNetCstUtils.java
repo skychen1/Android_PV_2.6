@@ -108,8 +108,6 @@ public class UnNetCstUtils {
 	List<InventoryVoError> voErrors = LitePal.where("operationstatus > ? ", "0")
 		.order("renewtime desc")
 		.find(InventoryVoError.class);
-	LogUtils.i("UNCC", "voErrors   " + voErrors.size());
-
 	if (voErrors != null && voErrors.size() > 0) {
 	   return true;
 	}
@@ -136,7 +134,6 @@ public class UnNetCstUtils {
     * 来网后判断然后进行数据提交
     */
    public static void putUnNetOperateYes(Object activity) {
-	LogUtils.i("UNCC", "putUnNetOperateYes   " );
 	if (getSqlChangeType()) {//判断数据库是否有改变
 	   type++;
 	   if (type == 1) {

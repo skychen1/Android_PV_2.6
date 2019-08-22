@@ -3,6 +3,7 @@ package high.rivamed.myapplication.devices;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.net.bean.AntInfo;
@@ -68,13 +69,14 @@ public class AllDeviceCallBack {
    public static        List<String>      mReaderIdList;
    public static        List<String>      mReaderDeviceId;
    public static        List<String>      eth002DeviceIdList;
-
+  public static Gson mGson;
 
    public static AllDeviceCallBack getInstance() {
 	//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
 	if (instances == null) {
 	   synchronized (NetRequest.class) {
 		if (instances == null) {
+		   mGson = new Gson();
 		   instances = new AllDeviceCallBack();
 		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		   Log.i(TAG, "mReaderDeviceId    " + mReaderDeviceId.size());
@@ -211,8 +213,7 @@ public class AllDeviceCallBack {
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(eth002DeviceIdList.get(i))) {
-		   LogUtils.i(TAG,
-				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   Eth002Manager.getEth002Manager().openDoor((String) eth002DeviceIdList.get(i));
 		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		}
@@ -269,10 +270,17 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
 		List<String> epcs = new ArrayList<>();
+
 		for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
 		   String epc = filteListEpc(v.getKey());
-		   epcs.add(epc);
+		   if (epc!=null){
+			epcs.add(epc);
+		   }
+		   Log.i("fa333","epcepcepcepc    "+epc);
+
 		}
+
+	      Log.i("fa333","epcs    "+mGson.toJson(epcs));
 
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0 &&
 		    !mTimelyOnResume) {//强开
@@ -487,7 +495,7 @@ public class AllDeviceCallBack {
 		return epc;
 	   }
 	}
-	return epc;
+	return null;
    }
 
    public void initEth002() {

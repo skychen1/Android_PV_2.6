@@ -101,6 +101,7 @@ public class TimelyAllFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
+	Log.e("FAFAS", "START4   "+event.type);
 	if (event.type.equals("START4")) {
 	   mPauseS = false;
 	   if (mBuilder != null) {
@@ -390,6 +391,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	} else {
 	   mTimelyAllAdapter.getData().clear();
 	   mTimelyAllAdapter.getData().addAll(mInventoryVos);
+	   mTimelyAllAdapter.notifyDataSetChanged();
 	}
 	if (mDeviceCode == null || mDeviceCode.equals("")||mTbaseDevices.size()==1) {//全部的柜子详情
 	   mTimelyPutBtn.setVisibility(View.VISIBLE);
@@ -599,6 +601,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		   LogUtils.i(TAG, "mReaderDeviceId.get(i)   " + mReaderDeviceId.get(i));
 		   if (mReaderDeviceId.get(i).equals(device_id)) {
 			int x = ReaderManager.getManager().startScan(device_id, READER_TIME);
+			LogUtils.i(TAG, "启动  " + x);
 			if (x == 2) {
 			   ReaderManager.getManager().stopScan(device_id);
 			   ReaderManager.getManager().startScan(device_id, READER_TIME);
@@ -831,8 +834,9 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    @Override
-   public void onDestroyView() {
-	super.onDestroyView();
+   public void onDestroy() {
+	super.onDestroy();
 	EventBusUtils.unregister(this);
    }
+
 }

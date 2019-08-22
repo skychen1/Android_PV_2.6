@@ -21,6 +21,7 @@ import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -106,4 +107,9 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
 						STYPE_TIMELY_FIVE_DETAILS, -10);
    }
 
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	EventBusUtils.postSticky(new Event.EventFrag("START4"));
+   }
 }

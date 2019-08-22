@@ -156,6 +156,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	EventBusUtils.register(this);
 	mDeptType = SPUtils.getString(this, PATIENT_TYPE);
 	mTemPTbaseDevices = (List<BoxSizeBean.DevicesBean>) getIntent().getSerializableExtra(
 		"mTemPTbaseDevices");
@@ -554,7 +555,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		finish();
 	   } else {
 		//先绑定患者
-
+		LogUtils.i(TAG, "先绑定患者，开门");
 		EventBusUtils.post(new Event.EventButton(true, true));
 		AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
 		EventBusUtils.post(new Event.EventCheckbox(vo));

@@ -61,7 +61,7 @@ public class Constants {
     public static final String CONFIG_017 = "017";//是否启用紧急登录
     public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
     public static final String CONFIG_026 = "026";//启用未确认耗材
-    public static final String CONFIG_031 = "031";//启用人脸识别登录
+    public static final String CONFIG_034 = "034";//启用人脸识别登录
     public static final String CONFIG_042 = "042";//启用是否领用即发起计费请求
     public static final String CONFIG_043 = "043";//启用非x位的epc过滤
     public static final String CONFIG_044 = "044";//启用前x位epc为y的过滤

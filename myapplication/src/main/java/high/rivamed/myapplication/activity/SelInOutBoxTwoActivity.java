@@ -337,6 +337,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   setTitleRightNum();
 		   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 		   break;
+		}else {
+		   setVosOperationType(next);
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
@@ -347,6 +349,26 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   }else {
 		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
+	}
+   }
+
+   /**
+    * 给vos数据设置特定值
+    * @param next
+    */
+   private void setVosOperationType(InventoryVo next) {
+	if (mOperationType == 9 || mOperationType == 8 ||
+	    (mOperationType == 3 && next.getOperationStatus() != 98) || mOperationType == 4) {
+	   if (next.getIsErrorOperation() != 1||(next.getIsErrorOperation()==1&&next.getExpireStatus()==0)) {
+		next.setStatus(mOperationType + "");
+	   }
+	   if (mOperationType == 4) {
+		next.setOperationStatus(3);
+	   }
+	} else {
+	   if (next.isDateNetType() || !mTitleConn) {
+		next.setIsErrorOperation(1);
 	   }
 	}
    }

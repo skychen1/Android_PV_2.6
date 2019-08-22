@@ -60,6 +60,8 @@ public class LyDateUtils {
 		String epc1 = next.getEpc();
 		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
 		   return true;
+		}else {
+
 		}
 	   }
 //	   for (int i = 0; i < size; i++) {
@@ -98,11 +100,6 @@ public class LyDateUtils {
 		   }
 		}
 	   }
-	   //	   for (int i = 0; i < size; i++) {
-	   //		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
-	   //		   return true;
-	   //		}
-	   //	   }
 	}
 	return false;
    }

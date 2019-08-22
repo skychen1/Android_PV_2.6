@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.utils;
 
-import android.util.Log;
-
 import java.io.File;
 
 public class LogFileUtils {
@@ -11,7 +9,7 @@ public class LogFileUtils {
         if (!file.exists()) {
             file.mkdirs();
         }
-        deleteFilesByTimeOfDay(file, 4);
+        deleteFilesByTimeOfDay(file, 2);
     }
 
     private static long getFileSize(File dir) {
@@ -66,7 +64,6 @@ public class LogFileUtils {
             return true;
         } else {
             for (File file : dir.listFiles()) {
-                Log.i("offs","Time      "+file.getName());
                 if (file.isFile()) {
                     if (isOffectDay(file, offDay)) {
                         continue;
@@ -112,7 +109,6 @@ public class LogFileUtils {
      * @return
      */
     private static boolean isOffectDay(File file, int offDay) {
-        Log.i("offs","isOffectDay      "+TimeUtil.getOffectDay(System.currentTimeMillis(), file.lastModified()));
         return TimeUtil.getOffectDay(System.currentTimeMillis(), file.lastModified()) < offDay;
     }
 
