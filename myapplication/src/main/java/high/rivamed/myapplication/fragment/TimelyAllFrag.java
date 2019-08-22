@@ -451,12 +451,12 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss,R.id.timely_put_btn})
    public void onViewClicked(View view) {
+	mPauseS = false;
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-
 		   mEPCDate.clear();
 		   mBoxList.clear();
 		   mBoxList.addAll(mTbaseDevices);
