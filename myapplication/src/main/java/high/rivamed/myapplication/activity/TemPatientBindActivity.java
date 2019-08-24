@@ -148,9 +148,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   if (null == mType || !mType.equals(TEMP_AFTERBIND)) {//后绑定患者
 		setTempPatientDate(event.mEthId);
 	   }
-
 	}
-
    }
 
    @Override
@@ -257,6 +255,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Override
    protected void onResume() {
 	super.onResume();
+	EventBusUtils.register(this);
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -304,14 +303,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    protected void onDestroy() {
 	patientInfos.clear();
 	mTrim = "";
+	EventBusUtils.unregister(this);
 	super.onDestroy();
    }
 
-   @Override
-   public void onPause() {
-	EventBusUtils.unregister(this);
-	super.onPause();
-   }
 
    /**
     * 先绑定患者，关门后获取选中的患者信息，并跳转界面
@@ -689,4 +684,5 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   }
 		});
    }
+
 }

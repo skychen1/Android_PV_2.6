@@ -155,7 +155,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private OpenDoorDialog.Builder        mBuilder;
    private List<BoxSizeBean.DevicesBean> mTbaseDevices = new ArrayList<>();
-   private int                           mRbKey;
+   private int                            mRbKey;
    public static boolean                 mPause   = true;
    private       int                     mAllPage = 1;
    private       int                     mRows    = 20;
@@ -257,7 +257,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
-	LogUtils.i(TAG, "开关门的接收    ");
+	LogUtils.i(TAG, "开关门的接收    "+mRbKey);
 	if (!mPause && event.isMute) {
 	   LogUtils.i(TAG, "开门");
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
@@ -530,8 +530,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   //如果只有一个柜子,就隐藏柜子列表
 	   mConsumeDownRv.setVisibility(View.GONE);
 	}
-	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-									   mTbaseDevices);
+	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout, mTbaseDevices);
 	mConsumeDownRv.setLayoutManager(layoutManager2);
 	mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
 	mHomeFastOpenDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -542,7 +541,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   ToastUtils.showShort("请选择操作方式！");
 		} else {
 		   //点击柜子进行操作
-		   doSelectOption(position, id);
+		   if (!UIUtils.isFastDoubleClick3()){
+			doSelectOption(position, id);
+		   }else {
+			ToastUtils.showShortToast("请勿频繁操作！");
+		   }
 		}
 	   }
 	});
@@ -753,7 +756,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 					.putExtra("mRbKey", mRbKey)
 					.putExtra("GoneType", gonetype));
 		   } else {
-			ToastUtils.showShort("没有患者数据");
+			ToastUtils.showShort("没有患者数据，如需创建临时患者领用，请到管理端进行配置");
 		   }
 		}
 	   }
@@ -880,7 +883,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				   } else {
 					ToastUtils.showShortToast("机器人召唤失败！");
 				   }
-
 				}
 				Log.e(TAG, "机器人    " + result);
 			   }
@@ -890,10 +892,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	   //选择操作监听
 	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-		if (UIUtils.isFastDoubleClick(view.getId())) {
-		   return;
-		} else {
+		if (!UIUtils.isFastDoubleClick3()){
 		   doSelectOption(0, view.getId());
+		}else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   }
 	} else {

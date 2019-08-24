@@ -215,7 +215,7 @@ public class AllDeviceCallBack {
 		if (device_id.equals(eth002DeviceIdList.get(i))) {
 		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   Eth002Manager.getEth002Manager().openDoor((String) eth002DeviceIdList.get(i));
-		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
+//		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		}
 	   }
 	}
@@ -494,6 +494,9 @@ public class AllDeviceCallBack {
 	   if (!epc.endsWith(value45)) {
 		return epc;
 	   }
+	}else if (!mConfigType043 && !mConfigType044 && !mConfigType045){
+	   Log.i("fadeddd","jdaangggg");
+	   return epc;
 	}
 	return null;
    }
