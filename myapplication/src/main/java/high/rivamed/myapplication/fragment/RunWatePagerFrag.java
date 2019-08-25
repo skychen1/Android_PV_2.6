@@ -162,7 +162,7 @@ public class RunWatePagerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	LogUtils.i(TAG, "START2   " + event.type);
+	LogUtils.i(TAG, "START2   " + event.type+"    mSearchTimeStart   "+(mSearchTimeStart != null));
 	if (event.type.equals("START2") && mSearchTimeStart != null) {
 	   mSearchTimeStart.setText("");
 	   mSearchTimeEnd.setText("");
@@ -180,6 +180,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 	mSearchTypeDb.setVisibility(View.GONE);
 	initDate();
+	initlistener();
+
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
    }
 
@@ -500,6 +502,5 @@ public class RunWatePagerFrag extends SimpleFragment {
    @Override
    public void onResume() {
 	super.onResume();
-	initlistener();
    }
 }

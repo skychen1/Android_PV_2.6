@@ -121,7 +121,7 @@ public class RadarView extends View {
 	mCirclePaint.setAntiAlias(true);
 
 	mRaindropPaint = new Paint();
-	mRaindropPaint.setStyle(Paint.Style.FILL);
+//	mRaindropPaint.setStyle(Paint.Style.FILL);
 	mRaindropPaint.setAntiAlias(true);
 
 	mSweepPaint = new Paint();

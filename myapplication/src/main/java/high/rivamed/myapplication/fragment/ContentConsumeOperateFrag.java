@@ -273,6 +273,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		mBuilder = null;
 	   }
 	   intentActType(event.mEthId);
+	   LogUtils.i(TAG, "开关门的接收    "+mRbKey);
 	}
 //	if (event.isMute) {
 //	   if (mBuilder == null) {
@@ -433,6 +434,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("mEthId", mEthId));
 	}
+	LogUtils.i(TAG, "跳转：    "+mRbKey);
    }
 
    private void initData() {

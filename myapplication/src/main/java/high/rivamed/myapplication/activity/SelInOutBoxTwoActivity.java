@@ -396,6 +396,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	}
 	mOperationType = getIntent().getIntExtra("OperationType", -3);
+	Log.e("hhh","跳转：    "+mOperationType);
 	mClossEthId = getIntent().getStringExtra("mEthId");
 	setRunnable();
 	setInBoxDate();

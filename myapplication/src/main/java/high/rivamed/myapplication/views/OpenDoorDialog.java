@@ -124,7 +124,10 @@ public class OpenDoorDialog extends Dialog {
 	   new Handler().postDelayed(new Runnable() {
 		@Override
 		public void run() {
-		   mDialog.dismiss();
+		   if (mDialog!=null){
+			mDialog.dismiss();
+		   }
+
 		}
 	   }, 25000);
 	   return mDialog;

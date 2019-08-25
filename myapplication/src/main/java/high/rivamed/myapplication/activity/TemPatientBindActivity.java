@@ -198,6 +198,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	} else {
 	   setTemporaryBing("2");
 	}
+	initListener();
    }
 
    @Override
@@ -226,11 +227,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_DIALOG, -10);
 	}
-	initListener();
+
 
    }
 
    private void initListener() {
+      if(mTypeView!=null){
+
 
 	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
@@ -250,12 +253,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mRefreshLayout.finishLoadMore();
 	   }
 	});
-   }
-
-   @Override
-   protected void onResume() {
-	super.onResume();
-	EventBusUtils.register(this);
+	}
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -264,7 +262,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+		Log.i("FFASD", "charSequence   发发发");
 		mTrim = charSequence.toString().trim();
 		mAllPage = 1;
 		patientInfos.clear();
@@ -297,6 +295,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
 	   }
 	});
+   }
+
+   @Override
+   protected void onResume() {
+	super.onResume();
+	EventBusUtils.register(this);
+
    }
 
    @Override
