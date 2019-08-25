@@ -44,9 +44,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 public class App extends Application {
 
-   private List<Activity> oList;//用于存放所有启动的Activity的集合除开登录界面
-   private List<Activity> oListAll;//用于存放所有启动的Activity的集合
-
    public static final String TAG            = "BaseApplication";
    public static       int    READER_TIME    = 3000;     //扫描时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
@@ -85,11 +82,13 @@ public class App extends Application {
    @Override
    public void onCreate() {
 	super.onCreate();
-	oList = new ArrayList<Activity>();
-	oListAll = new ArrayList<Activity>();
+//	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
+//	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
+//	LeakCanary.install(this);
+
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
-	LitePal.initialize(this);//数据库初始化
+	LitePal.initialize(mAppContext);//数据库初始化
 	registDevice();//注册硬件
 	instance = this;
 	initOkGo();
@@ -183,22 +182,23 @@ public class App extends Application {
     */
    public void addActivity_(Activity activity) {
 	// 判断当前集合中不存在该Activity
-	if (!oList.contains(activity) && !activity.getClass()
-		.getName()
-		.toString()
-		.equals("high.rivamed.myapplication.activity.LoginActivity")) {
-	   oList.add(activity);//把当前Activity添加到集合中
-	   Log.e(TAG, "Activity-------------->" + activity.getClass().getName());
-	}
+//	if (!oList.contains(activity) && !activity.getClass()
+//		.getName()
+//		.toString()
+//		.equals("high.rivamed.myapplication.activity.LoginActivity")) {
+//	   oList.add(activity);//把当前Activity添加到集合中
+//	   Log.e(TAG, "Activity-------------->" + activity.getClass().getName());
+//	}
    }
    /**
     * 添加Activity
     */
    public void addActivityAll(Activity activity) {
 	// 判断当前集合中不存在该Activity
-	if (!oListAll.contains(activity)) {
-	   oListAll.add(activity);//把当前Activity添加到集合中
-	}
+	String name = activity.getClass().getName();
+//	if (!oListAll.contains(name)) {
+//	   oListAll.add(name);//把当前Activity添加到集合中
+//	}
    }
 
    /**
@@ -206,27 +206,12 @@ public class App extends Application {
     */
    public void removeActivity_(Activity activity) {
 	//判断当前集合中存在该Activity
-	if (oList.contains(activity)) {
-	   oList.remove(activity);//从集合中移除
-	   activity.finish();//销毁当前Activity
-	}
-   }
-
-   /**
-    * 销毁所有的Activity
-    */
-   public void removeALLActivity_() {
-	//通过循环，把集合中的所有Activity销毁
-	for (Activity activity : oList) {
-	   activity.finish();
-	}
-//	for (Activity activity : oListAll) {
-//	   activity.finish();
+//	if (oList.contains(activity)) {
+//	   oList.remove(activity);//从集合中移除
+//	   activity.finish();//销毁当前Activity
 //	}
    }
-   public int getActivitySize(){
-	return oListAll.size();
-   }
+
    public boolean ifActivityRun(String className) {
 	Intent intent = new Intent();
 	intent.setClassName(getPackageName(), className);

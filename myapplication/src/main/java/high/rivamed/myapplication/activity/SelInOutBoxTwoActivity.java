@@ -28,7 +28,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
@@ -396,7 +395,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	}
 	mOperationType = getIntent().getIntExtra("OperationType", -3);
-	Log.e("hhh","跳转：    "+mOperationType);
 	mClossEthId = getIntent().getStringExtra("mEthId");
 	setRunnable();
 	setInBoxDate();
@@ -791,7 +789,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			if (mIntentType == 2) {
 			   UIUtils.putOrderId(mContext);
 			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
+			   finish();
 			} else {
 			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			}
@@ -857,7 +855,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			if (mIntentType == 2) {
 			   UIUtils.putOrderId(mContext);
 			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
+			   finish();
 			} else {
 			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			}
@@ -920,7 +918,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (mIntentType == 2) {
 	   UIUtils.putOrderId(mContext);
 	   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-	   App.getInstance().removeALLActivity_();
+	   finish();
 	} else {
 	   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	}
@@ -1006,7 +1004,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc(InventoryDto mTCstInventoryTwoDto) {
-
 	if (mTCstInventoryTwoDto.getInventoryVos() != null &&
 	    mTCstInventoryTwoDto.getInventoryVos().size() > 0) {
 	   setBoxVosDate(mBoxInventoryVos,mTCstInventoryTwoDto.getInventoryVos());
@@ -1036,7 +1033,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		inventoryVos.add(mBoxInventoryVos.get(i));
 	   }
 	}
-
 	mDtoLy.setInventoryVos(inventoryVos);
 	mDtoLy.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
 	mDtoLy.setAccountId(SPUtils.getString(mContext, KEY_ACCOUNT_ID));
@@ -1054,6 +1050,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (event.mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
 			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			finish();
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
@@ -1076,7 +1073,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    @Override
    protected void onResume() {
-
 	mResume = true;
 	super.onResume();
    }
@@ -1306,6 +1302,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mStarts = null;
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();
+	if (mBuildero != null) {
+	   mBuildero.mDialog.dismiss();
+	   mBuildero = null;
+	}
+	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();
    }
 }

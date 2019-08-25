@@ -222,7 +222,6 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
                         dialog.dismiss();
                         MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }

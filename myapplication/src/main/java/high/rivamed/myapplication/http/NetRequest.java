@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import high.rivamed.myapplication.activity.LoginActivity;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.UpDateTokenBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
@@ -1009,7 +1008,6 @@ public class NetRequest {
 			((Activity) tag).getApplicationContext()
 				.startActivity(new Intent(((Activity) tag).getApplicationContext(),
 								  LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			((Activity) tag).finish();
 		   }
 		}
@@ -1035,7 +1033,6 @@ public class NetRequest {
 			   ((Activity) tag).getApplicationContext()
 				   .startActivity(new Intent(((Activity) tag).getApplicationContext(),
 								     LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
 			   ((Activity) tag).finish();
 			}
 		   }
@@ -1239,7 +1236,6 @@ public class NetRequest {
 			((Activity) tag).getApplicationContext()
 				.startActivity(new Intent(((Activity) tag).getApplicationContext(),
 								  LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			((Activity) tag).finish();
 		   }
 		}
@@ -1265,7 +1261,6 @@ public class NetRequest {
 			   ((Activity) tag).getApplicationContext()
 				   .startActivity(new Intent(((Activity) tag).getApplicationContext(),
 								     LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
 			   ((Activity) tag).finish();
 			}
 		   }

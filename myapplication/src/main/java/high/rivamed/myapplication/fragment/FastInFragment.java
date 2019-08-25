@@ -27,7 +27,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
 import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.activity.LoginActivity;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -355,7 +354,6 @@ public class FastInFragment extends SimpleFragment {
 			if (mInOutDto.getOutInventoryVos().size() == 0) {
 			   UIUtils.putOrderId(mContext);
 			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
 			} else {
 			   mTimelyLeft.setEnabled(false);
 			   mTimelyRight.setEnabled(false);

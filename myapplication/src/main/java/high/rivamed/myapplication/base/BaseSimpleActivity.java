@@ -243,8 +243,8 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
 			startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+			finish();
 		   }
 		});
 		builder.create().show();

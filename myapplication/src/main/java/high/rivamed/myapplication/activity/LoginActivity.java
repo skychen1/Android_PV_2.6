@@ -889,4 +889,11 @@ public class LoginActivity extends SimpleActivity {
    public Object newP() {
 	return null;
    }
+
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	mLoginGone.onFinishTemporaryDetach();
+	mLoginGone= null;
+   }
 }

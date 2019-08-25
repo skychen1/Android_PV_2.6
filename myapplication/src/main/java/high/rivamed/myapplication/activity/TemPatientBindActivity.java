@@ -31,7 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -134,13 +133,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   Log.i("okgo", "getTaskId   " + getTaskId()+ "   "+getClass().getName());
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   Log.i("FFASD", "mType   " + mType);
+	   Log.i("okgo", "mType   " + mType);
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
@@ -308,6 +308,10 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    protected void onDestroy() {
 	patientInfos.clear();
 	mTrim = "";
+	if (mBuilder != null) {
+	   mBuilder.mDialog.dismiss();
+	   mBuilder = null;
+	}
 	EventBusUtils.unregister(this);
 	super.onDestroy();
    }
@@ -383,9 +387,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   @Override
 			   public void onClick(DialogInterface dialog, int i) {
 				mContext.startActivity(new Intent(mContext, LoginActivity.class));
-				App.getInstance().removeALLActivity_();
 				dialog.dismiss();
 				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+				finish();
 			   }
 			});
 			builder.create().show();

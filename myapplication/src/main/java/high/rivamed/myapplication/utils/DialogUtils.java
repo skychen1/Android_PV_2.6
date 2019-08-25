@@ -26,7 +26,6 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
@@ -368,7 +367,6 @@ public class DialogUtils {
                     if (context instanceof Activity) {
                         UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
                     }
                 }
             });
@@ -396,7 +394,6 @@ public class DialogUtils {
                     if (context instanceof Activity){
                         UIUtils.putOrderId(context);
                         context.startActivity(new Intent(context, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
                     }
                 }
             });

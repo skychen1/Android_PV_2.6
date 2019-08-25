@@ -26,7 +26,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutMealTopSuitAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -283,8 +282,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
                         dialog.dismiss();
+                        finish();
                     }
                 });
                 builder.create().show();

@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
@@ -54,8 +53,8 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
-import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -834,7 +833,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
 			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
+			finish();
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -874,7 +873,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
 			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
+			finish();
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -934,7 +933,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   if (mIntentType == 2) {
 		UIUtils.putOrderId(mContext);
 		startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		App.getInstance().removeALLActivity_();
+		finish();
 	   } else {
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	   }
@@ -1392,6 +1391,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (mPatientDto != null) {
 	   mPatientDto = null;
 	}
+
 	mEthDeviceIdBack.clear();
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);

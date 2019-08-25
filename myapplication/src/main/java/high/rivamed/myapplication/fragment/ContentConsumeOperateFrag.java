@@ -38,7 +38,6 @@ import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.activity.SelInOutBoxTwoActivity;
 import high.rivamed.myapplication.activity.TemPatientBindActivity;
 import high.rivamed.myapplication.adapter.HomeFastOpenAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -273,7 +272,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		mBuilder = null;
 	   }
 	   intentActType(event.mEthId);
-	   LogUtils.i(TAG, "开关门的接收    "+mRbKey);
+	   Log.i("hhhhhh", "开关门的接收    "+mRbKey);
 	}
 //	if (event.isMute) {
 //	   if (mBuilder == null) {
@@ -415,6 +414,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     * 关门后的跳转
     */
    private void intentActType(String mEthId) {
+	Log.i("okgo", "intentActType    "+mRbKey);
 	//快速开柜
 	if (mRbKey == -1) {
 	   mContext.startActivity(
@@ -434,7 +434,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("mEthId", mEthId));
 	}
-	LogUtils.i(TAG, "跳转：    "+mRbKey);
    }
 
    private void initData() {
@@ -822,10 +821,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int i) {
 			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
-			   App.getInstance().removeALLActivity_();
 			   dialog.dismiss();
 			   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-
+			   mContext.finish();
 			}
 		   });
 		   builder.create().show();

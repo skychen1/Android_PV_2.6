@@ -28,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
@@ -171,8 +170,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
 			startActivity(new Intent(mContext, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+			finish();
 		   }
 		});
 		builder.create().show();

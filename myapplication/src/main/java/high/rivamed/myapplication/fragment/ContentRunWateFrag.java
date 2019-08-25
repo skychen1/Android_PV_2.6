@@ -24,7 +24,6 @@ import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
@@ -198,7 +197,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
                         dialog.dismiss();
                         MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }

@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.devices;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,13 +16,11 @@ import java.util.Map;
 
 import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -36,7 +33,6 @@ import static high.rivamed.myapplication.activity.LoginActivity.mConfigType044;
 import static high.rivamed.myapplication.activity.LoginActivity.mConfigType045;
 import static high.rivamed.myapplication.activity.LoginActivity.sTCstConfigVos;
 import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
@@ -495,7 +491,6 @@ public class AllDeviceCallBack {
 		return epc;
 	   }
 	}else if (!mConfigType043 && !mConfigType044 && !mConfigType045){
-	   Log.i("fadeddd","jdaangggg");
 	   return epc;
 	}
 	return null;
@@ -510,19 +505,17 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onFingerFea(String deviceId, String fingerFea) {
-		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize>=1){
+//		int activitySize = App.getInstance().getActivitySize();
+//		if (activitySize>=1){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 2;//指纹登录
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, fingerFea, mConfigType));
 		   }
-		}
-		if (activitySize==0){
-		   if (activitySize==0){
-			Intent intent = new Intent(mAppContext, ScanService.class);
-			mAppContext.stopService(intent);
-		   }
-		}
+//		}
+//		if (activitySize==0){
+//			Intent intent = new Intent(mAppContext, ScanService.class);
+//			mAppContext.stopService(intent);
+//		}
 	   }
 
 	   @Override
@@ -537,17 +530,17 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onIDCard(String deviceId, String idCard) {
-		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize>=1){
+//		int activitySize = App.getInstance().getActivitySize();
+//		if (activitySize>=1){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 1;//IC卡
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, idCard, mConfigType));
 		   }
-		}
-		if (activitySize==0){
-		   Intent intent = new Intent(mAppContext, ScanService.class);
-		   mAppContext.stopService(intent);
-		}
+//		}
+//		if (activitySize==0){
+//		   Intent intent = new Intent(mAppContext, ScanService.class);
+//		   mAppContext.stopService(intent);
+//		}
 	   }
 
 	   @Override
