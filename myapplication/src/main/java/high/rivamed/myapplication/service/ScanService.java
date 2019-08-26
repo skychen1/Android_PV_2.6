@@ -91,10 +91,18 @@ public class ScanService extends Service {
 		   mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
 		}
 	   }
-	   if (mDeviceSizeList.size() == mListDevices.size()) {
+	   if (mDeviceSizeList!=null &&mListDevices!=null&&(mDeviceSizeList.size() == mListDevices.size())) {
+//	   if (mDeviceSizeList.size() == mListDevices.size()) {
 		mDoorStatusType = true;
 		mListDevices.clear();
 		mEthDevices.clear();
+	   }
+	   if (mListDevices==null){
+		mListDevices = new ArrayList<>();
+		mDoorStatusType = true;
+	   }
+	   if (mDeviceSizeList==null){
+		mDeviceSizeList = new ArrayList<>();
 	   }
 	}
    }

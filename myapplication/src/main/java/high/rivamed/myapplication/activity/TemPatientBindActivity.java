@@ -133,14 +133,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   Log.i("okgo", "getTaskId   " + getTaskId()+ "   "+getClass().getName());
+	   Log.i("outtccc", "getTaskId   " + getTaskId()+ "   "+getClass().getName());
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   Log.i("okgo", "mType   " + mType);
+	   Log.i("outtccc", "mType   " + mType);
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
@@ -233,8 +233,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
    private void initListener() {
       if(mTypeView!=null){
-
-
 	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
@@ -305,7 +303,15 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    }
 
    @Override
+   protected void onPause() {
+	super.onPause();
+	Log.i("outtccc", "关门的接收   onPause " + mRbKey);
+   }
+
+   @Override
    protected void onDestroy() {
+	mRbKey=-3;
+	Log.i("outtccc", "关门的接收   onDestroy " + mRbKey);
 	patientInfos.clear();
 	mTrim = "";
 	if (mBuilder != null) {

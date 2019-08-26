@@ -59,8 +59,8 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    TextView           mTag;
    @BindView(R.id.take_left_ly)
    RadioButton        mTakeLeftLy;
-   @BindView(R.id.take_left_tu)
-   RadioButton        mTakeLeftTu;
+//   @BindView(R.id.take_left_tu)
+//   RadioButton        mTakeLeftTu;
    @BindView(R.id.take_rg)
    RadioGroup         mTakeRg;
    @BindView(R.id.take_number)
@@ -155,10 +155,10 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 			mStatus=3;
 			loadDate(mPatientId,mStatus);
 			break;
-		   case R.id.take_left_tu://退回
-			mStatus=7;
-			loadDate(mPatientId,mStatus);
-			break;
+//		   case R.id.take_left_tu://退回
+//			mStatus=7;
+//			loadDate(mPatientId,mStatus);
+//			break;
 		}
 	   }
 	});

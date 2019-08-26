@@ -196,6 +196,7 @@
 							android:id="@+id/content_rb_lyth"
 							style="@style/consume_rb_style"
 							android:drawablePadding="@dimen/x15"
+							android:clickable="true"
 							android:drawableTop="@drawable/hccz_ic_lyth_sel"
 							android:text="领用/退回"/>
 

@@ -1,9 +1,11 @@
 package high.rivamed.myapplication.base;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,6 +21,7 @@ import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
@@ -29,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import cn.rivamed.Eth002Manager;
+import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
@@ -82,9 +86,11 @@ public class App extends Application {
    @Override
    public void onCreate() {
 	super.onCreate();
-//	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
-//	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
-//	LeakCanary.install(this);
+	if (BuildConfig.DEBUG) {
+	   	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
+	   	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
+	   	LeakCanary.install(this);
+	}
 
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
@@ -222,4 +228,28 @@ public class App extends Application {
 	}
 	return false;
    }
+
+   /**
+    * 检测app是否存活
+    * @return
+    */
+   public int getAppSatus() {
+
+	ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+	List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(20);
+
+	//判断程序是否在栈顶
+	if (list.get(0).topActivity.getPackageName().equals(getPackageName())) {
+	   return 1;
+	} else {
+	   //判断程序是否在栈里
+	   for (ActivityManager.RunningTaskInfo info : list) {
+		if (info.topActivity.getPackageName().equals(getPackageName())) {
+		   return 2;
+		}
+	   }
+	   return 3;//栈里找不到，返回3
+	}
+   }
+
 }

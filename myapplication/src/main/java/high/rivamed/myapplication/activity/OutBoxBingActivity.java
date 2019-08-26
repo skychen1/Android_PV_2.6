@@ -478,6 +478,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mClossEthId = getIntent().getStringExtra("mEthId");
 	mBindType = getIntent().getStringExtra("bindType");
 	mPatientVo = (InventoryVo) getIntent().getSerializableExtra("basePatientVo");
+	Log.i("outtccc", "initDataAndEvent  OutBoxBi  "+mOperationType );
 	if (mPatientVo != null) {
 	   getCheckBoxDate(mPatientVo);
 	}
@@ -583,6 +584,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (!mOnBtnGone) {
 	   mStarts.cancel();
 	}
+	Log.i("outtccc", "onPause  OutBoxBi  "+mOperationType );
+
 	mPause = true;
 	super.onPause();
    }
@@ -1382,6 +1385,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    @Override
    protected void onDestroy() {
+	mOperationType=-3;
+	Log.i("outtccc", "onDestroy  OutBoxBi  "+mOperationType );
 	mOnBtnGone = false;
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();

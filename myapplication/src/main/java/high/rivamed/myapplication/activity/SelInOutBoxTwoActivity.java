@@ -396,9 +396,17 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	mOperationType = getIntent().getIntExtra("OperationType", -3);
 	mClossEthId = getIntent().getStringExtra("mEthId");
+	Log.i("outtccc","mOperationType   "+mOperationType);
 	setRunnable();
 	setInBoxDate();
 	initRxJavaSearch();
+   }
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	Log.i("outtccc","onStart   "+mOperationType);
+
    }
 
    /**
@@ -1292,6 +1300,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
    @Override
    protected void onDestroy() {
+      Log.i("outtccc","onDestroy");
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
