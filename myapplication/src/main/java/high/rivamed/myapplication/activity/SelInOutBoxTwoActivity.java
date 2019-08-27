@@ -327,7 +327,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
-	   },1000);
+	   },3000);
 	}else {
 	   mHandler.postDelayed(new Runnable() {
 		@Override
@@ -358,10 +358,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
-		setTitleRightNum();
-		setNotifyData();
-		setTimeStart();
-		EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		if (mOperationType==2||mOperationType==7||mOperationType==10){
+		   setTitleRightNum();
+		   setNotifyData();
+		   setTimeStart();
+		}else {
+		   setTitleRightNum();
+		   setNotifyData();
+		   setTimeStart();
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		}
 	   }else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -575,7 +581,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void setHandlerToastAndFinish() {
 
 	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
-	   mHandler.postDelayed(mRunnableW, 3000);
+	   mHandler.postDelayed(mRunnableW, 4000);
 	} else {
 	   setRemoveRunnable();
 	}

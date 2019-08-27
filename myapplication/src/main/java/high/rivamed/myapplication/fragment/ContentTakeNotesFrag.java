@@ -125,7 +125,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    private void initData() {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	mBaseTabTvTitle.setText("使用记录");
+	mBaseTabTvTitle.setText("领用使用");
 	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 
@@ -261,8 +261,9 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		   ToastUtils.showShortToast("数据异常");
 		}else {
 		   String patientId = mRows.get(position).getPatientId();
+		   String patientName = mRows.get(position).getPatientName();
 		   int status = 3;
-		   EventBusUtils.postSticky(new Event.EventPatientId(patientId,status));
+		   EventBusUtils.postSticky(new Event.EventPatientId(patientId,status,patientName));
 		   mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
 		}
 	   }

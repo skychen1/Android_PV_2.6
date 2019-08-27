@@ -153,7 +153,7 @@ public class LoginActivity extends SimpleActivity {
    public static          boolean           mConfigType043;
    public static     boolean           mConfigType044;
    public static          boolean           mConfigType045;
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
 	   if (mLoading == null) {
@@ -895,5 +895,10 @@ public class LoginActivity extends SimpleActivity {
 	super.onDestroy();
 	mLoginGone.onFinishTemporaryDetach();
 	mLoginGone= null;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
    }
 }
