@@ -227,12 +227,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_DIALOG, -10);
 	}
-
-
-   }
-
-   private void initListener() {
-      if(mTypeView!=null){
 	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
@@ -251,6 +245,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mRefreshLayout.finishLoadMore();
 	   }
 	});
+
+   }
+
+   private void initListener() {
+      if(mTypeView!=null){
+
 	}
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override

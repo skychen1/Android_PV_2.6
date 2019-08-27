@@ -134,11 +134,11 @@ public class SplashActivity extends FragmentActivity {
 			   new Thread(() -> FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
 				   @Override
 				   public void initSuccess() {
-					   ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+					   ToastUtils.showShortToast("人脸识别SDK初始化成功");
 					   //初始化分组
 					   boolean b = FaceManager.getManager().initGroup();
 					   if (!b) {
-						   ToastUtils.showShortSafe("创建人脸照分组失败");
+						   ToastUtils.showShortToast("创建人脸照分组失败");
 						   //初始化完成后跳转页面
 						   launchLogin();
 					   } else {
@@ -146,7 +146,7 @@ public class SplashActivity extends FragmentActivity {
 						   FaceTask faceTask = new FaceTask(SplashActivity.this);
 						   faceTask.setCallBack((hasRegister, msg) -> {
 							   LogUtils.d("faceTask", "initListener: " + msg);
-							   ToastUtils.showShortSafe(msg);
+							   ToastUtils.showShortToast(msg);
 							   //初始化完成后跳转页面
 							   launchLogin();
 						   });
@@ -158,7 +158,7 @@ public class SplashActivity extends FragmentActivity {
 
 				   @Override
 				   public void initFail(int errorCode, String msg) {
-					   ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+					   ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
 					   //初始化完成后跳转页面
 					   launchLogin();
 				   }

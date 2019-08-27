@@ -143,9 +143,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private InBoxCountDialog.Builder     mShowInBoxCountBuilder;
    private int                          mLocalAllSize;
    private       LoadingDialogX.Builder mBuilder;
-   private String mEpc;
-   private OpenDoorDialog.Builder mBuildero;
-   private int mAllSize;
+   private String                       mEpc;
+   private OpenDoorDialog.Builder       mBuildero;
+   private int                          mAllSize;
+   private boolean                      mFirstFinishLoading; //先关闭
+   private boolean                      mLastFinishLoading =false;  //后关闭
 
    /**
     * 按钮的显示转换
@@ -314,18 +316,32 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mBuilder.setMsg(mLocalAllSize+"");
 	}
 	mEpc = event.epc;
-	mHandler.postDelayed(new Runnable() {
-	   @Override
-	   public void run() {
-		if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
-		   setTitleRightNum();
-		   setNotifyData();
-		   setTimeStart();
-		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+	if (mOperationType==2||mOperationType==7||mOperationType==10){
+	   mHandler.postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (mEpc.equals(event.epc) && !event.epc.equals("-1") && mFirstFinishLoading){
+			Log.i("LOGSCAN", "关loading-   ");
+			mFirstFinishLoading =false;
+			mLastFinishLoading = true;
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   }
 		}
-	   }
-	},600);
+	   },1000);
+	}else {
+	   mHandler.postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
+			setTitleRightNum();
+			setNotifyData();
+			setTimeStart();
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
+			Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+		   }
+		}
+	   },600);
+	}
 	if (getVosType2(mBoxInventoryVos, event.epc,mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
@@ -405,6 +421,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	mFirstFinishLoading =false;
+	mLastFinishLoading =false;
 	Log.i("outtccc","onStart   "+mOperationType);
 
    }
@@ -603,6 +621,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading =false;
 		   if (ScanService.mDoorStatusType) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
@@ -620,6 +640,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   //确认
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading =false;
 		   if (mDoorStatusType) {
 			mIntentType = 1;
 			stopScan();
@@ -654,6 +676,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_right)) {
 		   return;
 		} else {
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading =false;
 		   if (mDoorStatusType) {
 			stopScan();
 			setRemoveRunnable();
@@ -678,6 +702,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   return;
 		} else {
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading =false;
 		   if (mDoorStatusType) {
 			setFalseEnabled(false);
 			mBoxInventoryVos.clear();
@@ -695,6 +721,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		break;
 	   case R.id.timely_inbox_list://查看入库统计（入库才有）
 		if (!UIUtils.isFastDoubleClick(R.id.timely_inbox_list)) {
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading =false;
 		   mShowInBoxCountBuilder = DialogUtils.showInBoxCountDialog(mContext, mDto,mTimelyRight);
 
 		}
@@ -997,7 +1025,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onError(String result) {
-		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		InventoryDto dto = setUnNetDate(mContext, mGson, mOperationType, toJson, result, 3);
 		if (dto!=null){
 		   setDateEpc(dto);
@@ -1012,14 +1039,19 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc(InventoryDto mTCstInventoryTwoDto) {
+//	Log.i("LOGSCAN", "扫描完还没关就关   ");
+	mFirstFinishLoading = true;
 	if (mTCstInventoryTwoDto.getInventoryVos() != null &&
 	    mTCstInventoryTwoDto.getInventoryVos().size() > 0) {
 	   setBoxVosDate(mBoxInventoryVos,mTCstInventoryTwoDto.getInventoryVos());
-	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	}
 	setTitleRightNum();
 	setNotifyData();
 	setTimeStart();
+	if(mLastFinishLoading){//扫描完还没关就关
+//	   Log.i("LOGSCAN", "setDateEpc- EventLoadingX    ");
+	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+	}
    }
 
 
