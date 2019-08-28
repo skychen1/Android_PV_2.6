@@ -321,7 +321,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		@Override
 		public void run() {
 		   if (mEpc.equals(event.epc) && !event.epc.equals("-1") && mFirstFinishLoading){
-			Log.i("LOGSCAN", "关loading-   ");
+			Log.i("LOGSCAN", "入柜---有返回---的动画停止---   ");
 			mFirstFinishLoading =false;
 			mLastFinishLoading = true;
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
@@ -337,7 +337,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			setNotifyData();
 			setTimeStart();
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
-			Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+			Log.i("LOGSCAN", "出柜---有耗材的动画停止-   ");
 		   }
 		}
 	   },600);
@@ -357,15 +357,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
-		setTitleRightNum();
-		setNotifyData();
-		setTimeStart();
-		EventBusUtils.postSticky(new Event.EventLoadingX(false));
-	   }
+
 	   if (event.epc.equals("-1")) {//扫描完全结束的走向
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
-		   Log.i("LOGSCAN", "-结束1-1-1-1-1-1-   ");
+		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart();
@@ -379,7 +374,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
 	   }else {
-		mObs.getScanEpc(event.deviceId, event.epc);
+	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
+		   Log.i("LOGSCAN", "没得耗材的结束  ");
+		   setTitleRightNum();
+		   setNotifyData();
+		   setTimeStart();
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		}else {
+		   mObs.getScanEpc(event.deviceId, event.epc);
+		}
 	   }
 	}
    }
