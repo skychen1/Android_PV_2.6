@@ -395,7 +395,8 @@ public class TableTypeView extends LinearLayout {
                          mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mInventoryVos, mOperation);
                          mHeadView.setBackgroundResource(R.color.bg_green);
                          mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+//                         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                         mRecyclerview.setLayoutManager(new WrapContentLinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
                          mRefreshLayout.setEnableAutoLoadMore(false);
                          mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
                          mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能

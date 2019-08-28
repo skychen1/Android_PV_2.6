@@ -55,6 +55,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -281,9 +282,8 @@ public class OutMealActivity extends BaseSimpleActivity {
                 builder.setRight("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                        removeAllAct(mContext);
                         dialog.dismiss();
-                        finish();
                     }
                 });
                 builder.create().show();

@@ -49,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -225,8 +226,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
-			startActivity(new Intent(mContext, LoginActivity.class));
-			finish();
+			removeAllAct(LoginInfoActivity.this);
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 		   }
 		});

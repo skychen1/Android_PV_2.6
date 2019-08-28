@@ -67,6 +67,7 @@ import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.TEMP_FIRSTBIND;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /*
  * 患者列表页面,可以创建临时患者
@@ -392,10 +393,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			builder.setRight("确认", new DialogInterface.OnClickListener() {
 			   @Override
 			   public void onClick(DialogInterface dialog, int i) {
-				mContext.startActivity(new Intent(mContext, LoginActivity.class));
+				removeAllAct(mContext);
 				dialog.dismiss();
 				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-				finish();
 			   }
 			});
 			builder.create().show();

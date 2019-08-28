@@ -26,7 +26,6 @@ import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
 import high.rivamed.myapplication.activity.HomeActivity;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -51,6 +50,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Android_PV_2.6.3
@@ -353,7 +353,7 @@ public class FastInFragment extends SimpleFragment {
 		   if (mIntentType == 2) {
 			if (mInOutDto.getOutInventoryVos().size() == 0) {
 			   UIUtils.putOrderId(mContext);
-			   mContext.startActivity(new Intent(mContext, LoginActivity.class));
+			   removeAllAct(mContext);
 			} else {
 			   mTimelyLeft.setEnabled(false);
 			   mTimelyRight.setEnabled(false);

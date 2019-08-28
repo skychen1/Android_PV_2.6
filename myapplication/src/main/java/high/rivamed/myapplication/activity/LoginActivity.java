@@ -880,6 +880,11 @@ public class LoginActivity extends SimpleActivity {
    protected void onPause() {
 	super.onPause();
 	mOnStart = false;
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
 	if (mTitleConn) {
 	   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 	}
@@ -895,10 +900,6 @@ public class LoginActivity extends SimpleActivity {
 	super.onDestroy();
 	mLoginGone.onFinishTemporaryDetach();
 	mLoginGone= null;
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+
    }
 }

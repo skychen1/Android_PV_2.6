@@ -21,7 +21,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
@@ -36,6 +35,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UIUtils.setMessagersV;
 
 /**
@@ -221,7 +221,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
                 builder.setRight("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                        removeAllAct(mContext);
                         dialog.dismiss();
                         MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
                     }

@@ -54,6 +54,7 @@ import static android.widget.GridLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_051;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_052;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -198,11 +199,14 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   mSearchTypeUse.setVisibility(View.VISIBLE);
 	}
 	if (UIUtils.getConfigType(mContext, CONFIG_051)) {
-	   mSearchTypeTf.setVisibility(View.VISIBLE);
 	   mSearchTypeJf.setVisibility(View.VISIBLE);
 	} else {
-	   mSearchTypeTf.setVisibility(View.GONE);
 	   mSearchTypeJf.setVisibility(View.GONE);
+	}
+	if (UIUtils.getConfigType(mContext, CONFIG_052)) {
+	   mSearchTypeTf.setVisibility(View.VISIBLE);
+	} else {
+	   mSearchTypeTf.setVisibility(View.GONE);
 	}
 	mSearchTypeThzc.setVisibility(View.GONE);
 	Date date = new Date();

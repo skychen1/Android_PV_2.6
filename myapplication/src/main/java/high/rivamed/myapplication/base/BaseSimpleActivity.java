@@ -22,7 +22,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
@@ -39,6 +38,7 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UIUtils.setMessagersV;
 
 /**
@@ -242,9 +242,8 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
 			dialog.dismiss();
-			startActivity(new Intent(mContext, LoginActivity.class));
+			removeAllAct(mContext);
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-			finish();
 		   }
 		});
 		builder.create().show();

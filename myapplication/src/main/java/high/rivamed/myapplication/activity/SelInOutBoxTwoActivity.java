@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -76,6 +75,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -327,7 +327,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
-	   },3000);
+	   },1000);
 	}else {
 	   mHandler.postDelayed(new Runnable() {
 		@Override
@@ -357,11 +357,21 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc == null || event.epc.equals("0")||event.epc.equals("-1")) {
+	   if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
+		setTitleRightNum();
+		setNotifyData();
+		setTimeStart();
+		EventBusUtils.postSticky(new Event.EventLoadingX(false));
+	   }
+	   if (event.epc.equals("-1")) {//扫描完全结束的走向
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
+		   Log.i("LOGSCAN", "-结束1-1-1-1-1-1-   ");
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart();
+		   mFirstFinishLoading =false;
+		   mLastFinishLoading = true;
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}else {
 		   setTitleRightNum();
 		   setNotifyData();
@@ -581,7 +591,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void setHandlerToastAndFinish() {
 
 	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
-	   mHandler.postDelayed(mRunnableW, 4000);
+	   mHandler.postDelayed(mRunnableW, 3000);
 	} else {
 	   setRemoveRunnable();
 	}
@@ -633,6 +643,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
 			mBoxInventoryVos.clear();
+			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			moreStartScan(mBoxInventoryVos,mObs);
@@ -713,6 +724,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			setFalseEnabled(false);
 			mBoxInventoryVos.clear();
+			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			stopScan();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
@@ -830,8 +842,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			if (mIntentType == 2) {
 			   UIUtils.putOrderId(mContext);
-			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			   finish();
+			   removeAllAct(SelInOutBoxTwoActivity.this);
+
 			} else {
 			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			}
@@ -896,8 +908,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			if (mIntentType == 2) {
 			   UIUtils.putOrderId(mContext);
-			   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			   finish();
+			   removeAllAct(SelInOutBoxTwoActivity.this);
 			} else {
 			   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 			}
@@ -959,8 +970,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 	if (mIntentType == 2) {
 	   UIUtils.putOrderId(mContext);
-	   startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-	   finish();
+	   removeAllAct(SelInOutBoxTwoActivity.this);
 	} else {
 	   EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	}
@@ -1045,7 +1055,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc(InventoryDto mTCstInventoryTwoDto) {
-//	Log.i("LOGSCAN", "扫描完还没关就关   ");
+	Log.i("LOGSCAN", "扫描完还没关就关   ");
 	mFirstFinishLoading = true;
 	if (mTCstInventoryTwoDto.getInventoryVos() != null &&
 	    mTCstInventoryTwoDto.getInventoryVos().size() > 0) {
@@ -1055,7 +1065,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	setNotifyData();
 	setTimeStart();
 	if(mLastFinishLoading){//扫描完还没关就关
-//	   Log.i("LOGSCAN", "setDateEpc- EventLoadingX    ");
+	   Log.i("LOGSCAN", "setDateEpc- EventLoadingX    ");
 	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	}
    }
@@ -1095,8 +1105,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
-			finish();
+			removeAllAct(SelInOutBoxTwoActivity.this);
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
@@ -1196,7 +1205,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			removeAllAct(SelInOutBoxTwoActivity.this);
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }
@@ -1251,7 +1260,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(SelInOutBoxTwoActivity.this, LoginActivity.class));
+			removeAllAct(SelInOutBoxTwoActivity.this);
 		   } else {
 			EventBusUtils.postSticky(new Event.EventFrag("START1"));
 		   }

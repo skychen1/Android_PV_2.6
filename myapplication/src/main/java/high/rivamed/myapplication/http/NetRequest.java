@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.http;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.bean.UpDateTokenBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
@@ -45,6 +43,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -1005,10 +1004,7 @@ public class NetRequest {
 		   ToastUtils.showShortToast("登录状态已经过期，请重新登录");
 		   if (tag instanceof Activity) {
 			UIUtils.putOrderId(tag);
-			((Activity) tag).getApplicationContext()
-				.startActivity(new Intent(((Activity) tag).getApplicationContext(),
-								  LoginActivity.class));
-			((Activity) tag).finish();
+			removeAllAct((Activity) tag);
 		   }
 		}
 	   });
@@ -1030,10 +1026,7 @@ public class NetRequest {
 			ToastUtils.showShortToast("登录状态已经过期，请重新登录");
 			if (tag instanceof Activity) {
 			   UIUtils.putOrderId(tag);
-			   ((Activity) tag).getApplicationContext()
-				   .startActivity(new Intent(((Activity) tag).getApplicationContext(),
-								     LoginActivity.class));
-			   ((Activity) tag).finish();
+			   removeAllAct((Activity) tag);
 			}
 		   }
 		}
@@ -1233,10 +1226,7 @@ public class NetRequest {
 		   ToastUtils.showShortToast("登录状态已经过期，请重新登录");
 		   if (tag instanceof Activity) {
 			UIUtils.putOrderId(tag);
-			((Activity) tag).getApplicationContext()
-				.startActivity(new Intent(((Activity) tag).getApplicationContext(),
-								  LoginActivity.class));
-			((Activity) tag).finish();
+			removeAllAct((Activity) tag);
 		   }
 		}
 	   });
@@ -1258,10 +1248,7 @@ public class NetRequest {
 			ToastUtils.showShortToast("登录状态已经过期，请重新登录");
 			if (tag instanceof Activity) {
 			   UIUtils.putOrderId(tag);
-			   ((Activity) tag).getApplicationContext()
-				   .startActivity(new Intent(((Activity) tag).getApplicationContext(),
-								     LoginActivity.class));
-			   ((Activity) tag).finish();
+			   removeAllAct((Activity) tag);
 			}
 		   }
 		}

@@ -29,7 +29,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
@@ -89,6 +88,7 @@ import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
@@ -256,7 +256,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
-	Log.i("outtccc", "接收    " + mRbKey);
 	if (!mPause && event.isMute) {
 	   Log.i("outtccc", "开门的接收    " + mRbKey);
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
@@ -903,10 +902,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			builder.setRight("确认", new DialogInterface.OnClickListener() {
 			   @Override
 			   public void onClick(DialogInterface dialog, int i) {
-				mContext.startActivity(new Intent(mContext, LoginActivity.class));
+				removeAllAct(mContext);
 				dialog.dismiss();
 				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-				mContext.finish();
 			   }
 			});
 			builder.create().show();

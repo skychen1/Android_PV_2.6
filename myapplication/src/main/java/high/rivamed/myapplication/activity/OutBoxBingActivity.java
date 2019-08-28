@@ -85,6 +85,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -835,8 +836,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			finish();
+			removeAllAct(OutBoxBingActivity.this);
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -875,8 +875,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			finish();
+			removeAllAct(OutBoxBingActivity.this);
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -935,8 +934,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	   if (mIntentType == 2) {
 		UIUtils.putOrderId(mContext);
-		startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		finish();
+		removeAllAct(OutBoxBingActivity.this);
 	   } else {
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	   }

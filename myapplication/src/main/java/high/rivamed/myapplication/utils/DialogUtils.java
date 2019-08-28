@@ -22,7 +22,6 @@ import java.util.List;
 import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
@@ -67,6 +66,7 @@ import high.rivamed.myapplication.views.WifiDialog;
 
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -366,7 +366,7 @@ public class DialogUtils {
                     dialog.dismiss();
                     if (context instanceof Activity) {
                         UIUtils.putOrderId(context);
-                        context.startActivity(new Intent(context, LoginActivity.class));
+                        removeAllAct((Activity) context);
                     }
                 }
             });
@@ -393,7 +393,7 @@ public class DialogUtils {
                     dialog.dismiss();
                     if (context instanceof Activity){
                         UIUtils.putOrderId(context);
-                        context.startActivity(new Intent(context, LoginActivity.class));
+                        removeAllAct((Activity) context);
                     }
                 }
             });
