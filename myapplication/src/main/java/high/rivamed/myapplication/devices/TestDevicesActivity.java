@@ -106,8 +106,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnFace = findViewById(R.id.btn_face);
         initListener();
         initReader();
-//        initIdCard();
-//        initFinger();
+        //        initIdCard();
+        //        initFinger();
         initEth002();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         if (wm != null) {
@@ -147,7 +147,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
                     stringBuilder.append(v.getKey() + ";");
                 }
-//                appendLog(stringBuilder.toString());
+                //                appendLog(stringBuilder.toString());
                 setLog(stringBuilder.toString());
                 Log.i("ddddda",stringBuilder.toString());
                 // TODO: 2019/1/28 循环测试
@@ -273,75 +273,75 @@ public class TestDevicesActivity extends SimpleActivity {
         });
     }
 
-//    private void initFinger() {
-//        FingerManager.getFingerManager().registerCallBack(new FingerCallBack() {
-//            @Override
-//            public void onConnectState(String deviceId, boolean isConnect) {
-//                if (isConnect) {
-//                    fingerId = deviceId;
-//                    appendLog("Finger设备已连接：ID=" + deviceId);
-//                } else {
-//                    fingerId = "";
-//                    appendLog("Finger设备已连接：ID=" + deviceId);
-//                }
-//            }
-//
-//            @Override
-//            public void OnFingerReg(String deviceId, boolean success) {
-//                appendLog("三能指纹注册命令已执行：" + deviceId + ":::success=" + success);
-//            }
-//
-//            @Override
-//            public void OnFingerRegRet(String deviceId, boolean success, String fingerData) {
-//                appendLog("三能接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
-//                if (success) {
-//                    fingerTemplate = fingerData;
-//                }
-//            }
-//
-//            @Override
-//            public void OnFingerMayMatch(String deviceId, boolean isCan) {
-//                if (isCan) {
-//                    appendLog("指纹已经采集到，可以发送模板数据进行比对：" + deviceId);
-//                    int ret = FingerManager.getFingerManager().FingerMatch(deviceId, fingerTemplate);
-//                }
-//            }
-//
-//            @Override
-//            public void OnFingerMatchRet(String deviceId, boolean matchSuccess, String reason) {
-//                if (matchSuccess) {
-//                    appendLog("指纹成功匹配：" + deviceId);
-//                } else {
-//                    appendLog("指纹匹配失败，请继续：" + deviceId);
-//                }
-//            }
-//        });
-//    }
+    //    private void initFinger() {
+    //        FingerManager.getFingerManager().registerCallBack(new FingerCallBack() {
+    //            @Override
+    //            public void onConnectState(String deviceId, boolean isConnect) {
+    //                if (isConnect) {
+    //                    fingerId = deviceId;
+    //                    appendLog("Finger设备已连接：ID=" + deviceId);
+    //                } else {
+    //                    fingerId = "";
+    //                    appendLog("Finger设备已连接：ID=" + deviceId);
+    //                }
+    //            }
+    //
+    //            @Override
+    //            public void OnFingerReg(String deviceId, boolean success) {
+    //                appendLog("三能指纹注册命令已执行：" + deviceId + ":::success=" + success);
+    //            }
+    //
+    //            @Override
+    //            public void OnFingerRegRet(String deviceId, boolean success, String fingerData) {
+    //                appendLog("三能接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
+    //                if (success) {
+    //                    fingerTemplate = fingerData;
+    //                }
+    //            }
+    //
+    //            @Override
+    //            public void OnFingerMayMatch(String deviceId, boolean isCan) {
+    //                if (isCan) {
+    //                    appendLog("指纹已经采集到，可以发送模板数据进行比对：" + deviceId);
+    //                    int ret = FingerManager.getFingerManager().FingerMatch(deviceId, fingerTemplate);
+    //                }
+    //            }
+    //
+    //            @Override
+    //            public void OnFingerMatchRet(String deviceId, boolean matchSuccess, String reason) {
+    //                if (matchSuccess) {
+    //                    appendLog("指纹成功匹配：" + deviceId);
+    //                } else {
+    //                    appendLog("指纹匹配失败，请继续：" + deviceId);
+    //                }
+    //            }
+    //        });
+    //    }
 
-//           /**
-         //     * 初始化id卡
-         //     */
-        //    private void initIdCard() {
-        //        IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
-        //            @Override
-        //            public void onConnectState(String deviceId, boolean isConnect) {
-        //                if (isConnect) {
-        //                    idCardId = deviceId;
-        //                    appendLog("IdCardISO14443A设备已连接：ID=" + deviceId);
-        //                } else {
-        //                    idCardId = "";
-        //                    appendLog("IdCardISO14443A设备已断开:ID=" + deviceId);
-        //                }
-        //            }
-        //
-        //            @Override
-        //            public void onReceiveIDCard(String cardNo) {
-        //                String string;
-        //                string = ("\t读到的卡号：" + cardNo);
-        //                appendLog(string);
-        //            }
-        //        });
-        //    }
+    //           /**
+    //     * 初始化id卡
+    //     */
+    //    private void initIdCard() {
+    //        IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
+    //            @Override
+    //            public void onConnectState(String deviceId, boolean isConnect) {
+    //                if (isConnect) {
+    //                    idCardId = deviceId;
+    //                    appendLog("IdCardISO14443A设备已连接：ID=" + deviceId);
+    //                } else {
+    //                    idCardId = "";
+    //                    appendLog("IdCardISO14443A设备已断开:ID=" + deviceId);
+    //                }
+    //            }
+    //
+    //            @Override
+    //            public void onReceiveIDCard(String cardNo) {
+    //                String string;
+    //                string = ("\t读到的卡号：" + cardNo);
+    //                appendLog(string);
+    //            }
+    //        });
+    //    }
 
     private void appendLog(String msg) {
         TestDevicesActivity.this.mTvLog.post(new Runnable() {
@@ -399,8 +399,8 @@ public class TestDevicesActivity extends SimpleActivity {
                 // TODO: 2019/3/27  本地测试
                 int ret = ReaderManager.getManager().startScan(readerId, scanTime);
                 appendLog("启动持续扫描，扫描时间为" + ";RET=" + ret);
-//                int i = RaylinksManager.getManager().startScan();
-//                appendLog("启动持续扫描，扫描时间为" + ";RET=" + i);
+                //                int i = RaylinksManager.getManager().startScan();
+                //                appendLog("启动持续扫描，扫描时间为" + ";RET=" + i);
             }
         });
 
@@ -417,7 +417,7 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void onClick(View v) {
                 int ret = Eth002Manager.getEth002Manager().fingerReg(eth002DeviceId);
-//                int ret = FingerManager.getFingerManager().FingerRegister(fingerId);
+                //                int ret = FingerManager.getFingerManager().FingerRegister(fingerId);
                 appendLog("指纹注册命令已发送 RET=" + ret + ";请等待指纹注册执行结果");
 
             }
@@ -428,7 +428,7 @@ public class TestDevicesActivity extends SimpleActivity {
             @Override
             public void onClick(View v) {
                 int ret = Eth002Manager.getEth002Manager().openDoor(eth002DeviceId);
-//                int ret = ReaderManager.getManager().openLock(readerId);
+                //                int ret = ReaderManager.getManager().openLock(readerId);
                 appendLog("开门命令已发出 ret=" + ret);
             }
         });
@@ -440,8 +440,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnOpenGpio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().openLock(readerId);
-//                appendLog("GPIO开锁命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().openLock(readerId);
+                //                appendLog("GPIO开锁命令已经发出 ret=" + ret);
             }
         });
 
@@ -452,8 +452,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnCloseGpio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().closeLock(readerId);
-//                appendLog("GPIO关锁命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().closeLock(readerId);
+                //                appendLog("GPIO关锁命令已经发出 ret=" + ret);
             }
         });
 
@@ -464,8 +464,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnOpenGpioLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().openLight(readerId);
-//                appendLog("GPIO开灯命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().openLight(readerId);
+                //                appendLog("GPIO开灯命令已经发出 ret=" + ret);
             }
         });
 
@@ -476,8 +476,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnCloseGpioLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().closeLight(readerId);
-//                appendLog("GPIO关灯命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().closeLight(readerId);
+                //                appendLog("GPIO关灯命令已经发出 ret=" + ret);
             }
         });
 
@@ -488,8 +488,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnLightState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().checkLightState(readerId);
-//                appendLog("GPIO检测门锁状态命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().checkLightState(readerId);
+                //                appendLog("GPIO检测门锁状态命令已经发出 ret=" + ret);
             }
         });
 
@@ -500,8 +500,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnLockState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int ret = ReaderManager.getManager().checkLockState(readerId);
-//                appendLog("GPIO检测门锁状态命令已经发出 ret=" + ret);
+                //                int ret = ReaderManager.getManager().checkLockState(readerId);
+                //                appendLog("GPIO检测门锁状态命令已经发出 ret=" + ret);
             }
         });
 
@@ -509,14 +509,14 @@ public class TestDevicesActivity extends SimpleActivity {
          *  create by 孙朝阳 on 2018-12-29
          *  注册指纹（三能指纹仪）
          */
-//        mBtnFingerRegisterNew.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                int ret1 = FingerManager.getFingerManager().FingerRegister(fingerId);
-//                appendLog("三能指纹注册命令已发送 RET=" + ret1 + ";请等待指纹注册执行结果");
-//            }
-//        });
+        //        mBtnFingerRegisterNew.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View v) {
+        //
+        //                int ret1 = FingerManager.getFingerManager().FingerRegister(fingerId);
+        //                appendLog("三能指纹注册命令已发送 RET=" + ret1 + ";请等待指纹注册执行结果");
+        //            }
+        //        });
         mBtnQueryConnDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -527,27 +527,27 @@ public class TestDevicesActivity extends SimpleActivity {
                     readerId = de.getIdentification();
                 }
                 appendLog(
-			    StringUtils.isEmpty(device) ? "目前暂无RFID设备连接" : ("已连接Reader设备如下：\n" + device));
+                      StringUtils.isEmpty(device) ? "目前暂无RFID设备连接" : ("已连接Reader设备如下：\n" + device));
 
-//                // TODO: 2019/3/26   2.6ID新版代码测试
-//                List<DeviceInfo> connectedDeviceIdCard = IdCardManager.getIdCardManager().getConnectedDevice();
-//                String devices = "";
-//                for (DeviceInfo de : connectedDeviceIdCard) {
-//                    devices += "\t  IdCardISO14443A 设备id： \t" + de.getIdentification() + "\n";
-//                    idCardId = de.getIdentification();
-//                }
-//                appendLog(
-//			    StringUtils.isEmpty(devices) ? "目前暂无IDCard设备连接" : ("已连接Id卡设备如下：\n" + devices));
-//
-//                // TODO: 2019/3/26   2.6三能指纹仪新代码测试
-//                List<DeviceInfo> connectedDeviceFinger = FingerManager.getFingerManager().getConnectedDevice();
-//                String fingers = "";
-//                for (com.rivamed.libdevicesbase.base.DeviceInfo df : connectedDeviceFinger) {
-//                    fingers += "\t  Finger 设备id： \t" + df.getIdentification() + "\n";
-//                    fingerId = df.getIdentification();
-//                }
-//                appendLog(
-//			    StringUtils.isEmpty(fingers) ? "目前暂无Finger设备连接" : ("已连接指纹设备如下：\n" + fingers));
+                //                // TODO: 2019/3/26   2.6ID新版代码测试
+                //                List<DeviceInfo> connectedDeviceIdCard = IdCardManager.getIdCardManager().getConnectedDevice();
+                //                String devices = "";
+                //                for (DeviceInfo de : connectedDeviceIdCard) {
+                //                    devices += "\t  IdCardISO14443A 设备id： \t" + de.getIdentification() + "\n";
+                //                    idCardId = de.getIdentification();
+                //                }
+                //                appendLog(
+                //			    StringUtils.isEmpty(devices) ? "目前暂无IDCard设备连接" : ("已连接Id卡设备如下：\n" + devices));
+                //
+                //                // TODO: 2019/3/26   2.6三能指纹仪新代码测试
+                //                List<DeviceInfo> connectedDeviceFinger = FingerManager.getFingerManager().getConnectedDevice();
+                //                String fingers = "";
+                //                for (com.rivamed.libdevicesbase.base.DeviceInfo df : connectedDeviceFinger) {
+                //                    fingers += "\t  Finger 设备id： \t" + df.getIdentification() + "\n";
+                //                    fingerId = df.getIdentification();
+                //                }
+                //                appendLog(
+                //			    StringUtils.isEmpty(fingers) ? "目前暂无Finger设备连接" : ("已连接指纹设备如下：\n" + fingers));
 
                 // TODO: 2019/3/26  ETH002模块，新代码测试
                 List<DeviceInfo> connectedDeviceEth002 = Eth002Manager.getEth002Manager().getConnectedDevice();
@@ -571,8 +571,8 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnReaderFrequency.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int i = RaylinksManager.getManager().getFrequency();
-//                appendLog("读取频率 RET=" + i);
+                //                int i = RaylinksManager.getManager().getFrequency();
+                //                appendLog("读取频率 RET=" + i);
             }
         });
         mBtnGetPower.setOnClickListener(new View.OnClickListener() {
@@ -581,8 +581,8 @@ public class TestDevicesActivity extends SimpleActivity {
                 // TODO: 2019/3/27  本地测试
                 int ret = ReaderManager.getManager().getPower(readerId);
                 appendLog("获取RFID reader功率指令发送 RET=" + ret);
-//                int i = RaylinksManager.getManager().getPower();
-//                appendLog("获取功率 RET=" + i);
+                //                int i = RaylinksManager.getManager().getPower();
+                //                appendLog("获取功率 RET=" + i);
             }
         });
 
@@ -607,8 +607,8 @@ public class TestDevicesActivity extends SimpleActivity {
                 // TODO: 2019/3/27  本地测试
                 int ret = ReaderManager.getManager().setPower(readerId, i);
                 appendLog("设置RFID reader功率指令发送 设备Ｉ=" + readerId + ",功率=" + i + " RET=" + ret);
-//                int ret = RaylinksManager.getManager().setPower(i);
-//                appendLog("设置功率功率 RET=" + ret);
+                //                int ret = RaylinksManager.getManager().setPower(i);
+                //                appendLog("设置功率功率 RET=" + ret);
             }
         });
         mBtnReaderReset.setOnClickListener(new View.OnClickListener() {
@@ -651,10 +651,10 @@ public class TestDevicesActivity extends SimpleActivity {
     protected void onDestroy() {
         super.onDestroy();
         ReaderManager.getManager().unRegisterCallback();
-//        ReaderManager.getManager().disConnectReader(readerId);
+        //        ReaderManager.getManager().disConnectReader(readerId);
         Eth002Manager.getEth002Manager().unRegisterCallBack();
-//        RtspManager.getManager().stopEncode("rtsp://192.168.11.96:8554/live");
-//        RtspManager.getManager().stopRtsp("rtsp://192.168.11.96:8554/live");
+        //        RtspManager.getManager().stopEncode("rtsp://192.168.11.96:8554/live");
+        //        RtspManager.getManager().stopRtsp("rtsp://192.168.11.96:8554/live");
 
     }
 }

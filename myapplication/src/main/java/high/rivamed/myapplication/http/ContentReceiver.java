@@ -23,8 +23,10 @@ public class ContentReceiver extends BroadcastReceiver {
       new Thread(new Runnable() {
 	   @Override
 	   public void run() {
+
 		Intent it=new Intent(context,LoginActivity.class);
 		it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(it);
 	   }
 	}).start();

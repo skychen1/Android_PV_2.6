@@ -2,6 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -257,4 +258,10 @@ public class HomeActivity extends SimpleActivity {
 	return null;
    }
 
+   @Override
+   protected void onDestroy() {
+	Log.i("FAEDD","onDestroy");
+	super.onDestroy();
+	mHomeRg=null;
+   }
 }

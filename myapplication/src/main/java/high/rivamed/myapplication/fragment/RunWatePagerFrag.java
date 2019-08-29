@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -49,10 +50,11 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
-import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static android.widget.GridLayout.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_042;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_051;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_052;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -68,8 +70,8 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_042;
 @SuppressLint("ValidFragment")
 public class RunWatePagerFrag extends SimpleFragment {
 
-   private static final int loadTime      = 200;
-   private static final String TAG        = "RunWatePagerFrag";
+   private static final int    loadTime = 200;
+   private static final String TAG      = "RunWatePagerFrag";
    List<String> titeleList = null;
    @BindView(R.id.timely_ll)
    LinearLayout       mLinearLayout;
@@ -130,24 +132,26 @@ public class RunWatePagerFrag extends SimpleFragment {
    @BindView(R.id.public_ll)
    LinearLayout       mPublicLl;
    Unbinder unbinder;
-   private View mHeadView;
-   private int  mLayout;
-   private int PAGE = 1;
-   private int SIZE = 20;
-   public   String mDeviceCode;
-   private String mTerm = null;
-   private String mEndTime = null;
-   private String mStartTime= null;
-   private String mStatus = null;
+   private View                       mHeadView;
+   private int                        mLayout;
+   private int                        PAGE       = 1;
+   private int                        SIZE       = 20;
+   public  String                     mDeviceCode;
+   private String                     mTerm      = null;
+   private String                     mEndTime   = null;
+   private String                     mStartTime = null;
+   private String                     mStatus    = null;
    private List<RunWateBean.RowsBean> mWateBeanRows;
    private RunWatePageAdapter         mWatePageAdapter;
    private RunWateBean                mRunWateBean;
+   private boolean                    hasNextPage;//分页：是否有下一页
 
    @SuppressLint("ValidFragment")
    public RunWatePagerFrag(String deviceCode) {
 	this.mDeviceCode = deviceCode;
 
    }
+
    @SuppressLint("ValidFragment")
    public RunWatePagerFrag() {
    }
@@ -159,13 +163,14 @@ public class RunWatePagerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-      LogUtils.i(TAG,"START2   "+event.type);
-	if (event.type.equals("START2")&&mSearchTimeStart!=null) {
+	LogUtils.i(TAG, "START2   " + event.type+"    mSearchTimeStart   "+(mSearchTimeStart != null));
+	if (event.type.equals("START2") && mSearchTimeStart != null) {
 	   mSearchTimeStart.setText("");
 	   mSearchTimeEnd.setText("");
 	   initDate();
 	}
    }
+
    @Override
    public int getLayoutId() {
 	return R.layout.runwate_layout;
@@ -176,26 +181,32 @@ public class RunWatePagerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 	mSearchTypeDb.setVisibility(View.GONE);
 	initDate();
+	initlistener();
 
+	mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
    }
 
    private void initDate() {
-      if (UIUtils.getConfigType(mContext, CONFIG_019)){
+	if (UIUtils.getConfigType(mContext, CONFIG_019)) {
 	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
 	   mSearchTypeUse.setVisibility(View.VISIBLE);
-	}else if (UIUtils.getConfigType(mContext, CONFIG_007)){
+	} else if (UIUtils.getConfigType(mContext, CONFIG_007)) {
 	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
 	   mSearchTypeUse.setVisibility(View.GONE);
-	}else if (!UIUtils.getConfigType(mContext, CONFIG_007)&&!UIUtils.getConfigType(mContext, CONFIG_019)){
+	} else if (!UIUtils.getConfigType(mContext, CONFIG_007) &&
+		     !UIUtils.getConfigType(mContext, CONFIG_019)) {
 	   mSearchTypeBindUse.setVisibility(View.GONE);
 	   mSearchTypeUse.setVisibility(View.VISIBLE);
 	}
-	if (UIUtils.getConfigType(mContext, CONFIG_042)){
-	   mSearchTypeTf.setVisibility(View.VISIBLE);
+	if (UIUtils.getConfigType(mContext, CONFIG_051)) {
 	   mSearchTypeJf.setVisibility(View.VISIBLE);
-	}else {
-	   mSearchTypeTf.setVisibility(View.GONE);
+	} else {
 	   mSearchTypeJf.setVisibility(View.GONE);
+	}
+	if (UIUtils.getConfigType(mContext, CONFIG_052)) {
+	   mSearchTypeTf.setVisibility(View.VISIBLE);
+	} else {
+	   mSearchTypeTf.setVisibility(View.GONE);
 	}
 	mSearchTypeThzc.setVisibility(View.GONE);
 	Date date = new Date();
@@ -206,14 +217,44 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	mSearchEt.setHint("请输入耗材名称、规格型号、操作人、EPC查询");
 
-	mStartTime=null;
-	mEndTime=null;
-//	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-	loadDate(mDeviceCode);
-
+	mStartTime = null;
+	mEndTime = null;
 	String[] array = mContext.getResources().getStringArray(R.array.nine_runwate_arrays);
 	titeleList = Arrays.asList(array);
+	initAdapter();
+	//	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+	loadDate(mDeviceCode);
 
+
+
+   }
+
+   private void initAdapter() {
+	mLayout = R.layout.item_runwate_nine_layout;
+	mHeadView = LayoutInflater.from(_mActivity)
+		.inflate(R.layout.item_runwate_nine_title_layout, (ViewGroup) mLinearLayout.getParent(),
+			   false);
+	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(2));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
+	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
+	((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+	((TextView) mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
+
+	mWateBeanRows = new ArrayList<>();
+	mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
+
+	mHeadView.setBackgroundResource(R.color.bg_green);
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+
+	mRefreshLayout.setEnableAutoLoadMore(true);
+	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	mWatePageAdapter.setEmptyView(inflate);
+	mLinearLayout.addView(mHeadView);
+	mRecyclerview.setAdapter(mWatePageAdapter);
    }
 
    private void initlistener() {
@@ -223,10 +264,10 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
-		PAGE=1;
+		PAGE = 1;
 		mRefreshLayout.setNoMoreData(false);
 		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		finishRefresh();
+		finishLoading();
 	   }
 	});
 	/**
@@ -235,9 +276,13 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
-
-		loadMoreRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		finishLoadMore();
+		if (hasNextPage) {
+		   PAGE++;
+		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		} else {
+		   finishLoading();
+		   ToastUtils.showShort("暂无更多数据");
+		}
 	   }
 	});
 	mSearchTimeStart.addTextChangedListener(new TextWatcher() {
@@ -253,7 +298,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-		if (mEndTime!=null){
+		if (mEndTime != null) {
+		   PAGE =1 ;
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		}
 	   }
@@ -271,7 +317,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-		if (mStartTime!=null){
+		if (mStartTime != null) {
+		   PAGE =1 ;
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		}
 
@@ -286,7 +333,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		mTerm = s.toString().trim();
-//		UIUtils.hideSoftInput(_mActivity, mSearchEt);
+		PAGE =1 ;
 		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	   }
 
@@ -301,6 +348,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mSearchTypeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {
+		PAGE = 1;
+		mWateBeanRows.clear();
 		switch (checkedId) {
 		   case R.id.search_type_all://全部
 			mStatus = null;
@@ -354,66 +403,40 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   }
 	});
 
-//	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//	   @Override
-//	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//		   mTerm = mSearchEt.getText().toString().trim();
-//		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-//		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-//		   return true;
-//		}
-//		return false;
-//	   }
-//	});
+	//	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+	//	   @Override
+	//	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+	//		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+	//		   mTerm = mSearchEt.getText().toString().trim();
+	//		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
+	//		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+	//		   return true;
+	//		}
+	//		return false;
+	//	   }
+	//	});
    }
 
    private void loadRunWateDate(
 	   String deviceCode, String term, String startTime, String endTime, String status) {
-
+      if (PAGE==1){
+	   mWateBeanRows.clear();
+	}
 	NetRequest.getInstance()
-		.loadRunWate("1", String.valueOf(SIZE),deviceCode, term, startTime, endTime, status, mContext, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
-			if (mWateBeanRows != null) {
-			   mWateBeanRows.clear();
-			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
-			   List<RunWateBean.RowsBean> rows = mRunWateBean.getRows();
-			   mWateBeanRows.addAll(rows);
-			   mWatePageAdapter.notifyDataSetChanged();
+		.loadRunWate(String.valueOf(PAGE), String.valueOf(SIZE), deviceCode, term, startTime,
+				 endTime, status, mContext, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
 
-			} else {
-			   mRunWateBean = mGson.fromJson(result, RunWateBean.class);
-			   mWateBeanRows = mRunWateBean.getRows();
-			   mLayout = R.layout.item_runwate_nine_layout;
-			   mHeadView = LayoutInflater.from(_mActivity).inflate(
-				   R.layout.item_runwate_nine_title_layout,
-				   (ViewGroup) mLinearLayout.getParent(), false);
-			   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-			   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-			   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(3));
-			   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(2));
-			   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-			   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-			   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
-			   ((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
-			   ((TextView) mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
-
-			   mWatePageAdapter = new RunWatePageAdapter(mLayout, mWateBeanRows);
-
-			   mHeadView.setBackgroundResource(R.color.bg_green);
-			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-			   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
-			   mRefreshLayout.setEnableAutoLoadMore(true);
-			   mRecyclerview.setAdapter(mWatePageAdapter);
-			   View inflate = LayoutInflater.from(_mActivity)
-				   .inflate(R.layout.recy_null, null);
-			   mWatePageAdapter.setEmptyView(inflate);
-			   mLinearLayout.addView(mHeadView);
-			   mWatePageAdapter.notifyDataSetChanged();
-			}
-		   }
-		});
+				RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
+				List<RunWateBean.RowsBean> rows = runWateBean.getRows();
+				mWateBeanRows.addAll(rows);
+				hasNextPage = (rows.size() > SIZE - 1);
+				mWatePageAdapter.notifyDataSetChanged();
+			   }
+			});
+	mWatePageAdapter.notifyDataSetChanged();
+	finishLoading();
    }
 
    /**
@@ -429,23 +452,22 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   String deviceCode, String term, String startTime, String endTime, String status) {
 	PAGE++;
 	NetRequest.getInstance()
-		.loadRunWate(String.valueOf(PAGE), String.valueOf(SIZE),deviceCode, term, startTime, endTime, status, mContext, new BaseResult() {
-		   @Override
-		   public void onSucceed(String result) {
+		.loadRunWate(String.valueOf(PAGE), String.valueOf(SIZE), deviceCode, term, startTime,
+				 endTime, status, mContext, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
 
-			Log.i(TAG, "deviceCodedfdfdfd  :" + PAGE+ "     "  +SIZE);
-			RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
-			List<RunWateBean.RowsBean> rows = runWateBean.getRows();
-			if (rows.size()<SIZE){
-			   mWateBeanRows.addAll(rows);
-			   finishLoadMoreWithNoMoreData();//将不会再次触发加载更多事件
-			   mWatePageAdapter.notifyDataSetChanged();
-			}else {
-			   mWateBeanRows.addAll(rows);
-			   mWatePageAdapter.notifyDataSetChanged();
-			}
-		   }
-		});
+				Log.i(TAG, "deviceCodedfdfdfd  :" + PAGE + "     " + SIZE);
+				Log.i(TAG, "result     :" + result);
+				RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
+				List<RunWateBean.RowsBean> rows = runWateBean.getRows();
+				hasNextPage = (rows.size() > SIZE - 1);
+				mWateBeanRows.addAll(rows);
+				mWatePageAdapter.notifyDataSetChanged();
+			   }
+			});
+	mWatePageAdapter.notifyDataSetChanged();
+	finishLoading();
    }
 
    @Override
@@ -458,39 +480,31 @@ public class RunWatePagerFrag extends SimpleFragment {
 	switch (view.getId()) {
 	   case R.id.search_time_start:
 
-	      DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
+		DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
 		break;
 	   case R.id.search_time_end:
 		if (mStartTime == null) {
 		   ToastUtils.showShort("请先选择开始时间");
 		} else {
-		  DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
+		   DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
 		}
 		break;
 	}
    }
-   /**
-    * 上拉加载成功
-    */
-   public void finishLoadMore() {
-	mRefreshLayout.finishLoadMore(loadTime);
-   }
 
-   /**
-    * 下拉加载成功
-    */
-   public void finishRefresh() {
+   private void finishLoading() {
+	mRefreshLayout.finishLoadMore(loadTime);
 	mRefreshLayout.finishRefresh(loadTime);
    }
-   public void finishLoadMoreWithNoMoreData(){
+
+   public void finishLoadMoreWithNoMoreData() {
 	//不用这个的原因是会去加载一遍才说没有数据
 	mRefreshLayout.finishLoadMoreWithNoMoreData();
-//	mRefreshLayout.setNoMoreData(true);
+	//	mRefreshLayout.setNoMoreData(true);
    }
 
    @Override
    public void onResume() {
 	super.onResume();
-	initlistener();
    }
 }

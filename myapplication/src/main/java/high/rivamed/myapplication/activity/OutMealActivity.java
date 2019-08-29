@@ -26,7 +26,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.OutMealTopSuitAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -56,6 +55,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -282,8 +282,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                 builder.setRight("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
+                        removeAllAct(mContext);
                         dialog.dismiss();
                     }
                 });

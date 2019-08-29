@@ -267,11 +267,13 @@ public class Event {
    public static class EventPatientId {
 
 	public String patientId;
+	public String patientName;
 	public int    status;
 
-	public EventPatientId(String patientId, int status) {
+	public EventPatientId(String patientId, int status,String patientName) {
 	   this.patientId = patientId;
 	   this.status = status;
+	   this.patientName = patientName;
 	}
    }
 

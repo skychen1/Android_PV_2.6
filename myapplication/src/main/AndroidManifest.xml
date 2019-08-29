@@ -54,6 +54,7 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activity.HomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.MyInfoActivity"

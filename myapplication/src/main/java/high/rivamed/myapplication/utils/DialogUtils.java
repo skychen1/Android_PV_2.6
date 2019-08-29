@@ -22,11 +22,9 @@ import java.util.List;
 import cn.rivamed.Eth002Manager;
 import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
@@ -36,6 +34,7 @@ import high.rivamed.myapplication.bean.LoginResultBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -67,6 +66,7 @@ import high.rivamed.myapplication.views.WifiDialog;
 
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -366,8 +366,7 @@ public class DialogUtils {
                     dialog.dismiss();
                     if (context instanceof Activity) {
                         UIUtils.putOrderId(context);
-                        context.startActivity(new Intent(context, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
+                        removeAllAct((Activity) context);
                     }
                 }
             });
@@ -394,8 +393,7 @@ public class DialogUtils {
                     dialog.dismiss();
                     if (context instanceof Activity){
                         UIUtils.putOrderId(context);
-                        context.startActivity(new Intent(context, LoginActivity.class));
-                        App.getInstance().removeALLActivity_();
+                        removeAllAct((Activity) context);
                     }
                 }
             });
@@ -426,6 +424,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 onfingerprintBackListener.OnfingerprintBack(fingerList);
                 dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
             }
         });
 
@@ -498,6 +497,7 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int i) {
                 onBindIdCardListener.OnBindIdCard(mIdCard[0]);
                 dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
             }
         });
 

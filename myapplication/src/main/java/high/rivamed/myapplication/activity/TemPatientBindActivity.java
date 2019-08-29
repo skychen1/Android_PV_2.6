@@ -31,7 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -68,6 +67,7 @@ import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.TEMP_FIRSTBIND;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /*
  * 患者列表页面,可以创建临时患者
@@ -134,13 +134,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   Log.i("outtccc", "getTaskId   " + getTaskId()+ "   "+getClass().getName());
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   Log.i("FFASD", "mType   " + mType);
+	   Log.i("outtccc", "mType   " + mType);
 	   if (mBuilder != null) {
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
@@ -148,14 +149,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   if (null == mType || !mType.equals(TEMP_AFTERBIND)) {//后绑定患者
 		setTempPatientDate(event.mEthId);
 	   }
-
 	}
-
    }
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	EventBusUtils.register(this);
 	mDeptType = SPUtils.getString(this, PATIENT_TYPE);
 	mTemPTbaseDevices = (List<BoxSizeBean.DevicesBean>) getIntent().getSerializableExtra(
 		"mTemPTbaseDevices");
@@ -199,6 +199,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	} else {
 	   setTemporaryBing("2");
 	}
+	initListener();
    }
 
    @Override
@@ -227,12 +228,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 						   mLinearLayout, mRecyclerview, mRefreshLayout, ACTIVITY,
 						   STYPE_DIALOG, -10);
 	}
-	initListener();
-
-   }
-
-   private void initListener() {
-
 	mTypeView.mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
@@ -251,11 +246,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		mRefreshLayout.finishLoadMore();
 	   }
 	});
+
    }
 
-   @Override
-   protected void onResume() {
-	super.onResume();
+   private void initListener() {
+      if(mTypeView!=null){
+
+	}
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -264,7 +261,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+		Log.i("FFASD", "charSequence   发发发");
 		mTrim = charSequence.toString().trim();
 		mAllPage = 1;
 		patientInfos.clear();
@@ -300,17 +297,32 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    }
 
    @Override
-   protected void onDestroy() {
-	patientInfos.clear();
-	mTrim = "";
-	super.onDestroy();
+   protected void onResume() {
+	super.onResume();
+	EventBusUtils.register(this);
+
    }
 
    @Override
-   public void onPause() {
-	EventBusUtils.unregister(this);
+   protected void onPause() {
 	super.onPause();
+	Log.i("outtccc", "关门的接收   onPause " + mRbKey);
    }
+
+   @Override
+   protected void onDestroy() {
+	mRbKey=-3;
+	Log.i("outtccc", "关门的接收   onDestroy " + mRbKey);
+	patientInfos.clear();
+	mTrim = "";
+	if (mBuilder != null) {
+	   mBuilder.mDialog.dismiss();
+	   mBuilder = null;
+	}
+	EventBusUtils.unregister(this);
+	super.onDestroy();
+   }
+
 
    /**
     * 先绑定患者，关门后获取选中的患者信息，并跳转界面
@@ -381,8 +393,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			builder.setRight("确认", new DialogInterface.OnClickListener() {
 			   @Override
 			   public void onClick(DialogInterface dialog, int i) {
-				mContext.startActivity(new Intent(mContext, LoginActivity.class));
-				App.getInstance().removeALLActivity_();
+				removeAllAct(mContext);
 				dialog.dismiss();
 				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 			   }
@@ -554,7 +565,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		finish();
 	   } else {
 		//先绑定患者
-
+		LogUtils.i(TAG, "先绑定患者，开门");
 		EventBusUtils.post(new Event.EventButton(true, true));
 		AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
 		EventBusUtils.post(new Event.EventCheckbox(vo));
@@ -688,4 +699,5 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   }
 		});
    }
+
 }

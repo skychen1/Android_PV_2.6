@@ -1,7 +1,9 @@
 package high.rivamed.myapplication.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
@@ -164,7 +167,15 @@ public class UIUtils {
 	return false;
 
    }
+   public static boolean isFastDoubleClick3() {
+	long time = System.currentTimeMillis();
+	if (time - lastClickTime < 1500) {
+	   return true;
+	}
+	lastClickTime = time;
+	return false;
 
+   }
    public static boolean isFastDoubleClick(int buttonId) {
 	long time = System.currentTimeMillis();
 	if (lastButtonId == buttonId && time - lastClickTime < 3000) {
@@ -671,5 +682,15 @@ public class UIUtils {
 
 	   }
 	});
+   }
+   /**
+    * 退出登录
+    * @param activity
+    */
+   public static void removeAllAct(Activity activity) {
+	Intent intent = new Intent(activity, LoginActivity.class);
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+	activity.startActivity(intent);
+	activity.finish();
    }
 }

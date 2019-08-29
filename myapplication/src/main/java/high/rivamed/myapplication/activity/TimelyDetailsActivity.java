@@ -105,5 +105,4 @@ public class TimelyDetailsActivity extends BaseSimpleActivity {
 						mRecyclerview, mRefreshLayout, ACTIVITY,
 						STYPE_TIMELY_FIVE_DETAILS, -10);
    }
-
 }

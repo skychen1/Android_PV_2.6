@@ -32,7 +32,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Event;
@@ -54,8 +53,8 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
-import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
@@ -86,6 +85,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -181,6 +181,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private int mLocalAllSize;
    private String mEpc;
    private OpenDoorDialog.Builder    mBuildero;
+   private int mAllSize;
 
    /**
     * 门锁的提示
@@ -321,6 +322,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setTitleRightNum();
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
+		}else {
+		   setVosOperationType(next);
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
@@ -332,6 +335,24 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
+	   }
+	}
+   }
+   /**
+    * 给vos数据设置特定值
+    * @param next
+    */
+   private void setVosOperationType(InventoryVo next) {
+	if ((mOperationType == 3 && next.getOperationStatus() != 98) || mOperationType == 4) {
+	   if (next.getIsErrorOperation() != 1||(next.getIsErrorOperation()==1&&next.getExpireStatus()==0)) {
+		next.setStatus(mOperationType + "");
+	   }
+	   if (mOperationType == 4 && next.isDateNetType()) {
+		next.setOperationStatus(3);
+	   }
+	} else {
+	   if (next.isDateNetType() || !mTitleConn) {
+		next.setIsErrorOperation(1);
 	   }
 	}
    }
@@ -417,7 +438,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOverEvent(Event.EventOverPut event) {
 	if (event.b && !mOnBtnGone) {
-	   LogUtils.i(TAG, "EventOverPut");
 	   mIntentType = 2;//2确认并退出
 	   loadBingFistDate(mIntentType);
 	}
@@ -431,8 +451,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
-		   mBuilder.setMsg(mLocalAllSize+"");
 		   mBuilder.create().show();
+		   mBuilder.setMsg(mLocalAllSize+"");
 		}
 	   }
 	} else {
@@ -449,7 +469,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	EventBusUtils.register(this);
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mHandler = new Handler();
-	mLocalAllSize = getLocalAllCstVos().size();
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize = mAllSize;
 	if (mStarts == null && !mOnBtnGone) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
 	   mStarts.cancel();
@@ -458,6 +479,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mClossEthId = getIntent().getStringExtra("mEthId");
 	mBindType = getIntent().getStringExtra("bindType");
 	mPatientVo = (InventoryVo) getIntent().getSerializableExtra("basePatientVo");
+	Log.i("outtccc", "initDataAndEvent  OutBoxBi  "+mOperationType );
 	if (mPatientVo != null) {
 	   getCheckBoxDate(mPatientVo);
 	}
@@ -563,6 +585,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (!mOnBtnGone) {
 	   mStarts.cancel();
 	}
+	Log.i("outtccc", "onPause  OutBoxBi  "+mOperationType );
+
 	mPause = true;
 	super.onPause();
    }
@@ -594,7 +618,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 		TimelyAllFrag.mPauseS = true;
 		mBoxInventoryVos.clear();
-		mLocalAllSize = getLocalAllCstVos().size();
+		mLocalAllSize = mAllSize;
 		moreStartScan(mBoxInventoryVos, mObs);
 		break;
 	   case R.id.timely_open_door_right://重新开门
@@ -602,7 +626,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   if (mStarts != null) {
 			mStarts.cancel();
 		   }
-		   mLocalAllSize = getLocalAllCstVos().size();
+		   mLocalAllSize = mAllSize;
 		   mTimelyRight.setText("确认并退出登录");
 		   TimelyAllFrag.mPauseS = true;
 		   mBoxInventoryVos.clear();
@@ -812,8 +836,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
+			removeAllAct(OutBoxBingActivity.this);
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -852,8 +875,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		   if (mIntentType == 2) {
 			UIUtils.putOrderId(mContext);
-			startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-			App.getInstance().removeALLActivity_();
+			removeAllAct(OutBoxBingActivity.this);
 		   }
 		   if (!getSqlChangeType()) {
 			getAllCstDate(this);
@@ -912,8 +934,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	   if (mIntentType == 2) {
 		UIUtils.putOrderId(mContext);
-		startActivity(new Intent(OutBoxBingActivity.this, LoginActivity.class));
-		App.getInstance().removeALLActivity_();
+		removeAllAct(OutBoxBingActivity.this);
 	   } else {
 		EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	   }
@@ -1228,7 +1249,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mTimelyNumberText.setVisibility(View.GONE);
 		setFalseEnabled(true, false);
 	   } else {
-		LogUtils.i(TAG, "我走了falsesss");
 
 		mTimelyNumberText.setVisibility(View.VISIBLE);
 		setPointOutText(vosBean, mBoxInventoryVos, !mDoorStatusType);
@@ -1274,7 +1294,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   return;
 		}
 	   } else {
-		LogUtils.i(TAG, "我走了false");
 		if (!mDoorStatusType) {
 		   setFalseEnabled(false, false);
 		   mTimelyOpenDoorRight.setEnabled(false);
@@ -1283,7 +1302,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 
 		} else {
-		   LogUtils.i(TAG, "我走了false");
 		   mTimelyOpenDoorRight.setEnabled(true);
 		   mTimelyStartBtnRight.setEnabled(true);
 		   setFalseEnabled(true, true);
@@ -1365,6 +1383,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    @Override
    protected void onDestroy() {
+	mOperationType=-3;
+	Log.i("outtccc", "onDestroy  OutBoxBi  "+mOperationType );
 	mOnBtnGone = false;
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
@@ -1374,6 +1394,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (mPatientDto != null) {
 	   mPatientDto = null;
 	}
+
 	mEthDeviceIdBack.clear();
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);

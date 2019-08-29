@@ -217,6 +217,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private OpenDoorDialog.Builder       mBuildero;
    private int                          mLocalAllSize;
    private String                       mEpc;
+   private int mAllSize;
+
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -226,7 +228,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
-	mLocalAllSize = getLocalAllCstVos().size();
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize = mAllSize;
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mHandler = new Handler();
 	Event.EventBillStock data = (Event.EventBillStock) getIntent().getExtras()
@@ -321,8 +324,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
-		   mBuilder.setMsg(mLocalAllSize+"");
 		   mBuilder.create().show();
+		   mBuilder.setMsg(mLocalAllSize+"");
 		}
 	   }
 	} else {
@@ -545,7 +548,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   mLocalAllSize = getLocalAllCstVos().size();
+		   mLocalAllSize = mAllSize;
 		   mBoxInventoryVos.clear();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
@@ -859,7 +862,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
     * 重新打开柜门
     */
    private void reOpenDoor() {
-	mLocalAllSize = getLocalAllCstVos().size();
+	mLocalAllSize = mAllSize;
 	stopScan();
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;

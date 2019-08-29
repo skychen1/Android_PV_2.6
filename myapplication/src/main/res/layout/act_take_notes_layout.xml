@@ -40,10 +40,10 @@
 				android:checked="true"
 				android:text="最终领用"/>
 
-			<RadioButton
-				android:id="@+id/take_left_tu"
-				style="@style/runwate_btn_style"
-				android:text="退回"/>
+			<!--<RadioButton-->
+				<!--android:id="@+id/take_left_tu"-->
+				<!--style="@style/runwate_btn_style"-->
+				<!--android:text="退回"/>-->
 
 		</RadioGroup>
 		<TextView

@@ -65,11 +65,6 @@ public class TimerService extends Service {
 	   }
 	});
 
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-	   }
-	}).start();
 	AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 	int anHour = 15 * 1000;  // 这是一小时的毫秒数
 	long triggerAtTime = SystemClock.elapsedRealtime() + anHour;

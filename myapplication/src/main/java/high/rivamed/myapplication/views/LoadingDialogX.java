@@ -2,6 +2,7 @@ package high.rivamed.myapplication.views;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,8 @@ public class LoadingDialogX extends Dialog {
    public static class Builder {
 
 	private Context        mContext;
-	public RadarView      mLoading;
-	public TextView       mLoadingText;
+	public  RadarView      mLoading;
+	public  TextView       mLoadingText;
 	public  LoadingDialogX mDialog;
 
 	public Builder(Context context) {
@@ -43,6 +44,11 @@ public class LoadingDialogX extends Dialog {
 
 	public Builder setMsg(String msg) {
 	   mLoadingText.setText(msg);
+	   return this;
+	}
+
+	public Builder setMsgSize(int size) {
+	   mLoadingText.setTextSize(size);
 	   return this;
 	}
 
@@ -58,17 +64,16 @@ public class LoadingDialogX extends Dialog {
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 									     ViewGroup.LayoutParams.MATCH_PARENT));
 	   mLoading.start();
-//
-//	   EventBusUtils.post(new Event.EventHomeEnable(true));
-//	   //	   new Handler().postDelayed(new Runnable() {
-//	   //		@Override
-//	   //		public void run() {
-//	   //		   if (mDialog.isShowing()) {
-//	   //			mAnimationDrawable.stop();
-//	   //			mDialog.dismiss();
-//	   //		   }
-//	   //		}
-//	   //	   }, 15000);
+
+	   new Handler().postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (mDialog != null && mDialog.isShowing()) {
+			mLoading.stop();
+			mDialog.dismiss();
+		   }
+		}
+	   }, 25000);
 	   return mDialog;
 	}
 

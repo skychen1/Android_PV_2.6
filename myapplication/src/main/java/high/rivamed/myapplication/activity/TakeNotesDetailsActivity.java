@@ -59,8 +59,8 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    TextView           mTag;
    @BindView(R.id.take_left_ly)
    RadioButton        mTakeLeftLy;
-   @BindView(R.id.take_left_tu)
-   RadioButton        mTakeLeftTu;
+//   @BindView(R.id.take_left_tu)
+//   RadioButton        mTakeLeftTu;
    @BindView(R.id.take_rg)
    RadioGroup         mTakeRg;
    @BindView(R.id.take_number)
@@ -80,6 +80,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private String mPatientId;
    private int mStatus;
    private List<TakeNotesDetailsBean.JournalUseRecordDetailVos> mDetailVos =new ArrayList<>();
+   private String mPatientName;
 
    /**
     * 接收id和status
@@ -87,6 +88,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
    public void onPidEvent(Event.EventPatientId event) {
+	mPatientName = event.patientName;
 	mPatientId = event.patientId;
 	mStatus = event.status;
 
@@ -128,7 +130,14 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 	mStatus=3;
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
+	mTakeRg.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("耗材明细");
+	if (mPatientName==null){
+	   mTag.setText("[ 患者 ] 领用使用明细：");
+	}else {
+	   mTag.setText("[ "+mPatientName+" ]  领用使用明细：");
+	}
+
 	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
 	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
 	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
@@ -143,7 +152,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 		   .into(mBaseTabIconRight);
 	}
 	initDate();
-	initListener();
+//	initListener();
    }
 
    private void initListener() {
@@ -155,10 +164,10 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 			mStatus=3;
 			loadDate(mPatientId,mStatus);
 			break;
-		   case R.id.take_left_tu://退回
-			mStatus=7;
-			loadDate(mPatientId,mStatus);
-			break;
+//		   case R.id.take_left_tu://退回
+//			mStatus=7;
+//			loadDate(mPatientId,mStatus);
+//			break;
 		}
 	   }
 	});

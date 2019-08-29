@@ -123,8 +123,8 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	}
 	initDataAndEvent(savedInstanceState);
 
-	App.getInstance().addActivity_(this);
-	App.getInstance().addActivityAll(this);
+//	App.getInstance().addActivity_(this);
+//	App.getInstance().addActivityAll(this);
    }
    //   private void applyNet() {
    //	IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

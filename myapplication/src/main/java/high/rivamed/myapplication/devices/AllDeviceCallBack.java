@@ -3,6 +3,7 @@ package high.rivamed.myapplication.devices;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.net.bean.AntInfo;
@@ -68,13 +69,14 @@ public class AllDeviceCallBack {
    public static        List<String>      mReaderIdList;
    public static        List<String>      mReaderDeviceId;
    public static        List<String>      eth002DeviceIdList;
-
+  public static Gson mGson;
 
    public static AllDeviceCallBack getInstance() {
 	//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
 	if (instances == null) {
 	   synchronized (NetRequest.class) {
 		if (instances == null) {
+		   mGson = new Gson();
 		   instances = new AllDeviceCallBack();
 		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 		   Log.i(TAG, "mReaderDeviceId    " + mReaderDeviceId.size());
@@ -211,10 +213,9 @@ public class AllDeviceCallBack {
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(eth002DeviceIdList.get(i))) {
-		   LogUtils.i(TAG,
-				  " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
+		   LogUtils.i(TAG, " eth002DeviceIdList.get(i)   " + (String) eth002DeviceIdList.get(i));
 		   Eth002Manager.getEth002Manager().openDoor((String) eth002DeviceIdList.get(i));
-		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
+//		   EventBusUtils.post(new Event.EventBoolean(true, (String) eth002DeviceIdList.get(i)));
 		}
 	   }
 	}
@@ -269,10 +270,17 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
 		List<String> epcs = new ArrayList<>();
+
 		for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
 		   String epc = filteListEpc(v.getKey());
-		   epcs.add(epc);
+		   if (epc!=null){
+			epcs.add(epc);
+		   }
+		   Log.i("fa333","epcepcepcepc    "+epc);
+
 		}
+
+	      Log.i("fa333","epcs    "+mGson.toJson(epcs));
 
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0 &&
 		    !mTimelyOnResume) {//强开
@@ -287,7 +295,7 @@ public class AllDeviceCallBack {
 		if (result == null || result.size() == 0) {
 		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, "0"));
 		}
-		if (result.size() > 1) {
+		if (result.size() >= 1) {
 		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, "-1"));
 		}
 	   }
@@ -298,7 +306,6 @@ public class AllDeviceCallBack {
 		    !mTimelyOnResume) {//强开
 		   //		   EventBusUtils.post(new Event.EventOneEpcStrongOpenDeviceCallBack(deviceId, epc));
 		} else {
-		   Log.i("FAFAFAFAD", "FDFDF   " + deviceId + "      EPC    " + epc);
 		   filteEpc(deviceId, epc);
 		}
 	   }
@@ -380,21 +387,22 @@ public class AllDeviceCallBack {
 		int integer = Integer.parseInt(epc43.getValue());
 		String value44 = epc44.getValue();
 		String value45 = epc45.getValue();
-		Log.i("FAFAFAFAD",
-			"integer   " + integer + "      value44    " + epc.startsWith(value44) +
-			"      value45    " + value45);
-		if (epc.length() == integer && (!epc.startsWith(value44) || !epc.endsWith(value45))) {
-		   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
+
+		if (epc.length() == integer) {
+		   if (epc.startsWith(value44)&&epc.endsWith(value45)){
+		   }else {
+			EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
+		   }
 		}
 	   } catch (NumberFormatException e) {
 		e.printStackTrace();
 	   }
-
 	} else if (mConfigType043 && !mConfigType044 && mConfigType045) {//屏蔽位数和后X位
 	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
 	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value45 = epc45.getValue();
+
 	   if (epc.length() == integer && !epc.endsWith(value45)) {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
@@ -403,10 +411,23 @@ public class AllDeviceCallBack {
 	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
-	   if (!epc.startsWith(value44) && !epc.endsWith(value45)) {
+	   if (epc.startsWith(value44) && epc.endsWith(value45)) {
+	   }else {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
-	} else {
+	} else if (!mConfigType043 && mConfigType044 && !mConfigType045){
+	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   String value44 = epc44.getValue();
+	   if (!epc.startsWith(value44)) {
+		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
+	   }
+	}else if (!mConfigType043 && !mConfigType044 && mConfigType045){
+	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   String value45 = epc45.getValue();
+	   if (!epc.endsWith(value45)) {
+		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
+	   }
+	}else {
 	   EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	}
    }
@@ -438,8 +459,11 @@ public class AllDeviceCallBack {
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
-	   if (epc.length() == integer && (!epc.startsWith(value44) || !epc.endsWith(value45))) {
-		return epc;
+	   if (epc.length() == integer) {
+	      if (epc.startsWith(value44)&&epc.endsWith(value45)){
+		}else {
+		   return epc;
+		}
 	   }
 	} else if (mConfigType043 && !mConfigType044 && mConfigType045) {//屏蔽位数和后X位
 	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
@@ -454,11 +478,26 @@ public class AllDeviceCallBack {
 	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
-	   if (!epc.startsWith(value44) && !epc.endsWith(value45)) {
+	   if (epc.startsWith(value44) && epc.endsWith(value45)) {
+	   }else {
 		return epc;
 	   }
+	}else if (!mConfigType043 && mConfigType044 && !mConfigType045){
+	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   String value44 = epc44.getValue();
+	   if (!epc.startsWith(value44)) {
+		return epc;
+	   }
+	}else if (!mConfigType043 && !mConfigType044 && mConfigType045) {
+	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   String value45 = epc45.getValue();
+	   if (!epc.endsWith(value45)) {
+		return epc;
+	   }
+	}else if (!mConfigType043 && !mConfigType044 && !mConfigType045){
+	   return epc;
 	}
-	return epc;
+	return null;
    }
 
    public void initEth002() {
@@ -470,19 +509,18 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onFingerFea(String deviceId, String fingerFea) {
-		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize==1){
+		int appSatus = App.getInstance().getAppSatus();
+		Log.i("appSatus","appSatus   "+appSatus);
+		if (appSatus!=3){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 2;//指纹登录
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, fingerFea, mConfigType));
 		   }
+		}else {
+		   Intent intent = new Intent(mAppContext, ScanService.class);
+		   mAppContext.stopService(intent);
 		}
-		if (activitySize==0){
-		   if (activitySize==0){
-			Intent intent = new Intent(mAppContext, ScanService.class);
-			mAppContext.stopService(intent);
-		   }
-		}
+
 	   }
 
 	   @Override
@@ -497,17 +535,18 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onIDCard(String deviceId, String idCard) {
-		int activitySize = App.getInstance().getActivitySize();
-		if (activitySize==1){
+		int appSatus = App.getInstance().getAppSatus();
+		Log.i("appSatus","appSatus   "+appSatus);
+		if (appSatus!=3){
 		   if (!UIUtils.isFastDoubleClick()) {
 			mConfigType = 1;//IC卡
 			EventBusUtils.post(new Event.EventICAndFinger(deviceId, idCard, mConfigType));
 		   }
-		}
-		if (activitySize==0){
+		}else {
 		   Intent intent = new Intent(mAppContext, ScanService.class);
 		   mAppContext.stopService(intent);
 		}
+
 	   }
 
 	   @Override
@@ -535,6 +574,7 @@ public class AllDeviceCallBack {
 		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 		strings.clear();
 		if (success) {
+		   Log.i("outtccc", "柜门已开    " );
 		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceIndentify));
 		}
 	   }
@@ -542,6 +582,7 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onDoorClosed(String deviceIndentify, boolean success) {
 		getDoorStatus();
+		Log.i("outtccc", "柜门已关闭    " );
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceIndentify));
 		LogUtils.i(TAG, "onDoorClosed  " + mEthDeviceIdBack2.size() + "   " +
 				    mEthDeviceIdBack.size());

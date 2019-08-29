@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +26,7 @@ import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
 import high.rivamed.myapplication.fragment.RegisteReaderFrag;
 import high.rivamed.myapplication.fragment.RegisteRecoverFrag;
+import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
@@ -100,7 +102,13 @@ public class RegisteActivity extends SimpleActivity {
 	mBaseTabTvName.setVisibility(View.GONE);
 	mBaseTabBtnMsg.setVisibility(View.GONE);
 	mBaseTabTvTitle.setText("工程模式");
-	stopService(mIntentService);
+	if (mIntentService!=null){
+	   stopService(mIntentService);
+	}else {
+	   mIntentService = new Intent(this, ScanService.class);
+	   stopService(mIntentService);
+	}
+
 
 	if (WifiUtils.isWifi(mContext) == 0) {
 	   hasNetWork(false,false);

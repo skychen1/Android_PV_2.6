@@ -3,6 +3,7 @@ package high.rivamed.myapplication.views;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,6 +121,15 @@ public class OpenDoorDialog extends Dialog {
 		   mDialog.dismiss();
 		}
 	   });
+	   new Handler().postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (mDialog!=null){
+			mDialog.dismiss();
+		   }
+
+		}
+	   }, 25000);
 	   return mDialog;
 	}
 
