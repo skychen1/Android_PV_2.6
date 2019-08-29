@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,19 +34,15 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.FileEncoder;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.SettingPopupWindow;
-import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
@@ -70,12 +65,18 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    TextView     mSettingPasswordEdit;
    @BindView(R.id.setting_revise_password)
    ImageView    mSettingRevisePassword;
-   @BindView(R.id.setting_fingerprint)
-   TextView     mSettingFingerprint;
-   @BindView(R.id.setting_fingerprint_edit)
-   TextView     mSettingFingerprintEdit;
-   @BindView(R.id.setting_fingerprint_bind)
-   TextView     mSettingFingerprintBind;
+   @BindView(R.id.setting_fingerprint_edit_one)
+   TextView     mSettingFingerprintEditOne;
+   @BindView(R.id.setting_fingerprint_bind_one)
+   TextView     mSettingFingerprintBindOne;
+   @BindView(R.id.setting_fingerprint_edit_two)
+   TextView     mSettingFingerprintEditTwo;
+   @BindView(R.id.setting_fingerprint_bind_two)
+   TextView     mSettingFingerprintBindTwo;
+   @BindView(R.id.setting_fingerprint_edit_three)
+   TextView     mSettingFingerprintEditThree;
+   @BindView(R.id.setting_fingerprint_bind_three)
+   TextView     mSettingFingerprintBindThree;
    @BindView(R.id.setting_ic_card)
    TextView     mSettingIcCard;
    @BindView(R.id.setting_pass_edit)
@@ -103,19 +104,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("登录设置");
-	mBaseTabTvName.setText(SPUtils.getString(UIUtils.getContext(), KEY_USER_NAME));
-	if (SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX) != null &&
-	    SPUtils.getString(UIUtils.getContext(), KEY_USER_SEX).equals("男")) {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nan)
-		   .error(R.mipmap.hccz_mrtx_nan)
-		   .into(mBaseTabIconRight);
-	} else {
-	   Glide.with(this)
-		   .load(R.mipmap.hccz_mrtx_nv)
-		   .error(R.mipmap.hccz_mrtx_nv)
-		   .into(mBaseTabIconRight);
-	}
+
 	initData();
    }
 
@@ -141,12 +130,24 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   mIsWaidai = mAppAccountInfoVo.getIsWaidai();
 	   if (mAppAccountInfoVo.getIsFinger() == 0) {
 		//指纹未绑定
-		mSettingFingerprintEdit.setText("未绑定");
-		mSettingFingerprintBind.setText("绑定");
+		mSettingFingerprintEditOne.setText("未绑定");
+		mSettingFingerprintBindOne.setText("绑定");
+
+		mSettingFingerprintEditTwo.setText("未绑定");
+		mSettingFingerprintBindTwo.setText("绑定");
+
+		mSettingFingerprintEditThree.setText("未绑定");
+		mSettingFingerprintBindThree.setText("绑定");
 	   } else {
 		//已绑定
-		mSettingFingerprintEdit.setText("已绑定");
-		mSettingFingerprintBind.setText("重新绑定");
+		mSettingFingerprintEditOne.setText("已绑定");
+		mSettingFingerprintBindOne.setText("重新绑定");
+
+		mSettingFingerprintEditTwo.setText("已绑定");
+		mSettingFingerprintBindTwo.setText("重新绑定");
+
+		mSettingFingerprintEditThree.setText("已绑定");
+		mSettingFingerprintBindThree.setText("重新绑定");
 	   }
 	   if (mAppAccountInfoVo.getIsEmergency() == 0) {
 		//紧急登录未绑定
@@ -188,61 +189,45 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	return R.layout.setting_logininfo_layout;
    }
 
-   @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_tv_name, R.id.base_tab_icon_right,
-	   R.id.base_tab_tv_outlogin, R.id.base_tab_btn_msg, R.id.base_tab_back,
-	   R.id.setting_revise_password, R.id.setting_fingerprint_bind, R.id.setting_pass_setting})
+   @OnClick({R.id.setting_ic_card_bind, R.id.base_tab_back, R.id.setting_revise_password, R.id.setting_fingerprint_bind_one, R.id.setting_pass_setting})
    public void onViewClicked(View view) {
+	super.onViewClicked(view);
 	switch (view.getId()) {
-	   case R.id.base_tab_icon_right:
-	   case R.id.base_tab_tv_name:
-		mPopupWindow = new SettingPopupWindow(mContext);
-		mPopupWindow.showPopupWindow(view);
-		mPopupWindow.setmItemClickListener(new SettingPopupWindow.OnClickListener() {
-		   @Override
-		   public void onItemClick(int position) {
-			switch (position) {
-			   case 0:
-				startActivity(new Intent(LoginInfoActivity.this, MyInfoActivity.class));
-				break;
-			   case 1:
-				startActivity(new Intent(LoginInfoActivity.this, LoginInfoActivity.class));
-				break;
-			}
-		   }
-		});
-		break;
-	   case R.id.base_tab_tv_outlogin:
-		TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-		builder.setTwoMsg("您确认要退出登录吗?");
-		builder.setMsg("温馨提示");
-		builder.setLeft("取消", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-		   }
-		});
-		builder.setRight("确认", new DialogInterface.OnClickListener() {
-		   @Override
-		   public void onClick(DialogInterface dialog, int i) {
-			dialog.dismiss();
-			startActivity(new Intent(mContext, LoginActivity.class));
-			finish();
-			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-		   }
-		});
-		builder.create().show();
-		break;
 	   case R.id.setting_pass_setting://紧急登录密码修改
 		DialogUtils.showEmergencyDialog(mContext);
-		break;
-	   case R.id.base_tab_back:
-		finish();
 		break;
 	   case R.id.setting_revise_password:
 		DialogUtils.showOnePassWordDialog(mContext);
 		break;
-	   case R.id.setting_fingerprint_bind:
-		DialogUtils.showOneFingerDialog(mContext, new OnfingerprintBackListener() {
+	   case R.id.setting_fingerprint_bind_one:
+	      String fingerTxtOne = "指纹1";
+		DialogUtils.showOneFingerDialog(mContext,fingerTxtOne ,new OnfingerprintBackListener() {
+		   @Override
+		   public void OnfingerprintBack(List<String> list) {
+			if (list.size() == 3) {
+			   bindFingerPrint(list);
+			} else {
+			   ToastUtils.showShort("采集失败,请重试");
+			}
+		   }
+		});
+		break;
+	   case R.id.setting_fingerprint_bind_two:
+		String fingerTxtTwo = "指纹2";
+		DialogUtils.showOneFingerDialog(mContext, fingerTxtTwo,new OnfingerprintBackListener() {
+		   @Override
+		   public void OnfingerprintBack(List<String> list) {
+			if (list.size() == 3) {
+			   bindFingerPrint(list);
+			} else {
+			   ToastUtils.showShort("采集失败,请重试");
+			}
+		   }
+		});
+		break;
+	   case R.id.setting_fingerprint_bind_three:
+		String fingerTxtThree = "指纹3";
+		DialogUtils.showOneFingerDialog(mContext, fingerTxtThree,new OnfingerprintBackListener() {
 		   @Override
 		   public void OnfingerprintBack(List<String> list) {
 			if (list.size() == 3) {
@@ -349,8 +334,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   if (data.isOperateSuccess()) {
 			ToastUtils.showShort(data.getMsg());
 			//指纹未绑定
-			mSettingFingerprintEdit.setText("已绑定");
-			mSettingFingerprintBind.setText("重新绑定");
+			mSettingFingerprintEditOne.setText("已绑定");
+			mSettingFingerprintBindOne.setText("重新绑定");
 
 			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
 			LoginResultBean data2 = mGson.fromJson(accountData, LoginResultBean.class);

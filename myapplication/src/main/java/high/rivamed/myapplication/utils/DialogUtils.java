@@ -417,7 +417,7 @@ public class DialogUtils {
     }
 
     public static void showOneFingerDialog(
-            Context context, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
+            Context context,String title, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
         int[] times = {0};
         List<String> fingerList = new ArrayList<String>();
         OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
