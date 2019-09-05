@@ -31,6 +31,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.activity.LoginActivity.mConfigType015;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
@@ -192,7 +193,9 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        setMessagersV();//获取消息数量
+        if (mConfigType015) {
+            setMessagersV();//获取消息数量
+        }
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,

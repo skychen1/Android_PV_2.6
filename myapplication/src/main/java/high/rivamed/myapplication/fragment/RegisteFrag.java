@@ -51,6 +51,7 @@ import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -234,7 +235,7 @@ public class RegisteFrag extends SimpleFragment {
 	LitePal.deleteAll(InventoryVo.class);
 	LitePal.deleteAll(InventoryVoError.class);
 	LitePal.deleteDatabase("rivamedhigh");
-	LitePal.initialize(mContext);//数据库初始化
+	LitePal.initialize(mAppContext);//数据库初始化
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
 	initData();
@@ -264,10 +265,10 @@ public class RegisteFrag extends SimpleFragment {
 	mFragRegistePortEdit.setHint("8016");
 
 	if (BuildConfig.DEBUG) {
-	   mFragRegisteNameEdit.setText("2.6.7柜子");
+	   mFragRegisteNameEdit.setText("2.6.8柜子");
 	   mFragRegisteModelEdit.setText("rivamed26xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.11.30");
+	   mFragRegisteSeveripEdit.setText("192.168.111.36");
 	   mFragRegistePortEdit.setText("8018");
 	}
 

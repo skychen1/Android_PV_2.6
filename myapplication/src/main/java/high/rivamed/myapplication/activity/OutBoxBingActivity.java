@@ -1394,7 +1394,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	if (mPatientDto != null) {
 	   mPatientDto = null;
 	}
-
+	RxUtils.getInstance().unRegister();
 	mEthDeviceIdBack.clear();
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));
 	EventBusUtils.unregister(this);

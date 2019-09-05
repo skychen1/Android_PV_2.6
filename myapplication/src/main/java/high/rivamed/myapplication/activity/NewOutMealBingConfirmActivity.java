@@ -877,5 +877,6 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mFindBillOrderBean.getInventoryVos().clear();
 	mFindBillOrderBean.getDeviceIds().clear();
 	mEthDeviceIdBack.clear();
+	RxUtils.getInstance().unRegister();
    }
 }

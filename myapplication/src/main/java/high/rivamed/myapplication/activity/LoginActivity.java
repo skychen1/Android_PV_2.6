@@ -72,6 +72,7 @@ import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_034;
@@ -150,6 +151,7 @@ public class LoginActivity extends SimpleActivity {
    private       LoginFaceFragment faceFragment;
    private LoadingDialog.Builder   mLoading;
    public static List<ConfigBean.ThingConfigVosBean> sTCstConfigVos;
+   public static          boolean           mConfigType015;
    public static          boolean           mConfigType043;
    public static     boolean           mConfigType044;
    public static          boolean           mConfigType045;
@@ -170,6 +172,7 @@ public class LoginActivity extends SimpleActivity {
 		mLoading = null;
 	   }
 	}
+	EventBusUtils.removeStickyEvent(getClass());
    }
 	/**
     * ic卡和指纹仪登陆回调
@@ -506,6 +509,7 @@ public class LoginActivity extends SimpleActivity {
 	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
 												   loginType));
+	mConfigType015 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_015);
 	mConfigType043 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_043);
 	mConfigType044 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_044);
 	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
@@ -898,8 +902,14 @@ public class LoginActivity extends SimpleActivity {
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	mLoginGone.onFinishTemporaryDetach();
-	mLoginGone= null;
-
+	if (mLoginGone!=null){
+	   mLoginGone.onFinishTemporaryDetach();
+	   mLoginGone= null;
+	}
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
    }
 }

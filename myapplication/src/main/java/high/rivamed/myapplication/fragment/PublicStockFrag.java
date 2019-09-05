@@ -120,7 +120,7 @@ public class PublicStockFrag extends SimpleFragment {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START3")) {
 	   Log.i("ccc", "START3:  " + mDeviceCode);

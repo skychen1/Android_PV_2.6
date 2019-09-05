@@ -95,7 +95,7 @@ public class RegisteActivity extends SimpleActivity {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mRegisteViewpager = mContext.findViewById(R.id.registe_viewpager);
+	mRegisteViewpager = findViewById(R.id.registe_viewpager);
 	mBaseTabBtnConn = (ImageView) findViewById(R.id.base_tab_conn);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabIconRight.setVisibility(View.GONE);
@@ -178,6 +178,7 @@ public class RegisteActivity extends SimpleActivity {
    @Override
    protected void onDestroy() {
 	super.onDestroy();
+	mRegisteViewpager=null;
 //	ReaderManager.getManager().unRegisterCallback();
 //	Eth002Manager.getEth002Manager().unRegisterCallBack();
    }

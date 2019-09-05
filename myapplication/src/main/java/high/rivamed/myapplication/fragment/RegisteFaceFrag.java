@@ -19,8 +19,11 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.utils.FaceTask;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.FACE_OPEN;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -66,9 +69,20 @@ public class RegisteFaceFrag extends SimpleFragment {
         fragmentBtnActive.setText(hasInit ? "已初始化人脸识别SDK" : "初始化人脸识别SDK");
         //初始化sp工具类
         PreferencesUtil.initPrefs(UIUtils.getContext());
+        if (SPUtils.getBoolean(UIUtils.getContext(), FACE_OPEN)) {
+            switchBtn.setChecked(true);
+        } else {
+            switchBtn.setChecked(false);
+        }
+
         switchBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            //设置是否需要活体
-            FaceManager.getManager().setNeedLive(isChecked);
+            if (isChecked){
+                SPUtils.putBoolean(UIUtils.getContext(), FACE_OPEN, true);
+                //设置是否需要活体
+                FaceManager.getManager().setNeedLive(isChecked);
+            }else {
+                SPUtils.putBoolean(UIUtils.getContext(), FACE_OPEN, false);
+            }
         });
     }
 
@@ -90,7 +104,8 @@ public class RegisteFaceFrag extends SimpleFragment {
                     FaceManager.getManager().init(_mActivity, false, new InitListener() {
                         @Override
                         public void initSuccess() {
-                            ToastUtils.showShortSafe("人脸识别SDK初始化成功");
+                            UIUtils.runInUIThread(()->  ToastUtils.showShortSafe("人脸识别SDK初始化成功"));
+
                             fragmentBtnActive.post(() -> {
                                 hasInit = true;
                                 fragmentBtnActive.setEnabled(false);
@@ -100,7 +115,7 @@ public class RegisteFaceFrag extends SimpleFragment {
                             //初始化分组
                             boolean b = FaceManager.getManager().initGroup();
                             if (!b) {
-                                ToastUtils.showShortSafe("创建人脸照分组失败");
+                                UIUtils.runInUIThread(()->  ToastUtils.showShortSafe("创建人脸照分组失败"));
                                 //初始化完成后跳转页面
                             } else {
                                 //设置是否需要活体
@@ -110,7 +125,7 @@ public class RegisteFaceFrag extends SimpleFragment {
 
                         @Override
                         public void initFail(int errorCode, String msg) {
-                            ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
+                            UIUtils.runInUIThread(()-> ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
                         }
                     });
                 }
@@ -130,7 +145,9 @@ public class RegisteFaceFrag extends SimpleFragment {
                     FaceTask faceTask = new FaceTask(_mActivity);
                     faceTask.setCallBack((hasRegister, msg) -> {
                         LogUtils.d("faceTask", "initListener: " + msg);
-                        ToastUtils.showShortSafe(msg);
+                        if (msg!=null){
+                            ToastUtils.showShortSafe(msg);
+                        }
                     });
                     faceTask.getAllFaceAndRegister();
                 } else {

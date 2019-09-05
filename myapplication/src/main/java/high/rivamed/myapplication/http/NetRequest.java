@@ -31,6 +31,7 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
@@ -981,9 +982,11 @@ public class NetRequest {
 	 * 离线后来网，重新登录获取token
 	 */
 	private void putUnNetLoginDate() {
-	   String accountId = SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID);
+	   String accountId = SPUtils.getString(mAppContext, KEY_ACCOUNT_ID);
+	   LogUtils.i("OkGo","putUnNetLoginDate  accountId    "+accountId);
 	   AccountVosBean beans = LitePal.where("accountid = ? ", accountId)
 		   .findFirst(AccountVosBean.class);
+	   LogUtils.i("OkGo","beans     "+mGson.toJson(beans));
 	   UserLoginDto userLoginDto = new UserLoginDto();
 	   UserLoginDto.AccountBean accountBean = new UserLoginDto.AccountBean();
 	   accountBean.setAccountName(beans.getAccountName());
@@ -1204,6 +1207,7 @@ public class NetRequest {
 	 */
 	private void putUnNetLoginDate() {
 	   String accountId = SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID);
+
 	   AccountVosBean beans = LitePal.where("accountid = ? ", accountId)
 		   .findFirst(AccountVosBean.class);
 	   UserLoginDto userLoginDto = new UserLoginDto();

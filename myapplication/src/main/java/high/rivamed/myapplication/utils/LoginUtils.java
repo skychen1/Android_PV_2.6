@@ -112,8 +112,13 @@ public class LoginUtils {
                 String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
                 LogUtils.i("LoginA", "string   " + string);
                 ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
-                List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
-                callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
+                if (string!=null){
+                    List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                    callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
+                }else {
+                    ToastUtils.showShortToast("请到管理端开启配置项！");
+                }
+
             } else {
                 callback.onLogin(false, false, false);
             }

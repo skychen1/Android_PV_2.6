@@ -631,7 +631,9 @@ public class TestDevicesActivity extends SimpleActivity {
         findViewById(R.id.btn_face_register).setOnClickListener(view -> {
             FaceTask faceTask = new FaceTask(this);
             faceTask.setCallBack((hasRegister, msg) -> {
-                LogUtils.d("faceTask", "initListener: "+msg );
+                if (msg!=null){
+                    LogUtils.d("faceTask", "initListener: "+msg );
+                }
             });
             faceTask.getAllFaceAndRegister();
         });
