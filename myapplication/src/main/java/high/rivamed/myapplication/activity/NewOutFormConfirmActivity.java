@@ -718,5 +718,6 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mFindBillOrderBean.getEpcs().clear();
 	mEthDeviceIdBack.clear();
 	RxUtils.getInstance().unRegister();
+	mHandler.removeCallbacksAndMessages(null);
    }
 }

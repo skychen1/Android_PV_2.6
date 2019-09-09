@@ -513,6 +513,7 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType043 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_043);
 	mConfigType044 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_044);
 	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
+
 	//控制紧急登录tab的显示
 	mLoginPass.setVisibility(
 		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
