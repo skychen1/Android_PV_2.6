@@ -26,8 +26,17 @@ public class RegisterFingerDto {
          * data : 1111111111111111111111
          */
 
+        private String differentThings;
         private String userId;
         private String data;
+
+        public String getDifferentThings() {
+            return differentThings;
+        }
+
+        public void setDifferentThings(String differentThings) {
+            this.differentThings = differentThings;
+        }
 
         public String getType() {
             return type;

@@ -525,12 +525,21 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onFingerRegExcuted(String deviceId, boolean success) {
-
+		 EventBusUtils.post(new Event.EventFingerReg(success));
 	   }
 
 	   @Override
 	   public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
+		EventBusUtils.post(new Event.EventFingerRegEnter(success,fingerData));
+//		if(success){
+//		   //			type ="成功";
+//		   fingerList.add(fingerData);
+//		   UIUtils.runInUIThread(()->builder.setSuccess());
+//
+//		}else {
+//		   //			type="失败";
+//		   UIUtils.runInUIThread(()->builder.setError());
+//		}
 	   }
 
 	   @Override

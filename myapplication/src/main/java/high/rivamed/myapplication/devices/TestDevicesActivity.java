@@ -105,10 +105,7 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnFingerRegisterNew = findViewById(R.id.bt_fingerregister);
         mBtnFace = findViewById(R.id.btn_face);
         initListener();
-        initReader();
-        //        initIdCard();
-        //        initFinger();
-        initEth002();
+
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         if (wm != null) {
             DisplayMetrics dm = new DisplayMetrics();
@@ -117,6 +114,8 @@ public class TestDevicesActivity extends SimpleActivity {
             appendLog("程序已启动");
         }
         mBtnQueryConnDev.performClick();
+        initReader();
+        initEth002();
     }
 
 
@@ -124,6 +123,7 @@ public class TestDevicesActivity extends SimpleActivity {
      * 初始化罗丹贝尔回调
      */
     private void initReader() {
+        appendLog("initReader" );
         //设置回调
         ReaderManager.getManager().registerCallback(new ReaderCallback() {
             @Override
@@ -219,6 +219,7 @@ public class TestDevicesActivity extends SimpleActivity {
     }
 
     private void initEth002() {
+        appendLog("initEth002" );
         Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
             @Override
             public void onConnectState(String deviceId, boolean isConnect) {
@@ -552,7 +553,7 @@ public class TestDevicesActivity extends SimpleActivity {
                 // TODO: 2019/3/26  ETH002模块，新代码测试
                 List<DeviceInfo> connectedDeviceEth002 = Eth002Manager.getEth002Manager().getConnectedDevice();
                 String eth002 = "";
-                for (com.rivamed.libdevicesbase.base.DeviceInfo df : connectedDeviceEth002) {
+                for (DeviceInfo df : connectedDeviceEth002) {
                     eth002 += "\t  Eth002 设备id： \t" + df.getIdentification() + "\n";
                     eth002DeviceId = df.getIdentification();
                 }

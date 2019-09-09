@@ -1365,6 +1365,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
 	}
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	}
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();
    }

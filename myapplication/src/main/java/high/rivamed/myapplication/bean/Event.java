@@ -24,6 +24,30 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
+    * FingerReg接收指纹成功
+    */
+   public static class EventFingerRegEnter {
+
+	public boolean type;
+	public String fingerData;
+
+	public EventFingerRegEnter(boolean type,String fingerData) {
+	   this.type = type;
+	   this.fingerData = fingerData;
+	}
+   }
+   /**
+    * FingerReg发起注册
+    */
+   public static class EventFingerReg {
+
+	public boolean type;
+
+	public EventFingerReg(boolean type) {
+	   this.type = type;
+	}
+   }
+   /**
     * ExceptionDialog
     */
    public static class EventExceptionDialog {

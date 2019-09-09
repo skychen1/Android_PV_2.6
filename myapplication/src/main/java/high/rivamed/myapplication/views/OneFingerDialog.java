@@ -92,9 +92,15 @@ public class OneFingerDialog extends Dialog {
             this.mRightBtn = listener;
             return this;
         }
-
         public void setSuccess() {
             if (mFingerSuccess != null) {
+                mFingerSuccess.setVisibility(View.VISIBLE);
+                mFingerSuccess.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
+            }
+        }
+        public void setError() {
+            if (mFingerSuccess != null) {
+                mFingerSuccess.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
                 mFingerSuccess.setVisibility(View.VISIBLE);
             }
         }
