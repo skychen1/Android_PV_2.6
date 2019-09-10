@@ -48,7 +48,6 @@ import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.fragment.LoginFaceFragment;
-import high.rivamed.myapplication.fragment.LoginPassFragment;
 import high.rivamed.myapplication.fragment.LoginPassWordFragment;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
@@ -155,11 +154,14 @@ public class LoginActivity extends SimpleActivity {
    public static          boolean           mConfigType043;
    public static     boolean           mConfigType044;
    public static          boolean           mConfigType045;
+   private Thread mThread;
+   private Thread mThread1;
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
 	   if (mLoading == null) {
-		mLoading = DialogUtils.showLoading(mContext);
+		mLoading = DialogUtils.showLoading(this);
 	   } else {
 		if (!mLoading.mDialog.isShowing()) {
 		   mLoading.create().show();
@@ -200,7 +202,7 @@ public class LoginActivity extends SimpleActivity {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect, event.net);
 	if (mTitleConn && mOnStart) {
-	   new Thread(new Runnable() {
+	   mThread = new Thread(new Runnable() {
 		@Override
 		public void run() {
 		   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
@@ -211,7 +213,8 @@ public class LoginActivity extends SimpleActivity {
 		   getUnNetUseDate();
 		   getUnEntFindOperation();
 		}
-	   }).start();
+	   });
+	   mThread.start();
 	}
    }
 
@@ -225,12 +228,15 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+	  if (UIUtils.getConfigType(mContext, CONFIG_034)){
+	     faceFragment = new LoginFaceFragment();
+	     mFragments.add(faceFragment);//人脸识别登录 TODO
+	  }
 	}
 	mLoginGone = findViewById(R.id.login_gone);
-	faceFragment = new LoginFaceFragment();
-	mFragments.add(faceFragment);//人脸识别登录 TODO
+
 	mFragments.add(new LoginPassWordFragment());//用户名登录
-	mFragments.add(new LoginPassFragment());//紧急登录
+//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
 	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
 
@@ -274,7 +280,7 @@ public class LoginActivity extends SimpleActivity {
 
 	}
 
-	new Thread(new Runnable() {
+	mThread1 = new Thread(new Runnable() {
 	   @Override
 	   public void run() {
 		getAllCstDate(this);//重新获取在库耗材数据
@@ -287,7 +293,8 @@ public class LoginActivity extends SimpleActivity {
 		   getUnEntFindOperation();
 		}
 	   }
-	}).start();
+	});
+	mThread1.start();
 	mOnStart = true;
 	mPushFormOrders.clear();
 	mDownText.setText(
@@ -558,11 +565,11 @@ public class LoginActivity extends SimpleActivity {
 		}
 	   } else if (configType == 1) {//IC卡登录限制
 		mLoginGone.setVisibility(View.VISIBLE);
-		ToastUtils.showShort("正在维护，请到管理端启用");
+		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   } else if (configType == 2) {
 		//设备是否禁用
 		mLoginGone.setVisibility(View.VISIBLE);
-		ToastUtils.showShort("正在维护，请到管理端启用");
+		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   }
 	} else {
 	   if (configType == 0) {//正常登录密码登录限制
@@ -700,7 +707,7 @@ public class LoginActivity extends SimpleActivity {
 	});
 	mLoginGone.setOnClickListener(view -> {
 	   if (mTitleConn) {
-		ToastUtils.showShort("正在维护，请到管理端启用");
+		ToastUtils.showShortToast("正在维护，请到管理端启用");
 		mConfigType = 0;
 		getConfigDate(mConfigType, null);
 	   } else {

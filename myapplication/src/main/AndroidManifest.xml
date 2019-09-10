@@ -50,6 +50,7 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustPan"/>
         <activity

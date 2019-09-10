@@ -228,7 +228,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	return;
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (!mPause) {
 	   if (event.loading) {

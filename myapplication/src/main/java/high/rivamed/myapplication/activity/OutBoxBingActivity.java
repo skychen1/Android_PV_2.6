@@ -468,7 +468,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
    }
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
 	   if (mBuilder == null) {

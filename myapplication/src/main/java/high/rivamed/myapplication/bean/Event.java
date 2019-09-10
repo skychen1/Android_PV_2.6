@@ -24,6 +24,21 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
+    * lock的点击日志刷新
+    */
+   public static class lockType {
+
+	public int type;
+	public int ret;
+	public String item;
+
+	public lockType(int type,int ret,String item) {
+	   this.type = type;
+	   this.ret = ret;
+	   this.item = item;
+	}
+   }
+   /**
     * ExceptionDialog
     */
    public static class EventExceptionDialog {

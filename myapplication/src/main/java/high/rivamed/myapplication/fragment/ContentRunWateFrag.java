@@ -56,7 +56,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     @BindView(R.id.home_runwate_rg)
     MagicIndicator mHomeRunwateRg;
 
-    public static EditText mSearchEt;
+    EditText mSearchEt;
     @BindView(R.id.search_iv_delete)
     ImageView mSearchIvDelete;
     @BindView(R.id.search_time_all)
@@ -69,8 +69,8 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     RadioButton mSearchTimeMoon;
     @BindView(R.id.search_time_rg)
     RadioGroup mSearchTimeRg;
-    public static TextView mSearchTimeStart;
-    public static TextView mSearchTimeEnd;
+    TextView mSearchTimeStart;
+    TextView mSearchTimeEnd;
     @BindView(R.id.search_type_all)
     RadioButton mSearchTypeAll;
     @BindView(R.id.search_type_hous)
@@ -86,7 +86,7 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     @BindView(R.id.search_type_return_goods)
     RadioButton mSearchTypeReturnGoods;
 
-    public static RadioGroup mSearchTypeRg;
+    RadioGroup mSearchTypeRg;
     @BindView(R.id.search_type_db)
     RadioButton mSearchTypeDb;
     @BindView(R.id.search_type_thzc)

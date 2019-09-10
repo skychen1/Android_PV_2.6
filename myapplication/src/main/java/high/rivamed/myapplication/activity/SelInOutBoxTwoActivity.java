@@ -286,7 +286,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	mStarts.start();
    }
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
 	   if (mBuilder == null) {
@@ -302,6 +302,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
 		mBuilder.mDialog.dismiss();
+		mBuilder = null;
 	   }
 	}
    }
@@ -324,6 +325,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("LOGSCAN", "入柜---有返回---的动画停止---   ");
 			mFirstFinishLoading =false;
 			mLastFinishLoading = true;
+			setTimeStart();
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
@@ -421,9 +423,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-	EventBusUtils.post(new Event.EventLoadingX(true));
-	mAllSize = getLocalAllCstVos().size();
-	mLocalAllSize=mAllSize;
+
 	mHandler = new Handler();
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
@@ -440,6 +440,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	EventBusUtils.post(new Event.EventLoadingX(true));
+	mAllSize = getLocalAllCstVos().size();
+	mLocalAllSize=mAllSize;
 	mFirstFinishLoading =false;
 	mLastFinishLoading =false;
 	Log.i("outtccc","onStart   "+mOperationType);
@@ -1364,6 +1367,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (mBuildero != null) {
 	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
+	}
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	   mBuilder = null;
 	}
 	RxUtils.getInstance().unRegister();
 	mHandler.removeCallbacksAndMessages(null);

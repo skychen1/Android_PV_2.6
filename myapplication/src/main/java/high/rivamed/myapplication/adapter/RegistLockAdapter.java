@@ -11,7 +11,9 @@ import java.util.List;
 
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
+import high.rivamed.myapplication.utils.EventBusUtils;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -48,21 +50,24 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
          @Override
          public void onClick(View v) {
             int ret = Eth002Manager.getEth002Manager().openDoor(item);
-            RegisteLockFrag.AppendLog("开门命令已发出 ret=" + ret + "      DeviceId   " + item);
+            EventBusUtils.post(new Event.lockType(1,ret,item));
+
          }
       });
       mItemSettingStats.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             int ret = Eth002Manager.getEth002Manager().checkDoorState(item);
-            RegisteLockFrag.AppendLog("检查门锁指令已发出 ret=" + ret+"   ：设备ID:   "+item);
+            EventBusUtils.post(new Event.lockType(2,ret,item));
+
          }
       });
       mItemRegisteFinger.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             int ret =  Eth002Manager.getEth002Manager().fingerReg(item);
-            RegisteLockFrag.AppendLog("指纹注册命令已发送 RET=" + ret + ";请等待质问注册执行结果");
+            EventBusUtils.post(new Event.lockType(3,ret,item));
+
          }
       });
 

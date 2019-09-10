@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +27,7 @@ import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistLockAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static android.widget.GridLayout.VERTICAL;
@@ -46,16 +50,28 @@ public class RegisteLockFrag extends SimpleFragment {
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
-//   @BindView(R.id.txt_log)
-   static TextView           mTxtLog;
-//   @BindView(R.id.scroll_log)
-   static ScrollView         mScrollLog;
-   static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
+   @BindView(R.id.txt_log)
+    TextView           mTxtLog;
+   @BindView(R.id.scroll_log)
+    ScrollView         mScrollLog;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
    List<String> mDate = new ArrayList<>();
    private String mDiviceId;
- public static   String fingerData;
-   public static String fingerTemplate;
+ public    String fingerData;
+   public  String fingerTemplate;
    private RegistLockAdapter mAdapter;
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onLockType(Event.lockType event) {
+	if (event.type==1){
+	   AppendLog("开门命令已发出 ret=" + event.ret + "      DeviceId   " + event.item);
+	}else if (event.type ==2){
+	   AppendLog("检查门锁指令已发出 ret=" + event.ret+"   ：设备ID:   "+event.item);
+	}else if (event.type==3){
+	   AppendLog("指纹注册命令已发送 RET=" + event.ret + ";请等待质问注册执行结果");
+	}
+   }
+
 
    public static RegisteLockFrag newInstance() {
 	RegisteLockFrag fragment = new RegisteLockFrag();
@@ -75,11 +91,10 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void onBindViewBefore(View view) {
-	mTxtLog =view.findViewById(R.id.txt_log);
-	mScrollLog =view.findViewById(R.id.scroll_log);
+
    }
 
-   public static void AppendLog(String msg) {
+   public void AppendLog(String msg) {
 	mTxtLog.post(new Runnable() {
 	   @Override
 	   public void run() {

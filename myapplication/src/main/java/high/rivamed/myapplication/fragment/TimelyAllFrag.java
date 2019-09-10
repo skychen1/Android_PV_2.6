@@ -181,7 +181,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private int mLocalAllSize;
    private LoadingDialogX.Builder mBuilder;
 
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
 	   if (mBuilder == null) {
@@ -213,10 +213,7 @@ public class TimelyAllFrag extends SimpleFragment {
 
 	Log.e("FAFAS", "epc   "+event.deviceId+"     "+event.epcs);
 	if (!mPauseS) {
-	   if (mBuilder != null) {
-		mBuilder.mLoading.stop();
-		mBuilder.mDialog.dismiss();
-	   }
+
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)
 		   .find(BoxIdBean.class);
 
@@ -250,6 +247,7 @@ public class TimelyAllFrag extends SimpleFragment {
 		   }
 		}
 	   }
+
 	}
 
    }
@@ -659,6 +657,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result    " + result);
+
 		mCstInventoryDto = mGson.fromJson(result, InventoryDto.class);
 		if (mCstInventoryDto.isOperateSuccess()){
 		   setScanTimelyDate(mCstInventoryDto, epcs, deviceId);
