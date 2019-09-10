@@ -60,12 +60,12 @@ public class LoginFaceFragment extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         //识别成功的回调 回调用户的编号userId，唯一标识，回调速度可能会很快，需要自己加标识控制处理；
-        if (FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED)
-            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
-                if (isSuccess) {
-                    loginFace(userId);
-                }
-            });
+//        if (FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED)
+//            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
+//                if (isSuccess) {
+//                    loginFace(userId);
+//                }
+//            });
     }
 
     /**
@@ -86,6 +86,17 @@ public class LoginFaceFragment extends SimpleFragment {
                         }
                     }));
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED)
+            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
+                if (isSuccess) {
+                    loginFace(userId);
+                }
+            });
     }
 
     /**
@@ -216,8 +227,8 @@ public class LoginFaceFragment extends SimpleFragment {
                 textHint.post(() -> textHint.setText("人脸识别底库无数据"));
             } else {
                 //可以开启识别
-                LogUtils.d(TAG, "startIdentity---::::::::::: ");
                 startIdentity = FaceManager.getManager().startIdentity();
+                LogUtils.d(TAG, "startIdentity---::::::::::: "+startIdentity);
                 textHint.post(() -> textHint.setText(""));
             }
         } else {

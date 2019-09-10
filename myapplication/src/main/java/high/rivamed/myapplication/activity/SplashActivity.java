@@ -87,12 +87,12 @@ public class SplashActivity extends FragmentActivity {
 		OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
 		   @Override
 		   public void onSuccess(Response<String> response) {
-		      mTitleConn =true;
+			mTitleConn = true;
 		   }
 
 		   @Override
 		   public void onError(Response<String> response) {
-			mTitleConn =false;
+			mTitleConn = false;
 		   }
 		});
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
@@ -125,48 +125,56 @@ public class SplashActivity extends FragmentActivity {
 
 	new Thread(() -> startService(mIntentService)).start();
 
-		//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
-	   RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-		   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
-//		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
-			   //检测设备是否激活授权码
-			   //启动页初始化人脸识别sdk
-			   new Thread(() -> FaceManager.getManager().init(SplashActivity.this, false, new InitListener() {
-				   @Override
-				   public void initSuccess() {
-					   ToastUtils.showShortToast("人脸识别SDK初始化成功");
-					   //初始化分组
-					   boolean b = FaceManager.getManager().initGroup();
-					   if (!b) {
-						   ToastUtils.showShortToast("创建人脸照分组失败");
-						   //初始化完成后跳转页面
-						   launchLogin();
-					   } else {
-						   //从服务器更新人脸底库并注册至本地
-						   FaceTask faceTask = new FaceTask(SplashActivity.this);
-						   faceTask.setCallBack((hasRegister, msg) -> {
-							   LogUtils.d("faceTask", "initListener: " + msg);
-							   ToastUtils.showShortToast(msg);
-							   //初始化完成后跳转页面
-							   launchLogin();
-						   });
-						   faceTask.getAllFaceAndRegister();
-						   //初始化完成后跳转页面
-						   //launchLogin();
-					   }
-				   }
+	//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
+	RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
+	   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
+		//		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
+		//检测设备是否激活授权码
+		//启动页初始化人脸识别sdk
+		new Thread(() -> FaceManager.getManager()
+			.init(SplashActivity.this, false, new InitListener() {
+			   @Override
+			   public void initSuccess() {
+				UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化成功"));
+				//初始化分组
+				boolean b = FaceManager.getManager().initGroup();
+				LogUtils.d("Face","runInUIThread  "+b);
+				if (!b) {
+				   UIUtils.runInUIThread(() -> ToastUtils.showShortToast("创建人脸照分组失败"));
+				   //初始化完成后跳转页面
+				   launchLogin();
+				} else {
+				   LogUtils.d("Face", "initSuccess 1  " + b);
+				   //从服务器更新人脸底库并注册至本地
+				   FaceTask faceTask = new FaceTask(SplashActivity.this);
+				   faceTask.setCallBack((hasRegister, msg) -> {
+					if (msg != null) {
+					   UIUtils.runInUIThread(() -> ToastUtils.showShortToast(msg));
+					}
+					//初始化完成后跳转页面
+					launchLogin();
+				   });
+				   LogUtils.d("Face","initSuccess 2  "+b);
+				   faceTask.getAllFaceAndRegister();
+				   //初始化完成后跳转页面
+				   //launchLogin();
+				}
+			   }
 
-				   @Override
-				   public void initFail(int errorCode, String msg) {
-					   ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg);
-					   //初始化完成后跳转页面
-					   launchLogin();
-				   }
-			   })).start();
-		   } else {
-			   new Handler().postDelayed(this::launchLogin, 2000);
-		   }
-	   });
+			   @Override
+			   public void initFail(int errorCode, String msg) {
+				LogUtils.d("Face", "initFail 1  ");
+				UIUtils.runInUIThread(() -> ToastUtils.showShortToast(
+					"人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
+				//初始化完成后跳转页面
+				LogUtils.d("Face", "initFail 2  ");
+				launchLogin();
+			   }
+			})).start();
+	   } else {
+		new Handler().postDelayed(this::launchLogin, 2000);
+	   }
+	});
    }
 
    private void launchLogin() {

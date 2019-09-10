@@ -418,6 +418,7 @@ public class DialogUtils {
 
 //	 int[] times = {0};
         OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+        builder.setTwoMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {

@@ -77,7 +77,8 @@ public class FaceTask {
                 AllFacePhotoBean facePhotoBean = mGson.fromJson(result, AllFacePhotoBean.class);
                 if (null == facePhotoBean||!facePhotoBean.isOperateSuccess()) {
                     if (callBack != null)
-                        callBack.finishRegister(false,"暂时没有人脸照数据");
+//                        callBack.finishRegister(false,"暂时没有人脸照数据");
+                        callBack.finishRegister(false,null);
                     return;
                 }
                 List<AllFacePhotoBean.UsersBean> facePhotoList = facePhotoBean.getUsers();
@@ -88,6 +89,7 @@ public class FaceTask {
                 } else {
                     AllFacePhotoBean localFacePhotoBean = mGson.fromJson(facePhotoJson, AllFacePhotoBean.class);
                     List<AllFacePhotoBean.UsersBean> localFacePhotoList = localFacePhotoBean.getUsers();
+                    LogUtils.d("Face", "localFacePhotoList   "+localFacePhotoList.size());
                     new Thread(()->{
                         for (int i = 0; i < facePhotoList.size(); i++) {
                             AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
@@ -105,13 +107,14 @@ public class FaceTask {
                                 }
                             }
                         }
-                    }).start();
 
+                    }).start();
                 }
                 //没有新照片
                 if (updatePhotoList.size() == 0){
                     if (callBack != null)
-                        callBack.finishRegister(false,"暂时没有待注册人脸照数据");
+                        //                                callBack.finishRegister(false,"暂时没有待注册人脸照数据");
+                        callBack.finishRegister(false,null);
                     return;
                 }
                 cacheFace();
@@ -191,9 +194,10 @@ public class FaceTask {
             index++;
             cacheFace();
         } else {
+            LogUtils.d("Face", "人脸照注册完成11111");
             if (callBack != null)
                 callBack.finishRegister(true, "人脸照注册完成");
-            LogUtils.d(TAG, "人脸照注册完成");
+            LogUtils.d("Face", "人脸照注册完成");
             SPUtils.putString(UIUtils.getContext(), FACE_PHOTO, updateFaceJson);
             _mActivity = null;
         }

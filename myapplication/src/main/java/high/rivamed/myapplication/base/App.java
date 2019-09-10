@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,7 +20,6 @@ import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
@@ -32,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import cn.rivamed.Eth002Manager;
-import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
@@ -49,7 +46,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 public class App extends Application {
 
    public static final String TAG            = "BaseApplication";
-   public static       int    READER_TIME    = 3000;     //扫描时间
+   public static       int    READER_TIME    = 2000;     //扫描时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
    private static App instance;
    public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
@@ -86,11 +83,11 @@ public class App extends Application {
    @Override
    public void onCreate() {
 	super.onCreate();
-	if (BuildConfig.DEBUG) {
-	   	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
-	   	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
-	   	LeakCanary.install(this);
-	}
+//	if (BuildConfig.DEBUG) {
+//	   	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
+//	   	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
+//	   	LeakCanary.install(this);
+//	}
 
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);

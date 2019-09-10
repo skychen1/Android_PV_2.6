@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.ThingDto;
@@ -61,7 +62,10 @@ public class RegisteRecoverFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	if (BuildConfig.DEBUG) {
+	   mFragRegisteNameEdit.setText("2ab");
 
+	}
    }
 
    private void loadDate() {

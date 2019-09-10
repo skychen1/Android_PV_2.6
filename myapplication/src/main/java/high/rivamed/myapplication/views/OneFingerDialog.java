@@ -49,6 +49,7 @@ public class OneFingerDialog extends Dialog {
         private int mLeftTextColor = -1;
         private int mRightTextColor;
         private TextView mDialogBtn;
+        private TextView mFingerTitle;
         private ImageView mFingerIcon;
         private ImageView mFingerSuccess;
 
@@ -117,10 +118,12 @@ public class OneFingerDialog extends Dialog {
 
 
             mDialogBtn = (TextView) layout.findViewById(R.id.dialog_right);
+            mFingerTitle = (TextView) layout.findViewById(R.id.finger_title);
             mCloss = (ImageView) layout.findViewById(R.id.dialog_closs);
             mFingerIcon = (ImageView) layout.findViewById(R.id.finger_icon);
             mFingerSuccess = (ImageView) layout.findViewById(R.id.iv_finger_success);
             mFingerSuccess.setVisibility(View.INVISIBLE);
+            mFingerTitle.setText(mMsgTwo);
             mCloss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
