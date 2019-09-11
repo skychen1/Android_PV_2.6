@@ -49,7 +49,6 @@ public class StockRightUnconfFrag extends SimpleFragment {
 
     public StockMiddlePagerAdapter mPagerAdapter;
 
-    private LoadingDialog.Builder mBuilder;
     private List<BoxSizeBean.DevicesBean> mTbaseDevices;
 
     @Override

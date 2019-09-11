@@ -153,7 +153,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-		ToastUtils.showLongSafe("Reader启动中，请勿频繁切换，稍后点击 开始检测");
+		ToastUtils.showShortToast("Reader启动中，请勿频繁切换，稍后点击 开始检测");
 		switch (checkedId) {
 		   case R.id.reader_left:
 			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);

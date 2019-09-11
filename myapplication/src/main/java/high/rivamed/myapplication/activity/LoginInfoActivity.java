@@ -441,7 +441,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 								if (code== FunctionCode.SUCCESS){
 									//刪除本地缓存人脸照
 									new File(faceImagePath).delete();
-									ToastUtils.showShortSafe("人脸绑定成功");
+									ToastUtils.showShortToast("人脸绑定成功");
 								}
 							});
 				}
@@ -466,4 +466,13 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	void OnBindIdCard(String idCard);
    }
 
+   @Override
+   protected void onDestroy() {
+	super.onDestroy();
+	if (mBuilder!=null){
+	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder=null;
+	}
+   }
 }

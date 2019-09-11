@@ -109,7 +109,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   DeviceManager.getInstance().OpenDoor(deviceCode);
 		}
 	   } else {
-		ToastUtils.showShort("请关闭柜门，再进行操作！");
+		ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 	   }
 
 	}

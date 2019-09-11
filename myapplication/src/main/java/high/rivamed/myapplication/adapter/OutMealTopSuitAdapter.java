@@ -142,18 +142,18 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
                 if (item.getStatus() != null) {
                     if (mMealbing != null && mMealbing.equals("BING_MEAL")) {
                         String six = item.getStatus();
-                        ToastUtils.showShort("six！" + six);
+                        ToastUtils.showShortToast("six！" + six);
                         if (!six.equals("已领取")) {
                             DialogUtils.showNoDialog(mContext, position + "柜门已开", 2, "form", "BING_MEAL");
                         } else {
-                            ToastUtils.showShort("此项已领取！");
+                            ToastUtils.showShortToast("此项已领取！");
                         }
                     } else {
                         String six = item.getStatus();
                         if (!six.equals("已领取")) {
                             DialogUtils.showNoDialog(mContext, position + "柜门已开", 2, "form", null);
                         } else {
-                            ToastUtils.showShort("此项已领取！");
+                            ToastUtils.showShortToast("此项已领取！");
                         }
                     }
                 }
@@ -169,7 +169,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
                     AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
 
                 } else {
-                    ToastUtils.showShort("该耗材无耗材柜信息!");
+                    ToastUtils.showShortToast("该耗材无耗材柜信息!");
                 }
             }
         });

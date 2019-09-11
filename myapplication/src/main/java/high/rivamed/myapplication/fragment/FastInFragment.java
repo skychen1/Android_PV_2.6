@@ -348,7 +348,7 @@ public class FastInFragment extends SimpleFragment {
 		LogUtils.i(TAG, "result  " + result);
 		InventoryDto inventoryDto = mGson.fromJson(result, InventoryDto.class);
 		if (inventoryDto.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 		   if (mIntentType == 2) {
 			if (mInOutDto.getOutInventoryVos().size() == 0) {
@@ -567,7 +567,7 @@ public class FastInFragment extends SimpleFragment {
 		   if (mInOutDto.getInInventoryVos() != null) {
 			setDate(mIntentType);
 		   } else {
-			ToastUtils.showShort("数据异常");
+			ToastUtils.showShortToast("数据异常");
 		   }
 		}
 		break;
@@ -579,7 +579,7 @@ public class FastInFragment extends SimpleFragment {
 		   if (mInOutDto.getInInventoryVos() != null) {
 			setDate(mIntentType);
 		   } else {
-			ToastUtils.showShort("数据异常");
+			ToastUtils.showShortToast("数据异常");
 		   }
 		}
 		break;

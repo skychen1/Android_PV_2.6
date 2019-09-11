@@ -84,17 +84,21 @@ public class SplashActivity extends FragmentActivity {
 	   public void run() {
 		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 		String urls = MAIN_URL + NetApi.URL_CONNECT;
-		OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
-		   @Override
-		   public void onSuccess(Response<String> response) {
-			mTitleConn = true;
-		   }
+		Log.i("outtccc","MAIN_URL     "+MAIN_URL+"    ");
+		if (MAIN_URL!=null){
+		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+			@Override
+			public void onSuccess(Response<String> response) {
+			   mTitleConn = true;
+			}
 
-		   @Override
-		   public void onError(Response<String> response) {
-			mTitleConn = false;
-		   }
-		});
+			@Override
+			public void onError(Response<String> response) {
+			   mTitleConn = false;
+			}
+		   });
+		}
+
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
@@ -155,7 +159,9 @@ public class SplashActivity extends FragmentActivity {
 					launchLogin();
 				   });
 				   LogUtils.d("Face","initSuccess 2  "+b);
-				   faceTask.getAllFaceAndRegister();
+				   if (MAIN_URL!=null){
+					faceTask.getAllFaceAndRegister();
+				   }
 				   //初始化完成后跳转页面
 				   //launchLogin();
 				}

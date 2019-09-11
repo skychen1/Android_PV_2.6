@@ -277,7 +277,7 @@ public class ReciveBillFrag extends SimpleFragment {
     public void openAllDoor() {
         if (mPublicAdapter != null) {
             if (mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
-                ToastUtils.showShort("全部开柜");
+                ToastUtils.showShortToast("全部开柜");
                 mTbaseDevices.clear();
                 for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
                     List<String> deviceCodes = mPublicAdapter.getItem(i).getDeviceIds();
@@ -292,10 +292,10 @@ public class ReciveBillFrag extends SimpleFragment {
                 if (mTbaseDevices.size() > 0) {
                     AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                 } else {
-                    ToastUtils.showShort("无耗材柜数据");
+                    ToastUtils.showShortToast("无耗材柜数据");
                 }
             } else {
-                ToastUtils.showShort("无耗材数据");
+                ToastUtils.showShortToast("无耗材数据");
             }
         } else {
             Toast.makeText(mContext, "暂无数据！", Toast.LENGTH_SHORT).show();
@@ -361,5 +361,13 @@ public class ReciveBillFrag extends SimpleFragment {
         return mPrePageDate;
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mBuilder != null) {
+            mBuilder.mDialog.dismiss();
+            mBuilder.mHandler.removeCallbacksAndMessages(null);
+            mBuilder = null;
+        }
+    }
 }

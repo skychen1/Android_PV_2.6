@@ -141,7 +141,7 @@ public class LoginFaceFragment extends SimpleFragment {
             EventBusUtils.postSticky(new Event.EventLoading(false));
             textHint.setText("正在维护，请到管理端启用");
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
-            ToastUtils.showShort("正在维护，请到管理端启用");
+            ToastUtils.showShortToast("正在维护，请到管理端启用");
         }
 
     }

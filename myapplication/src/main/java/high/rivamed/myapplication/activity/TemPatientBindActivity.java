@@ -317,6 +317,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mTrim = "";
 	if (mBuilder != null) {
 	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   mBuilder = null;
 	}
 	EventBusUtils.unregister(this);

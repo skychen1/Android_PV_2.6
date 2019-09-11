@@ -14,8 +14,6 @@ import android.view.WindowManager;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.cookie.CookieJarImpl;
-import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
@@ -49,7 +47,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 public class App extends Application {
 
    public static final String TAG            = "BaseApplication";
-   public static       int    READER_TIME    = 2000;     //扫描时间
+   public static       int    READER_TIME    = 3000;     //扫描时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
    private static App instance;
    public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
@@ -168,8 +166,7 @@ public class App extends Application {
 
 	//自动管理cookie（或者叫session的保持），以下几种任选其一就行
 	//builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));            //使用sp保持cookie，如果cookie不过期，则一直有效
-	builder.cookieJar(new CookieJarImpl(
-		new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
+//	builder.cookieJar(new CookieJarImpl(new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
 	//builder.cookieJar(new CookieJarImpl(new MemoryCookieStore()));            //使用内存保持cookie，app退出后，cookie消失
 
 	// 其他统一的配置

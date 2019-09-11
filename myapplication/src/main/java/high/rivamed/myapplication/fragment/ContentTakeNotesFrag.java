@@ -191,7 +191,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		   loadDate(mTrim);
 		} else {
 		   finishLoading();
-		   ToastUtils.showShort("暂无更多数据");
+		   ToastUtils.showShortToast("暂无更多数据");
 		}
 	   }
 	});

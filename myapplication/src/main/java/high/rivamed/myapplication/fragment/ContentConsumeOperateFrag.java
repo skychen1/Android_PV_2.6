@@ -87,6 +87,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -336,19 +337,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mContentRg.setVisibility(View.VISIBLE);
 	initData();
 	initListener();
-	//	mContentRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-	//	   @Override
-	//	   public void onCheckedChanged(RadioGroup radioGroup, int i) {
-	//		if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-	//		   if (!UIUtils.isFastDoubleClick3()) {
-	//			Log.i("outtccc", "mContentRg点击，i.getId()   " + "     " + i);
-	//			doSelectOption(0, i);
-	//		   } else {
-	//			ToastUtils.showShortToast("请勿频繁操作！");
-	//		   }
-	//		}
-	//	   }
-	//	});
+
    }
 
    private void initListener() {
@@ -483,7 +472,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			 bingFindSchedulesBean.getPatientInfoVos().size() > 0) {
 			mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
 		   } else {
-			ToastUtils.showShort("没有患者数据");
+			ToastUtils.showShortToast("没有患者数据");
 		   }
 		}
 	   });
@@ -623,7 +612,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 			   int id = mContentRg.getCheckedRadioButtonId();
 			   if (id == -1) {
-				ToastUtils.showShort("请选择操作方式！");
+				ToastUtils.showShortToast("请选择操作方式！");
 			   } else {
 				//点击柜子进行操作
 				if (!UIUtils.isFastDoubleClick3()) {
@@ -653,11 +642,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mPause = false;
 	   switch (id) {
 		case R.id.content_rb_lyth://领用或者退回
-		   ToastUtils.showShort("领用/退回！");//拿出
+		   ToastUtils.showShortToast("领用/退回！");//拿出
 		   lingYongAndBack(position, 4);
 		   break;
 		case R.id.content_rb_ly://领用
-		   ToastUtils.showShort("领用！");//拿出
+		   ToastUtils.showShortToast("领用！");//拿出
 		   lingYongAndBack(position, 3);
 		   break;
 		case R.id.content_rb_rk://入库
@@ -710,7 +699,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     * */
 	private void sealsReturnClick ( int position){
 	   mRbKey = 8;
-	   ToastUtils.showShort("退货！");//拿出
+	   ToastUtils.showShortToast("退货！");//拿出
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -720,7 +709,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    */
 	private void returnClick ( int position){
 	   mRbKey = 7;
-	   ToastUtils.showShort("退回！");//拿入
+	   ToastUtils.showShortToast("退回！");//拿入
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -730,7 +719,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    */
 	private void moveInClick ( int position){
 	   mRbKey = 10;
-	   ToastUtils.showShort("移入！");//拿入
+	   ToastUtils.showShortToast("移入！");//拿入
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -740,7 +729,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    */
 	private void allotClick ( int position){
 	   mRbKey = 11;
-	   ToastUtils.showShort("调拨！");//拿出
+	   ToastUtils.showShortToast("调拨！");//拿出
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -750,7 +739,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    */
 	private void outBoxClick ( int position){
 	   mRbKey = 9;
-	   ToastUtils.showShort("移出！");//拿出
+	   ToastUtils.showShortToast("移出！");//拿出
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -760,7 +749,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	* */
 	private void inBoxClick ( int position){
 	   mRbKey = 2;
-	   ToastUtils.showShort("入库！");//拿入
+	   ToastUtils.showShortToast("入库！");//拿入
 	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	   EventBusUtils.postSticky(new Event.EventAct("inout"));
 	}
@@ -843,7 +832,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 						   .putExtra("mRbKey", mRbKey)
 						   .putExtra("GoneType", gonetype));
 				} else {
-				   ToastUtils.showShort("没有患者数据，如需创建临时患者领用，请到管理端进行配置");
+				   ToastUtils.showShortToast("没有患者数据，如需创建临时患者领用，请到管理端进行配置");
 				}
 			   }
 			}
@@ -925,7 +914,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
 			   }
 			} else {
-			   ToastUtils.showShort("此功能暂未开放");
+			   ToastUtils.showShortToast("此功能暂未开放");
 			}
 
 			break;
@@ -937,7 +926,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 				ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
 			   }
 			} else {
-			   ToastUtils.showShort("此功能暂未开放");
+			   ToastUtils.showShortToast("此功能暂未开放");
 			   //		   DialogUtils.showRegisteDialog(mContext, _mActivity);
 			}
 			break;
@@ -971,35 +960,35 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			}
 			break;
 		}
-		//选择操作监听
-		//	   if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-		//		if (!UIUtils.isFastDoubleClick3()){
-		//		   Log.i("outtccc","点击，view.getId()   "+view.getId());
-		//		   doSelectOption(0, view.getId());
-		//		}else {
-		//		   ToastUtils.showShortToast("请勿频繁操作！");
-		//		}
-		//	   }
+
 	   } else {
 		ToastUtils.showShortToast(getString(R.string.content_clossdoor_text));
 	   }
 
 	}
 
-	@Override public void onDestroyView () {
+   @Override
+   public void onStop() {
+	super.onStop();
+	if (mBuilder != null) {
+	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder = null;
+	}
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading = null;
+	}
+	cancel();
+   }
+
+   @Override
+	public void onDestroyView () {
 	   super.onDestroyView();
-	   Log.i("outtccc","onDestroyView   ");
 	   EventBusUtils.unregister(this);
-	   if (mBuilder != null) {
-		mBuilder.mDialog.dismiss();
-		mBuilder = null;
-	   }
 	   mEthDevices = null;
 	   mListDevices = null;
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
-	   }
 	}
    }

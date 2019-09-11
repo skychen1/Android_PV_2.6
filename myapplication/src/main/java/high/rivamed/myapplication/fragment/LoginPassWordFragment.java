@@ -119,7 +119,7 @@ public class LoginPassWordFragment extends SimpleFragment {
             }
         } else {
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
-            ToastUtils.showShort("正在维护，请到管理端启用");
+            ToastUtils.showShortToast("正在维护，请到管理端启用");
         }
     }
 

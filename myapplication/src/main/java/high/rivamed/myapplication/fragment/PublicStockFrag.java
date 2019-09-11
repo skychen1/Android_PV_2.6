@@ -150,7 +150,7 @@ public class PublicStockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	EventBusUtils.register(this);
+//	EventBusUtils.register(this);
 	Bundle arguments = getArguments();
 	mType_size = arguments.getInt(TYPE_SIZE);//假数据   用来判断数据长度  表格的列表
 	mType_page = arguments.getString(TYPE_PAGE);

@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -86,6 +85,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
@@ -215,6 +215,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   setTitleRightNum();
 	}
 	setTimeStart();
+	EventBusUtils.removeStickyEvent(Event.PopupEvent.class);
    }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -486,6 +487,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		mBuilder.mDialog.dismiss();
 	   }
 	}
+	EventBusUtils.removeStickyEvent(Event.EventLoadingX.class);
    }
 
    @Override
@@ -540,8 +542,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && !mPause) {
 		   setFalseEnabled(false, false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   Toast.makeText(OutBoxBingActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
-					Toast.LENGTH_SHORT).show();
+		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
 		   mHandler.postDelayed(mRunnable, 3000);
 		} else {
 		   setRemoveRunnable();
@@ -668,7 +669,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			Eth002Manager.getEth002Manager().openDoor(deviceCode);
 		   }
 		} else {
-		   ToastUtils.showShort("请关闭柜门，再进行操作！");
+		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		}
 		break;
 	   case R.id.timely_left:
@@ -680,7 +681,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			loadBingFistDate(mIntentType);
 			setRemoveRunnable();
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -693,7 +694,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			loadBingFistDate(mIntentType);
 			setRemoveRunnable();
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -713,7 +714,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			   }
 			}
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -754,7 +755,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 					.putExtra("mRbKey", mOperationType)
 					.putExtra("GoneType", "VISIBLE"));
 		   } else {
-			ToastUtils.showShort("没有患者数据");
+			ToastUtils.showShortToast("没有患者数据");
 		   }
 		}
 	   }
@@ -782,7 +783,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 				.putExtra("mRbKey", mOperationType)
 				.putExtra("GoneType", "VISIBLE"));
 	   } else {
-		ToastUtils.showShort("请开启管理端临时患者创建");
+		ToastUtils.showShortToast("请开启管理端临时患者创建");
 	   }
 	}
    }
@@ -859,7 +860,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		if (fromJson.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.USE_SUC);
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (mIntentType == 2) {
@@ -896,7 +897,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result   " + result);
 		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		if (fromJson.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.getInstance().play(MusicPlayer.Type.SUCCESS);
 
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
@@ -957,7 +958,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   inventory.save();
 		}
 	   }
-	   ToastUtils.showShort("操作成功");
+	   ToastUtils.showShortToast("操作成功");
 	   MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 
 	   if (mIntentType == 2) {
@@ -1414,18 +1415,31 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    }
 
    @Override
+   protected void onStop() {
+	super.onStop();
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder = null;
+	}
+	if (mBuildero != null) {
+	   mBuildero.mDialog.dismiss();
+	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero = null;
+	}
+   }
+
+   @Override
    protected void onDestroy() {
 	mOperationType = -3;
 	Log.i("outtccc", "onDestroy  OutBoxBi  " + mOperationType);
 	mOnBtnGone = false;
-	if (mBuilder != null) {
-	   mBuilder.mLoading.stop();
-	   mBuilder.mDialog.dismiss();
-	   mBuilder = null;
-	}
+
 	if (mPatientDto != null) {
 	   mPatientDto = null;
 	}
+	cancel();
 	RxUtils.getInstance().unRegister();
 	mEthDeviceIdBack.clear();
 	EventBusUtils.postSticky(new Event.EventFrag("START1"));

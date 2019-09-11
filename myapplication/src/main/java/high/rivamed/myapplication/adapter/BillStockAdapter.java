@@ -151,12 +151,12 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
                     if (mTbaseDevices.size() > 0) {
                         AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
                     } else {
-                        ToastUtils.showShort("无柜子信息！");
+                        ToastUtils.showShortToast("无柜子信息！");
                     }
                 } else if (six.equals("已领取")){
-                    ToastUtils.showShort("此项已领取！");
+                    ToastUtils.showShortToast("此项已领取！");
                 }else if (item.getCounts()==0){
-                    ToastUtils.showShort("库存不足，请补充库存");
+                    ToastUtils.showShortToast("库存不足，请补充库存");
                 }
             }
         });

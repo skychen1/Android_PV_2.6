@@ -263,7 +263,7 @@ public class DialogUtils {
      * @param title 打开柜门
      */
     public static OpenDoorDialog.Builder showOpenDoorDialog(
-          final Context context, String title) {
+          final Activity context, String title) {
         final OpenDoorDialog.Builder builder = new OpenDoorDialog.Builder(context);
         builder.setMsg(title);
         builder.create().show();
@@ -736,7 +736,7 @@ public class DialogUtils {
         builder.create().show();
     }
 
-    public static LoadingDialog.Builder showLoading(final Context context) {
+    public static LoadingDialog.Builder showLoading(final Activity context) {
         LoadingDialog.Builder builder = new LoadingDialog.Builder(context);
         builder.create().show();
         return builder;
@@ -813,7 +813,7 @@ public class DialogUtils {
     /**
      * 雷达
      */
-    public static LoadingDialogX.Builder showRader(Context context) {
+    public static LoadingDialogX.Builder showRader(Activity context) {
         LoadingDialogX.Builder builder = new LoadingDialogX.Builder(context);
         builder.create().show();
         return builder;

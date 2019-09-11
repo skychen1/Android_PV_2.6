@@ -104,7 +104,7 @@ public class RegisteFaceFrag extends SimpleFragment {
                     FaceManager.getManager().init(_mActivity, false, new InitListener() {
                         @Override
                         public void initSuccess() {
-                            UIUtils.runInUIThread(()->  ToastUtils.showShortSafe("人脸识别SDK初始化成功"));
+                            UIUtils.runInUIThread(()->  ToastUtils.showShortToast("人脸识别SDK初始化成功"));
 
                             fragmentBtnActive.post(() -> {
                                 hasInit = true;
@@ -115,7 +115,7 @@ public class RegisteFaceFrag extends SimpleFragment {
                             //初始化分组
                             boolean b = FaceManager.getManager().initGroup();
                             if (!b) {
-                                UIUtils.runInUIThread(()->  ToastUtils.showShortSafe("创建人脸照分组失败"));
+                                UIUtils.runInUIThread(()->  ToastUtils.showShortToast("创建人脸照分组失败"));
                                 //初始化完成后跳转页面
                             } else {
                                 //设置是否需要活体
@@ -125,7 +125,7 @@ public class RegisteFaceFrag extends SimpleFragment {
 
                         @Override
                         public void initFail(int errorCode, String msg) {
-                            UIUtils.runInUIThread(()-> ToastUtils.showShortSafe("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
+                            UIUtils.runInUIThread(()-> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
                         }
                     });
                 }
@@ -146,15 +146,15 @@ public class RegisteFaceFrag extends SimpleFragment {
                     faceTask.setCallBack((hasRegister, msg) -> {
                         LogUtils.d("faceTask", "initListener: " + msg);
                         if (msg!=null){
-                            ToastUtils.showShortSafe(msg);
+                            ToastUtils.showShortToast(msg);
                         }
                     });
                     faceTask.getAllFaceAndRegister();
                 } else {
-                    ToastUtils.showShort("创建人脸照分组失败");
+                    ToastUtils.showShortToast("创建人脸照分组失败");
                 }
             } else {
-                ToastUtils.showShort("请先初始化人脸识别SDK");
+                ToastUtils.showShortToast("请先初始化人脸识别SDK");
             }
         }
     }
@@ -162,22 +162,22 @@ public class RegisteFaceFrag extends SimpleFragment {
     void onTest(View v) {
         int initStatus = FaceManager.getManager().getInitStatus();
         if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-            ToastUtils.showShort("SDK还未激活，请先激活");
+            ToastUtils.showShortToast("SDK还未激活，请先激活");
             return;
         } else if (initStatus == FaceCode.SDK_NOT_INIT) {
-            ToastUtils.showShort("SDK还未初始化完成，请先初始化");
+            ToastUtils.showShortToast("SDK还未初始化完成，请先初始化");
             return;
         } else if (initStatus == FaceCode.SDK_INITING) {
-            ToastUtils.showShort("SDK正在初始化，请稍后再试");
+            ToastUtils.showShortToast("SDK正在初始化，请稍后再试");
             return;
         } else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-            ToastUtils.showShort("SDK初始化失败，请重新初始化SDK");
+            ToastUtils.showShortToast("SDK初始化失败，请重新初始化SDK");
             return;
         }
         //在开启人脸识别以前需要获取人脸照片数量，
         //如果为0表示没有底库，是不能开启识别的；
         if (0 == FaceManager.getManager().getFaceLibraryNum()) {
-            ToastUtils.showShort("人脸识别底库无数据，请先初始化人脸底库");
+            ToastUtils.showShortToast("人脸识别底库无数据，请先初始化人脸底库");
             return;
         }
         //跳转到识别页面
@@ -193,7 +193,7 @@ public class RegisteFaceFrag extends SimpleFragment {
             String userId = data.getStringExtra(RgbVideoIdentityActivity.USER_ID);
             User user = FaceManager.getManager().getUserById(userId);
             if (user != null) {
-                ToastUtils.showShort("识别到：：：" + user.getUserInfo());
+                ToastUtils.showShortToast("识别到：：：" + user.getUserInfo());
             }
         }
     }

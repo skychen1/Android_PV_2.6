@@ -70,7 +70,6 @@ public class StockLeftListenerFrag extends SimpleFragment {
    private StockLeftAdapter             mLeftAdapter;
    private List                         mDates;
    public  SocketLeftTopBean            mLeftTopBean;
-   private LoadingDialog.Builder        mBuilder;
    public List<BoxSizeBean.DevicesBean> mTbaseDevices;
    private List<SocketLeftTopBean.CstExpirationVosBean> mCstExpirationVos;
 

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -96,6 +97,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 
 /**
@@ -159,9 +161,10 @@ public class LoginActivity extends SimpleActivity {
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
+	Log.i("outtccc","EventLoading  event");
 	if (event.loading) {
 	   if (mLoading == null) {
-		mLoading = DialogUtils.showLoading(this);
+		mLoading = DialogUtils.showLoading(mContext);
 	   } else {
 		if (!mLoading.mDialog.isShowing()) {
 		   mLoading.create().show();
@@ -171,10 +174,10 @@ public class LoginActivity extends SimpleActivity {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
 		mLoading.mDialog.dismiss();
-		mLoading = null;
+		mLoading.mHandler.removeCallbacksAndMessages(null);
 	   }
 	}
-	EventBusUtils.removeStickyEvent(getClass());
+	EventBusUtils.removeStickyEvent(Event.EventLoading.class);
    }
 	/**
     * ic卡和指纹仪登陆回调
@@ -233,6 +236,9 @@ public class LoginActivity extends SimpleActivity {
 	     mFragments.add(faceFragment);//人脸识别登录 TODO
 	  }
 	}
+	mLoading = DialogUtils.showLoading(LoginActivity.this);
+	mLoading.mAnimationDrawable.stop();
+	mLoading.mDialog.dismiss();
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
@@ -269,7 +275,7 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-
+	EventBusUtils.register(this);
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   if (mIntentService!=null){
 		startService(mIntentService);
@@ -892,14 +898,22 @@ public class LoginActivity extends SimpleActivity {
    protected void onPause() {
 	super.onPause();
 	mOnStart = false;
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
 	if (mTitleConn) {
 	   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
 	}
+   }
+
+   @Override
+   protected void onStop() {
+	super.onStop();
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mDialog.dismiss();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading = null;
+	}
+	cancel();
+	EventBusUtils.unregister(this);
    }
 
    @Override
@@ -914,10 +928,8 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginGone.onFinishTemporaryDetach();
 	   mLoginGone= null;
 	}
-	if (mLoading != null) {
-	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
-	   mLoading = null;
-	}
+
+
+	Log.i("outtccc",getClass().getName()+"  onDestroy");
    }
 }

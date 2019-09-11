@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -75,6 +74,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
@@ -154,7 +154,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     *
     * @param event
     */
-   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventButton(Event.EventButton event) {
 	if (event.type) {
 	   mEventButton = event;
@@ -254,7 +254,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   if (mBuildero == null) {
-		mBuildero = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+		mBuildero = DialogUtils.showOpenDoorDialog(SelInOutBoxTwoActivity.this, event.mString);
 	   }
 	}
 	if (!event.isMute) {
@@ -290,7 +290,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
 	   if (mBuilder == null) {
-		mBuilder = DialogUtils.showRader(this);
+		mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
 		mBuilder.setMsg(mLocalAllSize+"");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
@@ -302,9 +302,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
 		mBuilder.mDialog.dismiss();
-		mBuilder = null;
 	   }
 	}
+	EventBusUtils.removeStickyEvent(Event.EventLoadingX.class);
    }
    /**
     * EPC扫描返回数据（单个返回）
@@ -423,7 +423,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
+	mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
+	mBuilder.mLoading.stop();
+	mBuilder.mDialog.dismiss();
 	mHandler = new Handler();
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
@@ -624,8 +626,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 		   setFalseEnabled(false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   Toast.makeText(SelInOutBoxTwoActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
-					Toast.LENGTH_SHORT).show();
+		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
 		   mHandler.postDelayed(mRunnable, 3000);
 		} else {
 		   setRemoveRunnable();
@@ -654,7 +655,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			moreStartScan(mBoxInventoryVos,mObs);
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -688,10 +689,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 				setDate(mIntentType);//其他操作
 			   }
 			} else {
-			   ToastUtils.showShort("数据异常");
+			   ToastUtils.showShortToast("数据异常");
 			}
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -714,10 +715,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   }
 			   putDateOutLogin(mIntentType);
 			} else {
-			   ToastUtils.showShort("数据异常");
+			   ToastUtils.showShortToast("数据异常");
 			}
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -739,7 +740,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   Eth002Manager.getEth002Manager().openDoor(deviceCode);
 			}
 		   } else {
-			ToastUtils.showShort("请关闭柜门，再进行操作！");
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -843,7 +844,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "result  " + result);
 		   InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		   if (fromJson.isOperateSuccess()) {
-			ToastUtils.showShort("操作成功");
+			ToastUtils.showShortToast("操作成功");
 			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			if (mIntentType == 2) {
@@ -908,7 +909,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   LogUtils.i(TAG, "result  " + result);
 		   InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		   if (fromJson.isOperateSuccess()) {
-			ToastUtils.showShort("操作成功");
+			ToastUtils.showShortToast("操作成功");
 
 			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
@@ -972,7 +973,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	}
 
-	ToastUtils.showShort("操作成功");
+	ToastUtils.showShortToast("操作成功");
 	MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 	if (mIntentType == 2) {
 	   UIUtils.putOrderId(mContext);
@@ -1106,7 +1107,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result移出   " + result);
 		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		if (fromJson.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
@@ -1127,7 +1128,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onError(String result) {
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
-		ToastUtils.showShort("操作失败，请重试！");
+		ToastUtils.showShortToast("操作失败，请重试！");
 	   }
 	});
    }
@@ -1206,7 +1207,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result退货   " + result);
 		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		if (fromJson.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
@@ -1227,7 +1228,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onError(String result) {
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
-		ToastUtils.showShort("操作失败，请重试！");
+		ToastUtils.showShortToast("操作失败，请重试！");
 	   }
 	});
    }
@@ -1261,7 +1262,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		LogUtils.i(TAG, "result调拨   " + result);
 		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
 		if (fromJson.isOperateSuccess()) {
-		   ToastUtils.showShort("操作成功");
+		   ToastUtils.showShortToast("操作成功");
 		   MusicPlayer.playSoundByOperation(mDtoLy.getOperation());//播放操作成功提示音
 		   new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 		   if (event.mIntentType == 2) {
@@ -1282,7 +1283,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   public void onError(String result) {
 		mTimelyLeft.setEnabled(true);
 		mTimelyRight.setEnabled(true);
-		ToastUtils.showShort("操作失败，请重试！");
+		ToastUtils.showShortToast("操作失败，请重试！");
 	   }
 	});
    }
@@ -1349,30 +1350,40 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	return super.dispatchTouchEvent(ev);
    }
 
-
-
    @Override
-   protected void onDestroy() {
-      Log.i("outtccc","onDestroy");
+   protected void onStop() {
+	super.onStop();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   mLoading.mDialog.dismiss();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
 	   mLoading = null;
 	}
+	if (mBuildero != null) {
+	   mBuildero.mDialog.dismiss();
+	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero = null;
+
+	}
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder = null;
+	}
+	cancel();
+   }
+
+   @Override
+   protected void onDestroy() {
+      Log.i("outtccc",getClass().getName()+"  onDestroy");
+
 	EventBusUtils.unregister(this);
 	mStarts.cancel();
 	mStarts = null;
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();
-	if (mBuildero != null) {
-	   mBuildero.mDialog.dismiss();
-	   mBuildero = null;
-	}
-	if (mBuilder != null) {
-	   mBuilder.mLoading.stop();
-	   mBuilder.mDialog.dismiss();
-	   mBuilder = null;
-	}
+
 	RxUtils.getInstance().unRegister();
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();

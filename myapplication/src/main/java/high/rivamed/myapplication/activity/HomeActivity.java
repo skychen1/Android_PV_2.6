@@ -59,7 +59,7 @@ public class HomeActivity extends SimpleActivity {
 
    @BindView(R.id.content_syjl)
    RadioButton mContentSyjl;
-   public static RadioGroup mHomeRg;
+   RadioGroup mHomeRg;
    public static View       mHomeRgGone;
    @BindView(R.id.content_consume_operate)
    RadioButton mContentConsumeOperate;
@@ -106,13 +106,18 @@ public class HomeActivity extends SimpleActivity {
     */
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	EventBusUtils.register(this);
 
 	setMenu();
 	initData();
 	initListener();
 	//	initPushService();
 	//	initMessageIcon();
+   }
+
+   @Override
+   public void onStart() {
+	super.onStart();
+	EventBusUtils.register(this);
    }
 
    /**
@@ -195,7 +200,7 @@ public class HomeActivity extends SimpleActivity {
 	mHomeRgGone.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View v) {
-		ToastUtils.showShort("请关闭柜门再进行操作");
+		ToastUtils.showShortToast("请关闭柜门再进行操作");
 	   }
 	});
 	mHomeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -247,7 +252,7 @@ public class HomeActivity extends SimpleActivity {
 
 	if ((System.currentTimeMillis() - TOUCH_TIME > WAIT_TIME)) {
 	   TOUCH_TIME = System.currentTimeMillis();
-	   ToastUtils.showShortSafe(UIUtils.getString(R.string.press_again_exit));
+	   ToastUtils.showShortToast(UIUtils.getString(R.string.press_again_exit));
 	} else {
 	   super.onBackPressedSupport();
 	}
@@ -260,8 +265,9 @@ public class HomeActivity extends SimpleActivity {
 
    @Override
    protected void onDestroy() {
-	Log.i("FAEDD","onDestroy");
+	Log.i("outtccc",getClass().getName()+"  onDestroy");
 	super.onDestroy();
 	mHomeRg=null;
+	mHomeRgGone=null;
    }
 }

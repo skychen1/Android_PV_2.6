@@ -12,7 +12,6 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.util.List;
 
-import cn.rivamed.DeviceManager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.RegisteTestBean;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -123,13 +122,13 @@ public class RegisteTestAdapter extends BaseMultiItemQuickAdapter<MultiItemEntit
 		   @Override
 		   public void onClick(View v) {
 			if (item3.test.equals("开锁")) {
-			   ToastUtils.showShort("我打开了锁");
+			   ToastUtils.showShortToast("我打开了锁");
 
 			} else if (item3.test.equals("设置功率")) {
 			   DialogUtils.showWifiDialog(mContext);
 			} else if (item3.test.equals("开始")) {
 
-			   ToastUtils.showShort("开始");
+			   ToastUtils.showShortToast("开始");
 			}
 		   }
 		});

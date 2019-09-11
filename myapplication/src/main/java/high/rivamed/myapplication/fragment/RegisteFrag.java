@@ -159,7 +159,7 @@ public class RegisteFrag extends SimpleFragment {
 		ThingDto thingDto = mGson.fromJson(result, ThingDto.class);
 		if (thingDto.isOperateSuccess()) {
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
-		   ToastUtils.showShort(thingDto.getMsg());
+		   ToastUtils.showShortToast(thingDto.getMsg());
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
@@ -179,7 +179,7 @@ public class RegisteFrag extends SimpleFragment {
 		   putDbDate(thingDto);
 		   initData();
 		} else {
-		   ToastUtils.showShort(thingDto.getMsg());
+		   ToastUtils.showShortToast(thingDto.getMsg());
 		}
 		LogUtils.i(TAG, "result   " + result);
 	   }
@@ -187,7 +187,7 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
-		ToastUtils.showShort("操作失败 (" + result + ")");
+		ToastUtils.showShortToast("操作失败 (" + result + ")");
 		mFragmentBtnOne.setEnabled(true);
 	   }
 	});
@@ -471,7 +471,7 @@ public class RegisteFrag extends SimpleFragment {
 	   public void onSucceed(String result) {
 		ThingDto thingDto = mGson.fromJson(result, ThingDto.class);
 		if (thingDto.isOperateSuccess()) {
-		   ToastUtils.showShort(thingDto.getMsg());
+		   ToastUtils.showShortToast(thingDto.getMsg());
 		   mFragmentBtnOne.setEnabled(true);
 		   mRecyclerview.scrollToPosition(i);
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
@@ -492,7 +492,7 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onError(String result) {
 		super.onError(result);
-		ToastUtils.showShort("操作失败 (" + result + ")");
+		ToastUtils.showShortToast("操作失败 (" + result + ")");
 		mFragmentBtnOne.setEnabled(true);
 	   }
 	});
@@ -665,7 +665,7 @@ public class RegisteFrag extends SimpleFragment {
 	}
 	if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
 	    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
-	   ToastUtils.showShort("请先填写服务器IP和端口");
+	   ToastUtils.showShortToast("请先填写服务器IP和端口");
 	} else {
 	   String url = "http://" + mFragRegisteSeveripEdit.getText().toString().trim() + ":" +
 			    mFragRegistePortEdit.getText().toString().trim();
@@ -686,7 +686,7 @@ public class RegisteFrag extends SimpleFragment {
 				@Override
 				public void onSucceed(String result) {
 				   LogUtils.i(TAG, "result   " + result);
-				   ToastUtils.showShort("服务器已连接成功！");
+				   ToastUtils.showShortToast("服务器已连接成功！");
 				   LogUtils.i(TAG,
 						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 

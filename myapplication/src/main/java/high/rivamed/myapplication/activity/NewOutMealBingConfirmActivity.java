@@ -79,6 +79,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
@@ -879,5 +880,17 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mEthDeviceIdBack.clear();
 	RxUtils.getInstance().unRegister();
 	mHandler.removeCallbacksAndMessages(null);
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder =null;
+	}
+	if (mBuildero != null) {
+	   mBuildero.mDialog.dismiss();
+	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero=null;
+	}
+	cancel();
    }
 }

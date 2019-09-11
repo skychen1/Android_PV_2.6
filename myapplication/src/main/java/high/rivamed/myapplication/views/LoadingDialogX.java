@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.views;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
@@ -7,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 import high.rivamed.myapplication.R;
 
@@ -33,12 +36,13 @@ public class LoadingDialogX extends Dialog {
 
    public static class Builder {
 
-	private Context        mContext;
+	private Activity        mContext;
 	public  RadarView      mLoading;
 	public  TextView       mLoadingText;
 	public  LoadingDialogX mDialog;
-
-	public Builder(Context context) {
+	public Handler mHandler;
+	private WeakReference<Activity> activitySRF = null;
+	public Builder(Activity context) {
 	   this.mContext = context;
 	}
 
@@ -53,9 +57,10 @@ public class LoadingDialogX extends Dialog {
 	}
 
 	public LoadingDialogX create() {
-	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+	   activitySRF = new WeakReference<Activity>(mContext);
+	   LayoutInflater inflater = (LayoutInflater) activitySRF.get().getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
-	   mDialog = new LoadingDialogX(mContext, R.style.Dialog);
+	   mDialog = new LoadingDialogX(activitySRF.get(), R.style.Dialog);
 	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_radar_loading_layout, null);
 	   mLoading = (RadarView) layout.findViewById(R.id.radar);
@@ -64,16 +69,20 @@ public class LoadingDialogX extends Dialog {
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 									     ViewGroup.LayoutParams.MATCH_PARENT));
 	   mLoading.start();
-
-	   new Handler().postDelayed(new Runnable() {
-		@Override
-		public void run() {
-		   if (mDialog != null && mDialog.isShowing()) {
-			mLoading.stop();
-			mDialog.dismiss();
+	   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+		mHandler = new Handler(activitySRF.get().getMainLooper());
+		mHandler.postDelayed(new Runnable() {
+		   @Override
+		   public void run() {
+			if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+			   if (mDialog != null && mDialog.isShowing()) {
+				mLoading.stop();
+				mDialog.dismiss();
+			   }
+			}
 		   }
-		}
-	   }, 25000);
+		}, 25000);
+	   }
 	   return mDialog;
 	}
 

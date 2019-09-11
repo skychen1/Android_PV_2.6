@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.views;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 import high.rivamed.myapplication.R;
 
@@ -35,7 +38,7 @@ public class OpenDoorDialog extends Dialog {
 
    public static class Builder {
 
-	private Context         mContext;
+	private Activity         mContext;
 	private String          mMsgTwo;
 	private String          mMsgText;
 	private String          mLeftText;
@@ -53,8 +56,9 @@ public class OpenDoorDialog extends Dialog {
 	public  OpenDoorDialog  mDialog;
 	private String          mNojump;
 	private String          mBing;
-
-	public Builder(Context context) {
+	public Handler mHandler;
+	private WeakReference<Activity> activitySRF = null;
+	public Builder(Activity context) {
 	   this.mContext = context;
 
 	}
@@ -98,9 +102,10 @@ public class OpenDoorDialog extends Dialog {
 	}
 
 	public OpenDoorDialog create() {
-	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+	   activitySRF = new WeakReference<Activity>(mContext);
+	   LayoutInflater inflater = (LayoutInflater) activitySRF.get().getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
-	   mDialog = new OpenDoorDialog(mContext, R.style.Dialog);
+	   mDialog = new OpenDoorDialog(activitySRF.get(), R.style.Dialog);
 	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_no_layout, null);
 	   mDialog.addContentView(layout,
@@ -119,17 +124,23 @@ public class OpenDoorDialog extends Dialog {
 		@Override
 		public void onClick(View view) {
 		   mDialog.dismiss();
+		   mHandler.removeCallbacksAndMessages(null);
 		}
 	   });
-	   new Handler().postDelayed(new Runnable() {
-		@Override
-		public void run() {
-		   if (mDialog!=null){
-			mDialog.dismiss();
-		   }
 
-		}
-	   }, 25000);
+	   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+		mHandler = new Handler(activitySRF.get().getMainLooper());
+		mHandler.postDelayed(new Runnable() {
+		   @Override
+		   public void run() {
+			if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+			   if (mDialog!=null){
+				mDialog.dismiss();
+			   }
+			}
+		   }
+		}, 25000);
+	   }
 	   return mDialog;
 	}
 

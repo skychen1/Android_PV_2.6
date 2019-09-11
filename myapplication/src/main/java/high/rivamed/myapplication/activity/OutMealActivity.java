@@ -302,7 +302,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(this, mSuites);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该科室暂无套组");
+                        ToastUtils.showShortToast("该科室暂无套组");
                     }
                 } else {
                     findOrderCstPlanDate(false);
@@ -310,7 +310,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                 break;
             case R.id.meal_open_btn:
                 if (mPublicAdapter!=null && mPublicAdapter.getData() != null && mPublicAdapter.getData().size() > 0) {
-                    ToastUtils.showShort("全部开柜");
+                    ToastUtils.showShortToast("全部开柜");
                     mTbaseDevicesFromEvent.clear();
                     for (int i = 0; i < mPublicAdapter.getData().size(); i++) {
                         for (String deviceCode : mPublicAdapter.getItem(i).getDeviceIds()) {
@@ -324,10 +324,10 @@ public class OutMealActivity extends BaseSimpleActivity {
                     if (mTbaseDevicesFromEvent.size() > 0) {
                         AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
                     } else {
-                        ToastUtils.showShort("无耗材柜数据");
+                        ToastUtils.showShortToast("无耗材柜数据");
                     }
                 } else {
-                    ToastUtils.showShort("无套组数据，请选择套组");
+                    ToastUtils.showShortToast("无套组数据，请选择套组");
                 }
                 break;
         }
@@ -348,7 +348,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         mPopupWindowSearch = new MealPopupWindow(OutMealActivity.this, mSuites);
                         mPopupWindowSearch.showPopupWindow(mMealTvSearch);
                     } else {
-                        ToastUtils.showShort("该科室暂无套组");
+                        ToastUtils.showShortToast("该科室暂无套组");
                     }
                 } else {
                     if (mSuites.size() > 0) {
@@ -463,5 +463,15 @@ public class OutMealActivity extends BaseSimpleActivity {
     protected void onPause() {
         super.onPause();
         mIsCanSkipToSurePage = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBuilder != null) {
+            mBuilder.mDialog.dismiss();
+            mBuilder.mHandler.removeCallbacksAndMessages(null);
+            mBuilder = null;
+        }
     }
 }

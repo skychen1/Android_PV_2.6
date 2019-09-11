@@ -66,17 +66,23 @@ public class MyHttpLoggingInterceptor implements Interceptor {
 
         //执行请求，计算请求时间
         long startNs = System.nanoTime();
-        Response response;
+        Response response = null;
         try {
             response = chain.proceed(request);
+            long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
+            return logForResponse(response, tookMs);
         } catch (Exception e) {
             log("<-- HTTP FAILED: " + e);
             throw e;
+        } finally {
+            if (response!=null){
+                response.close();
+            }
         }
-        long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
+//        long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
         //响应日志拦截
-        return logForResponse(response, tookMs);
+
     }
 
     private void logForRequest(Request request, Connection connection) throws IOException {

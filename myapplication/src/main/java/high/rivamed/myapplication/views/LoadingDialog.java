@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.views;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
@@ -36,19 +39,22 @@ public class LoadingDialog extends Dialog {
 
    public static class Builder {
 
-	private Context           mContext;
-	private ImageView         mLoading;
-	public  LoadingDialog     mDialog;
-	public  AnimationDrawable mAnimationDrawable;
+	private Activity                mContext;
+	private ImageView               mLoading;
+	public  LoadingDialog           mDialog;
+	public  AnimationDrawable       mAnimationDrawable;
+	public  Handler                 mHandler;
+	private WeakReference<Activity> activitySRF = null;
 
-	public Builder(Context context) {
+	public Builder(Activity context) {
 	   this.mContext = context;
 	}
 
 	public LoadingDialog create() {
-	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+	   activitySRF = new WeakReference<Activity>(mContext);
+	   LayoutInflater inflater = (LayoutInflater) activitySRF.get().getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
-	   mDialog = new LoadingDialog(mContext, R.style.Dialog);
+	   mDialog = new LoadingDialog(activitySRF.get(), R.style.Dialog);
 	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_loading_layout, null);
 	   mLoading = (ImageView) layout.findViewById(R.id.animProgress);
@@ -58,18 +64,24 @@ public class LoadingDialog extends Dialog {
 	   mAnimationDrawable = (AnimationDrawable) mLoading.getBackground();
 	   mAnimationDrawable.start();
 	   EventBusUtils.post(new Event.EventHomeEnable(true));
-	   new Handler().postDelayed(new Runnable() {
-		@Override
-		public void run() {
-		   if (mDialog.isShowing()) {
-			mAnimationDrawable.stop();
-			mDialog.dismiss();
+	   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+		mHandler = new Handler(activitySRF.get().getMainLooper());
+		mHandler.postDelayed(new Runnable() {
+		   @Override
+		   public void run() {
+			if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+			   if (mDialog.isShowing()) {
+				mAnimationDrawable.stop();
+				mDialog.dismiss();
+			   }
+			}
 		   }
-		}
-	   }, 15000);
+		}, 25000);
+	   }
+
 	   return mDialog;
 	}
 
    }
-
 }
+

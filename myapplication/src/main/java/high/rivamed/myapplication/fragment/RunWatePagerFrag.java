@@ -281,7 +281,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		} else {
 		   finishLoading();
-		   ToastUtils.showShort("暂无更多数据");
+		   ToastUtils.showShortToast("暂无更多数据");
 		}
 	   }
 	});
@@ -484,7 +484,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 		break;
 	   case R.id.search_time_end:
 		if (mStartTime == null) {
-		   ToastUtils.showShort("请先选择开始时间");
+		   ToastUtils.showShortToast("请先选择开始时间");
 		} else {
 		   DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
 		}

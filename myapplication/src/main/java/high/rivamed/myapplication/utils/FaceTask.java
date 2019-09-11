@@ -90,25 +90,27 @@ public class FaceTask {
                     AllFacePhotoBean localFacePhotoBean = mGson.fromJson(facePhotoJson, AllFacePhotoBean.class);
                     List<AllFacePhotoBean.UsersBean> localFacePhotoList = localFacePhotoBean.getUsers();
                     LogUtils.d("Face", "localFacePhotoList   "+localFacePhotoList.size());
-                    new Thread(()->{
-                        for (int i = 0; i < facePhotoList.size(); i++) {
-                            AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
-                            int index = localFacePhotoList.indexOf(photoBean);
-                            if (index==-1) {
-                                //本地没有缓存
-                                updatePhotoList.add(photoBean);
-                            } else {
-                                //有本地缓存，但不是最新更新的图片，也需要重新更新
-                                AllFacePhotoBean.UsersBean bean = localFacePhotoList.get(index);
-                                if (bean.getFaceUpdateTime().compareTo(photoBean.getFaceUpdateTime()) < 0) {
-                                    //最新更新时间大于本地更新时间，更新底库
-                                    photoBean.setUpdate(true);
+                    if (facePhotoList!=null){
+                        new Thread(()->{
+                            for (int i = 0; i < facePhotoList.size(); i++) {
+                                AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
+                                int index = localFacePhotoList.indexOf(photoBean);
+                                if (index==-1) {
+                                    //本地没有缓存
                                     updatePhotoList.add(photoBean);
+                                } else {
+                                    //有本地缓存，但不是最新更新的图片，也需要重新更新
+                                    AllFacePhotoBean.UsersBean bean = localFacePhotoList.get(index);
+                                    if (bean.getFaceUpdateTime().compareTo(photoBean.getFaceUpdateTime()) < 0) {
+                                        //最新更新时间大于本地更新时间，更新底库
+                                        photoBean.setUpdate(true);
+                                        updatePhotoList.add(photoBean);
+                                    }
                                 }
                             }
-                        }
+                        }).start();
+                    }
 
-                    }).start();
                 }
                 //没有新照片
                 if (updatePhotoList.size() == 0){
