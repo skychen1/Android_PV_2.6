@@ -423,9 +423,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-	mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
-	mBuilder.mLoading.stop();
-	mBuilder.mDialog.dismiss();
+//	mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
+//	mBuilder.mLoading.stop();
+//	mBuilder.mDialog.dismiss();
+	EventBusUtils.post(new Event.EventLoadingX(true));
+
 	mHandler = new Handler();
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
@@ -442,7 +444,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-	EventBusUtils.post(new Event.EventLoadingX(true));
 	mAllSize = getLocalAllCstVos().size();
 	mLocalAllSize=mAllSize;
 	mFirstFinishLoading =false;

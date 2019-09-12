@@ -14,6 +14,7 @@ import high.rivamed.myapplication.base.App;
 public class MusicPlayer {
     private Context mContext;
     private static MusicPlayer sInstance;
+    private Handler         mHandler = new Handler();
 
     public static class Type {
         public final static int LOGIN_SUC = 1;//您已登录成功.
@@ -103,7 +104,7 @@ public class MusicPlayer {
     public void play(int type) {
         if (sSpMap.get(type) == null)
             return;
-        new Handler().postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mSp.play(sSpMap.get(type), 1, 1, 0, 0, 1);

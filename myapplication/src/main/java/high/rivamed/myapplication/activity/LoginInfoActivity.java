@@ -85,14 +85,14 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    TextView     mSettingPassSetting;
    @BindView(R.id.setting_pass_ll)
    LinearLayout mSettingPassLL;
-   public static TextView mSettingIcCardEdit;
-   public static TextView mSettingIcCardBind;
+   TextView mSettingIcCardEdit;
+   TextView mSettingIcCardBind;
    @BindView(R.id.top_icon)
    ImageView mTopIcon;
    private LoadingDialog.Builder mBuilder;
    private String mUserId = "";
    private       LoginResultBean.AppAccountInfoVoBean mAppAccountInfoVo;
-   public static int                                  mIsWaidai;
+   public int                                  mIsWaidai;
 	private boolean isTakeFacePhoto;
 
 	@Override
@@ -271,7 +271,15 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   bean.setUserId(mUserId);
 		   bean.setType("2");
 		   dto.setUserFeatureInfo(bean);
-		   DialogUtils.showUnRegistDialog(this, "解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto));
+		   DialogUtils.showUnRegistDialog(this, "解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto),
+							    new SetEditTextListener() {
+								 @Override
+								 public void OnSetEditText() {
+								    mIsWaidai = 0;
+								    mSettingIcCardEdit.setText("未绑定");
+								    mSettingIcCardBind.setText("绑定");
+								 }
+							    });
 		}
 		break;
 	}
@@ -465,7 +473,11 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
 	void OnBindIdCard(String idCard);
    }
+   //提供接口
+   public interface SetEditTextListener {
 
+	void OnSetEditText();
+   }
    @Override
    protected void onDestroy() {
 	super.onDestroy();

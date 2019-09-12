@@ -2,8 +2,6 @@ package high.rivamed.myapplication.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
@@ -40,7 +38,6 @@ import high.rivamed.myapplication.base.App;
 public class ToastUtils {
 
    private static final int     DEFAULT_COLOR = 0x12000000;
-   private static final Handler sHandler      = new Handler(Looper.getMainLooper());
    private static Toast               sToast;
    private static WeakReference<View> sViewWeakReference;
    private static int gravity         = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
@@ -226,121 +223,121 @@ public class ToastUtils {
 	ToastUtils.messageColor = messageColor;
    }
 
-   /**
-    * 安全地显示短时吐司
-    *
-    * @param text 文本
-    */
-   public static void showShortSafe(@NonNull final CharSequence text) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(text, Toast.LENGTH_SHORT);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示短时吐司
-    *
-    * @param resId 资源Id
-    */
-   public static void showShortSafe(@StringRes final int resId) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(resId, Toast.LENGTH_SHORT);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示短时吐司
-    *
-    * @param resId 资源Id
-    * @param args  参数
-    */
-   public static void showShortSafe(@StringRes final int resId, final Object... args) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(resId, Toast.LENGTH_SHORT, args);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示短时吐司
-    *
-    * @param format 格式
-    * @param args   参数
-    */
-   public static void showShortSafe(final String format, final Object... args) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(format, Toast.LENGTH_SHORT, args);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时吐司
-    *
-    * @param text 文本
-    */
-   public static void showLongSafe(@NonNull final CharSequence text) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(text, Toast.LENGTH_LONG);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时吐司
-    *
-    * @param resId 资源Id
-    */
-   public static void showLongSafe(@StringRes final int resId) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(resId, Toast.LENGTH_LONG);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时吐司
-    *
-    * @param resId 资源Id
-    * @param args  参数
-    */
-   public static void showLongSafe(@StringRes final int resId, final Object... args) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(resId, Toast.LENGTH_LONG, args);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时吐司
-    *
-    * @param format 格式
-    * @param args   参数
-    */
-   public static void showLongSafe(final String format, final Object... args) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		show(format, Toast.LENGTH_LONG, args);
-	   }
-	});
-   }
+//   /**
+//    * 安全地显示短时吐司
+//    *
+//    * @param text 文本
+//    */
+//   public static void showShortSafe(@NonNull final CharSequence text) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(text, Toast.LENGTH_SHORT);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示短时吐司
+//    *
+//    * @param resId 资源Id
+//    */
+//   public static void showShortSafe(@StringRes final int resId) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(resId, Toast.LENGTH_SHORT);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示短时吐司
+//    *
+//    * @param resId 资源Id
+//    * @param args  参数
+//    */
+//   public static void showShortSafe(@StringRes final int resId, final Object... args) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(resId, Toast.LENGTH_SHORT, args);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示短时吐司
+//    *
+//    * @param format 格式
+//    * @param args   参数
+//    */
+//   public static void showShortSafe(final String format, final Object... args) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(format, Toast.LENGTH_SHORT, args);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时吐司
+//    *
+//    * @param text 文本
+//    */
+//   public static void showLongSafe(@NonNull final CharSequence text) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(text, Toast.LENGTH_LONG);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时吐司
+//    *
+//    * @param resId 资源Id
+//    */
+//   public static void showLongSafe(@StringRes final int resId) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(resId, Toast.LENGTH_LONG);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时吐司
+//    *
+//    * @param resId 资源Id
+//    * @param args  参数
+//    */
+//   public static void showLongSafe(@StringRes final int resId, final Object... args) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(resId, Toast.LENGTH_LONG, args);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时吐司
+//    *
+//    * @param format 格式
+//    * @param args   参数
+//    */
+//   public static void showLongSafe(final String format, final Object... args) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		show(format, Toast.LENGTH_LONG, args);
+//	   }
+//	});
+//   }
 
    /**
     * 显示短时吐司
@@ -425,31 +422,31 @@ public class ToastUtils {
 	show(format, Toast.LENGTH_LONG, args);
    }
 
-   /**
-    * 安全地显示短时自定义吐司
-    */
-   public static void showCustomShortSafe(@LayoutRes final int layoutId) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		setView(layoutId);
-		show("", Toast.LENGTH_SHORT);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时自定义吐司
-    */
-   public static void showCustomLongSafe(@LayoutRes final int layoutId) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		setView(layoutId);
-		show("", Toast.LENGTH_LONG);
-	   }
-	});
-   }
+//   /**
+//    * 安全地显示短时自定义吐司
+//    */
+//   public static void showCustomShortSafe(@LayoutRes final int layoutId) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		setView(layoutId);
+//		show("", Toast.LENGTH_SHORT);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时自定义吐司
+//    */
+//   public static void showCustomLongSafe(@LayoutRes final int layoutId) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		setView(layoutId);
+//		show("", Toast.LENGTH_LONG);
+//	   }
+//	});
+//   }
 
    /**
     * 显示短时自定义吐司
@@ -467,31 +464,31 @@ public class ToastUtils {
 	show("", Toast.LENGTH_LONG);
    }
 
-   /**
-    * 安全地显示短时自定义吐司
-    */
-   public static void showCustomShortSafe(@NonNull final View view) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		setView(view);
-		show("", Toast.LENGTH_SHORT);
-	   }
-	});
-   }
-
-   /**
-    * 安全地显示长时自定义吐司
-    */
-   public static void showCustomLongSafe(@NonNull final View view) {
-	sHandler.post(new Runnable() {
-	   @Override
-	   public void run() {
-		setView(view);
-		show("", Toast.LENGTH_LONG);
-	   }
-	});
-   }
+//   /**
+//    * 安全地显示短时自定义吐司
+//    */
+//   public static void showCustomShortSafe(@NonNull final View view) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		setView(view);
+//		show("", Toast.LENGTH_SHORT);
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 安全地显示长时自定义吐司
+//    */
+//   public static void showCustomLongSafe(@NonNull final View view) {
+//	sHandler.post(new Runnable() {
+//	   @Override
+//	   public void run() {
+//		setView(view);
+//		show("", Toast.LENGTH_LONG);
+//	   }
+//	});
+//   }
 
    /**
     * 显示短时自定义吐司

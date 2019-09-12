@@ -158,6 +158,7 @@ public class LoginActivity extends SimpleActivity {
    public static          boolean           mConfigType045;
    private Thread mThread;
    private Thread mThread1;
+   private boolean mDestroyType =true;//处理thread执行
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
@@ -205,19 +206,25 @@ public class LoginActivity extends SimpleActivity {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect, event.net);
 	if (mTitleConn && mOnStart) {
-	   mThread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
-		   if (voList == null || voList.size() == 0) {
-			getAllCstDate(this);
+	   if (mThread!=null){
+		mThread.start();
+	   }else {
+		mThread = new Thread(new Runnable() {
+		   @Override
+		   public void run() {
+			if (mDestroyType){
+			   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+			   if (voList == null || voList.size() == 0) {
+				getAllCstDate(this);
+			   }
+			   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
+			   getUnNetUseDate();
+			   getUnEntFindOperation();
+			}
 		   }
-		   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
-		   getUnNetUseDate();
-		   getUnEntFindOperation();
-		}
-	   });
-	   mThread.start();
+		});
+		mThread.start();
+	   }
 	}
    }
 
@@ -285,22 +292,27 @@ public class LoginActivity extends SimpleActivity {
 	   }
 
 	}
-
-	mThread1 = new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		getAllCstDate(this);//重新获取在库耗材数据
-		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
-		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
-		if (all.size() == 0) {
-		   getUnNetUseDate();
+	if (mThread1!=null){
+	   mThread1.start();
+	}else {
+	   mThread1 = new Thread(new Runnable() {
+		@Override
+		public void run() {
+		   if (mDestroyType){
+			getAllCstDate(this);//重新获取在库耗材数据
+			List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
+			List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+			if (all.size() == 0) {
+			   getUnNetUseDate();
+			}
+			if (roomsBeans.size() == 0) {
+			   getUnEntFindOperation();
+			}
+		   }
 		}
-		if (roomsBeans.size() == 0) {
-		   getUnEntFindOperation();
-		}
-	   }
-	});
-	mThread1.start();
+	   });
+	   mThread1.start();
+	}
 	mOnStart = true;
 	mPushFormOrders.clear();
 	mDownText.setText(
@@ -385,12 +397,7 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		deleteLitepal();
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		new Thread(new Runnable() {
-		   @Override
-		   public void run() {
-			setLitePalUseBean(userBean);
-		   }
-		}).start();
+		setLitePalUseBean(userBean);
 	   }
 	});
    }
@@ -928,8 +935,8 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginGone.onFinishTemporaryDetach();
 	   mLoginGone= null;
 	}
+	mDestroyType = false;
 
-
-	Log.i("outtccc",getClass().getName()+"  onDestroy");
+	Log.i("ccetdaF",getClass().getName()+"  onDestroy");
    }
 }

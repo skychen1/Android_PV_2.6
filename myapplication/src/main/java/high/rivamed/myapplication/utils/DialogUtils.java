@@ -207,7 +207,8 @@ public class DialogUtils {
      * @param context
      * @param title
      */
-    public static void showUnRegistDialog(Context context, String title, String date) {
+    public static void showUnRegistDialog(Context context, String title, String date,
+                                          LoginInfoActivity.SetEditTextListener mSetEditTextListener) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
@@ -221,9 +222,7 @@ public class DialogUtils {
                             Gson gson = new Gson();
                             UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
                             if (unRegistBean.isOperateSuccess()) {
-                                LoginInfoActivity.mIsWaidai = 0;
-                                LoginInfoActivity.mSettingIcCardEdit.setText("未绑定");
-                                LoginInfoActivity.mSettingIcCardBind.setText("绑定");
+                                mSetEditTextListener.OnSetEditText();
                             }
                             Toast.makeText(context, unRegistBean.getMsg(), Toast.LENGTH_SHORT).show();
                             String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,

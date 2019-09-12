@@ -262,7 +262,8 @@ public class LoginUtils {
         if (fromJson.size() > 0) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
             Intent intent = new Intent(activity, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             activity.startActivity(intent);
             if (callback != null){
                 callback.onMenu(true);
