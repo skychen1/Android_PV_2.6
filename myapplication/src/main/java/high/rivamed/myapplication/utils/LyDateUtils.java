@@ -196,11 +196,9 @@ public class LyDateUtils {
 		InventoryVo next = iterator.next();
 		if (!box_id.equals(next.getDeviceId())) {
 		   iterator.remove();
-		   break;
 		}
 	   }
 	   mBoxInventoryVos.addAll(cstVos);
-
 	   int size1 = mBoxInventoryVos.size();
 	   for (int i = 0; i < size1 - 1; i++) {
 		int size2 = mBoxInventoryVos.size();

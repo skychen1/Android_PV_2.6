@@ -33,7 +33,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_LEFT;
 
@@ -169,20 +168,41 @@ public class StockLeftListenerFrag extends SimpleFragment {
 
 	@Override
 	public Fragment getItem(int position) {
-
+	   String deviceCode = null;
+	   if (position == 0) {
+		deviceCode = null;
+	   } else {
+		deviceCode = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceId();
+	   }
 	   mStockLeftAlltop.setVisibility(View.VISIBLE);
-	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, mLeftTopBean.getCstExpirationVos().get(position).getDeviceId());
+
+	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, deviceCode);
 
 	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-	   return mLeftTopBean.getCstExpirationVos().get(position).getDeviceName();
+	   String deviceName = null;
+
+	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
+		if (position == 0) {
+		   deviceName = "全部";
+		} else {
+		   deviceName = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceName();
+		}
+	   }else {
+		deviceName = mLeftTopBean.getCstExpirationVos().get(position).getDeviceName();
+	   }
+	   return deviceName;
 	}
 
 	@Override
 	public int getCount() {
-	   return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size() ;
+	   if (mLeftTopBean.getCstExpirationVos().size()>1) {
+		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size()+1 ;
+	   }else {
+		return mLeftTopBean.getCstExpirationVos() == null ? 0 : mLeftTopBean.getCstExpirationVos().size() ;
+	   }
 	}
    }
 

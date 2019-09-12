@@ -65,21 +65,30 @@ public class LoadingDialog extends Dialog {
 	   mAnimationDrawable.start();
 	   EventBusUtils.post(new Event.EventHomeEnable(true));
 	   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
-		mHandler = new Handler(activitySRF.get().getMainLooper());
-		mHandler.postDelayed(new Runnable() {
-		   @Override
-		   public void run() {
-			if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
-			   if (mDialog.isShowing()) {
-				mAnimationDrawable.stop();
-				mDialog.dismiss();
-			   }
-			}
-		   }
-		}, 25000);
+	      if (mHandler!=null){
+		   postDialog();
+		}else {
+		   mHandler = new Handler(activitySRF.get().getMainLooper());
+		   postDialog();
+		}
 	   }
 
 	   return mDialog;
+	}
+
+	private void postDialog() {
+	   mHandler.postDelayed(new Runnable() {
+		@Override
+		public void run() {
+		   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
+			if (mDialog.isShowing()) {
+			   mAnimationDrawable.stop();
+			   mDialog.dismiss();
+			   mHandler.removeCallbacksAndMessages(null);
+			}
+		   }
+		}
+	   }, 25000);
 	}
 
    }

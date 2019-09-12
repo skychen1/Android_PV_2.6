@@ -638,17 +638,21 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	switch (view.getId()) {
 
 	   case R.id.timely_start_btn_right://重新扫描
-		if (mTimelyLeft != null && mTimelyRight != null && mStarts != null) {
-		   setFalseEnabled(false, false);
+		if (mDoorStatusType) {
+		   if (mTimelyLeft != null && mTimelyRight != null && mStarts != null) {
+			setFalseEnabled(false, false);
+		   }
+		   if (mConfigType009) {
+			mPatient = null;
+			mPatientId = null;
+		   }
+		   TimelyAllFrag.mPauseS = true;
+		   mBoxInventoryVos.clear();
+		   mLocalAllSize = mAllSize;
+		   moreStartScan(mBoxInventoryVos, mObs);
+		}else {
+		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		}
-		if (mConfigType009) {
-		   mPatient = null;
-		   mPatientId = null;
-		}
-		TimelyAllFrag.mPauseS = true;
-		mBoxInventoryVos.clear();
-		mLocalAllSize = mAllSize;
-		moreStartScan(mBoxInventoryVos, mObs);
 		break;
 	   case R.id.timely_open_door_right://重新开门
 		if (mDoorStatusType) {

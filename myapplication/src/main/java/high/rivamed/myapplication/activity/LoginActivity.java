@@ -159,10 +159,10 @@ public class LoginActivity extends SimpleActivity {
    private Thread mThread;
    private Thread mThread1;
    private boolean mDestroyType =true;//处理thread执行
+   private Thread mThread3;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
-	Log.i("outtccc","EventLoading  event");
 	if (event.loading) {
 	   if (mLoading == null) {
 		mLoading = DialogUtils.showLoading(mContext);
@@ -243,9 +243,7 @@ public class LoginActivity extends SimpleActivity {
 	     mFragments.add(faceFragment);//人脸识别登录 TODO
 	  }
 	}
-	mLoading = DialogUtils.showLoading(LoginActivity.this);
-	mLoading.mAnimationDrawable.stop();
-	mLoading.mDialog.dismiss();
+
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
@@ -397,7 +395,22 @@ public class LoginActivity extends SimpleActivity {
 	   public void onSucceed(String result) {
 		deleteLitepal();
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		setLitePalUseBean(userBean);
+		if (mThread3!=null){
+		   mThread3.start();
+		}else {
+		   mThread3 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   if (mDestroyType){
+				setLitePalUseBean(userBean);
+			   }
+			}
+		   });
+		   mThread3.start();
+		}
+
+
+
 	   }
 	});
    }
@@ -936,7 +949,9 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginGone= null;
 	}
 	mDestroyType = false;
-
+	mThread=null;
+	mThread1=null;
+	mThread3=null;
 	Log.i("ccetdaF",getClass().getName()+"  onDestroy");
    }
 }
