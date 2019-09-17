@@ -143,6 +143,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   Log.i("outtccc", "mType   " + mType);
 	   if (mBuilder != null) {
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
 	   }
@@ -316,8 +317,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	patientInfos.clear();
 	mTrim = "";
 	if (mBuilder != null) {
-	   mBuilder.mDialog.dismiss();
 	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	EventBusUtils.unregister(this);

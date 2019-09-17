@@ -260,6 +260,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   if (mBuildero != null) {
+		mBuildero.mHandler.removeCallbacksAndMessages(null);
 		mBuildero.mDialog.dismiss();
 		mBuildero = null;
 	   }
@@ -301,6 +302,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	} else {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
 		mBuilder.mDialog.dismiss();
 	   }
 	}
@@ -647,7 +649,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		} else {
 		   mFirstFinishLoading =false;
 		   mLastFinishLoading =false;
-		   if (ScanService.mDoorStatusType) {
+		   if (mDoorStatusType) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
 			mBoxInventoryVos.clear();
@@ -1171,6 +1173,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    protected void onPause() {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
@@ -1356,20 +1359,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	super.onStop();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
 	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mDialog.dismiss();
 	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
 
 	}
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mDialog.dismiss();
 	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	cancel();

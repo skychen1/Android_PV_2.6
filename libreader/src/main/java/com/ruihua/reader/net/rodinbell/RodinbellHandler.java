@@ -677,6 +677,8 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         LogUtils.e("连接断开了");
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler=null;
         if (mListener != null) {
             mListener.onConnectState(this, getIdentification(), false);
         }

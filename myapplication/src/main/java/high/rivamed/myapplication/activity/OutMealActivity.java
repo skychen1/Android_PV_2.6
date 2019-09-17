@@ -412,6 +412,7 @@ public class OutMealActivity extends BaseSimpleActivity {
         if (mIsCanSkipToSurePage && !event.isMute) {
             MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
             if (mBuilder != null) {
+                mBuilder.mHandler.removeCallbacksAndMessages(null);
                 mBuilder.mDialog.dismiss();
                 mBuilder = null;
             }
@@ -469,8 +470,8 @@ public class OutMealActivity extends BaseSimpleActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mBuilder != null) {
-            mBuilder.mDialog.dismiss();
             mBuilder.mHandler.removeCallbacksAndMessages(null);
+            mBuilder.mDialog.dismiss();
             mBuilder = null;
         }
     }

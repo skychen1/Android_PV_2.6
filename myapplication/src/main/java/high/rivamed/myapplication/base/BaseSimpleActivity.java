@@ -244,9 +244,9 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		builder.setRight("确认", new DialogInterface.OnClickListener() {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 			dialog.dismiss();
 			removeAllAct(mContext);
-			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 		   }
 		});
 		builder.create().show();

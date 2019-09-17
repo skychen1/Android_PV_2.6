@@ -440,6 +440,8 @@ public class Eth002Handler extends BaseEth002Handler implements Eth002HandlerInt
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         LogUtils.e("连接断开了");
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler =null;
         if (eth002MessageListener != null) {
             eth002MessageListener.onConnectState(this, getIdentification(), false);
         }

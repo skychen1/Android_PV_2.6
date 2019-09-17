@@ -226,5 +226,5 @@ public class ScanService extends Service {
 	timeFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
 	registerReceiver(mWorkReceiver, timeFilter);
    }
-
+//
 }

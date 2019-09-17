@@ -123,8 +123,8 @@ public class OpenDoorDialog extends Dialog {
 	   mCloss.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View view) {
-		   mDialog.dismiss();
 		   mHandler.removeCallbacksAndMessages(null);
+		   mDialog.dismiss();
 		}
 	   });
 
@@ -146,8 +146,9 @@ public class OpenDoorDialog extends Dialog {
 		public void run() {
 		   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
 			if (mDialog!=null){
-			   mDialog.dismiss();
 			   mHandler.removeCallbacksAndMessages(null);
+			   mHandler=null;
+			   mDialog.dismiss();
 			}
 		   }
 		}

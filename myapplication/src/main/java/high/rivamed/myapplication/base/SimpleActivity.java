@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -102,10 +103,12 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
 	//	hideBottomUIMenu();
+
 	if (MAIN_URL != null&&mIntent==null) {
 	   mIntent = new Intent(this, TimerService.class);
 	   startService(mIntent);
 	}
+
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	//	   applyNet();
@@ -338,5 +341,11 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    public void bindEvent() {
 
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+	Log.i("CCCCC","系统回收");
+	super.onSaveInstanceState(outState, outPersistentState);
    }
 }

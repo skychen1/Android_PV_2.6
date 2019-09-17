@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import high.rivamed.myapplication.activity.LoginActivity;
+import high.rivamed.myapplication.activity.SplashActivity;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -20,15 +20,12 @@ import high.rivamed.myapplication.activity.LoginActivity;
 public class ContentReceiver extends BroadcastReceiver {
    @Override
    public void onReceive(Context context, Intent intent) {
-      new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-
-		Intent it=new Intent(context,LoginActivity.class);
-		it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.startActivity(it);
-	   }
-	}).start();
+	if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
+	   Intent it=new Intent(context, SplashActivity.class);
+	   it.setAction("android.intent.action.MAIN");
+	   it.addCategory("android.intent.category.LAUNCHER");
+	   it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	   context.startActivity(it);
+	}
    }
 }

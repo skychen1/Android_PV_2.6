@@ -6,19 +6,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
-
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
+import android.util.Log;
 
 import org.androidpn.utils.XmppEvent;
 
-import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.receiver.AlarmReceiver;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
+import static high.rivamed.myapplication.utils.WifiUtils.isAvailableByPing;
 
 /**
  * 项目名称:    Android_PV_2.6.5New
@@ -33,6 +32,8 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
  */
 public class TimerService extends Service {
 
+   private Thread mThread;
+
    @Override
    public IBinder onBind(Intent intent) {
 	return null;
@@ -40,30 +41,55 @@ public class TimerService extends Service {
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
-	String urls = MAIN_URL + NetApi.URL_CONNECT;
-	OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
-	   @Override
-	   public void onSuccess(Response<String> response) {
-		String body = response.body();
-		if (body.equals("true")) {
-		   if (!mTitleConn){
-			EventBusUtils.post(new XmppEvent.XmmppConnect(true));
-		   }
-		} else {
-		   if (mTitleConn){
-			EventBusUtils.post(new XmppEvent.XmmppConnect(false));
-		   }
-		}
-	   }
+//	String urls = MAIN_URL + NetApi.URL_CONNECT;
 
-	   @Override
-	   public void onError(Response<String> response) {
-		super.onError(response);
-		if (mTitleConn) {
-		   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+	if (mThread==null){
+	   mThread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+		   boolean byPing = isAvailableByPing(
+			   SPUtils.getString(mAppContext, SAVE_SEVER_IP_TEXT));
+		   Log.i("Avalible", "byPing:" + byPing);
+		   if (byPing) {
+			if (!mTitleConn){
+			   EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+			}
+		   } else {
+			if (mTitleConn){
+			   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+			}
+		   }
 		}
-	   }
-	});
+	   });
+	   mThread.start();
+	}else {
+	   mThread.start();
+	}
+
+
+//	OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+//	   @Override
+//	   public void onSuccess(Response<String> response) {
+//		String body = response.body();
+//		if (body.equals("true")) {
+//		   if (!mTitleConn){
+//			EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+//		   }
+//		} else {
+//		   if (mTitleConn){
+//			EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+//		   }
+//		}
+//	   }
+//
+//	   @Override
+//	   public void onError(Response<String> response) {
+//		super.onError(response);
+//		if (mTitleConn) {
+//		   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+//		}
+//	   }
+//	});
 
 	AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
 	int anHour = 15 * 1000;  // 这是一小时的毫秒数
@@ -72,5 +98,11 @@ public class TimerService extends Service {
 	PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
 	manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
 	return super.onStartCommand(intent, flags, startId);
+   }
+
+   @Override
+   public void onDestroy() {
+	mThread =null;
+	super.onDestroy();
    }
 }

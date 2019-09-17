@@ -1,7 +1,5 @@
 package high.rivamed.myapplication.fragment;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,20 +20,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.SettingPopupWindow;
-import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
-import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -176,36 +169,37 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_tv_outlogin,
             R.id.search_iv_delete, R.id.search_time_start, R.id.search_time_end})
     public void onViewClicked(View view) {
+        super.onViewClicked(view);
         switch (view.getId()) {
-            case R.id.base_tab_icon_right:
-            case R.id.base_tab_tv_name:
-                mPopupWindow = new SettingPopupWindow(mContext);
-                mPopupWindow.showPopupWindow(mBaseTabIconRight);
-                popupClick();
-                break;
-            case R.id.base_tab_tv_outlogin:
-                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-                builder.setTwoMsg("您确认要退出登录吗?");
-                builder.setMsg("温馨提示");
-                builder.setLeft("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setRight("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        removeAllAct(mContext);
-                        dialog.dismiss();
-                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-                    }
-                });
-                builder.create().show();
-                break;
-            case R.id.base_tab_btn_msg:
-                mContext.startActivity(new Intent(mContext, MessageActivity.class));
-                break;
+//            case R.id.base_tab_icon_right:
+//            case R.id.base_tab_tv_name:
+//                mPopupWindow = new SettingPopupWindow(mContext);
+//                mPopupWindow.showPopupWindow(mBaseTabIconRight);
+//                popupClick();
+//                break;
+//            case R.id.base_tab_tv_outlogin:
+//                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+//                builder.setTwoMsg("您确认要退出登录吗?");
+//                builder.setMsg("温馨提示");
+//                builder.setLeft("取消", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int i) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder.setRight("确认", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int i) {
+//                        removeAllAct(mContext);
+//                        dialog.dismiss();
+//                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+//                    }
+//                });
+//                builder.create().show();
+//                break;
+//            case R.id.base_tab_btn_msg:
+//                mContext.startActivity(new Intent(mContext, MessageActivity.class));
+//                break;
             case R.id.search_iv_delete:
                 break;
             case R.id.search_time_start:

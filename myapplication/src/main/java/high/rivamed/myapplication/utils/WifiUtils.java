@@ -7,6 +7,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -83,5 +84,30 @@ public class WifiUtils {
 	   e.printStackTrace();
 	}
 	return hostIp;
+   }
+
+   public static boolean isAvailableByPing(String ip) {
+	if (ip == null || ip.length() <= 0) {
+	   ip = "192.168.0.0";// 阿里巴巴公共ip
+	}
+	Runtime runtime = Runtime.getRuntime();
+	Process ipProcess = null;
+	try {
+	   //-c 后边跟随的是重复的次数，-w后边跟随的是超时的时间，单位是秒，不是毫秒，要不然也不会anr了
+	   Log.i("Avalible", "ddddd:" + ip);
+	   ipProcess = runtime.exec("ping -c 3 -w 3 "+ip);
+	   int exitValue = ipProcess.waitFor();
+	   Log.i("Avalible", "Process:" + exitValue);
+	   return (exitValue == 0);
+	} catch (IOException | InterruptedException e) {
+	   e.printStackTrace();
+	} finally {
+	   //在结束的时候应该对资源进行回收
+	   if (ipProcess != null) {
+		ipProcess.destroy();
+	   }
+	   runtime.gc();
+	}
+	return false;
    }
 }

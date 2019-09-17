@@ -882,13 +882,13 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mHandler.removeCallbacksAndMessages(null);
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mDialog.dismiss();
 	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder.mDialog.dismiss();
 	   mBuilder =null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mDialog.dismiss();
 	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero.mDialog.dismiss();
 	   mBuildero=null;
 	}
 	cancel();

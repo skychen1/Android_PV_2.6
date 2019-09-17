@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,7 +28,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
-import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
@@ -58,8 +56,6 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.OpenDoorDialog;
-import high.rivamed.myapplication.views.SettingPopupWindow;
-import high.rivamed.myapplication.views.TwoDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -89,7 +85,6 @@ import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
-import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 /**
@@ -243,6 +238,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		if (mLoading != null) {
 		   mLoading.mAnimationDrawable.stop();
+		   mLoading.mHandler.removeCallbacksAndMessages(null);
 		   mLoading.mDialog.dismiss();
 		   mLoading = null;
 		}
@@ -268,10 +264,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   Log.i("outtccc", "关门的接收    " + mRbKey);
 	   if (mBuilder != null) {
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
 	   }
-	   if (mRbKey!=-3){
+	   if (mRbKey != -3) {
 		intentActType(event.mEthId);
 	   }
 	   Log.i("outtccc", "event.mEthId    " + mRbKey);
@@ -295,7 +292,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	Log.i("outtccc", "EventFrag  "+mRbKey );
+	Log.i("outtccc", "EventFrag  " + mRbKey);
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
 	   mEthDeviceIdBack.clear();
@@ -331,7 +328,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-	Log.i("outtccc","initDataAndEvent   "+mRbKey);
+	Log.i("outtccc", "initDataAndEvent   " + mRbKey);
 	mPause = false;
 	mContentRbTb.setVisibility(View.GONE);
 	mContentRg.setVisibility(View.VISIBLE);
@@ -342,653 +339,656 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void initListener() {
 	if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
-		mContentRbLyTh.setOnClickListener(view -> {
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_lyth);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbLy.setOnClickListener(view ->{
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_ly);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbRk.setOnClickListener(view ->{
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_rk);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbYc.setOnClickListener(view -> {
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_yc);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbTb.setOnClickListener(view ->{
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_tb);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbYr.setOnClickListener(view -> {
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_yr);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbTuihui.setOnClickListener(view -> {
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_tuihui);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		});
-		mContentRbTuihuo.setOnClickListener(view ->{
-		   if (!UIUtils.isFastDoubleClick3()) {
-			doSelectOption(0, R.id.content_rb_tuihuo);
-		   } else {
-			ToastUtils.showShortToast("请勿频繁操作！");
-		   }
-		} );
-
-	   }
-
-	}
-
-	/**
-	 * 设置选择操作的权限
-	 */
-	private void setDownType () {
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LYTH)) {//领用、退回合并按钮
-		mContentRbLyTh.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbLyTh.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LY)) {//领用
-		mContentRbLy.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbLy.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_RK)) {//入库
-		mContentRbRk.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbRk.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_YC)) {//移出
-		mContentRbYc.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbYc.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_YR)) {//移入
-		mContentRbYr.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbYr.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_DB)) {//调拨
-		mContentRbTb.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbTb.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_THUI)) {//退回
-		mContentRbTuihui.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbTuihui.setVisibility(View.GONE);
-	   }
-	   if (UIUtils.getMenuDownType(mContext, DOWN_MENU_THUO)) {//退货
-		mContentRbTuihuo.setVisibility(View.VISIBLE);
-	   } else {
-		mContentRbTuihuo.setVisibility(View.GONE);
-	   }
-	}
-
-	@Override public void onResume () {
-	   super.onResume();
-
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
-	   }
-	}
-
-	private void goToPatientConn () {
-	   LogUtils.i(TAG, "result   ");
-	   NetRequest.getInstance().findTempPatients("", this, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   LogUtils.i(TAG, "result   " + result);
-		   BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
-												    BingFindSchedulesBean.class);
-		   if (bingFindSchedulesBean != null &&
-			 bingFindSchedulesBean.getPatientInfoVos() != null &&
-			 bingFindSchedulesBean.getPatientInfoVos().size() > 0) {
-			mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
-		   } else {
-			ToastUtils.showShortToast("没有患者数据");
-		   }
+	   mContentRbLyTh.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_lyth);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
-	}
-
-	/**
-	 * 关门后的跳转
-	 */
-	private void intentActType (String mEthId){
-	   Log.i("outtccc", "intentActType    " + mRbKey);
-	   //快速开柜
-	   if (mRbKey == -1) {
-		mContext.startActivity(
-			new Intent(mContext, FastInOutBoxActivity.class).putExtra("mEthId", mEthId));
-	   }
-	   //后绑定患者
-	   else if (UIUtils.getConfigType(mContext, CONFIG_009) && (mRbKey == 3 || mRbKey == 4)) {
-		mContext.startActivity(
-			new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
-				.putExtra("bindType", TEMP_AFTERBIND)
-				.putExtra("mEthId", mEthId));
-	   }
-	   //正常的领用或者其他正常操作
-	   else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
-			mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
-		mContext.startActivity(
-			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType",
-													mRbKey)
-				.putExtra("mEthId", mEthId));
-	   }
-	}
-
-	private void initData () {
-	   if (mLoading != null) {
-		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
-		mLoading = null;
-	   }
-	   if (UIUtils.getConfigType(mContext, CONFIG_011) && mConsumeOpenallTop != null) {
-		mConsumeOpenallTop.setVisibility(View.VISIBLE);
-	   } else {
-		mConsumeOpenallTop.setVisibility(View.GONE);
-	   }
-
-	   //是否启用功能开柜
-	   if (UIUtils.getConfigType(mContext, CONFIG_016)) {
-		mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
-
-		//是否启用套餐领用
-		if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-		   mFunctionTitleMeal.setVisibility(View.VISIBLE);
+	   mContentRbLy.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_ly);
 		} else {
-		   mFunctionTitleMeal.setVisibility(View.GONE);
-		}
-
-		//是否启用请领单领用
-		if (UIUtils.getConfigType(mContext, CONFIG_015)) {
-		   mFastopenTitleForm.setVisibility(View.VISIBLE);
-		} else {
-		   mFastopenTitleForm.setVisibility(View.GONE);
-		}
-
-		//是否启用关联患者
-		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		   mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
-		} else {
-		   mFastopenTitleGuanlian.setVisibility(View.GONE);
-		}
-	   } else {
-		mConsumeOpenallMiddle.setVisibility(View.GONE);
-	   }
-	   loadDate();
-	}
-
-	//数据加载
-	private void loadDate () {
-	   String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	   LogUtils.i(TAG, "loadDate   " + string);
-	   if (string != null) {
-		mTbaseDevices.addAll(mGson.fromJson(string,
-								new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
-	   } else {
-		String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-		mTbaseDevices.addAll(mGson.fromJson(strings,
-								new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
-	   }
-	   //柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
-	   if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
-		 !UIUtils.getConfigType(mContext, CONFIG_010) &&
-		 getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
-		doSelectOption(0, R.id.content_rb_lyth);
-	   }
-	   onSucceedDate();
-	}
-
-	//赋值
-	private void onSucceedDate () {
-	   mBaseTabBtnLeft.setVisibility(View.VISIBLE);
-	   mBaseTabTvTitle.setVisibility(View.VISIBLE);
-	   mBaseTabTvTitle.setText("耗材操作");
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
-					   SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-	   LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-	   layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
-	   mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-									     mTbaseDevices);
-	   mConsumeOpenallRv.setLayoutManager(layoutManager);
-	   mConsumeOpenallRv.setAdapter(mHomeFastOpenTopAdapter);
-
-	   mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-		@Override
-		public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-		   if (mTitleConn) {
-			mRbKey = -1;
-			mPause = false;
-			AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-		   }
+		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
-	   LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
-	   layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+	   mContentRbRk.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_rk);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
+	   mContentRbYc.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_yc);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
+	   mContentRbTb.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_tb);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
+	   mContentRbYr.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_yr);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
+	   mContentRbTuihui.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_tuihui);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
+	   mContentRbTuihuo.setOnClickListener(view -> {
+		if (!UIUtils.isFastDoubleClick3()) {
+		   doSelectOption(0, R.id.content_rb_tuihuo);
+		} else {
+		   ToastUtils.showShortToast("请勿频繁操作！");
+		}
+	   });
 
-	   if (mTbaseDevices.size() < 2) {
-		//如果只有一个柜子,就隐藏柜子列表
-		mConsumeDownRv.setVisibility(View.GONE);
+	}
+
+   }
+
+   /**
+    * 设置选择操作的权限
+    */
+   private void setDownType() {
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LYTH)) {//领用、退回合并按钮
+	   mContentRbLyTh.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbLyTh.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_LY)) {//领用
+	   mContentRbLy.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbLy.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_RK)) {//入库
+	   mContentRbRk.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbRk.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_YC)) {//移出
+	   mContentRbYc.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbYc.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_YR)) {//移入
+	   mContentRbYr.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbYr.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_DB)) {//调拨
+	   mContentRbTb.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbTb.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_THUI)) {//退回
+	   mContentRbTuihui.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbTuihui.setVisibility(View.GONE);
+	}
+	if (UIUtils.getMenuDownType(mContext, DOWN_MENU_THUO)) {//退货
+	   mContentRbTuihuo.setVisibility(View.VISIBLE);
+	} else {
+	   mContentRbTuihuo.setVisibility(View.GONE);
+	}
+   }
+
+   @Override
+   public void onResume() {
+	super.onResume();
+
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+   }
+
+   private void goToPatientConn() {
+	LogUtils.i(TAG, "result   ");
+	NetRequest.getInstance().findTempPatients("", this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		BingFindSchedulesBean bingFindSchedulesBean = mGson.fromJson(result,
+												 BingFindSchedulesBean.class);
+		if (bingFindSchedulesBean != null &&
+		    bingFindSchedulesBean.getPatientInfoVos() != null &&
+		    bingFindSchedulesBean.getPatientInfoVos().size() > 0) {
+		   mContext.startActivity(new Intent(mContext, PatientConnActivity.class));
+		} else {
+		   ToastUtils.showShortToast("没有患者数据");
+		}
 	   }
-	   mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
-										mTbaseDevices);
-	   mConsumeDownRv.setLayoutManager(layoutManager2);
-	   mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
-	   mHomeFastOpenDownAdapter.setOnItemClickListener(
-		   new BaseQuickAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-			   int id = mContentRg.getCheckedRadioButtonId();
-			   if (id == -1) {
-				ToastUtils.showShortToast("请选择操作方式！");
-			   } else {
-				//点击柜子进行操作
-				if (!UIUtils.isFastDoubleClick3()) {
-				   Log.i("outtccc", "position    " + position + "        id  " + id);
-				   doSelectOption(position, id);
-				} else {
-				   ToastUtils.showShortToast("请勿频繁操作！");
-				}
-			   }
-			}
-		   });
-	   boolean aBoolean = SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL);
-	   if (aBoolean) {
-		setDownType();//设置选择操作的权限
+	});
+   }
+
+   /**
+    * 关门后的跳转
+    */
+   private void intentActType(String mEthId) {
+	Log.i("outtccc", "intentActType    " + mRbKey);
+	//快速开柜
+	if (mRbKey == -1) {
+	   mContext.startActivity(
+		   new Intent(mContext, FastInOutBoxActivity.class).putExtra("mEthId", mEthId));
+	}
+	//后绑定患者
+	else if (UIUtils.getConfigType(mContext, CONFIG_009) && (mRbKey == 3 || mRbKey == 4)) {
+	   mContext.startActivity(
+		   new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
+			   .putExtra("bindType", TEMP_AFTERBIND)
+			   .putExtra("mEthId", mEthId));
+	}
+	//正常的领用或者其他正常操作
+	else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
+		   mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
+	   mContext.startActivity(
+		   new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
+			   .putExtra("mEthId", mEthId));
+	}
+   }
+
+   private void initData() {
+	if (mLoading != null) {
+	   mLoading.mAnimationDrawable.stop();
+	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading.mDialog.dismiss();
+	   mLoading = null;
+	}
+	if (UIUtils.getConfigType(mContext, CONFIG_011) && mConsumeOpenallTop != null) {
+	   mConsumeOpenallTop.setVisibility(View.VISIBLE);
+	} else {
+	   mConsumeOpenallTop.setVisibility(View.GONE);
+	}
+
+	//是否启用功能开柜
+	if (UIUtils.getConfigType(mContext, CONFIG_016)) {
+	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
+
+	   //是否启用套餐领用
+	   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
+		mFunctionTitleMeal.setVisibility(View.VISIBLE);
 	   } else {
-		mConsumeOpenallDown.setVisibility(View.GONE);
-		mConsumeDown.setVisibility(View.GONE);
-		mConsumeDownRv.setVisibility(View.GONE);
+		mFunctionTitleMeal.setVisibility(View.GONE);
 	   }
-	}
 
-	/*
-	 * 选择操作
-	 * */
-	private void doSelectOption ( int position, int id){
-	   EventBusUtils.postSticky(new Event.EventButGone(false));
-	   mPause = false;
-	   switch (id) {
-		case R.id.content_rb_lyth://领用或者退回
-		   ToastUtils.showShortToast("领用/退回！");//拿出
-		   lingYongAndBack(position, 4);
-		   break;
-		case R.id.content_rb_ly://领用
-		   ToastUtils.showShortToast("领用！");//拿出
-		   lingYongAndBack(position, 3);
-		   break;
-		case R.id.content_rb_rk://入库
-		   if (mTitleConn) {
-			inBoxClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持领用！");
-		   }
-		   break;
-		case R.id.content_rb_yc://移出
-		   if (mTitleConn) {
-			outBoxClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持领用！");
-		   }
-		   break;
-		case R.id.content_rb_tb://调拨
-		   if (mTitleConn) {
-			allotClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-		   }
-		   break;
-		case R.id.content_rb_yr://移入
-		   if (mTitleConn) {
-			moveInClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-		   }
-		   break;
-		case R.id.content_rb_tuihui://退回
-		   if (mTitleConn) {
-			returnClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-		   }
-		   break;
-		case R.id.content_rb_tuihuo://退货
-		   if (mTitleConn) {
-			sealsReturnClick(position);
-		   } else {
-			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-		   }
-		   break;
+	   //是否启用请领单领用
+	   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
+		mFastopenTitleForm.setVisibility(View.VISIBLE);
+	   } else {
+		mFastopenTitleForm.setVisibility(View.GONE);
 	   }
+
+	   //是否启用关联患者
+	   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+		mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
+	   } else {
+		mFastopenTitleGuanlian.setVisibility(View.GONE);
+	   }
+	} else {
+	   mConsumeOpenallMiddle.setVisibility(View.GONE);
 	}
+	loadDate();
+   }
+
+   //数据加载
+   private void loadDate() {
+	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	LogUtils.i(TAG, "loadDate   " + string);
+	if (string != null) {
+	   mTbaseDevices.addAll(
+		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	} else {
+	   String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	   mTbaseDevices.addAll(mGson.fromJson(strings,
+							   new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	}
+	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
+	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
+	    !UIUtils.getConfigType(mContext, CONFIG_010) &&
+	    getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
+	   doSelectOption(0, R.id.content_rb_lyth);
+	}
+	onSucceedDate();
+   }
+
+   //赋值
+   private void onSucceedDate() {
+	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
+	mBaseTabTvTitle.setVisibility(View.VISIBLE);
+	mBaseTabTvTitle.setText("耗材操作");
+	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+	mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
+									  mTbaseDevices);
+	mConsumeOpenallRv.setLayoutManager(layoutManager);
+	mConsumeOpenallRv.setAdapter(mHomeFastOpenTopAdapter);
+
+	mHomeFastOpenTopAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		if (mTitleConn) {
+		   mRbKey = -1;
+		   mPause = false;
+		   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+		}
+	   }
+	});
+	LinearLayoutManager layoutManager2 = new LinearLayoutManager(mContext);
+	layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+	if (mTbaseDevices.size() < 2) {
+	   //如果只有一个柜子,就隐藏柜子列表
+	   mConsumeDownRv.setVisibility(View.GONE);
+	}
+	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(R.layout.item_home_fastopen_layout,
+									   mTbaseDevices);
+	mConsumeDownRv.setLayoutManager(layoutManager2);
+	mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
+	mHomeFastOpenDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		int id = mContentRg.getCheckedRadioButtonId();
+		if (id == -1) {
+		   ToastUtils.showShortToast("请选择操作方式！");
+		} else {
+		   //点击柜子进行操作
+		   if (!UIUtils.isFastDoubleClick3()) {
+			Log.i("outtccc", "position    " + position + "        id  " + id);
+			doSelectOption(position, id);
+		   } else {
+			ToastUtils.showShortToast("请勿频繁操作！");
+		   }
+		}
+	   }
+	});
+	boolean aBoolean = SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL);
+	if (aBoolean) {
+	   setDownType();//设置选择操作的权限
+	} else {
+	   mConsumeOpenallDown.setVisibility(View.GONE);
+	   mConsumeDown.setVisibility(View.GONE);
+	   mConsumeDownRv.setVisibility(View.GONE);
+	}
+   }
+
+   /*
+    * 选择操作
+    * */
+   private void doSelectOption(int position, int id) {
+	EventBusUtils.postSticky(new Event.EventButGone(false));
+	mPause = false;
+	switch (id) {
+	   case R.id.content_rb_lyth://领用或者退回
+		ToastUtils.showShortToast("领用/退回！");//拿出
+		lingYongAndBack(position, 4);
+		break;
+	   case R.id.content_rb_ly://领用
+		ToastUtils.showShortToast("领用！");//拿出
+		lingYongAndBack(position, 3);
+		break;
+	   case R.id.content_rb_rk://入库
+		if (mTitleConn) {
+		   inBoxClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持领用！");
+		}
+		break;
+	   case R.id.content_rb_yc://移出
+		if (mTitleConn) {
+		   outBoxClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持领用！");
+		}
+		break;
+	   case R.id.content_rb_tb://调拨
+		if (mTitleConn) {
+		   allotClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+		}
+		break;
+	   case R.id.content_rb_yr://移入
+		if (mTitleConn) {
+		   moveInClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+		}
+		break;
+	   case R.id.content_rb_tuihui://退回
+		if (mTitleConn) {
+		   returnClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+		}
+		break;
+	   case R.id.content_rb_tuihuo://退货
+		if (mTitleConn) {
+		   sealsReturnClick(position);
+		} else {
+		   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+		}
+		break;
+	}
+   }
 
    /*
     点击退货
     * */
-	private void sealsReturnClick ( int position){
-	   mRbKey = 8;
-	   ToastUtils.showShortToast("退货！");//拿出
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void sealsReturnClick(int position) {
+	mRbKey = 8;
+	ToastUtils.showShortToast("退货！");//拿出
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
    /*
    点击退回
    */
-	private void returnClick ( int position){
-	   mRbKey = 7;
-	   ToastUtils.showShortToast("退回！");//拿入
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void returnClick(int position) {
+	mRbKey = 7;
+	ToastUtils.showShortToast("退回！");//拿入
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
    /*
     点击移入
    */
-	private void moveInClick ( int position){
-	   mRbKey = 10;
-	   ToastUtils.showShortToast("移入！");//拿入
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void moveInClick(int position) {
+	mRbKey = 10;
+	ToastUtils.showShortToast("移入！");//拿入
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
    /*
    点击调拨
    */
-	private void allotClick ( int position){
-	   mRbKey = 11;
-	   ToastUtils.showShortToast("调拨！");//拿出
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void allotClick(int position) {
+	mRbKey = 11;
+	ToastUtils.showShortToast("调拨！");//拿出
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
    /*
    点击移出
    */
-	private void outBoxClick ( int position){
-	   mRbKey = 9;
-	   ToastUtils.showShortToast("移出！");//拿出
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void outBoxClick(int position) {
+	mRbKey = 9;
+	ToastUtils.showShortToast("移出！");//拿出
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
    /*
 	点击入库
 	* */
-	private void inBoxClick ( int position){
-	   mRbKey = 2;
-	   ToastUtils.showShortToast("入库！");//拿入
-	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	}
+   private void inBoxClick(int position) {
+	mRbKey = 2;
+	ToastUtils.showShortToast("入库！");//拿入
+	AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+   }
 
-	/*
-	 * 点击领用
-	 * */
-	private void lingYongAndBack ( int position, int mkey){
-	   mRbKey = mkey;
+   /*
+    * 点击领用
+    * */
+   private void lingYongAndBack(int position, int mkey) {
+	mRbKey = mkey;
 
-	   if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-		  UIUtils.getConfigType(mContext, CONFIG_019)) &&
-		 UIUtils.getConfigType(mContext, CONFIG_010) &&
-		 !UIUtils.getConfigType(mContext, CONFIG_012)) {
-		//先绑定患者再开柜，不启动临时患者
-		LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
-		mAllPage = 1;
-		if (mTitleConn) {
-		   goToFirstBindAC(position, "GONE");
-		} else {
-		   errorBind(position, "GONE");
-		}
-	   } else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			   UIUtils.getConfigType(mContext, CONFIG_019)) &&
-			  UIUtils.getConfigType(mContext, CONFIG_010) &&
-			  UIUtils.getConfigType(mContext, CONFIG_012)) {
-		//先绑定患者，启动临时患者
-		LogUtils.i(TAG, "先绑定患者，启动临时患者");
-		mAllPage = 1;
-		if (mTitleConn) {
-		   goToFirstBindAC(position, "VISIBLE");
-		} else {
-		   errorBind(position, "VISIBLE");
-		}
-	   } else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			   UIUtils.getConfigType(mContext, CONFIG_019)) &&
-			  UIUtils.getConfigType(mContext, CONFIG_009) &&
-			  !UIUtils.getConfigType(mContext, CONFIG_012)) {
-		//后绑定患者，不启用临时患者
-		LogUtils.i(TAG, "后绑定患者，不启用临时患者");
-		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-	   } else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			   UIUtils.getConfigType(mContext, CONFIG_019)) &&
-			  UIUtils.getConfigType(mContext, CONFIG_009) &&
-			  UIUtils.getConfigType(mContext, CONFIG_012)) {
-		//后绑定患者，启用临时患者
-		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
-		LogUtils.i(TAG, "后绑定患者，启用临时患者");
+	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
+	     UIUtils.getConfigType(mContext, CONFIG_019)) &&
+	    UIUtils.getConfigType(mContext, CONFIG_010) &&
+	    !UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   //先绑定患者再开柜，不启动临时患者
+	   LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
+	   mAllPage = 1;
+	   if (mTitleConn) {
+		goToFirstBindAC(position, "GONE");
 	   } else {
-		//不绑定患者
-		LogUtils.i(TAG, "不绑定患者");
-		AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+		errorBind(position, "GONE");
 	   }
-	   EventBusUtils.postSticky(new Event.EventAct("inout"));
-	   return;
-	}
-
-	private void goToFirstBindAC ( int position, String gonetype){
-	   //获取需要绑定的患者
-	   NetRequest.getInstance()
-		   .findSchedulesDate("", "", mAllPage, mRows, this, new BaseResult() {
-			@Override
-			public void onSucceed(String result) {
-			   LogUtils.i(TAG, "result   " + result);
-			   FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
-
-			   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-				mContext.startActivity(
-					new Intent(mContext, TemPatientBindActivity.class).putExtra(
-						"position", position)
-						.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
-						.putExtra("mRbKey", mRbKey)
-						.putExtra("GoneType", gonetype));
-			   } else {
-				if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
-				   mContext.startActivity(
-					   new Intent(mContext, TemPatientBindActivity.class).putExtra(
-						   "position", position)
-						   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
-						   .putExtra("mRbKey", mRbKey)
-						   .putExtra("GoneType", gonetype));
-				} else {
-				   ToastUtils.showShortToast("没有患者数据，如需创建临时患者领用，请到管理端进行配置");
-				}
-			   }
-			}
-
-			@Override
-			public void onError(String result) {
-			   super.onError(result);
-			   errorBind(position, gonetype);
-			}
-		   });
-	}
-
-	/**
-	 * 无网直接跳到患者界面
-	 *
-	 * @param position
-	 * @param gonetype
-	 */
-	private void errorBind ( int position, String gonetype){
-	   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		mContext.startActivity(
-			new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position)
-				.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
-				.putExtra("mRbKey", mRbKey)
-				.putExtra("GoneType", gonetype));
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
+			UIUtils.getConfigType(mContext, CONFIG_019)) &&
+		     UIUtils.getConfigType(mContext, CONFIG_010) &&
+		     UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   //先绑定患者，启动临时患者
+	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
+	   mAllPage = 1;
+	   if (mTitleConn) {
+		goToFirstBindAC(position, "VISIBLE");
+	   } else {
+		errorBind(position, "VISIBLE");
 	   }
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
+			UIUtils.getConfigType(mContext, CONFIG_019)) &&
+		     UIUtils.getConfigType(mContext, CONFIG_009) &&
+		     !UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   //后绑定患者，不启用临时患者
+	   LogUtils.i(TAG, "后绑定患者，不启用临时患者");
+	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
+			UIUtils.getConfigType(mContext, CONFIG_019)) &&
+		     UIUtils.getConfigType(mContext, CONFIG_009) &&
+		     UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   //后绑定患者，启用临时患者
+	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
+	   LogUtils.i(TAG, "后绑定患者，启用临时患者");
+	} else {
+	   //不绑定患者
+	   LogUtils.i(TAG, "不绑定患者");
+	   AllDeviceCallBack.getInstance().openDoor(position, mTbaseDevices);
 	}
+	EventBusUtils.postSticky(new Event.EventAct("inout"));
+	return;
+   }
 
-	@Override public void onPause () {
-	   mPause = true;
-	   super.onPause();
+   private void goToFirstBindAC(int position, String gonetype) {
+	//获取需要绑定的患者
+	NetRequest.getInstance().findSchedulesDate("", "", mAllPage, mRows, this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "result   " + result);
+		FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+
+		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+		   mContext.startActivity(
+			   new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+													   position)
+				   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
+				   .putExtra("mRbKey", mRbKey)
+				   .putExtra("GoneType", gonetype));
+		} else {
+		   if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+			mContext.startActivity(
+				new Intent(mContext, TemPatientBindActivity.class).putExtra("position",
+														position)
+					.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
+					.putExtra("mRbKey", mRbKey)
+					.putExtra("GoneType", gonetype));
+		   } else {
+			ToastUtils.showShortToast("没有患者数据，如需创建临时患者领用，请到管理端进行配置");
+		   }
+		}
+	   }
+
+	   @Override
+	   public void onError(String result) {
+		super.onError(result);
+		errorBind(position, gonetype);
+	   }
+	});
+   }
+
+   /**
+    * 无网直接跳到患者界面
+    *
+    * @param position
+    * @param gonetype
+    */
+   private void errorBind(int position, String gonetype) {
+	if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   mContext.startActivity(
+		   new Intent(mContext, TemPatientBindActivity.class).putExtra("position", position)
+			   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
+			   .putExtra("mRbKey", mRbKey)
+			   .putExtra("GoneType", gonetype));
 	}
+   }
 
-	@OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
-		R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
-		R.id.fastopen_title_guanlian, R.id.base_tab_robot, R.id.rg_down_gone, R.id.rg_top_gone,
-		R.id.rg_middle_gone}) public void onViewClicked (View view){
-	   if (mDoorStatus) {
-		switch (view.getId()) {
-		   case R.id.base_tab_icon_right:
-		   case R.id.base_tab_tv_name:
-			mPopupWindow = new SettingPopupWindow(mContext);
-			mPopupWindow.showPopupWindow(mBaseTabIconRight);
-			popupClick();
-			break;
-		   case R.id.base_tab_tv_outlogin:
-			TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-			builder.setTwoMsg("您确认要退出登录吗?");
-			builder.setMsg("温馨提示");
-			builder.setLeft("取消", new DialogInterface.OnClickListener() {
-			   @Override
-			   public void onClick(DialogInterface dialog, int i) {
-				dialog.dismiss();
-			   }
-			});
-			builder.setRight("确认", new DialogInterface.OnClickListener() {
-			   @Override
-			   public void onClick(DialogInterface dialog, int i) {
-				removeAllAct(mContext);
-				dialog.dismiss();
-				MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-			   }
-			});
-			builder.create().show();
-			break;
-		   case R.id.base_tab_btn_msg:
+   @Override
+   public void onPause() {
+	mPause = true;
+	super.onPause();
+   }
+
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_tv_outlogin,
+	   R.id.base_tab_btn_msg, R.id.function_title_meal, R.id.fastopen_title_form,
+	   R.id.fastopen_title_guanlian, R.id.base_tab_robot, R.id.rg_down_gone, R.id.rg_top_gone,
+	   R.id.rg_middle_gone})
+   public void onViewClicked(View view) {
+	if (mDoorStatus) {
+	   super.onViewClicked(view);
+	   switch (view.getId()) {
+//		case R.id.base_tab_icon_right:
+//		case R.id.base_tab_tv_name:
+//		   mPopupWindow = new SettingPopupWindow(mContext);
+//		   mPopupWindow.showPopupWindow(mBaseTabIconRight);
+//		   popupClick();
+//		   break;
+//		case R.id.base_tab_tv_outlogin:
+//		   TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
+//		   builder.setTwoMsg("您确认要退出登录吗?");
+//		   builder.setMsg("温馨提示");
+//		   builder.setLeft("取消", new DialogInterface.OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int i) {
+//			   dialog.dismiss();
+//			}
+//		   });
+//		   builder.setRight("确认", new DialogInterface.OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int i) {
+//			   removeAllAct(mContext);
+//			   dialog.dismiss();
+//			   MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+//			}
+//		   });
+//		   builder.create().show();
+//		   break;
+//		case R.id.base_tab_btn_msg:
+//		   if (mTitleConn) {
+//			mContext.startActivity(new Intent(mContext, MessageActivity.class));
+//		   } else {
+//			ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
+//		   }
+//		   break;
+		case R.id.function_title_meal://套组
+		   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
 			if (mTitleConn) {
-			   mContext.startActivity(new Intent(mContext, MessageActivity.class));
+			   mContext.startActivity(new Intent(mContext, OutMealActivity.class));
+			   EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
 			} else {
 			   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
 			}
-			break;
-		   case R.id.function_title_meal://套组
-			if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-			   if (mTitleConn) {
-				mContext.startActivity(new Intent(mContext, OutMealActivity.class));
-				EventBusUtils.postSticky(new Event.EventAct("NOBING_MEAL"));
-			   } else {
-				ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-			   }
-			} else {
-			   ToastUtils.showShortToast("此功能暂未开放");
-			}
+		   } else {
+			ToastUtils.showShortToast("此功能暂未开放");
+		   }
 
-			break;
-		   case R.id.fastopen_title_form://医嘱
-			if (UIUtils.getConfigType(mContext, CONFIG_015)) {
-			   if (mTitleConn) {
-				mContext.startActivity(new Intent(mContext, OutFormActivity.class));
-			   } else {
-				ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-			   }
+		   break;
+		case R.id.fastopen_title_form://医嘱
+		   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
+			if (mTitleConn) {
+			   mContext.startActivity(new Intent(mContext, OutFormActivity.class));
 			} else {
-			   ToastUtils.showShortToast("此功能暂未开放");
-			   //		   DialogUtils.showRegisteDialog(mContext, _mActivity);
+			   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
 			}
-			break;
-		   case R.id.fastopen_title_guanlian://患者关联
-			if (UIUtils.isFastDoubleClick(R.id.fastopen_title_guanlian)) {
-			   return;
+		   } else {
+			ToastUtils.showShortToast("此功能暂未开放");
+			//		   DialogUtils.showRegisteDialog(mContext, _mActivity);
+		   }
+		   break;
+		case R.id.fastopen_title_guanlian://患者关联
+		   if (UIUtils.isFastDoubleClick(R.id.fastopen_title_guanlian)) {
+			return;
+		   } else {
+			if (mTitleConn) {
+			   goToPatientConn();//患者关联
 			} else {
-			   if (mTitleConn) {
-				goToPatientConn();//患者关联
-			   } else {
-				ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
-			   }
+			   ToastUtils.showShortToast("离线状态，只支持选择操作的领用！");
 			}
-			break;
-		   case R.id.base_tab_robot://机器人
-			if (UIUtils.isFastDoubleClick(R.id.base_tab_robot)) {
-			   NetRequest.getInstance().CallRobot(_mActivity, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-				   RobotBean robotBean = mGson.fromJson(result, RobotBean.class);
-				   if (robotBean.isOperateSuccess()) {
-					if (robotBean.getReciveMessage().getResultCode() == 0) {
-					   ToastUtils.showShortToast("机器人召唤成功！");
-					} else {
-					   ToastUtils.showShortToast("机器人召唤失败！");
-					}
+		   }
+		   break;
+		case R.id.base_tab_robot://机器人
+		   if (UIUtils.isFastDoubleClick(R.id.base_tab_robot)) {
+			NetRequest.getInstance().CallRobot(_mActivity, new BaseResult() {
+			   @Override
+			   public void onSucceed(String result) {
+				RobotBean robotBean = mGson.fromJson(result, RobotBean.class);
+				if (robotBean.isOperateSuccess()) {
+				   if (robotBean.getReciveMessage().getResultCode() == 0) {
+					ToastUtils.showShortToast("机器人召唤成功！");
+				   } else {
+					ToastUtils.showShortToast("机器人召唤失败！");
 				   }
-				   Log.e(TAG, "机器人    " + result);
 				}
-			   });
-			}
-			break;
-		}
-
-	   } else {
-		ToastUtils.showShortToast(getString(R.string.content_clossdoor_text));
+				Log.e(TAG, "机器人    " + result);
+			   }
+			});
+		   }
+		   break;
 	   }
 
+	} else {
+	   ToastUtils.showShortToast(getString(R.string.content_clossdoor_text));
 	}
+
+   }
 
    @Override
    public void onStop() {
 	super.onStop();
 	if (mBuilder != null) {
-	   mBuilder.mDialog.dismiss();
 	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
 	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 	cancel();
    }
 
    @Override
-	public void onDestroyView () {
-	   super.onDestroyView();
-	   EventBusUtils.unregister(this);
-	   mEthDevices = null;
-	   mListDevices = null;
-	}
+   public void onDestroyView() {
+	super.onDestroyView();
+	EventBusUtils.unregister(this);
+	mEthDevices = null;
+	mListDevices = null;
    }
+}

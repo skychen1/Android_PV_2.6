@@ -207,6 +207,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos, mObs, event.mEthId);
 	   if (mBuildero != null) {
+		mBuildero.mHandler.removeCallbacksAndMessages(null);
 		mBuildero.mDialog.dismiss();
 		mBuildero = null;
 	   }
@@ -1423,13 +1424,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	super.onStop();
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mDialog.dismiss();
 	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mDialog.dismiss();
 	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
 	}
    }

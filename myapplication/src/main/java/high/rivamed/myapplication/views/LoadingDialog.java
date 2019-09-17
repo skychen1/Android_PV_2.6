@@ -83,8 +83,9 @@ public class LoadingDialog extends Dialog {
 		   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
 			if (mDialog.isShowing()) {
 			   mAnimationDrawable.stop();
-			   mDialog.dismiss();
 			   mHandler.removeCallbacksAndMessages(null);
+			   mHandler=null;
+			   mDialog.dismiss();
 			}
 		   }
 		}

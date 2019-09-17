@@ -174,8 +174,8 @@ public class LoginActivity extends SimpleActivity {
 	} else {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
-		mLoading.mDialog.dismiss();
 		mLoading.mHandler.removeCallbacksAndMessages(null);
+		mLoading.mDialog.dismiss();
 	   }
 	}
 	EventBusUtils.removeStickyEvent(Event.EventLoading.class);
@@ -928,8 +928,8 @@ public class LoginActivity extends SimpleActivity {
 	super.onStop();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mDialog.dismiss();
 	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 	cancel();

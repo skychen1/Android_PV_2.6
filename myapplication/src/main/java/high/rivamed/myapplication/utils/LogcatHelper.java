@@ -43,7 +43,7 @@ public class LogcatHelper {
 	} else {// 如果SD卡不存在，就保存到本应用的目录下
 	   PATH_LOGCAT = context.getFilesDir().getAbsolutePath() + File.separator + "Rivamed_logs";
 	}
-	LogUtils.i("TAS",PATH_LOGCAT);
+//	LogUtils.i("TAS",PATH_LOGCAT);
 	File file = new File(PATH_LOGCAT);
 	if (!file.exists()) {
 	   file.mkdirs();

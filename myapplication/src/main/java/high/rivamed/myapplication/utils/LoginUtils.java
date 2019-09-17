@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -411,6 +412,9 @@ public class LoginUtils {
                     @Override
                     public void onError(Response<File> response) {
                         super.onError(response);
+                        Log.i("responses",""+response.message());
+                        Log.i("responses",""+response.code());
+                        Log.i("responses",""+response.body());
                         ToastUtils.showShort(R.string.connection_fails);
                         mDialog.dismiss();
                         loginEnjoin(tCstConfigVos, true, callback);

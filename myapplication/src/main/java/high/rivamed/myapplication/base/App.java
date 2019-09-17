@@ -1,6 +1,5 @@
 package high.rivamed.myapplication.base;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
@@ -11,10 +10,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.ayvytr.okhttploginterceptor.LoggingInterceptor;
+import com.ayvytr.okhttploginterceptor.LoggingLevel;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.ruihua.reader.ReaderManager;
@@ -27,14 +27,13 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
-import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
+import high.rivamed.myapplication.utils.CrashHandler;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
@@ -90,6 +89,9 @@ public class App extends Application {
 	   	LeakCanary.install(this);
 	}
 
+	CrashHandler crashHandler = CrashHandler.getInstance();
+	crashHandler.init(this);
+
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
 	LitePal.initialize(mAppContext);//数据库初始化
@@ -138,7 +140,7 @@ public class App extends Application {
 		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
 		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
 
-		//li模块儿
+		//li模块
 		Eth002Manager.getEth002Manager().startService(8012);
 	   }
 	}).start();
@@ -150,12 +152,9 @@ public class App extends Application {
    private void initOkGo() {
 	OkHttpClient.Builder builder = new OkHttpClient.Builder();
 	//log相关
-	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
-	loggingInterceptor.setPrintLevel(
-		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
-	loggingInterceptor.setColorLevel(
-		Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
-	builder.addInterceptor(loggingInterceptor);                                 //添加OkGo默认debug日志
+
+	LoggingInterceptor interceptor = new LoggingInterceptor(LoggingLevel.BODY);
+	builder.addInterceptor(interceptor);                                 //添加OkGo默认debug日志
 	//第三方的开源库，使用通知显示当前请求的log，不过在做文件下载的时候，这个库好像有问题，对文件判断不准确
 	//builder.addInterceptor(new ChuckInterceptor(this));
 
@@ -168,7 +167,8 @@ public class App extends Application {
 	//builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));            //使用sp保持cookie，如果cookie不过期，则一直有效
 //	builder.cookieJar(new CookieJarImpl(new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
 	//builder.cookieJar(new CookieJarImpl(new MemoryCookieStore()));            //使用内存保持cookie，app退出后，cookie消失
-
+//	builder.cookieJar(new CookieJarImpl(
+//		new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
 	// 其他统一的配置
 	// 详细说明看GitHub文档：https://github.com/jeasonlzy/
 	OkGo.getInstance().init(this)                           //必须调用初始化
@@ -178,41 +178,6 @@ public class App extends Application {
 		.setRetryCount(
 			0);                              //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
 
-   }
-
-   /**
-    * 添加Activity
-    */
-   public void addActivity_(Activity activity) {
-	// 判断当前集合中不存在该Activity
-//	if (!oList.contains(activity) && !activity.getClass()
-//		.getName()
-//		.toString()
-//		.equals("high.rivamed.myapplication.activity.LoginActivity")) {
-//	   oList.add(activity);//把当前Activity添加到集合中
-//	   Log.e(TAG, "Activity-------------->" + activity.getClass().getName());
-//	}
-   }
-   /**
-    * 添加Activity
-    */
-   public void addActivityAll(Activity activity) {
-	// 判断当前集合中不存在该Activity
-	String name = activity.getClass().getName();
-//	if (!oListAll.contains(name)) {
-//	   oListAll.add(name);//把当前Activity添加到集合中
-//	}
-   }
-
-   /**
-    * 销毁单个Activity
-    */
-   public void removeActivity_(Activity activity) {
-	//判断当前集合中存在该Activity
-//	if (oList.contains(activity)) {
-//	   oList.remove(activity);//从集合中移除
-//	   activity.finish();//销毁当前Activity
-//	}
    }
 
    public boolean ifActivityRun(String className) {
