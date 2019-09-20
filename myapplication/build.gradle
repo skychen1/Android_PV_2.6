@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "2.6.8.1.26"
+        versionName "2.6.8.1.27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 //        ndk {
@@ -127,7 +127,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
-    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
+//    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
 
 }
 tasks.withType(JavaCompile) {

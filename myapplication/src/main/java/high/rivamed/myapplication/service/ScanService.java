@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.ruihua.reader.ReaderManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -22,9 +23,19 @@ import java.util.TreeMap;
 
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
+import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
+import high.rivamed.myapplication.dbmodel.RoomsBean;
+import high.rivamed.myapplication.dbmodel.UserBean;
+import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
@@ -38,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
@@ -58,15 +70,113 @@ public class ScanService extends Service {
    private List<BoxIdBean> mBoxIdBeans;
    int k    = 0;
    int size = 0;
-   private       List<String>        mEPCDate        = new ArrayList<>();
-   private       Map<String, String> mEPCDatess      = new TreeMap<>();
-   public static boolean             mDoorStatusType = false;//false 没关  true已经关了
-   private       List<String>        mDeviceSizeList = new ArrayList<>();
-   private ArrayList<String> mListDevices;
-   private ArrayList<String> mEthDevices = new ArrayList<>();
-   private RxUtils.BaseEpcObservable mObs;
-   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
-   private NetWorkReceiver mWorkReceiver;
+   private       List<String>              mEPCDate         = new ArrayList<>();
+   private       Map<String, String>       mEPCDatess       = new TreeMap<>();
+   public static boolean                   mDoorStatusType  = false;//false 没关  true已经关了
+   private       List<String>              mDeviceSizeList  = new ArrayList<>();
+   private       ArrayList<String>         mListDevices;
+   private       ArrayList<String>         mEthDevices      = new ArrayList<>();
+   private       RxUtils.BaseEpcObservable mObs;
+   public        List<InventoryVo>         mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private       NetWorkReceiver           mWorkReceiver;
+   private       Gson                      mGson            = new Gson();
+   private       Thread                    mThread;
+   private Thread mThread1;
+   private Thread mThread2;
+   private  long lastClickTime = 0L;
+   private long mTime;
+
+   /**
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onServerEvent(Event.EventServer event) {
+	mTime = System.currentTimeMillis();
+	if (event.type == 1) {//登录界面每次显示更新数据
+	   if (mThread != null) {
+		if (mTime - lastClickTime >= 2000) {
+		   mThread.start();
+		   lastClickTime = mTime;
+		}
+	   } else {
+		mThread = new Thread(new Runnable() {
+		   @Override
+		   public void run() {
+			getAllCstDate(this);//重新获取在库耗材数据
+			List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
+			List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+			if (all.size() == 0) {
+			   getUnNetUseDate();
+			}
+			if (roomsBeans.size() == 0) {
+			   getUnEntFindOperation();
+			}
+		   }
+		});
+		lastClickTime = mTime;
+		mThread.start();
+	   }
+	} else if (event.type == 2) {
+
+	   if (mThread1 != null) {
+		if (mTime - lastClickTime >= 2000) {
+		   mThread1.start();
+		   lastClickTime = mTime;
+		}
+	   } else {
+		mThread1 = new Thread(new Runnable() {
+		   @Override
+		   public void run() {
+			List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+			if (voList == null || voList.size() == 0) {
+			   getAllCstDate(this);
+			}
+			UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
+			getUnNetUseDate();
+			getUnEntFindOperation();
+		   }
+		});
+		lastClickTime = mTime;
+		mThread1.start();
+	   }
+	}
+   }
+
+   /**
+    * 所有用户的本地数据
+    */
+   private void getUnNetUseDate() {
+	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		deleteLitepal();
+		UserBean userBean = mGson.fromJson(result, UserBean.class);
+		if (mThread2!=null){
+		   mThread2.start();
+		}else {
+		   mThread2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   setLitePalUseBean(userBean);
+			}
+		   });
+		   mThread2.start();
+		}
+	   }
+	});
+   }
+
+   /**
+    * 删除本地数据库用户信息表
+    */
+   private void deleteLitepal() {
+	LitePal.deleteAll(UserBean.class);
+	LitePal.deleteAll(AccountVosBean.class);
+	LitePal.deleteAll(HomeAuthorityMenuBean.class);
+	LitePal.deleteAll(UserFeatureInfosBean.class);
+	LitePal.deleteAll(ChildrenBeanX.class);
+	LitePal.deleteAll(ChildrenBean.class);
+   }
 
    /**
     * 门锁的状态检测回调
@@ -91,17 +201,18 @@ public class ScanService extends Service {
 		   mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
 		}
 	   }
-	   if (mDeviceSizeList!=null &&mListDevices!=null&&(mDeviceSizeList.size() == mListDevices.size())) {
-//	   if (mDeviceSizeList.size() == mListDevices.size()) {
+	   if (mDeviceSizeList != null && mListDevices != null &&
+		 (mDeviceSizeList.size() == mListDevices.size())) {
+		//	   if (mDeviceSizeList.size() == mListDevices.size()) {
 		mDoorStatusType = true;
 		mListDevices.clear();
 		mEthDevices.clear();
 	   }
-	   if (mListDevices==null){
+	   if (mListDevices == null) {
 		mListDevices = new ArrayList<>();
 		mDoorStatusType = true;
 	   }
-	   if (mDeviceSizeList==null){
+	   if (mDeviceSizeList == null) {
 		mDeviceSizeList = new ArrayList<>();
 	   }
 	}
@@ -142,34 +253,35 @@ public class ScanService extends Service {
 	List<InventoryVo> vos = setAllBoxVosDate(allVo, boxid);
 	mInVo.addAll(vos);
 	Iterator<Map.Entry<String, String>> iterator = epcDatess.entrySet().iterator();
-	while (iterator.hasNext()){
+	while (iterator.hasNext()) {
 	   Map.Entry<String, String> next = iterator.next();
 	   String key = next.getKey();
 	   String value = next.getValue();
 	   InventoryVo vo = LitePal.where("epc = ?", key).findFirst(InventoryVo.class);
 	   if (vo != null) {
-	      mInVo.remove(vo);
+		mInVo.remove(vo);
 	   } else {
 		if (key != null && !key.trim().equals("") && value != null) {
-		   if (!getVosType(allVo,key)){
-			boolean saveError = saveErrorVo(key,value,true,false,false);//放入，存入error流水表
-			Log.i(TAG, "     Scan 存入error流水表  "+saveError);
+		   if (!getVosType(allVo, key)) {
+			boolean saveError = saveErrorVo(key, value, true, false, false);//放入，存入error流水表
+			Log.i(TAG, "     Scan 存入error流水表  " + saveError);
 		   }
-		   if (!mTitleConn){
-			boolean save = saveErrorVo(key,value,false,false,false);//放入，存入库存表
+		   if (!mTitleConn) {
+			boolean save = saveErrorVo(key, value, false, false, false);//放入，存入库存表
 			Log.i(TAG, "Scan 存入库存表    " + save);
 		   }
 		}
 	   }
 	}
 	Iterator<InventoryVo> iteratorX = mInVo.iterator();
-	while (iteratorX.hasNext()){
+	while (iteratorX.hasNext()) {
 	   InventoryVo next = iteratorX.next();
-	   deleteVo(allVo,next.getEpc());//拿出时，删除库存表内的该条数据
-	   boolean save = saveErrorVo(next.getEpc(),next.getDeviceId(),true,true,false);//拿出时，存入到error流水表
+	   deleteVo(allVo, next.getEpc());//拿出时，删除库存表内的该条数据
+	   boolean save = saveErrorVo(next.getEpc(), next.getDeviceId(), true, true,
+						false);//拿出时，存入到error流水表
 	   Log.i(TAG, "Scan 出柜存入 并删除   " + save);
 	}
-	if (mTitleConn){
+	if (mTitleConn) {
 	   UnNetCstUtils.putUnNetOperateYes(getAppContext());//提交离线耗材和重新获取在库耗材数据
 	}
    }
@@ -195,7 +307,7 @@ public class ScanService extends Service {
 	}
 	initReceiver();
 	AllDeviceCallBack.getInstance().initCallBack();
-//	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
+	//	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
 
    }
 
@@ -212,6 +324,7 @@ public class ScanService extends Service {
 	super.onDestroy();
 
    }
+
    /**
     * 注册网络监听的广播
     */
@@ -226,5 +339,97 @@ public class ScanService extends Service {
 	timeFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
 	registerReceiver(mWorkReceiver, timeFilter);
    }
-//
+
+   /**
+    * 数据存储
+    *
+    * @param userBean
+    */
+   private void setLitePalUseBean(UserBean userBean) {
+	UserBean mUserBean = new UserBean();
+	mUserBean.setDeptId(userBean.getDeptId());
+	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
+	   AccountVosBean vosBean = new AccountVosBean();
+	   vosBean.setAccountId(accountVosBean.getAccountId());
+	   vosBean.setUserId(accountVosBean.getUserId());
+	   vosBean.setAccountName(accountVosBean.getAccountName());
+	   vosBean.setTenantId(accountVosBean.getTenantId());
+	   vosBean.setUseState(accountVosBean.getUseState());
+	   vosBean.setPassword(accountVosBean.getPassword());
+	   vosBean.setSalt(accountVosBean.getSalt());
+	   vosBean.setSex(accountVosBean.getSex());
+	   vosBean.setUserName(accountVosBean.getUserName());
+	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
+		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
+		infosBean.setUserId(userFeatureInfosBean.getUserId());
+		infosBean.setType(userFeatureInfosBean.getType());
+		infosBean.setData(userFeatureInfosBean.getData());
+		infosBean.setAccountName(accountVosBean.getAccountName());
+		infosBean.save();
+		vosBean.getUserFeatureInfos().add(infosBean);
+	   }
+	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
+		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
+		mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
+		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+		    null != homeAuthorityMenuBean.getChildren() &&
+		    homeAuthorityMenuBean.getChildren().size() > 0) {
+		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
+		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+			for (int x = 0;
+			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+				   .get(0)
+				   .getChildren()
+				   .get(x);
+			   ChildrenBean mChildrenBean = new ChildrenBean();
+			   mChildrenBean.setTitle(childrenBean.getTitle());
+			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
+			   mChildrenBean.save();
+			   mChildrenBeanX.getChildren().add(mChildrenBean);
+			}
+		   }
+		   mChildrenBeanX.save();
+		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
+		}
+		mhomeAuthorityMenuBean.save();
+		vosBean.getMenus().add(mhomeAuthorityMenuBean);
+	   }
+	   vosBean.save();
+	   mUserBean.getAccountVos().add(vosBean);
+	}
+	mUserBean.save();
+   }
+
+   /**
+    * 本地手术室
+    */
+   private void getUnEntFindOperation() {
+
+	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
+		LitePal.deleteAll(RoomsBean.class);
+		LitePal.deleteAll(OperationRoomsBean.class);
+		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
+		RoomsBean mRoomsBean = new RoomsBean();
+		if (roomsBean.getOperationRooms().size() > 0) {
+		   mRoomsBean.setThingId(roomsBean.getThingId());
+		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
+			OperationRoomsBean bean = new OperationRoomsBean();
+			bean.setOptRoomId(mOperationRooms.getOptRoomId());
+			bean.setRoomName(mOperationRooms.getRoomName());
+			bean.save();
+			mRoomsBean.getOperationRooms().add(bean);
+		   }
+		   mRoomsBean.save();
+		}
+	   }
+	});
+   }
 }

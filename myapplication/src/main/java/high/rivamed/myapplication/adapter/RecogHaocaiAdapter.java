@@ -167,10 +167,12 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   if (item.getPatientName() == null || item.getPatientName().length() < 1) {
 		mSeven_six.setText("");
 	   } else {
-		if (item.getPatientId().equals("virtual")) {
-		   mSeven_six.setText(item.getPatientName());
-		} else {
-		   mSeven_six.setText(item.getPatientName() + " / " + item.getHisPatientId());
+		if (null!=item.getPatientId()){
+		   if (item.getPatientId().equals("virtual")) {
+			mSeven_six.setText(item.getPatientName());
+		   } else {
+			mSeven_six.setText(item.getPatientName() + " / " + item.getHisPatientId());
+		   }
 		}
 	   }
 	}

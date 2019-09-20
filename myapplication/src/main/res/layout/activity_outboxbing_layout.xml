@@ -90,14 +90,37 @@
 			</LinearLayout>
 		</RelativeLayout>
 	</RelativeLayout>
-	<include
-		layout="@layout/include_recyclerview"
+	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_marginLeft="@dimen/x40"
 		android:layout_marginRight="@dimen/x40"
 		android:layout_marginTop="@dimen/x30"
-		android:layout_weight="1" />
+		android:layout_weight="1" >
+
+		<include
+			layout="@layout/include_recyclerview"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			/>
+		<TextView
+			android:id="@+id/door_closs"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="请关闭所有柜门后再进行操作"
+			android:layout_centerHorizontal="true"
+			android:layout_alignParentBottom="true"
+			android:textColor="@color/bg_f"
+			android:paddingLeft="@dimen/x30"
+			android:paddingRight="@dimen/x30"
+			android:paddingTop="@dimen/y4"
+			android:paddingBottom="@dimen/y4"
+			android:background="@color/bg_deletes"
+			android:visibility="gone"
+			android:textSize="@dimen/textsize_17"/>
+	</RelativeLayout>
+
+
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="2px"

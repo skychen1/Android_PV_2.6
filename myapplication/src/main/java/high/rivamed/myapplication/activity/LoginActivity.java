@@ -37,12 +37,6 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
-import high.rivamed.myapplication.dbmodel.AccountVosBean;
-import high.rivamed.myapplication.dbmodel.ChildrenBean;
-import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
-import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
-import high.rivamed.myapplication.dbmodel.RoomsBean;
-import high.rivamed.myapplication.dbmodel.UserBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
@@ -98,7 +92,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
-import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -156,10 +149,9 @@ public class LoginActivity extends SimpleActivity {
    public static          boolean           mConfigType043;
    public static     boolean           mConfigType044;
    public static          boolean           mConfigType045;
-   private Thread mThread;
-   private Thread mThread1;
-   private boolean mDestroyType =true;//处理thread执行
-   private Thread mThread3;
+//
+//   private boolean mDestroyType =true;//处理thread执行
+//   private Thread mThread3;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
@@ -206,27 +198,36 @@ public class LoginActivity extends SimpleActivity {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect, event.net);
 	if (mTitleConn && mOnStart) {
-	   if (mThread!=null){
-		mThread.start();
-	   }else {
-		mThread = new Thread(new Runnable() {
-		   @Override
-		   public void run() {
-			if (mDestroyType){
-			   List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
-			   if (voList == null || voList.size() == 0) {
-				getAllCstDate(this);
-			   }
-			   UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
-			   getUnNetUseDate();
-			   getUnEntFindOperation();
-			}
-		   }
-		});
-		mThread.start();
-	   }
+	   EventBusUtils.post(new Event.EventServer(true,2));//有网后处理数据
+//	   if (mThread!=null){
+//		mThread.start();
+//	   }else {
+//	      mThread = new MyThread(this);
+//		mThread.start();
+//	   }
 	}
    }
+//   public  class MyThread extends Thread {
+//	WeakReference<LoginActivity> mThreadActivityRef;
+//
+//	public MyThread(LoginActivity activity) {
+//	   mThreadActivityRef = new WeakReference<LoginActivity>(
+//		   activity);
+//	}
+//
+//	@Override
+//	public void run() {
+//	   if (mDestroyType){
+//		List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+//		if (voList == null || voList.size() == 0) {
+//		   getAllCstDate(mThreadActivityRef);
+//		}
+//		UnNetCstUtils.putUnNetOperateYes(mThreadActivityRef);//提交离线耗材和重新获取在库耗材数据
+//		getUnNetUseDate();
+//		getUnEntFindOperation();
+//	   }
+//	}
+//   }
 
    @Override
    public int getLayoutId() {
@@ -288,29 +289,14 @@ public class LoginActivity extends SimpleActivity {
 		mIntentService = new Intent(this, ScanService.class);
 		startService(mIntentService);
 	   }
-
 	}
-	if (mThread1!=null){
-	   mThread1.start();
-	}else {
-	   mThread1 = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		   if (mDestroyType){
-			getAllCstDate(this);//重新获取在库耗材数据
-			List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
-			List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
-			if (all.size() == 0) {
-			   getUnNetUseDate();
-			}
-			if (roomsBeans.size() == 0) {
-			   getUnEntFindOperation();
-			}
-		   }
-		}
-	   });
-	   mThread1.start();
-	}
+	EventBusUtils.post(new Event.EventServer(true,1));
+//	if (mThread1!=null){
+//	   mThread1.start();
+//	}else {
+//	   mThread1 = new MyThread1(this);
+//	   mThread1.start();
+//	}
 	mOnStart = true;
 	mPushFormOrders.clear();
 	mDownText.setText(
@@ -342,6 +328,30 @@ public class LoginActivity extends SimpleActivity {
 	getConfigDate(mConfigType, null);
    }
 
+//   public  class MyThread1 extends Thread {
+//	WeakReference<LoginActivity> mThreadActivityRef;
+//
+//	public MyThread1(LoginActivity activity) {
+//	   mThreadActivityRef = new WeakReference<LoginActivity>(
+//		   activity);
+//	}
+//
+//	@Override
+//	public void run() {
+//	   if (mDestroyType){
+//		getAllCstDate(mThreadActivityRef);//重新获取在库耗材数据
+//		List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
+//		List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
+//		if (all.size() == 0) {
+//		   getUnNetUseDate();
+//		}
+//		if (roomsBeans.size() == 0) {
+//		   getUnEntFindOperation();
+//		}
+//	   }
+//	}
+//   }
+
    /**
     * 查询未确认耗材
     */
@@ -358,139 +368,144 @@ public class LoginActivity extends SimpleActivity {
 	});
    }
 
-   /**
-    * 本地手术室
-    */
-   private void getUnEntFindOperation() {
+//   /**
+//    * 本地手术室
+//    */
+//   private void getUnEntFindOperation() {
+//
+//	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+//		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
+//		LitePal.deleteAll(RoomsBean.class);
+//		LitePal.deleteAll(OperationRoomsBean.class);
+//		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
+//		RoomsBean mRoomsBean = new RoomsBean();
+//		if (roomsBean.getOperationRooms().size() > 0) {
+//		   mRoomsBean.setThingId(roomsBean.getThingId());
+//		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
+//			OperationRoomsBean bean = new OperationRoomsBean();
+//			bean.setOptRoomId(mOperationRooms.getOptRoomId());
+//			bean.setRoomName(mOperationRooms.getRoomName());
+//			bean.save();
+//			mRoomsBean.getOperationRooms().add(bean);
+//		   }
+//		   mRoomsBean.save();
+//		}
+//	   }
+//	});
+//   }
+//
+//   /**
+//    * 所有用户的本地数据
+//    */
+//   private void getUnNetUseDate() {
+//	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
+//	   @Override
+//	   public void onSucceed(String result) {
+//		deleteLitepal();
+//		UserBean userBean = mGson.fromJson(result, UserBean.class);
+//		if (mThread3!=null){
+//		   mThread3.start();
+//		}else {
+//		   mThread3 = new MyThread3(LoginActivity.this,userBean);
+//		   mThread3.start();
+//		}
+//	   }
+//	});
+//   }
+//   public  class MyThread3 extends Thread {
+//	WeakReference<LoginActivity> mThreadActivityRef;
+//	UserBean userBean;
+//	public MyThread3(LoginActivity activity,UserBean userBean) {
+//	   mThreadActivityRef = new WeakReference<LoginActivity>(
+//		   activity);
+//	   this.userBean =userBean;
+//	}
+//
+//	@Override
+//	public void run() {
+//	   if (mDestroyType){
+//		setLitePalUseBean(userBean);
+//	   }
+//	}
+//   }
+//   /**
+//    * 数据存储
+//    *
+//    * @param userBean
+//    */
+//   private void setLitePalUseBean(UserBean userBean) {
+//	UserBean mUserBean = new UserBean();
+//	mUserBean.setDeptId(userBean.getDeptId());
+//	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
+//	   AccountVosBean vosBean = new AccountVosBean();
+//	   vosBean.setAccountId(accountVosBean.getAccountId());
+//	   vosBean.setUserId(accountVosBean.getUserId());
+//	   vosBean.setAccountName(accountVosBean.getAccountName());
+//	   vosBean.setTenantId(accountVosBean.getTenantId());
+//	   vosBean.setUseState(accountVosBean.getUseState());
+//	   vosBean.setPassword(accountVosBean.getPassword());
+//	   vosBean.setSalt(accountVosBean.getSalt());
+//	   vosBean.setSex(accountVosBean.getSex());
+//	   vosBean.setUserName(accountVosBean.getUserName());
+//	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+//		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
+//		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
+//		infosBean.setUserId(userFeatureInfosBean.getUserId());
+//		infosBean.setType(userFeatureInfosBean.getType());
+//		infosBean.setData(userFeatureInfosBean.getData());
+//		infosBean.setAccountName(accountVosBean.getAccountName());
+//		infosBean.save();
+//		vosBean.getUserFeatureInfos().add(infosBean);
+//	   }
+//	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+//		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
+//		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
+//		mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
+//		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+//		    null != homeAuthorityMenuBean.getChildren() &&
+//		    homeAuthorityMenuBean.getChildren().size() > 0) {
+//		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+//		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+//		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
+//		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+//			for (int x = 0;
+//			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+//			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+//				   .get(0)
+//				   .getChildren()
+//				   .get(x);
+//			   ChildrenBean mChildrenBean = new ChildrenBean();
+//			   mChildrenBean.setTitle(childrenBean.getTitle());
+//			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
+//			   mChildrenBean.save();
+//			   mChildrenBeanX.getChildren().add(mChildrenBean);
+//			}
+//		   }
+//		   mChildrenBeanX.save();
+//		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
+//		}
+//		mhomeAuthorityMenuBean.save();
+//		vosBean.getMenus().add(mhomeAuthorityMenuBean);
+//	   }
+//	   vosBean.save();
+//	   mUserBean.getAccountVos().add(vosBean);
+//	}
+//	mUserBean.save();
+//   }
 
-	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
-		LitePal.deleteAll(RoomsBean.class);
-		LitePal.deleteAll(OperationRoomsBean.class);
-		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
-		RoomsBean mRoomsBean = new RoomsBean();
-		if (roomsBean.getOperationRooms().size() > 0) {
-		   mRoomsBean.setThingId(roomsBean.getThingId());
-		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
-			OperationRoomsBean bean = new OperationRoomsBean();
-			bean.setOptRoomId(mOperationRooms.getOptRoomId());
-			bean.setRoomName(mOperationRooms.getRoomName());
-			bean.save();
-			mRoomsBean.getOperationRooms().add(bean);
-		   }
-		   mRoomsBean.save();
-		}
-	   }
-	});
-   }
-
-   /**
-    * 所有用户的本地数据
-    */
-   private void getUnNetUseDate() {
-	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		deleteLitepal();
-		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		if (mThread3!=null){
-		   mThread3.start();
-		}else {
-		   mThread3 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-			   if (mDestroyType){
-				setLitePalUseBean(userBean);
-			   }
-			}
-		   });
-		   mThread3.start();
-		}
-
-
-
-	   }
-	});
-   }
-
-   /**
-    * 数据存储
-    *
-    * @param userBean
-    */
-   private void setLitePalUseBean(UserBean userBean) {
-	UserBean mUserBean = new UserBean();
-	mUserBean.setDeptId(userBean.getDeptId());
-	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
-	   AccountVosBean vosBean = new AccountVosBean();
-	   vosBean.setAccountId(accountVosBean.getAccountId());
-	   vosBean.setUserId(accountVosBean.getUserId());
-	   vosBean.setAccountName(accountVosBean.getAccountName());
-	   vosBean.setTenantId(accountVosBean.getTenantId());
-	   vosBean.setUseState(accountVosBean.getUseState());
-	   vosBean.setPassword(accountVosBean.getPassword());
-	   vosBean.setSalt(accountVosBean.getSalt());
-	   vosBean.setSex(accountVosBean.getSex());
-	   vosBean.setUserName(accountVosBean.getUserName());
-	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
-		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
-		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
-		infosBean.setUserId(userFeatureInfosBean.getUserId());
-		infosBean.setType(userFeatureInfosBean.getType());
-		infosBean.setData(userFeatureInfosBean.getData());
-		infosBean.setAccountName(accountVosBean.getAccountName());
-		infosBean.save();
-		vosBean.getUserFeatureInfos().add(infosBean);
-	   }
-	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
-		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
-		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
-		mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
-		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
-		    null != homeAuthorityMenuBean.getChildren() &&
-		    homeAuthorityMenuBean.getChildren().size() > 0) {
-		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
-		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
-		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
-		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
-			for (int x = 0;
-			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
-			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
-				   .get(0)
-				   .getChildren()
-				   .get(x);
-			   ChildrenBean mChildrenBean = new ChildrenBean();
-			   mChildrenBean.setTitle(childrenBean.getTitle());
-			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
-			   mChildrenBean.save();
-			   mChildrenBeanX.getChildren().add(mChildrenBean);
-			}
-		   }
-		   mChildrenBeanX.save();
-		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
-		}
-		mhomeAuthorityMenuBean.save();
-		vosBean.getMenus().add(mhomeAuthorityMenuBean);
-	   }
-	   vosBean.save();
-	   mUserBean.getAccountVos().add(vosBean);
-	}
-	mUserBean.save();
-   }
-
-   /**
-    * 删除本地数据库用户信息表
-    */
-   private void deleteLitepal() {
-	LitePal.deleteAll(UserBean.class);
-	LitePal.deleteAll(AccountVosBean.class);
-	LitePal.deleteAll(HomeAuthorityMenuBean.class);
-	LitePal.deleteAll(UserFeatureInfosBean.class);
-	LitePal.deleteAll(ChildrenBeanX.class);
-	LitePal.deleteAll(ChildrenBean.class);
-   }
+//   /**
+//    * 删除本地数据库用户信息表
+//    */
+//   private void deleteLitepal() {
+//	LitePal.deleteAll(UserBean.class);
+//	LitePal.deleteAll(AccountVosBean.class);
+//	LitePal.deleteAll(HomeAuthorityMenuBean.class);
+//	LitePal.deleteAll(UserFeatureInfosBean.class);
+//	LitePal.deleteAll(ChildrenBeanX.class);
+//	LitePal.deleteAll(ChildrenBean.class);
+//   }
 
    /**
     * 获取配置项
@@ -948,10 +963,10 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginGone.onFinishTemporaryDetach();
 	   mLoginGone= null;
 	}
-	mDestroyType = false;
-	mThread=null;
-	mThread1=null;
-	mThread3=null;
+//	mDestroyType = false;
+//	mThread=null;
+//	mThread1=null;
+//	mThread3=null;
 	Log.i("ccetdaF",getClass().getName()+"  onDestroy");
    }
 }

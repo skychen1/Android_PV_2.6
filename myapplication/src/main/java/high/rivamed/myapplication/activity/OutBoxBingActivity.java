@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.ruihua.reader.net.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -33,6 +34,7 @@ import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -61,6 +63,7 @@ import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
@@ -78,6 +81,7 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
+import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType3;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
@@ -159,6 +163,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    TextView           mLyBingBtnRight;
    @BindView(R.id.activity_down_btnll)
    LinearLayout       mActivityDownBtnTwoll;
+   @BindView(R.id.door_closs)
+   TextView           mDoorCloss;
    public InventoryDto                               mInventoryDto;
    public InventoryDto                               mPatientDto;
    //   public List<InventoryVo>                          mInventoryVos = new ArrayList<>(); //入柜扫描到的epc信息
@@ -186,7 +192,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private boolean                   mConfigType019;
    private boolean                   mConfigType009;
    private boolean                   mConfigType007;
-
+   private List<BoxSizeBean.DevicesBean> mBoxsize;
    /**
     * 门锁的提示
     *
@@ -218,7 +224,23 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	setTimeStart();
 	EventBusUtils.removeStickyEvent(Event.PopupEvent.class);
    }
-
+   /**
+    * 门锁的状态检测回调
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventDoorStatus(Event.EventDoorStatus event) {
+	Log.i("EventDoorStatus", "EventDoorStatus"+event.type);
+	if (mBoxsize.size()>1){
+	   if (event.type) {//门没关
+		mDoorCloss.setVisibility(View.VISIBLE);
+	   }
+	   if (!event.type) {//门关了
+		mDoorCloss.setVisibility(View.GONE);
+	   }
+	}
+   }
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventBing(Event.EventCheckbox event) {
 	mPatientVo = event.vo;
@@ -299,8 +321,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	mLocalAllSize--;
+
 	if (mLocalAllSize > 0) {
+	   mLocalAllSize--;
 	   mBuilder.setMsg(mLocalAllSize + "");
 	}
 	mEpc = event.epc;
@@ -495,6 +518,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
+	getDoorStatus();
+	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	mBoxsize = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mConfigType019 = UIUtils.getConfigType(mContext, CONFIG_019);
 	mConfigType009 = UIUtils.getConfigType(mContext, CONFIG_009);

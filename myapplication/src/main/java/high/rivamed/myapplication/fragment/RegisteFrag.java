@@ -239,6 +239,7 @@ public class RegisteFrag extends SimpleFragment {
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
 	initData();
+	ToastUtils.showShortToast("数据恢复完成，请稍等5秒！");
    }
 
    public static RegisteFrag newInstance() {

@@ -23,6 +23,20 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+
+   /**
+    * 登录界面触发server
+    */
+   public static class EventServer {
+
+	public boolean mBoolean;
+	public int type;//1
+
+	public EventServer(boolean mBoolean,int type) {
+	   this.type = type;
+	   this.mBoolean = mBoolean;
+	}
+   }
    /**
     * lock的点击日志刷新
     */

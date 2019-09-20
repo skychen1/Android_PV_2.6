@@ -16,6 +16,7 @@ import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.activity.RegisteActivity.mRegisteViewpager;
@@ -75,8 +76,13 @@ public class RegisteRecoverFrag extends SimpleFragment {
 	   public void onSucceed(String result) {
 		Log.i("RegisteFrag","sn    "+result);
 		ThingDto snRecoverBean = mGson.fromJson(result, ThingDto.class);
-		EventBusUtils.postSticky(snRecoverBean);
-		mRegisteViewpager.setCurrentItem(0);
+		if (snRecoverBean.isOperateSuccess()){
+		   EventBusUtils.postSticky(snRecoverBean);
+		   mRegisteViewpager.setCurrentItem(0);
+		}else {
+		   ToastUtils.showShortToast("数据恢复失败！");
+		}
+
 	   }
 	});
    }

@@ -10,8 +10,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.ayvytr.okhttploginterceptor.LoggingInterceptor;
-import com.ayvytr.okhttploginterceptor.LoggingLevel;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -32,6 +30,8 @@ import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
+import high.rivamed.myapplication.http.LoggingLevel;
+import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -42,6 +42,8 @@ import static high.rivamed.myapplication.cont.Constants.READER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
+
+//import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
 public class App extends Application {
 
@@ -89,8 +91,7 @@ public class App extends Application {
 	   	LeakCanary.install(this);
 	}
 
-	CrashHandler crashHandler = CrashHandler.getInstance();
-	crashHandler.init(this);
+
 
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
@@ -101,6 +102,8 @@ public class App extends Application {
 	LogUtils.setDebugMode(false);
 	//设备基础module中有使用，需要注册初始化
 	ToastUtils.register(this);
+	CrashHandler crashHandler = CrashHandler.getInstance();
+	crashHandler.init(this);
 
 	WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 	if (wm != null) {
@@ -152,8 +155,14 @@ public class App extends Application {
    private void initOkGo() {
 	OkHttpClient.Builder builder = new OkHttpClient.Builder();
 	//log相关
+//	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
+//	loggingInterceptor.setPrintLevel(
+//		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
+//	loggingInterceptor.setColorLevel(
+//		Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
+//	builder.addInterceptor(loggingInterceptor);
 
-	LoggingInterceptor interceptor = new LoggingInterceptor(LoggingLevel.BODY);
+	MyLoggingInterceptor interceptor = new MyLoggingInterceptor(LoggingLevel.BODY);
 	builder.addInterceptor(interceptor);                                 //添加OkGo默认debug日志
 	//第三方的开源库，使用通知显示当前请求的log，不过在做文件下载的时候，这个库好像有问题，对文件判断不准确
 	//builder.addInterceptor(new ChuckInterceptor(this));

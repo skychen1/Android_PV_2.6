@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -27,6 +28,7 @@ import butterknife.OnClick;
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -54,6 +56,7 @@ import high.rivamed.myapplication.views.TableTypeView;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -66,6 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
+import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType2;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
@@ -124,7 +128,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    TextView           mTimelyNumber;
    @BindView(R.id.timely_inbox_list)
    TextView           mTimelyInboxList;
-
+   @BindView(R.id.door_closs)
+   TextView           mDoorCloss;
    public  TableTypeView mTypeView;
    List<String> titeleList = null;
    public int          mSize;
@@ -148,6 +153,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private int                          mAllSize;
    private boolean                      mFirstFinishLoading; //先关闭
    private boolean                      mLastFinishLoading =false;  //后关闭
+   private List<BoxSizeBean.DevicesBean> mBoxsize;
 
    /**
     * 按钮的显示转换
@@ -175,18 +181,18 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
 		    ((patientId == null || patientId.equals("")) ||
 		     (patientName == null || patientName.equals(""))) ||
-		    !ScanService.mDoorStatusType) {
+		    !mDoorStatusType) {
 		   setFalseEnabled(false);
-		   setAllTextVis(ScanService.mDoorStatusType);
+		   setAllTextVis(mDoorStatusType);
 		   return;
 		}
 		if ((isErrorOperation == 1 && deleteCount == 0) ||
 		    (isErrorOperation == 1 && deleteCount == 0 &&
 		     b.getExpireStatus() == 0) ||
 		    (UIUtils.getConfigType(mContext, CONFIG_007) && patientName == null) ||
-		    !ScanService.mDoorStatusType) {
+		    !mDoorStatusType) {
 		   setFalseEnabled(false);
-		   setAllTextVis(ScanService.mDoorStatusType);
+		   setAllTextVis(mDoorStatusType);
 		   return;
 		} else {
 		   setFalseEnabled(true);
@@ -266,11 +272,26 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	   startScan(mBoxInventoryVos,mObs,event.mEthId);
 	}
-	if (ScanService.mDoorStatusType) {
+	if (mDoorStatusType) {
 	   setTitleRightNum();
 	}
    }
-
+   /**
+    * 门锁的状态检测回调
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventDoorStatus(Event.EventDoorStatus event) {
+	if (mBoxsize.size()>1){
+	   if (event.type) {//门没关
+		mDoorCloss.setVisibility(View.VISIBLE);
+	   }
+	   if (!event.type) {//门关了
+		mDoorCloss.setVisibility(View.GONE);
+	   }
+	}
+   }
    /**
     * dialog操作数据
     * @param event
@@ -306,7 +327,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mBuilder.mDialog.dismiss();
 	   }
 	}
-	EventBusUtils.removeStickyEvent(Event.EventLoadingX.class);
    }
    /**
     * EPC扫描返回数据（单个返回）
@@ -314,8 +334,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
-	mLocalAllSize--;
+
 	if (mLocalAllSize>0){
+	   mLocalAllSize--;
 	   mBuilder.setMsg(mLocalAllSize+"");
 	}
 	mEpc = event.epc;
@@ -429,7 +450,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 //	mBuilder.mLoading.stop();
 //	mBuilder.mDialog.dismiss();
 	EventBusUtils.post(new Event.EventLoadingX(true));
-
+	getDoorStatus();
+	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	mBoxsize = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
 	mHandler = new Handler();
 	if (mStarts == null) {
 	   mStarts = new TimeCount(COUNTDOWN_TIME, 1000, mTimelyLeft, mTimelyRight);
