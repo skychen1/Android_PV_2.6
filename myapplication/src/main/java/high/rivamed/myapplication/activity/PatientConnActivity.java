@@ -268,6 +268,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
+				   data.setBedNo(bean.getRows().get(i).getBedNo());
+				   data.setWardName(bean.getRows().get(i).getWardName());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {
@@ -334,6 +336,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				   data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
+				   data.setBedNo(bean.getRows().get(i).getBedNo());
+				   data.setWardName(bean.getRows().get(i).getWardName());
 				   mPatientInfos.add(data);
 				}
 				if (isClear && mPatientInfos.size() > 0) {

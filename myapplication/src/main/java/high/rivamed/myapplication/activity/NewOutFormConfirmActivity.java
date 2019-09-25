@@ -722,12 +722,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mHandler.removeCallbacksAndMessages(null);
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder=null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuildero.mHandler!=null){
+		mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuildero.mDialog.dismiss();
 	   mBuildero=null;
 	}

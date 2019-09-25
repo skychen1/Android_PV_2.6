@@ -80,6 +80,24 @@ public class BingFindSchedulesBean implements Serializable {
         private String medicalId;
         private String hisPatientId        ;
         private String deptType;
+        private String bedNo;
+        private String wardName;
+
+        public String getBedNo() {
+            return bedNo;
+        }
+
+        public void setBedNo(String bedNo) {
+            this.bedNo = bedNo;
+        }
+
+        public String getWardName() {
+            return wardName;
+        }
+
+        public void setWardName(String wardName) {
+            this.wardName = wardName;
+        }
 
         public String getDeptType() {
             return deptType;

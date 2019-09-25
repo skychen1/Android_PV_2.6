@@ -111,6 +111,10 @@ public class SplashActivity extends FragmentActivity {
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
+		}
+		if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME)==-1){
+		   COUNTDOWN_TIME = 20000;
+		}else {
 		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
 		}
 		LogcatHelper.getInstance(getApplicationContext()).start();

@@ -82,6 +82,24 @@ public class FindInPatientBean {
         private String deptType          = "";
         private String  operatingRoomNo;//手术间ID
         private boolean isSelected;
+        private String bedNo;
+        private String wardName;
+
+        public String getBedNo() {
+            return bedNo;
+        }
+
+        public void setBedNo(String bedNo) {
+            this.bedNo = bedNo;
+        }
+
+        public String getWardName() {
+            return wardName;
+        }
+
+        public void setWardName(String wardName) {
+            this.wardName = wardName;
+        }
 
         public String getOperatingRoomNo() {
             return operatingRoomNo;

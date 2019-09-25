@@ -56,7 +56,6 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
-import high.rivamed.myapplication.views.RvDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -129,7 +128,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    int k = 0;
 
    private       LoadingDialogX.Builder mBuilder;
-   private       RvDialog.Builder       mAfterBind;
+
    private       String                 mIdNo                = "";
    private       String                 mSurgeryTime         = "";
    private       String                 mOperatingRoomNo     = "";
@@ -213,7 +212,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos, mObs, event.mEthId);
 	   if (mBuildero != null) {
-		mBuildero.mHandler.removeCallbacksAndMessages(null);
+		if (mBuildero.mHandler!=null){
+		   mBuildero.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuildero.mDialog.dismiss();
 		mBuildero = null;
 	   }
@@ -345,7 +346,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		InventoryVo next = iterator.next();
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
-		   setTitleRightNum();
+//		   setTitleRightNum();
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
 		} else {
@@ -642,7 +643,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	}
 	Log.i("outtccc", "onPause  OutBoxBi  " + mOperationType);
-
+	setFalseEnabled(false, false);
 	mPause = true;
 	super.onPause();
    }
@@ -655,6 +656,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mTimelyOpenDoorRight.setVisibility(View.GONE);
 	   mTimelyRight.setVisibility(View.GONE);
 	}
+	setTimeStart();
 	super.onResume();
 
    }
@@ -1450,12 +1452,16 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	super.onStop();
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuildero.mHandler!=null){
+		mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
 	}

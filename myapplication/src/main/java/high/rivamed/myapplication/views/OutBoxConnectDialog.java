@@ -37,8 +37,6 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class OutBoxConnectDialog extends Dialog {
 
-    private static gridviewAdapter sAdapter;
-    private static GridView sGridView;
 
     public OutBoxConnectDialog(Context context) {
         super(context);
@@ -50,6 +48,8 @@ public class OutBoxConnectDialog extends Dialog {
 
     public static class Builder {
 
+        private  gridviewAdapter sAdapter;
+        private  GridView sGridView;
         private Context mContext;
         private int mNumColumn;
         private List<String> mMsgList;

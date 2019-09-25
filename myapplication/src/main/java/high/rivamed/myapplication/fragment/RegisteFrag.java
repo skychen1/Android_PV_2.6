@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
@@ -29,6 +30,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.TBaseDevices;
@@ -52,6 +54,8 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mAppContext;
+import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -162,6 +166,7 @@ public class RegisteFrag extends SimpleFragment {
 		   ToastUtils.showShortToast(thingDto.getMsg());
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
+		   getBoxSize();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
@@ -192,7 +197,28 @@ public class RegisteFrag extends SimpleFragment {
 	   }
 	});
    }
+   public void getBoxSize() {
+	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		mTitleConn=true;
+		Gson gson = new Gson();
+		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
+		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
+		if (devices.size() > 1) {
+		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
+		   tbaseDevicesBean.setDeviceName("全部开柜");
+		   devices.add(0, tbaseDevicesBean);
+		}
+		SPUtils.putString(mAppContext, BOX_SIZE_DATE, gson.toJson(devices));
+	   }
 
+	   @Override
+	   public void onError(String result) {
+
+	   }
+	});
+   }
    @Override
    public void onStart() {
 	super.onStart();
@@ -239,6 +265,7 @@ public class RegisteFrag extends SimpleFragment {
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
 	initData();
+	getBoxSize();
 	ToastUtils.showShortToast("数据恢复完成，请稍等5秒！");
    }
 

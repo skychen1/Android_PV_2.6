@@ -372,32 +372,32 @@ public class DialogUtils {
         }
         builder.create().show();
     }
-
-    public static void showOutFormDialog(Context context, int mType, String title, String msg) {
-        TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
-            builder.setTwoMsg(msg);
-            builder.setMsg(title);
-            builder.setLeft("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    dialog.dismiss();
-                    if (context instanceof Activity){
-                        ((Activity) context).finish();
-                    }
-                }
-            });
-            builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    dialog.dismiss();
-                    if (context instanceof Activity){
-                        UIUtils.putOrderId(context);
-                        removeAllAct((Activity) context);
-                    }
-                }
-            });
-        builder.create().show();
-    }
+//
+//    public static void showOutFormDialog(Context context, int mType, String title, String msg) {
+//        TwoDialog.Builder builder = new TwoDialog.Builder(context, mType);
+//            builder.setTwoMsg(msg);
+//            builder.setMsg(title);
+//            builder.setLeft("确认", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int i) {
+//                    dialog.dismiss();
+//                    if (context instanceof Activity){
+//                        ((Activity) context).finish();
+//                    }
+//                }
+//            });
+//            builder.setRight("确认并退出登录", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int i) {
+//                    dialog.dismiss();
+//                    if (context instanceof Activity){
+//                        UIUtils.putOrderId(context);
+//                        removeAllAct((Activity) context);
+//                    }
+//                }
+//            });
+//        builder.create().show();
+//    }
 
     public static void showOnePassWordDialog(Context context) {
         OnePassWordDialog.Builder builder = new OnePassWordDialog.Builder(context);

@@ -59,6 +59,7 @@ import high.rivamed.myapplication.views.TwoDialog;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_056;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -141,9 +142,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	}
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
-	   Log.i("outtccc", "mType   " + mType);
+	   Log.i("outtccc", "mType   " + mType+"   event.mEthId   "+event.mEthId);
 	   if (mBuilder != null) {
-		mBuilder.mHandler.removeCallbacksAndMessages(null);
+		if (mBuilder.mHandler!=null){
+		   mBuilder.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
 	   }
@@ -218,7 +221,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mSearchDept.setText("查询申请科室：");
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
 	} else {
-	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	   if (UIUtils.getConfigType(mContext, CONFIG_056)) {
+		array = mContext.getResources().getStringArray(R.array.eight_dialog_arrays);
+	   }else {
+		array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+	   }
 	   mSearchDept.setText("查询手术间：");
 	   mSearchRight.setHint("请输入手术间名称、编号、拼音码");
 	}
@@ -251,9 +258,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    }
 
    private void initListener() {
-      if(mTypeView!=null){
 
-	}
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -317,7 +322,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	patientInfos.clear();
 	mTrim = "";
 	if (mBuilder != null) {
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
@@ -676,6 +683,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				data.setOperatingRoomNo(bean.getRows().get(i).getOperatingRoomNo());
 				data.setDeptType(bean.getRows().get(i).getDeptType());
+				data.setBedNo(bean.getRows().get(i).getBedNo());
+				data.setWardName(bean.getRows().get(i).getWardName());
 				if (bean.getRows().get(i).getSurgeryId() != null) {
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
 				}

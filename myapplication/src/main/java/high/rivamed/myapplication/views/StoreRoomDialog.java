@@ -39,8 +39,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class StoreRoomDialog extends Dialog {
 
-   private static gridviewAdapter sAdapter;
-   private static GridView        sGridView;
+
 
    public StoreRoomDialog(Context context) {
 	super(context);
@@ -51,7 +50,8 @@ public class StoreRoomDialog extends Dialog {
    }
 
    public static class Builder {
-
+	private  gridviewAdapter sAdapter;
+	private  GridView        sGridView;
 	private Context         mContext;
 	private int             mNumColumn;
 	private int             mType;

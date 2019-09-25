@@ -1,11 +1,9 @@
 package high.rivamed.myapplication.adapter;
 
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -28,26 +26,26 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
  */
 public class BingDialogOutAdapter
 	extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfoVos, BaseViewHolder> {
-   SparseBooleanArray mCheckStates;
-   private TextView mSeven_two;
-   private TextView mSeven_three;
-   private TextView mSeven_four;
-   private TextView mSeven_five;
-   private TextView mSeven_six;
-   private int mSelectedPos = 0;
+
+   private int                                        mSelectedPos = 0;
+   private int                                        mSize;
    private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
+
    public BingDialogOutAdapter(
-	   int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
-      super(layout, patientInfos);
-      this.patientInfos=patientInfos;
+	   int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos, int size) {
+	super(layout, patientInfos);
+	this.patientInfos = patientInfos;
+	this.mSize = size;
    }
+
    public int getCheckedPosition() {
 	return mSelectedPos;
    }
+
    @Override
    protected void convert(
 	   BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
-      if (mSelectedPos==0){
+	if (mSelectedPos == 0) {
 	   patientInfos.get(mSelectedPos).setSelected(true);
 	}
 	for (int i = 0; i < patientInfos.size(); i++) {
@@ -55,23 +53,19 @@ public class BingDialogOutAdapter
 		mSelectedPos = i;
 	   }
 	}
-//	if (helper.getAdapterPosition() % 2 == 0) {
-//	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_color);
-//	} else {
-	   ((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
-//	}
-	LinearLayout layout = (LinearLayout) helper.getView(R.id.seven_ll);
+	((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
-	mSeven_two = ((TextView) helper.getView(R.id.seven_two));
-	mSeven_three = ((TextView) helper.getView(R.id.seven_three));
-	mSeven_four = ((TextView) helper.getView(R.id.seven_four));
-	mSeven_five = ((TextView) helper.getView(R.id.seven_five));
-	mSeven_six = ((TextView) helper.getView(R.id.seven_six));
-	mSeven_two.setText(item.getPatientName());
-	mSeven_three.setText(item.getHisPatientId());
-	mSeven_four.setText(item.getSurgeryTime());
-	mSeven_five.setText(item.getDoctorName());
-	mSeven_six.setText(item.getRoomName());
+
+	helper.setText(R.id.seven_two, item.getPatientName())
+		.setText(R.id.seven_three, item.getHisPatientId())
+		.setText(R.id.seven_four, item.getSurgeryTime())
+		.setText(R.id.seven_five, item.getDoctorName())
+		.setText(R.id.seven_six, item.getRoomName());
+//	if (mSize == 8) {
+//	   helper.setText(R.id.seven_seven, item.getWardName());
+//	   helper.setText(R.id.seven_eight, item.getBedNo());
+//	}
+
 	mCheckBox.setOnCheckedChangeListener(null);
 	int position = helper.getAdapterPosition();
 	mCheckBox.setChecked(item.isSelected());

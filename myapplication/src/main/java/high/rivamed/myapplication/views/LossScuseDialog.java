@@ -36,8 +36,7 @@ import high.rivamed.myapplication.utils.UIUtils;
  */
 public class LossScuseDialog extends Dialog {
 
-   private static LossCauseAdapter sAdapter;
-   private static GridView        sGridView;
+
 
    public LossScuseDialog(Context context) {
 	super(context);
@@ -48,7 +47,8 @@ public class LossScuseDialog extends Dialog {
    }
 
    public static class Builder {
-
+	private  LossCauseAdapter sAdapter;
+	private  GridView        sGridView;
 	private Context         mContext;
 	private int             mNumColumn;
 	private int             mType;

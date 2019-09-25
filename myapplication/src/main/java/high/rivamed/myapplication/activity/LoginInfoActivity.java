@@ -482,7 +482,9 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    protected void onDestroy() {
 	super.onDestroy();
 	if (mBuilder!=null){
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder=null;
 	}

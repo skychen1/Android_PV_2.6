@@ -25,16 +25,20 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
     private TextView mSeven_five;
     private TextView mSeven_six;
     private TextView mSeven_seven;
+    private TextView mSeven_eight;
+    private TextView mSeven_nine;
     public int mSelectedPos;
     public String mDeptType;
+    public int mSize;
     private List<BingFindSchedulesBean.PatientInfoVos> patientInfos = new ArrayList<>();
 
 
     public BindTemporaryAdapter(
-            int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos,String mDeptType) {
+            int layout, List<BingFindSchedulesBean.PatientInfoVos> patientInfos,String mDeptType,int mSize) {
         super(layout, patientInfos);
         this.patientInfos = patientInfos;
         this.mDeptType = mDeptType;
+        this.mSize = mSize;
     }
 
     @Override
@@ -58,6 +62,10 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
+        if (mSize==9){
+            helper.setText(R.id.seven_eight, item.getWardName());
+            helper.setText(R.id.seven_nine, item.getBedNo());
+        }
         if (item.getSex()!=null){
             mSeven_two.setText(item.getPatientName()+" - "+item.getSex());
         }else {

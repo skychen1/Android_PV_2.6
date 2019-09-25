@@ -68,6 +68,7 @@ public class Constants {
     public static final String CONFIG_044 = "044";//启用前x位epc为y的过滤
     public static final String CONFIG_045 = "045";//启用后x位epc为y的过滤
     public static final String CONFIG_046 = "046";//启用查看未入库耗材
+    public static final String CONFIG_056 = "056";//启用查看手术排班患者病区床号
 
     public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
     public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水

@@ -319,7 +319,9 @@ public class ReciveBillFrag extends SimpleFragment {
                     if (!event.isMute) {
 			     MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
                         if (mBuilder != null) {
-                            mBuilder.mHandler.removeCallbacksAndMessages(null);
+                            if (mBuilder.mHandler!=null){
+                                mBuilder.mHandler.removeCallbacksAndMessages(null);
+                            }
                             mBuilder.mDialog.dismiss();
                             mBuilder = null;
                         }
@@ -366,7 +368,9 @@ public class ReciveBillFrag extends SimpleFragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (mBuilder != null) {
-            mBuilder.mHandler.removeCallbacksAndMessages(null);
+            if ( mBuilder.mHandler!=null){
+                mBuilder.mHandler.removeCallbacksAndMessages(null);
+            }
             mBuilder.mDialog.dismiss();
             mBuilder = null;
         }

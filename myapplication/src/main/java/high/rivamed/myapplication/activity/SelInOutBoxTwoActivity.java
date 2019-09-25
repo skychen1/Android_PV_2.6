@@ -266,7 +266,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (!event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   if (mBuildero != null) {
-		mBuildero.mHandler.removeCallbacksAndMessages(null);
+		if (mBuildero.mHandler!=null){
+		   mBuildero.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuildero.mDialog.dismiss();
 		mBuildero = null;
 	   }
@@ -323,7 +325,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	} else {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
-		mBuilder.mHandler.removeCallbacksAndMessages(null);
+		if (mBuilder.mHandler!=null){
+		   mBuilder.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuilder.mDialog.dismiss();
 	   }
 	}
@@ -374,7 +378,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		InventoryVo next = iterator.next();
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
-		   setTitleRightNum();
+//		   setTitleRightNum();
 		   mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 		   break;
 		}else {
@@ -1162,6 +1166,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    protected void onResume() {
 	mResume = true;
+	setTimeStart();
 	super.onResume();
    }
 
@@ -1196,12 +1201,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    protected void onPause() {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   if (mLoading.mHandler!=null){
+		mLoading.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 	mResume =false;
-	mStarts.cancel();
+	if (mStarts!=null){
+	   mStarts.cancel();
+	}
 	super.onPause();
    }
 
@@ -1382,19 +1391,25 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	super.onStop();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   if (mLoading.mHandler!=null){
+		mLoading.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
 	if (mBuildero != null) {
-	   mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuildero.mHandler!=null){
+		mBuildero.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuildero.mDialog.dismiss();
 	   mBuildero = null;
 
 	}
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}

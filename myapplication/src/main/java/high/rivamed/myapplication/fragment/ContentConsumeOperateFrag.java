@@ -83,6 +83,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -238,7 +239,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		if (mLoading != null) {
 		   mLoading.mAnimationDrawable.stop();
-		   mLoading.mHandler.removeCallbacksAndMessages(null);
+		   if (mLoading.mHandler!=null){
+			mLoading.mHandler.removeCallbacksAndMessages(null);
+		   }
 		   mLoading.mDialog.dismiss();
 		   mLoading = null;
 		}
@@ -264,7 +267,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   Log.i("outtccc", "关门的接收    " + mRbKey);
 	   if (mBuilder != null) {
-		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	      if (mBuilder.mHandler!=null){
+		   mBuilder.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuilder.mDialog.dismiss();
 		mBuilder = null;
 	   }
@@ -452,7 +457,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   if (mLoading.mHandler!=null){
+		mLoading.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
@@ -506,7 +513,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void initData() {
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   if (mLoading.mHandler!=null){
+		mLoading.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}
@@ -548,16 +557,15 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    //数据加载
    private void loadDate() {
-	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	LogUtils.i(TAG, "loadDate   " + string);
-	if (string != null) {
-	   mTbaseDevices.addAll(
-		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
-	} else {
-	   String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	   mTbaseDevices.addAll(mGson.fromJson(strings,
-							   new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
-	}
+//	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+//	LogUtils.i(TAG, "loadDate   " + string);
+//	if (string != null) {
+//	   mTbaseDevices.addAll(
+//		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+//	} else {
+	String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	mTbaseDevices.addAll(mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+//	}
 	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
 	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_010) &&
@@ -971,13 +979,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onStop() {
 	super.onStop();
 	if (mBuilder != null) {
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   mLoading.mHandler.removeCallbacksAndMessages(null);
+	   if (mLoading.mHandler!=null){
+		mLoading.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mLoading.mDialog.dismiss();
 	   mLoading = null;
 	}

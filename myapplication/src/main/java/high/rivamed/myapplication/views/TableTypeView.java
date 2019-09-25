@@ -188,7 +188,7 @@ public class TableTypeView extends LinearLayout {
                         mLinearLayout.addView(mHeadView);
                     }
                 } else if (mSize == SIX) {
-                    if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {
+                    if (mDialog != null && mDialog.equals(STYPE_DIALOG2)) {//所有在院患者Dialog
                         List<BingFindSchedulesBean.PatientInfoVos> patientInfos =(List<BingFindSchedulesBean.PatientInfoVos>) mObject;
                         mLayout = R.layout.item_dialog_six_layout;
                         mHeadView = mActivity.getLayoutInflater()
@@ -204,37 +204,7 @@ public class TableTypeView extends LinearLayout {
                         for (int i = 0; i < patientInfos.size(); i++) {
                             patientInfos.get(i).setSelected(false);
                         }
-                        if (patientInfos != null && patientInfos.size() > 1) {
-                            patientInfos.get(0).setSelected(true);
-                        }
-                        mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos);
-                        mHeadView.setBackgroundResource(R.color.bg_green);
-                        mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-                        mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-                        mRefreshLayout.setEnableAutoLoadMore(true);
-                        mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
-                        mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
-                        View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
-                        mBingOutAdapter.setEmptyView(inflate);
-                        mRecyclerview.setAdapter(mBingOutAdapter);
-                        mLinearLayout.addView(mHeadView);
-                    } else if (mDialog != null && mDialog.equals(STYPE_DIALOG2)) {//所有在院患者Dialog
-                        List<BingFindSchedulesBean.PatientInfoVos> patientInfos =(List<BingFindSchedulesBean.PatientInfoVos>) mObject;
-                        mLayout = R.layout.item_dialog_six_layout;
-                        mHeadView = mActivity.getLayoutInflater()
-                                .inflate(R.layout.item_dialog_six_title_layout,
-                                        (ViewGroup) mLinearLayout.getParent(), false);
-                        ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-                        ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-                        ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-                        ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-                        ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-                        ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-
-                        for (int i = 0; i < patientInfos.size(); i++) {
-                            patientInfos.get(i).setSelected(false);
-                        }
-                        mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos);
+                        mBingOutAdapter = new BingDialogOutAdapter(mLayout, patientInfos,mSize);
                         mHeadView.setBackgroundResource(R.color.bg_green);
                         mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -357,11 +327,10 @@ public class TableTypeView extends LinearLayout {
                         mSeven_five.setText(titeleList.get(4));
                         mSeven_six.setText(titeleList.get(5));
                         mSeven_seven.setText(titeleList.get(6));
-
                         if (mTempPatientAdapter != null) {
                             mTempPatientAdapter.notifyDataSetChanged();
                         } else {
-                            mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,mDeptType);
+                            mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,mDeptType,mSize);
                             mHeadView.setBackgroundResource(R.color.bg_green);
                             mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                             mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -498,6 +467,42 @@ public class TableTypeView extends LinearLayout {
                      mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
                      mRecyclerview.setAdapter(timelyProfitAdapter);
                      mLinearLayout.addView(mHeadView);
+                 }
+             }else if (mSize ==9){
+                 if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
+                     String mDeptType = SPUtils.getString(mContext, PATIENT_TYPE);
+                     List<BingFindSchedulesBean.PatientInfoVos> patientInfos =(List<BingFindSchedulesBean.PatientInfoVos>) mObject;
+                     mLayout = R.layout.item_temp_nine_layout;
+                     mHeadView = mActivity.getLayoutInflater()
+                           .inflate(R.layout.item_outbing_nine_title_layout,
+                                    (ViewGroup) mLinearLayout.getParent(), false);
+                     findId();
+                     mSeven_one.setText(titeleList.get(0));
+                     mSeven_two.setText(titeleList.get(1));
+                     mSeven_three.setText(titeleList.get(2));
+                     ((TextView)mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+                     ((TextView)mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
+                     mSeven_four.setText(titeleList.get(3));
+                     mSeven_five.setText(titeleList.get(4));
+                     mSeven_six.setText(titeleList.get(5));
+                     mSeven_seven.setText(titeleList.get(6));
+
+                     if (mTempPatientAdapter != null) {
+                         mTempPatientAdapter.notifyDataSetChanged();
+                     } else {
+                         mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,mDeptType,mSize);
+                         mHeadView.setBackgroundResource(R.color.bg_green);
+                         mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+                         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+                         mRefreshLayout.setEnableAutoLoadMore(true);
+                         mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
+                         mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+                         View inflate = LayoutInflater.from(mActivity).inflate(R.layout.recy_null, null);
+                         mTempPatientAdapter.setEmptyView(inflate);
+                         mRecyclerview.setAdapter(mTempPatientAdapter);
+                         mLinearLayout.addView(mHeadView);
+                         mTempPatientAdapter.notifyDataSetChanged();
+                     }
                  }
              }
                 break;

@@ -200,8 +200,10 @@ public class TimelyAllFrag extends SimpleFragment {
 	} else {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
+		if (mBuilder.mHandler!=null){
+		   mBuilder.mHandler.removeCallbacksAndMessages(null);
+		}
 		mBuilder.mDialog.dismiss();
-		mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   }
 	}
 	EventBusUtils.removeStickyEvent(Event.EventLoadingX.class);
@@ -841,8 +843,10 @@ public class TimelyAllFrag extends SimpleFragment {
 	super.onStop();
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
+	   if (mBuilder.mHandler!=null){
+		mBuilder.mHandler.removeCallbacksAndMessages(null);
+	   }
 	   mBuilder.mDialog.dismiss();
-	   mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   mBuilder=null;
 	}
 	cancel();

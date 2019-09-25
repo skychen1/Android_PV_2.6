@@ -88,8 +88,8 @@ public class LoadingDialogX extends Dialog {
 		   if (null != activitySRF && null != activitySRF.get() && !activitySRF.get().isFinishing()) {
 			if (mDialog != null && mDialog.isShowing()) {
 			   mLoading.stop();
-			   mDialog.dismiss();
 			   mHandler.removeCallbacksAndMessages(null);
+			   mDialog.dismiss();
 			}
 		   }
 		}
