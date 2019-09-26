@@ -966,6 +966,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			}
 			finish();
 		   }else {
+			ToastUtils.showShortToast("数据返回异常，请与实施联系！");
 			mTimelyLeft.setEnabled(true);
 			mTimelyRight.setEnabled(true);
 		   }
@@ -1160,6 +1161,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}else {
+		   ToastUtils.showShortToast("数据返回异常，请与实施联系！");
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		}
@@ -1266,6 +1268,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}else {
+		   ToastUtils.showShortToast("数据返回异常，请与实施联系！");
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		}
@@ -1321,6 +1324,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 		   finish();
 		}else {
+		   ToastUtils.showShortToast("数据返回异常，请与实施联系！");
 		   mTimelyLeft.setEnabled(true);
 		   mTimelyRight.setEnabled(true);
 		}

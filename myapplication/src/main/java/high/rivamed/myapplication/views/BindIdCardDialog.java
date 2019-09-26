@@ -19,10 +19,7 @@ import high.rivamed.myapplication.R;
 
 public class BindIdCardDialog extends Dialog {
 
-    private static LinearLayout mLlSuccess;
-    private static RelativeLayout mRlLoading;
-    private static TextView mTvIdNum;
-    private static TextView mTvError;
+
 
     public BindIdCardDialog(Context context) {
         super(context);
@@ -33,7 +30,10 @@ public class BindIdCardDialog extends Dialog {
     }
 
     public static class Builder {
-
+        private  LinearLayout mLlSuccess;
+        private  RelativeLayout mRlLoading;
+        private  TextView mTvIdNum;
+        private  TextView mTvError;
 
         private Context mContext;
         private String mMsgTwo;

@@ -39,7 +39,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 
 public class OnePassWordDialog extends Dialog {
 
-    private static Gson mGson;
+
 
     public OnePassWordDialog(Context context) {
         super(context);
@@ -51,7 +51,7 @@ public class OnePassWordDialog extends Dialog {
 
     public static class Builder {
 
-
+        private  Gson mGson;
         private Context mContext;
         private String mMsgTwo;
         private String mMsgText;
