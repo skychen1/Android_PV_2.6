@@ -644,9 +644,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    @Override
    protected void onPause() {
 	if (!mOnBtnGone) {
+	   Log.i("BaseSimpleActivity", "onPause  " );
 	   mStarts.cancel();
 	}
-	Log.i("outtccc", "onPause  OutBoxBi  " + mOperationType);
+
 	setFalseEnabled(false, false);
 	mPause = true;
 	super.onPause();
@@ -1374,11 +1375,13 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 
 		} else {
-		   Log.i("ffadef", "6666666666666666666666666");
-		   mTimelyOpenDoorRight.setEnabled(true);
-		   mTimelyStartBtnRight.setEnabled(true);
-		   setFalseEnabled(true, true);
-		   mTimelyNumberText.setVisibility(View.GONE);
+		   if (!mPause){
+			Log.i("ffadef", "6666666666666666666666666");
+			mTimelyOpenDoorRight.setEnabled(true);
+			mTimelyStartBtnRight.setEnabled(true);
+			setFalseEnabled(true, true);
+			mTimelyNumberText.setVisibility(View.GONE);
+		   }
 		}
 
 	   }
@@ -1458,6 +1461,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    @Override
    protected void onStop() {
 	super.onStop();
+	Log.i("ffadef", "onStop     " );
+	if (mStarts != null) {
+	   mStarts.cancel();
+	}
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
 	   if (mBuilder.mHandler != null) {

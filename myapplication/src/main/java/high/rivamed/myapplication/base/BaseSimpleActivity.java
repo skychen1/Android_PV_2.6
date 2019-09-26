@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -287,14 +288,13 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 
 	@Override
 	public void onFinish() {// 计时完毕时触发
-	   LogUtils.i(TAG, "onFinish     ");
 	   EventBusUtils.post(new Event.EventOverPut(true));
 
 	}
 
 	@Override
 	public void onTick(long millisUntilFinished) {// 计时过程显示
-	   LogUtils.i(TAG, "millisUntilFinished     " + millisUntilFinished);
+	   Log.i("ffadef", "millisUntilFinished     " + millisUntilFinished);
 	   if (millisUntilFinished / 1000 <= 35) {
 		textView.setText("确认并退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
 	   } else {
