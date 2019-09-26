@@ -191,6 +191,7 @@ public class ScanService extends Service {
 	   if (mListDevices != null) {
 		mListDevices.clear();
 	   }
+	   EventBusUtils.post(new Event.EventDoorV(false));
 	   return;
 	}
 	if (!event.type) {//门关了
@@ -207,10 +208,12 @@ public class ScanService extends Service {
 		mDoorStatusType = true;
 		mListDevices.clear();
 		mEthDevices.clear();
+		EventBusUtils.post(new Event.EventDoorV(true));
 	   }
 	   if (mListDevices == null) {
 		mListDevices = new ArrayList<>();
 		mDoorStatusType = true;
+		EventBusUtils.post(new Event.EventDoorV(true));
 	   }
 	   if (mDeviceSizeList == null) {
 		mDeviceSizeList = new ArrayList<>();

@@ -30,6 +30,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
@@ -64,11 +65,6 @@ public class LyDateUtils {
 
 		}
 	   }
-//	   for (int i = 0; i < size; i++) {
-//		if (epc==null||epc.equals("0")||vos.get(i).getEpc().equals(epc)) {
-//		   return true;
-//		}
-//	   }
 	}
 	return false;
    }
@@ -263,7 +259,7 @@ public class LyDateUtils {
 		   ReaderManager.getManager().startScan(device_id, READER_TIME);
 		}
 		setAllBoxVosDate(mBoxInventoryVos, box_id);
-		if (mObs != null) {
+		if (mObs != null&&mDoorStatusType) {
 		   mObs.removeVos();
 		}
 	   }

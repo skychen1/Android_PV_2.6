@@ -174,6 +174,7 @@ public class RxUtils {
 	}
 
 	public void removeVos() {
+
 	   inventoryVos.clear();
 	   mDev = null;
 	   sBox_id = "";

@@ -127,16 +127,16 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private              int                        mRows                = 20;
    int k = 0;
 
-   private       LoadingDialogX.Builder mBuilder;
+   private LoadingDialogX.Builder mBuilder;
 
-   private       String                 mIdNo                = "";
-   private       String                 mSurgeryTime         = "";
-   private       String                 mOperatingRoomNo     = "";
-   private       String                 mOperatingRoomNoName = "";
-   private       String                 mSex                 = "";
-   private       String                 mDeptId              = "";
-   private       boolean                mIsCreate            = false;
-   public static boolean                mOnBtnGone           = false;
+   private       String  mIdNo                = "";
+   private       String  mSurgeryTime         = "";
+   private       String  mOperatingRoomNo     = "";
+   private       String  mOperatingRoomNoName = "";
+   private       String  mSex                 = "";
+   private       String  mDeptId              = "";
+   private       boolean mIsCreate            = false;
+   public static boolean mOnBtnGone           = false;
    @BindView(R.id.timely_start_btn_right)
    TextView mTimelyStartBtnRight;
    @BindView(R.id.timely_open_door_right)
@@ -177,21 +177,22 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private String mClossEthId;
    private String mBindType;
 
-   private Handler                   mHandler;
-   private Runnable                  mRunnable;
-   private Runnable                  mRunnableW;
-   public  List<InventoryVo>         mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
-   private RxUtils.BaseEpcObservable mObs;
-   private InventoryDto              mDto             = new InventoryDto();
-   private InventoryVo               mPatientVo;
-   private int                       mLocalAllSize;
-   private String                    mEpc;
-   private OpenDoorDialog.Builder    mBuildero;
-   private int                       mAllSize;
-   private boolean                   mConfigType019;
-   private boolean                   mConfigType009;
-   private boolean                   mConfigType007;
+   private Handler                       mHandler;
+   private Runnable                      mRunnable;
+   private Runnable                      mRunnableW;
+   public  List<InventoryVo>             mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private RxUtils.BaseEpcObservable     mObs;
+   private InventoryDto                  mDto             = new InventoryDto();
+   private InventoryVo                   mPatientVo;
+   private int                           mLocalAllSize;
+   private String                        mEpc;
+   private OpenDoorDialog.Builder        mBuildero;
+   private int                           mAllSize;
+   private boolean                       mConfigType019;
+   private boolean                       mConfigType009;
+   private boolean                       mConfigType007;
    private List<BoxSizeBean.DevicesBean> mBoxsize;
+
    /**
     * 门锁的提示
     *
@@ -199,6 +200,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
+	Log.i("ttadrf", "event.isMute   "+event.isMute);
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   mTimelyOpenDoorRight.setEnabled(false);
@@ -212,7 +214,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
 	   startScan(mBoxInventoryVos, mObs, event.mEthId);
 	   if (mBuildero != null) {
-		if (mBuildero.mHandler!=null){
+		if (mBuildero.mHandler != null) {
 		   mBuildero.mHandler.removeCallbacksAndMessages(null);
 		}
 		mBuildero.mDialog.dismiss();
@@ -223,25 +225,25 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   setTitleRightNum();
 	}
 	setTimeStart();
-	EventBusUtils.removeStickyEvent(Event.PopupEvent.class);
    }
+
    /**
     * 门锁的状态检测回调
     *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onEventDoorStatus(Event.EventDoorStatus event) {
-	Log.i("EventDoorStatus", "EventDoorStatus"+event.type);
-	if (mBoxsize.size()>1){
-	   if (event.type) {//门没关
-		mDoorCloss.setVisibility(View.VISIBLE);
-	   }
-	   if (!event.type) {//门关了
+   public void onEventDoorStatus(Event.EventDoorV event) {
+	if (mBoxsize.size() > 1) {
+	   if (event.mBoolean) {//门关
 		mDoorCloss.setVisibility(View.GONE);
+	   }
+	   if (!event.mBoolean) {//门没关
+		mDoorCloss.setVisibility(View.VISIBLE);
 	   }
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventBing(Event.EventCheckbox event) {
 	mPatientVo = event.vo;
@@ -325,7 +327,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 	if (mLocalAllSize > 0) {
 	   mLocalAllSize--;
-	   mBuilder.setMsg(mLocalAllSize + "");
+	   if (mBuilder!=null){
+		mBuilder.setMsg(mLocalAllSize + "");
+	   }
 	}
 	mEpc = event.epc;
 	mHandler.postDelayed(new Runnable() {
@@ -346,7 +350,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		InventoryVo next = iterator.next();
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
-//		   setTitleRightNum();
+		   //		   setTitleRightNum();
 		   mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   break;
 		} else {
@@ -399,11 +403,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   for (InventoryVo b : mBoxInventoryVos) {
 		ArrayList<String> strings = new ArrayList<>();
 		strings.add(b.getCstCode());
-		if (!mConfigType019){
-		   if (mConfigType009 &&
-			 ((b.getPatientId() == null || b.getPatientId().equals("")) ||
-			  (b.getPatientName() == null || b.getPatientName().equals(""))) ||
-			 !mDoorStatusType) {
+		if (!mConfigType019) {
+		   if (mConfigType009 && ((b.getPatientId() == null || b.getPatientId().equals("")) ||
+						  (b.getPatientName() == null ||
+						   b.getPatientName().equals(""))) || !mDoorStatusType) {
 			mTimelyNumberText.setVisibility(View.VISIBLE);
 			setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 			LogUtils.i(TAG, "OutBoxBingActivityfffff   cancel");
@@ -428,25 +431,25 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {
-//	   if (UIUtils.getConfigType(mContext, CONFIG_019)) {
-//		for (InventoryVo b : mBoxInventoryVos) {
-//
-//		   int isErrorOperation = b.getIsErrorOperation();
-//		   int deleteCount = b.getDeleteCount();
-//		   if ((isErrorOperation == 1 && deleteCount == 0 && b.getExpireStatus() == 0) ||
-//			 !mDoorStatusType) {
-//			mTimelyNumberText.setVisibility(View.VISIBLE);
-//			setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
-//			Log.i(TAG, "OutBoxBingActivity   canE3333333cel");
-//			setFalseEnabled(false, false);
-//			return;
-//		   } else {
-//			Log.i(TAG, "OutBoxBingActivity   FDFDFDF");
-//			mTimelyNumberText.setVisibility(View.GONE);
-//			setFalseEnabled(true, false);
-//		   }
-//		}
-//	   }
+	   //	   if (UIUtils.getConfigType(mContext, CONFIG_019)) {
+	   //		for (InventoryVo b : mBoxInventoryVos) {
+	   //
+	   //		   int isErrorOperation = b.getIsErrorOperation();
+	   //		   int deleteCount = b.getDeleteCount();
+	   //		   if ((isErrorOperation == 1 && deleteCount == 0 && b.getExpireStatus() == 0) ||
+	   //			 !mDoorStatusType) {
+	   //			mTimelyNumberText.setVisibility(View.VISIBLE);
+	   //			setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
+	   //			Log.i(TAG, "OutBoxBingActivity   canE3333333cel");
+	   //			setFalseEnabled(false, false);
+	   //			return;
+	   //		   } else {
+	   //			Log.i(TAG, "OutBoxBingActivity   FDFDFDF");
+	   //			mTimelyNumberText.setVisibility(View.GONE);
+	   //			setFalseEnabled(true, false);
+	   //		   }
+	   //		}
+	   //	   }
 	}
    }
 
@@ -521,7 +524,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	EventBusUtils.register(this);
 	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	mBoxsize = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+	mBoxsize = mGson.fromJson(string,
+					  new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mConfigType019 = UIUtils.getConfigType(mContext, CONFIG_019);
 	mConfigType009 = UIUtils.getConfigType(mContext, CONFIG_009);
@@ -665,7 +669,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   R.id.timely_open_door_right, R.id.ly_bing_btn_right})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
-
 	   case R.id.timely_start_btn_right://重新扫描
 		if (mDoorStatusType) {
 		   if (mTimelyLeft != null && mTimelyRight != null && mStarts != null) {
@@ -679,7 +682,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mBoxInventoryVos.clear();
 		   mLocalAllSize = mAllSize;
 		   moreStartScan(mBoxInventoryVos, mObs);
-		}else {
+		} else {
 		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		}
 		break;
@@ -688,10 +691,12 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   if (mStarts != null) {
 			mStarts.cancel();
 		   }
+		   Log.i("ttadrf","timely_open_door_right   ");
 		   mLocalAllSize = mAllSize;
 		   mTimelyRight.setText("确认并退出登录");
 		   TimelyAllFrag.mPauseS = true;
 		   mBoxInventoryVos.clear();
+		   mObs.removeVos();
 		   stopScan();
 		   if (mConfigType009) {
 			mPatient = null;
@@ -1330,10 +1335,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   int operationStatus = b.getOperationStatus();
 	   if ((isErrorOperation == 1 && deleteCount == 0) ||
 		 (isErrorOperation == 1 && deleteCount == 0 && expireStatus == 0 &&
-		  mOperationType != 8) || ((mOperationType == 3 || mOperationType == 4) && mConfigType007 &&
-						   (patientName == null ||
-						    ((operationStatus == 7 || operationStatus == 99) &&
-						     patientName.equals("vr"))))) {
+		  mOperationType != 8) ||
+		 ((mOperationType == 3 || mOperationType == 4) && mConfigType007 &&
+		  (patientName == null ||
+		   ((operationStatus == 7 || operationStatus == 99) && patientName.equals("vr"))))) {
 		Log.i("ffadef", "1111111111111111");
 		if ((mOperationType == 8 && isErrorOperation == 1 && deleteCount == 0 &&
 		     expireStatus == 0) ||
@@ -1452,14 +1457,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	super.onStop();
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   if (mBuilder.mHandler!=null){
+	   if (mBuilder.mHandler != null) {
 		mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mBuilder.mDialog.dismiss();
 	   mBuilder = null;
 	}
 	if (mBuildero != null) {
-	   if (mBuildero.mHandler!=null){
+	   if (mBuildero.mHandler != null) {
 		mBuildero.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mBuildero.mDialog.dismiss();
@@ -1485,6 +1490,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	   mStarts = null;
 	}
+	mObs.removeVos();
 	mOnBtnGone = false;
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();

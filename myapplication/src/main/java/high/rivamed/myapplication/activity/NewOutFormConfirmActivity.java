@@ -345,11 +345,15 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_start_btn)) {
 		   return;
 		} else {
-		   mBoxInventoryVos.clear();
-		   mLocalAllSize = mAllSize;
-		   for (String deviceInventoryVo : mEthDeviceIdBack) {
-			String deviceCode = deviceInventoryVo;
-			startScan(mBoxInventoryVos, mObs, deviceCode);
+		   if (mDoorStatusType) {
+			mBoxInventoryVos.clear();
+			mLocalAllSize = mAllSize;
+			for (String deviceInventoryVo : mEthDeviceIdBack) {
+			   String deviceCode = deviceInventoryVo;
+			   startScan(mBoxInventoryVos, mObs, deviceCode);
+			}
+		   }else {
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
@@ -357,18 +361,27 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		if (UIUtils.isFastDoubleClick(R.id.timely_open_door)) {
 		   return;
 		} else {
-		   mBoxInventoryVos.clear();
-		   mLocalAllSize = mAllSize;
-		   reOpenDoor();
+		   if (mDoorStatusType) {
+			mBoxInventoryVos.clear();
+			mLocalAllSize = mAllSize;
+			mObs.removeVos();
+			reOpenDoor();
+		   }else {
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
+		   }
 		}
 		break;
 	   case R.id.activity_btn_one:
 		if (UIUtils.isFastDoubleClick(R.id.activity_btn_one)) {
 		   return;
 		} else {
-		   mDownBtnOne.setEnabled(false);
-		   sureTransReceiveOrder();
-		   setRemoveRunnable();
+		   if (mDoorStatusType) {
+			mDownBtnOne.setEnabled(false);
+			sureTransReceiveOrder();
+			setRemoveRunnable();
+		   }else {
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
+		   }
 		}
 		break;
 	   case R.id.ly_bing_btn:
@@ -718,6 +731,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mFindBillOrderBean.getDeviceIds().clear();
 	mFindBillOrderBean.getEpcs().clear();
 	mEthDeviceIdBack.clear();
+	mObs.removeVos();
 	RxUtils.getInstance().unRegister();
 	mHandler.removeCallbacksAndMessages(null);
 	if (mBuilder != null) {

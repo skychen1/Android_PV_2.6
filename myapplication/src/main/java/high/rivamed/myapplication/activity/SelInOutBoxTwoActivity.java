@@ -140,6 +140,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private String                       mClossEthId;
    private RxUtils.BaseEpcObservable    mObs;
    private InventoryDto                 mDto            = new InventoryDto();
+   private InventoryDto                 mDtoLossCounts            = new InventoryDto();
+   private List<DeviceInventoryVo>                 mDeviceInventoryVos            = new ArrayList<>();
    private Handler                      mHandler;
    private Runnable                     mRunnable;
    private Runnable                     mRunnableW;
@@ -284,13 +286,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onEventDoorStatus(Event.EventDoorStatus event) {
+   public void onEventDoorStatus(Event.EventDoorV event) {
 	if (mBoxsize.size()>1){
-	   if (event.type) {//门没关
-		mDoorCloss.setVisibility(View.VISIBLE);
-	   }
-	   if (!event.type) {//门关了
+	   if (event.mBoolean) {//门关
 		mDoorCloss.setVisibility(View.GONE);
+	   }
+	   if (!event.mBoolean) {//门没关
+		mDoorCloss.setVisibility(View.VISIBLE);
 	   }
 	}
    }
@@ -341,7 +343,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	if (mLocalAllSize>0){
 	   mLocalAllSize--;
-	   mBuilder.setMsg(mLocalAllSize+"");
+	   if (mBuilder!=null){
+		mBuilder.setMsg(mLocalAllSize + "");
+	   }
 	}
 	mEpc = event.epc;
 	if (mOperationType==2||mOperationType==7||mOperationType==10){
@@ -761,6 +765,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			setFalseEnabled(false);
 			mBoxInventoryVos.clear();
+			mObs.removeVos();
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			stopScan();
 			mLocalAllSize = mAllSize;
@@ -776,9 +781,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		break;
 	   case R.id.timely_inbox_list://查看入库统计（入库才有）
 		if (!UIUtils.isFastDoubleClick(R.id.timely_inbox_list)) {
-		   mFirstFinishLoading =false;
-		   mLastFinishLoading =false;
-		   mShowInBoxCountBuilder = DialogUtils.showInBoxCountDialog(mContext, mDto,mTimelyRight);
+		   if (mDoorStatusType) {
+			mFirstFinishLoading =false;
+			mLastFinishLoading =false;
+			Log.i("ttadrf","mDto   "+mGson.toJson(mDto));
+			mShowInBoxCountBuilder = DialogUtils.showInBoxCountDialog(mContext, mDto,mTimelyRight);
+		   }else {
+			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
+		   }
+
 
 		}
 	      break;
@@ -1425,7 +1436,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mStarts = null;
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();
-
+	mObs.removeVos();
 	RxUtils.getInstance().unRegister();
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();

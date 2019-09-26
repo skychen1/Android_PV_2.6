@@ -27,7 +27,6 @@ import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
-import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.activity.LoginActivity.mConfigType;
@@ -46,6 +45,7 @@ import static high.rivamed.myapplication.fragment.TimelyAllFrag.mTimelyOnResume;
 import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LoginUtils.getEpcFilte;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
+import static high.rivamed.myapplication.utils.StringUtils.getStringType;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -553,30 +553,20 @@ public class AllDeviceCallBack {
 	   public void onDoorOpened(String deviceIndentify, boolean success) {
 		//目前设备监控开门success有可能出现错误   都设置成true
 		getDoorStatus();
-		if (mEthDeviceIdBack.size() > 0) {
-		   for (String s : mEthDeviceIdBack) {
-			if (!deviceIndentify.equals(s)) {
-			   mEthDeviceIdBack.add(deviceIndentify);
-			}
-		   }
-		} else {
-		   mEthDeviceIdBack.add(deviceIndentify);
-		}
-		//筛选相同的锁
-		ArrayList<String> strings = StringUtils.removeDuplicteUsers(mEthDeviceIdBack);
-		for (String s : strings) {
-		   Log.i(TAG, "  开门strings     " + s);
-		}
-		mEthDeviceIdBack.clear();
-		mEthDeviceIdBack.addAll(strings);
-		mEthDeviceIdBack2.clear();
-		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
-		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
-		strings.clear();
 		if (success) {
 		   Log.i("outtccc", "柜门已开    " );
 		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceIndentify));
 		}
+		if (mEthDeviceIdBack.size() > 0) {
+		   if (!getStringType(mEthDeviceIdBack,deviceIndentify)){
+			mEthDeviceIdBack.add(deviceIndentify);
+		   }
+		} else {
+		   mEthDeviceIdBack.add(deviceIndentify);
+		}
+		mEthDeviceIdBack2.clear();
+		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
+		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 	   }
 
 	   @Override

@@ -12,6 +12,7 @@ import android.util.Log;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -350,5 +351,22 @@ public class StringUtils {
 //	   }
 //	}
 	return results;
+   }
+   /**
+    * 是否包含锁
+    *
+    * @return
+    */
+   public static boolean getStringType(ArrayList<String> vos, String DeviceId) {
+	if (vos != null) {
+	   Iterator<String> iterator = vos.iterator();
+	   while (iterator.hasNext()){
+		String next = iterator.next();
+		if (DeviceId.equals(next)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
    }
 }

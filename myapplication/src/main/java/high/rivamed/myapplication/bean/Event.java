@@ -23,7 +23,17 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+   /**
+    * 登录界面触发server
+    */
+   public static class EventDoorV {
 
+	public boolean mBoolean;
+
+	public EventDoorV(boolean mBoolean) {
+	   this.mBoolean = mBoolean;
+	}
+   }
    /**
     * 登录界面触发server
     */
