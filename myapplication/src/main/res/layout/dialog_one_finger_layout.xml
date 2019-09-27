@@ -59,7 +59,19 @@
             android:layout_alignParentBottom="true"
             android:src="@mipmap/hccz_ic_tx" />
     </RelativeLayout>
-
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="指纹采集异常\n请重试！"
+        android:textStyle="bold"
+        android:padding="@dimen/y4"
+        android:gravity="center"
+        android:background="@color/bg_greens"
+        android:textSize="@dimen/textsize_17"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:textColor="@color/color_red"/>
     <TextView
         android:id="@+id/dialog_right"
         android:layout_width="@dimen/x400"

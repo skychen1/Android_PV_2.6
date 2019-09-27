@@ -139,18 +139,22 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 										new OnfingerprintBackListener() {
 										   @Override
 										   public void OnfingerprintBack() {
-										    List<String> list =   new ArrayList<>();
-										    if (mFingerData!=null){
-											 list.add(mFingerData);
-										    }
-
-										      Log.i("fadeee","list.size()   "+list.size());
-											if (list.size() == 1) {
-											   bindFingerPrint(list);
-											} else {
-											   ToastUtils.showShort(
-												   "采集失败,请重试");
+										      if (mOneFingerDialog.mDialogBtn.getText().equals("重试")){
+											   setEth002FingerReg();
+											   mOneFingerDialog.mErrorText.setVisibility(View.GONE);
+											}else {
+											   List<String> list =   new ArrayList<>();
+											   if (mFingerData!=null){
+												list.add(mFingerData);
+											   }
+											   Log.i("fadeee","list.size()   "+list.size());
+											   if (list.size() == 1) {
+												bindFingerPrint(list);
+											   } else {
+												ToastUtils.showShort("采集失败,请重试");
+											   }
 											}
+											mOneFingerDialog.mDialog.dismiss();
 										   }
 										});
 	} else {
