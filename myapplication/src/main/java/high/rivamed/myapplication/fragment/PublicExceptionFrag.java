@@ -70,6 +70,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
+import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueDate;
 import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueUnKnownDate;
 
@@ -637,6 +638,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	List<inventoryUnNormalHandleVo.InventoryUnNormalHandleVosBean> vos = new ArrayList<>();
 	for (ExceptionRecordBean.RowsBean bean : trueDate) {
 	   inventoryUnNormalHandleVo.InventoryUnNormalHandleVosBean vosBean = new inventoryUnNormalHandleVo.InventoryUnNormalHandleVosBean();
+	   vosBean.setThingId(sThingCode);
 	   vosBean.setUnNormalId(bean.getUnNormalId());
 	   vosBean.setOperationStatue("7");
 	   vosBean.setOutStatue(type);
@@ -689,6 +691,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	   vosBean.setUnNormalId(bean.getUnNormalId());
 	   vosBean.setOperationStatue("1");
 	   vosBean.setRemoveStatue(type);
+	   vosBean.setThingId(sThingCode);
 	   vos.add(vosBean);
 	}
 	handleVo.setInventoryUnNormalHandleVos(vos);
@@ -713,6 +716,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 								    vosBean.setUnNormalId(bean.getUnNormalId());
 								    vosBean.setOperatorName(operator.getName());
 								    vosBean.setOperatorId(operator.getAccountId());
+								    vosBean.setThingId(sThingCode);
 								    handleVos.add(vosBean);
 								 }
 								 knowHandleVo.setUnKnowHandleVos(handleVos);
