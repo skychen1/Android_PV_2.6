@@ -34,6 +34,15 @@ public class UnKnowHandleVo implements Serializable{
 	private String operatorId;
 	private String operatorName;
 	private String unNormalId;
+	private String thingId;
+
+	public String getThingId() {
+	   return thingId;
+	}
+
+	public void setThingId(String thingId) {
+	   this.thingId = thingId;
+	}
 
 	public String getOperatorId() { return operatorId;}
 
