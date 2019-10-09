@@ -31,6 +31,15 @@ public class LoginResultBean implements Serializable {
     private String               loginTime;
     private String               patientType;//2,3手术，1是非手术
     private AccessTokenBean      accessToken;
+    private List<HomeAuthorityMenuBean>     menuVos;
+
+    public List<HomeAuthorityMenuBean> getMenuVos() {
+        return menuVos;
+    }
+
+    public void setMenuVos(List<HomeAuthorityMenuBean> menuVos) {
+        this.menuVos = menuVos;
+    }
 
     public String getPatientType() {
         return patientType;

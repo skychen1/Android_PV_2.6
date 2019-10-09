@@ -8,8 +8,7 @@ import android.net.Network;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import org.androidpn.utils.XmppEvent;
-
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -64,11 +63,11 @@ public class NetWorkReceiver extends BroadcastReceiver {
 		//获取ConnectivityManager对象对应的NetworkInfo对象
 		NetworkInfo networkInfo = connMgr.getNetworkInfo(networks[i]);
 //		Toast.makeText(context, "成功", Toast.LENGTH_SHORT).show();
-		EventBusUtils.post(new XmppEvent.XmmppConnect(mTitleConn,true));
+		EventBusUtils.post(new Event.XmmppConnect(mTitleConn, true));
 	   }
 	   if (networks.length==0){
 //		Toast.makeText(context, "失败", Toast.LENGTH_SHORT).show();
-		EventBusUtils.post(new XmppEvent.XmmppConnect(mTitleConn,false));
+		EventBusUtils.post(new Event.XmmppConnect(mTitleConn,false));
 	   }
 
 	}

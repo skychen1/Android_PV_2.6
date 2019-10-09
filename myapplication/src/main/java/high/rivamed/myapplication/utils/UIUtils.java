@@ -35,8 +35,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 
-import org.androidpn.utils.XmppEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +43,7 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
@@ -435,9 +434,9 @@ public class UIUtils {
 			   PendingTaskBean emergencyBean = sGson.fromJson(result, PendingTaskBean.class);
 			   int size = emergencyBean.getMessages().size();
 			   if (emergencyBean.getMessages().size() == 0) {
-				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
+				EventBusUtils.post(new Event.EventPushMessageNum(size));
 			   } else {
-				EventBusUtils.post(new XmppEvent.EventPushMessageNum(size));
+				EventBusUtils.post(new Event.EventPushMessageNum(size));
 			   }
 			} catch (JsonSyntaxException e) {
 

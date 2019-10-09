@@ -93,7 +93,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    private String mUserId = "";
    private       LoginResultBean.AppAccountInfoVoBean mAppAccountInfoVo;
    public int                                  mIsWaidai;
-	private boolean isTakeFacePhoto;
 
 	@Override
    public void initDataAndEvent(Bundle savedInstanceState) {
@@ -119,19 +118,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	}
 	initData();
    }
-
-   @Override
-   protected void onPause() {
-	super.onPause();
-	if (!isTakeFacePhoto)
-	finish();
-   }
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		isTakeFacePhoto = false;
-	}
 
 	private void initData() {
 	try {
@@ -409,7 +395,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 				faceImagePath = "";
 				int type = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS, GlobalFaceTypeModel.TYPE_NO_LIVENSS);
 				if (type == GlobalFaceTypeModel.TYPE_NO_LIVENSS || type == GlobalFaceTypeModel.TYPE_RGB_LIVENSS) {
-					isTakeFacePhoto=true;
 					FaceManager.getManager().getFacePicture(LoginInfoActivity.this, SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID)+".jpg");
 				}
 			}

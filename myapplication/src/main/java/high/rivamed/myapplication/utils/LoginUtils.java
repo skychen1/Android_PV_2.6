@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
@@ -40,7 +39,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
@@ -86,7 +84,8 @@ public class LoginUtils {
                         ConfigBean configBean = new Gson().fromJson(result, ConfigBean.class);
                         List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
 //                    if (tCstConfigVos.size()!=0){
-                        getUpDateVer(mContext, tCstConfigVos, callback);
+                        loginEnjoin(tCstConfigVos, true, callback);
+//                        getUpDateVer(mContext, tCstConfigVos, callback);
 //                    }else {
 //                        ToastUtils.showShortToast("请先在管理端对配置项进行设置，后进行登录！");
 //                    }
@@ -129,7 +128,7 @@ public class LoginUtils {
     /**
      * 检测版本更新
      */
-    public static void getUpDateVer(Activity mContext, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, LoginCallback callback) {
+    public static void getUpDateVer(Activity mContext) {
         if (mTitleConn) {
             NetRequest.getInstance().checkVer(mContext, new BaseResult() {
                 @Override
@@ -142,23 +141,23 @@ public class LoginUtils {
                         String netVersion = versionBean.getSystemVersion().getVersion();
                         if (netVersion != null && 1 == StringUtils.compareVersion(netVersion, localVersion)) {
                             String mDesc = versionBean.getSystemVersion().getDescription();
-                            showUpdateDialog(mContext, tCstConfigVos, mDesc, callback);
+                            showUpdateDialog(mContext,mDesc);
                         } else {
                             // 不需要更新
-                            loginEnjoin(tCstConfigVos, true, callback);
+//                            loginEnjoin(tCstConfigVos, true);
                         }
                     } else {
-                        loginEnjoin(tCstConfigVos, true, callback);
+//                        loginEnjoin(tCstConfigVos, true);
                     }
                 }
 
                 @Override
                 public void onError(String result) {
-                    loginEnjoin(tCstConfigVos, true, callback);
+//                    loginEnjoin(tCstConfigVos, true);
                 }
             });
         }else {
-            loginEnjoin(tCstConfigVos, false, callback);
+//            loginEnjoin(tCstConfigVos, false, callback);
         }
     }
 
@@ -227,7 +226,8 @@ public class LoginUtils {
 
 //		App.initPush(loginResultBean.getAppAccountInfoVo().getAccountId());
                 //获取权限菜单数据
-                getAuthorityMenu(activity, mGson, callback);
+                List<HomeAuthorityMenuBean> menuVos = loginResultBean.getMenuVos();
+                getAuthorityMenu(menuVos,activity, mGson, callback);
 
             } else {
                 if (callback != null)
@@ -283,25 +283,10 @@ public class LoginUtils {
     /**
      * 获取权限菜单
      */
-    private static void getAuthorityMenu(Activity activity, Gson mGson, MenuCallback callback) {
-        NetRequest.getInstance().getAuthorityMenu(getAppContext(), new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                LogUtils.i("Login", "getAuthorityMenu  " + result);
-                SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE, result);
-                List<HomeAuthorityMenuBean> fromJson = mGson.fromJson(result,
-                        new TypeToken<List<HomeAuthorityMenuBean>>() {}.getType());
-                //检测权限菜单和首页跳转
-                setMenuDateAndStart(fromJson, mGson, activity, callback);
-            }
-
-            @Override
-            public void onError(String result) {
-                EventBusUtils.postSticky(new Event.EventLoading(false));
-                if (callback != null)
-                    callback.onMenu(false);
-            }
-        });
+    private static void getAuthorityMenu(List<HomeAuthorityMenuBean> menuVos,Activity activity, Gson mGson, MenuCallback callback) {
+        SPUtils.putString(UIUtils.getContext(), SAVE_MENU_LEFT_TYPE,  mGson.toJson(menuVos));
+        //检测权限菜单和首页跳转
+        setMenuDateAndStart(menuVos, mGson, activity, callback);
     }
 
     /**
@@ -358,18 +343,18 @@ public class LoginUtils {
     /**
      * apk更新的dialog
      */
-    private static void showUpdateDialog(Activity mContext, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, String mDesc, LoginCallback callback) {
+    private static void showUpdateDialog(Activity mContext, String mDesc) {
         UpDateDialog.Builder builder = new UpDateDialog.Builder(mContext);
         builder.setTitle(UIUtils.getString(R.string.ver_title));
         builder.setMsg(mDesc);
         builder.setLeft(UIUtils.getString(R.string.ver_cancel), (dialog, i) -> {
             //取消
-            loginEnjoin(tCstConfigVos, true, callback);
+//            loginEnjoin(tCstConfigVos, true, callback);
             dialog.dismiss();
         });
         builder.setRight(UIUtils.getString(R.string.ver_ok), (dialog, i) -> {
             //更新
-            downloadNewVersion(mContext, tCstConfigVos, callback);//未下载就开始下载
+            downloadNewVersion(mContext);//未下载就开始下载
             dialog.dismiss();
         });
 
@@ -379,7 +364,7 @@ public class LoginUtils {
     /**
      * apk下载进度条
      */
-    private static void downloadNewVersion(Activity mContext, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, LoginCallback callback) {
+    private static void downloadNewVersion(Activity mContext) {
         // 1.显示进度的dialog
         ProgressDialog mDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
         mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -387,13 +372,13 @@ public class LoginUtils {
         mDialog.setMax(100);
         mDialog.show();
 
-        loadUpDataVersion(mContext, mDialog, tCstConfigVos, callback);
+        loadUpDataVersion(mContext, mDialog);
     }
 
     /**
      * apk下载
      */
-    private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog, List<ConfigBean.ThingConfigVosBean> tCstConfigVos, LoginCallback callback) {
+    private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog) {
         OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(mContext)//
                 .params("systemType", SYSTEMTYPE)
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
@@ -417,7 +402,7 @@ public class LoginUtils {
                         Log.i("responses",""+response.body());
                         ToastUtils.showShort(R.string.connection_fails);
                         mDialog.dismiss();
-                        loginEnjoin(tCstConfigVos, true, callback);
+//                        loginEnjoin(tCstConfigVos, true);
                     }
                 });
 

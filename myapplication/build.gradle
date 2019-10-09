@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "2.6.8.1.29"
+        versionName "2.6.9.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 //        ndk {
@@ -103,12 +103,10 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.0'
     //数据库
     implementation 'org.litepal.android:core:2.0.0'
-    implementation project(path: ':devices')
     //侧滑
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation "com.github.bumptech.glide:glide:3.7.0"
     //推送
-    implementation project(':androidpnclient')
     implementation project(':libeth002')
     implementation project(':libreader')
     //人脸识别

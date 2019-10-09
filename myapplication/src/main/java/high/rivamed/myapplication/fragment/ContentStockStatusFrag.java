@@ -68,6 +68,7 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 	initListener();
    }
 
+
    private void initData() {
 
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);

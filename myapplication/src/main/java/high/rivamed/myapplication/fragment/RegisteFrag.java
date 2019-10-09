@@ -207,7 +207,9 @@ public class RegisteFrag extends SimpleFragment {
 		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
 		if (devices.size() > 1) {
 		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-		   tbaseDevicesBean.setDeviceName("全部开柜");
+//		   tbaseDevicesBean.setDeviceName("全部开柜");
+		   tbaseDevicesBean.setDeviceName("全部");
+		   tbaseDevicesBean.setDeviceId("");
 		   devices.add(0, tbaseDevicesBean);
 		}
 		SPUtils.putString(mAppContext, BOX_SIZE_DATE, gson.toJson(devices));
@@ -251,7 +253,7 @@ public class RegisteFrag extends SimpleFragment {
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 				mSnRecoverBean.getThingSnVo().getSthName());
 	SPUtils.putString(UIUtils.getContext(), THING_CODE, mSnRecoverBean.getThing().getThingId());
-
+	SPUtils.putString(UIUtils.getContext(), SN_NUMBER, mSnRecoverBean.getThing().getSn());
 	mFragRegisteRight.setEnabled(false);
 	if (mSmallAdapter != null && mSmallAdapter.mRightDelete != null) {
 	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
@@ -715,8 +717,7 @@ public class RegisteFrag extends SimpleFragment {
 				public void onSucceed(String result) {
 				   LogUtils.i(TAG, "result   " + result);
 				   ToastUtils.showShortToast("服务器已连接成功！");
-				   LogUtils.i(TAG,
-						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+				   LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 
 				   mNameBean = mGson.fromJson(result, DeviceNameBeanX.class);
 				   mNameList = mNameBean.getDeviceDictVos();

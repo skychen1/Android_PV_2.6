@@ -34,8 +34,12 @@ public class HomeFastOpenAdapter
    @Override
    protected void convert(BaseViewHolder helper, BoxSizeBean.DevicesBean item) {
 	findId(helper);
-
+	if (item.getDeviceName().equals("全部")){
+	   mFastopenTitle.setText(item.getDeviceName()+"开柜");
+	}else {
 	   mFastopenTitle.setText(item.getDeviceName());
+	}
+
    }
 
    private void findId(BaseViewHolder helper) {

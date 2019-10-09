@@ -163,11 +163,11 @@ public class RunWatePagerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	LogUtils.i(TAG, "START2   " + event.type+"    mSearchTimeStart   "+(mSearchTimeStart != null));
 	if (event.type.equals("START2") && mSearchTimeStart != null) {
 	   mSearchTimeStart.setText("");
 	   mSearchTimeEnd.setText("");
 	   initDate();
+	   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	}
    }
 
@@ -222,11 +222,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	String[] array = mContext.getResources().getStringArray(R.array.nine_runwate_arrays);
 	titeleList = Arrays.asList(array);
 	initAdapter();
-	//	loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	loadDate(mDeviceCode);
-
-
-
    }
 
    private void initAdapter() {
@@ -264,6 +260,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
+		LogUtils.i("ok", "mRefreshLayout");
 		PAGE = 1;
 		mRefreshLayout.setNoMoreData(false);
 		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
@@ -276,6 +273,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
 	   @Override
 	   public void onLoadMore(RefreshLayout refreshLayout) {
+		LogUtils.i("ok", "mRefreshLayout");
 		if (hasNextPage) {
 		   PAGE++;
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
@@ -298,7 +296,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-		if (mEndTime != null) {
+		if (mEndTime != null&&!mEndTime.equals("")) {
 		   PAGE =1 ;
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		}
@@ -317,7 +315,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-		if (mStartTime != null) {
+		if (mStartTime != null&&!mStartTime.equals("")) {
 		   PAGE =1 ;
 		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 		}
@@ -345,6 +343,7 @@ public class RunWatePagerFrag extends SimpleFragment {
    }
 
    private void loadDate(String mDeviceCode) {
+
 	mSearchTypeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {

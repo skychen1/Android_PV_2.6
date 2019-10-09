@@ -59,11 +59,11 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.MyInfoActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.LoginInfoActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".activity.TimelyLossActivity"

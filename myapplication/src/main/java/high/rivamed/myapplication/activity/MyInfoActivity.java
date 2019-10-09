@@ -66,11 +66,7 @@ public class MyInfoActivity extends BaseSimpleActivity {
         }
         initData();
     }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
+
     private void initData() {
         try {
             String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");

@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.gson.reflect.TypeToken;
+
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.List;
@@ -17,11 +19,10 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
-import high.rivamed.myapplication.views.LoadingDialog;
 
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
 
 /**
@@ -63,31 +64,14 @@ public class StockRightUnconfFrag extends SimpleFragment {
     }
 
     public void getRightDate() {
-        NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                //            mBuilder.mDialog.dismiss();
-                BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                mTbaseDevices = boxSizeBean.getDevices();
-                if (mTbaseDevices != null) {
-                    onSucceedDate();
-                }
-            }
-
-            @Override
-            public void onError(String result) {
-                //            mBuilder.mDialog.dismiss();
-            }
-        });
+        String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+        mTbaseDevices = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+        if (mTbaseDevices != null) {
+            onSucceedDate();
+        }
     }
 
     private void onSucceedDate() {
-        if (mTbaseDevices.size() > 1) {
-            BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
-            devicesBean1.setDeviceName("全部");
-            devicesBean1.setDeviceId("");
-            mTbaseDevices.add(0, devicesBean1);
-        }
         mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
         mCttimecheckViewpager.setAdapter(mPagerAdapter);
         mCttimecheckViewpager.setCurrentItem(0);

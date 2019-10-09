@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
+
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.List;
@@ -15,10 +17,10 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
 
 /**
@@ -47,27 +49,14 @@ public class ExceptionDealFrag extends SimpleFragment {
     }
 
     public void getBoxData() {
-        //加载柜子数据
-        NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-//		mBuilder.mDialog.dismiss();
-                BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                mTbaseDevices = boxSizeBean.getDevices();
-                if (mTbaseDevices != null) {
-                    onSucceedData();
-                }
-            }
-        });
+        String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+        mTbaseDevices = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+        if (mTbaseDevices != null) {
+            onSucceedData();
+        }
     }
 
     private void onSucceedData() {
-        if (mTbaseDevices.size() > 1) {
-            BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
-            devicesBean1.setDeviceName("全部");
-            devicesBean1.setDeviceId("");
-            mTbaseDevices.add(0, devicesBean1);
-        }
         if (!isAdded()) return;
         mPagerAdapter = new ExceptionLeftPagerAdapter(getChildFragmentManager());
         ecptDealViewpager.setAdapter(mPagerAdapter);

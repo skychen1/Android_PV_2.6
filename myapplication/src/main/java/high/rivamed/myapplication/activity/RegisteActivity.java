@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
-import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -21,6 +20,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.fragment.RegisteFaceFrag;
 import high.rivamed.myapplication.fragment.RegisteFrag;
 import high.rivamed.myapplication.fragment.RegisteLockFrag;
@@ -71,7 +71,7 @@ public class RegisteActivity extends SimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+   public void onTitleConnEvent(Event.XmmppConnect event) {
 //	Log.e("xxb", "RegisteActivity     " + event.connect);
 	mTitleConn = event.connect;
 	selTitleIcon();

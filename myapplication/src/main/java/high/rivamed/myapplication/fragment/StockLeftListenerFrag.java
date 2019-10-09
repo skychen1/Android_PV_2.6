@@ -93,7 +93,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "START3 fafafa  " );
-	getLeftDate();
+//	getLeftDate();
    }
 
 
@@ -105,6 +105,12 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		mLeftTopBean = mGson.fromJson(result, SocketLeftTopBean.class);
 		if (mLeftTopBean != null) {
 		   onSucceedDate();
+		   mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
+		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+		   mCttimecheckViewpager.setCurrentItem(0);
+		   mCttimecheckViewpager.setOffscreenPageLimit(6);
+		   //	   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
+		   UIUtils.initPvTabLayout2(mCstExpirationVos, mCttimecheckViewpager, mCttimeCheck_Rg);
 		}
 	   }
 
@@ -146,13 +152,6 @@ public class StockLeftListenerFrag extends SimpleFragment {
 		manager.beginTransaction().replace(R.id.home_stock_viewpager, inforFrag).commit();
 	   }
 	});
-	   mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
-	   mCttimecheckViewpager.setAdapter(mPagerAdapter);
-	   mCttimecheckViewpager.setCurrentItem(0);
-	   mCttimecheckViewpager.setOffscreenPageLimit(6);
-//	   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);
-	UIUtils.initPvTabLayout2(mCstExpirationVos, mCttimecheckViewpager, mCttimeCheck_Rg);
-
    }
 
    @Override

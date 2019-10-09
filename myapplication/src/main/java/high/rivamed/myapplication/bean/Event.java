@@ -24,6 +24,31 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
+    * 页面顶部的连接状态改变
+    */
+   public static class EventPushMessageNum {
+	public int num;
+
+	public EventPushMessageNum(int num) {
+	   this.num = num;
+	}
+   }
+   /**
+    * 连接状态
+    */
+   public static class XmmppConnect {
+	public boolean connect;
+	public boolean net;
+
+	public XmmppConnect(boolean connect) {
+	   this.connect = connect;
+	}
+	public XmmppConnect(boolean connect, boolean net) {
+	   this.connect = connect;
+	   this.net = net;
+	}
+   }
+   /**
     * 登录界面触发server
     */
    public static class EventDoorV {

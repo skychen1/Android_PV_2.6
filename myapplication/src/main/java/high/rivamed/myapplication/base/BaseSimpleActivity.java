@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.androidpn.utils.XmppEvent;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -108,7 +108,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+   public void onTitleConnEvent(Event.XmmppConnect event) {
 	mTitleConn = event.connect;
 	selTitleIcon();
 	hasNetWork(mTitleConn,event.net);
@@ -120,7 +120,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
+   public void onEventIfHaveMessage(Event.EventPushMessageNum event) {
 	if (event.num > 0) {
 	   mTitleMsg = true;
 	   if (mBaseTabBtnMsg != null) {

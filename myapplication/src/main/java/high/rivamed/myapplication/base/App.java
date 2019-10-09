@@ -19,7 +19,6 @@ import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
 import com.squareup.leakcanary.LeakCanary;
 
-import org.androidpn.client.ServiceManager;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
@@ -35,13 +34,11 @@ import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
 import high.rivamed.myapplication.utils.SPUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
 import static high.rivamed.myapplication.cont.Constants.READER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 
 //import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
@@ -62,7 +59,6 @@ public class App extends Application {
    public static String         MAIN_URL        = null;
    public static boolean        mTitleConn      = false;
    public static boolean        mTitleMsg       = false;
-   public static ServiceManager mServiceManager = null;
    public static Context mAppContext;
    public static DisplayMetrics mDm;
    public static synchronized App getInstance() {
@@ -112,14 +108,6 @@ public class App extends Application {
 	}
    }
 
-   public static void initPush(String id) {
-	if (id != null) {
-	   mServiceManager = new ServiceManager(UIUtils.getContext());
-	   mServiceManager.init("CC39A99BD90D179F",
-					SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP_TEXT), "5222");
-	   mServiceManager.startService(id);
-	}
-   }
 
    public void registDevice() {
 

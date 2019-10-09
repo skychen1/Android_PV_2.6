@@ -8,8 +8,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
-import org.androidpn.utils.XmppEvent;
-
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.receiver.AlarmReceiver;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -52,11 +51,11 @@ public class TimerService extends Service {
 		   Log.i("Avalible", "byPing:" + byPing);
 		   if (byPing) {
 			if (!mTitleConn){
-			   EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+			   EventBusUtils.post(new Event.XmmppConnect(true));
 			}
 		   } else {
 			if (mTitleConn){
-			   EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+			   EventBusUtils.post(new Event.XmmppConnect(false));
 			}
 		   }
 		}

@@ -376,7 +376,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   },600);
 	}
 	if (getVosType2(mBoxInventoryVos, event.epc,mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
-
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()){
 		InventoryVo next = iterator.next();

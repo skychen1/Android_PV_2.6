@@ -34,6 +34,7 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.StockMidTypeActivity;
 import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
+import high.rivamed.myapplication.adapter.StockMiddleRgAdapter;
 import high.rivamed.myapplication.adapter.StockRightAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
@@ -68,7 +69,7 @@ public class PublicStockFrag extends SimpleFragment {
    private static final String TYPE_PAGE  = "TYPE_PAGE";
    private static final String DEVICECODE = "DEVICECODE";
    private static final int    FIVE       = 5;
-   private static final int    NINE      = 9;
+   private static final int    NINE       = 9;
    private static final String TAG        = "PublicStockFrag";
    @BindView(R.id.timely_reality2)
    TextView           mTimelyReality2;
@@ -87,29 +88,28 @@ public class PublicStockFrag extends SimpleFragment {
    @BindView(R.id.right_top)
    LinearLayout       mRightTop;
    @BindView(R.id.stock_right_btn)
-   LinearLayout   mStockRightLL;
+   LinearLayout       mStockRightLL;
    @BindView(R.id.public_rl)
-   RelativeLayout mPublicRl;
+   RelativeLayout     mPublicRl;
    @BindView(R.id.stock_left_zhengchang)
-   RadioButton    mStockLeftZhengchang;
+   RadioButton        mStockLeftZhengchang;
    @BindView(R.id.stock_left_rg)
-   RadioGroup     mStockLeftRg;
+   RadioGroup         mStockLeftRg;
    @BindView(R.id.stock_timely_ll)
-   RelativeLayout mStockTimelyLl;
+   RelativeLayout     mStockTimelyLl;
 
-   private int          mSize; //假数据 举例6个横向格子
-   private View         mHeadView;
-   private int          mLayout;
-   private int          mType_size;
-   private String       mType_page;
-   private String       mDeviceCode;
-   private InventoryDto mLeftDownBean;
+   private int    mSize; //假数据 举例6个横向格子
+   private View   mHeadView;
+   private int    mLayout;
+   private int    mType_size;
+   private String mType_page;
+   private String mDeviceCode;
    List<String> titeleList = null;
    private int                  mStopFlag;
    private InventoryDto         mInventoryDto;
    private List<InventoryVo>    mInventoryVos;
    private List<InventoryVo>    mInventoryVosS;
-   public  StockLeftDownAdapter mDownAdapter;
+   public  StockMiddleRgAdapter mDownAdapter;
    private String               mTrim;
    private List<InventoryVo>    mTCstStockRightList;
    private StockRightAdapter    mRightAdapter;
@@ -124,7 +124,7 @@ public class PublicStockFrag extends SimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START3")) {
 	   Log.i("ccc", "START3:  " + mDeviceCode);
-	   initData();
+//	   initData();
 	}
    }
 
@@ -150,7 +150,7 @@ public class PublicStockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-//	EventBusUtils.register(this);
+	//	EventBusUtils.register(this);
 	Bundle arguments = getArguments();
 	mType_size = arguments.getInt(TYPE_SIZE);//假数据   用来判断数据长度  表格的列表
 	mType_page = arguments.getString(TYPE_PAGE);
@@ -173,7 +173,9 @@ public class PublicStockFrag extends SimpleFragment {
 		mStockTimelyLl.setVisibility(View.VISIBLE);
 		mRightTop.setVisibility(View.GONE);
 		mStockLeftRg.check(R.id.stock_left_all);
-		getMiddleDate(mDeviceCode, mSearchEts);
+		initMiddleView();
+//		getMiddleDate(mDeviceCode, mSearchEts);
+		LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
 		mSearchEts.addTextChangedListener(new TextWatcher() {
 		   @Override
 		   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -222,6 +224,7 @@ public class PublicStockFrag extends SimpleFragment {
 		});
 	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {
 		mPublicRl.setVisibility(View.GONE);
+		initLeftDownView();
 		getLeftDownDate(mDeviceCode);
 	   }
 	} else if (mType_size == NINE && mType_page.equals(STYPE_STOCK_RIGHT)) {
@@ -254,26 +257,97 @@ public class PublicStockFrag extends SimpleFragment {
 
 		   }
 		});
-//		mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//		   @Override
-//		   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//			if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//			   mTrim = mSearchEt.getText().toString().trim();
-//
-//			   Toast.makeText(mContext, mTrim, Toast.LENGTH_SHORT).show();
-//			   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-//			   loadStockRightDate(mDeviceCode, mTrim);
-//			   return true;
-//			}
-//			return false;
-//		   }
-//		});
-
 	   } else {
-	   mStockRightLL.setVisibility(View.GONE);
-	   mPublicRl.setVisibility(View.GONE);
+		mStockRightLL.setVisibility(View.GONE);
+		mPublicRl.setVisibility(View.GONE);
+	   }
 	}
-	}
+   }
+
+   private void initMiddleView() {
+	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mTimelyReality2.setVisibility(View.VISIBLE);
+	mStockLeftZhengchang.setVisibility(View.GONE);
+	mStopFlag = -1;
+
+	mLayout = R.layout.item_stockmid_five_layout;
+	   mHeadView = LayoutInflater.from(_mActivity)
+		   .inflate(R.layout.item_stockmid_five_title_layout,
+				(ViewGroup) mLinearLayout.getParent(), false);
+	   ((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	   ((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	   ((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	   ((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	   ((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	   mInventoryVos = new ArrayList<>();
+	   mDownAdapter = new StockMiddleRgAdapter(mLayout, mInventoryVos, mSize);
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mHeadView.setBackgroundResource(R.color.bg_green);
+	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	   mRefreshLayout.setEnableAutoLoadMore(false);
+	   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	   View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	   mDownAdapter.setEmptyView(inflate);
+	   mRecyclerview.setAdapter(mDownAdapter);
+	   mLinearLayout.addView(mHeadView);
+	   mDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+		@Override
+		public void onItemClick(
+			BaseQuickAdapter adapter, View view, int position) {
+		   mContext.startActivity(
+			   new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus",
+													 mStopFlag));
+		   InventoryVo inventoryVo = mInventoryVos.get(position);
+		   //						EventBusUtils.postSticky(inventoryVo);
+		   EventBusUtils.postSticky(new Event.EventStockDetailVo(inventoryVo));
+		}
+	   });
+	mTimelyReality2.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + 0 +
+							  "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							  0 + "</big></font>"));
+   }
+
+   private void initLeftDownView() {
+	mPublicRl.setVisibility(View.GONE);
+	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
+	titeleList = Arrays.asList(array);
+	mSize = array.length;
+	mLayout = R.layout.item_stockmid_five_layout;
+	mHeadView = LayoutInflater.from(_mActivity)
+		.inflate(R.layout.item_stockmid_five_title_layout,
+			   (ViewGroup) mLinearLayout.getParent(), false);
+	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
+	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
+	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
+	mInventoryVosS = new ArrayList<>();
+	mStockLeftAdapter = new StockLeftDownAdapter(mLayout, mInventoryVosS, mSize);
+	mHeadView.setBackgroundResource(R.color.bg_green);
+	mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
+	mRefreshLayout.setEnableAutoLoadMore(false);
+	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
+	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	mStockLeftAdapter.setEmptyView(inflate);
+	mRecyclerview.setAdapter(mStockLeftAdapter);
+	mLinearLayout.addView(mHeadView);
+
+	mStockLeftAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+	   @Override
+	   public void onItemClick(
+		   BaseQuickAdapter adapter, View view, int position) {
+		mContext.startActivity(
+			new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus", -1));
+		InventoryVo vosBean = mInventoryVosS.get(position);
+		EventBusUtils.postSticky(new Event.EventStockDetailVo(vosBean));
+	   }
+	});
    }
 
    @Override
@@ -287,193 +361,53 @@ public class PublicStockFrag extends SimpleFragment {
     * @param mDeviceCode
     */
    public void getLeftDownDate(String mDeviceCode) {
-	mPublicRl.setVisibility(View.GONE);
-	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
+
+	mInventoryVosS.clear();
 	LogUtils.i(TAG, "mDeviceCode  " + mDeviceCode);
 	NetRequest.getInstance().getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
-		if (mInventoryVosS != null) {
-		   mInventoryVosS.clear();
-		   mLeftDownBean = mGson.fromJson(result, InventoryDto.class);
-		   List<InventoryVo> inventoryVos = mLeftDownBean.getInventoryVos();
-		   mInventoryVosS.addAll(inventoryVos);
-		   mStockLeftAdapter.notifyDataSetChanged();
-		} else {
-		   mLeftDownBean = mGson.fromJson(result, InventoryDto.class);
-		   mInventoryVosS = mLeftDownBean.getInventoryVos();
-		   if (mInventoryVosS != null) {
-			mLayout = R.layout.item_stockmid_five_layout;
-			mHeadView = LayoutInflater.from(_mActivity)
-				.inflate(R.layout.item_stockmid_five_title_layout,
-					   (ViewGroup) mLinearLayout.getParent(), false);
-			((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
-			((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-			((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
-			((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
-			((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
-
-			mStockLeftAdapter = new StockLeftDownAdapter(mLayout, mInventoryVosS, mSize);
-			mHeadView.setBackgroundResource(R.color.bg_green);
-			mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
-			mRecyclerview.setLayoutManager(new LinearLayoutManager(_mActivity));
-			mRefreshLayout.setEnableAutoLoadMore(false);
-			mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-			View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
-			mStockLeftAdapter.setEmptyView(inflate);
-			mRecyclerview.setAdapter(mStockLeftAdapter);
-			mLinearLayout.addView(mHeadView);
-
-			mStockLeftAdapter.setOnItemClickListener(
-				new BaseQuickAdapter.OnItemClickListener() {
-				   @Override
-				   public void onItemClick(
-					   BaseQuickAdapter adapter, View view, int position) {
-					mContext.startActivity(
-						new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus",-1));
-					InventoryVo vosBean = mInventoryVosS.get(position);
-					EventBusUtils.postSticky(new Event.EventStockDetailVo(vosBean));
-				   }
-				});
-
-		   }
-		}
+		InventoryDto mLeftDownBean = mGson.fromJson(result, InventoryDto.class);
+		List<InventoryVo> inventoryVos = mLeftDownBean.getInventoryVos();
+		mInventoryVosS.addAll(inventoryVos);
+		mStockLeftAdapter.notifyDataSetChanged();
 	   }
 	});
    }
 
-   /**
-    * 库存状态和 库存监控底部和库存详情
-    *
-    * @param mDeviceCode
-    */
-   public void getMiddleDate(String mDeviceCode, EditText mSearchEts) {
-	String[] array = _mActivity.getResources().getStringArray(R.array.five_arrays);
-	titeleList = Arrays.asList(array);
-	mSize = array.length;
-	mTimelyReality2.setVisibility(View.VISIBLE);
-	mStockLeftZhengchang.setVisibility(View.GONE);
-	mStopFlag = -1;
-
-	LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
-
-//	mSearchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//	   @Override
-//	   public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//		   mTrim = mSearchEt.getText().toString().trim();
-//		   UIUtils.hideSoftInput(_mActivity, mSearchEt);
-//		   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-//		   return true;
-//		}
-//		return false;
-//	   }
-//	});
-
-
-
-   }
-
    private void LoadMiddleRgDate(String mDeviceCode, int mStopFlag, String editString) {
-	LogUtils.i(TAG, "mDeviceCode  " + mDeviceCode);
+	mInventoryVos.clear();
+	LogUtils.i(TAG, "mDeviceCodesss  " + mDeviceCode);
 	NetRequest.getInstance()
 		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "LoadMiddleRgDate   " + result);
-			if (mInventoryVos != null) {
-			   mInventoryVos.clear();
-			   //			   mInventoryDto = mGson.fromJson(result, SocketLeftDownBean.class);
-			   mInventoryDto = mGson.fromJson(result, InventoryDto.class);
+			mInventoryDto = mGson.fromJson(result, InventoryDto.class);
+			List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
+			mInventoryVos.addAll(inventoryVos);
+			mDownAdapter.notifyDataSetChanged();
 
-			   List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
-			   mInventoryVos.addAll(inventoryVos);
-			   ArrayList<String> strings = new ArrayList<>();
-			   int SIZE = 0;
-			   for (InventoryVo vosBean : inventoryVos) {
-				if(vosBean.getCstId()!=null){
-				   strings.add(vosBean.getCstId());
-				}
-				SIZE += vosBean.getCountStock();
+			ArrayList<String> strings = new ArrayList<>();
+			int SIZE = 0;
+			for (InventoryVo vosBean : mInventoryVos) {
+			   if (vosBean.getCstId() != null) {
+				strings.add(vosBean.getCstId());
 			   }
-			   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-			   mTimelyReality2.setText(Html.fromHtml(
-				   "耗材种类：<font color='#262626'><big>" + list.size() +
-				   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" + SIZE +
-				   "</big></font>"));
-			   mDownAdapter.notifyDataSetChanged();
-			} else {
-			   mInventoryDto = mGson.fromJson(result, InventoryDto.class);
-			   mInventoryVos = mInventoryDto.getInventoryVos();
-			   if (mInventoryVos != null) {
-				mLayout = R.layout.item_stockmid_five_layout;
-				mHeadView = LayoutInflater.from(_mActivity)
-					.inflate(R.layout.item_stockmid_five_title_layout,
-						   (ViewGroup) mLinearLayout.getParent(), false);
-				((TextView) mHeadView.findViewById(R.id.seven_one)).setText(
-					titeleList.get(0));
-				((TextView) mHeadView.findViewById(R.id.seven_two)).setText(
-					titeleList.get(1));
-				((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-					titeleList.get(2));
-				((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-					titeleList.get(3));
-				((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-					titeleList.get(4));
+			   SIZE += vosBean.getCountStock();
 
-				mDownAdapter = new StockLeftDownAdapter(mLayout, mInventoryVos, mSize);
-				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-				mDownAdapter.setOnItemClickListener(
-					new BaseQuickAdapter.OnItemClickListener() {
-					   @Override
-					   public void onItemClick(
-						   BaseQuickAdapter adapter, View view, int position) {
-						mContext.startActivity(
-							new Intent(mContext, StockMidTypeActivity.class).putExtra("expireStatus",mStopFlag));
-						InventoryVo inventoryVo = mInventoryVos.get(position);
-						//						EventBusUtils.postSticky(inventoryVo);
-						EventBusUtils.postSticky(
-							new Event.EventStockDetailVo(inventoryVo));
-					   }
-					});
-				mHeadView.setBackgroundResource(R.color.bg_green);
-				mRecyclerview.addItemDecoration(
-					new DividerItemDecoration(mContext, VERTICAL));
-				mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-				mRefreshLayout.setEnableAutoLoadMore(false);
-				mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-				mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-				View inflate = LayoutInflater.from(_mActivity)
-					.inflate(R.layout.recy_null, null);
-				mDownAdapter.setEmptyView(inflate);
-				mRecyclerview.setAdapter(mDownAdapter);
-				mLinearLayout.addView(mHeadView);
-				ArrayList<String> strings = new ArrayList<>();
-				int SIZE = 0;
-				for (InventoryVo vosBean : mInventoryVos) {
-				   if(vosBean.getCstId()!=null){
-					strings.add(vosBean.getCstId());
-				   }
-				   SIZE += vosBean.getCountStock();
-
-				}
-				ArrayList<String> list = new ArrayList<>();
-				try {
-				   list = StringUtils.removeDuplicteUsers(strings);
-				} catch (Exception e) {
-				   e.printStackTrace();
-				}
-
-				mTimelyReality2.setText(Html.fromHtml(
-					"耗材种类：<font color='#262626'><big>" + list.size() +
-					"</big>&emsp</font>耗材数量：<font color='#262626'><big>" + SIZE +
-					"</big></font>"));
-			   }
 			}
+			ArrayList<String> list = new ArrayList<>();
+			try {
+			   list = StringUtils.removeDuplicteUsers(strings);
+			} catch (Exception e) {
+			   e.printStackTrace();
+			}
+
+			mTimelyReality2.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+									  "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+									  SIZE + "</big></font>"));
 		   }
 		});
    }
@@ -532,5 +466,4 @@ public class PublicStockFrag extends SimpleFragment {
 
 	});
    }
-
 }

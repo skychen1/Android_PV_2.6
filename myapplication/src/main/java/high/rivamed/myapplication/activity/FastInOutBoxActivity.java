@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.ruihua.reader.ReaderManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -22,7 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import butterknife.BindView;
-import cn.rivamed.DeviceManager;
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
@@ -106,7 +107,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		for (String deviceInventoryVo : mEthDeviceIdBack) {
 		   String deviceCode = deviceInventoryVo;
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-		   DeviceManager.getInstance().OpenDoor(deviceCode);
+		   Eth002Manager.getEth002Manager().openDoor(deviceCode);
 		}
 	   } else {
 		ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -470,7 +471,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
-		int i = DeviceManager.getInstance().StartUhfScan(device_id, READER_TIME);
+		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
 		LogUtils.i(TAG, "开始扫描了状态    " + i);
 	   }
 	}

@@ -15,7 +15,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -147,9 +146,9 @@ public class PendingTaskFrag extends SimpleFragment {
                     }
                     if (emergencyBean.getMessages().size()==0){
                         LogUtils.i(TAG,"mMessagesList.size()   "+mMessagesList.size());
-                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size()));
+                        EventBusUtils.postSticky(new Event.EventPushMessageNum(mMessagesList.size()));
                     }else {
-                        EventBusUtils.postSticky(new XmppEvent.EventPushMessageNum(mMessagesList.size()));
+                        EventBusUtils.postSticky(new Event.EventPushMessageNum(mMessagesList.size()));
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();

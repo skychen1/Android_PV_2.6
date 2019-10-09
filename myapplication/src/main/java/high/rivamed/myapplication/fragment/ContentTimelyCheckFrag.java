@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
+
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.ArrayList;
@@ -16,11 +18,10 @@ import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
@@ -60,9 +61,13 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-	initData();
    }
 
+   @Override
+   public void onResume() {
+	super.onResume();
+	initData();
+   }
    private void initData() {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
@@ -72,32 +77,23 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    }
 
    private void loadTopBoxSize() {
-	NetRequest.getInstance().loadBoxSize(mContext,new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getDevices();
-		if (mTbaseDevices != null) {
-		   if (mTbaseDevices.size() > 1) {
-			BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
-			devicesBean1.setDeviceName("全部");
-			devicesBean1.setDeviceId("");
-			mTbaseDevices.add(0, devicesBean1);
-		   }
-		   ArrayList<Fragment> fragments = new ArrayList<>();
-		   for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
-			//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(),mTbaseDevices));
-			fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(),mTbaseDevices));
-		   }
-		   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
-		   mCttimecheckViewpager.setAdapter(mPagerAdapter);
-		   mCttimecheckViewpager.setCurrentItem(0);
-		   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
-//		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);\
-		   UIUtils.initPvTabLayout(mTbaseDevices, mCttimecheckViewpager, mCttimeCheck_Rg);
-		}
+	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	mTbaseDevices = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+	if (mTbaseDevices != null) {
+	   ArrayList<Fragment> fragments = new ArrayList<>();
+	   for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
+		//			fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(),mTbaseDevices));
+		fragments.add(new TimelyAllFrag(devicesBean.getDeviceId(), mTbaseDevices));
 	   }
-	});
+	   mPagerAdapter = new CttimeCheckPagerAdapter(getChildFragmentManager(), fragments);
+	   mCttimecheckViewpager.setAdapter(mPagerAdapter);
+	   mCttimecheckViewpager.setCurrentItem(0);
+	   mCttimecheckViewpager.setOffscreenPageLimit(fragments.size());
+	   //		   mCttimeCheck_Rg.setViewPager(mCttimecheckViewpager);\
+	   UIUtils.initPvTabLayout(mTbaseDevices, mCttimecheckViewpager, mCttimeCheck_Rg);
+
+	}
+
    }
 
    private class CttimeCheckPagerAdapter extends FragmentStatePagerAdapter {

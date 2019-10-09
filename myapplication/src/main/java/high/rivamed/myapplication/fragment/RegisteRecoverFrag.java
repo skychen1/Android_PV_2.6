@@ -9,17 +9,19 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.activity.RegisteActivity.mRegisteViewpager;
+import static high.rivamed.myapplication.base.App.mAppContext;
+import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -63,10 +65,11 @@ public class RegisteRecoverFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	if (BuildConfig.DEBUG) {
-	   mFragRegisteNameEdit.setText("2ab");
-
-	}
+//	if (BuildConfig.DEBUG) {
+//	   mFragRegisteNameEdit.setText("2ab");
+//	}else {
+	   mFragRegisteNameEdit.setText(SPUtils.getString(mAppContext,SN_NUMBER));
+//	}
    }
 
    private void loadDate() {

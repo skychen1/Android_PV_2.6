@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 
-import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -82,7 +81,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+   public void onTitleConnEvent(Event.XmmppConnect event) {
 	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	mNet = event.net;
@@ -168,7 +167,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 			}else {
 			   ((TextView)mTipView.getRootView().findViewById(R.id.tip_text)).setText("网络正常，未连接到服务器！");
 			}
-
 		   } catch (Exception e) {
 
 		   }

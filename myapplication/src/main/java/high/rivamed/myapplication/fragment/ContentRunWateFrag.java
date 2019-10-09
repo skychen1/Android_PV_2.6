@@ -12,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
+
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import java.util.ArrayList;
@@ -22,11 +24,10 @@ import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 
@@ -103,11 +104,15 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         super.initDataAndEvent(savedInstanceState);
-        initData();
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
 
-//    /**
+    //    /**
 //     * 重新加载数据
 //     *
 //     * @param event
@@ -133,37 +138,22 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     }
 
     private void loadTopBoxSize() {
-        NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-            @Override
-            public void onSucceed(String result) {
-                BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-                mTbaseDevices = boxSizeBean.getDevices();
-                if (mTbaseDevices != null) {
-                    if (mTbaseDevices.size() > 1) {
-                        BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
-                        devicesBean1.setDeviceName("全部");
-                        devicesBean1.setDeviceId("");
-                        mTbaseDevices.add(0, devicesBean1);
-                    }
-                    ArrayList<Fragment> fragments = new ArrayList<>();
-                    for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
-                        fragments.add(new RunWatePagerFrag(devicesBean.getDeviceId()));
-                    }
-                    mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
-                    mHomeRunWateViewpager.setAdapter(mPagerAdapter);
-                    mHomeRunWateViewpager.setCurrentItem(0);
-                    mHomeRunWateViewpager.setOffscreenPageLimit(6);
-//                  mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
-                    UIUtils.initPvTabLayout(mTbaseDevices,  mHomeRunWateViewpager, mHomeRunwateRg);
-                    mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
-                }
+        String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+        mTbaseDevices = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+        if (mTbaseDevices != null) {
+            ArrayList<Fragment> fragments = new ArrayList<>();
+            for (BoxSizeBean.DevicesBean devicesBean : mTbaseDevices) {
+                fragments.add(new RunWatePagerFrag(devicesBean.getDeviceId()));
             }
+            mPagerAdapter = new RunWatePagerAdapter(getChildFragmentManager(), fragments);
+            mHomeRunWateViewpager.setAdapter(mPagerAdapter);
+            mHomeRunWateViewpager.setCurrentItem(0);
+            mHomeRunWateViewpager.setOffscreenPageLimit(6);
+            //                  mHomeRunwateRg.setViewPager(mHomeRunWateViewpager);
+            UIUtils.initPvTabLayout(mTbaseDevices,  mHomeRunWateViewpager, mHomeRunwateRg);
+//            mHomeRunWateViewpager.addOnPageChangeListener(new PageChangeListener());
+        }
 
-            @Override
-            public void onError(String result) {
-                //		mBuilder.mDialog.dismiss();
-            }
-        });
     }
 
     @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_tv_outlogin,
@@ -171,35 +161,6 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
     public void onViewClicked(View view) {
         super.onViewClicked(view);
         switch (view.getId()) {
-//            case R.id.base_tab_icon_right:
-//            case R.id.base_tab_tv_name:
-//                mPopupWindow = new SettingPopupWindow(mContext);
-//                mPopupWindow.showPopupWindow(mBaseTabIconRight);
-//                popupClick();
-//                break;
-//            case R.id.base_tab_tv_outlogin:
-//                TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
-//                builder.setTwoMsg("您确认要退出登录吗?");
-//                builder.setMsg("温馨提示");
-//                builder.setLeft("取消", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int i) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.setRight("确认", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int i) {
-//                        removeAllAct(mContext);
-//                        dialog.dismiss();
-//                        MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
-//                    }
-//                });
-//                builder.create().show();
-//                break;
-//            case R.id.base_tab_btn_msg:
-//                mContext.startActivity(new Intent(mContext, MessageActivity.class));
-//                break;
             case R.id.search_iv_delete:
                 break;
             case R.id.search_time_start:
@@ -238,21 +199,21 @@ public class ContentRunWateFrag extends BaseSimpleFragment {
         }
     }
 
-    private class PageChangeListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            mSearchTypeRg.check(R.id.search_type_all);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    }
+//    private class PageChangeListener implements ViewPager.OnPageChangeListener {
+//
+//        @Override
+//        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//        }
+//
+//        @Override
+//        public void onPageSelected(int position) {
+//            mSearchTypeRg.check(R.id.search_type_all);
+//        }
+//
+//        @Override
+//        public void onPageScrollStateChanged(int state) {
+//
+//        }
+//    }
 }

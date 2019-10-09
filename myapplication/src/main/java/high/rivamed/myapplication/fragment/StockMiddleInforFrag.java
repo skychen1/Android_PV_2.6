@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.gson.reflect.TypeToken;
+
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -22,11 +24,11 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.http.BaseResult;
-import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_MIDDLE;
 
 /**
@@ -77,17 +79,11 @@ public class StockMiddleInforFrag extends SimpleFragment {
    }
 
    public void getMiddleDate() {
-	NetRequest.getInstance().loadBoxSize(mContext, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-//		mBuilder.mDialog.dismiss();
-		BoxSizeBean boxSizeBean = mGson.fromJson(result, BoxSizeBean.class);
-		mTbaseDevices = boxSizeBean.getDevices();
-		if (mTbaseDevices != null) {
-		   onSucceedDate();
-		}
-	   }
-	});
+	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
+	mTbaseDevices = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+	if (mTbaseDevices != null) {
+	   onSucceedDate();
+	}
    }
 
    @Override
@@ -97,12 +93,6 @@ public class StockMiddleInforFrag extends SimpleFragment {
    }
 
    private void onSucceedDate() {
-	if (mTbaseDevices.size() > 1) {
-	   BoxSizeBean.DevicesBean devicesBean1 = new BoxSizeBean.DevicesBean();
-	   devicesBean1.setDeviceName("全部");
-	   devicesBean1.setDeviceId("");
-	   mTbaseDevices.add(0, devicesBean1);
-	}
 	if (!isAdded()) return;
 	mPagerAdapter = new StockMiddlePagerAdapter(getChildFragmentManager());
 	mCttimecheckViewpager.setAdapter(mPagerAdapter);

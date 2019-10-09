@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -24,6 +23,7 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -95,7 +95,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+   public void onTitleConnEvent(Event.XmmppConnect event) {
 	mTitleConn = event.connect;
 	//        LogUtils.i(TAG, "Xmmppf  "+mTitleConn);
 	selTitleIcon();
@@ -107,7 +107,7 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-   public void onEventIfHaveMessage(XmppEvent.EventPushMessageNum event) {
+   public void onEventIfHaveMessage(Event.EventPushMessageNum event) {
 
 	if (event.num > 0) {
 	   mTitleMsg = true;

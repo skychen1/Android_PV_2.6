@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 
-import org.androidpn.utils.XmppEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
@@ -136,18 +135,18 @@ public class LoginActivity extends SimpleActivity {
    final static int  COUNTS   = 5;// 点击次数  2s内点击8次进入注册界面
    final static long DURATION = 2000;// 规定有效时间
    long[] mHits = new long[COUNTS];
-   public static int               mConfigType;
-   private       boolean           mOnStart = false;
-   private       LoginFaceFragment faceFragment;
-   private LoadingDialog.Builder   mLoading;
+   public static int                                 mConfigType;
+   private       boolean                             mOnStart = false;
+   private       LoginFaceFragment                   faceFragment;
+   private       LoadingDialog.Builder               mLoading;
    public static List<ConfigBean.ThingConfigVosBean> sTCstConfigVos;
-   public static          boolean           mConfigType015;
-   public static          boolean           mConfigType043;
-   public static     boolean           mConfigType044;
-   public static          boolean           mConfigType045;
-//
-//   private boolean mDestroyType =true;//处理thread执行
-//   private Thread mThread3;
+   public static boolean                             mConfigType015;
+   public static boolean                             mConfigType043;
+   public static boolean                             mConfigType044;
+   public static boolean                             mConfigType045;
+   //
+   //   private boolean mDestroyType =true;//处理thread执行
+   //   private Thread mThread3;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
@@ -162,7 +161,7 @@ public class LoginActivity extends SimpleActivity {
 	} else {
 	   if (mLoading != null) {
 		mLoading.mAnimationDrawable.stop();
-		if (mLoading.mHandler!=null){
+		if (mLoading.mHandler != null) {
 		   mLoading.mHandler.removeCallbacksAndMessages(null);
 		}
 		mLoading.mDialog.dismiss();
@@ -170,7 +169,8 @@ public class LoginActivity extends SimpleActivity {
 	}
 	EventBusUtils.removeStickyEvent(Event.EventLoading.class);
    }
-	/**
+
+   /**
     * ic卡和指纹仪登陆回调
     *
     * @param event
@@ -192,11 +192,11 @@ public class LoginActivity extends SimpleActivity {
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
-   public void onTitleConnEvent(XmppEvent.XmmppConnect event) {
+   public void onTitleConnEvent(Event.XmmppConnect event) {
 	mTitleConn = event.connect;
 	hasNetWork(event.connect, event.net);
 	if (mTitleConn && mOnStart) {
-	   EventBusUtils.post(new Event.EventServer(true,2));//有网后处理数据
+	   EventBusUtils.post(new Event.EventServer(true, 2));//有网后处理数据
 	}
    }
 
@@ -210,70 +210,45 @@ public class LoginActivity extends SimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	  if (UIUtils.getConfigType(mContext, CONFIG_034)){
-	     faceFragment = new LoginFaceFragment();
-	     mFragments.add(faceFragment);//人脸识别登录 TODO
-	  }
+	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
+		faceFragment = new LoginFaceFragment();
+		mFragments.add(faceFragment);//人脸识别登录 TODO
+	   }
 	}
 
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
-//	mFragments.add(new LoginPassFragment());//紧急登录
+	//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
 	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
 
    }
-
-//   public void getBoxSize() {
-//	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
-//	   @Override
-//	   public void onSucceed(String result) {
-//		mTitleConn=true;
-//		SPUtils.putString(mAppContext, BOX_SIZE_DATE, "");
-//		Gson gson = new Gson();
-//		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
-//		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
-//		if (devices.size() > 1) {
-//		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-//		   tbaseDevicesBean.setDeviceName("全部开柜");
-//		   devices.add(0, tbaseDevicesBean);
-//		}
-//		SPUtils.putString(mAppContext, BOX_SIZE_DATE, gson.toJson(devices));
-//	   }
-//
-//	   @Override
-//	   public void onError(String result) {
-//
-//	   }
-//	});
-//   }
 
    @Override
    public void onStart() {
 	super.onStart();
 	EventBusUtils.register(this);
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
-	   if (mIntentService!=null){
+	   if (mIntentService != null) {
 		startService(mIntentService);
-	   }else {
+	   } else {
 		mIntentService = new Intent(this, ScanService.class);
 		startService(mIntentService);
 	   }
 	}
-	EventBusUtils.post(new Event.EventServer(true,1));
-
+	EventBusUtils.post(new Event.EventServer(true, 1));
+	LoginUtils.getUpDateVer(this);
 	mOnStart = true;
 	mPushFormOrders.clear();
-	mDownText.setText(
-		"© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
+	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
-		Log.i("outtccc","COUNTDOWN_TIME  LOG     "+COUNTDOWN_TIME);
+		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
 	   }
 	   getLeftDate();
-//	   getBoxSize();
+	   //	   getBoxSize();
 	}
 	initTab();
 	initlistener();
@@ -299,13 +274,13 @@ public class LoginActivity extends SimpleActivity {
     * 查询未确认耗材
     */
    private void getNoConfirm() {
-	NetRequest.getInstance().getRightUnconfDate("", "", mContext, new BaseResult(){
+	NetRequest.getInstance().getRightUnconfDate("", "", mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inventoryVos = socketRightBean.getInventoryVos();
-		if (inventoryVos.size()>0){
-		   mTVLoginUnConfirmCst.setText("未确认耗材（"+inventoryVos.size()+"）");
+		if (inventoryVos.size() > 0) {
+		   mTVLoginUnConfirmCst.setText("未确认耗材（" + inventoryVos.size() + "）");
 		}
 	   }
 	});
@@ -317,7 +292,7 @@ public class LoginActivity extends SimpleActivity {
    public void getConfigDate(int configType, String loginType) {
 	LogUtils.i(TAG, "getConfigDate   ");
 	if (SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   LogUtils.i(TAG, "getConfigDate    ddd   "+mTitleConn);
+	   LogUtils.i(TAG, "getConfigDate    ddd   " + mTitleConn);
 	   if (mTitleConn) {
 		NetRequest.getInstance().findThingConfigDate(UIUtils.getContext(), new BaseResult() {
 		   @Override
@@ -354,13 +329,14 @@ public class LoginActivity extends SimpleActivity {
     */
    private void setConfigBean(String result, int configType, String loginType) {
 	ConfigBean configBean = mGson.fromJson(result, ConfigBean.class);
-	if (configBean==null){
+	if (configBean == null) {
 	   return;
 	}
 	sTCstConfigVos = configBean.getThingConfigVos();
-	LoginUtils.getUpDateVer(this, sTCstConfigVos,
-					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
-												   loginType));
+	loginEnjoin(!LoginUtils.getConfigTrue(sTCstConfigVos), configType, loginType);
+//	LoginUtils.getUpDateVer(this, sTCstConfigVos,
+//					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
+//												   loginType));
 	mConfigType015 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_015);
 	mConfigType043 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_043);
 	mConfigType044 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_044);
@@ -374,16 +350,19 @@ public class LoginActivity extends SimpleActivity {
 	mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
 	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
 	//有人脸识别或紧急登录时，可滑动
-	mLoginViewpager.setScanScroll(isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
-	LogUtils.i(TAG, "getConfigDatddffdfe   "+UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026));
-	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)){
+	mLoginViewpager.setScanScroll(
+		isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
+	LogUtils.i(TAG,
+		     "getConfigDatddffdfe   " + UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026));
+	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
 	   mLoginUnRL.setVisibility(View.VISIBLE);
 	   mTVLoginUnConfirmCst.setText("未确认耗材（0）");
 	   getNoConfirm();
-	}else {
+	} else {
 	   mLoginUnRL.setVisibility(View.INVISIBLE);
 	}
-	mTVLoginToBePutInStorage.setVisibility(UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046)?View.VISIBLE:View.GONE);
+	mTVLoginToBePutInStorage.setVisibility(
+		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
    }
 
    public boolean isConfigFace() {
@@ -496,6 +475,7 @@ public class LoginActivity extends SimpleActivity {
 		LogUtils.i(TAG, "validateLoginFinger   result   " + result);
 		LoginUtils.loginSpDate(result, mContext, mGson, null);
 	   }
+
 	   @Override
 	   public void onError(String result) {
 		EventBusUtils.postSticky(new Event.EventLoading(false));
@@ -583,7 +563,7 @@ public class LoginActivity extends SimpleActivity {
 	/**
 	 * 未入库耗材
 	 */
-	mTVLoginToBePutInStorage.setOnClickListener(view->{
+	mTVLoginToBePutInStorage.setOnClickListener(view -> {
 	   if (mTitleConn) {
 		startActivity(new Intent(LoginActivity.this, LoginToBePutInStorageActivity.class));
 	   } else {
@@ -747,7 +727,7 @@ public class LoginActivity extends SimpleActivity {
 	super.onStop();
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
-	   if (mLoading.mHandler!=null){
+	   if (mLoading.mHandler != null) {
 		mLoading.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mLoading.mDialog.dismiss();
@@ -765,11 +745,11 @@ public class LoginActivity extends SimpleActivity {
    @Override
    protected void onDestroy() {
 	super.onDestroy();
-	if (mLoginGone!=null){
+	if (mLoginGone != null) {
 	   mLoginGone.onFinishTemporaryDetach();
-	   mLoginGone= null;
+	   mLoginGone = null;
 	}
 
-	Log.i("ccetdaF",getClass().getName()+"  onDestroy");
+	Log.i("ccetdaF", getClass().getName() + "  onDestroy");
    }
 }

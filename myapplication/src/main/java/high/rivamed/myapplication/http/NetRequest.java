@@ -11,7 +11,6 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 
-import org.androidpn.utils.XmppEvent;
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.UpDateTokenBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
@@ -924,7 +924,7 @@ public class NetRequest {
 		netResult.onError(response.code() + "");
 	   }
 	   if (mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+		EventBusUtils.post(new Event.XmmppConnect(false));
 	   }
 	   if (response.code() == -1) {
 		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
@@ -940,7 +940,7 @@ public class NetRequest {
 	@Override
 	public void onSuccess(Response<String> response) {
 	   if (!mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+		EventBusUtils.post(new Event.XmmppConnect(true));
 	   }
 	   UnNetCstUtils.putUnNetOperateYes(tag);//提交离线耗材和重新获取在库耗材数据
 
@@ -1088,7 +1088,7 @@ public class NetRequest {
 	@Override
 	public void onError(Response<String> response) {
 	   if (mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+		EventBusUtils.post(new Event.XmmppConnect(false));
 	   }
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
@@ -1101,7 +1101,7 @@ public class NetRequest {
 	@Override
 	public void onSuccess(Response<String> response) {
 	   if (!mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+		EventBusUtils.post(new Event.XmmppConnect(true));
 	   }
 	   if (netResult != null) {
 		netResult.onSucceed(response.body());
@@ -1149,7 +1149,7 @@ public class NetRequest {
 		netResult.onError(response.code() + "");
 	   }
 	   if (mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(false));
+		EventBusUtils.post(new Event.XmmppConnect(false));
 	   }
 	   if (response.code() == -1) {
 		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
@@ -1166,7 +1166,7 @@ public class NetRequest {
 	@Override
 	public void onSuccess(Response<String> response) {
 	   if (!mTitleConn) {
-		EventBusUtils.post(new XmppEvent.XmmppConnect(true));
+		EventBusUtils.post(new Event.XmmppConnect(true));
 	   }
 	   try {
 		JSONObject jsonObject = JSON.parseObject(response.body());
