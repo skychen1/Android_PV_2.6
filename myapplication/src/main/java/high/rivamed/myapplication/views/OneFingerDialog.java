@@ -48,9 +48,12 @@ public class OneFingerDialog extends Dialog {
         private ImageView mCloss;
         private int mLeftTextColor = -1;
         private int mRightTextColor;
-        private TextView mDialogBtn;
+        public TextView mDialogBtn;
+        private TextView mFingerTitle;
+        public TextView mErrorText;
         private ImageView mFingerIcon;
         private ImageView mFingerSuccess;
+        public OneFingerDialog mDialog;
 
         public Builder(Context context) {
             this.mContext = context;
@@ -92,42 +95,55 @@ public class OneFingerDialog extends Dialog {
             this.mRightBtn = listener;
             return this;
         }
-
         public void setSuccess() {
             if (mFingerSuccess != null) {
                 mFingerSuccess.setVisibility(View.VISIBLE);
+                mFingerSuccess.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_tx));
+                mDialogBtn.setText("确定");
+                mErrorText.setVisibility(View.GONE);
+            }
+        }
+        public void setError() {
+            if (mFingerSuccess != null) {
+                mFingerSuccess.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
+                mFingerSuccess.setVisibility(View.VISIBLE);
+                mDialogBtn.setText("重试");
+                mErrorText.setVisibility(View.VISIBLE);
             }
         }
 
         public OneFingerDialog create() {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            final OneFingerDialog dialog = new OneFingerDialog(mContext, R.style.Dialog);
-            dialog.setCancelable(false);
+            mDialog = new OneFingerDialog(mContext, R.style.Dialog);
+            mDialog.setCancelable(false);
             View layout = inflater.inflate(R.layout.dialog_one_finger_layout, null);
-            dialog.addContentView(layout,
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            mDialog.addContentView(layout,
+                                   new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
             mDialogBtn = (TextView) layout.findViewById(R.id.dialog_right);
+            mFingerTitle = (TextView) layout.findViewById(R.id.finger_title);
+            mErrorText = (TextView) layout.findViewById(R.id.error_text);
             mCloss = (ImageView) layout.findViewById(R.id.dialog_closs);
             mFingerIcon = (ImageView) layout.findViewById(R.id.finger_icon);
             mFingerSuccess = (ImageView) layout.findViewById(R.id.iv_finger_success);
             mFingerSuccess.setVisibility(View.INVISIBLE);
+            mFingerTitle.setText(mMsgTwo+"绑定");
             mCloss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.dismiss();
+                    mDialog.dismiss();
                 }
             });
             mDialogBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mRightBtn.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                    mRightBtn.onClick(mDialog, DialogInterface.BUTTON_POSITIVE);
                 }
             });
-            return dialog;
+            return mDialog;
         }
 
 

@@ -525,12 +525,24 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onFingerRegExcuted(String deviceId, boolean success) {
-
+		 EventBusUtils.post(new Event.EventFingerReg(success));
+		Log.i("fadeee","onFingerRegExcuted   "+success);
 	   }
 
 	   @Override
 	   public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
+		EventBusUtils.post(new Event.EventFingerRegEnter(success,fingerData));
+		Log.i("fadeee","appSatus   "+success);
+		Log.i("fadeee","fingerData   "+fingerData);
+//		if(success){
+//		   //			type ="成功";
+//		   fingerList.add(fingerData);
+//		   UIUtils.runInUIThread(()->builder.setSuccess());
+//
+//		}else {
+//		   //			type="失败";
+//		   UIUtils.runInUIThread(()->builder.setError());
+//		}
 	   }
 
 	   @Override

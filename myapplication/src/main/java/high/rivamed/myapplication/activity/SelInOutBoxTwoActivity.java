@@ -1441,6 +1441,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mEthDeviceIdBack.clear();
 	mObs.removeVos();
 	RxUtils.getInstance().unRegister();
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	}
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();
    }
