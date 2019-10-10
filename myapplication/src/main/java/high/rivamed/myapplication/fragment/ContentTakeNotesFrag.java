@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,16 +106,15 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-
-   }
-
-   @Override
-   public void onResume() {
-	super.onResume();
 	initData();
-
 	initListener();
    }
+
+//   @Override
+//   public void onResume() {
+//	super.onResume();
+//
+//   }
 
 
    @Override
