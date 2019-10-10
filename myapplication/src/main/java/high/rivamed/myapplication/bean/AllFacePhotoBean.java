@@ -18,7 +18,7 @@ public class AllFacePhotoBean {
      * pageNo : 1
      * pageSize : 20
      * systemType : HCT
-     * users : [{"userId":"10000000000000000000000000000001","name":"系统管理员","sex":"男","updateTime":"2019-06-11 10:15:05","dbCenterUserId":"001","userState":"1","userType":1,"deptId":"","faceFileName":"http://192.168.10.25:8050/faceRecognition/.jpg","faceUpdateTime":"2019-06-06 17:19:32"}]
+     * userVos : [{"userId":"10000000000000000000000000000001","name":"系统管理员","sex":"男","updateTime":"2019-06-11 10:15:05","dbCenterUserId":"001","userState":"1","userType":1,"deptId":"","faceFileName":"http://192.168.10.25:8050/faceRecognition/.jpg","faceUpdateTime":"2019-06-06 17:19:32"}]
      */
 
     private boolean operateSuccess;
@@ -27,7 +27,7 @@ public class AllFacePhotoBean {
     private int pageNo;
     private int pageSize;
     private String systemType;
-    private List<UsersBean> users;
+    private List<UsersBean> userVos;
 
 
     public boolean isOperateSuccess() {
@@ -78,12 +78,12 @@ public class AllFacePhotoBean {
         this.systemType = systemType;
     }
 
-    public List<UsersBean> getUsers() {
-        return users;
+    public List<UsersBean> getUserVos() {
+        return userVos;
     }
 
-    public void setUsers(List<UsersBean> users) {
-        this.users = users;
+    public void setUserVos(List<UsersBean> userVos) {
+        this.userVos = userVos;
     }
 
     public static class UsersBean {
