@@ -8,15 +8,37 @@
 	android:orientation="vertical">
 
 
-	<ImageView
-		android:id="@+id/login_logo"
-		android:layout_width="@dimen/x250"
-		android:layout_height="@dimen/y70"
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
 		android:layout_marginBottom="@dimen/y55"
-		android:layout_marginLeft="@dimen/x79"
-		android:layout_marginTop="@dimen/y55"
-		android:background="@mipmap/bg_login_icon"
-		/>
+		android:layout_marginTop="@dimen/y55">
+
+		<ImageView
+			android:id="@+id/login_logo"
+			android:layout_width="@dimen/x250"
+			android:layout_height="@dimen/y70"
+			android:layout_marginLeft="@dimen/x79"
+			android:background="@mipmap/bg_login_icon"
+			/>
+
+		<View
+			android:layout_width="2dp"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="@dimen/x60"
+			android:layout_marginRight="@dimen/x60"
+			android:background="@color/bg"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="智能高值耗材管理系统"
+			android:textColor="@color/text_color_3"
+			android:textSize="@dimen/x48"
+			android:textStyle="bold"/>
+	</LinearLayout>
+
 
 	<RelativeLayout
 		android:layout_width="match_parent"
@@ -33,6 +55,7 @@
 			android:layout_marginLeft="@dimen/x210"
 			android:orientation="vertical"
 			>
+
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -47,42 +70,45 @@
 					android:text="耗材效期监控"
 					android:textColor="@color/bg_f"
 					android:textSize="@dimen/x36"/>
+
 				<RelativeLayout
 					android:id="@+id/login_unrl"
 					android:layout_width="@dimen/x280"
 					android:layout_height="@dimen/y130"
+					android:layout_gravity="bottom"
 					android:layout_marginLeft="@dimen/x130"
 					android:background="@mipmap/login_unknow_icon"
-					android:layout_gravity="bottom"
 					android:visibility="invisible"
 					>
+
 					<TextView
 						android:id="@+id/login_unconfirmcst"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:text="未确认耗材"
-						android:paddingTop="@dimen/y16"
-						android:textSize="@dimen/x28"
-						android:textColor="@color/color_o"
 						android:paddingBottom="@dimen/y16"
 						android:paddingLeft="@dimen/x16"
+						android:paddingTop="@dimen/y16"
+						android:text="未确认耗材"
+						android:textColor="@color/color_o"
+						android:textSize="@dimen/x28"
 						/>
+
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/y12"
 						android:layout_alignParentRight="true"
 						android:layout_marginRight="@dimen/x16"
+						android:layout_marginTop="@dimen/y12"
+						android:text=">>"
 						android:textColor="@color/color_o"
-						android:textSize="@dimen/x30"
-						android:text=">>"/>
+						android:textSize="@dimen/x30"/>
 				</RelativeLayout>
 			</LinearLayout>
 
 			<RelativeLayout
 				android:layout_width="@dimen/x716"
 				android:layout_height="@dimen/y423"
-			android:layout_marginTop="@dimen/y244"
+				android:layout_marginTop="@dimen/y244"
 				android:background="@mipmap/login_left_bg">
 
 				<LinearLayout
@@ -115,14 +141,14 @@
 							android:id="@+id/left_guo_text"
 							android:layout_width="@dimen/x104"
 							android:layout_height="wrap_content"
-							android:gravity="center"
 							android:layout_marginLeft="@dimen/x25"
-							android:text=""
-							android:maxLines="1"
-							android:textStyle="bold"
-							android:textColor="#fe5422"
+							android:gravity="center"
 							android:includeFontPadding="false"
+							android:maxLines="1"
+							android:text=""
+							android:textColor="#fe5422"
 							android:textSize="@dimen/x54"
+							android:textStyle="bold"
 							/>
 					</LinearLayout>
 				</LinearLayout>
@@ -158,40 +184,42 @@
 							android:layout_width="@dimen/x104"
 							android:layout_height="wrap_content"
 							android:layout_marginLeft="@dimen/x25"
-							android:maxLines="1"
 							android:gravity="center"
-							android:text=""
-							android:textStyle="bold"
-							android:textColor="#94C444"
 							android:includeFontPadding="false"
+							android:maxLines="1"
+							android:text=""
+							android:textColor="#94C444"
 							android:textSize="@dimen/x54"
+							android:textStyle="bold"
 							/>
 					</LinearLayout>
 
 
 				</LinearLayout>
 			</RelativeLayout>
+
 			<TextView
 				android:id="@+id/login_stock_status"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
 				android:layout_marginBottom="@dimen/x50"
 				android:layout_marginLeft="@dimen/x30"
-				android:text="查看库存详情  〉"
 				android:padding="@dimen/y15"
-				android:layout_alignParentBottom="true"
+				android:text="查看库存详情  〉"
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
+
 			<TextView
 				android:id="@+id/login_uninbox"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
 				android:layout_marginBottom="@dimen/x50"
 				android:layout_marginLeft="@dimen/x30"
 				android:layout_toRightOf="@+id/login_stock_status"
-				android:text="查看未入库耗材  〉"
 				android:padding="@dimen/y15"
-				android:layout_alignParentBottom="true"
+				android:text="查看未入库耗材  〉"
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
 		</RelativeLayout>
@@ -255,12 +283,12 @@
 			android:layout_width="@dimen/x600"
 			android:layout_height="@dimen/y630"
 			android:layout_alignParentRight="true"
-			android:stateListAnimator="@null"
 			android:layout_centerVertical="true"
 			android:layout_marginRight="@dimen/x207"
 			android:background="@color/bg_f"
 			android:gravity="center_vertical"
 			android:orientation="vertical"
+			android:stateListAnimator="@null"
 			app:cardBackgroundColor="@color/white"
 			app:cardCornerRadius="@dimen/x5"
 			app:cardElevation="0dp"
@@ -338,6 +366,7 @@
 						android:textColor="@color/selector_login_tab_text"
 						android:textSize="@dimen/x30"
 						/>
+
 					<View
 						android:layout_width="@dimen/x2"
 						android:layout_height="@dimen/y75"
@@ -353,6 +382,7 @@
 				</high.rivamed.myapplication.views.CustomViewPager>
 			</LinearLayout>
 		</android.support.v7.widget.CardView>
+
 		<View
 			android:id="@+id/login_gone"
 			android:layout_width="@dimen/x610"

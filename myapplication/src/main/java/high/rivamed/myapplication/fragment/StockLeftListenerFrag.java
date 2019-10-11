@@ -93,7 +93,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	EventBusUtils.register(this);
 //	mBuilder = DialogUtils.showLoading(mContext);
 	LogUtils.i(TAG, "START3 fafafa  " );
-//	getLeftDate();
+//	getLeftDate();/
    }
 
 

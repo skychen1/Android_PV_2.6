@@ -26,16 +26,16 @@ public class RegisterFingerDto {
          * data : 1111111111111111111111
          */
 
-        private String differentThings;
+        private String featureName;
         private String userId;
         private String data;
 
-        public String getDifferentThings() {
-            return differentThings;
+        public String getFeatureName() {
+            return featureName;
         }
 
-        public void setDifferentThings(String differentThings) {
-            this.differentThings = differentThings;
+        public void setFeatureName(String featureName) {
+            this.featureName = featureName;
         }
 
         public String getType() {
