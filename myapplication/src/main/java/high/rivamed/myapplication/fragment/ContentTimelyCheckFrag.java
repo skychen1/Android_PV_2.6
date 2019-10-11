@@ -61,12 +61,13 @@ public class ContentTimelyCheckFrag extends BaseSimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	initData();
    }
 
    @Override
    public void onResume() {
 	super.onResume();
-	initData();
+
    }
    private void initData() {
 	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
