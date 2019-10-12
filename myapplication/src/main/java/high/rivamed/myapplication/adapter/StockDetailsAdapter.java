@@ -44,6 +44,7 @@ public class StockDetailsAdapter extends
 	helper.setText(R.id.seven_two,item.getUpdateDateTime());
 	helper.setText(R.id.seven_three,item.getStatus());
 	helper.setText(R.id.seven_four,item.getExpiryDate());
+	helper.getView(R.id.seven_four).setBackgroundResource(R.color.bg_f);
 	helper.setText(R.id.seven_five,"展开");
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), four, helper.getView(R.id.seven_four));

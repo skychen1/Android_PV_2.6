@@ -280,7 +280,7 @@ public class LoginActivity extends SimpleActivity {
 		InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inventoryVos = socketRightBean.getInventoryVos();
 		if (inventoryVos.size() > 0) {
-		   mTVLoginUnConfirmCst.setText("未确认耗材（" + inventoryVos.size() + "）");
+		   mTVLoginUnConfirmCst.setText("未确认耗材 (" + inventoryVos.size() + ")");
 		}
 	   }
 	});

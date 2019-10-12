@@ -616,9 +616,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							mBoxInventoryVos.size() + "</big></font>"));
+	UIUtils.runInUIThread(()->mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+											  "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+											  mBoxInventoryVos.size() + "</big></font>")));
+
 	if (StringUtils.isExceedTime(mBoxInventoryVos)) {
 	   setAllTextVis(ScanService.mDoorStatusType);
 	} else {
@@ -686,6 +687,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
+			setRemoveRunnable();
 			moreStartScan(mBoxInventoryVos,mObs);
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -768,6 +770,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			stopScan();
 			mLocalAllSize = mAllSize;
+			setRemoveRunnable();
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
@@ -783,6 +786,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mFirstFinishLoading =false;
 			mLastFinishLoading =false;
+			setRemoveRunnable();
 			Log.i("ttadrf","mDto   "+mGson.toJson(mDto));
 			mShowInBoxCountBuilder = DialogUtils.showInBoxCountDialog(mContext, mDto,mTimelyRight);
 		   }else {

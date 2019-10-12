@@ -50,7 +50,6 @@ import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getAllCstDate;
-import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.saveErrorVo;
 
 /**
@@ -241,7 +240,7 @@ public class ScanService extends Service {
 		mEPCDatess.put(epc, box_id);
 	   }
 	}
-	LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size());
+	LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size()+"   box_id   "+box_id);
 	putEPC(mEPCDatess, box_id);
    }
 
@@ -252,8 +251,8 @@ public class ScanService extends Service {
     */
    private void putEPC(Map<String, String> epcDatess, String boxid) {
 	List<InventoryVo> mInVo = new ArrayList<>();
-	List<InventoryVo> allVo = getLocalAllCstVos();
-	List<InventoryVo> vos = setAllBoxVosDate(allVo, boxid);
+	List<InventoryVo> mBoxInventoryVos = new ArrayList<>();
+	List<InventoryVo> vos = setAllBoxVosDate(mBoxInventoryVos, boxid);
 	mInVo.addAll(vos);
 	Iterator<Map.Entry<String, String>> iterator = epcDatess.entrySet().iterator();
 	while (iterator.hasNext()) {
@@ -265,7 +264,7 @@ public class ScanService extends Service {
 		mInVo.remove(vo);
 	   } else {
 		if (key != null && !key.trim().equals("") && value != null) {
-		   if (!getVosType(allVo, key)) {
+		   if (!getVosType(mBoxInventoryVos, key)) {
 			boolean saveError = saveErrorVo(key, value, true, false, false);//放入，存入error流水表
 			Log.i(TAG, "     Scan 存入error流水表  " + saveError);
 		   }
@@ -279,7 +278,7 @@ public class ScanService extends Service {
 	Iterator<InventoryVo> iteratorX = mInVo.iterator();
 	while (iteratorX.hasNext()) {
 	   InventoryVo next = iteratorX.next();
-	   deleteVo(allVo, next.getEpc());//拿出时，删除库存表内的该条数据
+	   deleteVo(mBoxInventoryVos, next.getEpc());//拿出时，删除库存表内的该条数据
 	   boolean save = saveErrorVo(next.getEpc(), next.getDeviceId(), true, true,
 						false);//拿出时，存入到error流水表
 	   Log.i(TAG, "Scan 出柜存入 并删除   " + save);

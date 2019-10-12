@@ -682,6 +682,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   TimelyAllFrag.mPauseS = true;
 		   mBoxInventoryVos.clear();
 		   mLocalAllSize = mAllSize;
+		   setRemoveRunnable();
 		   moreStartScan(mBoxInventoryVos, mObs);
 		} else {
 		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -703,6 +704,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatient = null;
 			mPatientId = null;
 		   }
+		   setRemoveRunnable();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
 			Eth002Manager.getEth002Manager().openDoor(deviceCode);
@@ -742,6 +744,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   if (mDoorStatusType) {
+			setRemoveRunnable();
 			if (StringUtils.isExceedTime(mBoxInventoryVos)) {
 			   DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump",
 							    null);
@@ -1278,9 +1281,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   }
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-							    "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-							    mBoxInventoryVos.size() + "</big></font>"));
+	UIUtils.runInUIThread(()->mTimelyNumberLeft.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+												"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+												mBoxInventoryVos.size() + "</big></font>")));
+
 
    }
 

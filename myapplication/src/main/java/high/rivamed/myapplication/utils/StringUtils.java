@@ -7,7 +7,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -328,13 +327,14 @@ public class StringUtils {
    }
    public static List<InventoryVo>  search(String name,String cstId,List<InventoryVo> list) {
 	List<InventoryVo> results = new ArrayList();
-	Pattern pattern = Pattern.compile(name);
-	Pattern pattern3 = Pattern.compile(name,Pattern.CASE_INSENSITIVE);
-	Pattern pattern2 = Pattern.compile(cstId,Pattern.CASE_INSENSITIVE);
+	String pattenName = Pattern.quote("" + name);
+	String pattenCstId = Pattern.quote("" + cstId);
+	Pattern pattern = Pattern.compile(pattenName);
+	Pattern pattern3 = Pattern.compile(pattenName,Pattern.CASE_INSENSITIVE);
+	Pattern pattern2 = Pattern.compile(pattenCstId,Pattern.CASE_INSENSITIVE);
 	for (InventoryVo vo : list) {
 	   Matcher matcher = pattern.matcher(vo.getCstName());
 	   Matcher matcher2 = pattern2.matcher(vo.getCstSpec());
-	   Log.i("FADADF", " FAEE           " + Pinyin4jUtil.getFirstSpell(vo.getCstName()));
 	   Matcher matcher4 = pattern3.matcher(Pinyin4jUtil.getFirstSpell(vo.getCstName()));
 	   if(matcher4.lookingAt()||matcher.find()||matcher2.find()){
 		results.add(vo);
