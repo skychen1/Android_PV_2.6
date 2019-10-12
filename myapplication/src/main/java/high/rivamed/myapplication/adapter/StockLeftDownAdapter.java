@@ -72,7 +72,8 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseView
 	   mSeven_three.setText(item.getCountStock()+"");
 	   mSeven_four.setText(item.getDeviceName());
 
-
+	mSeven_five.setText(item.getExpiryDate());
+	mSeven_five.setBackgroundResource(R.color.bg_f);
 	if (item.getExpireStatus()!=null) {
 	   UIUtils.initTermOfValidity(mContext, item.getIsErrorOperation(), item.getExpireStatus(), mSeven_five);
 	}
@@ -80,9 +81,6 @@ public class StockLeftDownAdapter extends BaseQuickAdapter<InventoryVo, BaseView
 	   mSeven_five.setText("已过期");
 	   mSeven_five.setBackgroundResource(R.drawable.bg_text_red);
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.bg_f));
-	}else {
-	   mSeven_five.setText(item.getExpiryDate());
-	   mSeven_five.setBackgroundResource(R.color.bg_f);
 	}
    }
 

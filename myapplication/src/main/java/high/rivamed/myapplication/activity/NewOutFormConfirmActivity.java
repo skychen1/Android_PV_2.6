@@ -348,6 +348,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mBoxInventoryVos.clear();
 			mLocalAllSize = mAllSize;
+			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
 			   startScan(mBoxInventoryVos, mObs, deviceCode);
@@ -365,6 +366,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			mBoxInventoryVos.clear();
 			mLocalAllSize = mAllSize;
 			mObs.removeVos();
+			setRemoveRunnable();
 			reOpenDoor();
 		   }else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -386,6 +388,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		break;
 	   case R.id.ly_bing_btn:
 		LogUtils.i(TAG, "mTransReceiveOrderDetailVosBean   " + mGson.toJson(mTransReceiveOrderDetailVosBean));
+		setRemoveRunnable();
 		DialogUtils.showLookUpDetailedListDialog(mContext, true,
 								     mTransReceiveOrderDetailVosBean, mPrePageDate);
 		break;

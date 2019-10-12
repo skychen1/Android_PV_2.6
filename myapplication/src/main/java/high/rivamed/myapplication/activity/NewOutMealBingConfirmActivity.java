@@ -563,6 +563,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mLocalAllSize = mAllSize;
 			mBoxInventoryVos.clear();
+			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
 			   startScan(mBoxInventoryVos, mObs, deviceCode);
@@ -579,6 +580,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mBoxInventoryVos.clear();
 			mObs.removeVos();
+			setRemoveRunnable();
 			reOpenDoor();
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -589,6 +591,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		if (!UIUtils.isFastDoubleClick(R.id.ly_bing_btn)) {
 		   LogUtils.i(TAG, "mTransReceiveOrderDetailVos   " +
 					 mGson.toJson(mTransReceiveOrderDetailVos));
+		   setRemoveRunnable();
 		   DialogUtils.showLookUpDetailedListDialog(mContext, false,
 									  mTransReceiveOrderDetailVos, mPrePageDate);
 
@@ -610,6 +613,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   if (StringUtils.isExceedTime(mBoxInventoryVos)) {
 			DialogUtils.showNoDialog(mContext, "耗材中包含异常耗材，请取出异常耗材后再进行操作！", 1, "noJump", null);
 		   } else {
+			setRemoveRunnable();
 			if (UIUtils.getConfigType(mContext, CONFIG_012)) {
 			   EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			   Intent intent = new Intent(mContext, TemPatientBindActivity.class);
