@@ -220,7 +220,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectOperator(trueDate);
 		   } else {
-			ToastUtils.showShortToast("未选择操作的耗材，请选择后再进行操作！");
+			ToastUtils.showShortToast(getString(R.string.exception_text));
 		   }
 		}
 		break;
@@ -231,7 +231,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectOutBox();
 		   } else {
-			ToastUtils.showShortToast("未选择操作的耗材，请选择后再进行操作！");
+			ToastUtils.showShortToast(getString(R.string.exception_text));
 		   }
 		}
 		break;
@@ -242,7 +242,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   if (trueDate != null && trueDate.size() > 0) {
 			connectPatient(trueDate);
 		   } else {
-			ToastUtils.showShortToast("未选择操作的耗材，请选择后再进行操作！");
+			ToastUtils.showShortToast(getString(R.string.exception_text));
 		   }
 		}
 		break;
@@ -253,7 +253,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   if (trueDate != null && trueDate.size() > 0) {
 			removeJudge();
 		   } else {
-			ToastUtils.showShortToast("未选择操作的耗材，请选择后再进行操作！");
+			ToastUtils.showShortToast(getString(R.string.exception_text));
 		   }
 		}
 		break;

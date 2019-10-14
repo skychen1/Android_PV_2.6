@@ -49,6 +49,7 @@
     <string name="log_open">请重新启动APP，才会进行全日志收集</string>
 
     <string name="content_clossdoor_text">请关闭柜门再进行操作！</string>
+    <string name="exception_text">请选择相应操作的耗材，再进行操作！</string>
 
 
 </resources>
