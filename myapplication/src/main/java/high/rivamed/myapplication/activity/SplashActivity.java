@@ -88,7 +88,7 @@ public class SplashActivity extends FragmentActivity {
 		if (MAIN_URL!=null){
 		   boolean byPing = isAvailableByPing(
 			   SPUtils.getString(mAppContext, SAVE_SEVER_IP_TEXT));
-		   Log.i("Avalible", "byPing:" + byPing);
+
 		   if (byPing) {
 			mTitleConn = true;
 		   } else {

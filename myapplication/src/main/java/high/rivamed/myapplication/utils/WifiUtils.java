@@ -94,10 +94,8 @@ public class WifiUtils {
 	Process ipProcess = null;
 	try {
 	   //-c 后边跟随的是重复的次数，-w后边跟随的是超时的时间，单位是秒，不是毫秒，要不然也不会anr了
-	   Log.i("Avalible", "ddddd:" + ip);
 	   ipProcess = runtime.exec("ping -c 3 -w 3 "+ip);
 	   int exitValue = ipProcess.waitFor();
-	   Log.i("Avalible", "Process:" + exitValue);
 	   return (exitValue == 0);
 	} catch (IOException | InterruptedException e) {
 	   e.printStackTrace();

@@ -671,7 +671,7 @@ public class UIUtils {
 		   } else {
 			mCommonNavigator.getTitleContainer()
 				.getChildAt(i)
-				.setBackgroundColor(getResources().getColor(R.color.bg));
+				.setBackgroundColor(getResources().getColor(R.color.bg_0));
 		   }
 		}
 	   }

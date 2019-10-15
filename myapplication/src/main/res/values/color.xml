@@ -14,6 +14,7 @@
 	<color name="search_bg">#E3E9F0</color>
 	<color name="bg">#E3E9F0</color>
 	<color name="bg_f">#ffffff</color>
+	<color name="bg_0">#00000000</color>
 	<color name="item_divider">#cccccc</color>
 	<color name="bg_e">#eeeeee</color>
 	<color name="bg_c">#cccccc</color>
