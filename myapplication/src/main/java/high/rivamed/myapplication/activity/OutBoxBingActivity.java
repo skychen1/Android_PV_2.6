@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,6 +59,7 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
+import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -234,6 +237,14 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onScanStartType(Event.StartScanType event) {
+      if (!event.type){
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
 	mScanType = event.type;
 	Log.i(TAG,"mScanType   "+mScanType);
    }
@@ -374,6 +385,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		setNotifyData();
 		setTimeStart();
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -532,6 +545,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	mBoxsize = mGson.fromJson(string,

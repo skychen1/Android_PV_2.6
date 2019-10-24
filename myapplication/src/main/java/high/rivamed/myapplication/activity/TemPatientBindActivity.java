@@ -222,7 +222,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
 	} else {
 	   if (UIUtils.getConfigType(mContext, CONFIG_056)) {
-		array = mContext.getResources().getStringArray(R.array.eight_dialog_arrays);
+		array = mContext.getResources().getStringArray(R.array.nine_dialog_arrays);
 	   }else {
 		array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
 	   }
@@ -679,6 +679,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				data.setSurgeryName(bean.getRows().get(i).getSurgeryName());
 				data.setMedicalId(bean.getRows().get(i).getMedicalId());
 				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
 				data.setOperatingRoomNo(bean.getRows().get(i).getOperatingRoomNo());

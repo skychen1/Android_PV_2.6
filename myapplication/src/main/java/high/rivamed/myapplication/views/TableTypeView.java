@@ -468,13 +468,13 @@ public class TableTypeView extends LinearLayout {
                      mRecyclerview.setAdapter(timelyProfitAdapter);
                      mLinearLayout.addView(mHeadView);
                  }
-             }else if (mSize ==9){
+             }else if (mSize ==10){
                  if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
                      String mDeptType = SPUtils.getString(mContext, PATIENT_TYPE);
                      List<BingFindSchedulesBean.PatientInfoVos> patientInfos =(List<BingFindSchedulesBean.PatientInfoVos>) mObject;
-                     mLayout = R.layout.item_temp_nine_layout;
+                     mLayout = R.layout.item_temp_ten_layout;
                      mHeadView = mActivity.getLayoutInflater()
-                           .inflate(R.layout.item_outbing_nine_title_layout,
+                           .inflate(R.layout.item_outbing_ten_title_layout,
                                     (ViewGroup) mLinearLayout.getParent(), false);
                      findId();
                      mSeven_one.setText(titeleList.get(0));
@@ -482,6 +482,7 @@ public class TableTypeView extends LinearLayout {
                      mSeven_three.setText(titeleList.get(2));
                      ((TextView)mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
                      ((TextView)mHeadView.findViewById(R.id.seven_nine)).setText(titeleList.get(8));
+                     ((TextView)mHeadView.findViewById(R.id.seven_ten)).setText(titeleList.get(9));
                      mSeven_four.setText(titeleList.get(3));
                      mSeven_five.setText(titeleList.get(4));
                      mSeven_six.setText(titeleList.get(5));

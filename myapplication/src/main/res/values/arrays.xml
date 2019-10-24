@@ -28,18 +28,19 @@
 		<item>手术时间</item>
 		<item>医生</item>
 		<item>手术间</item>
-		<item>是否为临时患者</item>
+		<item>临时患者</item>
 	</string-array>
-	<string-array name="eight_dialog_arrays">
+	<string-array name="nine_dialog_arrays">
 		<item>选择</item>
 		<item>患者姓名</item>
 		<item>患者ID</item>
 		<item>手术时间</item>
 		<item>医生</item>
 		<item>手术间</item>
-		<item>是否为临时患者</item>
+		<item>临时患者</item>
 		<item>病区</item>
 		<item>床号</item>
+		<item>手术名称</item>
 	</string-array>
 	<string-array name="six_dialog_arrays2">
 		<item>选择</item>
@@ -48,7 +49,7 @@
 		<item>申请时间</item>
 		<item>申请医生</item>
 		<item>申请科室</item>
-		<item>是否为临时患者</item>
+		<item>临时患者</item>
 	</string-array>
 	<string-array name="eight_title_bing_arrays">
 		<item>名称</item>

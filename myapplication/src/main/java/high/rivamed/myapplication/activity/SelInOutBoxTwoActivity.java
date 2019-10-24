@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -52,6 +54,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
+import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
@@ -170,7 +173,21 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   setButtonType(mEventButton);
 	}
    }
-
+   /**
+    * 正在扫描的回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+	if (!event.type){
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
+   }
    private void setButtonType(Event.EventButton event) {
 
 	if (event.bing) {//绑定的按钮转换
@@ -401,12 +418,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   mFirstFinishLoading =false;
 		   mLastFinishLoading = true;
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+
 		}else {
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart();
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
@@ -417,6 +437,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}else {
 		   mObs.getScanEpc(event.deviceId, event.epc);
 		}
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   }
 	}
    }
@@ -456,9 +478,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-//	mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
-//	mBuilder.mLoading.stop();
-//	mBuilder.mDialog.dismiss();
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	EventBusUtils.post(new Event.EventLoadingX(true));
 	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);

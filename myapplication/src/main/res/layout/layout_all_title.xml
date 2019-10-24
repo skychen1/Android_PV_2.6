@@ -221,6 +221,15 @@
 					android:src="@drawable/robot_sel"
 					android:visibility="gone"
 					/>
+				<pl.droidsonroids.gif.GifImageView
+					android:id="@+id/base_iv_rfid"
+					android:layout_width="@dimen/x80"
+					android:layout_height="@dimen/x80"
+					android:layout_centerVertical="true"
+					android:visibility="gone"
+					android:padding="@dimen/x15"
+					android:layout_toLeftOf="@id/base_tab_robot"
+					 />
 			</RelativeLayout>
 
 		</RelativeLayout>
