@@ -318,6 +318,9 @@ public class RegisteReaderFrag extends SimpleFragment {
 		}
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无reader连接" : ("已连接设备如下：\n" + s));
 		mGoneLl.setVisibility(StringUtils.isEmpty(s) ?View.GONE :View.VISIBLE);
+		mItemTimeText2.setHint("动画延时:"+ANIMATION_TIME+"ms");
+		mItemTimeText.setHint("扫描时间:"+READER_TIME+"ms");
+
 		int mLayout = R.layout.item_reader_layout;
 		if (mAdapter != null) {
 		   mAdapter.notifyDataSetChanged();

@@ -68,7 +68,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="@dimen/x30"
-				android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描完成默认3000 ms后停止扫描"
+				android:text="开始检测连接的reader并读取功率。先输入功率，点击功率保存，扫描完成默认3000 ms后停止扫描,动画延时请设置为 1000ms 到扫描停止时间之间"
 				android:textSize="@dimen/textsize_16"/>
 		</LinearLayout>
 

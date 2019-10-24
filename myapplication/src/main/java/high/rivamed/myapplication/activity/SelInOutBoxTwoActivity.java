@@ -374,7 +374,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("LOGSCAN", "入柜---有返回---的动画停止---   ");
 			mFirstFinishLoading =false;
 			mLastFinishLoading = true;
-			setTimeStart();
+			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
@@ -386,7 +386,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
 			setTitleRightNum();
 			setNotifyData();
-			setTimeStart();
+			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			Log.i("LOGSCAN", "出柜---有耗材的动画停止-   ");
 		   }
@@ -414,7 +414,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   mFirstFinishLoading =false;
 		   mLastFinishLoading = true;
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
@@ -422,7 +422,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}else {
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
 		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
@@ -432,13 +432,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}else {
 		   mObs.getScanEpc(event.deviceId, event.epc);
 		}
-		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
-		mBaseGifImageView.setImageDrawable(drawable);
 	   }
 	}
    }
@@ -1140,7 +1138,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	setTitleRightNum();
 	setNotifyData();
-	setTimeStart();
+	setTimeStart(false);
 	if(mLastFinishLoading){//扫描完还没关就关
 	   Log.i("LOGSCAN", "setDateEpc- EventLoadingX    ");
 	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
@@ -1207,11 +1205,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    protected void onResume() {
 	mResume = true;
-	setTimeStart();
+	setTimeStart(false);
 	super.onResume();
    }
 
-   private void setTimeStart() {
+   /**
+    *
+    * @param type true是扫描结束
+    */
+   private void setTimeStart(boolean type) {
 	for (InventoryVo b : mBoxInventoryVos) {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
@@ -1232,7 +1234,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (mDoorStatusType) {
 	   mTimelyOpenDoor.setEnabled(true);
 	   mTimelyStartBtn.setEnabled(true);
-	   setFalseEnabled(true);
+	   setFalseEnabled(true,true);
 	} else {
 	   setFalseEnabled(false);
 	}
@@ -1384,6 +1386,32 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * @param b true可以点击，false不可点击
     */
    private void setFalseEnabled(boolean b) {
+	setFalseEnabledDate(b);
+	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
+	   mStarts.cancel();
+	   mStarts.start();
+	}
+   }
+   /**
+    * 设置界面按钮状态
+    * @param b true可以点击，false不可点击
+    * @param x true开始倒计时
+    */
+   private void setFalseEnabled(boolean b,boolean x) {
+	setFalseEnabledDate(b);
+	if (((mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing())||x)&&mStarts !=null &&b) {
+	   mStarts.cancel();
+	   mStarts.start();
+	   Log.i("LOGSCAN", "ddddfafaffafafafaf");
+	}
+	//	if (mStarts !=null &&b){
+	//	   mStarts.cancel();
+	//	   mStarts.start();
+	//	}
+
+   }
+
+   private void setFalseEnabledDate(boolean b) {
 	if (mTimelyLeft!=null&&mTimelyRight!=null){
 	   mTimelyLeft.setEnabled(b);
 	   mTimelyRight.setEnabled(b);
@@ -1392,14 +1420,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
-	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
-	   mStarts.cancel();
-	   mStarts.start();
-	}
-//	if (mStarts !=null &&b){
-//	   mStarts.cancel();
-//	   mStarts.start();
-//	}
 	if (mShowInBoxCountBuilder!=null&&mShowInBoxCountBuilder.mDialog.isShowing()){
 	   if (mStarts != null) {
 		mStarts.cancel();
@@ -1474,6 +1494,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	mEthDeviceIdBack.clear();
 	mObs.removeVos();
 	RxUtils.getInstance().unRegister();
+	if (mBuilder != null) {
+	   mBuilder.mLoading.stop();
+	   mBuilder.mDialog.dismiss();
+	}
 	mHandler.removeCallbacksAndMessages(null);
 	super.onDestroy();
    }
