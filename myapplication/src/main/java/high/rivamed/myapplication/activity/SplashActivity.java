@@ -26,11 +26,13 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ANIMATION_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
@@ -107,8 +109,13 @@ public class SplashActivity extends FragmentActivity {
 //			}
 //		   });
 		}
-
+		if (SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME) == -1) {
+		   ANIMATION_TIME = 1000;
+		} else {
+		   ANIMATION_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME);
+		}
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
+		   READER_TIME = 3000;
 		} else {
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		}

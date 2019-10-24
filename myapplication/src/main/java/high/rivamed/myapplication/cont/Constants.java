@@ -115,6 +115,7 @@ public class Constants {
     public static final String SAVE_STOREHOUSE_NAME = "save_storehouse_name";//库房名字
     public static final String SAVE_RECEIVE_ORDERID = "save_receive_orderid";//医嘱单ID
     public static final String SAVE_READER_TIME = "SAVE_READER_TIME";//READER扫描时长
+    public static final String SAVE_ANIMATION_TIME = "SAVE_ANIMATION_TIME";//READER扫描动画延时时长
     public static final String SAVE_LOGINOUT_TIME = "SAVE_LOGINOUT_TIME";//无操作退出时间
     public static final String SYSTEMTYPE = "HCT";//高值登录的type
     public static final String BOX_SIZE_DATE = "BOX_SIZE_DATE";//柜子的信息

@@ -46,6 +46,7 @@ public class App extends Application {
 
    public static final String TAG            = "BaseApplication";
    public static       int    READER_TIME    = 3000;     //扫描时间
+   public static       int    ANIMATION_TIME    = 1000;     //动画延时时间
    public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
    private static App instance;
    public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();

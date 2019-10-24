@@ -58,6 +58,7 @@ import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -192,6 +193,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private boolean                       mConfigType009;
    private boolean                       mConfigType007;
    private List<BoxSizeBean.DevicesBean> mBoxsize;
+   private boolean mScanType;
 
    /**
     * 门锁的提示
@@ -226,7 +228,15 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
 	setTimeStart();
    }
-
+   /**
+    * 正在扫描的回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+	mScanType = event.type;
+	Log.i(TAG,"mScanType   "+mScanType);
+   }
    /**
     * 门锁的状态检测回调
     *
@@ -343,7 +353,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
 		}
 	   }
-	}, 600);
+	}, ANIMATION_TIME);
 	if (getVosType3(mBoxInventoryVos, event.epc, mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()) {
@@ -680,7 +690,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatientId = null;
 		   }
 		   TimelyAllFrag.mPauseS = true;
-		   mBoxInventoryVos.clear();
 		   mLocalAllSize = mAllSize;
 		   setRemoveRunnable();
 		   moreStartScan(mBoxInventoryVos, mObs);

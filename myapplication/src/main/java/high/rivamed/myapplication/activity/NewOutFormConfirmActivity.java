@@ -346,7 +346,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   if (mDoorStatusType) {
-			mBoxInventoryVos.clear();
+//			mBoxInventoryVos.clear();
 			mLocalAllSize = mAllSize;
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {

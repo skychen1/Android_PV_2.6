@@ -91,47 +91,6 @@ public class AllDeviceCallBack {
 	return instances;
    }
 
-   //   /**
-   //    * 强开的扫描
-   //    */
-   //   private void StrongOpenScanStart() {
-   //	List<String> deviceId = DevicesUtils.getReaderDeviceId();
-   //	for (String s : deviceId) {//记录强开后未关门
-   //	   int i =  ReaderManager.getManager().startScan(s, READER_TIME);
-   //	}
-   //   }
-
-   //   /**
-   //    * 柜门检测关闭后进行扫描
-   //    *
-   //    * @param deviceIndentify
-   //    */
-   //   private void clossDoorStartScan(String deviceIndentify) {
-   //	if (mReaderIdList.size() == 0) {
-   //	   new Thread(new Runnable() {
-   //		@Override
-   //		public void run() {
-   //		   try {
-   //			Thread.currentThread().sleep(4000);
-   //			setReaderList(null);
-   //			if (mReaderIdList.size() == 0) {
-   //			   LogUtils.i(TAG, "走了");
-   //			   mEthDeviceIdBack.clear();
-   //			   EventBusUtils.postSticky(new Event.EventToast("reader未启动，请重新开关柜门"));
-   //			} else {
-   //			   startScan(deviceIndentify);
-   //			}
-   //		   } catch (Exception e) {
-   //			e.printStackTrace();
-   //		   }
-   //		}
-   //
-   //	   }).start();
-   //
-   //	} else {
-   //	   startScan(deviceIndentify);
-   //	}
-   //   }
 
    public void setReaderList(String mDeviceCode) {
 	if (mDeviceCode == null) {
@@ -243,8 +202,8 @@ public class AllDeviceCallBack {
 	   ReaderManager.getManager().startScan(device_id, READER_TIME);
 	}
 	if (i == 2) {
-	   ReaderManager.getManager().stopScan(device_id);
-	   ReaderManager.getManager().startScan(device_id, READER_TIME);
+//	   ReaderManager.getManager().stopScan(device_id);
+//	   ReaderManager.getManager().startScan(device_id, READER_TIME);
 	}
 	LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
 

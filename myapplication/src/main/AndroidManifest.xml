@@ -137,26 +137,6 @@
         <activity
             android:name=".activity.TakeNotesDetailsActivity"
             android:screenOrientation="sensorLandscape" />
-        <!--androidpnclient 开始-->
-        <activity
-            android:name="org.androidpn.demoapp.DemoAppActivity"
-            android:label="@string/app_name">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-
-        <service
-            android:name="org.androidpn.client.NotificationService"
-            android:enabled="true"
-            android:label="NotificationService">
-            <intent-filter>
-                <action android:name="org.androidpn.client.NotificationService" />
-
-            </intent-filter>
-        </service>
-        <!--androidpnclient 结束-->
 
         <receiver android:name=".http.ContentReceiver">
             <intent-filter>
@@ -177,8 +157,6 @@
             android:name="high.rivamed.myapplication.service.ScanService"
             android:exported="true">
         </service>
-        <service android:name=".service.TimerService" >   </service>
-        <receiver android:name=".receiver.AlarmReceiver" >   </receiver>
     </application>
 
 </manifest>

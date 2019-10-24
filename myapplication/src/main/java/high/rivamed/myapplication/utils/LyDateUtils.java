@@ -114,7 +114,7 @@ public class LyDateUtils {
 		}else {
 		   InventoryVo vo = vos.get(x);
 		   if (mOperationType == 9 || mOperationType == 8 ||
-			 (mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
+			 (mOperationType == 3 && vo.getOperationStatus() != 98) || (mOperationType == 4&&vo.isDateNetType())) {
 			if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
 			   vo.setStatus(mOperationType + "");
 			}
@@ -239,7 +239,7 @@ public class LyDateUtils {
    public static void startScan(
 	   List<InventoryVo> mBoxInventoryVos, RxUtils.BaseEpcObservable mObs,
 	   String deviceIndentify) {
-	EventBusUtils.postSticky(new Event.EventLoadingX(true));
+
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
@@ -249,19 +249,26 @@ public class LyDateUtils {
 	   for (BoxIdBean deviceid : deviceBean) {
 		String device_id = deviceid.getDevice_id();
 		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
-		Log.i("SelSelfff", "i   " + i);
+		Log.i("aalldf", "startScan  "+i);
 		if (i == 2) {
-		   ReaderManager.getManager().stopScan(device_id);
-		   ReaderManager.getManager().startScan(device_id, READER_TIME);
+		   Log.i("aalldf", "mRunnable   开始  "+device_id);
+		   EventBusUtils.post(new Event.StartScanType(true));
+		   ToastUtils.showShortToast("扫描中，请扫描结束后再进行操作！");
 		}
 		if (i == 1) {
 		   ReaderManager.getManager().restDevice(device_id);
-		   ReaderManager.getManager().startScan(device_id, READER_TIME);
+		   ToastUtils.showShortToast("readr未连接，请稍后重试！");
 		}
-		setAllBoxVosDate(mBoxInventoryVos, box_id);
-		if (mObs != null&&mDoorStatusType) {
-		   mObs.removeVos();
+		if (i ==0){
+		   EventBusUtils.postSticky(new Event.EventLoadingX(true));
+		   mBoxInventoryVos.clear();
+		   setAllBoxVosDate(mBoxInventoryVos, box_id);
+		   EventBusUtils.post(new Event.StartScanType(false));
+		   if (mObs != null&&mDoorStatusType) {
+			mObs.removeVos();
+		   }
 		}
+
 	   }
 	}
 //	return mBoxInventoryVos;

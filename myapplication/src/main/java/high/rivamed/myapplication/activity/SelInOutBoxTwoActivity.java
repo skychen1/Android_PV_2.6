@@ -53,6 +53,7 @@ import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -360,7 +361,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
-	   },1000);
+	   },ANIMATION_TIME+400);
 	}else {
 	   mHandler.postDelayed(new Runnable() {
 		@Override
@@ -373,12 +374,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("LOGSCAN", "出柜---有耗材的动画停止-   ");
 		   }
 		}
-	   },600);
+	   },ANIMATION_TIME);
 	}
 	if (getVosType2(mBoxInventoryVos, event.epc,mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()){
 		InventoryVo next = iterator.next();
+
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
 //		   setTitleRightNum();
@@ -425,11 +427,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void setVosOperationType(InventoryVo next) {
 	if (mOperationType == 9 || mOperationType == 8 ||
-	    (mOperationType == 3 && next.getOperationStatus() != 98) || mOperationType == 4) {
+	    (mOperationType == 3 && next.getOperationStatus() != 98) || (mOperationType == 4&& next.isDateNetType())) {
 	   if (next.getIsErrorOperation() != 1||(next.getIsErrorOperation()==1&&next.getExpireStatus()==0)) {
+		Log.i("LOGSCAN", "setVosOperationType   " + mOperationType+"      "+next.isDateNetType()+"     "+next.getOperationStatus());
 		next.setStatus(mOperationType + "");
 	   }
-	   if (mOperationType == 4) {
+	   if (mOperationType == 4&& next.isDateNetType()) {
 		next.setOperationStatus(3);
 	   }
 	} else {
@@ -683,7 +686,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
-			mBoxInventoryVos.clear();
+//			mBoxInventoryVos.clear();
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);

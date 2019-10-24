@@ -420,7 +420,7 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
                 currentAntIndex++;
                 sendNextWorkAnt();
             }
-        }, 1000);
+        }, 800);
     }
 
     /**

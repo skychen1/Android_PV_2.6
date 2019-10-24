@@ -524,7 +524,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(18);
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -571,7 +571,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(18);
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -619,7 +619,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList[index]);
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(18);
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -651,7 +651,7 @@ public class UIUtils {
 	//        titleContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 	//        titleContainer.setDividerDrawable(getResources().getDrawable(R.drawable.bg_btn_gray_nor2));
 	ViewPagerHelper.bind(mMagicIndicator, mCttimecheckViewpager);
-	mCommonNavigator.getTitleContainer().setPadding(0, ImageUtils.dip2px(mAppContext, 2), 0, 0);
+	mCommonNavigator.getTitleContainer().setPadding(0, (int)getResources().getDimension(R.dimen.y2), 0, 0);
 	mCommonNavigator.getTitleContainer()
 		.getChildAt(0)
 		.setBackgroundColor(getResources().getColor(R.color.white));

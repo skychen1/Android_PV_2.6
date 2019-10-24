@@ -562,7 +562,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		} else {
 		   if (mDoorStatusType) {
 			mLocalAllSize = mAllSize;
-			mBoxInventoryVos.clear();
+//			mBoxInventoryVos.clear();
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
