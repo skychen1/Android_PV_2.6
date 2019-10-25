@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -96,7 +97,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());
 	   window.showPopupWindow(helper.getView(R.id.seven_seven),mDm.widthPixels);
 	});
-	if (status!=null&&((status.equals("3")&&item.getOperationStatus()!=98)||status.equals("4"))){
+	if (status!=null&&((status.equals("3")&&item.getOperationStatus()!=98)||(status.equals("4")&&item.getOperationStatus()!=7))){
 	   if (item.getExpireStatus()==0){
 		mSeven_six.setText("已过期");
 	   }else {

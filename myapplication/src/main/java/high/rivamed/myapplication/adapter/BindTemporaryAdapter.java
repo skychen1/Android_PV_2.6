@@ -62,9 +62,22 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-        if (mSize==9){
-            helper.setText(R.id.seven_eight, item.getWardName());
-            helper.setText(R.id.seven_nine, item.getBedNo());
+        if (mSize==10){
+            if (item.getWardName()==null||item.getWardName().equals("")){
+                helper.setText(R.id.seven_eight, "/");
+            }else {
+                helper.setText(R.id.seven_eight, item.getWardName());
+            }
+            if (item.getBedNo()==null||item.getBedNo().equals("")){
+                helper.setText(R.id.seven_nine,"/");
+            }else {
+                helper.setText(R.id.seven_nine, item.getBedNo());
+            }
+            if (item.getSurgeryName()==null||item.getSurgeryName().equals("")){
+                helper.setText(R.id.seven_ten,"/");
+            }else {
+                helper.setText(R.id.seven_ten, item.getSurgeryName());
+            }
         }
         if (item.getSex()!=null){
             mSeven_two.setText(item.getPatientName()+" - "+item.getSex());

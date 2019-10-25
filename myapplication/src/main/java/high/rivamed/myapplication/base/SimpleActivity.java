@@ -33,14 +33,12 @@ import high.rivamed.myapplication.base.mvp.KnifeKit;
 import high.rivamed.myapplication.base.mvp.VDelegate;
 import high.rivamed.myapplication.base.mvp.VDelegateBase;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.service.TimerService;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 
@@ -102,11 +100,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	super.onCreate(savedInstanceState);
 	EventBusUtils.register(this);
 	//	hideBottomUIMenu();
-
-	if (MAIN_URL != null&&mIntent==null) {
-	   mIntent = new Intent(this, TimerService.class);
-	   startService(mIntent);
-	}
 
 	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				   WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,7 +59,9 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
+import pl.droidsonroids.gif.GifDrawable;
 
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -192,6 +196,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private boolean                       mConfigType009;
    private boolean                       mConfigType007;
    private List<BoxSizeBean.DevicesBean> mBoxsize;
+   private boolean mScanType;
 
    /**
     * 门锁的提示
@@ -226,7 +231,23 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	}
 	setTimeStart();
    }
-
+   /**
+    * 正在扫描的回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+      if (!event.type){
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
+	mScanType = event.type;
+	Log.i(TAG,"mScanType   "+mScanType);
+   }
    /**
     * 门锁的状态检测回调
     *
@@ -343,7 +364,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
 		}
 	   }
-	}, 600);
+	}, ANIMATION_TIME);
 	if (getVosType3(mBoxInventoryVos, event.epc, mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()) {
@@ -364,6 +385,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		setNotifyData();
 		setTimeStart();
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -522,6 +545,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	EventBusUtils.register(this);
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	mBoxsize = mGson.fromJson(string,
@@ -680,7 +706,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatientId = null;
 		   }
 		   TimelyAllFrag.mPauseS = true;
-		   mBoxInventoryVos.clear();
 		   mLocalAllSize = mAllSize;
 		   setRemoveRunnable();
 		   moreStartScan(mBoxInventoryVos, mObs);

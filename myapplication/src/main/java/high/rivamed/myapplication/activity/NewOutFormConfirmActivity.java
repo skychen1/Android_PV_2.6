@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
@@ -24,6 +25,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -58,9 +60,10 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
+import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
+import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -93,14 +96,14 @@ import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
 
 public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
-   private String TAG = "NewOutFormConfirmActivity";
-   public int      mSize;
+   private String   TAG = "NewOutFormConfirmActivity";
+   public  int      mSize;
    //重新扫描
    @BindView(R.id.timely_start_btn)
-   public TextView mTimelyStartBtn;
+   public  TextView mTimelyStartBtn;
    //打开柜门
    @BindView(R.id.timely_open_door)
-   public TextView mTimelyOpenDoor;
+   public  TextView mTimelyOpenDoor;
    //查看医嘱清单
    @BindView(R.id.ly_bing_btn)
    TextView mLyBingBtn;
@@ -176,17 +179,17 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    public TextView      mAllOutText;
    public TableTypeView mTypeView;
    List<String> titeleList = null;
-   private int                          mLocalAllSize;
-   private String                       mEpc;
-   private       LoadingDialogX.Builder mBuilder;
+   private int                     mLocalAllSize;
+   private String                  mEpc;
+   private LoadingDialogX.Builder  mBuilder;
    /**
     * 根据EPC请求网络参数
     */
-   public  FindBillOrderBean            mFindBillOrderBean;
+   public  FindBillOrderBean       mFindBillOrderBean;
    /**
     * 确认领用使用参数
     */
-   private OrderSheetBean.RowsBean      mPrePageDate;
+   private OrderSheetBean.RowsBean mPrePageDate;
 
    /**
     * 柜子信息
@@ -200,13 +203,13 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
    private String                    mClossEthId;
    private RxUtils.BaseEpcObservable mObs;
-   public List<InventoryVo> mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
-   private Handler           mHandler;
-   private Runnable          mRunnable;
-   private Runnable          mRunnableW;
-   private boolean mResume;
-   private OpenDoorDialog.Builder mBuildero;
-   private int mAllSize;
+   public  List<InventoryVo>         mBoxInventoryVos = new ArrayList<>(); //在柜epc信息
+   private Handler                   mHandler;
+   private Runnable                  mRunnable;
+   private Runnable                  mRunnableW;
+   private boolean                   mResume;
+   private OpenDoorDialog.Builder    mBuildero;
+   private int                       mAllSize;
 
    @Override
    protected int getContentLayoutId() {
@@ -218,16 +221,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	if (event.type) {
 	   if (event.bing) {//绑定的按钮转换
 		for (InventoryVo b : mBoxInventoryVos) {
-		   if (mDoorStatusType){
+		   if (mDoorStatusType) {
 			if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 			     b.getExpireStatus() == 0) ||
 			    (!b.getRemark().equals("1") && b.getDeleteCount() == 0)) {
 			   mDownBtnOne.setEnabled(false);
-			   if (!b.getRemark().equals("1")){
+			   if (!b.getRemark().equals("1")) {
 				mAllOutText.setVisibility(View.VISIBLE);
 				mAllOutText.setText(R.string.outform_error_string);
-			   }else {
+			   } else {
 				mAllOutText.setVisibility(View.VISIBLE);
 				mAllOutText.setText(R.string.epc_error_string);
 			   }
@@ -237,7 +240,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			   mAllOutText.setVisibility(View.GONE);
 
 			}
-		   }else {
+		   } else {
 			mDownBtnOne.setEnabled(false);
 			mAllOutText.setVisibility(View.VISIBLE);
 			mAllOutText.setText(R.string.open_error_string);
@@ -247,17 +250,16 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	}
    }
 
-
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventLoading(Event.EventLoadingX event) {
 	if (event.loading) {
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showRader(this);
-		mBuilder.setMsg(mLocalAllSize+"");
+		mBuilder.setMsg(mLocalAllSize + "");
 	   } else {
 		if (!mBuilder.mDialog.isShowing()) {
 		   mBuilder.create().show();
-		   mBuilder.setMsg(mLocalAllSize+"");
+		   mBuilder.setMsg(mLocalAllSize + "");
 		}
 	   }
 	} else {
@@ -268,9 +270,29 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	}
    }
 
+   /**
+    * 正在扫描的回调
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+	if (!event.type) {
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
+   }
+
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	EventBusUtils.register(this);
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mHandler = new Handler();
@@ -290,20 +312,21 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	initView();
 	initRxJavaSearch();
    }
+
    @Override
    protected void onResume() {
 	super.onResume();
-	mResume=true;
+	mResume = true;
    }
 
    @Override
    protected void onPause() {
 	super.onPause();
-	mResume=false;
+	mResume = false;
    }
 
    private void initView() {
-	startScan(mBoxInventoryVos,mObs,mClossEthId);
+	startScan(mBoxInventoryVos, mObs, mClossEthId);
 	mBaseTabBack.setVisibility(View.GONE);
 	mBaseTabIconRight.setEnabled(false);
 	mBaseTabTvName.setEnabled(false);
@@ -311,8 +334,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mBaseTabBtnMsg.setEnabled(false);
 	mDownBtnOne.setEnabled(false);
 
-
-	if (mBillOrderResultBean==null){
+	if (mBillOrderResultBean == null) {
 	   mBillOrderResultBean = new BillOrderResultBean();
 	   mBillOrderResultBean.setInventoryVos(new ArrayList<>());
 	}
@@ -337,8 +359,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
    }
 
-   @OnClick({ R.id.timely_start_btn, R.id.activity_btn_one,
-	   R.id.ly_bing_btn, R.id.timely_open_door})
+   @OnClick({R.id.timely_start_btn, R.id.activity_btn_one, R.id.ly_bing_btn, R.id.timely_open_door})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.timely_start_btn:
@@ -346,14 +367,14 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   if (mDoorStatusType) {
-			mBoxInventoryVos.clear();
+			//			mBoxInventoryVos.clear();
 			mLocalAllSize = mAllSize;
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
 			   startScan(mBoxInventoryVos, mObs, deviceCode);
 			}
-		   }else {
+		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
@@ -368,7 +389,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			mObs.removeVos();
 			setRemoveRunnable();
 			reOpenDoor();
-		   }else {
+		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
@@ -381,19 +402,21 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			mDownBtnOne.setEnabled(false);
 			sureTransReceiveOrder();
 			setRemoveRunnable();
-		   }else {
+		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
 		}
 		break;
 	   case R.id.ly_bing_btn:
-		LogUtils.i(TAG, "mTransReceiveOrderDetailVosBean   " + mGson.toJson(mTransReceiveOrderDetailVosBean));
+		LogUtils.i(TAG, "mTransReceiveOrderDetailVosBean   " +
+				    mGson.toJson(mTransReceiveOrderDetailVosBean));
 		setRemoveRunnable();
 		DialogUtils.showLookUpDetailedListDialog(mContext, true,
 								     mTransReceiveOrderDetailVosBean, mPrePageDate);
 		break;
 	}
    }
+
    /**
     * 500ms进行网络请求一次RXJAVA的处理
     */
@@ -405,11 +428,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		mFindBillOrderBean.getDeviceIds().clear();
 		mFindBillOrderBean.getEpcs().clear();
 		for (DeviceInventoryVo vo : vos) {
-		   if (mFindBillOrderBean.getDeviceIds().size()==0||!getVosBoxIdVo(mFindBillOrderBean.getInventoryVos(),vo.getDeviceId())){
+		   if (mFindBillOrderBean.getDeviceIds().size() == 0 ||
+			 !getVosBoxIdVo(mFindBillOrderBean.getInventoryVos(), vo.getDeviceId())) {
 			mFindBillOrderBean.getDeviceIds().add(vo.getDeviceId());
 		   }
 		   for (Inventory inventory : vo.getInventories()) {
-			if (!getVosType(mFindBillOrderBean.getInventoryVos(),inventory.getEpc())){
+			if (!getVosType(mFindBillOrderBean.getInventoryVos(), inventory.getEpc())) {
 			   mFindBillOrderBean.getEpcs().add(inventory.getEpc());
 			}
 		   }
@@ -420,6 +444,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   }
 	});
    }
+
    private void setTitleRightNum() {
 	if (mPublicAdapter == null) {
 	   setLayoutDate();
@@ -434,14 +459,12 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   }
 	}
 	ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
-	mTimelyNumber.setText(Html.fromHtml(
-		"耗材种类：<font color='#262626'><big>" + list.size() +
-		"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-		mBoxInventoryVos.size() + "</big></font>"));
-
-
+	mTimelyNumber.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
+							"</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+							mBoxInventoryVos.size() + "</big></font>"));
 
    }
+
    /**
     * adapter数据的刷新
     */
@@ -449,6 +472,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mPublicAdapter.notifyDataSetChanged();
 	setHandlerToastAndFinish();
    }
+
    /**
     * 没有数据就跳转到主界面
     */
@@ -479,6 +503,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   }
 	};
    }
+
    /**
     * 没有扫到数据，就弹出toast和关闭本页
     */
@@ -490,6 +515,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   setRemoveRunnable();
 	}
    }
+
    /**
     * 取消runnable
     */
@@ -508,8 +534,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    private void setLayoutDate() {
 	mLayout = R.layout.item_formcon_seven_layout;
 	mHeadView = mContext.getLayoutInflater()
-		.inflate(R.layout.item_formcon_seven_title_layout, (ViewGroup) mLinearLayout.getParent(),
-			   false);
+		.inflate(R.layout.item_formcon_seven_title_layout,
+			   (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
 	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
@@ -544,7 +570,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			LogUtils.i(TAG, "getBillStockByEpc   " + result);
 			BillOrderResultBean resultBean = mGson.fromJson(result,
-												   BillOrderResultBean.class);
+											BillOrderResultBean.class);
 			setDateEpc(resultBean);
 		   }
 
@@ -555,18 +581,19 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   }
 		});
    }
+
    /**
     * 扫描EPC返回后进行赋值
     */
    private void setDateEpc(BillOrderResultBean resultBean) {
 
-	if (resultBean.getInventoryVos() != null &&
-	    resultBean.getInventoryVos().size() > 0) {
-	   setBoxVosDate(mBoxInventoryVos,resultBean.getInventoryVos());
+	if (resultBean.getInventoryVos() != null && resultBean.getInventoryVos().size() > 0) {
+	   setBoxVosDate(mBoxInventoryVos, resultBean.getInventoryVos());
 	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	}
 	setTitleRightNum();
    }
+
    private void sureTransReceiveOrder() {
 	mBillOrderResultBean.setInventoryVos(mBoxInventoryVos);
 	mBillOrderResultBean.setOrderId(mPrePageDate.getOrderId());
@@ -596,7 +623,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 				DialogUtils.showTwoDialog(mContext, mContext, 2, "耗材领用成功",
 								  sureReciveOrder.getMsg());
 			   }
-			   UnNetCstUtils.putUnNetOperateYes( NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
+			   UnNetCstUtils.putUnNetOperateYes(
+				   NewOutFormConfirmActivity.this);//提交离线耗材和重新获取在库耗材数据
 
 			} else {
 			   mDownBtnOne.setEnabled(true);
@@ -626,7 +654,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   ordersBean.setOrderId(mPrePageDate.getOrderId());
 	   mPushFormOrders.add(ordersBean);
 	} else if (mPushFormOrders != null && mPushFormOrders.size() != 0) {
-	   for (int x=0;x<mPushFormOrders.size();x++){
+	   for (int x = 0; x < mPushFormOrders.size(); x++) {
 		if (!mPushFormOrders.get(x).getOrderId().equals(mPrePageDate.getOrderId())) {
 		   PushFormDateBean.OrdersBean ordersBean = new PushFormDateBean.OrdersBean();
 		   ordersBean.setOrderId(mPrePageDate.getOrderId());
@@ -638,26 +666,27 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
    /**
     * EPC扫描返回数据（单个返回）
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventOneEpcDeviceCallBack event) {
 	mLocalAllSize--;
-	if (mLocalAllSize>0){
-	   mBuilder.setMsg(mLocalAllSize+"");
+	if (mLocalAllSize > 0) {
+	   mBuilder.setMsg(mLocalAllSize + "");
 	}
 	mEpc = event.epc;
 	mHandler.postDelayed(new Runnable() {
 	   @Override
 	   public void run() {
-		if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
+		if (mEpc.equals(event.epc) && !event.epc.equals("-1")) {
 		   setTitleRightNum();
 		   setNotifyData();
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
 		}
 	   }
-	},600);
+	}, 600);
 	if (getVosType(mBoxInventoryVos, event.epc)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()) {
@@ -667,19 +696,21 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   setTitleRightNum();
 		   break;
 		}
-		if (getVosRemark(mTransReceiveOrderDetailVosBean,next.getCstId())){
+		if (getVosRemark(mTransReceiveOrderDetailVosBean, next.getCstId())) {
 		   next.setRemark("1");
-		}else {
+		} else {
 		   next.setRemark("0");
 		}
 	   }
 
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-	   if (event.epc==null||event.epc.equals("0")||event.epc.equals("-1")){
+	   if (event.epc == null || event.epc.equals("0") || event.epc.equals("-1")) {
 		setTitleRightNum();
 		setNotifyData();
-		EventBusUtils.post(new Event.EventButton(true,true));
-	   }else {
+		EventBusUtils.post(new Event.EventButton(true, true));
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
+	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
 	}
@@ -698,6 +729,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 
    /**
     * 门锁的提示
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
@@ -716,11 +748,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	   if (mBuildero != null) {
 		mBuildero.mDialog.dismiss();
 	   }
-	   startScan(mBoxInventoryVos,mObs,event.mEthId);
+	   startScan(mBoxInventoryVos, mObs, event.mEthId);
 	}
 	if (mDoorStatusType) {
 	   setTitleRightNum();
-	}else {
+	} else {
 	   mDownBtnOne.setEnabled(false);
 	   mAllOutText.setVisibility(View.VISIBLE);
 	   mAllOutText.setText(R.string.open_error_string);
@@ -739,18 +771,18 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	mHandler.removeCallbacksAndMessages(null);
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   if (mBuilder.mHandler!=null){
+	   if (mBuilder.mHandler != null) {
 		mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mBuilder.mDialog.dismiss();
-	   mBuilder=null;
+	   mBuilder = null;
 	}
 	if (mBuildero != null) {
-	   if (mBuildero.mHandler!=null){
+	   if (mBuildero.mHandler != null) {
 		mBuildero.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mBuildero.mDialog.dismiss();
-	   mBuildero=null;
+	   mBuildero = null;
 	}
 	cancel();
    }

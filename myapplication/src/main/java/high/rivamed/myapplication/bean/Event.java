@@ -24,6 +24,16 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
+    * 正在扫描:type :true是正在扫描
+    */
+   public static class StartScanType {
+	public boolean type;
+
+	public StartScanType(boolean type) {
+	   this.type = type;
+	}
+   }
+   /**
     * 页面顶部的连接状态改变
     */
    public static class EventPushMessageNum {

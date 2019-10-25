@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,6 +26,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +65,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
+import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
@@ -219,7 +222,21 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private int                       mLocalAllSize;
    private String                    mEpc;
    private int                       mAllSize;
-
+   /**
+    * 正在扫描的回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+	if (!event.type){
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
+   }
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -228,6 +245,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	EventBusUtils.register(this);
 	mAllSize = getLocalAllCstVos().size();
 	mLocalAllSize = mAllSize;
@@ -424,6 +444,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		setTitleRightNum();
 		setNotifyData();
 		EventBusUtils.post(new Event.EventButton(true, true));
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -562,7 +584,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		} else {
 		   if (mDoorStatusType) {
 			mLocalAllSize = mAllSize;
-			mBoxInventoryVos.clear();
+//			mBoxInventoryVos.clear();
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;

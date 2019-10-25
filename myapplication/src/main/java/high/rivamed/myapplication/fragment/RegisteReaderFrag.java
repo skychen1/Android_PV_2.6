@@ -45,11 +45,13 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_ANIMATION_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 
 /**
@@ -84,6 +86,8 @@ public class RegisteReaderFrag extends SimpleFragment {
    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
    @BindView(R.id.item_time_text)
    EditText     mItemTimeText;
+   @BindView(R.id.item_time_text2)
+   EditText     mItemTimeText2;
    @BindView(R.id.item_setting_time)
    TextView     mItemSettingTime;
    @BindView(R.id.gone_ll)
@@ -293,7 +297,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 	});
    }
 
-   @OnClick({R.id.frag_start, R.id.item_setting_time})
+   @OnClick({R.id.frag_start, R.id.item_setting_time,R.id.item_setting_time2})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
@@ -314,6 +318,9 @@ public class RegisteReaderFrag extends SimpleFragment {
 		}
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无reader连接" : ("已连接设备如下：\n" + s));
 		mGoneLl.setVisibility(StringUtils.isEmpty(s) ?View.GONE :View.VISIBLE);
+		mItemTimeText2.setHint("动画延时:"+ANIMATION_TIME+"ms");
+		mItemTimeText.setHint("扫描时间:"+READER_TIME+"ms");
+
 		int mLayout = R.layout.item_reader_layout;
 		if (mAdapter != null) {
 		   mAdapter.notifyDataSetChanged();
@@ -334,6 +341,15 @@ public class RegisteReaderFrag extends SimpleFragment {
 		   SPUtils.putInt(UIUtils.getContext(), SAVE_READER_TIME, time);
 		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
 		   AppendLog("设置RFID reader扫描完成：" + READER_TIME + " ms 后停止扫描！");
+		} catch (Exception ex) {
+		}
+		break;
+	   case R.id.item_setting_time2:
+		try {
+		   int time = Integer.parseInt(mItemTimeText2.getText().toString().trim());
+		   SPUtils.putInt(UIUtils.getContext(), SAVE_ANIMATION_TIME, time);
+		   ANIMATION_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME);
+		   AppendLog("设置扫描动画无新耗材扫描到延时：" + ANIMATION_TIME + " ms 后停止动画！");
 		} catch (Exception ex) {
 		}
 		break;

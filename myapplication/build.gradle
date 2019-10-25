@@ -124,6 +124,9 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+//    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
+
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

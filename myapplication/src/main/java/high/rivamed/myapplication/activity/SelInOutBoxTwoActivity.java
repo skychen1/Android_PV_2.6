@@ -1,5 +1,6 @@
 package high.rivamed.myapplication.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -52,7 +54,9 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.TableTypeView;
+import pl.droidsonroids.gif.GifDrawable;
 
+import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
@@ -169,7 +173,21 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   setButtonType(mEventButton);
 	}
    }
-
+   /**
+    * 正在扫描的回调
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onScanStartType(Event.StartScanType event) {
+	if (!event.type){
+	   GifDrawable gifDrawable = null;
+	   try {
+		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
+		mBaseGifImageView.setImageDrawable(gifDrawable);
+	   } catch (IOException e) {
+	   }
+	}
+   }
    private void setButtonType(Event.EventButton event) {
 
 	if (event.bing) {//绑定的按钮转换
@@ -356,11 +374,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("LOGSCAN", "入柜---有返回---的动画停止---   ");
 			mFirstFinishLoading =false;
 			mLastFinishLoading = true;
-			setTimeStart();
+			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
-	   },1000);
+	   },ANIMATION_TIME+400);
 	}else {
 	   mHandler.postDelayed(new Runnable() {
 		@Override
@@ -368,17 +386,18 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
 			setTitleRightNum();
 			setNotifyData();
-			setTimeStart();
+			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			Log.i("LOGSCAN", "出柜---有耗材的动画停止-   ");
 		   }
 		}
-	   },600);
+	   },ANIMATION_TIME);
 	}
 	if (getVosType2(mBoxInventoryVos, event.epc,mOperationType)) {//过滤不在库存的epc进行请求，拿出柜子并且有库存，本地处理
 	   Iterator<InventoryVo> iterator = mBoxInventoryVos.iterator();
 	   while (iterator.hasNext()){
 		InventoryVo next = iterator.next();
+
 		if (next.getEpc().equals(event.epc)) {//本来在库存的且未拿出柜子的就remove
 		   iterator.remove();
 //		   setTitleRightNum();
@@ -395,22 +414,25 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   mFirstFinishLoading =false;
 		   mLastFinishLoading = true;
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+
 		}else {
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
+		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		mBaseGifImageView.setImageDrawable(drawable);
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
 		   setTitleRightNum();
 		   setNotifyData();
-		   setTimeStart();
+		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}else {
 		   mObs.getScanEpc(event.deviceId, event.epc);
@@ -425,11 +447,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void setVosOperationType(InventoryVo next) {
 	if (mOperationType == 9 || mOperationType == 8 ||
-	    (mOperationType == 3 && next.getOperationStatus() != 98) || mOperationType == 4) {
+	    (mOperationType == 3 && next.getOperationStatus() != 98) || (mOperationType == 4&& next.isDateNetType())) {
 	   if (next.getIsErrorOperation() != 1||(next.getIsErrorOperation()==1&&next.getExpireStatus()==0)) {
+		Log.i("LOGSCAN", "setVosOperationType   " + mOperationType+"      "+next.isDateNetType()+"     "+next.getOperationStatus());
 		next.setStatus(mOperationType + "");
 	   }
-	   if (mOperationType == 4) {
+	   if (mOperationType == 4&& next.isDateNetType()) {
 		next.setOperationStatus(3);
 	   }
 	} else {
@@ -453,9 +476,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
-//	mBuilder = DialogUtils.showRader(SelInOutBoxTwoActivity.this);
-//	mBuilder.mLoading.stop();
-//	mBuilder.mDialog.dismiss();
+	mBaseGifImageView.setVisibility(View.VISIBLE);
+	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	mBaseGifImageView.setImageDrawable(drawable);
 	EventBusUtils.post(new Event.EventLoadingX(true));
 	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
@@ -683,7 +706,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
-			mBoxInventoryVos.clear();
+//			mBoxInventoryVos.clear();
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
@@ -1115,7 +1138,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	setTitleRightNum();
 	setNotifyData();
-	setTimeStart();
+	setTimeStart(false);
 	if(mLastFinishLoading){//扫描完还没关就关
 	   Log.i("LOGSCAN", "setDateEpc- EventLoadingX    ");
 	   EventBusUtils.postSticky(new Event.EventLoadingX(false));
@@ -1182,11 +1205,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Override
    protected void onResume() {
 	mResume = true;
-	setTimeStart();
+	setTimeStart(false);
 	super.onResume();
    }
 
-   private void setTimeStart() {
+   /**
+    *
+    * @param type true是扫描结束
+    */
+   private void setTimeStart(boolean type) {
 	for (InventoryVo b : mBoxInventoryVos) {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
@@ -1207,7 +1234,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (mDoorStatusType) {
 	   mTimelyOpenDoor.setEnabled(true);
 	   mTimelyStartBtn.setEnabled(true);
-	   setFalseEnabled(true);
+	   setFalseEnabled(true,true);
 	} else {
 	   setFalseEnabled(false);
 	}
@@ -1359,6 +1386,32 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * @param b true可以点击，false不可点击
     */
    private void setFalseEnabled(boolean b) {
+	setFalseEnabledDate(b);
+	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
+	   mStarts.cancel();
+	   mStarts.start();
+	}
+   }
+   /**
+    * 设置界面按钮状态
+    * @param b true可以点击，false不可点击
+    * @param x true开始倒计时
+    */
+   private void setFalseEnabled(boolean b,boolean x) {
+	setFalseEnabledDate(b);
+	if (((mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing())||x)&&mStarts !=null &&b) {
+	   mStarts.cancel();
+	   mStarts.start();
+	   Log.i("LOGSCAN", "ddddfafaffafafafaf");
+	}
+	//	if (mStarts !=null &&b){
+	//	   mStarts.cancel();
+	//	   mStarts.start();
+	//	}
+
+   }
+
+   private void setFalseEnabledDate(boolean b) {
 	if (mTimelyLeft!=null&&mTimelyRight!=null){
 	   mTimelyLeft.setEnabled(b);
 	   mTimelyRight.setEnabled(b);
@@ -1367,14 +1420,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
-	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
-	   mStarts.cancel();
-	   mStarts.start();
-	}
-//	if (mStarts !=null &&b){
-//	   mStarts.cancel();
-//	   mStarts.start();
-//	}
 	if (mShowInBoxCountBuilder!=null&&mShowInBoxCountBuilder.mDialog.isShowing()){
 	   if (mStarts != null) {
 		mStarts.cancel();
