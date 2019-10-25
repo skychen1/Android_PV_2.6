@@ -24,13 +24,15 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class Event {
    /**
-    * 正在扫描:type :true是正在扫描
+    * 正在扫描:type :true是被占用无法开启扫描  start:true正在扫描
     */
    public static class StartScanType {
 	public boolean type;
+	public boolean start;
 
-	public StartScanType(boolean type) {
+	public StartScanType(boolean type,boolean start) {
 	   this.type = type;
+	   this.start = start;
 	}
    }
    /**

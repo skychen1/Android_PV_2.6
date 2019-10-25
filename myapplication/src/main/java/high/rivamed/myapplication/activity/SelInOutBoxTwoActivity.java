@@ -160,7 +160,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private boolean                      mFirstFinishLoading; //先关闭
    private boolean                      mLastFinishLoading =false;  //后关闭
    private List<BoxSizeBean.DevicesBean> mBoxsize;
-
+   private boolean mStartScanType;
+   private int mEndSize =0;
    /**
     * 按钮的显示转换
     *
@@ -179,11 +180,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onScanStartType(Event.StartScanType event) {
+	mStartScanType = event.start;
 	if (!event.type){
 	   GifDrawable gifDrawable = null;
 	   try {
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
+		if (mTimelyStartBtn!=null){
+		   mTimelyOpenDoor.setEnabled(false);
+		   mTimelyStartBtn.setEnabled(false);
+		}
 	   } catch (IOException e) {
 	   }
 	}
@@ -410,6 +416,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 
 	   if (event.epc.equals("-1")) {//扫描完全结束的走向
+		mEndSize ++;
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
 		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
@@ -425,14 +432,32 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
-		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
-		mBaseGifImageView.setImageDrawable(drawable);
+		if (mEthDeviceIdBack.size()==mEndSize){
+		   mStartScanType = false;
+		   if (mTimelyStartBtn!=null){
+			mTimelyOpenDoor.setEnabled(true);
+			mTimelyStartBtn.setEnabled(true);
+		   }
+		   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		   mBaseGifImageView.setImageDrawable(drawable);
+		   mEndSize=0;
+		}
+
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
+		   mEndSize ++;
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart(true);
+		   if (mEthDeviceIdBack.size()==mEndSize) {
+			mStartScanType = false;
+			if (mTimelyStartBtn != null) {
+			   mTimelyOpenDoor.setEnabled(true);
+			   mTimelyStartBtn.setEnabled(true);
+			}
+			mEndSize=0;
+		   }
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}else {
 		   mObs.getScanEpc(event.deviceId, event.epc);
@@ -706,7 +731,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (mDoorStatusType) {
 			mStarts.cancel();
 			mTimelyRight.setText("确认并退出登录");
-//			mBoxInventoryVos.clear();
+			if (!mStartScanType){
+			   mBoxInventoryVos.clear();
+			}
 			mTypeView.mInBoxAllAdapter.notifyDataSetChanged();
 			mLocalAllSize = mAllSize;
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
@@ -1232,8 +1259,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   }
 	}
 	if (mDoorStatusType) {
-	   mTimelyOpenDoor.setEnabled(true);
-	   mTimelyStartBtn.setEnabled(true);
+//	   mTimelyOpenDoor.setEnabled(true);
+//	   mTimelyStartBtn.setEnabled(true);
 	   setFalseEnabled(true,true);
 	} else {
 	   setFalseEnabled(false);

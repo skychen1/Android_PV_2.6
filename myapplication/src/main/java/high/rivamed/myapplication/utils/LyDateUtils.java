@@ -252,18 +252,20 @@ public class LyDateUtils {
 		Log.i("aalldf", "startScan  "+i);
 		if (i == 2) {
 		   Log.i("aalldf", "mRunnable   开始  "+device_id);
-		   EventBusUtils.post(new Event.StartScanType(true));
+		   EventBusUtils.post(new Event.StartScanType(true,false));
 		   ToastUtils.showShortToast("扫描中，请扫描结束后再进行操作！");
 		}
 		if (i == 1) {
+		   EventBusUtils.post(new Event.StartScanType(true,false));
 		   ReaderManager.getManager().restDevice(device_id);
+
 		   ToastUtils.showShortToast("readr未连接，请稍后重试！");
 		}
 		if (i ==0){
+		   EventBusUtils.post(new Event.StartScanType(false,true));
 		   EventBusUtils.postSticky(new Event.EventLoadingX(true));
-		   mBoxInventoryVos.clear();
+//		   mBoxInventoryVos.clear();
 		   setAllBoxVosDate(mBoxInventoryVos, box_id);
-		   EventBusUtils.post(new Event.StartScanType(false));
 		   if (mObs != null&&mDoorStatusType) {
 			mObs.removeVos();
 		   }

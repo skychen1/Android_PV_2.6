@@ -210,7 +210,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
    private boolean                   mResume;
    private OpenDoorDialog.Builder    mBuildero;
    private int                       mAllSize;
-
+   private boolean mStartScanType;
    @Override
    protected int getContentLayoutId() {
 	return R.layout.activity_timely_layout;
@@ -277,6 +277,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onScanStartType(Event.StartScanType event) {
+	mStartScanType = event.start;
 	if (!event.type) {
 	   GifDrawable gifDrawable = null;
 	   try {
@@ -367,7 +368,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		   return;
 		} else {
 		   if (mDoorStatusType) {
-			//			mBoxInventoryVos.clear();
+			if (!mStartScanType){
+			   mBoxInventoryVos.clear();
+			}
 			mLocalAllSize = mAllSize;
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
@@ -710,6 +713,11 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		EventBusUtils.post(new Event.EventButton(true, true));
 		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 		mBaseGifImageView.setImageDrawable(drawable);
+		mStartScanType = false;
+		if (mTimelyStartBtn!=null){
+		   mTimelyOpenDoor.setEnabled(true);
+		   mTimelyStartBtn.setEnabled(true);
+		}
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }

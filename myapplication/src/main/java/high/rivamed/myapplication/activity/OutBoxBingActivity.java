@@ -196,7 +196,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private boolean                       mConfigType009;
    private boolean                       mConfigType007;
    private List<BoxSizeBean.DevicesBean> mBoxsize;
-   private boolean mScanType;
+   private boolean mStartScanType;
+   private int mEndSize =0;
 
    /**
     * 门锁的提示
@@ -237,16 +238,21 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onScanStartType(Event.StartScanType event) {
+	mStartScanType = event.start;
       if (!event.type){
 	   GifDrawable gifDrawable = null;
 	   try {
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
+		if (mTimelyStartBtnRight!=null){
+		   mTimelyOpenDoorRight.setEnabled(false);
+		   mTimelyStartBtnRight.setEnabled(false);
+		}
 	   } catch (IOException e) {
 	   }
 	}
-	mScanType = event.type;
-	Log.i(TAG,"mScanType   "+mScanType);
+
+	Log.i(TAG,"mScanType   "+mStartScanType);
    }
    /**
     * 门锁的状态检测回调
@@ -380,13 +386,23 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
 	   if (event.epc == null || event.epc.equals("0") || event.epc.equals("-1")) {
+		mEndSize ++;
 		Log.i("LOGSCAN", "最后   ");
 		setTitleRightNum();
 		setNotifyData();
 		setTimeStart();
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
-		mBaseGifImageView.setImageDrawable(drawable);
+
+		if (mEthDeviceIdBack.size()==mEndSize){
+		   mStartScanType = false;
+		   if (mTimelyStartBtnRight!=null){
+			mTimelyOpenDoorRight.setEnabled(true);
+			mTimelyStartBtnRight.setEnabled(true);
+		   }
+		   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		   mBaseGifImageView.setImageDrawable(drawable);
+		   mEndSize=0;
+		}
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -706,6 +722,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatientId = null;
 		   }
 		   TimelyAllFrag.mPauseS = true;
+		   if (!mStartScanType){
+			mBoxInventoryVos.clear();
+		   }
 		   mLocalAllSize = mAllSize;
 		   setRemoveRunnable();
 		   moreStartScan(mBoxInventoryVos, mObs);
@@ -1390,8 +1409,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   Log.i("ffadef", "333333333333");
 		   setFalseEnabled(false, true);
 		   mTimelyNumberText.setVisibility(View.VISIBLE);
-		   mTimelyOpenDoorRight.setEnabled(true);
-		   mTimelyStartBtnRight.setEnabled(true);
+		   if (!mStartScanType){
+			mTimelyOpenDoorRight.setEnabled(true);
+			mTimelyStartBtnRight.setEnabled(true);
+		   }
 		   setPointOutText(b, mBoxInventoryVos, !mDoorStatusType);
 		   return;
 		}
@@ -1408,8 +1429,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		} else {
 		   if (!mPause){
 			Log.i("ffadef", "6666666666666666666666666");
-			mTimelyOpenDoorRight.setEnabled(true);
-			mTimelyStartBtnRight.setEnabled(true);
+			if (!mStartScanType){
+			   mTimelyOpenDoorRight.setEnabled(true);
+			   mTimelyStartBtnRight.setEnabled(true);
+			}
 			setFalseEnabled(true, true);
 			mTimelyNumberText.setVisibility(View.GONE);
 		   }

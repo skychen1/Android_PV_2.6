@@ -222,17 +222,23 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private int                       mLocalAllSize;
    private String                    mEpc;
    private int                       mAllSize;
+   private boolean mStartScanType;
    /**
     * 正在扫描的回调
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onScanStartType(Event.StartScanType event) {
+	mStartScanType = event.start;
 	if (!event.type){
 	   GifDrawable gifDrawable = null;
 	   try {
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
+		if (mTimelyStartBtn!=null){
+		   mTimelyOpenDoor.setEnabled(false);
+		   mTimelyStartBtn.setEnabled(false);
+		}
 	   } catch (IOException e) {
 	   }
 	}
@@ -446,6 +452,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		EventBusUtils.post(new Event.EventButton(true, true));
 		Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 		mBaseGifImageView.setImageDrawable(drawable);
+		mStartScanType =false;
+		if (mTimelyStartBtn!=null){
+		   mTimelyOpenDoor.setEnabled(true);
+		   mTimelyStartBtn.setEnabled(true);
+		}
 	   } else {
 		mObs.getScanEpc(event.deviceId, event.epc);
 	   }
@@ -584,7 +595,9 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		} else {
 		   if (mDoorStatusType) {
 			mLocalAllSize = mAllSize;
-//			mBoxInventoryVos.clear();
+			if (!mStartScanType){
+			   mBoxInventoryVos.clear();
+			}
 			setRemoveRunnable();
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
