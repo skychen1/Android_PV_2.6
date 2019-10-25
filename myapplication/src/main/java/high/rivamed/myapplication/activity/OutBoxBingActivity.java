@@ -988,6 +988,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   InventoryVoError inventory = new InventoryVoError();//拿出，存入error流水表
 		   inventory.setStatus("3");
 		   inventory.setOperationStatus(98);
+		   inventory.setEpc(s.getEpc());
+		   inventory.setDeviceId(s.getDeviceId());
 		   inventory.setRenewTime(getDates());
 		   inventory.setIdNo(s.getIdNo());
 		   inventory.setCreate(s.isCreate());

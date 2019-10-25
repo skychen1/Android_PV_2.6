@@ -409,7 +409,12 @@ public class LoginActivity extends SimpleActivity {
 		   uNNetvalidateLoginIdCard(loginType);
 		}
 	   } else if (configType == 2) {
-		validateLoginFinger(loginType);
+		if (mTitleConn) {
+		   validateLoginFinger(loginType);
+		}else {
+		   EventBusUtils.postSticky(new Event.EventLoading(false));
+		   ToastUtils.showShortToast("登录失败，离线模式请使用腕带或者账号登录！");
+		}
 	   }
 	}
    }

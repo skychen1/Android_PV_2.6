@@ -1367,10 +1367,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mStarts.cancel();
 	   mTimelyRight.setText("确认并退出登录");
 	}
-	if (mStarts !=null &&b){
+	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
 	   mStarts.cancel();
 	   mStarts.start();
 	}
+//	if (mStarts !=null &&b){
+//	   mStarts.cancel();
+//	   mStarts.start();
+//	}
 	if (mShowInBoxCountBuilder!=null&&mShowInBoxCountBuilder.mDialog.isShowing()){
 	   if (mStarts != null) {
 		mStarts.cancel();
