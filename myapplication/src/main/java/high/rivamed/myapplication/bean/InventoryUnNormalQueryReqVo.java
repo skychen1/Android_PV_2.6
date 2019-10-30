@@ -28,7 +28,15 @@ public class InventoryUnNormalQueryReqVo implements Serializable {
    private String startDate;
    private String endDate;
    private String unNormalSource;
+   private String thingId;
 
+   public String getThingId() {
+      return thingId;
+   }
+
+   public void setThingId(String thingId) {
+      this.thingId = thingId;
+   }
 
    public String getDeviceId() { return deviceId;}
 

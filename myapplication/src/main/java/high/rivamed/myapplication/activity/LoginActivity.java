@@ -26,10 +26,6 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
@@ -62,7 +58,6 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
-import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
@@ -89,11 +84,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
-import static high.rivamed.myapplication.utils.WifiUtils.isAvailableByPing;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -154,8 +147,8 @@ public class LoginActivity extends SimpleActivity {
    //
    //   private boolean mDestroyType =true;//处理thread执行
    //   private Thread mThread3;
-   private       ScheduledExecutorService            scheduled;
-   private       TimerTask                           mTask;
+//   private       ScheduledExecutorService            scheduled;
+//   private       TimerTask                           mTask;
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -216,30 +209,6 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	mTask = new TimerTask() {
-	   @Override
-	   public void run()
-	   {
-		boolean byPing = isAvailableByPing(
-			SPUtils.getString(mAppContext, SAVE_SEVER_IP_TEXT));
-		Log.i("Avalible", "byPi:" + byPing);
-		if (byPing) {
-		   if (!mTitleConn){
-			EventBusUtils.post(new Event.XmmppConnect(true));
-		   }
-		} else {
-		   if (mTitleConn){
-			EventBusUtils.post(new Event.XmmppConnect(false));
-		   }
-		}
-	   }
-	};
-	if(scheduled==null){
-	   scheduled = Executors.newScheduledThreadPool(1);
-	}
-	scheduled.scheduleAtFixedRate(mTask, 0 , 15000, TimeUnit.MILLISECONDS);
-
-
 
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
