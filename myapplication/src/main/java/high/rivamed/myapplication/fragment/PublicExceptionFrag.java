@@ -492,6 +492,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	queryReqVo.setStartDate(mSearchStartTime);
 	queryReqVo.setEndDate(mSearchEndTime);
 	queryReqVo.setUnNormalSource(mSearchType);
+	queryReqVo.setThingId(sThingCode);
 	unNormal.setPageNo(PAGE + "");
 	unNormal.setPageSize(SIZE + "");
 	unNormal.setInventoryUnNormalQueryReqVo(queryReqVo);
@@ -519,6 +520,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	queryReqVo.setCstNameOrEpcOrAccountName(mSearchKey);
 	queryReqVo.setStartDate(mSearchStartTime);
 	queryReqVo.setEndDate(mSearchEndTime);
+	queryReqVo.setThingId(sThingCode);
 	unNormal.setPageNo(PAGE + "");
 	unNormal.setPageSize(SIZE + "");
 	unNormal.setInventoryUnNormalQueryReqVo(queryReqVo);

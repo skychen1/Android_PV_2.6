@@ -724,6 +724,7 @@ public class TimelyAllFrag extends SimpleFragment {
 			mDeviceInventoryVos.addAll(deviceInventoryVos);
 			mTimelyAllAdapter.getData().clear();
 			mTimelyAllAdapter.getData().addAll(inventoryVos);
+			mTimelyAllAdapter.notifyDataSetChanged();
 			int number = 0;
 			for (InventoryVo InventoryVo : mInventoryVos) {
 			   number += InventoryVo.getCountStock();
@@ -797,6 +798,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	   mDeviceInventoryVos.addAll(deviceInventoryVos);
 	   mTimelyAllAdapter.getData().clear();
 	   mTimelyAllAdapter.getData().addAll(inventoryVos);
+	   mTimelyAllAdapter.notifyDataSetChanged();
 	   int number = 0;
 	   for (InventoryVo inventoryVo : mInventoryVos) {
 		number += inventoryVo.getCountStock();
