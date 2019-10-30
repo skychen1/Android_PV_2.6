@@ -416,7 +416,14 @@ public class RegisteFrag extends SimpleFragment {
 		   }
 		}
 	   });
+//	   mSmallAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//		@Override
+//		public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//		   mContext.startActivity(new Intent(mContext, RegisteBoxActivity.class));
+//		}
+//	   });
 	}
+
    }
 
    //已有数据的时候   给激活之前添加界面数据
@@ -642,9 +649,8 @@ public class RegisteFrag extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
-		if (UIUtils.isFastDoubleClick(view.getId())) {
-		   return;
-		} else {
+		if (!UIUtils.isFastDoubleClick(view.getId())) {
+//		   mContext.startActivity(new Intent(mContext, RegisteBoxActivity.class));
 		   mRecyclerview.scrollToPosition(i);
 		   RecyclerView.LayoutManager layoutManager = mRecyclerview.getLayoutManager();
 		   LinearLayoutManager linearManager = (LinearLayoutManager) layoutManager;
@@ -657,15 +663,12 @@ public class RegisteFrag extends SimpleFragment {
 		}
 		break;
 	   case R.id.frag_registe_left:
-		if (UIUtils.isFastDoubleClick(view.getId())) {
-		   return;
-		} else {
+		if (!UIUtils.isFastDoubleClick(view.getId())) {
 		   if (SPUtils.getString(UIUtils.getContext(), SAVE_REGISTE_DATE) == null) {
 			mDeviceVos.clear();
 		   }
 		   getDeviceName();
 		}
-
 		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
@@ -746,7 +749,6 @@ public class RegisteFrag extends SimpleFragment {
 		TBaseDevices.tBaseDevices.partsmacBean partsmacBean1 = new TBaseDevices.tBaseDevices.partsmacBean();
 		partsmacBean1.setPartsmacnumber(mDeviceInfos.get(i).getIdentification());
 		partsmacBean1.setPartsIp(mDeviceInfos.get(i).getRemoteIP());
-
 		mSmallmac.add(partsmacBean1);
 	   }
 	}

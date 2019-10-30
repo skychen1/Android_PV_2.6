@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -50,6 +51,8 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    public  EditText                        mLeftName;
    public  TextView                        mLeftCode;
    public ImageView mRightDelete;
+   private RadioGroup mGroup;
+   private int mBoxType =2;
    //   public RecyclerView mRecyclerView2;
 //   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
 //   public static TBaseThingDto.TBaseDeviceVo mMTBaseThingVoBean;
@@ -65,12 +68,27 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
 	mLeftName = (EditText) holder.getView(R.id.head_left_name);
 	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
-
+	mGroup = (RadioGroup) holder.getView(R.id.registe_head_rg);
+	mGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+	   @Override
+	   public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+		switch (checkedId) {
+		   case R.id.registe_top:
+			mBoxType = 0;
+		      break;
+		   case R.id.registe_down:
+			mBoxType = 1;
+			break;
+		   case R.id.registe_single:
+			mBoxType = 2;
+			break;
+		}
+	   }
+	});
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
-	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getDeviceName());
-	LogUtils.i(TAG,"RegisteSmallAdapter   "+item.getDeviceId());
+
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
 	   mLeftName.setText(item.getDeviceName());
 	   mLeftCode.setText(item.getDeviceId());

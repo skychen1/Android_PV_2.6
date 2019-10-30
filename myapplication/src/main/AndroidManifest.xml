@@ -138,7 +138,7 @@
             android:name=".activity.TakeNotesDetailsActivity"
             android:screenOrientation="sensorLandscape" />
 
-        <receiver android:name=".http.ContentReceiver">
+		<receiver android:name=".http.ContentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.HOME" />
