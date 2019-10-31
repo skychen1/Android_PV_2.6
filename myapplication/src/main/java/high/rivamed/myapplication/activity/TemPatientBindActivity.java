@@ -651,7 +651,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     * 获取需要绑定的患者
     */
    private void loadBingDate(String optienNameOrId, String deptName) {
-
+      if (mTypeView!=null&&mTypeView.mTempPatientAdapter!=null){
+	   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+	}
 	NetRequest.getInstance()
 		.findSchedulesDate(optienNameOrId, deptName, mAllPage, mRows, this, new BaseResult() {
 		   @Override

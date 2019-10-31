@@ -24,7 +24,6 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.ruihua.face.recognition.utils.ImageUtils;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -524,7 +523,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimensionPixelOffset(R.dimen.x30));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -539,8 +538,8 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(ImageUtils.dip2px(context, 39));
-		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
 	   }
@@ -571,7 +570,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList.get(index).getDeviceName());
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimensionPixelOffset(R.dimen.x30));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -586,8 +585,8 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(ImageUtils.dip2px(context, 39));
-		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
 	   }
@@ -619,7 +618,7 @@ public class UIUtils {
 		colorTransitionPagerTitleView.setPadding(mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0,mAppContext.getResources().getDimensionPixelSize(R.dimen.x55),0);
 		colorTransitionPagerTitleView.setText(mTitleDataList[index]);
 		//		colorTransitionPagerTitleView.setMinimumWidth(textWidth);
-		colorTransitionPagerTitleView.setTextSize(getResources().getDimension(R.dimen.textsize_18));
+		colorTransitionPagerTitleView.setTextSize(getResources().getDimensionPixelOffset(R.dimen.x30));
 		colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
 		   @Override
 		   public void onClick(View view) {
@@ -634,8 +633,8 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(ImageUtils.dip2px(context, 39));
-		indicator.setLineHeight(ImageUtils.dip2px(context, 2));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
 	   }
