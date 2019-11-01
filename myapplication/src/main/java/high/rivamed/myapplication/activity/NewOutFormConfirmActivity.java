@@ -497,6 +497,7 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 		   mDownBtnOne.setEnabled(false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		   Toast.makeText(NewOutFormConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
 					Toast.LENGTH_SHORT).show();
 		   mHandler.postDelayed(mRunnable, 3000);

@@ -748,6 +748,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 		   setFalseEnabled(false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
 		   mHandler.postDelayed(mRunnable, 1000);
 		} else {
@@ -1301,7 +1302,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	if (mDoorStatusType) {
 //	   mTimelyOpenDoor.setEnabled(true);
 //	   mTimelyStartBtn.setEnabled(true);
-	   setFalseEnabled(true,true);
+	   setFalseEnabled(true);
 	} else {
 	   setFalseEnabled(false);
 	}
