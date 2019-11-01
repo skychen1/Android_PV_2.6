@@ -24,11 +24,15 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.TakeNotesDetailsActivity;
 import high.rivamed.myapplication.adapter.TakeNotesAdapter;
@@ -37,8 +41,9 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.TakeNotesBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.timeutil.PowerDateUtils;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
-import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
@@ -58,28 +63,38 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
  * 更新描述：   ${TODO}
  */
 public class ContentTakeNotesFrag extends BaseSimpleFragment {
-  public String TAG ="ContentTakeNotesFrag";
+
+   public String TAG = "ContentTakeNotesFrag";
    @BindView(R.id.search_et)
-   EditText           mSearchEt;
+   EditText     mSearchEt;
    @BindView(R.id.search_iv_delete)
-   ImageView          mSearchIvDelete;
+   ImageView    mSearchIvDelete;
    @BindView(R.id.timely_ll)
-   LinearLayout       mLinearLayout;
+   LinearLayout mLinearLayout;
 
    @BindView(R.id.recyclerview)
    RecyclerView       mRecyclerview;
    @BindView(R.id.refreshLayout)
    SmartRefreshLayout mRefreshLayout;
    List<String> titeleList = null;
-   private View mHeadView;
-   private int  mLayout;
-   private TakeNotesAdapter mNotesAdapter;
-   private int PAGE = 1;
-   private int SIZE = 20;
-   private String mTrim;
-   private List<TakeNotesBean.RowsBean> mRows;
-   private boolean                            hasNextPage;//分页：是否有下一页
-   private static final int loadTime    = 200;//上下拉加载时间
+   @BindView(R.id.search_time_start)
+   TextView mSearchTimeStart;
+   @BindView(R.id.search_time_end)
+   TextView mSearchTimeEnd;
+   Unbinder unbinder;
+   private              View                         mHeadView;
+   private              int                          mLayout;
+   private              TakeNotesAdapter             mNotesAdapter;
+   private              int                          PAGE     = 1;
+   private              int                          SIZE     = 20;
+   private              String                       mTrim;
+   private              List<TakeNotesBean.RowsBean> mRows;
+   private              boolean                      hasNextPage;//分页：是否有下一页
+   private static final int                          loadTime = 200;//上下拉加载时间
+
+   private String mEndTime   = null;
+   private String mStartTime = null;
+
    public static ContentTakeNotesFrag newInstance() {
 	Bundle args = new Bundle();
 	ContentTakeNotesFrag fragment = new ContentTakeNotesFrag();
@@ -96,10 +111,13 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    public void onStartFrag(Event.EventFrag event) {
 	if (event.type.equals("START5")) {
 	   PAGE = 1;
-	   if (mRows!=null){
+	   if (mRows != null) {
 		mRows.clear();
 	   }
-	   loadDate("");
+	   mSearchEt.setText("");
+	   mStartTime=null;
+	   mEndTime=null;
+	   loadDate("",mStartTime,mEndTime);
 	}
    }
 
@@ -109,13 +127,6 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	initData();
 	initListener();
    }
-
-//   @Override
-//   public void onResume() {
-//	super.onResume();
-//
-//   }
-
 
    @Override
    protected int getContentLayoutId() {
@@ -127,30 +138,36 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("领用使用");
 	mSearchEt.setHint("请输入患者姓名、患者ID、拼音码");
-	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
+	mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME) + " - " +
+					SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
 
 	String[] array = mContext.getResources().getStringArray(R.array.syjl_title_seven);
 	titeleList = Arrays.asList(array);
 
 	mLayout = R.layout.item_takenotes_seven_layout;
-	mHeadView = LayoutInflater.from(_mActivity).inflate(
-		R.layout.item_takenotes_seven_title_layout,
-		(ViewGroup) mLinearLayout.getParent(), false);
+	mHeadView = LayoutInflater.from(_mActivity)
+		.inflate(R.layout.item_takenotes_seven_title_layout,
+			   (ViewGroup) mLinearLayout.getParent(), false);
 	((TextView) mHeadView.findViewById(R.id.seven_one)).setText(titeleList.get(0));
 	((TextView) mHeadView.findViewById(R.id.seven_two)).setText(titeleList.get(1));
-	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(
-		titeleList.get(2));
-	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(
-		titeleList.get(3));
-	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(
-		titeleList.get(4));
+	((TextView) mHeadView.findViewById(R.id.seven_three)).setText(titeleList.get(2));
+	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(3));
+	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(5));
-	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(
-		titeleList.get(6));
+	((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
+
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	String format = sdf.format(date);
+	mSearchTimeStart.setHint(PowerDateUtils.getTime(2));
+	mSearchTimeEnd.setHint(format);
+	mStartTime = null;
+	mEndTime = null;
 	setDate();
    }
+
    private void initListener() {
 	mSearchEt.addTextChangedListener(new TextWatcher() {
 	   @Override
@@ -162,7 +179,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		mTrim = charSequence.toString().trim();
 		PAGE = 1;
-		loadDate(mTrim);
+		loadDate(mTrim,mStartTime,mEndTime);
 	   }
 
 	   @Override
@@ -176,7 +193,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   public void onRefresh(RefreshLayout refreshLayout) {
 		//刷新
 		PAGE = 1;
-		loadDate(mTrim);
+		loadDate(mTrim,mStartTime,mEndTime);
 	   }
 	});
 
@@ -186,42 +203,70 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		//加载下一页
 		if (hasNextPage) {
 		   PAGE++;
-		   loadDate(mTrim);
+		   loadDate(mTrim,mStartTime,mEndTime);
 		} else {
 		   finishLoading();
 		   ToastUtils.showShortToast("暂无更多数据");
 		}
 	   }
 	});
-   }
-   private void finishLoading() {
-	mRefreshLayout.finishLoadMore(loadTime);
-	mRefreshLayout.finishRefresh(loadTime);
-   }
-
-   private void loadMoreDate(String trim) {
-	NetRequest.getInstance().getFindPatientDate(trim,PAGE,SIZE,_mActivity,new BaseResult(){
+	mSearchTimeStart.addTextChangedListener(new TextWatcher() {
 	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG,"result   "+result);
-		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
-		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
-		mRows.addAll(rows);
-		mNotesAdapter.notifyDataSetChanged();
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		mStartTime = s.toString().trim();
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
+		if (mEndTime != null&&!mEndTime.equals("")) {
+		   PAGE =1 ;
+		   loadDate(mTrim,mStartTime,mEndTime);
+		}
+	   }
+	});
+	mSearchTimeEnd.addTextChangedListener(new TextWatcher() {
+	   @Override
+	   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+	   }
+
+	   @Override
+	   public void onTextChanged(CharSequence s, int start, int before, int count) {
+		mEndTime = s.toString().trim();
+	   }
+
+	   @Override
+	   public void afterTextChanged(Editable s) {
+		if (mStartTime != null&&!mStartTime.equals("")) {
+		   PAGE =1 ;
+		   loadDate(mTrim,mStartTime,mEndTime);
+		}
 
 	   }
 	});
    }
 
+   private void finishLoading() {
+	mRefreshLayout.finishLoadMore(loadTime);
+	mRefreshLayout.finishRefresh(loadTime);
+   }
+
+
    /**
     * 加载数据
+    *
     * @param string
     */
-   private void loadDate(String string) {
-	if (PAGE==1){
+   private void loadDate(String string,String startTime, String endTime) {
+	if (PAGE == 1) {
 	   mRows.clear();
 	}
-	NetRequest.getInstance().getFindPatientDate(string,PAGE,SIZE,_mActivity,new BaseResult(){
+	NetRequest.getInstance().getFindPatientDate(string,startTime, endTime,PAGE, SIZE, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
@@ -239,34 +284,48 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     * 设置数据
     */
    private void setDate() {
-	if (mNotesAdapter!=null){
+	if (mNotesAdapter != null) {
 	   mNotesAdapter.notifyDataSetChanged();
-	}else {
-	   mRows=new ArrayList<>();
+	} else {
+	   mRows = new ArrayList<>();
 	   mNotesAdapter = new TakeNotesAdapter(mLayout, mRows);
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	   mRecyclerview.addItemDecoration(new DividerItemDecoration(_mActivity, VERTICAL));
 	   mRefreshLayout.setEnableAutoLoadMore(true);
 	   mRecyclerview.setAdapter(mNotesAdapter);
-	   View inflate = LayoutInflater.from(_mActivity)
-		   .inflate(R.layout.recy_null, null);
+	   View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	   mNotesAdapter.setEmptyView(inflate);
 	}
 	mNotesAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-	      if (mRows==null||null==mRows.get(position)||null==mRows.get(position).getPatientId()){
+		if (mRows == null || null == mRows.get(position) ||
+		    null == mRows.get(position).getPatientId()) {
 		   ToastUtils.showShortToast("数据异常");
-		}else {
+		} else {
 		   String patientId = mRows.get(position).getPatientId();
 		   String patientName = mRows.get(position).getPatientName();
 		   int status = 3;
-		   EventBusUtils.postSticky(new Event.EventPatientId(patientId,status,patientName));
+		   EventBusUtils.postSticky(new Event.EventPatientId(patientId, status, patientName));
 		   mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
 		}
 	   }
 	});
    }
 
-
+   @OnClick({R.id.search_time_start, R.id.search_time_end})
+   public void onViewClicked(View view) {
+	switch (view.getId()) {
+	   case R.id.search_time_start:
+		DialogUtils.showTimeDialog(mContext, mSearchTimeStart);
+		break;
+	   case R.id.search_time_end:
+		if (mStartTime == null) {
+		   ToastUtils.showShortToast("请先选择开始时间");
+		} else {
+		   DialogUtils.showTimeDialog(mContext, mSearchTimeEnd);
+		}
+		break;
+	}
+   }
 }

@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.ruihua.face.recognition.FaceManager;
@@ -37,9 +40,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
-import static high.rivamed.myapplication.utils.WifiUtils.isAvailableByPing;
 
 /**
  * 项目名称:    Android_PV_2.6.5New
@@ -84,30 +85,25 @@ public class SplashActivity extends FragmentActivity {
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
+		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
 		String urls = MAIN_URL + NetApi.URL_CONNECT;
-		Log.i("outtccc","MAIN_URL     "+MAIN_URL+"    ");
+		Log.i("outtccc","MAIN_URL     "+MAIN_URL+"  dfdfdfdfdf  ");
 		if (MAIN_URL!=null){
-		   boolean byPing = isAvailableByPing(
-			   SPUtils.getString(mAppContext, SAVE_SEVER_IP_TEXT));
 
-		   if (byPing) {
-			mTitleConn = true;
-		   } else {
-			mTitleConn = false;
-		   }
+		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+			@Override
+			public void onSuccess(Response<String> response) {
+			   Log.i("outtccc","MAIN_URL     "+MAIN_URL+" fffffffffffffffffff  ");
+			   mTitleConn = true;
+			}
 
-//		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
-//			@Override
-//			public void onSuccess(Response<String> response) {
-//			   mTitleConn = true;
-//			}
-//
-//			@Override
-//			public void onError(Response<String> response) {
-//			   mTitleConn = false;
-//			}
-//		   });
+			@Override
+			public void onError(Response<String> response) {
+			   mTitleConn = false;
+			}
+		   });
+		}else {
+		   mTitleConn = false;
 		}
 		if (SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME) == -1) {
 		   ANIMATION_TIME = 1000;

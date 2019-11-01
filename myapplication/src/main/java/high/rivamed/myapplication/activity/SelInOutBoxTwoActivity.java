@@ -380,6 +380,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("LOGSCAN", "入柜---有返回---的动画停止---   ");
 			mFirstFinishLoading =false;
 			mLastFinishLoading = true;
+			setTitleRightNum();
+			setNotifyData();
 			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
@@ -389,7 +391,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   mHandler.postDelayed(new Runnable() {
 		@Override
 		public void run() {
-		   if (mEpc.equals(event.epc)&&!event.epc.equals("-1")){
+		   if (mEpc.equals(event.epc)&&!event.epc.equals("-1")&&!event.epc.equals("0")){
 			setTitleRightNum();
 			setNotifyData();
 			setTimeStart(false);

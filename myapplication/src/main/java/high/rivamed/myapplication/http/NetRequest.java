@@ -568,10 +568,12 @@ public class NetRequest {
     * 使用记录的患者列表
     */
    public void getFindPatientDate(
-	   String string, int page, int rows, Object tag, NetResult netResult) {
+	   String string,String startTime, String endTime, int page, int rows, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FIND_PATIENT;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", string);
+	map.put("startTime", startTime);
+	map.put("endTime", endTime);
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("pageSize", rows + "");
 	map.put("pageNo", page + "");

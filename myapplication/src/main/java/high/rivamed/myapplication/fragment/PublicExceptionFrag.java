@@ -301,7 +301,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
-	searchTimeStart.setHint(PowerDateUtils.getTime());
+	searchTimeStart.setHint(PowerDateUtils.getTime(1));
 	searchTimeEnd.setHint(format);
 	//设置时间选择监听
 	searchTimeStart.addTextChangedListener(new TextWatcher() {
@@ -492,6 +492,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	queryReqVo.setStartDate(mSearchStartTime);
 	queryReqVo.setEndDate(mSearchEndTime);
 	queryReqVo.setUnNormalSource(mSearchType);
+	queryReqVo.setThingId(sThingCode);
 	unNormal.setPageNo(PAGE + "");
 	unNormal.setPageSize(SIZE + "");
 	unNormal.setInventoryUnNormalQueryReqVo(queryReqVo);
@@ -519,6 +520,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	queryReqVo.setCstNameOrEpcOrAccountName(mSearchKey);
 	queryReqVo.setStartDate(mSearchStartTime);
 	queryReqVo.setEndDate(mSearchEndTime);
+	queryReqVo.setThingId(sThingCode);
 	unNormal.setPageNo(PAGE + "");
 	unNormal.setPageSize(SIZE + "");
 	unNormal.setInventoryUnNormalQueryReqVo(queryReqVo);

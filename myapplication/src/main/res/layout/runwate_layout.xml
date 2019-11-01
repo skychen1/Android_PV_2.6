@@ -227,6 +227,10 @@
 					style="@style/runwate_btn_style"
 					android:visibility="gone"
 					android:text="请求退费"/>
+				<RadioButton
+					android:id="@+id/search_type_yc"
+					style="@style/runwate_btn_style"
+					android:text="移除"/>
 			</RadioGroup>
 		</LinearLayout>
 	</LinearLayout>

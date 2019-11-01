@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.ruihua.reader.ReaderManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -19,7 +22,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.Event;
@@ -35,16 +42,21 @@ import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RxUtils;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 
+import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
@@ -80,10 +92,12 @@ public class ScanService extends Service {
    private       NetWorkReceiver           mWorkReceiver;
    private       Gson                      mGson            = new Gson();
    private       Thread                    mThread;
-   private Thread mThread1;
-   private Thread mThread2;
-   private  long lastClickTime = 0L;
-   private long mTime;
+   private       Thread                    mThread1;
+   private       Thread                    mThread2;
+   private       long                      lastClickTime    = 0L;
+   private       long                      mTime;
+   private       ScheduledExecutorService  scheduled;
+   private       TimerTask                 mTask;
 
    /**
     * @param event
@@ -150,9 +164,9 @@ public class ScanService extends Service {
 	   public void onSucceed(String result) {
 		deleteLitepal();
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		if (mThread2!=null){
+		if (mThread2 != null) {
 		   mThread2.start();
-		}else {
+		} else {
 		   mThread2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -240,7 +254,7 @@ public class ScanService extends Service {
 		mEPCDatess.put(epc, box_id);
 	   }
 	}
-	LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size()+"   box_id   "+box_id);
+	LogUtils.i(TAG, "mEPCDates.mEPCDates() " + mEPCDatess.size() + "   box_id   " + box_id);
 	putEPC(mEPCDatess, box_id);
    }
 
@@ -302,6 +316,8 @@ public class ScanService extends Service {
    @Override
    public void onCreate() {
 	super.onCreate();
+	setConnectType();
+
 	EventBusUtils.register(this);
 	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
@@ -310,6 +326,35 @@ public class ScanService extends Service {
 	initReceiver();
 	AllDeviceCallBack.getInstance().initCallBack();
 	//	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
+
+   }
+
+   private void setConnectType() {
+	mTask = new TimerTask() {
+	   @Override
+	   public void run() {
+		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
+		String urls = MAIN_URL + NetApi.URL_CONNECT;
+		if (MAIN_URL!=null){
+		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+			@Override
+			public void onSuccess(Response<String> response) {
+			   EventBusUtils.post(new Event.XmmppConnect(true));
+			}
+			@Override
+			public void onError(Response<String> response) {
+			   EventBusUtils.post(new Event.XmmppConnect(false));
+			}
+		   });
+		}else {
+		   EventBusUtils.post(new Event.XmmppConnect(false));
+		}
+	   }
+	};
+	if (scheduled == null) {
+	   scheduled = Executors.newScheduledThreadPool(1);
+	}
+	scheduled.scheduleAtFixedRate(mTask, 0, 15000, TimeUnit.MILLISECONDS);
 
    }
 
