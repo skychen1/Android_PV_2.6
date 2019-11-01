@@ -258,7 +258,7 @@ public class LyDateUtils {
 		if (i == 1) {
 		   EventBusUtils.post(new Event.StartScanType(true,false));
 		   ReaderManager.getManager().restDevice(device_id);
-
+		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   ToastUtils.showShortToast("readr未连接，请稍后重试！");
 		}
 		if (i ==0){

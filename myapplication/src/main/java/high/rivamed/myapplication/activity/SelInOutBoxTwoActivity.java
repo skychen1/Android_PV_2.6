@@ -383,6 +383,26 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
+		   if (event.epc.equals("0")){
+			mEndSize ++;
+			setTitleRightNum();
+			setNotifyData();
+			setTimeStart(true);
+
+			if (mEthDeviceIdBack.size()==mEndSize) {
+			   mStartScanType = false;
+			   if (mTimelyStartBtn != null) {
+				mTimelyOpenDoor.setEnabled(true);
+				mTimelyStartBtn.setEnabled(true);
+			   }
+			   mEndSize=0;
+			   mFirstFinishLoading =false;
+			   mLastFinishLoading = true;
+			   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+			   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+			   mBaseGifImageView.setImageDrawable(drawable);
+			}
+		   }
 		}
 	   },ANIMATION_TIME+400);
 	}else {
@@ -395,6 +415,24 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			setTimeStart(false);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			Log.i("LOGSCAN", "出柜---有耗材的动画停止-   ");
+		   }
+		   if (event.epc == null || event.epc.equals("0")){
+			Log.i("LOGSCAN", "没得耗材的结束  ");
+			mEndSize ++;
+			setTitleRightNum();
+			setNotifyData();
+			setTimeStart(true);
+			if (mEthDeviceIdBack.size()==mEndSize) {
+			   mStartScanType = false;
+			   if (mTimelyStartBtn != null) {
+				mTimelyOpenDoor.setEnabled(true);
+				mTimelyStartBtn.setEnabled(true);
+			   }
+			   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+			   mBaseGifImageView.setImageDrawable(drawable);
+			   mEndSize=0;
+			}
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
 	   },ANIMATION_TIME);
@@ -414,7 +452,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}
 	   }
 	} else {//放入柜子并且无库存的逻辑走向，可能出现网络断的处理和有网络的处理
-
+	   Log.i("LOGSCAN", "event.epc  "+event.epc);
 	   if (event.epc.equals("-1")) {//扫描完全结束的走向
 		mEndSize ++;
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
@@ -445,8 +483,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
-		   mEndSize ++;
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
+		   mEndSize ++;
 		   setTitleRightNum();
 		   setNotifyData();
 		   setTimeStart(true);
@@ -456,6 +494,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   mTimelyOpenDoor.setEnabled(true);
 			   mTimelyStartBtn.setEnabled(true);
 			}
+			Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+			mBaseGifImageView.setImageDrawable(drawable);
 			mEndSize=0;
 		   }
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
@@ -709,7 +749,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   setFalseEnabled(false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
-		   mHandler.postDelayed(mRunnable, 3000);
+		   mHandler.postDelayed(mRunnable, 1000);
 		} else {
 		   setRemoveRunnable();
 		}

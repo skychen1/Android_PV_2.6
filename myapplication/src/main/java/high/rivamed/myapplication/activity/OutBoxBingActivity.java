@@ -367,7 +367,19 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setNotifyData();
 		   setTimeStart();
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   Log.i("LOGSCAN", "xxxxxxxxxxxx-   ");
+		   if (event.epc == null || event.epc.equals("0")){
+			mEndSize ++;
+			if (mEthDeviceIdBack.size()==mEndSize){
+			   mStartScanType = false;
+			   if (mTimelyStartBtnRight!=null){
+				mTimelyOpenDoorRight.setEnabled(true);
+				mTimelyStartBtnRight.setEnabled(true);
+			   }
+			   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+			   mBaseGifImageView.setImageDrawable(drawable);
+			   mEndSize=0;
+			}
+		   }
 		}
 	   }
 	}, ANIMATION_TIME);
@@ -617,7 +629,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setFalseEnabled(false, false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
-		   mHandler.postDelayed(mRunnable, 3000);
+		   mHandler.postDelayed(mRunnable, 1000);
 		} else {
 		   setRemoveRunnable();
 		}
