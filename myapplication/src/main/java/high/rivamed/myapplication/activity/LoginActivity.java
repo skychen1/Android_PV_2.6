@@ -345,26 +345,36 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
 
 	//控制紧急登录tab的显示
-	mLoginPass.setVisibility(
-		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
+	if (mLoginPass!=null){
+	   mLoginPass.setVisibility(
+		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
+	}
 	//有人脸识别，显示人脸识别tab，默认选中人脸识别tab
 	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
-	mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
-	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
-	//有人脸识别或紧急登录时，可滑动
-	mLoginViewpager.setScanScroll(
-		isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
-	LogUtils.i(TAG,
-		     "getConfigDatddffdfe   " + UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026));
-	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
-	   mLoginUnRL.setVisibility(View.VISIBLE);
-	   mTVLoginUnConfirmCst.setText("未确认耗材（0）");
-	   getNoConfirm();
-	} else {
-	   mLoginUnRL.setVisibility(View.INVISIBLE);
+	if (mLoginFace!=null){
+	   mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
 	}
-	mTVLoginToBePutInStorage.setVisibility(
-		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
+	if (mLoginViewpager!=null){
+	   mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
+	   //有人脸识别或紧急登录时，可滑动
+	   mLoginViewpager.setScanScroll(
+		   isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
+	}
+	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
+	   if (mLoginUnRL!=null){
+		mLoginUnRL.setVisibility(View.VISIBLE);
+		mTVLoginUnConfirmCst.setText("未确认耗材（0）");
+		getNoConfirm();
+	   }
+	} else {
+	   if (mLoginUnRL!=null) {
+		mLoginUnRL.setVisibility(View.INVISIBLE);
+	   }
+	}
+	if (mTVLoginToBePutInStorage!=null) {
+	   mTVLoginToBePutInStorage.setVisibility(
+		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
+	}
    }
 
    public boolean isConfigFace() {
@@ -384,22 +394,30 @@ public class LoginActivity extends SimpleActivity {
 	   boolean canDevice, int configType, String loginType) {
 	if (!canDevice) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
-		mLoginGone.setVisibility(View.VISIBLE);
+	      if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
 		   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
 		   faceFragment.onTabShowPreview(false);
 		}
 	   } else if (configType == 1) {//IC卡登录限制
-		mLoginGone.setVisibility(View.VISIBLE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   } else if (configType == 2) {
 		//设备是否禁用
-		mLoginGone.setVisibility(View.VISIBLE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   }
 	} else {
 	   if (configType == 0) {//正常登录密码登录限制
-		mLoginGone.setVisibility(View.GONE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.GONE);
+		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
 		   //设备禁用切换至设备可用时当前选中显示的是人脸识别页面，开启人脸识别的预览
 		   faceFragment.onTabShowPreview(true);

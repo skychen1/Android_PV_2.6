@@ -45,6 +45,9 @@ public class ExceptionDealAdapter
 	   case "1":
 		helper.setText(R.id.nine_one, "连续移除");
 		break;
+	   case "8":
+		helper.setText(R.id.nine_one, "unKnown");
+		break;
 	}
 	helper.setText(R.id.nine_two, item.getCstName());
 	helper.setText(R.id.nine_three, item.getEpc());

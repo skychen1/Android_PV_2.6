@@ -628,7 +628,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && !mPause) {
 		   setFalseEnabled(false, false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   if (!UIUtils.isFastDoubleClick()) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
 		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
 		   mHandler.postDelayed(mRunnable, 1000);
 		} else {
