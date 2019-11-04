@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -56,6 +57,8 @@ public class StockLeftListenerFrag extends SimpleFragment {
    public ViewPager mCttimecheckViewpager;
    @BindView(R.id.stock_left_rv)
    RecyclerView mStockLeftRv;
+   @BindView(R.id.app_bar)
+   AppBarLayout appbar;
    @BindView(R.id.stock_left_alltop)
    LinearLayout mStockLeftAlltop;
    private List<Integer> mList;
@@ -173,7 +176,8 @@ public class StockLeftListenerFrag extends SimpleFragment {
 	   } else {
 		deviceCode = mLeftTopBean.getCstExpirationVos().get(position - 1).getDeviceId();
 	   }
-	   mStockLeftAlltop.setVisibility(View.VISIBLE);
+//	   mStockLeftAlltop.setVisibility(View.VISIBLE);
+	   appbar.setVisibility(View.VISIBLE);
 
 	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_LEFT, deviceCode);
 

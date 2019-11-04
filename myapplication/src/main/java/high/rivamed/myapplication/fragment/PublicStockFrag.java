@@ -333,7 +333,7 @@ public class PublicStockFrag extends SimpleFragment {
 	mRefreshLayout.setEnableAutoLoadMore(false);
 	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null2, null);
 	mStockLeftAdapter.setEmptyView(inflate);
 	mRecyclerview.setAdapter(mStockLeftAdapter);
 	mLinearLayout.addView(mHeadView);
