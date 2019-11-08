@@ -810,10 +810,12 @@ public class NetRequest {
    /**
     * 获取所有人脸照
     */
-   public void getAllFace(Object tag, NetResult netResult) {
+   public void getAllFace(String startDate,String endDate, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FACE_GET_ALL;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", SYSTEMTYPE);
+	map.put("startDate", startDate);
+	map.put("endDate", endDate);
 	GetRequest(urls, map, tag, netResult);
    }
 
