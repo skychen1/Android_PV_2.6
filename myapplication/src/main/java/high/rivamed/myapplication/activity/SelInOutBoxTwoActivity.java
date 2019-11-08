@@ -385,10 +385,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   }
 		   if (event.epc.equals("0")){
 			mEndSize ++;
-			setTitleRightNum();
-			setNotifyData();
-			setTimeStart(true);
-
 			if (mEthDeviceIdBack.size()==mEndSize) {
 			   mStartScanType = false;
 			   if (mTimelyStartBtn != null) {
@@ -402,6 +398,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 			   mBaseGifImageView.setImageDrawable(drawable);
 			}
+			setTitleRightNum();
+			setNotifyData();
+			setTimeStart(true);
 		   }
 		}
 	   },ANIMATION_TIME+400);
@@ -419,9 +418,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (event.epc == null || event.epc.equals("0")){
 			Log.i("LOGSCAN", "没得耗材的结束  ");
 			mEndSize ++;
-			setTitleRightNum();
-			setNotifyData();
-			setTimeStart(true);
 			if (mEthDeviceIdBack.size()==mEndSize) {
 			   mStartScanType = false;
 			   if (mTimelyStartBtn != null) {
@@ -432,6 +428,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   mBaseGifImageView.setImageDrawable(drawable);
 			   mEndSize=0;
 			}
+			setTitleRightNum();
+			setNotifyData();
+			setTimeStart(true);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		   }
 		}
@@ -455,6 +454,15 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   Log.i("LOGSCAN", "event.epc  "+event.epc);
 	   if (event.epc.equals("-1")) {//扫描完全结束的走向
 		mEndSize ++;
+		if (mEthDeviceIdBack.size()==mEndSize){
+		   mStartScanType = false;
+		   if (mTimelyStartBtn!=null){
+			mTimelyOpenDoor.setEnabled(true);
+			mTimelyStartBtn.setEnabled(true);
+		   }
+		   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+		   mBaseGifImageView.setImageDrawable(drawable);
+		   mEndSize=0;
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
 		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
@@ -470,24 +478,13 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
-		if (mEthDeviceIdBack.size()==mEndSize){
-		   mStartScanType = false;
-		   if (mTimelyStartBtn!=null){
-			mTimelyOpenDoor.setEnabled(true);
-			mTimelyStartBtn.setEnabled(true);
-		   }
-		   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
-		   mBaseGifImageView.setImageDrawable(drawable);
-		   mEndSize=0;
+
 		}
 
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
 		   Log.i("LOGSCAN", "没得耗材的结束  ");
 		   mEndSize ++;
-		   setTitleRightNum();
-		   setNotifyData();
-		   setTimeStart(true);
 		   if (mEthDeviceIdBack.size()==mEndSize) {
 			mStartScanType = false;
 			if (mTimelyStartBtn != null) {
@@ -498,6 +495,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			mBaseGifImageView.setImageDrawable(drawable);
 			mEndSize=0;
 		   }
+		   setTitleRightNum();
+		   setNotifyData();
+		   setTimeStart(true);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}else {
 		   mObs.getScanEpc(event.deviceId, event.epc);
@@ -1457,9 +1457,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void setFalseEnabled(boolean b) {
 	setFalseEnabledDate(b);
-	if (mBuilder!=null&&mBuilder.mDialog!=null&&!mBuilder.mDialog.isShowing()&&mStarts !=null &&b) {
+	if (mBuilder!=null&&mBuilder.mDialog!=null&&(!mBuilder.mDialog.isShowing()||!mStartScanType)&&mStarts !=null &&b) {
 	   mStarts.cancel();
 	   mStarts.start();
+	   Log.i("LOGSCAN", "mStartScanType   "+mStartScanType);
 	}
    }
    /**

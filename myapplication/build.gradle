@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "2.6.9.1.11"
+        versionName "2.6.9.1.13"
 //        versionName "3.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -125,7 +125,8 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+    implementation project(':android-gif-drawable')
 //    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
 
 }
