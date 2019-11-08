@@ -495,7 +495,7 @@ public class FaceManager {
         final CameraImageSource cameraImageSource = new CameraImageSource(context);
         // 图片越小检测速度越快，闸机场景640 * 480 可以满足需求。实际预览值可能和该值不同。和相机所支持的预览尺寸有关。
         // 可以通过 camera.getParameters().getSupportedPreviewSizes()查看支持列表。
-        cameraImageSource.getCameraControl().setPreferredPreviewSize(1280, 720);
+        cameraImageSource.getCameraControl().setPreferredPreviewSize(640, 480);
         // 设置最小人脸，该值越小，检测距离越远，该值越大，检测性能越好。范围为80-200
         FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(100);
         // 设置预览
@@ -518,7 +518,7 @@ public class FaceManager {
             cameraImageSource.getCameraControl().setDisplayOrientation(CameraView.ORIENTATION_HORIZONTAL);
         }
         // TODO 选择使用前置摄像头
-        // cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
+         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
         // TODO 选择使用usb摄像头
         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
         if (isMirror) {

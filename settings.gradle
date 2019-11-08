@@ -1,1 +1,1 @@
-include ':myapplication',':libdevicesbase', ':libeth002', ':libreader', ':libfacerecognition', ':libvideorecord',':android-gif-drawable'
+include ':myapplication',':libdevicesbase', ':libeth002', ':libreader', ':libfacerecognition', ':libvideorecord'

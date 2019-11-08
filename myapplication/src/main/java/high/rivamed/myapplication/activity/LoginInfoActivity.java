@@ -434,7 +434,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 								if (code== FunctionCode.SUCCESS){
 									//刪除本地缓存人脸照
 									new File(faceImagePath).delete();
-									ToastUtils.showShortToast("人脸绑定成功");
+								   UIUtils.runInUIThread(()->  ToastUtils.showShortToast("人脸绑定成功"));
+//									ToastUtils.showShortToast("人脸绑定成功");
 								}
 							});
 				}

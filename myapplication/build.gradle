@@ -8,14 +8,14 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "2.6.9.1.13"
+        versionName "2.6.9.1.14"
 //        versionName "3.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-//        ndk {
-//            //选择要添加的对应cpu类型的.so库。
-//            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a'
-//        }
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi-v7a'
+        }
     }
     signingConfigs {
         debug_config {
@@ -125,8 +125,7 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-//    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
-    implementation project(':android-gif-drawable')
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
 //    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
 
 }
