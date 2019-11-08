@@ -816,8 +816,8 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_FACE_GET_ALL;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", SYSTEMTYPE);
-	   map.put("startDate", startDate);
-	   map.put("endDate", endDate);
+	map.put("startDate", startDate);
+	map.put("endDate", endDate);
 	GetRequest(urls, map, tag, netResult);
    }
 

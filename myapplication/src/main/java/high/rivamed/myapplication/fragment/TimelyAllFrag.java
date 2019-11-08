@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.TimelyDetailsActivity;
+import high.rivamed.myapplication.activity.TimelyGroupCstActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
 import high.rivamed.myapplication.activity.TimelyProfitActivity;
 import high.rivamed.myapplication.adapter.TimelyAllAdapter;
@@ -123,6 +124,8 @@ public class TimelyAllFrag extends SimpleFragment {
    TextView mTimelyStartBtn;
    @BindView(R.id.timely_put_btn)
    TextView mTimelyPutBtn;
+   @BindView(R.id.group_btn)
+   TextView mGroupBtn;
    @BindView(R.id.timely_book)
    TextView mTimelyBook;
    @BindView(R.id.timely_reality)
@@ -200,7 +203,7 @@ public class TimelyAllFrag extends SimpleFragment {
 	} else {
 	   if (mBuilder != null) {
 		mBuilder.mLoading.stop();
-		if (mBuilder.mHandler!=null){
+		if (mBuilder.mHandler != null) {
 		   mBuilder.mHandler.removeCallbacksAndMessages(null);
 		}
 		mBuilder.mDialog.dismiss();
@@ -277,7 +280,7 @@ public class TimelyAllFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-      EventBusUtils.register(this);
+	EventBusUtils.register(this);
 	mBuilder = DialogUtils.showRader(mContext);
 	mBuilder.mLoading.stop();
 	mBuilder.mDialog.dismiss();
@@ -300,9 +303,11 @@ public class TimelyAllFrag extends SimpleFragment {
 	}
 	mTimelyOnResume = true;
 	super.onResume();
-	boolean b3 = App.getInstance().ifActivityRun("high.rivamed.myapplication.activity.LoginActivity");
-	boolean b2 = App.getInstance().ifActivityRun("high.rivamed.myapplication.activity.SelInOutBoxTwoActivity");
-	Log.i("outtccc"," dfdfdfdfdf          "+b3+"    "+b2);
+	boolean b3 = App.getInstance()
+		.ifActivityRun("high.rivamed.myapplication.activity.LoginActivity");
+	boolean b2 = App.getInstance()
+		.ifActivityRun("high.rivamed.myapplication.activity.SelInOutBoxTwoActivity");
+	Log.i("outtccc", " dfdfdfdfdf          " + b3 + "    " + b2);
 	mSearchEts.addTextChangedListener(new TextWatcher() {
 	   @Override
 	   public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -366,12 +371,12 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void initDate(int epcSize, int reduce, int add, int count) {
-	if (epcSize == count) {
-	   mTimelyReality.setText(
-		   Html.fromHtml("实际扫描数：<font color='#262626'><big>" + epcSize + "</big>&emsp</font>"));
-	} else {
+	if (reduce != 0 || add != 0) {
 	   mTimelyReality.setText(
 		   Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + epcSize + "</big>&emsp</font>"));
+	} else {
+	   mTimelyReality.setText(
+		   Html.fromHtml("实际扫描数：<font color='#262626'><big>" + epcSize + "</big>&emsp</font>"));
 	}
 	mTimelyBook.setText(
 		Html.fromHtml("账面库存数：<font color='#262626'><big>" + count + "</big>&emsp</font>"));
@@ -401,13 +406,14 @@ public class TimelyAllFrag extends SimpleFragment {
 	}
 	if (mDeviceCode == null || mDeviceCode.equals("") || mTbaseDevices.size() == 1) {//全部的柜子详情
 	   mTimelyPutBtn.setVisibility(View.VISIBLE);
+	   mGroupBtn.setVisibility(View.VISIBLE);
 	} else {
 	   mTimelyPutBtn.setVisibility(View.GONE);
+	   mGroupBtn.setVisibility(View.GONE);
 	}
 	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	mTimelyAllAdapter.setEmptyView(inflate);
 	mTimelyAllAdapter.notifyDataSetChanged();
-
 	mTimelyAllAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -455,7 +461,8 @@ public class TimelyAllFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss, R.id.timely_put_btn})
+   @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss, R.id.timely_put_btn,
+	   R.id.group_btn})
    public void onViewClicked(View view) {
 	mPauseS = false;
 	switch (view.getId()) {
@@ -559,6 +566,19 @@ public class TimelyAllFrag extends SimpleFragment {
 			ToastUtils.showShort("请盘点后进行保存！");
 		   }
 
+		}
+		break;
+	   case R.id.group_btn:
+		//耗材组
+		if (mToJson == null) {
+		   ToastUtils.showShortToast("请先盘点后再查看");
+		}else {
+		   String dtoJson = mGson.toJson(mCstInventoryDto);
+		   Intent intent = new Intent(mContext, TimelyGroupCstActivity.class);
+		   intent.putExtra("mCstInventoryDto",dtoJson);
+		   intent.putExtra("timelygroupdate",mToJson);
+		   intent.putExtra("mDeviceCode",mDeviceCode);
+		   mContext.startActivity(intent);
 		}
 		break;
 	}
@@ -690,6 +710,8 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    private void setScanTimelyDate(InventoryDto mCstInventoryDto, int epcs, String deviceId) {
+	int reduces = mCstInventoryDto.getReduce();
+	int adds = mCstInventoryDto.getAdd();
 	if (mDeviceCode == null || mDeviceCode.equals("")) { //全部柜子扫描显示
 	   moreScanTimely(mCstInventoryDto, epcs, deviceId);
 	   LogUtils.i(TAG, "全部");
@@ -735,34 +757,37 @@ public class TimelyAllFrag extends SimpleFragment {
 			   Reduce += l.getReduce();
 			   Add += l.getAdd();
 			}
-			if (epcs == number) {
-			   mTimelyReality.setText(Html.fromHtml(
-				   "实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
-			} else {
+			if (reduces != 0 || adds != 0) {
 			   mTimelyReality.setText(Html.fromHtml(
 				   "实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+			} else {
+			   mTimelyReality.setText(Html.fromHtml(
+				   "实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
 			}
+			//			if (epcs == number) {
+			//			   mTimelyReality.setText(Html.fromHtml(
+			//				   "实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
+			//			} else {
+			//			   mTimelyReality.setText(Html.fromHtml(
+			//				   "实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+			//			}
 
 			mTimelyBook.setText(Html.fromHtml(
 				"账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
 
-			if (mCstInventoryDto.getReduce() == 0) {
-			   mTimelyLoss.setText(Html.fromHtml(
-				   "盘亏：" + "<font color='#262626'>" + mCstInventoryDto.getReduce() +
-				   "</font>"));
+			if (reduces == 0) {
+			   mTimelyLoss.setText(
+				   Html.fromHtml("盘亏：" + "<font color='#262626'>" + reduces + "</font>"));
 			} else {
-			   mTimelyLoss.setText(Html.fromHtml(
-				   "盘亏：" + "<font color='#F5222D'>" + mCstInventoryDto.getReduce() +
-				   "</font>"));
+			   mTimelyLoss.setText(
+				   Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + reduces + "</font>"));
 			}
-			if (mCstInventoryDto.getAdd() == 0) {
-			   mTimelyProfit.setText(Html.fromHtml(
-				   "盘盈：" + "<font color='#262626'>" + mCstInventoryDto.getAdd() +
-				   "</font>"));
+			if (adds == 0) {
+			   mTimelyProfit.setText(
+				   Html.fromHtml("盘盈：" + "<font color='#262626'>" + adds + "</font>"));
 			} else {
-			   mTimelyProfit.setText(Html.fromHtml(
-				   "盘盈：" + "<font color='#F5222D'>" + mCstInventoryDto.getAdd() +
-				   "</font>"));
+			   mTimelyProfit.setText(
+				   Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + adds + "</font>"));
 			}
 
 			mTimelyAllAdapter.notifyDataSetChanged();
@@ -780,6 +805,8 @@ public class TimelyAllFrag extends SimpleFragment {
     * @param deviceId
     */
    private void moreScanTimely(InventoryDto mCstInventoryDto, int epcs, String deviceId) {
+	int reduces = mCstInventoryDto.getReduce();
+	int adds = mCstInventoryDto.getAdd();
 	if (mInventoryVos == null) {  //第一次扫描
 	   mInventoryVos = mCstInventoryDto.getInventoryVos();
 	   mDeviceInventoryVos = mCstInventoryDto.getDeviceInventoryVos();
@@ -803,30 +830,30 @@ public class TimelyAllFrag extends SimpleFragment {
 	   for (InventoryVo inventoryVo : mInventoryVos) {
 		number += inventoryVo.getCountStock();
 	   }
-	   if (epcs == number) {
-		mTimelyReality.setText(
-			Html.fromHtml("实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
-	   } else {
+	   if (reduces != 0 || adds != 0) {
 		mTimelyReality.setText(
 			Html.fromHtml("实际扫描数：<font color='#F5222D'><big>" + epcs + "</big>&emsp</font>"));
+	   } else {
+		mTimelyReality.setText(
+			Html.fromHtml("实际扫描数：<font color='#262626'><big>" + epcs + "</big>&emsp</font>"));
 	   }
 
 	   mTimelyBook.setText(
 		   Html.fromHtml("账面库存数：<font color='#262626'><big>" + number + "</big>&emsp</font>"));
-	   if (mCstInventoryDto.getReduce() == 0) {
-		mTimelyLoss.setText(Html.fromHtml(
-			"盘亏：" + "<font color='#262626'>" + mCstInventoryDto.getReduce() + "</font>"));
+	   if (reduces == 0) {
+		mTimelyLoss.setText(
+			Html.fromHtml("盘亏：" + "<font color='#262626'>" + reduces + "</font>"));
 	   } else {
-		mTimelyLoss.setText(Html.fromHtml(
-			"盘亏：" + "<font color='#F5222D'>" + mCstInventoryDto.getReduce() + "</font>"));
+		mTimelyLoss.setText(
+			Html.fromHtml("盘亏：" + "<font color='#F5222D'>" + reduces + "</font>"));
 	   }
 
-	   if (mCstInventoryDto.getAdd() == 0) {
-		mTimelyProfit.setText(Html.fromHtml(
-			"盘盈：" + "<font color='#262626'>" + mCstInventoryDto.getAdd() + "</font>"));
+	   if (adds == 0) {
+		mTimelyProfit.setText(
+			Html.fromHtml("盘盈：" + "<font color='#262626'>" + adds + "</font>"));
 	   } else {
-		mTimelyProfit.setText(Html.fromHtml(
-			"盘盈：" + "<font color='#F5222D'>" + mCstInventoryDto.getAdd() + "</font>"));
+		mTimelyProfit.setText(
+			Html.fromHtml("盘盈：" + "<font color='#F5222D'>" + adds + "</font>"));
 
 	   }
 
@@ -845,11 +872,11 @@ public class TimelyAllFrag extends SimpleFragment {
 	super.onStop();
 	if (mBuilder != null) {
 	   mBuilder.mLoading.stop();
-	   if (mBuilder.mHandler!=null){
+	   if (mBuilder.mHandler != null) {
 		mBuilder.mHandler.removeCallbacksAndMessages(null);
 	   }
 	   mBuilder.mDialog.dismiss();
-	   mBuilder=null;
+	   mBuilder = null;
 	}
 	cancel();
    }

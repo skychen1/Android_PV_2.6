@@ -52,9 +52,12 @@
                     />
 
             </FrameLayout>
+
+
             <TextView
                 android:id="@+id/timely_start_btn"
-                android:layout_toRightOf="@+id/search_fl"
+                android:layout_below="@+id/search_fl"
+                android:layout_marginTop="@dimen/y30"
                 style="@style/btn_style_sel"
                 android:text="开始盘点"
                 />
@@ -65,11 +68,13 @@
                 android:layout_height="@dimen/x50"
                 android:layout_marginRight="@dimen/x20"
                 android:layout_marginLeft="@dimen/x20"
+                android:layout_marginTop="@dimen/y30"
                 android:background="@drawable/bg_btn_line_circle_nor"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/x22"
                 android:paddingRight="@dimen/x22"
                 android:text="盘亏：3"
+                android:layout_below="@+id/search_fl"
                 android:layout_toRightOf="@+id/timely_start_btn"
                 android:textColor="@color/text_color_58"
                 android:textSize="@dimen/textsize_15"
@@ -81,8 +86,10 @@
                 android:background="@drawable/bg_btn_line_circle_nor"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/x22"
+                android:layout_marginTop="@dimen/y30"
                 android:paddingRight="@dimen/x22"
                 android:text="盘盈：30"
+                android:layout_below="@+id/search_fl"
                 android:layout_toRightOf="@+id/timely_loss"
                 android:textColor="@color/text_color_58"
                 android:textSize="@dimen/textsize_15"
@@ -93,11 +100,22 @@
                 android:layout_width="wrap_content"
                 android:paddingLeft="@dimen/x20"
                 android:paddingRight="@dimen/x20"
+                android:layout_below="@+id/search_fl"
+                android:layout_marginTop="@dimen/y30"
                 android:visibility="gone"
                 android:layout_toRightOf="@+id/timely_profit"
                 android:text="保存盘点单"
                 />
-
+            <include
+                android:id="@+id/right_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/view_right_top_layout"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/y30"
+                android:layout_below="@+id/search_fl"
+                android:gravity="bottom"
+                />
         </RelativeLayout>
         <include android:id="@+id/stock_search"
             layout="@layout/view_search_et_layout"
@@ -177,13 +195,7 @@
                 android:textSize="@dimen/textsize_16"/>
 
         </RelativeLayout>
-        <include
-            android:id="@+id/right_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            layout="@layout/view_right_top_layout"
-            android:layout_alignParentRight="true"
-            />
+
         <LinearLayout
             android:id="@+id/stock_right_btn"
             android:layout_width="match_parent"
@@ -237,6 +249,16 @@
             </RadioGroup>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/group_btn"
+            style="@style/btn_style_sel"
+            android:layout_width="wrap_content"
+            android:paddingLeft="@dimen/x30"
+            android:paddingRight="@dimen/x30"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/x30"
+            android:layout_alignParentRight="true"
+            android:text="耗 材 组"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"

@@ -821,9 +821,12 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		   mBindPatient.setEnabled(false);
 
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   if (!UIUtils.isFastDoubleClick()) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
 		   Toast.makeText(NewOutMealBingConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
 					Toast.LENGTH_SHORT).show();
-		   mHandler.postDelayed(mRunnable, 3000);
+		   mHandler.postDelayed(mRunnable, 1000);
 		} else {
 		   setRemoveRunnable();
 		}

@@ -13,16 +13,21 @@ import com.google.gson.reflect.TypeToken;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
 
 /**
@@ -51,6 +56,18 @@ public class StockRightUnconfFrag extends SimpleFragment {
     public StockMiddlePagerAdapter mPagerAdapter;
 
     private List<BoxSizeBean.DevicesBean> mTbaseDevices;
+    /**
+     * 重新加载数据
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onStartFrag(Event.EventFrag event) {
+        if (event.type.equals("START3")) {
+            if(UIUtils.getConfigType(mContext, CONFIG_026)){
+                onSucceedDate();
+            }
+        }
+    }
 
     @Override
     public int getLayoutId() {

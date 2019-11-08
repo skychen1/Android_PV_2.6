@@ -242,6 +242,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
       if (!event.type){
 	   GifDrawable gifDrawable = null;
 	   try {
+
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
 		if (mTimelyStartBtnRight!=null){
@@ -628,6 +629,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && !mPause) {
 		   setFalseEnabled(false, false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   if (!UIUtils.isFastDoubleClick()) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
 		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
 		   mHandler.postDelayed(mRunnable, 1000);
 		} else {

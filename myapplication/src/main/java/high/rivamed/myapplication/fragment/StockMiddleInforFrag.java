@@ -57,6 +57,16 @@ public class StockMiddleInforFrag extends SimpleFragment {
    private List<BoxSizeBean.DevicesBean> mTbaseDevices;
    /**
     * 重新加载数据
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+   public void onStartFrag(Event.EventFrag event) {
+	if (event.type.equals("START3")) {
+	   onSucceedDate();
+	}
+   }
+   /**
+    * 重新加载数据
     *
     * @param event
     */
@@ -117,7 +127,7 @@ public class StockMiddleInforFrag extends SimpleFragment {
 	public Fragment getItem(int position) {
 
 	   mStockLeftAlltop.setVisibility(View.GONE);
-	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE, mTbaseDevices.get(position).getDeviceId());
+	   return PublicStockFrag.newInstance(mStockNumber, STYPE_STOCK_MIDDLE, mTbaseDevices.get(position).getDeviceId(),mTbaseDevices.size());
 	}
 
 	@Override
