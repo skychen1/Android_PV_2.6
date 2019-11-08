@@ -302,7 +302,7 @@ public class Activation {
             String liscense = readFile(liscensePaht, "liscense");
             success = FileUitls.c(context, FaceSDKManager.LICENSE_NAME, list);
             if (success) {
-                toast("激活中，请稍等！");
+                toast("激活中，请稍等30秒，成功后按钮会变化！");
                 FaceSDKManager.initStatus = FaceSDKManager.SDK_UNINIT;
                 FaceSDKManager.getInstance().init(context);
                 hide();
@@ -495,13 +495,13 @@ public class Activation {
         }
 
         if (success) {
-            toast("激活成功");
+            toast("激活中，请稍等30秒，成功后按钮会变化！");
             if (activationCallback != null) {
                 activationCallback.callback(true);
                 activationDialog.dismiss();
             }
         } else {
-            toast("激活失败");
+//            toast("激活失败");
         }
     }
 

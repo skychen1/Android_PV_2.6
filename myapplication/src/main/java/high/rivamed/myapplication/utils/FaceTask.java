@@ -83,7 +83,7 @@ public class FaceTask {
                 AllFacePhotoBean facePhotoBean = mGson.fromJson(result, AllFacePhotoBean.class);
                 if (null == facePhotoBean||!facePhotoBean.isOperateSuccess()||facePhotoBean.getUserVos()==null||facePhotoBean.getUserVos().isEmpty()) {
                     if (callBack != null)
-//                        callBack.finishRegister(false,"暂时没有人脸照数据");
+                        //                        callBack.finishRegister(false,"暂时没有人脸照数据");
                         callBack.finishRegister(false,null);
                     return;
                 }
@@ -111,28 +111,28 @@ public class FaceTask {
             return;
         }
         OkGo.<File>get(faceUrl).tag(_mActivity)//
-//                .params("systemType", SYSTEMTYPE)
-                .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getUserId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
-                    @Override
-                    public void onSuccess(Response<File> response) {
-                        //缓存至本地，注册人脸
-                        registerFaceLibrary(updatePhotoList.get(index), response.body());
-                    }
+              //                .params("systemType", SYSTEMTYPE)
+              .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getUserId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
+                  @Override
+                  public void onSuccess(Response<File> response) {
+                      //缓存至本地，注册人脸
+                      registerFaceLibrary(updatePhotoList.get(index), response.body());
+                  }
 
-                    @Override
-                    public void downloadProgress(Progress progress) {
-//                        mDialog.setProgress((int) (progress.fraction / -1024));
-                        super.downloadProgress(progress);
+                  @Override
+                  public void downloadProgress(Progress progress) {
+                      //                        mDialog.setProgress((int) (progress.fraction / -1024));
+                      super.downloadProgress(progress);
 
-                    }
+                  }
 
-                    @Override
-                    public void onError(Response<File> response) {
-                        super.onError(response);
-                        //继续注册下一张
-                        next();
-                    }
-                });
+                  @Override
+                  public void onError(Response<File> response) {
+                      super.onError(response);
+                      //继续注册下一张
+                      next();
+                  }
+              });
     }
 
     /**

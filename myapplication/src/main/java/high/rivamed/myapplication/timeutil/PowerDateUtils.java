@@ -588,11 +588,11 @@ public class PowerDateUtils {
 	}
 
    /**
-    * 获取前一天当前时间   x = -1 向前走一天
+    * 获取前一天当前时间
     */
-   public static String getTime(int x){
+   public static String getTime(){
 	Calendar  calendar =Calendar. getInstance();
-	calendar.add( Calendar. DATE, -x); //向前走一天
+	calendar.add( Calendar. DATE, -1); //向前走一天
 	Date date= calendar.getTime();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);

@@ -517,30 +517,30 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	}
    }
 
-   public void bindFace(String path) {
-	try {
-	   String base64 = FileEncoder.encodeFileToBase64String(path);
-	   NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   // TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
-		   //更新：需要先删除本地已注册人脸，再重新注册
-		   if (FaceManager.getManager().getUserById(mUserId) != null) {
-			boolean b = FaceManager.getManager().deleteFace(mUserId);
-			LogUtils.d(TAG, "删除人脸底照：" + b + ",userId：" + mUserId);
-		   }
-		   FaceManager.getManager()
-			   .registerFace(mUserId,
-					     SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
-					     faceImagePath, (code, msg) -> {
-					LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
-					if (code == FunctionCode.SUCCESS) {
-					   //刪除本地缓存人脸照
-					   new File(faceImagePath).delete();
-					   ToastUtils.showShortToast("人脸绑定成功");
+	public void bindFace(String path) {
+		try {
+			String base64 = FileEncoder.encodeFileToBase64String(path);
+			NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+					// TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
+					//更新：需要先删除本地已注册人脸，再重新注册
+					if (FaceManager.getManager().getUserById(mUserId)!=null) {
+						boolean b = FaceManager.getManager().deleteFace(mUserId);
+						LogUtils.d(TAG, "删除人脸底照："+b+",userId：" + mUserId);
 					}
-				   });
-		}
+					FaceManager.getManager().registerFace(mUserId,
+							SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
+							faceImagePath, (code, msg) -> {
+								LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
+								if (code== FunctionCode.SUCCESS){
+									//刪除本地缓存人脸照
+									new File(faceImagePath).delete();
+								   UIUtils.runInUIThread(()->  ToastUtils.showShortToast("人脸绑定成功"));
+//									ToastUtils.showShortToast("人脸绑定成功");
+								}
+							});
+				}
 
 		@Override
 		public void onError(String result) {

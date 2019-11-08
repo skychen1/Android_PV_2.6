@@ -31,6 +31,7 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -95,6 +96,8 @@ public class LoginFaceFragment extends SimpleFragment {
             FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
                 if (isSuccess) {
                     loginFace(userId);
+                }else {
+                    UIUtils.runInUIThread(()->  ToastUtils.showShortToast("登录失败，暂无人脸信息！"));
                 }
             });
     }
