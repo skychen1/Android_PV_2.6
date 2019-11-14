@@ -449,7 +449,7 @@ public class LoginActivity extends SimpleActivity {
 	List<UserFeatureInfosBean> beans = LitePal.where("data = ? ", loginType)
 		.find(UserFeatureInfosBean.class);
 	LogUtils.i(TAG, " beans     " + mGson.toJson(beans));
-	if (beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
+	if (beans!=null&&beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
 	   String accountName = beans.get(0).getAccountName();
 	   List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
 	   LogUtils.i(TAG, " menus1     " + mGson.toJson(fromJson));
@@ -479,6 +479,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onError(String result) {
 		EventBusUtils.postSticky(new Event.EventLoading(false));
+		uNNetvalidateLoginIdCard(idCard);
 	   }
 	});
 

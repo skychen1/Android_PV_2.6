@@ -127,7 +127,20 @@ public class ToastUtils {
 	   toast.show();
 	}
    }
-
+   /**
+    * 短时间显示Toast【居下】    处理7.1.版本API崩溃问题
+    *
+    * @param msg 显示的内容-字符串
+    */
+   public static void showLongToast(String msg) {
+	if (App.getAppContext() != null) {
+	   Toast toast = Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_LONG);
+	   if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
+		hook(toast);
+	   }
+	   toast.show();
+	}
+   }
    public static void showClickToast(final Context context, String msg, int duration) {
 
 	if (mToast == null) {

@@ -58,6 +58,7 @@ import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVo;
@@ -116,14 +117,8 @@ public class ScanService extends Service {
 		   @Override
 		   public void run() {
 			getAllCstDate(this);//重新获取在库耗材数据
-			List<UserFeatureInfosBean> all = LitePal.findAll(UserFeatureInfosBean.class);
-			List<OperationRoomsBean> roomsBeans = LitePal.findAll(OperationRoomsBean.class);
-			if (all.size() == 0) {
-			   getUnNetUseDate();
-			}
-			if (roomsBeans.size() == 0) {
-			   getUnEntFindOperation();
-			}
+			getUnNetUseDate();
+			getUnEntFindOperation();
 		   }
 		});
 		lastClickTime = mTime;
@@ -145,8 +140,6 @@ public class ScanService extends Service {
 			   getAllCstDate(this);
 			}
 			UnNetCstUtils.putUnNetOperateYes(this);//提交离线耗材和重新获取在库耗材数据
-			getUnNetUseDate();
-			getUnEntFindOperation();
 		   }
 		});
 		lastClickTime = mTime;
@@ -162,33 +155,17 @@ public class ScanService extends Service {
 	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		deleteLitepal();
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		if (mThread2 != null) {
-		   mThread2.start();
-		} else {
-		   mThread2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-			   setLitePalUseBean(userBean);
-			}
-		   });
-		   mThread2.start();
+		List<AccountVosBean> accountVos = userBean.getAccountVos();
+		for (AccountVosBean allUser : accountVos) {
+		   AccountVosBean vo = LitePal.where("accountId = ?", allUser.getAccountId())
+			   .findFirst(AccountVosBean.class);
+		   if (vo == null) {
+			setLitePalUseBean(allUser);//存入
+		   }
 		}
 	   }
 	});
-   }
-
-   /**
-    * 删除本地数据库用户信息表
-    */
-   private void deleteLitepal() {
-	LitePal.deleteAll(UserBean.class);
-	LitePal.deleteAll(AccountVosBean.class);
-	LitePal.deleteAll(HomeAuthorityMenuBean.class);
-	LitePal.deleteAll(UserFeatureInfosBean.class);
-	LitePal.deleteAll(ChildrenBeanX.class);
-	LitePal.deleteAll(ChildrenBean.class);
    }
 
    /**
@@ -316,6 +293,7 @@ public class ScanService extends Service {
    @Override
    public void onCreate() {
 	super.onCreate();
+
 	setConnectType();
 
 	EventBusUtils.register(this);
@@ -335,18 +313,19 @@ public class ScanService extends Service {
 	   public void run() {
 		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
 		String urls = MAIN_URL + NetApi.URL_CONNECT;
-		if (MAIN_URL!=null){
+		if (MAIN_URL != null) {
 		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
 			@Override
 			public void onSuccess(Response<String> response) {
 			   EventBusUtils.post(new Event.XmmppConnect(true));
 			}
+
 			@Override
 			public void onError(Response<String> response) {
 			   EventBusUtils.post(new Event.XmmppConnect(false));
 			}
 		   });
-		}else {
+		} else {
 		   EventBusUtils.post(new Event.XmmppConnect(false));
 		}
 	   }
@@ -385,6 +364,94 @@ public class ScanService extends Service {
 	timeFilter.addAction("android.net.wifi.STATE_CHANGE");
 	timeFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
 	registerReceiver(mWorkReceiver, timeFilter);
+   }
+
+   /**
+    * 数据存储
+    *
+    * @param accountVosBean
+    */
+   private void setLitePalUseBean(AccountVosBean accountVosBean) {
+
+	AccountVosBean vosBean = new AccountVosBean();
+	vosBean.setAccountId(accountVosBean.getAccountId());
+	vosBean.setUserId(accountVosBean.getUserId());
+	vosBean.setAccountName(accountVosBean.getAccountName());
+	vosBean.setTenantId(accountVosBean.getTenantId());
+	vosBean.setUseState(accountVosBean.getUseState());
+	vosBean.setPassword(accountVosBean.getPassword());
+	vosBean.setSalt(accountVosBean.getSalt());
+	vosBean.setSex(accountVosBean.getSex());
+	vosBean.setUserName(accountVosBean.getUserName());
+	for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+	   UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
+	   infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
+	   infosBean.setUserId(userFeatureInfosBean.getUserId());
+	   infosBean.setType(userFeatureInfosBean.getType());
+	   infosBean.setData(userFeatureInfosBean.getData());
+	   infosBean.setAccountName(accountVosBean.getAccountName());
+	   infosBean.save();
+	   vosBean.getUserFeatureInfos().add(infosBean);
+	}
+	for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+	   HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
+	   mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
+	   mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
+	   if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+		 null != homeAuthorityMenuBean.getChildren() &&
+		 homeAuthorityMenuBean.getChildren().size() > 0) {
+		ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+		mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+		mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
+		if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+		   for (int x = 0;
+			  x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+			ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+				.get(0)
+				.getChildren()
+				.get(x);
+			ChildrenBean mChildrenBean = new ChildrenBean();
+			mChildrenBean.setTitle(childrenBean.getTitle());
+			mChildrenBean.setAccountName(accountVosBean.getAccountName());
+			mChildrenBean.save();
+			mChildrenBeanX.getChildren().add(mChildrenBean);
+		   }
+		}
+		mChildrenBeanX.save();
+		mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
+	   }
+	   mhomeAuthorityMenuBean.save();
+	   vosBean.getMenus().add(mhomeAuthorityMenuBean);
+	}
+	boolean save = vosBean.save();
+	Log.i("ddefad", "存入名字结束  " + save + "    " + getDates());
+   }
+
+   /**
+    * 本地手术室
+    */
+   private void getUnEntFindOperation() {
+
+	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
+		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
+		List<OperationRoomsBean> operationRooms = roomsBean.getOperationRooms();
+
+		for (OperationRoomsBean allRoom : operationRooms) {
+		   OperationRoomsBean vo = LitePal.where("optRoomId = ?", allRoom.getOptRoomId())
+			   .findFirst(OperationRoomsBean.class);
+		   if (vo == null) {
+			OperationRoomsBean bean = new OperationRoomsBean();
+			bean.setOptRoomId(allRoom.getOptRoomId());
+			bean.setRoomName(allRoom.getRoomName());
+			boolean save = bean.save();//存入
+			Log.i("ddefad", "存入手术间  " + save);
+		   }
+		}
+	   }
+	});
    }
 
    /**
@@ -450,33 +517,5 @@ public class ScanService extends Service {
 	   mUserBean.getAccountVos().add(vosBean);
 	}
 	mUserBean.save();
-   }
-
-   /**
-    * 本地手术室
-    */
-   private void getUnEntFindOperation() {
-
-	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
-	   @Override
-	   public void onSucceed(String result) {
-		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
-		LitePal.deleteAll(RoomsBean.class);
-		LitePal.deleteAll(OperationRoomsBean.class);
-		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
-		RoomsBean mRoomsBean = new RoomsBean();
-		if (roomsBean.getOperationRooms().size() > 0) {
-		   mRoomsBean.setThingId(roomsBean.getThingId());
-		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
-			OperationRoomsBean bean = new OperationRoomsBean();
-			bean.setOptRoomId(mOperationRooms.getOptRoomId());
-			bean.setRoomName(mOperationRooms.getRoomName());
-			bean.save();
-			mRoomsBean.getOperationRooms().add(bean);
-		   }
-		   mRoomsBean.save();
-		}
-	   }
-	});
    }
 }

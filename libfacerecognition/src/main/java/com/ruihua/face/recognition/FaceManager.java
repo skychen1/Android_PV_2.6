@@ -110,7 +110,7 @@ public class FaceManager {
      * @param isMirror 是否需要镜像
      * @param listener 数据回调监听
      */
-    public void init(@NonNull Activity context, boolean isMirror, InitListener listener) {
+    public void init(@NonNull Context context, boolean isMirror, InitListener listener) {
         //检测文件读取权限
         int permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -520,7 +520,7 @@ public class FaceManager {
         // TODO 选择使用前置摄像头
          cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
         // TODO 选择使用usb摄像头
-        cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
+//        cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
         if (isMirror) {
             //如果有镜像需要设置镜像
             // 如果不设置，人脸框会镜像，显示不准
