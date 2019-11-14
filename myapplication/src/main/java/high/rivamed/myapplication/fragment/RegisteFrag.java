@@ -33,6 +33,7 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.LogosBean;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.ThingDto;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
@@ -44,6 +45,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DevicesUtils;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LogcatHelper;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -167,6 +169,7 @@ public class RegisteFrag extends SimpleFragment {
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
 		   getBoxSize();
+		   getLogos();
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
@@ -266,9 +269,29 @@ public class RegisteFrag extends SimpleFragment {
 	LitePal.initialize(mAppContext);//数据库初始化
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
+	getLogos();
 	initData();
 	getBoxSize();
 	ToastUtils.showShortToast("数据恢复完成，请稍等5秒！");
+   }
+
+   /**
+    * 获取logo
+    */
+   private void getLogos() {
+	NetRequest.getInstance().loadLogo(this,new BaseResult(){
+	   @Override
+	   public void onSucceed(String result) {
+		LogosBean logosBean = mGson.fromJson(result, LogosBean.class);
+		String loginPageLogo = logosBean.getHospitalFile().getLoginPageLogo();
+		String mainInterfaceLogo = logosBean.getHospitalFile().getMainInterfaceLogo();
+		boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo,"login_logo");
+		boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo,"home_logo");
+
+		Log.i("eees","图片loginPageLogo保存+     "+saveloginPageLogo);
+		Log.i("eees","图片mainInterfaceLogo保存+     "+savemainInterfaceLogo);
+	   }
+	});
    }
 
    public static RegisteFrag newInstance() {

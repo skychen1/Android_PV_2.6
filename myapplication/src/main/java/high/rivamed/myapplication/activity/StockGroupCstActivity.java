@@ -65,7 +65,7 @@ public class StockGroupCstActivity extends BaseSimpleActivity {
 
    private void loadDate() {
 	NetRequest.getInstance()
-		.getStockDown("","", -1, mContext, new BaseResult() {
+		.getStockMiddleDetails("", "", -1, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			mInventoryGroupVos.clear();

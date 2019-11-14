@@ -34,7 +34,6 @@
 			android:layout_marginLeft="@dimen/x30"
 			android:layout_marginBottom="@dimen/y40"
 			android:layout_gravity="center"
-			android:background="@mipmap/hckg_logo"
 			/>
 
 

@@ -294,6 +294,13 @@ public class NetRequest {
    }
 
    /**
+    * 获取logo
+    */
+   public void loadLogo(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_LOGO;
+	GetRequest(urls, null, tag, netResult);
+   }
+   /**
     * 耗材效期监控
     */
    public void materialControl(Object tag, NetResult netResult) {
@@ -304,9 +311,9 @@ public class NetRequest {
    }
 
    /**
-    * 库存详情和耗材库存预警
+    * 库存详情
     */
-   public void getStockDown(
+   public void getStockMiddleDetails(
 	   String nameOrSpecQueryCon, String deviceCode, int mStopFlag, Object tag,
 	   NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_STOCKSTATUS_DETAILS;
@@ -317,7 +324,17 @@ public class NetRequest {
 	map.put("expireStatus", mStopFlag + "");
 	GetRequest(urls, map, tag, netResult);
    }
-
+   /**
+    * 库存监控
+    */
+   public void getStockLeftDown(String deviceCode, Object tag,
+	   NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_STOCKSTATUS_MONITORING;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingId", sThingCode);
+	map.put("deviceId", deviceCode);
+	GetRequest(urls, map, tag, netResult);
+   }
    /**
     * 未确认耗材
     */

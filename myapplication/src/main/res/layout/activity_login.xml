@@ -20,7 +20,6 @@
 			android:layout_width="@dimen/x250"
 			android:layout_height="@dimen/y70"
 			android:layout_marginLeft="@dimen/x79"
-			android:background="@mipmap/bg_login_icon"
 			/>
 
 		<View

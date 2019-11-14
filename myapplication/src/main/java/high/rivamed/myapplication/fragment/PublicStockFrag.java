@@ -395,15 +395,16 @@ public class PublicStockFrag extends SimpleFragment {
    }
 
    /**
-    * 库存状态和 库存监控底部和库存详情
+    * 库存监控底部
     *
     * @param mDeviceCode
     */
    public void getLeftDownDate(String mDeviceCode) {
 
 	mInventoryVosS.clear();
+	mStockLeftAdapter.notifyDataSetChanged();
 	LogUtils.i(TAG, "mDeviceCode  " + mDeviceCode);
-	NetRequest.getInstance().getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
+	NetRequest.getInstance().getStockLeftDown(mDeviceCode, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
@@ -415,12 +416,18 @@ public class PublicStockFrag extends SimpleFragment {
 	});
    }
 
+   /**
+    * 库存监控
+    * @param mDeviceCode
+    * @param mStopFlag
+    * @param editString
+    */
    private void LoadMiddleRgDate(String mDeviceCode, int mStopFlag, String editString) {
 	mInventoryVos.clear();
 	mDownAdapter.notifyDataSetChanged();
 	LogUtils.i(TAG, "mDeviceCodesss  " + mDeviceCode);
 	NetRequest.getInstance()
-		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
+		.getStockMiddleDetails(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "LoadMiddleRgDate   " + result);
