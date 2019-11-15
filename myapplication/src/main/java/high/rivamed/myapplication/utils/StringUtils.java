@@ -18,6 +18,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
+import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 public class StringUtils {
@@ -363,6 +365,41 @@ public class StringUtils {
 	   while (iterator.hasNext()){
 		String next = iterator.next();
 		if (DeviceId.equals(next)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
+
+   /**
+    * 判断list是否有此用户
+    * @return
+    */
+   public static boolean getUserId(List<AccountVosBean> all, String accountId) {
+	if (all != null) {
+	   Iterator<AccountVosBean> iterator = all.iterator();
+	   while (iterator.hasNext()){
+		AccountVosBean next = iterator.next();
+		String mAccountId = next.getAccountId();
+		if (mAccountId.equals(accountId)) {
+		   return true;
+		}
+	   }
+	}
+	return false;
+   }
+   /**
+    * 判断list是否有此手术间
+    * @return
+    */
+   public static boolean getRooms(List<OperationRoomsBean> all, String optRoomId) {
+	if (all != null) {
+	   Iterator<OperationRoomsBean> iterator = all.iterator();
+	   while (iterator.hasNext()){
+		OperationRoomsBean next = iterator.next();
+		String mOptRoomId = next.getOptRoomId();
+		if (mOptRoomId.equals(optRoomId)) {
 		   return true;
 		}
 	   }

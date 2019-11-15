@@ -104,22 +104,29 @@ public class LoginPassWordFragment extends SimpleFragment {
             if (type) {//有网登录
                 loadLogin();
             } else {//离线登录
-                String accountName = mLoginName.getText().toString();
-                List<AccountVosBean> beans = LitePal.where("accountname = ? ", accountName)
-                        .find(AccountVosBean.class);
-                LogUtils.i("LoginA", "LitePal   " + mGson.toJson(beans));
-
-                String password = mLoginPassword.getText().toString();
-                if (beans.size() > 0 && Coder.loginCheck(password, beans.get(0).getSalt(), beans.get(0).getPassword())) {
-                    List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
-                    LoginUtils.setMenuDateAndStart(fromJson, mGson, _mActivity, null);
-                } else {
-                    ToastUtils.showShortToast("登录失败，暂无登录信息！");
-                }
+                unNetLoadLogin();
             }
         } else {
             LoginActivity.mLoginGone.setVisibility(View.VISIBLE);
             ToastUtils.showShortToast("正在维护，请到管理端启用");
+        }
+    }
+
+    /**
+     * 离线登录
+     */
+    private void unNetLoadLogin() {
+        String accountName = mLoginName.getText().toString();
+        List<AccountVosBean> beans = LitePal.where("accountname = ? ", accountName)
+                .find(AccountVosBean.class);
+        LogUtils.i("LoginA", "LitePal   " + mGson.toJson(beans));
+
+        String password = mLoginPassword.getText().toString();
+        if (beans!=null&&beans.size() > 0 && Coder.loginCheck(password, beans.get(0).getSalt(), beans.get(0).getPassword())) {
+            List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
+            LoginUtils.setMenuDateAndStart(fromJson, mGson, _mActivity, null);
+        } else {
+            ToastUtils.showShortToast("登录失败，暂无登录信息！");
         }
     }
 
@@ -155,7 +162,7 @@ public class LoginPassWordFragment extends SimpleFragment {
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                LogUtils.i("getAppAccountInfoVo", "result  " + result);
+                LogUtils.i("BaseSimpleFragment", "result  " + result);
                 LoginUtils.loginSpDate(result,mContext,mGson,null);
             }
 
@@ -164,6 +171,7 @@ public class LoginPassWordFragment extends SimpleFragment {
                 EventBusUtils.postSticky(new Event.EventLoading(false));
                 LogUtils.i("BaseSimpleFragment", "登录失败  " + result);
                 Toast.makeText(mContext, "登录失败", Toast.LENGTH_SHORT).show();
+                unNetLoadLogin();
             }
         });
     }

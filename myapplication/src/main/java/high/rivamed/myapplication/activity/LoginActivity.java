@@ -1,6 +1,8 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -212,8 +213,17 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	File file = new File(Environment.getExternalStorageDirectory()+"/login_logo" + "/login_logo.png");
-	Glide.with(this).load(file).error(R.mipmap.bg_login_icon).into(mLoginLogo);
+	File file = new File(Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
+	Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
+	Log.i("eerf","file.getPath()   "+file.getPath());
+	Log.i("eerf","bitmap   "+(bitmap==null));
+	if (bitmap ==null){
+	   mLoginLogo.setImageResource(R.mipmap.bg_login_icon);
+	}else {
+	   mLoginLogo.setImageBitmap(bitmap);
+	}
+
+//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
@@ -453,7 +463,7 @@ public class LoginActivity extends SimpleActivity {
 	List<UserFeatureInfosBean> beans = LitePal.where("data = ? ", loginType)
 		.find(UserFeatureInfosBean.class);
 	LogUtils.i(TAG, " beans     " + mGson.toJson(beans));
-	if (beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
+	if (beans!=null&&beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
 	   String accountName = beans.get(0).getAccountName();
 	   List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
 	   LogUtils.i(TAG, " menus1     " + mGson.toJson(fromJson));
@@ -483,6 +493,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onError(String result) {
 		EventBusUtils.postSticky(new Event.EventLoading(false));
+		uNNetvalidateLoginIdCard(idCard);
 	   }
 	});
 

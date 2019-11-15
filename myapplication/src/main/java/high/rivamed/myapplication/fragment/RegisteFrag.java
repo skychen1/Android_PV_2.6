@@ -33,10 +33,18 @@ import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.DeviceNameBeanX;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.LogosBean;
 import high.rivamed.myapplication.bean.TBaseDevices;
 import high.rivamed.myapplication.bean.ThingDto;
+import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
+import high.rivamed.myapplication.dbmodel.OperationRoomsBean;
+import high.rivamed.myapplication.dbmodel.RoomsBean;
+import high.rivamed.myapplication.dbmodel.UserBean;
+import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVoError;
@@ -75,6 +83,7 @@ import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetApi.URL_CLOSE;
 import static high.rivamed.myapplication.http.NetApi.URL_OPEN;
+import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -129,7 +138,7 @@ public class RegisteFrag extends SimpleFragment {
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
    private       ThingDto                            mSnRecoverBean;
    public static List<ThingDto.DeviceVosBean>        mDeviceVos = new ArrayList<>();//柜子list
-
+   private       Thread                    mThread2;
    private       String                              mBoxCode;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -185,6 +194,9 @@ public class RegisteFrag extends SimpleFragment {
 		   SPUtils.putString(UIUtils.getContext(), THING_CODE,
 					   thingDto.getThing().getThingId());
 		   putDbDate(thingDto);
+		   ToastUtils.showLongToast("激活成功，请稍等5秒，初始化中！");
+		   getUnNetUseDate();
+		   getUnEntFindOperation();
 		   initData();
 		} else {
 		   ToastUtils.showShortToast(thingDto.getMsg());
@@ -261,18 +273,23 @@ public class RegisteFrag extends SimpleFragment {
 	if (mSmallAdapter != null && mSmallAdapter.mRightDelete != null) {
 	   mSmallAdapter.mRightDelete.setVisibility(View.GONE);
 	}
+
 	LitePal.deleteAll(BoxIdBean.class);
 	LitePal.deleteAll(InventoryDto.class);
 	LitePal.deleteAll(InventoryVo.class);
 	LitePal.deleteAll(InventoryVoError.class);
+	deleteLitepal();
 	LitePal.deleteDatabase("rivamedhigh");
 	LitePal.initialize(mAppContext);//数据库初始化
+
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
 	getLogos();
 	initData();
 	getBoxSize();
-	ToastUtils.showShortToast("数据恢复完成，请稍等5秒！");
+	ToastUtils.showLongToast("数据恢复完成，请稍等5秒，初始化中！");
+	getUnNetUseDate();
+	getUnEntFindOperation();
    }
 
    /**
@@ -807,4 +824,178 @@ public class RegisteFrag extends SimpleFragment {
 	super.onDestroy();
 	//	mContext.unregisterReceiver(netWorkReceiver);
    }
+   /**
+    * 本地手术室
+    */
+   private void getUnEntFindOperation() {
+
+	NetRequest.getInstance().getUnEntFindOperation(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		LogUtils.i(TAG, "getUnEntFindOperation    " + result);
+		LitePal.deleteAll(RoomsBean.class);
+		LitePal.deleteAll(OperationRoomsBean.class);
+		RoomsBean roomsBean = mGson.fromJson(result, RoomsBean.class);
+		RoomsBean mRoomsBean = new RoomsBean();
+		if (roomsBean.getOperationRooms().size() > 0) {
+		   mRoomsBean.setThingId(roomsBean.getThingId());
+		   for (OperationRoomsBean mOperationRooms : roomsBean.getOperationRooms()) {
+			OperationRoomsBean bean = new OperationRoomsBean();
+			bean.setOptRoomId(mOperationRooms.getOptRoomId());
+			bean.setRoomName(mOperationRooms.getRoomName());
+			bean.save();
+			mRoomsBean.getOperationRooms().add(bean);
+		   }
+		   mRoomsBean.save();
+		}
+	   }
+	});
+   }
+
+
+   /**
+    * 所有用户的本地数据
+    */
+   private void getUnNetUseDate() {
+	NetRequest.getInstance().getUnNetUseDate(this, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		UserBean userBean = mGson.fromJson(result, UserBean.class);
+		Log.i("ddefad", "userBean  "+getDates());
+		new Thread(new Runnable() {
+		   @Override
+		   public void run() {
+//			setLitePalUseBean(userBean);
+			saveUserData(userBean);
+		   }
+		}).start();
+
+	   }
+	});
+   }
+
+   private void saveUserData(UserBean userBean) {
+	UserBean mUserBean = new UserBean();
+	mUserBean.setDeptId(userBean.getDeptId());
+	List<AccountVosBean> accountVosBeans = new ArrayList<>();
+
+	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
+	   List<UserFeatureInfosBean> userFeatureInfosList = new ArrayList<>();
+	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+		userFeatureInfosBean.setAccountName(accountVosBean.getAccountName());
+		userFeatureInfosList.add(userFeatureInfosBean);
+	   }
+	   LitePal.saveAll(userFeatureInfosList);
+
+	   List<HomeAuthorityMenuBean> homeAuthorityMenuBeanS = new ArrayList<>();
+	   List<ChildrenBeanX> mChildrenBeanXS = new ArrayList<>();
+
+	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+		homeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
+		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+		    null != homeAuthorityMenuBean.getChildren() &&
+		    homeAuthorityMenuBean.getChildren().size() > 0) {
+
+		   ChildrenBeanX childrenBeanX = homeAuthorityMenuBean.getChildren().get(0);
+		   childrenBeanX.setAccountName(accountVosBean.getAccountName());
+		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+			List<ChildrenBean> children = homeAuthorityMenuBean.getChildren().get(0).getChildren();
+			for (ChildrenBean child : children) {
+			   child.setAccountName(accountVosBean.getAccountName());
+			}
+			LitePal.saveAll(children);
+		   }
+		   mChildrenBeanXS.add(childrenBeanX);
+		}
+		LitePal.saveAll(mChildrenBeanXS);
+		homeAuthorityMenuBeanS.add(homeAuthorityMenuBean);
+	   }
+	   accountVosBean.setMenus(homeAuthorityMenuBeanS);
+	   LitePal.saveAll(homeAuthorityMenuBeanS);
+	   accountVosBeans.add(accountVosBean);
+	}
+	LitePal.saveAll(accountVosBeans);
+	mUserBean.setAccountVos(accountVosBeans);
+	boolean save = mUserBean.save();
+	Log.i("ddefad", "userBean完成  " + save + "     " + getDates());
+   }
+
+   /**
+    * 删除本地数据库用户信息表
+    */
+   private void deleteLitepal() {
+	LitePal.deleteAll(UserBean.class);
+	LitePal.deleteAll(AccountVosBean.class);
+	LitePal.deleteAll(HomeAuthorityMenuBean.class);
+	LitePal.deleteAll(UserFeatureInfosBean.class);
+	LitePal.deleteAll(ChildrenBeanX.class);
+	LitePal.deleteAll(ChildrenBean.class);
+   }
+   /**
+    * 数据存储
+    *
+    * @param userBean
+    */
+   private void setLitePalUseBean(UserBean userBean) {
+	Log.i("ddefad", "存入mUserBean开始 " );
+	UserBean mUserBean = new UserBean();
+	mUserBean.setDeptId(userBean.getDeptId());
+	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
+	   AccountVosBean vosBean = new AccountVosBean();
+	   vosBean.setAccountId(accountVosBean.getAccountId());
+	   vosBean.setUserId(accountVosBean.getUserId());
+	   vosBean.setAccountName(accountVosBean.getAccountName());
+	   vosBean.setTenantId(accountVosBean.getTenantId());
+	   vosBean.setUseState(accountVosBean.getUseState());
+	   vosBean.setPassword(accountVosBean.getPassword());
+	   vosBean.setSalt(accountVosBean.getSalt());
+	   vosBean.setSex(accountVosBean.getSex());
+	   vosBean.setUserName(accountVosBean.getUserName());
+	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
+		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
+		infosBean.setUserId(userFeatureInfosBean.getUserId());
+		infosBean.setType(userFeatureInfosBean.getType());
+		infosBean.setData(userFeatureInfosBean.getData());
+		infosBean.setAccountName(accountVosBean.getAccountName());
+		infosBean.save();
+		vosBean.getUserFeatureInfos().add(infosBean);
+	   }
+	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
+		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
+		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
+		mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
+		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
+		    null != homeAuthorityMenuBean.getChildren() &&
+		    homeAuthorityMenuBean.getChildren().size() > 0) {
+		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
+		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
+		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
+		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
+			for (int x = 0;
+			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
+			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
+				   .get(0)
+				   .getChildren()
+				   .get(x);
+			   ChildrenBean mChildrenBean = new ChildrenBean();
+			   mChildrenBean.setTitle(childrenBean.getTitle());
+			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
+			   mChildrenBean.save();
+			   mChildrenBeanX.getChildren().add(mChildrenBean);
+			}
+		   }
+		   mChildrenBeanX.save();
+		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
+		}
+		mhomeAuthorityMenuBean.save();
+		vosBean.getMenus().add(mhomeAuthorityMenuBean);
+	   }
+	   vosBean.save();
+	   mUserBean.getAccountVos().add(vosBean);
+	}
+	boolean save = mUserBean.save();
+	Log.i("ddefad", "存入mUserBean结束  " + save + "    " + getDates());
+   }
+
 }

@@ -37,6 +37,8 @@ public class Constants {
     public static final int    ACTIVITY                  = 1;
     public static final int    FRAGMENT                  = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI   = "act_type_confirm_haocai";//确认耗材领用界面
+    public static final String CONTENT_ALLROOMS   = "CONTENT_ALLROOMS";//所有的手术间id
+    public static final String CONTENT_ALLUSERS   = "CONTENT_ALLUSERS";//所有的用户信息id
 
     public static final String TEMP_AFTERBIND = "afterBind";//后绑定患者
     public static final String TEMP_FIRSTBIND = "firstBind";//后绑定患者
