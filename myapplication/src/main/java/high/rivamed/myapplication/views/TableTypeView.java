@@ -35,10 +35,12 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 import high.rivamed.myapplication.bean.Movie;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
@@ -361,7 +363,8 @@ public class TableTypeView extends LinearLayout {
                          mInBoxAllAdapter.notifyDataSetChanged();
 
                      } else {
-                         mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mInventoryVos, mOperation);
+                         boolean menuDownType = UIUtils.getMenuDownType(UIUtils.getContext(), DOWN_MENU_YICHU);
+                         mInBoxAllAdapter = new InBoxAllAdapter(mLayout, mInventoryVos, mOperation,menuDownType);
                          mHeadView.setBackgroundResource(R.color.bg_green);
                          mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 //                         mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
@@ -399,7 +402,8 @@ public class TableTypeView extends LinearLayout {
                      if (mRecogHaocaiAdapter != null) {
                          mRecogHaocaiAdapter.notifyDataSetChanged();
                      } else {
-                         mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mInventoryVos);
+                         boolean menuDownType = UIUtils.getMenuDownType(UIUtils.getContext(), DOWN_MENU_YICHU);
+                         mRecogHaocaiAdapter = new RecogHaocaiAdapter(mLayout, mInventoryVos,menuDownType);
                          mHeadView.setBackgroundResource(R.color.bg_green);
                          mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
                          mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));

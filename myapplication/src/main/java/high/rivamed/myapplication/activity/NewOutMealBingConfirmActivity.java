@@ -72,6 +72,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
@@ -711,7 +712,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	if (mPublicAdapter != null) {
 	   setNotifyData();
 	} else {
-	   mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBoxInventoryVos);
+	   boolean menuDownType = UIUtils.getMenuDownType(UIUtils.getContext(), DOWN_MENU_YICHU);
+	   mPublicAdapter = new BillOrderAdapter(mLayout, mSize, mBoxInventoryVos,menuDownType);
 
 	   mRecyclerview.addItemDecoration(
 		   new DividerItemDecoration(mContext, LinearLayout.VERTICAL));

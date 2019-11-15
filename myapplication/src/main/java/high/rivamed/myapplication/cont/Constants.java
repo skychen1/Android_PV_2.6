@@ -87,6 +87,7 @@ public class Constants {
     public static final String DOWN_MENU_YR = "移入";//移入
     public static final String DOWN_MENU_THUI = "退回";//退回
     public static final String DOWN_MENU_THUO = "退货";//退货
+    public static final String DOWN_MENU_YICHU = "移除";//移除
 
     //sp存入的key
     public static final String SAVE_SEVER_IP = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
