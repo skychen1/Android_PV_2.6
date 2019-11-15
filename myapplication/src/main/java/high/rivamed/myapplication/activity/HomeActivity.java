@@ -114,7 +114,6 @@ public class HomeActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	File file = new File(Environment.getExternalStorageDirectory()+"/home_logo" + "/home_logo.png");
-//	Glide.with(this).load(file).error(R.mipmap.hckg_logo).into(mHomeLogo);
 	Glide.with(this).load(file).error(R.mipmap.hckg_logo).into(mHomeLogo);
 
 	setMenu();

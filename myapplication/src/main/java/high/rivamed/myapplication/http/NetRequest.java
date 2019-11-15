@@ -720,18 +720,18 @@ public class NetRequest {
 	PostTokenRequest(urls, json, tag, netResult);
    }
 
-   /**
-    * 获取账号权限菜单（左侧、选择操作）
-    */
-   public void getAuthorityMenu(Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
-	Map<String, String> map = new HashMap<>();
-	map.put("systemType", SYSTEMTYPE);
-	OkGo.<String>get(urls).tag(tag)
-		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
-		.params(map)
-		.execute(new MyCallBack2(urls, map, tag, netResult, true, true));
-   }
+//   /**
+//    * 获取账号权限菜单（左侧、选择操作）
+//    */
+//   public void getAuthorityMenu(Object tag, NetResult netResult) {
+//	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
+//	Map<String, String> map = new HashMap<>();
+//	map.put("systemType", SYSTEMTYPE);
+//	OkGo.<String>get(urls).tag(tag)
+//		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
+//		.params(map)
+//		.execute(new MyCallBack2(urls, map, tag, netResult, true, true));
+//   }
 
    /**
     * 换新token
@@ -940,7 +940,7 @@ public class NetRequest {
 
 	@Override
 	public void onError(Response<String> response) {
-
+	   LogUtils.w(TAG, "onError mTitleConn： "  +mTitleConn);
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
@@ -948,11 +948,12 @@ public class NetRequest {
 		EventBusUtils.post(new Event.XmmppConnect(false));
 	   }
 	   if (response.code() == -1) {
-		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
+//		EventBusUtils.post(new Event.XmmppConnect(false));
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
-	   LogUtils.w(TAG, "onError 请求URL： " + url);
+
+	   LogUtils.w(TAG, "onError 请求URL： " + url+mTitleConn);
 	   LogUtils.w(TAG, "onError 请求URL： " + response.code());
 	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
 	   LogUtils.w(TAG, "onError 返回Body： " + response.body());

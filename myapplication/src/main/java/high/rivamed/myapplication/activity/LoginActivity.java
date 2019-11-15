@@ -216,15 +216,15 @@ public class LoginActivity extends SimpleActivity {
 	Glide.with(this).load(file).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
-		faceFragment = new LoginFaceFragment();
-		mFragments.add(faceFragment);//人脸识别登录 TODO
-	   }
 	}
 
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
+	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
+		   faceFragment = new LoginFaceFragment();
+		   mFragments.add(faceFragment);//人脸识别登录 TODO
+	   }
 	//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
 	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
@@ -353,13 +353,13 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginPass.setVisibility(
 		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
 	}
-	//有人脸识别，显示人脸识别tab，默认选中人脸识别tab
+	//有人脸识别，显示人脸识别tab，默认选中用户名登录tab
 	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
 	if (mLoginFace!=null){
 	   mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
 	}
 	if (mLoginViewpager!=null){
-	   mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
+	   mLoginViewpager.setCurrentItem(0);
 	   //有人脸识别或紧急登录时，可滑动
 	   mLoginViewpager.setScanScroll(
 		   isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
@@ -620,10 +620,10 @@ public class LoginActivity extends SimpleActivity {
 		if (isConfigFace()) {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_face:
-			   mLoginViewpager.setCurrentItem(0);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_pass:
 			   mLoginViewpager.setCurrentItem(2);
@@ -632,10 +632,10 @@ public class LoginActivity extends SimpleActivity {
 		} else {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_pass:
-			   mLoginViewpager.setCurrentItem(2);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 		   }
 		}
@@ -643,16 +643,16 @@ public class LoginActivity extends SimpleActivity {
 		if (isConfigFace()) {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_face:
-			   mLoginViewpager.setCurrentItem(0);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 		   }
 		} else {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 		   }
 		}
@@ -664,7 +664,7 @@ public class LoginActivity extends SimpleActivity {
 	mLoginPass.setVisibility(View.GONE);
 	mLoginFace.setVisibility(View.GONE);
 	mLoginViewpager.setScanScroll(false);
-	mLoginViewpager.setCurrentItem(1);
+	mLoginViewpager.setCurrentItem(0);
    }
 
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
@@ -679,10 +679,10 @@ public class LoginActivity extends SimpleActivity {
 	   if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017)) {
 		if (isConfigFace()) {
 		   switch (position) {
-			case 0:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_face);
 			   break;
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 			case 2:
@@ -691,10 +691,10 @@ public class LoginActivity extends SimpleActivity {
 		   }
 		} else {
 		   switch (position) {
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
-			case 2:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_pass);
 			   break;
 		   }
@@ -702,16 +702,16 @@ public class LoginActivity extends SimpleActivity {
 	   } else {
 		if (isConfigFace()) {
 		   switch (position) {
-			case 0:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_face);
 			   break;
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 		   }
 		} else {
 		   switch (position) {
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 		   }
