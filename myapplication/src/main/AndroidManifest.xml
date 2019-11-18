@@ -137,8 +137,13 @@
         <activity
             android:name=".activity.TakeNotesDetailsActivity"
             android:screenOrientation="sensorLandscape" />
-
-		<receiver android:name=".http.ContentReceiver">
+        <activity
+            android:name=".activity.StockGroupCstActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.TimelyGroupCstActivity"
+            android:screenOrientation="sensorLandscape" />
+        <receiver android:name=".http.ContentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.HOME" />

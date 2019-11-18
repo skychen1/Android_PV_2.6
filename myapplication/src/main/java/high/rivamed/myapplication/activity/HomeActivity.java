@@ -1,14 +1,19 @@
 package high.rivamed.myapplication.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +66,8 @@ public class HomeActivity extends SimpleActivity {
    RadioButton mContentSyjl;
    RadioGroup mHomeRg;
    public static View       mHomeRgGone;
+   @BindView(R.id.home_logo)
+   ImageView mHomeLogo;
    @BindView(R.id.content_consume_operate)
    RadioButton mContentConsumeOperate;
    @BindView(R.id.content_running_wate)
@@ -106,7 +113,16 @@ public class HomeActivity extends SimpleActivity {
     */
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-
+	File file = new File(Environment.getExternalStorageDirectory() + "/home_logo" + "/home_logo.png");
+//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.hckg_logo).into(mHomeLogo);
+	Log.i("eerf","file.getPath()   "+file.getPath());
+	Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
+	Log.i("eerf","bitmap   "+(bitmap==null));
+	if (bitmap ==null){
+	   mHomeLogo.setImageResource(R.mipmap.hckg_logo);
+	}else {
+	   mHomeLogo.setImageBitmap(bitmap);
+	}
 	setMenu();
 	initData();
 	initListener();

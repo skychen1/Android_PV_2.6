@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -413,78 +412,19 @@ public class DialogUtils {
 
     }
 
-    public static void showOneFingerDialog(
-            Context context, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
-        int[] times = {0};
-        List<String> fingerList = new ArrayList<String>();
+    public static OneFingerDialog.Builder showOneFingerDialog(
+            Context context,String title, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
+
         OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+        builder.setTwoMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                onfingerprintBackListener.OnfingerprintBack(fingerList);
-                dialog.dismiss();
-                AllDeviceCallBack.getInstance().initCallBack();
+                onfingerprintBackListener.OnfingerprintBack();
             }
         });
-
         builder.create().show();
-        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
-            @Override
-            public void onConnectState(String deviceId, boolean isConnect) {
-
-            }
-
-            @Override
-            public void onFingerFea(String deviceId, String fingerFea) {
-                times[0]++;
-                String myfingerFea = fingerFea.trim().replaceAll("\n", "");
-                if (times[0] == 1) {
-                    fingerList.add(myfingerFea);
-                    //					ToastUtils.showShort("请再次按下");
-                } else if (times[0] == 2) {
-                    fingerList.add(myfingerFea);
-                    //					ToastUtils.showShort("请第三次按下");
-                } else if (times[0] == 3) {
-                    fingerList.add(myfingerFea);
-                    //					ToastUtils.showShort("采集成功!请按确定键!");
-                    UIUtils.runInUIThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            builder.setSuccess();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFingerRegExcuted(String deviceId, boolean success) {
-
-            }
-
-            @Override
-            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-            }
-
-            @Override
-            public void onIDCard(String deviceId, String idCard) {
-            }
-
-            @Override
-            public void onDoorOpened(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void onDoorClosed(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
-
-            }
-        });
+        return builder;
     }
 
     public static void showBindIdCardDialog(

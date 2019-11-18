@@ -20,18 +20,17 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.AllFacePhotoBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
+import high.rivamed.myapplication.timeutil.PowerDateUtils;
 
-import static high.rivamed.myapplication.cont.Constants.FACE_PHOTO;
+import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 
 /**
  * 项目名称：高值
  * 创建者：chenyanling
  * 创建时间：2019/6/10
  * 描述：1.获取所有待注册人脸照，
- * 2.1 检测如果本地已注册且是最新更新的照片，则不用再次注册；
- * 2.2 否则，缓存图片至本地，
- * 3.1.已注册但不是最新图片，删除已注册的底照，再次注册
- * 3.2.未注册，注册
+ * 2.已注册但不是最新图片，删除已注册的底照，再次注册
+ * 3.未注册，注册
  * 人脸注册不能批量注册，只能每次注册一张，注册完成后再注册下一张
  */
 public class FaceTask {
@@ -49,7 +48,8 @@ public class FaceTask {
     //待注册的人脸
     private List<AllFacePhotoBean.UsersBean> updatePhotoList;
     //注册完成后缓存最新的人脸照数据
-    private String updateFaceJson = "";
+    private String updateTime;
+    private String startTime;
     private Gson mGson;
     private Activity _mActivity;
     private CallBack callBack;
@@ -60,6 +60,10 @@ public class FaceTask {
         mGson = new Gson();
         updatePhotoList = new ArrayList<>();
         faceLibrary = FileUitls.getBatchFaceDirectory("cache_face_library");
+        //上次更新时间
+        startTime=SPUtils.getString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
+        //本次更新时间
+        updateTime= PowerDateUtils.getNowDateString2();
     }
 
     public void setCallBack(CallBack callBack) {
@@ -70,55 +74,21 @@ public class FaceTask {
      * 获取所有人脸信息，缓存至本地，注册至本地人脸照底库
      */
     public void getAllFaceAndRegister() {
-        NetRequest.getInstance().getAllFace(_mActivity, new BaseResult() {
+        NetRequest.getInstance().getAllFace(startTime,updateTime,_mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                updateFaceJson = result;
+                //缓存本次更新时间
+                SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, updateTime);
+                updatePhotoList.clear();
                 AllFacePhotoBean facePhotoBean = mGson.fromJson(result, AllFacePhotoBean.class);
-                if (null == facePhotoBean||!facePhotoBean.isOperateSuccess()) {
+                if (null == facePhotoBean||!facePhotoBean.isOperateSuccess()||facePhotoBean.getUserVos()==null||facePhotoBean.getUserVos().isEmpty()) {
                     if (callBack != null)
-//                        callBack.finishRegister(false,"暂时没有人脸照数据");
+                        //                        callBack.finishRegister(false,"暂时没有人脸照数据");
                         callBack.finishRegister(false,null);
                     return;
                 }
-                List<AllFacePhotoBean.UsersBean> facePhotoList = facePhotoBean.getUsers();
-                //获取本地已缓存人脸数据
-                String facePhotoJson = SPUtils.getString(UIUtils.getContext(), FACE_PHOTO, "");
-                if (TextUtils.isEmpty(facePhotoJson)) {
-                    updatePhotoList.addAll(facePhotoList);
-                } else {
-                    AllFacePhotoBean localFacePhotoBean = mGson.fromJson(facePhotoJson, AllFacePhotoBean.class);
-                    List<AllFacePhotoBean.UsersBean> localFacePhotoList = localFacePhotoBean.getUsers();
-                    LogUtils.d("Face", "localFacePhotoList   "+localFacePhotoList.size());
-                    if (facePhotoList!=null){
-                        new Thread(()->{
-                            for (int i = 0; i < facePhotoList.size(); i++) {
-                                AllFacePhotoBean.UsersBean photoBean = facePhotoList.get(i);
-                                int index = localFacePhotoList.indexOf(photoBean);
-                                if (index==-1) {
-                                    //本地没有缓存
-                                    updatePhotoList.add(photoBean);
-                                } else {
-                                    //有本地缓存，但不是最新更新的图片，也需要重新更新
-                                    AllFacePhotoBean.UsersBean bean = localFacePhotoList.get(index);
-                                    if (bean.getFaceUpdateTime().compareTo(photoBean.getFaceUpdateTime()) < 0) {
-                                        //最新更新时间大于本地更新时间，更新底库
-                                        photoBean.setUpdate(true);
-                                        updatePhotoList.add(photoBean);
-                                    }
-                                }
-                            }
-                        }).start();
-                    }
-
-                }
-                //没有新照片
-                if (updatePhotoList.size() == 0){
-                    if (callBack != null)
-                        //                                callBack.finishRegister(false,"暂时没有待注册人脸照数据");
-                        callBack.finishRegister(false,null);
-                    return;
-                }
+                List<AllFacePhotoBean.UsersBean> facePhotoList = facePhotoBean.getUserVos();
+                updatePhotoList.addAll(facePhotoList);
                 cacheFace();
             }
 
@@ -141,28 +111,28 @@ public class FaceTask {
             return;
         }
         OkGo.<File>get(faceUrl).tag(_mActivity)//
-//                .params("systemType", SYSTEMTYPE)
-                .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getUserId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
-                    @Override
-                    public void onSuccess(Response<File> response) {
-                        //缓存至本地，注册人脸
-                        registerFaceLibrary(updatePhotoList.get(index), response.body());
-                    }
+              //                .params("systemType", SYSTEMTYPE)
+              .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getUserId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
+                  @Override
+                  public void onSuccess(Response<File> response) {
+                      //缓存至本地，注册人脸
+                      registerFaceLibrary(updatePhotoList.get(index), response.body());
+                  }
 
-                    @Override
-                    public void downloadProgress(Progress progress) {
-//                        mDialog.setProgress((int) (progress.fraction / -1024));
-                        super.downloadProgress(progress);
+                  @Override
+                  public void downloadProgress(Progress progress) {
+                      //                        mDialog.setProgress((int) (progress.fraction / -1024));
+                      super.downloadProgress(progress);
 
-                    }
+                  }
 
-                    @Override
-                    public void onError(Response<File> response) {
-                        super.onError(response);
-                        //继续注册下一张
-                        next();
-                    }
-                });
+                  @Override
+                  public void onError(Response<File> response) {
+                      super.onError(response);
+                      //继续注册下一张
+                      next();
+                  }
+              });
     }
 
     /**
@@ -170,7 +140,7 @@ public class FaceTask {
      */
     private void registerFaceLibrary(AllFacePhotoBean.UsersBean facePhotoBean, File file) {
         String userId = facePhotoBean.getUserId();
-        if (facePhotoBean.isUpdate()) {
+        if (FaceManager.getManager().getUserById(userId)!=null) {
             //更新：需要先删除本地已注册人脸，再重新注册
             if (!FaceManager.getManager().deleteFace(userId)) {
                 LogUtils.d(TAG, "删除人脸底照失败：：" + userId);
@@ -200,7 +170,6 @@ public class FaceTask {
             if (callBack != null)
                 callBack.finishRegister(true, "人脸照注册完成");
             LogUtils.d("Face", "人脸照注册完成");
-            SPUtils.putString(UIUtils.getContext(), FACE_PHOTO, updateFaceJson);
             _mActivity = null;
         }
     }

@@ -15,7 +15,7 @@
 	<net.lucode.hackware.magicindicator.MagicIndicator
 		android:id="@+id/registe_tl"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/y65"
+		android:layout_height="@dimen/y63"
 		android:layout_below="@+id/appbar"
 		android:layout_marginLeft="@dimen/x40"
 		android:layout_marginRight="@dimen/x40"

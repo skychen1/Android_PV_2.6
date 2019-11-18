@@ -294,6 +294,13 @@ public class NetRequest {
    }
 
    /**
+    * 获取logo
+    */
+   public void loadLogo(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_LOGO;
+	GetRequest(urls, null, tag, netResult);
+   }
+   /**
     * 耗材效期监控
     */
    public void materialControl(Object tag, NetResult netResult) {
@@ -304,9 +311,9 @@ public class NetRequest {
    }
 
    /**
-    * 库存详情和耗材库存预警
+    * 库存详情
     */
-   public void getStockDown(
+   public void getStockMiddleDetails(
 	   String nameOrSpecQueryCon, String deviceCode, int mStopFlag, Object tag,
 	   NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_STOCKSTATUS_DETAILS;
@@ -317,7 +324,17 @@ public class NetRequest {
 	map.put("expireStatus", mStopFlag + "");
 	GetRequest(urls, map, tag, netResult);
    }
-
+   /**
+    * 库存监控
+    */
+   public void getStockLeftDown(String deviceCode, Object tag,
+	   NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_STOCKSTATUS_MONITORING;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingId", sThingCode);
+	map.put("deviceId", deviceCode);
+	GetRequest(urls, map, tag, netResult);
+   }
    /**
     * 未确认耗材
     */
@@ -568,10 +585,12 @@ public class NetRequest {
     * 使用记录的患者列表
     */
    public void getFindPatientDate(
-	   String string, int page, int rows, Object tag, NetResult netResult) {
+	   String string,String startTime, String endTime, int page, int rows, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FIND_PATIENT;
 	Map<String, String> map = new HashMap<>();
 	map.put("patientNameOrId", string);
+	map.put("startTime", startTime);
+	map.put("endTime", endTime);
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("pageSize", rows + "");
 	map.put("pageNo", page + "");
@@ -701,18 +720,18 @@ public class NetRequest {
 	PostTokenRequest(urls, json, tag, netResult);
    }
 
-   /**
-    * 获取账号权限菜单（左侧、选择操作）
-    */
-   public void getAuthorityMenu(Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
-	Map<String, String> map = new HashMap<>();
-	map.put("systemType", SYSTEMTYPE);
-	OkGo.<String>get(urls).tag(tag)
-		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
-		.params(map)
-		.execute(new MyCallBack2(urls, map, tag, netResult, true, true));
-   }
+//   /**
+//    * 获取账号权限菜单（左侧、选择操作）
+//    */
+//   public void getAuthorityMenu(Object tag, NetResult netResult) {
+//	String urls = MAIN_URL + NetApi.URL_AUTHORITY_MENU;
+//	Map<String, String> map = new HashMap<>();
+//	map.put("systemType", SYSTEMTYPE);
+//	OkGo.<String>get(urls).tag(tag)
+//		.headers("tokenId", SPUtils.getString(UIUtils.getContext(), ACCESS_TOKEN))
+//		.params(map)
+//		.execute(new MyCallBack2(urls, map, tag, netResult, true, true));
+//   }
 
    /**
     * 换新token
@@ -810,10 +829,12 @@ public class NetRequest {
    /**
     * 获取所有人脸照
     */
-   public void getAllFace(Object tag, NetResult netResult) {
+   public void getAllFace(String startDate,String endDate, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FACE_GET_ALL;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", SYSTEMTYPE);
+	map.put("startDate", startDate);
+	map.put("endDate", endDate);
 	GetRequest(urls, map, tag, netResult);
    }
 
@@ -919,7 +940,7 @@ public class NetRequest {
 
 	@Override
 	public void onError(Response<String> response) {
-
+	   LogUtils.w(TAG, "onError mTitleConn： "  +mTitleConn);
 	   if (netResult != null) {
 		netResult.onError(response.code() + "");
 	   }
@@ -927,11 +948,12 @@ public class NetRequest {
 		EventBusUtils.post(new Event.XmmppConnect(false));
 	   }
 	   if (response.code() == -1) {
-		//		ToastUtils.showShortToast("服务器异常，请检查网络！");
+//		EventBusUtils.post(new Event.XmmppConnect(false));
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
-	   LogUtils.w(TAG, "onError 请求URL： " + url);
+
+	   LogUtils.w(TAG, "onError 请求URL： " + url+mTitleConn);
 	   LogUtils.w(TAG, "onError 请求URL： " + response.code());
 	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
 	   LogUtils.w(TAG, "onError 返回Body： " + response.body());

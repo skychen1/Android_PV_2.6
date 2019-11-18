@@ -140,11 +140,29 @@ public class LoginResultBean implements Serializable {
         private String          userId;
         private int             isFinger;
         private int             isWaidai;
+        private int             isFace;
         private int             isEmergency;
         private String          sex;
         private String          useState;
         private Object          emergencyPwd;
         private List<RolesBean> roles;
+        private String          fingerNames;
+
+        public int getIsFace() {
+            return isFace;
+        }
+
+        public void setIsFace(int isFace) {
+            this.isFace = isFace;
+        }
+
+        public String getFingerNames() {
+            return fingerNames;
+        }
+
+        public void setFingerNames(String fingerNames) {
+            this.fingerNames = fingerNames;
+        }
 
         public Object getClientId() { return clientId;}
 

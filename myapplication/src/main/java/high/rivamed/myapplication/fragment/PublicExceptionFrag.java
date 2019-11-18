@@ -301,7 +301,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
-	searchTimeStart.setHint(PowerDateUtils.getTime());
+	searchTimeStart.setHint(PowerDateUtils.getTime(1));
 	searchTimeEnd.setHint(format);
 	//设置时间选择监听
 	searchTimeStart.addTextChangedListener(new TextWatcher() {

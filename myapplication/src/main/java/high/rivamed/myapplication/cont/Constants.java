@@ -37,6 +37,8 @@ public class Constants {
     public static final int    ACTIVITY                  = 1;
     public static final int    FRAGMENT                  = 2;
     public static final String ACT_TYPE_CONFIRM_HAOCAI   = "act_type_confirm_haocai";//确认耗材领用界面
+    public static final String CONTENT_ALLROOMS   = "CONTENT_ALLROOMS";//所有的手术间id
+    public static final String CONTENT_ALLUSERS   = "CONTENT_ALLUSERS";//所有的用户信息id
 
     public static final String TEMP_AFTERBIND = "afterBind";//后绑定患者
     public static final String TEMP_FIRSTBIND = "firstBind";//后绑定患者
@@ -85,6 +87,7 @@ public class Constants {
     public static final String DOWN_MENU_YR = "移入";//移入
     public static final String DOWN_MENU_THUI = "退回";//退回
     public static final String DOWN_MENU_THUO = "退货";//退货
+    public static final String DOWN_MENU_YICHU = "移除";//移除
 
     //sp存入的key
     public static final String SAVE_SEVER_IP = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
@@ -121,7 +124,7 @@ public class Constants {
     public static final String BOX_SIZE_DATE = "BOX_SIZE_DATE";//柜子的信息
     public static final String LOGCAT_OPEN = "LOG_CAT_OPEN";//日志记录
     public static final String FACE_OPEN = "face_OPEN";//活体检测
-    public static final String FACE_PHOTO = "face_photo";//人脸照
+    public static final String FACE_UPDATE_TIME = "face_update_time";//人脸照最新更新时间
     public static final String PATIENT_TYPE = "PatientType";///2,3手术，1是非手术
 
     public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN

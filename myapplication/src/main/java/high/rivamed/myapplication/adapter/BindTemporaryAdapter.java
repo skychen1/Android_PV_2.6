@@ -62,53 +62,56 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-        if (mSize==10){
+        if (mSize==8){
             if (item.getWardName()==null||item.getWardName().equals("")){
                 helper.setText(R.id.seven_eight, "/");
             }else {
                 helper.setText(R.id.seven_eight, item.getWardName());
             }
-            if (item.getBedNo()==null||item.getBedNo().equals("")){
-                helper.setText(R.id.seven_nine,"/");
+            if (item.getSex()!=null){
+                mSeven_five.setText(item.getPatientName()+" - "+item.getSex());
             }else {
-                helper.setText(R.id.seven_nine, item.getBedNo());
+                mSeven_five.setText(item.getPatientName()!=null? item.getPatientName():"/");
             }
-            if (item.getSurgeryName()==null||item.getSurgeryName().equals("")){
-                helper.setText(R.id.seven_ten,"/");
-            }else {
-                helper.setText(R.id.seven_ten, item.getSurgeryName());
-            }
-        }
-        if (item.getSex()!=null){
-            mSeven_two.setText(item.getPatientName()+" - "+item.getSex());
+            mSeven_two.setText(item.getPatientWard()!=null? item.getPatientWard():"/");
+            mSeven_three.setText(item.getFloor()!=null? item.getFloor():"/");
+            mSeven_four.setText(item.getRoomName()!=null? item.getRoomName():"/");
+            mSeven_six.setText(item.getWardName()!=null? item.getWardName():"/");
+            mSeven_seven.setText(item.getBedNo()!=null? item.getBedNo():"/");
+            helper.setText(R.id.seven_eight,item.getSurgeryName()!=null? item.getSurgeryName():"/");
         }else {
-            mSeven_two.setText(item.getPatientName());
-        }
-        mSeven_four.setText(item.getSurgeryTime());
-        mSeven_five.setText(item.getDoctorName());
-
-        if (item.getPatientId()!=null){
-            if (item.getPatientId().equals("virtual")) {
-                mSeven_three.setText("/");
-                mSeven_seven.setText("是");
-                mSeven_five.setText("/");
-                if (mDeptType==null||!mDeptType.equals("1")){
-                    mSeven_four.setText(item.getSurgeryTime());
-                    mSeven_six.setText(item.getRoomName());
-                }else {
-                    mSeven_four.setText("/");
-                    mSeven_six.setText("/");
-                }
-            } else {
-                mSeven_seven.setText("否");
-                mSeven_three.setText(item.getHisPatientId());
-
-		   if (mDeptType==null||!mDeptType.equals("1")){
-			mSeven_six.setText(item.getRoomName());
-		   }else {
-			mSeven_six.setText(item.getDeptName());
-		   }
+            if (item.getSex()!=null){
+                mSeven_two.setText(item.getPatientName()+" - "+item.getSex());
+            }else {
+                mSeven_two.setText(item.getPatientName());
             }
+            mSeven_four.setText(item.getSurgeryTime());
+            mSeven_five.setText(item.getDoctorName());
+
+            if (item.getPatientId()!=null){
+                if (item.getPatientId().equals("virtual")) {
+                    mSeven_three.setText("/");
+                    mSeven_seven.setText("是");
+                    mSeven_five.setText("/");
+                    if (mDeptType==null||!mDeptType.equals("1")){
+                        mSeven_four.setText(item.getSurgeryTime());
+                        mSeven_six.setText(item.getRoomName());
+                    }else {
+                        mSeven_four.setText("/");
+                        mSeven_six.setText("/");
+                    }
+                } else {
+                    mSeven_seven.setText("否");
+                    mSeven_three.setText(item.getHisPatientId());
+
+                    if (mDeptType==null||!mDeptType.equals("1")){
+                        mSeven_six.setText(item.getRoomName());
+                    }else {
+                        mSeven_six.setText(item.getDeptName());
+                    }
+                }
+            }
+
         }
 
 

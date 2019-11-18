@@ -31,6 +31,7 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -95,6 +96,8 @@ public class LoginFaceFragment extends SimpleFragment {
             FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
                 if (isSuccess) {
                     loginFace(userId);
+                }else {
+                    UIUtils.runInUIThread(()->  ToastUtils.showShortToast("登录失败，暂无人脸信息！"));
                 }
             });
     }
@@ -114,28 +117,7 @@ public class LoginFaceFragment extends SimpleFragment {
                 loadLogin();
             } else {
                 //离线，从本地数据库查询
-                List<AccountVosBean> beans = LitePal.where("accountId = ? ", userId).find(AccountVosBean.class);
-                LogUtils.i("LoginA", "LitePal   " + mGson.toJson(beans));
-                if (beans != null && beans.size() > 0) {
-                    //设置离线数据:当前用户离线登陆所需数据
-                    List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(beans.get(0).getAccountName(), mGson);
-                    //设置菜单权限并跳转至首页
-                    LoginUtils.setMenuDateAndStart(fromJson, mGson, _mActivity, hasMenu -> {
-                        if (hasMenu) {
-                            //销毁人脸识别sdk
-                            destroyFaceSDK();
-                            _mActivity.finish();
-                        } else {
-                            //开启重新预览
-                            onTabShowPreview(true);
-                        }
-                    });
-                } else {
-                    ToastUtils.showShortToast("登录失败，暂无登录信息！");
-                    //开启重新预览
-                    onTabShowPreview(true);
-                }
-                EventBusUtils.postSticky(new Event.EventLoading(false));
+                unNetFaceLogin();
             }
         } else {
             EventBusUtils.postSticky(new Event.EventLoading(false));
@@ -144,6 +126,34 @@ public class LoginFaceFragment extends SimpleFragment {
             ToastUtils.showShortToast("正在维护，请到管理端启用");
         }
 
+    }
+
+    /**
+     * 离线登录
+     */
+    private void unNetFaceLogin() {
+        List<AccountVosBean> beans = LitePal.where("accountId = ? ", userId).find(AccountVosBean.class);
+        LogUtils.i("LoginA", "LitePal   " + mGson.toJson(beans));
+        if (beans != null && beans.size() > 0) {
+            //设置离线数据:当前用户离线登陆所需数据
+            List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(beans.get(0).getAccountName(), mGson);
+            //设置菜单权限并跳转至首页
+            LoginUtils.setMenuDateAndStart(fromJson, mGson, _mActivity, hasMenu -> {
+                if (hasMenu) {
+                    //销毁人脸识别sdk
+                    destroyFaceSDK();
+                    _mActivity.finish();
+                } else {
+                    //开启重新预览
+                    onTabShowPreview(true);
+                }
+            });
+        } else {
+            ToastUtils.showShortToast("登录失败，暂无登录信息！");
+            //开启重新预览
+            onTabShowPreview(true);
+        }
+        EventBusUtils.postSticky(new Event.EventLoading(false));
     }
 
     /**

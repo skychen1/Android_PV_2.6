@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/seven_ll"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical"
+			  android:background="@mipmap/bg_home"
+
+	>
+	<TextView
+		android:id="@+id/right_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="right"
+		android:layout_marginRight="@dimen/x30"
+		android:layout_marginTop="@dimen/x30"
+		android:text="hahahah"
+		android:textColor="@color/text_color_3"
+		android:textSize="@dimen/textsize_17"/>
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		android:layout_marginTop="@dimen/x30">
+
+		<TextView
+			android:id="@+id/seven_one"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="5"
+			android:text="名称"
+			/>
+
+		<View
+			style="@style/view_title_line_style"/>
+
+		<TextView
+			android:id="@+id/seven_two"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			android:text="数量小计"
+			/>
+
+		<View
+			style="@style/view_title_line_style"/>
+
+		<TextView
+			android:id="@+id/seven_three"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="4"
+			android:text="规格型号"
+			/>
+
+		<!--<View-->
+			<!--style="@style/view_title_line_style"/>-->
+
+		<TextView
+			android:id="@+id/seven_four"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			android:text="库存数量"
+			/>
+
+		<!--<View-->
+			<!--style="@style/view_title_line_style"/>-->
+
+		<TextView
+			android:id="@+id/seven_five"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			android:text="柜号"
+			/>
+
+		<!--<View-->
+			<!--style="@style/view_title_line_style"/>-->
+
+		<TextView
+			android:id="@+id/seven_six"
+			style="@style/text_title_style"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			android:text="最近效期"
+			/>
+
+	</LinearLayout>
+	<include
+		android:id="@+id/public_ll"
+		layout="@layout/include_recyclerview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginLeft="@dimen/x30"
+		android:layout_marginRight="@dimen/x30"
+		/>
+</LinearLayout>

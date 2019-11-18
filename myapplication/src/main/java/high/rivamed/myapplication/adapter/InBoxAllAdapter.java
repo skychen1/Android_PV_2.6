@@ -1,7 +1,6 @@
 package high.rivamed.myapplication.adapter;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,15 +45,17 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
    TextView mdeleteTv;
    ImageView mdeleteIv;
    LinearLayout mLl;
+   boolean menuDownType;
    public InBoxAllAdapter(
 	   int layoutResId, List<InventoryVo> data) {
 	super(layoutResId, data);
    }
 
    public InBoxAllAdapter(
-	   int layoutResId, List<InventoryVo> data, int operation) {
+	   int layoutResId, List<InventoryVo> data, int operation,boolean menuDownType) {
 	super(layoutResId, data);
 	this.mOperation = operation;
+	this.menuDownType = menuDownType;
    }
 
    @Override
@@ -156,6 +157,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 	setDeleteView(mData.get(helper.getAdapterPosition()).isDelete(), swipe);
+
 	if (item.getDeleteCount()>0){
 	   mSeven_one.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
 	   mSeven_two.setTextColor(mContext.getResources().getColor(R.color.text_color_9));
@@ -180,6 +182,9 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_three.setText("/");
 	   mSeven_four.setText("/");
 	   mSeven_six.setText("断网放入");
+	}
+	if (menuDownType){
+	   swipe.setSwipeEnabled(false);
 	}
    }
 

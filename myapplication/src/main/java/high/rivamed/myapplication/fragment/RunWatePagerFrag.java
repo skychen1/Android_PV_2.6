@@ -121,6 +121,8 @@ public class RunWatePagerFrag extends SimpleFragment {
    RadioButton        mSearchTypeTf;
    @BindView(R.id.search_type_jf)
    RadioButton        mSearchTypeJf;
+   @BindView(R.id.search_type_yc)
+   RadioButton        mSearchTypeYc;
    @BindView(R.id.search_type_rg)
    RadioGroup         mSearchTypeRg;
    @BindView(R.id.header)
@@ -166,6 +168,8 @@ public class RunWatePagerFrag extends SimpleFragment {
 	if (event.type.equals("START2") && mSearchTimeStart != null) {
 	   mSearchTimeStart.setText("");
 	   mSearchTimeEnd.setText("");
+	   mSearchEt.setText("");
+	   mTerm="";
 	   initDate();
 	   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	}
@@ -212,7 +216,7 @@ public class RunWatePagerFrag extends SimpleFragment {
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
-	mSearchTimeStart.setHint(PowerDateUtils.getTime());
+	mSearchTimeStart.setHint(PowerDateUtils.getTime(1));
 	mSearchTimeEnd.setHint(format);
 
 	mSearchEt.setHint("请输入耗材名称、规格型号、操作人、EPC查询");
@@ -396,6 +400,10 @@ public class RunWatePagerFrag extends SimpleFragment {
 			break;
 		   case R.id.search_type_tf://退费请求
 			mStatus = "32";
+			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+			break;
+		   case R.id.search_type_yc://移除
+			mStatus = "14";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		}

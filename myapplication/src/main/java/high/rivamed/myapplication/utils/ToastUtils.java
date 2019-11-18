@@ -2,6 +2,9 @@ package high.rivamed.myapplication.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
@@ -37,65 +40,134 @@ import high.rivamed.myapplication.base.App;
 
 public class ToastUtils {
 
-   private static final int     DEFAULT_COLOR = 0x12000000;
-   private static Toast               sToast;
-   private static WeakReference<View> sViewWeakReference;
-   private static int gravity         = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-   private static int xOffset         = 0;
-   private static int yOffset         = (int) (64 * UIUtils.getResources().getDisplayMetrics().density + 0.5);
-   private static int backgroundColor = DEFAULT_COLOR;
-   private static int bgResource      = -1;
-   private static int messageColor    = DEFAULT_COLOR;
-   private static Toast    mToast;
-   private static TextView   btn;
-   private static TextView textMsg;
+   private static final int                 DEFAULT_COLOR   = 0x12000000;
+   private static       Toast               sToast;
+   private static       WeakReference<View> sViewWeakReference;
+   private static       int                 gravity         =
+	   Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+   private static       int                 xOffset         = 0;
+   private static       int                 yOffset         = (int) (
+	   64 * UIUtils.getResources().getDisplayMetrics().density + 0.5);
+   private static       int                 backgroundColor = DEFAULT_COLOR;
+   private static       int                 bgResource      = -1;
+   private static       int                 messageColor    = DEFAULT_COLOR;
+   private static       Toast               mToast;
+   private static       TextView            btn;
+   private static       TextView            textMsg;
+
    private ToastUtils() {
 	throw new UnsupportedOperationException("u can't instantiate me...");
    }
-   private static Toast toast;//实现不管我们触发多少次Toast调用，都只会持续一次Toast显示的时长
 
-   /**
-    * 短时间显示Toast【居下】
-    * @param msg 显示的内容-字符串*/
-   public static void showShortToast(String msg) {
-	if(App.getAppContext() != null){
-	   if (toast == null) {
-		toast = Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_SHORT);
-	   } else {
-		toast.setText(msg);
+//   private static Toast toast;//实现不管我们触发多少次Toast调用，都只会持续一次Toast显示的时长
+
+   private static Field sField_TN;
+   private static Field sField_TN_Handler;
+
+   static {
+	if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
+	   try {
+		sField_TN = Toast.class.getDeclaredField("mTN");
+		sField_TN.setAccessible(true);
+
+		sField_TN_Handler = sField_TN.getType().getDeclaredField("mHandler");
+		sField_TN_Handler.setAccessible(true);
+	   } catch (Exception e) {
 	   }
-	   //1、setGravity方法必须放到这里，否则会出现toast始终按照第一次显示的位置进行显示（比如第一次是在底部显示，那么即使设置setGravity在中间，也不管用）
-	   //2、虽然默认是在底部显示，但是，因为这个工具类实现了中间显示，所以需要还原，还原方式如下：
-	   toast.show();
 	}
    }
 
-   public static void showClickToast (final Context context,String msg, int duration){
+   private static void hook(Toast toast) {
+	try {
+	   Object tn = sField_TN.get(toast);
+	   Handler preHandler = (Handler) sField_TN_Handler.get(tn);
+	   sField_TN_Handler.set(tn, new SafelyHandlerWarpper(preHandler));
+	} catch (Exception e) {
+	}
+   }
 
-	if(mToast == null){
-	   LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+   public static void showToast(Context context, CharSequence cs, int length) {
+	Toast toast = Toast.makeText(context, cs, length);
+	if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
+	   hook(toast);
+	}
+	toast.show();
+   }
+
+   private static class SafelyHandlerWarpper extends Handler {
+
+	private Handler impl;
+
+	public SafelyHandlerWarpper(Handler impl) {
+	   this.impl = impl;
+	}
+
+	@Override
+	public void handleMessage(Message msg) {
+	   try {
+		impl.handleMessage(msg);
+	   } catch (Exception e) {
+		e.printStackTrace();
+	   }
+
+	}
+   }
+
+   /**
+    * 短时间显示Toast【居下】    处理7.1.版本API崩溃问题
+    *
+    * @param msg 显示的内容-字符串
+    */
+   public static void showShortToast(String msg) {
+	if (App.getAppContext() != null) {
+	   Toast toast = Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_SHORT);
+		if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
+		   hook(toast);
+		}
+	   toast.show();
+	}
+   }
+   /**
+    * 短时间显示Toast【居下】    处理7.1.版本API崩溃问题
+    *
+    * @param msg 显示的内容-字符串
+    */
+   public static void showLongToast(String msg) {
+	if (App.getAppContext() != null) {
+	   Toast toast = Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_LONG);
+	   if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
+		hook(toast);
+	   }
+	   toast.show();
+	}
+   }
+   public static void showClickToast(final Context context, String msg, int duration) {
+
+	if (mToast == null) {
+	   LayoutInflater inflater = (LayoutInflater) context.getApplicationContext()
+		   .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	   //自定义布局
 	   View view = inflater.inflate(R.layout.toast_mytoast, null);
-	   textMsg= view.findViewById(R.id.text_mag);
+	   textMsg = view.findViewById(R.id.text_mag);
 	   textMsg.setText(msg);
-	   btn= view.findViewById(R.id.text_click);
+	   btn = view.findViewById(R.id.text_click);
 	   btn.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 
-//		   File file = new File(Environment.getExternalStorageDirectory() + "/Rivamed_logs");
-//		   Intent intent = new Intent("android.intent.action.VIEW");
-//		   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		   intent.addCategory("android.intent.category.DEFAULT");
-//		   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
-//			StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-//			StrictMode.setVmPolicy(builder.build());
-//			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//		   } else {
-//			intent.setDataAndType(Uri.fromFile(file), "*/*");
-//		   }
-//		   LogUtils.i("TAS"," FFF    "+Uri.fromFile(file));
-//		   context.startActivity(intent);
+		   //		   File file = new File(Environment.getExternalStorageDirectory() + "/Rivamed_logs");
+		   //		   Intent intent = new Intent("android.intent.action.VIEW");
+		   //		   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		   //		   intent.addCategory("android.intent.category.DEFAULT");
+		   //		   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+		   //			StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+		   //			StrictMode.setVmPolicy(builder.build());
+		   //			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		   //		   } else {
+		   //			intent.setDataAndType(Uri.fromFile(file), "*/*");
+		   //		   }
+		   //		   LogUtils.i("TAS"," FFF    "+Uri.fromFile(file));
+		   //		   context.startActivity(intent);
 		}
 	   });
 
@@ -104,18 +176,17 @@ public class ToastUtils {
 	}
 
 	try {
-	   Object mTN ;
+	   Object mTN;
 	   mTN = getField(mToast, "mTN");
 	   if (mTN != null) {
 		Object mParams = getField(mTN, "mParams");
-		if (mParams != null
-		    && mParams instanceof WindowManager.LayoutParams) {
+		if (mParams != null && mParams instanceof WindowManager.LayoutParams) {
 		   WindowManager.LayoutParams params = (WindowManager.LayoutParams) mParams;
 		   //显示与隐藏动画
 		   params.windowAnimations = R.style.mToast;
 		   //Toast可点击
-		   params.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-					| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+		   params.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 
 		   //设置viewgroup宽高
 		   params.width = WindowManager.LayoutParams.WRAP_CONTENT; //设置Toast宽度为屏幕宽度
@@ -131,11 +202,12 @@ public class ToastUtils {
 
    /**
     * 反射字段
-    * @param object 要反射的对象
+    *
+    * @param object    要反射的对象
     * @param fieldName 要反射的字段名称
     */
-   private static Object getField(Object object, String fieldName)
-	   throws NoSuchFieldException, IllegalAccessException {
+   private static Object getField(Object object, String fieldName) throws NoSuchFieldException,
+	   IllegalAccessException {
 	Field field = object.getClass().getDeclaredField(fieldName);
 	if (field != null) {
 	   field.setAccessible(true);
@@ -143,10 +215,6 @@ public class ToastUtils {
 	}
 	return null;
    }
-
-
-
-
 
    /**
     * 设置吐司位置
@@ -167,7 +235,8 @@ public class ToastUtils {
     * @param layoutId 视图
     */
    public static void setView(@LayoutRes final int layoutId) {
-	LayoutInflater inflate = (LayoutInflater) UIUtils.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	LayoutInflater inflate = (LayoutInflater) UIUtils.getContext()
+		.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	sViewWeakReference = new WeakReference<>(inflate.inflate(layoutId, null));
    }
 
@@ -192,7 +261,9 @@ public class ToastUtils {
 		return view;
 	   }
 	}
-	if (sToast != null) return sToast.getView();
+	if (sToast != null) {
+	   return sToast.getView();
+	}
 	return null;
    }
 
@@ -223,121 +294,121 @@ public class ToastUtils {
 	ToastUtils.messageColor = messageColor;
    }
 
-//   /**
-//    * 安全地显示短时吐司
-//    *
-//    * @param text 文本
-//    */
-//   public static void showShortSafe(@NonNull final CharSequence text) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(text, Toast.LENGTH_SHORT);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示短时吐司
-//    *
-//    * @param resId 资源Id
-//    */
-//   public static void showShortSafe(@StringRes final int resId) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(resId, Toast.LENGTH_SHORT);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示短时吐司
-//    *
-//    * @param resId 资源Id
-//    * @param args  参数
-//    */
-//   public static void showShortSafe(@StringRes final int resId, final Object... args) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(resId, Toast.LENGTH_SHORT, args);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示短时吐司
-//    *
-//    * @param format 格式
-//    * @param args   参数
-//    */
-//   public static void showShortSafe(final String format, final Object... args) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(format, Toast.LENGTH_SHORT, args);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时吐司
-//    *
-//    * @param text 文本
-//    */
-//   public static void showLongSafe(@NonNull final CharSequence text) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(text, Toast.LENGTH_LONG);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时吐司
-//    *
-//    * @param resId 资源Id
-//    */
-//   public static void showLongSafe(@StringRes final int resId) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(resId, Toast.LENGTH_LONG);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时吐司
-//    *
-//    * @param resId 资源Id
-//    * @param args  参数
-//    */
-//   public static void showLongSafe(@StringRes final int resId, final Object... args) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(resId, Toast.LENGTH_LONG, args);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时吐司
-//    *
-//    * @param format 格式
-//    * @param args   参数
-//    */
-//   public static void showLongSafe(final String format, final Object... args) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		show(format, Toast.LENGTH_LONG, args);
-//	   }
-//	});
-//   }
+   //   /**
+   //    * 安全地显示短时吐司
+   //    *
+   //    * @param text 文本
+   //    */
+   //   public static void showShortSafe(@NonNull final CharSequence text) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(text, Toast.LENGTH_SHORT);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示短时吐司
+   //    *
+   //    * @param resId 资源Id
+   //    */
+   //   public static void showShortSafe(@StringRes final int resId) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(resId, Toast.LENGTH_SHORT);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示短时吐司
+   //    *
+   //    * @param resId 资源Id
+   //    * @param args  参数
+   //    */
+   //   public static void showShortSafe(@StringRes final int resId, final Object... args) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(resId, Toast.LENGTH_SHORT, args);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示短时吐司
+   //    *
+   //    * @param format 格式
+   //    * @param args   参数
+   //    */
+   //   public static void showShortSafe(final String format, final Object... args) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(format, Toast.LENGTH_SHORT, args);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时吐司
+   //    *
+   //    * @param text 文本
+   //    */
+   //   public static void showLongSafe(@NonNull final CharSequence text) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(text, Toast.LENGTH_LONG);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时吐司
+   //    *
+   //    * @param resId 资源Id
+   //    */
+   //   public static void showLongSafe(@StringRes final int resId) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(resId, Toast.LENGTH_LONG);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时吐司
+   //    *
+   //    * @param resId 资源Id
+   //    * @param args  参数
+   //    */
+   //   public static void showLongSafe(@StringRes final int resId, final Object... args) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(resId, Toast.LENGTH_LONG, args);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时吐司
+   //    *
+   //    * @param format 格式
+   //    * @param args   参数
+   //    */
+   //   public static void showLongSafe(final String format, final Object... args) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		show(format, Toast.LENGTH_LONG, args);
+   //	   }
+   //	});
+   //   }
 
    /**
     * 显示短时吐司
@@ -347,14 +418,16 @@ public class ToastUtils {
    public static void showShort(@NonNull final CharSequence text) {
 	show(text, Toast.LENGTH_SHORT);
    }
+
    /**
     * 显示短时吐司
     *
     * @param text 文本
     */
-   public static void showShort2(Context context,@NonNull final CharSequence text) {
-	show2(context,text, Toast.LENGTH_SHORT);
+   public static void showShort2(Context context, @NonNull final CharSequence text) {
+	show2(context, text, Toast.LENGTH_SHORT);
    }
+
    /**
     * 显示短时吐司
     *
@@ -422,31 +495,31 @@ public class ToastUtils {
 	show(format, Toast.LENGTH_LONG, args);
    }
 
-//   /**
-//    * 安全地显示短时自定义吐司
-//    */
-//   public static void showCustomShortSafe(@LayoutRes final int layoutId) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		setView(layoutId);
-//		show("", Toast.LENGTH_SHORT);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时自定义吐司
-//    */
-//   public static void showCustomLongSafe(@LayoutRes final int layoutId) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		setView(layoutId);
-//		show("", Toast.LENGTH_LONG);
-//	   }
-//	});
-//   }
+   //   /**
+   //    * 安全地显示短时自定义吐司
+   //    */
+   //   public static void showCustomShortSafe(@LayoutRes final int layoutId) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		setView(layoutId);
+   //		show("", Toast.LENGTH_SHORT);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时自定义吐司
+   //    */
+   //   public static void showCustomLongSafe(@LayoutRes final int layoutId) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		setView(layoutId);
+   //		show("", Toast.LENGTH_LONG);
+   //	   }
+   //	});
+   //   }
 
    /**
     * 显示短时自定义吐司
@@ -464,31 +537,31 @@ public class ToastUtils {
 	show("", Toast.LENGTH_LONG);
    }
 
-//   /**
-//    * 安全地显示短时自定义吐司
-//    */
-//   public static void showCustomShortSafe(@NonNull final View view) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		setView(view);
-//		show("", Toast.LENGTH_SHORT);
-//	   }
-//	});
-//   }
-//
-//   /**
-//    * 安全地显示长时自定义吐司
-//    */
-//   public static void showCustomLongSafe(@NonNull final View view) {
-//	sHandler.post(new Runnable() {
-//	   @Override
-//	   public void run() {
-//		setView(view);
-//		show("", Toast.LENGTH_LONG);
-//	   }
-//	});
-//   }
+   //   /**
+   //    * 安全地显示短时自定义吐司
+   //    */
+   //   public static void showCustomShortSafe(@NonNull final View view) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		setView(view);
+   //		show("", Toast.LENGTH_SHORT);
+   //	   }
+   //	});
+   //   }
+   //
+   //   /**
+   //    * 安全地显示长时自定义吐司
+   //    */
+   //   public static void showCustomLongSafe(@NonNull final View view) {
+   //	sHandler.post(new Runnable() {
+   //	   @Override
+   //	   public void run() {
+   //		setView(view);
+   //		show("", Toast.LENGTH_LONG);
+   //	   }
+   //	});
+   //   }
 
    /**
     * 显示短时自定义吐司
@@ -560,7 +633,8 @@ public class ToastUtils {
 	   if (messageColor != DEFAULT_COLOR) {
 		SpannableString spannableString = new SpannableString(text);
 		ForegroundColorSpan colorSpan = new ForegroundColorSpan(messageColor);
-		spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		spannableString.setSpan(colorSpan, 0, spannableString.length(),
+						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		sToast = Toast.makeText(UIUtils.getContext(), spannableString, duration);
 	   } else {
 		sToast = Toast.makeText(UIUtils.getContext(), text, duration);
@@ -575,13 +649,14 @@ public class ToastUtils {
 	sToast.setGravity(gravity, xOffset, yOffset);
 	sToast.show();
    }
+
    /**
     * 显示吐司
     *
     * @param text     文本
     * @param duration 显示时长
     */
-   private static void show2(Context context,final CharSequence text, final int duration) {
+   private static void show2(Context context, final CharSequence text, final int duration) {
 	cancel();
 	boolean isCustom = false;
 	if (sViewWeakReference != null) {
@@ -597,7 +672,8 @@ public class ToastUtils {
 	   if (messageColor != DEFAULT_COLOR) {
 		SpannableString spannableString = new SpannableString(text);
 		ForegroundColorSpan colorSpan = new ForegroundColorSpan(messageColor);
-		spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		spannableString.setSpan(colorSpan, 0, spannableString.length(),
+						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		sToast = Toast.makeText(context, spannableString, duration);
 	   } else {
 		sToast = Toast.makeText(context, text, duration);
@@ -612,6 +688,7 @@ public class ToastUtils {
 	sToast.setGravity(gravity, xOffset, yOffset);
 	sToast.show();
    }
+
    /**
     * 取消吐司显示
     */
@@ -621,7 +698,8 @@ public class ToastUtils {
 	   sToast = null;
 	}
    }
-   public static void showUiToast(Activity activity,String msg) {
+
+   public static void showUiToast(Activity activity, String msg) {
 	activity.runOnUiThread(new Runnable() {
 	   @Override
 	   public void run() {

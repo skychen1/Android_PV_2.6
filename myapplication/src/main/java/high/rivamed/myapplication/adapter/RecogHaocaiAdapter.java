@@ -38,10 +38,11 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
    private TextView mSeven_eight;
    LinearLayout mLl;
    LinearLayout mSeven_sevenl;
-
+boolean menuDownType;
    public RecogHaocaiAdapter(
-	   int layoutResId, List<InventoryVo> data) {
+	   int layoutResId, List<InventoryVo> data,boolean menuDownType) {
 	super(layoutResId, data);
+	this.menuDownType=menuDownType;
    }
 
    @Override
@@ -207,7 +208,9 @@ public class RecogHaocaiAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHo
 	   mSeven_six.setText("/");
 	   mSeven_seven.setText("断网放入");
 	}
-
+	if (menuDownType){
+	   swipe.setSwipeEnabled(false);
+	}
    }
 
    public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {

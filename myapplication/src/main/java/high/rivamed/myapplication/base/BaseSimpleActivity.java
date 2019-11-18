@@ -64,6 +64,8 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    public               TextView        mBaseTabBtnLeft;
    @BindView(R.id.base_tab_tv_title)
    public               TextView        mBaseTabTvTitle;
+//   @BindView(R.id.base_iv_rfid)
+//   public               ImageView    mBaseGifImageView;
    @BindView(R.id.base_iv_rfid)
    public               GifImageView    mBaseGifImageView;
    @BindView(R.id.stock_rdbtn_left)

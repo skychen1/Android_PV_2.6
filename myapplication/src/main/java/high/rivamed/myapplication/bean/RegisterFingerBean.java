@@ -20,7 +20,16 @@ public class RegisterFingerBean implements Serializable {
     private boolean operateSuccess;
     private int id;
     private String msg;
+    private String fingerNames;
     private List<UserFeatureInfosBean> userFeatureInfos;
+
+    public String getFingerNames() {
+        return fingerNames;
+    }
+
+    public void setFingerNames(String fingerNames) {
+        this.fingerNames = fingerNames;
+    }
 
     public boolean isOperateSuccess() {
         return operateSuccess;
@@ -64,6 +73,15 @@ public class RegisterFingerBean implements Serializable {
         private String userId;
         private String type;
         private String data;
+        private String featureName;
+
+        public String getFeatureName() {
+            return featureName;
+        }
+
+        public void setFeatureName(String featureName) {
+            this.featureName = featureName;
+        }
 
         public String getUserId() {
             return userId;

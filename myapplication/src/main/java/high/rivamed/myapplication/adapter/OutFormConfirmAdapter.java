@@ -43,15 +43,16 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
     private TextView mSeven_four;
     private TextView mSeven_five;
     LinearLayout mLl;
-
+    boolean menuDownType;
     public String TAG = "OutFormConfirmAdapter";
     public int mSize;
     public String mType;
 
     public OutFormConfirmAdapter(
-            int layout, List<InventoryVo> data) {
+            int layout, List<InventoryVo> data,boolean menuDownType) {
         super(layout, data);
         this.mData = data;
+        this.menuDownType=menuDownType;
     }
 
     public void clear() {
@@ -176,7 +177,9 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             setDeleteView(item.isDelete(),swipe);
         }
-
+        if (menuDownType){
+            swipe.setSwipeEnabled(false);
+        }
     }
 
 

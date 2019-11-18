@@ -36,12 +36,12 @@ public class MyInfoActivity extends BaseSimpleActivity {
     private static final String TAG = "MyInfoActivity";
     @BindView(R.id.setting_name)
     TextView  mSettingName;
-    @BindView(R.id.setting_department)
-    TextView  mSettingDepartment;
+//    @BindView(R.id.setting_department)
+//    TextView  mSettingDepartment;
     @BindView(R.id.setting_position)
     TextView  mSettingPosition;
-    @BindView(R.id.setting_remarks)
-    TextView  mSettingRemarks;
+//    @BindView(R.id.setting_remarks)
+//    TextView  mSettingRemarks;
     @BindView(R.id.setting_account_name)
     TextView  mSettingAccountName;
     @BindView(R.id.top_icon)
@@ -82,8 +82,8 @@ public class MyInfoActivity extends BaseSimpleActivity {
                 }
             }
             mSettingAccountName.setText(appAccountInfoVo.getAccountName());
-            mSettingName.setText("用户名：" + appAccountInfoVo.getUserName());
-            mSettingPosition.setText("角色：" + roleName);
+            mSettingName.setText(appAccountInfoVo.getUserName());
+            mSettingPosition.setText(roleName);
             mBaseTabTvName.setText(appAccountInfoVo.getUserName());
             if (appAccountInfoVo.getSex().equals("女")){
                 Glide.with(this)

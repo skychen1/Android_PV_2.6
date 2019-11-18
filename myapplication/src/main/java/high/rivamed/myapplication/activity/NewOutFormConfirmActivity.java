@@ -67,6 +67,7 @@ import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_RECEIVE_ORDERID;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -497,6 +498,9 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
 		   mDownBtnOne.setEnabled(false);
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
+		   if (!UIUtils.isFastDoubleClick()) {
+			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
+		   }
 		   Toast.makeText(NewOutFormConfirmActivity.this, "未扫描到操作的耗材,即将返回主界面，请重新操作",
 					Toast.LENGTH_SHORT).show();
 		   mHandler.postDelayed(mRunnable, 3000);
@@ -546,7 +550,8 @@ public class NewOutFormConfirmActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(5));
 	((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(6));
-	mPublicAdapter = new OutFormConfirmAdapter(mLayout, mBoxInventoryVos);
+	boolean menuDownType = UIUtils.getMenuDownType(UIUtils.getContext(), DOWN_MENU_YICHU);
+	mPublicAdapter = new OutFormConfirmAdapter(mLayout, mBoxInventoryVos,menuDownType);
 	mHeadView.setBackgroundResource(R.color.bg_green);
 
 	mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, LinearLayout.VERTICAL));

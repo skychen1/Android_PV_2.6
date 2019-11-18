@@ -46,11 +46,12 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
     public int mSize;
     public String mType;
     LinearLayout mLl;
-
+    boolean menuDownType;
     public BillOrderAdapter(
-            int layout, int type, List<InventoryVo> data) {
+            int layout, int type, List<InventoryVo> data,boolean menuDownType) {
         super(layout, data);
         this.mType = "" + type;
+        this.menuDownType=menuDownType;
     }
 
     public void clear() {
@@ -187,7 +188,9 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             }
             mLl.setBackgroundResource(R.color.bg_f);
         }
-
+        if (menuDownType){
+            swipe.setSwipeEnabled(false);
+        }
     }
     public void setDeleteView(boolean isDeleteView, SwipeLayout swipe) {
         if (isDeleteView) {

@@ -1,8 +1,11 @@
 package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -24,6 +27,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,18 +213,28 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	File file = new File(Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
+	Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
+	Log.i("eerf","file.getPath()   "+file.getPath());
+	Log.i("eerf","bitmap   "+(bitmap==null));
+	if (bitmap ==null){
+	   mLoginLogo.setImageResource(R.mipmap.bg_login_icon);
+	}else {
+	   mLoginLogo.setImageBitmap(bitmap);
+	}
 
+//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
-	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
-		faceFragment = new LoginFaceFragment();
-		mFragments.add(faceFragment);//人脸识别登录 TODO
-	   }
 	}
 
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
+	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
+		   faceFragment = new LoginFaceFragment();
+		   mFragments.add(faceFragment);//人脸识别登录 TODO
+	   }
 	//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
 	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
@@ -243,7 +257,7 @@ public class LoginActivity extends SimpleActivity {
 	LoginUtils.getUpDateVer(this);
 	mOnStart = true;
 	mPushFormOrders.clear();
-	mDownText.setText("© 2018 Rivamed  All Rights Reserved  V: " + UIUtils.getVersionName(this));
+	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V:" + UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
@@ -345,26 +359,36 @@ public class LoginActivity extends SimpleActivity {
 	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
 
 	//控制紧急登录tab的显示
-	mLoginPass.setVisibility(
-		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
-	//有人脸识别，显示人脸识别tab，默认选中人脸识别tab
-	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
-	mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
-	mLoginViewpager.setCurrentItem(isConfigFace() ? 0 : 1);
-	//有人脸识别或紧急登录时，可滑动
-	mLoginViewpager.setScanScroll(
-		isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
-	LogUtils.i(TAG,
-		     "getConfigDatddffdfe   " + UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026));
-	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
-	   mLoginUnRL.setVisibility(View.VISIBLE);
-	   mTVLoginUnConfirmCst.setText("未确认耗材（0）");
-	   getNoConfirm();
-	} else {
-	   mLoginUnRL.setVisibility(View.INVISIBLE);
+	if (mLoginPass!=null){
+	   mLoginPass.setVisibility(
+		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
 	}
-	mTVLoginToBePutInStorage.setVisibility(
-		UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
+	//有人脸识别，显示人脸识别tab，默认选中用户名登录tab
+	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
+	if (mLoginFace!=null){
+	   mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
+	}
+	if (mLoginViewpager!=null){
+	   mLoginViewpager.setCurrentItem(0);
+	   //有人脸识别或紧急登录时，可滑动
+	   mLoginViewpager.setScanScroll(
+		   isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
+	}
+	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
+	   if (mLoginUnRL!=null){
+		mLoginUnRL.setVisibility(View.VISIBLE);
+		mTVLoginUnConfirmCst.setText("未确认耗材（0）");
+		getNoConfirm();
+	   }
+	} else {
+	   if (mLoginUnRL!=null) {
+		mLoginUnRL.setVisibility(View.INVISIBLE);
+	   }
+	}
+	if (mTVLoginToBePutInStorage!=null) {
+	   mTVLoginToBePutInStorage.setVisibility(
+		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
+	}
    }
 
    public boolean isConfigFace() {
@@ -384,22 +408,30 @@ public class LoginActivity extends SimpleActivity {
 	   boolean canDevice, int configType, String loginType) {
 	if (!canDevice) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
-		mLoginGone.setVisibility(View.VISIBLE);
+	      if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
 		   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
 		   faceFragment.onTabShowPreview(false);
 		}
 	   } else if (configType == 1) {//IC卡登录限制
-		mLoginGone.setVisibility(View.VISIBLE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   } else if (configType == 2) {
 		//设备是否禁用
-		mLoginGone.setVisibility(View.VISIBLE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.VISIBLE);
+		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   }
 	} else {
 	   if (configType == 0) {//正常登录密码登录限制
-		mLoginGone.setVisibility(View.GONE);
+		if (mLoginGone!=null){
+		   mLoginGone.setVisibility(View.GONE);
+		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
 		   //设备禁用切换至设备可用时当前选中显示的是人脸识别页面，开启人脸识别的预览
 		   faceFragment.onTabShowPreview(true);
@@ -431,7 +463,7 @@ public class LoginActivity extends SimpleActivity {
 	List<UserFeatureInfosBean> beans = LitePal.where("data = ? ", loginType)
 		.find(UserFeatureInfosBean.class);
 	LogUtils.i(TAG, " beans     " + mGson.toJson(beans));
-	if (beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
+	if (beans!=null&&beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
 	   String accountName = beans.get(0).getAccountName();
 	   List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
 	   LogUtils.i(TAG, " menus1     " + mGson.toJson(fromJson));
@@ -461,6 +493,7 @@ public class LoginActivity extends SimpleActivity {
 	   @Override
 	   public void onError(String result) {
 		EventBusUtils.postSticky(new Event.EventLoading(false));
+		uNNetvalidateLoginIdCard(idCard);
 	   }
 	});
 
@@ -598,10 +631,10 @@ public class LoginActivity extends SimpleActivity {
 		if (isConfigFace()) {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_face:
-			   mLoginViewpager.setCurrentItem(0);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_pass:
 			   mLoginViewpager.setCurrentItem(2);
@@ -610,10 +643,10 @@ public class LoginActivity extends SimpleActivity {
 		} else {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 			case R.id.login_pass:
-			   mLoginViewpager.setCurrentItem(2);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 		   }
 		}
@@ -621,16 +654,16 @@ public class LoginActivity extends SimpleActivity {
 		if (isConfigFace()) {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_face:
-			   mLoginViewpager.setCurrentItem(0);
+			   mLoginViewpager.setCurrentItem(1);
 			   break;
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 		   }
 		} else {
 		   switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.login_password:
-			   mLoginViewpager.setCurrentItem(1);
+			   mLoginViewpager.setCurrentItem(0);
 			   break;
 		   }
 		}
@@ -642,7 +675,7 @@ public class LoginActivity extends SimpleActivity {
 	mLoginPass.setVisibility(View.GONE);
 	mLoginFace.setVisibility(View.GONE);
 	mLoginViewpager.setScanScroll(false);
-	mLoginViewpager.setCurrentItem(1);
+	mLoginViewpager.setCurrentItem(0);
    }
 
    private class PageChangeListener implements ViewPager.OnPageChangeListener {
@@ -657,10 +690,10 @@ public class LoginActivity extends SimpleActivity {
 	   if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017)) {
 		if (isConfigFace()) {
 		   switch (position) {
-			case 0:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_face);
 			   break;
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 			case 2:
@@ -669,10 +702,10 @@ public class LoginActivity extends SimpleActivity {
 		   }
 		} else {
 		   switch (position) {
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
-			case 2:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_pass);
 			   break;
 		   }
@@ -680,16 +713,16 @@ public class LoginActivity extends SimpleActivity {
 	   } else {
 		if (isConfigFace()) {
 		   switch (position) {
-			case 0:
+			case 1:
 			   mLoginRadiogroup.check(R.id.login_face);
 			   break;
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 		   }
 		} else {
 		   switch (position) {
-			case 1:
+			case 0:
 			   mLoginRadiogroup.check(R.id.login_password);
 			   break;
 		   }

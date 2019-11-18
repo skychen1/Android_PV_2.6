@@ -110,7 +110,7 @@ public class FaceManager {
      * @param isMirror 是否需要镜像
      * @param listener 数据回调监听
      */
-    public void init(@NonNull Activity context, boolean isMirror, InitListener listener) {
+    public void init(@NonNull Context context, boolean isMirror, InitListener listener) {
         //检测文件读取权限
         int permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -495,7 +495,7 @@ public class FaceManager {
         final CameraImageSource cameraImageSource = new CameraImageSource(context);
         // 图片越小检测速度越快，闸机场景640 * 480 可以满足需求。实际预览值可能和该值不同。和相机所支持的预览尺寸有关。
         // 可以通过 camera.getParameters().getSupportedPreviewSizes()查看支持列表。
-        cameraImageSource.getCameraControl().setPreferredPreviewSize(1280, 720);
+        cameraImageSource.getCameraControl().setPreferredPreviewSize(640, 480);
         // 设置最小人脸，该值越小，检测距离越远，该值越大，检测性能越好。范围为80-200
         FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(100);
         // 设置预览
@@ -518,9 +518,9 @@ public class FaceManager {
             cameraImageSource.getCameraControl().setDisplayOrientation(CameraView.ORIENTATION_HORIZONTAL);
         }
         // TODO 选择使用前置摄像头
-        // cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
+         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
         // TODO 选择使用usb摄像头
-        cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
+//        cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
         if (isMirror) {
             //如果有镜像需要设置镜像
             // 如果不设置，人脸框会镜像，显示不准

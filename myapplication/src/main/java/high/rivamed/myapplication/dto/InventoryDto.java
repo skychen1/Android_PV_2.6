@@ -9,6 +9,7 @@ import java.util.List;
 import high.rivamed.myapplication.dto.entity.Inventory;
 import high.rivamed.myapplication.dto.vo.CstExpirationVo;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
+import high.rivamed.myapplication.dto.vo.InventoryGroupVos;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 /**
@@ -103,11 +104,21 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     * fuWai : false
     */
 
-    private int pageNo;
-   private int pageSize;
-   private int inTypeCount;
-   private int cstSum;
-   private List<InventoryVo> storageCstCountVo;
+    private int                    pageNo;
+   private int                     pageSize;
+   private int                     inTypeCount;
+   private int                     cstSum;
+   private List<InventoryVo>       storageCstCountVo;
+   private List<InventoryGroupVos> inventoryGroupVos;
+
+   public List<InventoryGroupVos> getInventoryGroupVos() {
+      return inventoryGroupVos;
+   }
+
+   public void setInventoryGroupVos(
+         List<InventoryGroupVos> inventoryGroupVos) {
+      this.inventoryGroupVos = inventoryGroupVos;
+   }
 
    public List<String> getEpcs() {
       return epcs;

@@ -30,7 +30,7 @@
 			android:layout_height="@dimen/y2"
 			android:layout_marginLeft="@dimen/x35"
 			android:layout_marginRight="@dimen/x35"
-			android:background="@drawable/line"
+			android:background="@drawable/line_dashgap"
 			android:layerType="software"/>
 		<TextView
 			android:id="@+id/stock_card_outofdate"

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="horizontal">
+
+	<View
+		style="@style/view_line_style"
+		android:background="@color/login_line2"/>
+	<TextView
+		android:id="@+id/seven_one"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_gravity="center_vertical"
+		android:layout_weight="5"
+		android:text="名称"
+		/>
+
+	<View
+		style="@style/view_line_style"
+		android:layout_width="1.2px"
+		android:background="@color/login_line2"/>
+
+	<TextView
+		android:id="@+id/seven_two"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_gravity="center_vertical"
+		android:layout_weight="2"
+		android:text="数量小计"
+		/>
+	<View
+		style="@style/view_line_style"
+		android:layout_width="1.2px"
+		android:background="@color/login_line2"/>
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_weight="10"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:orientation="vertical"
+		android:gravity="center">
+		<android.support.v7.widget.RecyclerView
+			android:id="@+id/recyclerviews"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:overScrollMode="never"/>
+	</LinearLayout>
+	<View
+		style="@style/view_line_style"
+		android:background="@color/login_line2"/>
+</LinearLayout>
+

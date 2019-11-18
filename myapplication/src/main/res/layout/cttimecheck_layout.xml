@@ -1,71 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:tl="http://schemas.android.com/apk/res-auto"
-			  android:layout_width="match_parent"
-			  android:id="@+id/ll"
-			  android:layout_height="match_parent"
-			  android:background="@color/bg"
-			  android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@mipmap/bg_home"
 	>
-	<LinearLayout
-		android:id="@+id/stock_left_alltop"
+	<android.support.design.widget.AppBarLayout
+		android:id="@+id/app_bar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@color/bg"
-		android:layout_marginTop="@dimen/y30"
-		android:layout_marginLeft="@dimen/x30"
-		android:orientation="vertical"
-		android:visibility="gone">
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="耗材效期监控："
-			android:textSize="@dimen/textsize_18"
-			android:drawableLeft="@drawable/line_top"
-			android:drawablePadding="@dimen/x15"
-			android:textColor="@color/text_color_3"
-			android:textStyle="bold"/>
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/stock_left_rv"
-			android:layout_marginTop="@dimen/y15"
+		android:background="#00000000"
+		android:visibility="gone"
+		app:elevation="0dp">
+		<android.support.design.widget.CollapsingToolbarLayout
+			android:id="@+id/toolbar_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:overScrollMode="never"
-			>
-		</android.support.v7.widget.RecyclerView>
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="耗材库存预警："
-			android:drawableLeft="@drawable/line_top"
-			android:drawablePadding="@dimen/x15"
-			android:layout_marginTop="@dimen/y20"
-			android:textSize="@dimen/textsize_18"
-			android:textColor="@color/text_color_3"
-			android:textStyle="bold"/>
-	</LinearLayout>
+			android:layout_height="match_parent"
+			app:layout_scrollFlags="scroll|enterAlways">
+			<LinearLayout
+				android:id="@+id/stock_left_alltop"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x30"
+				android:layout_marginTop="@dimen/y30"
+				android:orientation="vertical"
+				>
 
-	<net.lucode.hackware.magicindicator.MagicIndicator
-		android:id="@+id/cttimecheck_rg"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/y65"
-		android:background="@color/bg"
-		android:layout_marginTop="@dimen/y18"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		/>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:drawableLeft="@drawable/line_top"
+					android:drawablePadding="@dimen/x15"
+					android:text="耗材效期监控："
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_18"
+					android:textStyle="bold"/>
 
+				<android.support.v7.widget.RecyclerView
+					android:id="@+id/stock_left_rv"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/y15"
+					android:overScrollMode="never"
+					>
+				</android.support.v7.widget.RecyclerView>
 
-	<android.support.v4.view.ViewPager
-		android:id="@+id/cttimecheck_viewpager"
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/y20"
+					android:drawableLeft="@drawable/line_top"
+					android:drawablePadding="@dimen/x15"
+					android:text="耗材库存监控："
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/textsize_18"
+					android:textStyle="bold"/>
+			</LinearLayout>
+		</android.support.design.widget.CollapsingToolbarLayout>
+	</android.support.design.widget.AppBarLayout>
+
+	<LinearLayout
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
+		android:id="@+id/ll"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:overScrollMode="never"
-		android:layout_marginLeft="@dimen/x30"
-		android:layout_marginRight="@dimen/x30"
-		android:background="@color/bg_f"
+		android:orientation="vertical"
 		>
-	</android.support.v4.view.ViewPager>
 
-</LinearLayout>
+		<net.lucode.hackware.magicindicator.MagicIndicator
+			android:id="@+id/cttimecheck_rg"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/y65"
+			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginRight="@dimen/x30"
+			android:layout_marginTop="@dimen/y18"
+			/>
+
+
+		<android.support.v4.view.ViewPager
+			android:id="@+id/cttimecheck_viewpager"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="@dimen/x30"
+			android:layout_marginRight="@dimen/x30"
+			android:background="@color/bg_f"
+			android:overScrollMode="never"
+			>
+		</android.support.v4.view.ViewPager>
+
+	</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

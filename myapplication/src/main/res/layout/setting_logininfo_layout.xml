@@ -1,181 +1,539 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
+			  xmlns:tools="http://schemas.android.com/tools"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:background="@color/bg"
+			  android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="@dimen/x1410"
-        android:layout_height="@dimen/x760"
-        android:layout_centerInParent="true"
-        android:background="@color/bg_f"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="@dimen/x5"
-        app:cardElevation="@dimen/x1"
-        app:cardMaxElevation="@dimen/x1"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true">
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginBottom="@dimen/x35"
+		android:layout_marginLeft="@dimen/x35"
+		android:layout_marginRight="@dimen/x35"
+		android:background="@color/bg_f"
+		android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="@dimen/x1410"
-            android:layout_height="@dimen/x760"
-            android:layout_gravity="center"
-            android:background="@color/bg_f"
-            android:orientation="vertical">
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/y240"
+			android:layout_margin="@dimen/x35"
+			android:background="@color/bg_e0"
+			android:padding="@dimen/y35"
+			>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x300"
-                android:layout_marginTop="@dimen/x245"
-                android:orientation="horizontal">
+			<LinearLayout
+				android:layout_width="@dimen/x736"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/setting_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="密码："
-                    android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_21" />
+				<de.hdodenhof.circleimageview.CircleImageView
+					android:id="@+id/top_icon"
+					android:layout_width="@dimen/x150"
+					android:layout_height="@dimen/x150"
+					android:elevation="1dp"
+					android:src="@mipmap/hccz_sztx_nv"/>
 
-                <TextView
-                    android:id="@+id/setting_password_edit"
-                    android:layout_width="@dimen/x600"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:letterSpacing="0.5"
-                    android:text="******"
-                    android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_21" />
+				<RelativeLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/x50"
+					android:layout_toRightOf="@+id/top_icon"
+					>
 
-                <ImageView
-                    android:id="@+id/setting_revise_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/x24"
-                    android:paddingRight="@dimen/x24"
-                    android:src="@mipmap/hccz_ic_dlsz_xgxx" />
+					<TextView
+						android:id="@+id/setting_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentTop="true"
+						android:text="名字"
+						android:textColor="@color/text_color_3"
+						android:textSize="@dimen/x48"
+						android:textStyle="bold"/>
 
-            </LinearLayout>
+					<LinearLayout
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentBottom="true"
+						android:layout_below="@+id/setting_name"
+						android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x300"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/x50">
+						<TextView
+							android:id="@+id/setting_password"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_gravity="bottom"
+							android:text="密  码："
+							android:textColor="@color/text_color_3"
+							android:textSize="@dimen/x32"/>
 
-                <TextView
-                    android:id="@+id/setting_fingerprint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="指纹："
-                    android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_21" />
+						<TextView
+							android:id="@+id/setting_password_edit"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_gravity="bottom"
+							android:letterSpacing="0.5"
+							android:text="******"
+							android:textColor="@color/text_color_6"
+							android:textSize="@dimen/x32"/>
 
-                <TextView
-                    android:id="@+id/setting_fingerprint_edit"
-                    android:layout_width="@dimen/x600"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    tools:text="未绑定"
-                    android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_21" />
+						<ImageView
+							android:id="@+id/setting_revise_password"
+							android:layout_width="@dimen/x48"
+							android:layout_height="@dimen/x48"
+							android:layout_marginLeft="@dimen/x40"
+							android:layout_gravity="bottom"
+							android:background="@mipmap/setting_password"/>
 
-                <TextView
-                    android:id="@+id/setting_fingerprint_bind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/x24"
-                    android:paddingRight="@dimen/x24"
-                    tools:text="绑定"
-                    android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_21" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x300"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/x50">
+					</LinearLayout>
+				</RelativeLayout>
+			</LinearLayout>
 
-                <TextView
-                    android:id="@+id/setting_ic_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="腕带："
-                    android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_21" />
+		</RelativeLayout>
 
-                <TextView
-                    android:id="@+id/setting_ic_card_edit"
-                    android:layout_width="@dimen/x600"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    tools:text="未绑定"
-                    android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_21" />
+		<RelativeLayout
+			android:layout_width="@dimen/x736"
+			android:layout_height="@dimen/y170"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginLeft="@dimen/x20"
+			>
 
-                <TextView
-                    android:id="@+id/setting_ic_card_bind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/x24"
-                    android:paddingRight="@dimen/x24"
-                    tools:text="绑定"
-                    android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_21" />
-            </LinearLayout>
+			<ImageView
+				android:id="@+id/setting_face_icon"
+				android:layout_width="@dimen/x90"
+				android:layout_height="@dimen/x90"
+				android:layout_centerVertical="true"
+				android:src="@mipmap/setting_face"/>
 
-            <LinearLayout
-                android:id="@+id/setting_pass_ll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/x300"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/x50">
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/y90"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="@dimen/x50"
+				android:layout_toRightOf="@+id/setting_face_icon"
+				>
 
-                <TextView
-                    android:id="@+id/setting_pass"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="紧急登录密码："
-                    android:textColor="@color/color_drak_green"
-                    android:textSize="@dimen/textsize_21" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentTop="true"
+					android:text="人脸绑定"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x34"/>
 
-                <TextView
-                    android:id="@+id/setting_pass_edit"
-                    android:layout_width="@dimen/x470"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="无"
-                    android:textColor="@color/text_color_6"
-                    android:textSize="@dimen/textsize_21" />
+				<TextView
+					android:id="@+id/setting_face_bind_text"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentBottom="true"
+					android:text="未绑定"
+					android:textSize="@dimen/x30"
+					android:textColor="@color/text_color_6"/>
+			</RelativeLayout>
 
-                <TextView
-                    android:id="@+id/setting_pass_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/x24"
-                    android:paddingRight="@dimen/x24"
-                    android:text="设置"
-                    android:textColor="@color/color_green"
-                    android:textSize="@dimen/textsize_21" />
-            </LinearLayout>
-        </LinearLayout>
+			<TextView
+				android:id="@+id/setting_face_bind_btn"
+				style="@style/btn_style_sel"
+				android:layout_centerVertical="true"
+				android:layout_alignParentRight="true"
+				android:text="绑定"/>
+		</RelativeLayout>
+		<View
+			android:layout_width="@dimen/x760"
+			android:layout_height="@dimen/y2"
+			android:background="@drawable/line_dashgap_big"
+			android:layerType="software"
+			android:layout_gravity="center_horizontal"/>
 
-    </android.support.v7.widget.CardView>
+		<RelativeLayout
+			android:layout_width="@dimen/x736"
+			android:layout_height="@dimen/y350"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginLeft="@dimen/x20"
+			android:paddingTop="@dimen/y40"
+			>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/top_icon"
-        android:layout_width="@dimen/x150"
-        android:layout_height="@dimen/x150"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/x50"
-        android:elevation="1dp"
-        android:src="@mipmap/hccz_sztx_nv" />
+			<ImageView
+				android:id="@+id/setting_finger_icon"
+				android:layout_width="@dimen/x90"
+				android:layout_height="@dimen/x92"
+				android:src="@mipmap/setting_finger"/>
 
-</RelativeLayout>
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_marginLeft="@dimen/x50"
+				android:layout_toRightOf="@+id/setting_finger_icon"
+				>
+
+				<TextView
+					android:id="@+id/finger_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="指纹绑定"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x34"/>
+				<RelativeLayout
+					android:id="@+id/finger_one"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/finger_title"
+					android:layout_marginTop="@dimen/y20">
+
+					<TextView
+						android:id="@+id/setting_fingerprint_edit_one"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="指纹1"
+						android:textSize="@dimen/x30"
+						android:textColor="@color/text_color_6"/>
+					<TextView
+						android:id="@+id/setting_fingerprint_bind_one"
+						style="@style/btn_style_sel"
+						android:layout_centerVertical="true"
+						android:layout_alignParentRight="true"
+						android:text="绑定"/>
+				</RelativeLayout>
+				<RelativeLayout
+					android:id="@+id/finger_two"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/y20"
+					android:layout_below="@+id/finger_one"
+					>
+
+					<TextView
+						android:id="@+id/setting_fingerprint_edit_two"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="指纹2"
+						android:textSize="@dimen/x30"
+						android:textColor="@color/text_color_6"/>
+					<TextView
+						android:id="@+id/setting_fingerprint_bind_two"
+						style="@style/btn_style_sel"
+						android:layout_centerVertical="true"
+						android:layout_alignParentRight="true"
+						android:text="绑定"/>
+				</RelativeLayout>
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/finger_two"
+					android:layout_marginTop="@dimen/y20"
+					android:orientation="horizontal">
+
+					<TextView
+						android:id="@+id/setting_fingerprint_edit_three"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentTop="true"
+						android:layout_marginTop="0dp"
+						android:text="指纹3"
+						android:textColor="@color/text_color_6"
+						android:textSize="@dimen/x30"/>
+					<TextView
+						android:id="@+id/setting_fingerprint_bind_three"
+						style="@style/btn_style_sel"
+						android:layout_centerVertical="true"
+						android:layout_alignParentRight="true"
+						android:text="绑定"/>
+				</RelativeLayout>
+			</RelativeLayout>
+
+
+		</RelativeLayout>
+
+		<View
+			android:layout_width="@dimen/x760"
+			android:layout_height="@dimen/y2"
+			android:background="@drawable/line_dashgap_big"
+			android:layerType="software"
+			android:layout_gravity="center_horizontal"/>
+		<RelativeLayout
+			android:layout_width="@dimen/x736"
+			android:layout_height="@dimen/y180"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginLeft="@dimen/x20"
+			>
+
+			<ImageView
+				android:id="@+id/setting_wandai_icon"
+				android:layout_width="@dimen/x90"
+				android:layout_height="@dimen/x90"
+				android:layout_centerVertical="true"
+				android:src="@mipmap/setting_wandai"/>
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/y90"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="@dimen/x50"
+				android:layout_toRightOf="@+id/setting_wandai_icon"
+				>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentTop="true"
+					android:text="腕带绑定"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x34"/>
+
+				<TextView
+					android:id="@+id/setting_ic_card_text"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentBottom="true"
+					android:textSize="@dimen/x30"
+					android:text="绑定"
+					android:textColor="@color/text_color_6"/>
+			</RelativeLayout>
+
+			<TextView
+				android:id="@+id/setting_ic_card_bind"
+				style="@style/btn_style_sel"
+				android:layout_centerVertical="true"
+				android:layout_alignParentRight="true"
+				android:text="绑定"/>
+		</RelativeLayout>
+
+	</LinearLayout>
+
+	<!--<android.support.v7.widget.CardView-->
+		<!--android:layout_width="@dimen/x1410"-->
+		<!--android:layout_height="@dimen/x760"-->
+		<!--android:layout_centerInParent="true"-->
+		<!--android:background="@color/bg_f"-->
+		<!--app:cardBackgroundColor="@color/white"-->
+		<!--app:cardCornerRadius="@dimen/x5"-->
+		<!--app:cardElevation="@dimen/x1"-->
+		<!--app:cardMaxElevation="@dimen/x1"-->
+		<!--app:cardPreventCornerOverlap="true"-->
+		<!--app:cardUseCompatPadding="true">-->
+
+		<!--<LinearLayout-->
+			<!--android:layout_width="@dimen/x1410"-->
+			<!--android:layout_height="@dimen/x760"-->
+			<!--android:layout_gravity="center"-->
+			<!--android:background="@color/bg_f"-->
+			<!--android:orientation="vertical">-->
+
+			<!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_marginLeft="@dimen/x300"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_marginTop="@dimen/x200"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:orientation="horizontal">&ndash;&gt;-->
+
+			<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+			<!--&lt;!&ndash;android:id="@+id/setting_password"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:text="密  码："&ndash;&gt;-->
+			<!--&lt;!&ndash;android:textColor="@color/color_drak_green"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:textSize="@dimen/textsize_21" />&ndash;&gt;-->
+
+			<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+			<!--&lt;!&ndash;android:id="@+id/setting_password_edit"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_width="@dimen/x600"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_gravity="center_vertical"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:letterSpacing="0.5"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:text="******"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:textColor="@color/text_color_6"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:textSize="@dimen/textsize_21" />&ndash;&gt;-->
+
+			<!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+			<!--&lt;!&ndash;android:id="@+id/setting_revise_password"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:paddingLeft="@dimen/x24"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:paddingRight="@dimen/x24"&ndash;&gt;-->
+			<!--&lt;!&ndash;android:src="@mipmap/hccz_ic_dlsz_xgxx" />&ndash;&gt;-->
+
+			<!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+			<!--<LinearLayout-->
+				<!--android:layout_width="match_parent"-->
+				<!--android:layout_height="wrap_content"-->
+				<!--android:layout_marginLeft="@dimen/x300"-->
+				<!--android:orientation="horizontal"-->
+				<!--android:paddingTop="@dimen/x50">-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_ic_card"-->
+					<!--android:layout_width="wrap_content"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:text="腕  带："-->
+					<!--android:textColor="@color/color_drak_green"-->
+					<!--android:textSize="@dimen/textsize_21"/>-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_ic_card_edit"-->
+					<!--android:layout_width="@dimen/x600"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:layout_gravity="center_vertical"-->
+					<!--android:textColor="@color/text_color_6"-->
+					<!--android:textSize="@dimen/textsize_21"-->
+					<!--tools:text="未绑定"/>-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_ic_card_bind"-->
+					<!--android:layout_width="wrap_content"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:paddingLeft="@dimen/x24"-->
+					<!--android:paddingRight="@dimen/x24"-->
+					<!--android:textColor="@color/color_green"-->
+					<!--android:textSize="@dimen/textsize_21"-->
+					<!--tools:text="绑定"/>-->
+			<!--</LinearLayout>-->
+
+			<!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_marginLeft="@dimen/x300"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:orientation="horizontal"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:paddingTop="@dimen/x50">&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_one"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:text="指纹1："&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_drak_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_edit_one"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="@dimen/x600"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_gravity="center_vertical"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/text_color_6"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="未绑定"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_bind_one"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingLeft="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingRight="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="绑定"/>&ndash;&gt;-->
+			<!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+			<!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_marginLeft="@dimen/x300"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:orientation="horizontal"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:paddingTop="@dimen/x50">&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_two"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:text="指纹2："&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_drak_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_edit_two"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="@dimen/x600"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_gravity="center_vertical"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/text_color_6"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="未绑定"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_bind_two"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingLeft="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingRight="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="绑定"/>&ndash;&gt;-->
+			<!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+			<!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:layout_marginLeft="@dimen/x300"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:orientation="horizontal"&ndash;&gt;-->
+				<!--&lt;!&ndash;android:paddingTop="@dimen/x50">&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_three"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:text="指纹3："&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_drak_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_edit_three"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="@dimen/x600"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_gravity="center_vertical"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/text_color_6"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="未绑定"/>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;<TextView&ndash;&gt;-->
+					<!--&lt;!&ndash;android:id="@+id/setting_fingerprint_bind_three"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingLeft="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:paddingRight="@dimen/x24"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textColor="@color/color_green"&ndash;&gt;-->
+					<!--&lt;!&ndash;android:textSize="@dimen/textsize_21"&ndash;&gt;-->
+					<!--&lt;!&ndash;tools:text="绑定"/>&ndash;&gt;-->
+			<!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+			<!--<LinearLayout-->
+				<!--android:id="@+id/setting_pass_ll"-->
+				<!--android:layout_width="match_parent"-->
+				<!--android:layout_height="wrap_content"-->
+				<!--android:layout_marginLeft="@dimen/x300"-->
+				<!--android:orientation="horizontal"-->
+				<!--android:paddingTop="@dimen/x50">-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_pass"-->
+					<!--android:layout_width="wrap_content"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:text="紧急登录密码："-->
+					<!--android:textColor="@color/color_drak_green"-->
+					<!--android:textSize="@dimen/textsize_21"/>-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_pass_edit"-->
+					<!--android:layout_width="@dimen/x470"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:layout_gravity="center_vertical"-->
+					<!--android:text="无"-->
+					<!--android:textColor="@color/text_color_6"-->
+					<!--android:textSize="@dimen/textsize_21"/>-->
+
+				<!--<TextView-->
+					<!--android:id="@+id/setting_pass_setting"-->
+					<!--android:layout_width="wrap_content"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:paddingLeft="@dimen/x24"-->
+					<!--android:paddingRight="@dimen/x24"-->
+					<!--android:text="设置"-->
+					<!--android:textColor="@color/color_green"-->
+					<!--android:textSize="@dimen/textsize_21"/>-->
+			<!--</LinearLayout>-->
+		<!--</LinearLayout>-->
+
+	<!--</android.support.v7.widget.CardView>-->
+
+
+</LinearLayout>

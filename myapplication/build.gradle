@@ -11,10 +11,10 @@ android {
         versionName "3.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-//        ndk {
-//            //选择要添加的对应cpu类型的.so库。
-//            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a'
-//        }
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters  'armeabi-v7a'
+        }
     }
     signingConfigs {
         debug_config {
@@ -69,6 +69,9 @@ android {
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+        lintOptions {
+            disable 'GoogleAppIndexingWarning'
+        }
     }
 }
 
@@ -125,7 +128,6 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
-//    implementation 'com.ayvytr:okhttploginterceptor:2.1.0'
 
 }
 tasks.withType(JavaCompile) {

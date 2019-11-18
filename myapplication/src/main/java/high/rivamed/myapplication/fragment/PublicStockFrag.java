@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.activity.StockGroupCstActivity;
 import high.rivamed.myapplication.activity.StockMidTypeActivity;
 import high.rivamed.myapplication.adapter.StockLeftDownAdapter;
 import high.rivamed.myapplication.adapter.StockMiddleRgAdapter;
@@ -66,6 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_STOCK_RIGHT;
 public class PublicStockFrag extends SimpleFragment {
 
    private static final String TYPE_SIZE  = "TYPE_SIZE";
+   private static final String BOX_SIZE  = "BOX_SIZE";
    private static final String TYPE_PAGE  = "TYPE_PAGE";
    private static final String DEVICECODE = "DEVICECODE";
    private static final int    FIVE       = 5;
@@ -85,6 +89,8 @@ public class PublicStockFrag extends SimpleFragment {
    FrameLayout        mStockSearch;
    @BindView(R.id.search_et)
    EditText           mSearchEts;
+   @BindView(R.id.group_btn)
+   TextView           mGroupBtn;
    @BindView(R.id.right_top)
    LinearLayout       mRightTop;
    @BindView(R.id.stock_right_btn)
@@ -114,6 +120,7 @@ public class PublicStockFrag extends SimpleFragment {
    private List<InventoryVo>    mTCstStockRightList;
    private StockRightAdapter    mRightAdapter;
    private StockLeftDownAdapter mStockLeftAdapter;
+   private int mBox_size;
 
    /**
     * 重新加载数据
@@ -133,6 +140,21 @@ public class PublicStockFrag extends SimpleFragment {
     * @param type  表格类别
     * @returnList<RunWateBean.RowsBean>
     */
+   public static PublicStockFrag newInstance(int param, String type, String deviceCode,int boxsize) {
+	Bundle args = new Bundle();
+	PublicStockFrag fragment = new PublicStockFrag();
+	args.putInt(TYPE_SIZE, param);
+	args.putInt(BOX_SIZE, boxsize);
+	args.putString(TYPE_PAGE, type);
+	args.putString(DEVICECODE, deviceCode);
+	fragment.setArguments(args);
+	return fragment;
+   }
+   /**
+    * @param param 表格的列数  用来判断数据长度  表格的列表
+    * @param type  表格类别
+    * @returnList<RunWateBean.RowsBean>
+    */
    public static PublicStockFrag newInstance(int param, String type, String deviceCode) {
 	Bundle args = new Bundle();
 	PublicStockFrag fragment = new PublicStockFrag();
@@ -142,7 +164,6 @@ public class PublicStockFrag extends SimpleFragment {
 	fragment.setArguments(args);
 	return fragment;
    }
-
    @Override
    public int getLayoutId() {
 	return R.layout.public_timely_layout;
@@ -153,6 +174,7 @@ public class PublicStockFrag extends SimpleFragment {
 	//	EventBusUtils.register(this);
 	Bundle arguments = getArguments();
 	mType_size = arguments.getInt(TYPE_SIZE);//假数据   用来判断数据长度  表格的列表
+	mBox_size = arguments.getInt(BOX_SIZE);
 	mType_page = arguments.getString(TYPE_PAGE);
 	mDeviceCode = arguments.getString(DEVICECODE);
 	Log.i("ccc", "mType_size:  " + mType_size);
@@ -167,6 +189,11 @@ public class PublicStockFrag extends SimpleFragment {
 	if (mType_size == FIVE) {
 	   Log.i("ccc", "ssfsfsf:  " + mDeviceCode);
 	   if (mType_page.equals(STYPE_STOCK_MIDDLE)) {
+		if (mDeviceCode == null || mDeviceCode.equals("") || mBox_size == 1) {//全部的柜子详情
+		   mGroupBtn.setVisibility(View.VISIBLE);
+		} else {
+		   mGroupBtn.setVisibility(View.GONE);
+		}
 		mSearchEts.setHint("请输入耗材名称、规格型号查询");
 		mRelativeLayout.setVisibility(View.GONE);
 		mStockSearch.setVisibility(View.VISIBLE);
@@ -221,6 +248,10 @@ public class PublicStockFrag extends SimpleFragment {
 			   //			break;
 			}
 		   }
+		});
+		mGroupBtn.setOnClickListener(view -> {//耗材组
+		   Intent intent = new Intent(mContext, StockGroupCstActivity.class);
+		   mContext.startActivity(intent);
 		});
 	   } else if (mType_page.equals(STYPE_STOCK_LEFT)) {
 		mPublicRl.setVisibility(View.GONE);
@@ -288,12 +319,20 @@ public class PublicStockFrag extends SimpleFragment {
 	   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
 	   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	   mRefreshLayout.setEnableAutoLoadMore(false);
-	   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	   mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
 	   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 	   View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
 	   mDownAdapter.setEmptyView(inflate);
 	   mRecyclerview.setAdapter(mDownAdapter);
 	   mLinearLayout.addView(mHeadView);
+	   mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+	   @Override
+	   public void onRefresh(RefreshLayout refreshLayout) {
+		//刷新
+		LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
+		refreshLayout.finishRefresh(200);
+	   }
+	});
 	   mDownAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 		@Override
 		public void onItemClick(
@@ -333,7 +372,7 @@ public class PublicStockFrag extends SimpleFragment {
 	mRefreshLayout.setEnableAutoLoadMore(false);
 	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
 	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null, null);
+	View inflate = LayoutInflater.from(_mActivity).inflate(R.layout.recy_null2, null);
 	mStockLeftAdapter.setEmptyView(inflate);
 	mRecyclerview.setAdapter(mStockLeftAdapter);
 	mLinearLayout.addView(mHeadView);
@@ -356,15 +395,16 @@ public class PublicStockFrag extends SimpleFragment {
    }
 
    /**
-    * 库存状态和 库存监控底部和库存详情
+    * 库存监控底部
     *
     * @param mDeviceCode
     */
    public void getLeftDownDate(String mDeviceCode) {
 
 	mInventoryVosS.clear();
+	mStockLeftAdapter.notifyDataSetChanged();
 	LogUtils.i(TAG, "mDeviceCode  " + mDeviceCode);
-	NetRequest.getInstance().getStockDown(null, mDeviceCode, -1, mContext, new BaseResult() {
+	NetRequest.getInstance().getStockLeftDown(mDeviceCode, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result  " + result);
@@ -376,11 +416,18 @@ public class PublicStockFrag extends SimpleFragment {
 	});
    }
 
+   /**
+    * 库存监控
+    * @param mDeviceCode
+    * @param mStopFlag
+    * @param editString
+    */
    private void LoadMiddleRgDate(String mDeviceCode, int mStopFlag, String editString) {
 	mInventoryVos.clear();
+	mDownAdapter.notifyDataSetChanged();
 	LogUtils.i(TAG, "mDeviceCodesss  " + mDeviceCode);
 	NetRequest.getInstance()
-		.getStockDown(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
+		.getStockMiddleDetails(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
 			LogUtils.i(TAG, "LoadMiddleRgDate   " + result);

@@ -26,8 +26,17 @@ public class RegisterFingerDto {
          * data : 1111111111111111111111
          */
 
+        private String featureName;
         private String userId;
         private String data;
+
+        public String getFeatureName() {
+            return featureName;
+        }
+
+        public void setFeatureName(String featureName) {
+            this.featureName = featureName;
+        }
 
         public String getType() {
             return type;

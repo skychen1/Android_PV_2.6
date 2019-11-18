@@ -4,7 +4,7 @@
 			  android:orientation="vertical"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:background="@color/bg"
+			  android:background="@mipmap/bg_home"
 			  android:focusable="true"
 			  android:focusableInTouchMode="true"
 				>
@@ -54,6 +54,39 @@
 				/>
 
 		</FrameLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="@dimen/x35"
+			android:orientation="horizontal">
+
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:gravity="center_vertical"
+				android:text="时间段:"
+				android:textColor="@color/text_color_3"
+				android:textSize="@dimen/textsize_16"/>
+
+			<TextView
+				android:id="@+id/search_time_start"
+				style="@style/runwate_textview_style"
+				/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x20"
+				android:text="～"
+				android:textStyle="bold"/>
+
+			<TextView
+				android:id="@+id/search_time_end"
+				style="@style/runwate_textview_style"
+				/>
+		</LinearLayout>
 	</LinearLayout>
 
 	<LinearLayout

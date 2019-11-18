@@ -147,12 +147,12 @@ public class SplashActivity extends FragmentActivity {
 
 	//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
 	RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-	   if (hasPermission && FaceManager.getManager().hasActivation(SplashActivity.this)) {
+	   if (hasPermission && FaceManager.getManager().hasActivation(mAppContext)) {
 		//		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
 		//检测设备是否激活授权码
 		//启动页初始化人脸识别sdk
 		new Thread(() -> FaceManager.getManager()
-			.init(SplashActivity.this, false, new InitListener() {
+			.init(mAppContext, false, new InitListener() {
 			   @Override
 			   public void initSuccess() {
 				UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化成功"));
