@@ -17,6 +17,15 @@ public class BoxIdBean extends LitePalSupport {
    private String name;//柜子或者部件的类型
    private String device_id;//柜子部件的id
    private String box_id;//柜子id
+   private String box_tpye;//柜子类型
+
+   public String getBox_tpye() {
+	return box_tpye;
+   }
+
+   public void setBox_tpye(String box_tpye) {
+	this.box_tpye = box_tpye;
+   }
 
    public String getDevice_id() {
 	return device_id;

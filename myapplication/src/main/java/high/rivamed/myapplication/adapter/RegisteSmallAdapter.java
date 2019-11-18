@@ -51,7 +51,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    public  EditText                        mLeftName;
    public  TextView                        mLeftCode;
    public ImageView mRightDelete;
-   private RadioGroup mGroup;
+   public RadioGroup mGroup;
    private int mBoxType =2;
    //   public RecyclerView mRecyclerView2;
 //   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
@@ -60,6 +60,18 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    public RegisteSmallAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices> data) {
 	super(layoutResId, data);
+   }
+   public void disableRadioGroup(RadioGroup testRadioGroup) {
+//	ToastUtils.showShortToast("已经激活，点击无效！");
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(false);
+	}
+   }
+
+   public void enableRadioGroup(RadioGroup testRadioGroup) {
+	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
+	   testRadioGroup.getChildAt(i).setEnabled(true);
+	}
    }
 
    @Override
@@ -154,8 +166,12 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 							(ViewGroup) mRecyclerView2.getParent(), false);
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 	   view.findViewById(R.id.type_de).setVisibility(View.GONE);
+	   disableRadioGroup(mGroup);
+	   mRightDelete.setVisibility(View.GONE);
 	} else {
 	   view.findViewById(R.id.type_de).setVisibility(View.VISIBLE);
+	   enableRadioGroup(mGroup);
+	   mRightDelete.setVisibility(View.VISIBLE);
 	}
 	mHeadAdapter.addHeaderView(view);
 	mHeadAdapter.setOnItemClickListener(new OnItemClickListener() {

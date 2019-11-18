@@ -268,6 +268,7 @@ public class RegisteFrag extends SimpleFragment {
 	putDbDate(mSnRecoverBean);
 	initData();
 	getBoxSize();
+
 	ToastUtils.showShortToast("数据恢复完成，请稍等5秒！");
    }
 
@@ -497,7 +498,6 @@ public class RegisteFrag extends SimpleFragment {
 	mSmallAdapter = new RegisteSmallAdapter(R.layout.item_registe_head_layout, mTBaseDevicesAll);
 	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerview.setAdapter(mSmallAdapter);
-	LogUtils.i(TAG, "XCSCSS");
    }
 
    //提交预注册的数据

@@ -123,7 +123,7 @@ public           RecyclerView                    recyclerView;
 		LogUtils.i("RegisteFrag","pos   "+pos);
 
 //		RegisteSmallAdapter.tBaseDevice.remove(pos-1);
-		data.remove(pos-1);
+//		data.remove(pos-1);
 		RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 		if (mData.size()==1){
 		   layoutManager.getChildAt(mData.size()).findViewById(R.id.foot_delete).setVisibility(View.GONE);
