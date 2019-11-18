@@ -710,12 +710,12 @@ public class RegisteFrag extends SimpleFragment {
 	   case R.id.frag_registe_loginout_btn:
 		try {
 		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
-		   if (time>=20000){
+		   if (time>=10000){
 			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
 			COUNTDOWN_TIME = time;
 			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
 		   }else {
-			ToastUtils.showShortToast("设置失败，时间必须大于等于20秒，请重新设置！");
+			ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");
@@ -931,71 +931,4 @@ public class RegisteFrag extends SimpleFragment {
 	LitePal.deleteAll(ChildrenBeanX.class);
 	LitePal.deleteAll(ChildrenBean.class);
    }
-   /**
-    * 数据存储
-    *
-    * @param userBean
-    */
-   private void setLitePalUseBean(UserBean userBean) {
-	Log.i("ddefad", "存入mUserBean开始 " );
-	UserBean mUserBean = new UserBean();
-	mUserBean.setDeptId(userBean.getDeptId());
-	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
-	   AccountVosBean vosBean = new AccountVosBean();
-	   vosBean.setAccountId(accountVosBean.getAccountId());
-	   vosBean.setUserId(accountVosBean.getUserId());
-	   vosBean.setAccountName(accountVosBean.getAccountName());
-	   vosBean.setTenantId(accountVosBean.getTenantId());
-	   vosBean.setUseState(accountVosBean.getUseState());
-	   vosBean.setPassword(accountVosBean.getPassword());
-	   vosBean.setSalt(accountVosBean.getSalt());
-	   vosBean.setSex(accountVosBean.getSex());
-	   vosBean.setUserName(accountVosBean.getUserName());
-	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
-		UserFeatureInfosBean infosBean = new UserFeatureInfosBean();
-		infosBean.setFeatureId(userFeatureInfosBean.getFeatureId());
-		infosBean.setUserId(userFeatureInfosBean.getUserId());
-		infosBean.setType(userFeatureInfosBean.getType());
-		infosBean.setData(userFeatureInfosBean.getData());
-		infosBean.setAccountName(accountVosBean.getAccountName());
-		infosBean.save();
-		vosBean.getUserFeatureInfos().add(infosBean);
-	   }
-	   for (HomeAuthorityMenuBean homeAuthorityMenuBean : accountVosBean.getMenus()) {
-		HomeAuthorityMenuBean mhomeAuthorityMenuBean = new HomeAuthorityMenuBean();
-		mhomeAuthorityMenuBean.setTitle(homeAuthorityMenuBean.getTitle());
-		mhomeAuthorityMenuBean.setAccountName(accountVosBean.getAccountName());
-		if (homeAuthorityMenuBean.getTitle().equals("耗材操作") &&
-		    null != homeAuthorityMenuBean.getChildren() &&
-		    homeAuthorityMenuBean.getChildren().size() > 0) {
-		   ChildrenBeanX mChildrenBeanX = new ChildrenBeanX();
-		   mChildrenBeanX.setTitle(homeAuthorityMenuBean.getChildren().get(0).getTitle());
-		   mChildrenBeanX.setAccountName(accountVosBean.getAccountName());
-		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
-			for (int x = 0;
-			     x < homeAuthorityMenuBean.getChildren().get(0).getChildren().size(); x++) {
-			   ChildrenBean childrenBean = homeAuthorityMenuBean.getChildren()
-				   .get(0)
-				   .getChildren()
-				   .get(x);
-			   ChildrenBean mChildrenBean = new ChildrenBean();
-			   mChildrenBean.setTitle(childrenBean.getTitle());
-			   mChildrenBean.setAccountName(accountVosBean.getAccountName());
-			   mChildrenBean.save();
-			   mChildrenBeanX.getChildren().add(mChildrenBean);
-			}
-		   }
-		   mChildrenBeanX.save();
-		   mhomeAuthorityMenuBean.getChildren().add(mChildrenBeanX);
-		}
-		mhomeAuthorityMenuBean.save();
-		vosBean.getMenus().add(mhomeAuthorityMenuBean);
-	   }
-	   vosBean.save();
-	   mUserBean.getAccountVos().add(vosBean);
-	}
-	boolean save = mUserBean.save();
-	Log.i("ddefad", "存入mUserBean结束  " + save + "    " + getDates());
-   }
-
 }

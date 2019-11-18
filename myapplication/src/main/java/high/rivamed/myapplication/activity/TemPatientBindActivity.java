@@ -222,7 +222,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
 	} else {
 	   if (UIUtils.getConfigType(mContext, CONFIG_056)) {
-		array = mContext.getResources().getStringArray(R.array.nine_dialog_arrays);
+		array = mContext.getResources().getStringArray(R.array.eight_dialog_arrays);
 	   }else {
 		array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
 	   }
@@ -544,7 +544,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   Log.i("ffad", "ccccc    " + mGson.toJson(vo));
 	   if (null != mType && mType.equals(TEMP_AFTERBIND)) {
 		//后绑定患者
-
 		if (patientInfoVos.getPatientId().equals("virtual")) {
 		   if (mPatientBean == null) {
 			EventBusUtils.post(new Event.EventButton(true, true));
@@ -688,9 +687,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setDeptType(bean.getRows().get(i).getDeptType());
 				data.setBedNo(bean.getRows().get(i).getBedNo());
 				data.setWardName(bean.getRows().get(i).getWardName());
-				if (bean.getRows().get(i).getSurgeryId() != null) {
-				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
-				}
+				data.setPatientWard(bean.getRows().get(i).getPatientWard());
+				data.setFloor(bean.getRows().get(i).getFloor());
+
 				patientInfos.add(data);
 			   }
 			   if (isClear && patientInfos.size() > 0) {
