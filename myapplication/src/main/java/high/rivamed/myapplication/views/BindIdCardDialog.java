@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 
 /**
  * 绑定腕带dialog
@@ -126,6 +127,7 @@ public class BindIdCardDialog extends Dialog {
             mCloss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    AllDeviceCallBack.getInstance().initCallBack();
                     dialog.dismiss();
                 }
             });

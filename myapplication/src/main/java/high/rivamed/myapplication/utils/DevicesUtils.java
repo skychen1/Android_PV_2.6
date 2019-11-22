@@ -4,12 +4,13 @@ import android.content.Context;
 import android.view.WindowManager;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libidcard.IdCardManager;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.rivamed.Eth002Manager;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -29,30 +30,24 @@ public class DevicesUtils {
     */
    public static List<DeviceInfo> QueryConnectedDevice() {
 	arrayList.clear();
-	List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
-	for (int i = 0; i < deviceInfos.size(); i++) {
-	   deviceInfos.get(i).setDeviceType(DeviceInfo.DeviceType.Eth002);
-	}
-	List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
-	for (int i = 0; i < connectedDevice.size(); i++) {
-	   connectedDevice.get(i).setDeviceType(DeviceInfo.DeviceType.UHFREADER);
-	}
+	List<DeviceInfo> deviceInfos = IdCardManager.getIdCardManager().getConnectedDevice();
+	List<DeviceInfo> connectedDeviceb = ConsumableManager.getManager().getConnectedDevice();
+	List<DeviceInfo> connectedDeviceR = ReaderManager.getManager().getConnectedReader();
 	arrayList.addAll(deviceInfos);
-	arrayList.addAll(connectedDevice);
+	arrayList.addAll(connectedDeviceb);
+	arrayList.addAll(connectedDeviceR);
 	return  arrayList;
    }
    /**
-    * 获取锁
+    * 获取锁、指纹仪、bom主板
     * @return
     */
-   public static List<String> getEthDeviceId() {
-	List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
-	//	String s = "";
+   public static List<String> getBomDeviceId() {
+	List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
 	List<String> identifition = new ArrayList<>();
 	for (DeviceInfo d : deviceInfos) {
-	   String eth002DeviceId = d.getIdentification();
-	   identifition.add(eth002DeviceId);
-	   //	   s += d.getIdentification() + "|||";
+	   String bomDeviceId = d.getIdentification();
+	   identifition.add(bomDeviceId);
 	}
 	return identifition;
    }
@@ -61,7 +56,7 @@ public class DevicesUtils {
     * @return
     */
    public static List<String> getReaderDeviceId() {
-	List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
+	List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedReader();
 	List<String> identifition = new ArrayList<>();
 	for (DeviceInfo d : connectedDevice) {
 	   String uhfDeviceId = d.getIdentification();
@@ -82,9 +77,10 @@ public class DevicesUtils {
     * @return
     */
    public static void getDoorStatus() {
-	List<DeviceInfo> connectedDevice = Eth002Manager.getEth002Manager().getConnectedDevice();
-	for (DeviceInfo s : connectedDevice) {
-	   Eth002Manager.getEth002Manager().checkDoorState(s.getIdentification());
+	List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
+	for (DeviceInfo s : deviceInfos) {
+	   ConsumableManager.getManager().checkDoorState(s.getIdentification(),0);
+//	   ConsumableManager.getManager().checkDoorState(s.getIdentification(),1);
 	}
    }
 }

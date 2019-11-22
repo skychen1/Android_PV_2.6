@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.rivamed.FingerManager;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.ruihua.face.recognition.FaceManager;
@@ -26,7 +27,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
@@ -350,10 +350,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     * 发起注册指纹
     */
    private void setEth002FingerReg() {
-	List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
+	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
 	for (DeviceInfo info : deviceInfos) {
 	   String identification = info.getIdentification();
-	   int ret = Eth002Manager.getEth002Manager().fingerReg(identification);
+	   int ret = FingerManager.getManager().startReadFinger(identification);
 	   if (ret == 0) {
 		EventBusUtils.postSticky(new Event.EventLoading(true));
 	   } else if (ret == 2) {

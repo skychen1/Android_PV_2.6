@@ -237,7 +237,8 @@ public class LoginFaceFragment extends SimpleFragment {
                 textHint.post(() -> textHint.setText("人脸识别底库无数据"));
             } else {
                 //可以开启识别
-                startIdentity = FaceManager.getManager().startIdentity();
+                FaceManager.getManager().starIdentity();
+                startIdentity = true;
                 LogUtils.d(TAG, "startIdentity---::::::::::: "+startIdentity);
                 textHint.post(() -> textHint.setText(""));
             }

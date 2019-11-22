@@ -15,7 +15,6 @@ import org.litepal.LitePal;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import high.rivamed.myapplication.bean.Event;
@@ -155,10 +154,9 @@ public class NetRequest {
     * 预注册和激活的时候获取部件名称和ID
     */
    public void getDeviceInfosDate(
-	   String url, List<String> deviceTypes, Object tag, NetResult netResult) {
+	   String url,  Object tag, NetResult netResult) {
 	OkGo.<String>get(url + NetApi.URL_TEST_FINDDEVICE).tag(tag)
-		.addUrlParams("deviceTypes", deviceTypes)
-		.execute(new MyCallBack(url, deviceTypes, tag, netResult, true, false));
+		.execute(new MyCallBack(url, null, tag, netResult, true, false));
    }
 
    /**

@@ -187,8 +187,14 @@ public class RgbDetectActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // 开始检测
-        tipTv.postDelayed(() -> faceDetectManager.start(),100);
+        // 延迟100ms开始预览，防止界面没有初始化完成开始预览会渲染失败的bug；
+        tipTv.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                faceDetectManager.start();
+            }
+        },100);
+
     }
 
     @Override

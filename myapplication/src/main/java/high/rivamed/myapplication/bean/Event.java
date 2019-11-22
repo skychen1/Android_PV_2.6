@@ -198,12 +198,11 @@ public class Event {
    public static class EventICAndFinger {
 
 	public int    type;
-	public String deviceId;
 	public String date;
 
-	public EventICAndFinger(String deviceId, String date, int type) {
+	public EventICAndFinger(String date, int type) {
 	   this.type = type;
-	   this.deviceId = deviceId;
+
 	   this.date = date;
 	}
    }

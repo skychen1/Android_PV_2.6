@@ -24,6 +24,24 @@ public class TBaseDevices extends AbstractExpandableItem<TBaseDevices.tBaseDevic
    public  String                 deviceName;//柜子名字
    public  String                 deviceId;//柜子名字
    private List<RegisteTitleBean> list2;//柜子list信息
+   private String            cabinetNum;//柜子编号：同个编号表示同一个柜子
+   private String            cabinetType;//柜子类型：1：上柜 -1：下柜 0：单柜
+
+   public String getCabinetNum() {
+	return cabinetNum;
+   }
+
+   public void setCabinetNum(String cabinetNum) {
+	this.cabinetNum = cabinetNum;
+   }
+
+   public String getCabinetType() {
+	return cabinetType;
+   }
+
+   public void setCabinetType(String cabinetType) {
+	this.cabinetType = cabinetType;
+   }
 
    public String getDeviceId() {
 	return deviceId;

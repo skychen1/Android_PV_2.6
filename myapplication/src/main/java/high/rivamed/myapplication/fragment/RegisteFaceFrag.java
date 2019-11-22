@@ -181,7 +181,7 @@ public class RegisteFaceFrag extends SimpleFragment {
             return;
         }
         //跳转到识别页面
-        RgbVideoIdentityActivity.launch(this);
+        RgbVideoIdentityActivity.launch(mContext);
     }
 
     @Override

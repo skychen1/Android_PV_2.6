@@ -2,11 +2,15 @@ package com.ruihua.reader.net.rodinbell;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.TransferUtils;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
+import com.ruihua.reader.net.NetReaderManager;
 import com.ruihua.reader.net.callback.ReaderHandler;
 import com.ruihua.reader.net.callback.ReaderMessageListener;
 
@@ -46,12 +50,17 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
     private int checkWhich = 0;
     private ReaderMessageListener mListener;
     private Handler mHandler;
+    private volatile boolean isCheckAnt = false;
+    private List<AntInfo> antInfoList = new ArrayList<>();
+    private String filter = "";
+    private byte[] workAnts = null;
+    private HandlerThread mHandlerThread;
 
     /**
      * 构造函数，初始化handler 用来执行定时任务
      */
     public RodinbellHandler() {
-        HandlerThread mHandlerThread = new HandlerThread("delay_ant_thread::::" + this.hashCode());
+        mHandlerThread = new HandlerThread("delay_ant_thread::::" + this.hashCode());
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
     }
@@ -85,6 +94,10 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
             case DataProtocol.CMD_SET_WORK_ANT:
                 processSetWorkAnt(buf);
                 break;
+            // 读取天线回波损耗
+            case DataProtocol.GET_RF_PORT_RETURN_LOSS:
+                processPortLoss(buf);
+                break;
             //获取读写器工作天线
             case DataProtocol.CMD_GET_WORK_ANT:
                 //获取工作天线，在该项目中用作心跳包处理，所以不不需要处理
@@ -105,6 +118,7 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
                 break;
         }
     }
+
 
     /**
      * 解析获取设备id号结果
@@ -146,19 +160,16 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
      */
     private void processGetPower(byte[] buf) {
         //解析数据
-        int allPower;
-        if (buf.length == 6) {
-            allPower = buf[4];
-        } else {
-            allPower = -1;
-            for (int i = 0; i < 4; i++) {
-                if (allPower < buf[4 + i]) {
-                    allPower = buf[4 + i];
-                }
-            }
+        //拿到数组的长度
+        int length = (buf[1] & 0xff) - 3;
+        //准备数据
+        int[] powers = new int[length];
+        //循环获取数据
+        for (int i = 0; i < powers.length; i++) {
+            powers[i] = buf[i + 4];
         }
         if (this.mListener != null) {
-            mListener.onQueryPowerRet(this.getIdentification(), allPower);
+            mListener.onQueryPowerRet(this.getIdentification(), powers);
         }
     }
 
@@ -174,16 +185,41 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         boolean success = buf[4] == DataProtocol.CMD_SUCCESS;
         //如果成功
         if (success) {
-            //设置天线成功就发送盘存指令
-            sendRtInventory();
-            sendNextWorkAntDelay();
-        } else {
-            //如果失败并且在扫描状态下就设置下一根天线
-            if (scanModel) {
-                currentAntIndex++;
-                sendNextWorkAnt();
+            //如果是检测天线就发送测量天线回波损耗指令
+            if (isCheckAnt) {
+                //发送检测天线指令
+                sendPortReturnLoss();
+                sendNextWorkAntDelay();
+            } else {
+                //设置天线成功就发送盘存指令
+                sendRtInventory();
+                sendNextWorkAntDelay();
             }
+        } else {
+            //设置天线失败，直接发送设置下一根天线
+            isCheckAnt();
         }
+    }
+
+    /**
+     * 解析回波损耗
+     *
+     * @param buf 数据
+     */
+    private void processPortLoss(byte[] buf) {
+        //取消延时
+        cancelSendNextWorkAntDelay();
+        AntInfo antInfo = new AntInfo();
+        antInfo.setAntNum(currentAntIndex + 1);
+        //如果损耗值大于3就表示可用，小于3就是不可用
+        if (buf[4] > 3) {
+            antInfo.setUsable(true);
+        }
+        //加入到集合中
+        antInfoList.add(antInfo);
+        //设置下一根天线
+        currentAntIndex++;
+        sendNextWorkAnt();
     }
 
     /**
@@ -200,7 +236,7 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         }
         //读取扫描数据出错的话直接跳下一根天线继续读
         if (buf.length == 6) {
-//            Log.e("解析数据出错", currentAntIndex + "继续扫描下一根天线");
+            Log.e("解析数据出错", currentAntIndex + "继续扫描下一根天线");
             //继续扫描，设置天线
             currentAntIndex++;
             sendNextWorkAnt();
@@ -209,7 +245,7 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         //如果是一根天先扫描完成的结束包（一根正确的天线扫描结束）
         if (buf.length == 12 && buf[4] >= 0x00 && buf[4] <= 0x07) {
             if (System.currentTimeMillis() - lastTipTime > scanTime) {
-//                Log.e("对比是否有新标签了", "没有新标签了，返回最后结果");
+                Log.e("对比是否有新标签了", "没有新标签了，返回最后结果");
                 //超过设置时间间隔就发送扫描结果发送扫描结果，
                 processScanCompleted();
                 //设置扫描表示为（没有扫描）
@@ -235,7 +271,7 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         //延时开启下一根天线运行，防止丢包引起流程中断
         sendNextWorkAntDelay();
         //因为前面数据已经处理过(每一条数据就是一条标准的协议标签数据，所以不需要再验证标签数据)，
-        byte ant = (byte) ((buf[4] & 0x03) & 0xff);
+//        int ant = ((buf[4] & 0x03) + 1) & 0xff;
         byte[] bPc = new byte[2];
         //解析pc值
         System.arraycopy(buf, 5, bPc, 0, 2);
@@ -244,10 +280,15 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         byte[] bEpc = new byte[lenEpc];
         System.arraycopy(buf, 7, bEpc, 0, lenEpc);
         String epc = TransferUtils.Byte2String(bEpc);
+
+        //如果需要过滤（过滤规则不为空），并且标签不是以规则开始的，就去掉标签
+        if (!TextUtils.isEmpty(filter) && !epc.startsWith(filter)) {
+            return;
+        }
         //转变成真实的RSSI,参见开发文档第五节
         byte brssi = buf[5 + lenEpc];
         int rssi = 0 - (129 - (brssi & 0xff));
-        EpcInfo info = new EpcInfo(rssi, ant, pc);
+        EpcInfo info = new EpcInfo(rssi, currentAntIndex + 1, pc);
         //判断以前是否有这个标签，如果有，就直接添加本次扫描的状态到集合中
         if (epcList.containsKey(epc)) {
             epcList.get(epc).add(info);
@@ -398,13 +439,25 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
                 return false;
             }
             //超过天线的最大值就设为第一根天线
-            if ((currentAntIndex > DataProtocol.ANTS.length - 1)) {
-                currentAntIndex = 0;
+            if ((currentAntIndex > workAnts.length - 1)) {
+                //如果是检测天线的命令就直接回调数据，结束流程了
+                if (isCheckAnt) {
+                    //修改标识
+                    isCheckAnt = false;
+                    scanModel = false;
+                    //回调数据
+                    if (mListener != null) {
+                        mListener.onCheckAnt(this.getIdentification(), antInfoList);
+                    }
+                    return true;
+                } else {
+                    currentAntIndex = 0;
+                }
             }
             //设置天线的时候，开启一个延时设置天线，防止设置天线收不到回复包导致扫描流程中断。并且标志位无法重置；
             cancelSendNextWorkAntDelay();
             sendNextWorkAntDelay();
-            return sendPacket(DataProtocol.CMD_SET_WORK_ANT, new byte[]{DataProtocol.ANTS[currentAntIndex]});
+            return sendPacket(DataProtocol.CMD_SET_WORK_ANT, new byte[]{workAnts[currentAntIndex]});
         }
     }
 
@@ -416,9 +469,9 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                Log.e("延时重置天线了", "延时重置天线了");
-                currentAntIndex++;
-                sendNextWorkAnt();
+                Log.e("延时重置天线了", "延时重置天线了");
+                //超时的时候查看是否是检测天线的状态，
+                isCheckAnt();
             }
         }, 800);
     }
@@ -431,6 +484,23 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
     }
 
     /**
+     * 判断是否是检测天线的状态，
+     * 如果是检测天线的状态就需要添加这根天线不可用
+     * 然后执行设置下一根天线的操作
+     */
+    private void isCheckAnt() {
+        //如果是检测天线的状态就需要添加这根天线不可用
+        if (isCheckAnt) {
+            AntInfo info = new AntInfo();
+            info.setAntNum(currentAntIndex + 1);
+            antInfoList.add(info);
+        }
+        currentAntIndex++;
+        sendNextWorkAnt();
+    }
+
+
+    /**
      * 发送盘存的命令
      */
     private void sendRtInventory() {
@@ -440,10 +510,17 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         sendPacket(DataProtocol.CMD_REALTIME_INVENTORY, data);
     }
 
-    //    提供给外部的方法，发起某个操作的方法
+    /**
+     * 发送获取回波损耗值
+     */
+    private void sendPortReturnLoss() {
+        byte[] data = new byte[]{(byte) 33};
+        sendPacket(DataProtocol.GET_RF_PORT_RETURN_LOSS, data);
+    }
 
     @Override
     public int closeChannel() {
+        LogUtils.e("关闭通道了：：：");
         //调用父类的关闭方法
         return close() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
@@ -456,6 +533,30 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
      */
     @Override
     public int startScan(int timeout) {
+        workAnts = DataProtocol.ANTS;
+        return scan(timeout);
+    }
+
+    /**
+     * 自定义天线扫描
+     *
+     * @param timeout 没有新标签的时间
+     * @param ants    扫描的天线
+     * @return 返回码
+     */
+    @Override
+    public int startScan(int timeout, byte[] ants) {
+        workAnts = ants;
+        return scan(timeout);
+    }
+
+    /**
+     * 开始扫描
+     *
+     * @param timeout 超时时间
+     * @return 返回码
+     */
+    private int scan(int timeout) {
         //先查看是否是在扫描中，因为只能单任务操作，所以需要加标识来处理
         if (scanModel) {
             return FunctionCode.DEVICE_BUSY;
@@ -470,9 +571,12 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         epcList.clear();
         //开始扫描默认是第1根天线
         currentAntIndex = 0;
+        //拿到过滤规则
+        filter = NetReaderManager.getManager().getFilter();
         //调用开始盘点方法，根据结果返回成功或者失败
         return sendNextWorkAnt() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
+
 
     /**
      * 停止扫描 （该方法只能在此通道服务端停止扫描操作，不能直接停止底层扫描返回）
@@ -498,6 +602,11 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
         return sendPacket(DataProtocol.CMD_SET_OUTPUT_POWER, data) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
+    @Override
+    public int setPower(byte[] powers) {
+        return sendPacket(DataProtocol.CMD_SET_OUTPUT_POWER, powers) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+    }
+
     /**
      * 查询功率
      *
@@ -511,8 +620,22 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
 
     @Override
     public int checkAnts() {
-        // TODO: 2019/1/29 还未实现，需要编写代码
-        return -10;
+        //先查看是否是在扫描中，因为只能单任务操作，所以需要加标识来处理
+        //因为检测天线也需要设置每一根天线
+        if (scanModel) {
+            return FunctionCode.DEVICE_BUSY;
+        }
+        workAnts = DataProtocol.ANTS;
+        //如果没有在扫描，就进入扫描，并且设置标识,
+        scanModel = true;
+        //是检测天线模式；
+        isCheckAnt = true;
+        //清空返回集合
+        antInfoList.clear();
+        //开始扫描默认是第1根天线
+        currentAntIndex = 0;
+        //调用开始盘点方法，根据结果返回成功或者失败
+        return sendNextWorkAnt() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
     /**
@@ -676,11 +799,18 @@ public class RodinbellHandler extends BaseRodinbellHandler implements ReaderHand
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LogUtils.e("连接断开了");
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler=null;
-        if (mListener != null) {
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
+        if (mHandlerThread != null) {
+            //断开连接就要退出循环，销毁
+            mHandlerThread.quit();
+            mHandlerThread = null;
+        }
+        if (mListener != null && !TextUtils.isEmpty(getIdentification())) {
             mListener.onConnectState(this, getIdentification(), false);
+            mListener = null;
         }
         super.channelInactive(ctx);
     }

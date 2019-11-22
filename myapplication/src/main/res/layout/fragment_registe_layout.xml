@@ -397,6 +397,7 @@
 				>
 
 				<TextView
+					android:id="@+id/text_title"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:drawableLeft="@drawable/line_top"
@@ -407,7 +408,13 @@
 					android:textColor="@color/text_color_3"
 					android:textSize="@dimen/textsize_17"
 					android:textStyle="bold"/>
-
+				<TextView
+					android:id="@+id/frag_registe_txt"
+					style="@style/btn_style_sel"
+					android:layout_marginTop="@dimen/x15"
+					android:layout_toRightOf="@+id/text_title"
+					android:text="注册说明"
+					/>
 				<TextView
 					android:id="@+id/frag_registe_right"
 					style="@style/btn_style_sel"

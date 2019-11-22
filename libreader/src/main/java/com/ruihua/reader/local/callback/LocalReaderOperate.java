@@ -10,10 +10,11 @@ public interface LocalReaderOperate {
 
     /**
      * 连接设备
-     *
+     * @param port 端口号
+     * @param baud 波特率
      * @return 返回码
      */
-    int connect();
+    int connect(String port, int baud);
 
     /**
      * 与设备断开连接
@@ -25,6 +26,7 @@ public interface LocalReaderOperate {
     /**
      * 设置功率
      *
+     * @param powerInt 功率值
      * @return 返回码
      */
     int setPower(int powerInt);
@@ -37,6 +39,13 @@ public interface LocalReaderOperate {
     int getPower();
 
     /**
+     * 检测设备天线
+     *
+     * @return 返回码
+     */
+    int checkAnt();
+
+    /**
      * 获取频率
      *
      * @return 操作返回码
@@ -46,9 +55,10 @@ public interface LocalReaderOperate {
     /**
      * 开始扫描标签
      *
+     * @param timeOut 超时时间
      * @return 操作返回码
      */
-    int startScan();
+    int startScan(int timeOut);
 
     /**
      * 停止扫描

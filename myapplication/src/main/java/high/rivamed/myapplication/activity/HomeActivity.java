@@ -41,7 +41,7 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_YCCL;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -95,7 +95,7 @@ public class HomeActivity extends SimpleActivity {
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
+	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
 	   mDeviceSizeList.add(idBean.getDevice_id());
 	}

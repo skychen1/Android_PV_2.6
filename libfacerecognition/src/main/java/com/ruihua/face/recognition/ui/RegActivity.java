@@ -106,7 +106,7 @@ public class RegActivity extends Activity implements View.OnClickListener {
             int type = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS, GlobalFaceTypeModel.TYPE_NO_LIVENSS);
             if (type == GlobalFaceTypeModel.TYPE_NO_LIVENSS || type == GlobalFaceTypeModel.TYPE_RGB_LIVENSS) {
                 imageName = UUID.randomUUID().toString();
-                boolean facePicture = FaceManager.getManager().getFacePicture(RegActivity.this, imageName);
+                boolean facePicture = FaceManager.getManager().getFacePicture(RegActivity.this, imageName+".jpeg");
                 if (!facePicture) {
                     toast("照片名称不能为空");
                 }

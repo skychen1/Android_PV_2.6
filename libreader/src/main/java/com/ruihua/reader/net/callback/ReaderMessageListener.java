@@ -1,13 +1,13 @@
 package com.ruihua.reader.net.callback;
 
-import com.ruihua.reader.net.bean.AntInfo;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * describe ：
+ * describe ：设备操作的回调
  *
  * @author : Yich
  * data: 2019/2/27
@@ -22,7 +22,6 @@ public interface ReaderMessageListener {
      * @param deviceId  设备的唯一标识号
      * @param isConnect 连接的装态，，true为已连接，false为已断开
      */
-    //void onConnectState(RodinbellHandler mHandler, String deviceId, boolean isConnect);
     void onConnectState(ReaderHandler mHandler, String deviceId, boolean isConnect);
 
     /**
@@ -58,6 +57,14 @@ public interface ReaderMessageListener {
      * @param power    功率
      */
     void onQueryPowerRet(String deviceId, int power);
+
+    /**
+     * 获取功率结果通知(所有天线)
+     *
+     * @param deviceId 设备ID
+     * @param power    功率
+     */
+    void onQueryPowerRet(String deviceId, int[] power);
 
     /**
      * 检查天线是否可用

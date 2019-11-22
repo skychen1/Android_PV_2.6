@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -140,6 +141,8 @@ public class RegisteFrag extends SimpleFragment {
    public static List<ThingDto.DeviceVosBean>        mDeviceVos = new ArrayList<>();//柜子list
    private       Thread                    mThread2;
    private       String                              mBoxCode;
+   private String mBoxType ="0";
+   private RadioGroup mRadioGroup;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -335,15 +338,16 @@ public class RegisteFrag extends SimpleFragment {
 	mFragRegistePortEdit.setHint("8016");
 
 	if (BuildConfig.DEBUG) {
-	   mFragRegisteNameEdit.setText("2.6.8柜子");
+	   mFragRegisteNameEdit.setText("3.0柜子");
 	   mFragRegisteModelEdit.setText("rivamed26xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.111.36");
+	   mFragRegisteSeveripEdit.setText("192.168.111.68");
 	   mFragRegistePortEdit.setText("8018");
 	}
 
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
+	Log.i("fadddde",mGson.toJson(mBaseDevices));
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   mSwitch.setChecked(true);
 	} else {
@@ -502,6 +506,8 @@ public class RegisteFrag extends SimpleFragment {
 				 deviceVo.getDeviceId());
 	   registeAddBean1.setDeviceName(deviceVo.getDeviceName());
 	   registeAddBean1.setDeviceId(deviceVo.getDeviceId());
+	   registeAddBean1.setCabinetNum(deviceVo.getCabinetNum());
+	   registeAddBean1.setCabinetType(deviceVo.getCabinetType());
 	   registeAddBean1.setList(mTBaseDevicesSmall);
 
 	   if (deviceVo.getDevices() != null) {
@@ -577,6 +583,8 @@ public class RegisteFrag extends SimpleFragment {
 	   boxIdBean.setName(boxName);//柜子名字
 	   boxIdBean.setBox_id(null);//柜子id
 	   boxIdBean.setDevice_id(boxCode);//柜子子ID
+	   boxIdBean.setCabinetType(b.getCabinetType());
+	   boxIdBean.setCabinetNum(b.getCabinetNum());
 	   boxIdBean.save();
 	   List<ThingDto.DeviceVosBean.DevicesBean> taBaseDevices = b.getDevices();
 	   for (ThingDto.DeviceVosBean.DevicesBean x : taBaseDevices) {
@@ -594,14 +602,21 @@ public class RegisteFrag extends SimpleFragment {
 
    public ThingDto.DeviceVosBean getDeviceVos(int i) {
 	ThingDto.DeviceVosBean tBaseThingVoBean = new ThingDto.DeviceVosBean();
-	mHeadName = ((EditText) mRecyclerview.getChildAt(i)
-		.findViewById(R.id.head_left_name)).getText().toString().trim();
-	mBoxCode = ((TextView) mRecyclerview.getChildAt(i).findViewById(R.id.gone_box_code)).getText()
-		.toString()
-		.trim();
+	mHeadName = ((EditText) mRecyclerview.getChildAt(i).findViewById(R.id.head_left_name)).getText().toString().trim();
+	mBoxCode = ((TextView) mRecyclerview.getChildAt(i).findViewById(R.id.gone_box_code)).getText().toString().trim();
+	mRadioGroup = (RadioGroup) mRecyclerview.getChildAt(i)
+		.findViewById(R.id.registe_head_rg);
+	if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_top){
+	   mBoxType = "1";
+	}else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_down){
+	   mBoxType = "-1";
+	}else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_single){
+	   mBoxType = "0";
+	}
+
 	tBaseThingVoBean.setDeviceName(mHeadName);
 	tBaseThingVoBean.setDeviceId(mBoxCode);
-	LogUtils.i(TAG, "boxCode " + mBoxCode);
+	tBaseThingVoBean.setCabinetType(mBoxType);
 	RecyclerView mRecyclerView2 = mRecyclerview.getChildAt(i).findViewById(R.id.recyclerview2);
 	List<ThingDto.DeviceVosBean.DevicesBean> tBaseDevice = new ArrayList<>();//柜子内部的设备list
 	for (int x = 0; x < mRecyclerView2.getChildCount() - 1; x++) {
@@ -628,9 +643,11 @@ public class RegisteFrag extends SimpleFragment {
 	   device.setIdentification(mFootMacStr);
 	   device.setIp(mFootIpStr);
 	   tBaseDevice.add(device);
+	   if (gone_devicetype.equals("1")){
+		tBaseThingVoBean.setCabinetNum(mFootMacStr);
+	   }
 	}
 	tBaseThingVoBean.setDevices(tBaseDevice);
-
 	return tBaseThingVoBean;
    }
 
@@ -668,6 +685,7 @@ public class RegisteFrag extends SimpleFragment {
 	   LogUtils.i(TAG, " i  firstVisibleItemPosition     " + firstVisibleItemPosition);
 	   mDeviceVos.add(getDeviceVos(lastItemPosition - firstVisibleItemPosition));
 	}
+	LogUtils.i("fododo", "mDeviceVos       " + mGson.toJson(mDeviceVos));
 	TBaseThingDto.setDeviceVos(mDeviceVos);
 	return TBaseThingDto;
    }
@@ -677,7 +695,7 @@ public class RegisteFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn})
+   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn, R.id.frag_registe_txt})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -702,6 +720,9 @@ public class RegisteFrag extends SimpleFragment {
 		   getDeviceName();
 		}
 		break;
+	   case R.id.frag_registe_txt:
+		DialogUtils.showRegisteTextDialog(mContext);
+		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
 		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
@@ -724,10 +745,7 @@ public class RegisteFrag extends SimpleFragment {
     */
    private void getDeviceName() {
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
-	List<String> strings = new ArrayList<>();
-	for (int i = 0; i < mDeviceInfos.size(); i++) {
-	   strings.add(mDeviceInfos.get(i).getDeviceType().toString());
-	}
+
 	if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
 	    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
 	   ToastUtils.showShortToast("请先填写服务器IP和端口");
@@ -746,7 +764,7 @@ public class RegisteFrag extends SimpleFragment {
 	   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
 
 	   NetRequest.getInstance()
-		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP), strings,
+		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP),
 					     _mActivity, new BaseResult() {
 				@Override
 				public void onSucceed(String result) {

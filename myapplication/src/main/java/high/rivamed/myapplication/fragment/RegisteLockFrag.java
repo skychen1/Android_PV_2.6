@@ -9,7 +9,13 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.rivamed.FingerCallback;
+import com.rivamed.FingerManager;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libidcard.IdCardCallBack;
+import com.rivamed.libidcard.IdCardManager;
+import com.ruihua.libconsumables.ConsumableManager;
+import com.ruihua.libconsumables.callback.ConsumableCallBack;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -22,8 +28,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
-import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistLockAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
@@ -85,8 +89,10 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	initEth002();
 //	initCallBack();
+	initBom();
+	initFinger();
+	initIC();
    }
 
    @Override
@@ -111,9 +117,57 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 	});
    }
+   /**
+    * IC卡
+    */
+   private void initIC() {
+	IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
+	   @Override
+	   public void onConnectState(String deviceId, boolean isConnect) {
 
-   private void initEth002() {
-	Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
+	   }
+
+	   @Override
+	   public void onReceiveCardNum(String cardNo) {
+		AppendLog("接收到刷卡信息：设备ID:     ID = " + cardNo);
+	   }
+	});
+   }
+   /**
+    * 指纹仪
+    */
+   private void initFinger() {
+	FingerManager.getManager().registerCallback(new FingerCallback() {
+	   @Override
+	   public void onConnectState(String deviceId, boolean isConnect) {
+	   }
+
+	   @Override
+	   public void onFingerFeatures(String deviceId, String features) {
+		AppendLog("接收到指纹采集信息：设备ID:   " + deviceId + "   ;   FingerData = " + features);
+		fingerData = features;
+	   }
+
+	   @Override
+	   public void onRegisterResult(String deviceId, int code, String features, List<String> fingerPicPath, String msg) {
+		//		appendLog("设备：：" + deviceId + "注册结果码是：：" + code + "\n>>>>>>>" + msg
+		//			    + "\n指纹照片数据：：" + (fingerPicPath == null ? 0 : fingerPicPath.size()) + "\n特征值是：：：" + features);
+		//收到注册结果标识注册完成就开启读取
+	   }
+
+	   @Override
+	   public void onFingerUp(String deviceId) {
+		//		appendLog("设备：：" + deviceId + "请抬起手指：");
+	   }
+
+	   @Override
+	   public void onRegisterTimeLeft(String deviceId, long time) {
+		//		setLog("设备：：" + deviceId + "剩余注册时间：：" + time + "\n");
+	   }
+	});
+   }
+   private void initBom() {
+	ConsumableManager.getManager().registerCallback(new ConsumableCallBack() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
 		if (!isConnect) {
@@ -122,74 +176,91 @@ public class RegisteLockFrag extends SimpleFragment {
 	   }
 
 	   @Override
-	   public void onFingerFea(String deviceId, String fingerFea) {
-		AppendLog("接收到指纹采集信息：设备ID:   " + deviceId + "   ;   FingerData = " + fingerFea);
-		fingerData = fingerFea;
-	   }
-
-	   @Override
-	   public void onFingerRegExcuted(String deviceId, boolean success) {
+	   public void onOpenDoor(String deviceId, int which, boolean isSuccess) {
 		String type ;
-		if(success){
+		String whichs ;
+		if(isSuccess){
 		   type ="成功";
 		}else {
 		   type="失败";
 		}
-
-		AppendLog("指纹注册命令已执行：设备ID:   " + deviceId + "   ;   操作状态 = " + type);
+		if(which==0){
+		   whichs ="0号端口";
+		}else {
+		   whichs="1号端口";
+		}
+		AppendLog("开门结果：设备ID:   " + deviceId + "  端口： "+whichs+" ;   开门状态 = " + type);
 	   }
 
 	   @Override
-	   public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+	   public void onCloseDoor(String deviceId, int which, boolean isSuccess) {
 		String type ;
-		if(success){
+		String whichs ;
+		if(isSuccess){
 		   type ="成功";
 		}else {
 		   type="失败";
 		}
-		AppendLog("接收到指纹注册结果：设备ID:   " + deviceId + "   ;   操作状态 = " + type + "   ;   FingerData = " + fingerData);
-		if (success) {
-		   fingerTemplate = fingerData;
-		}
-	   }
-
-	   @Override
-	   public void onIDCard(String deviceId, String idCard) {
-		AppendLog("接收到刷卡信息：设备ID:   " + deviceId + "   ;   ID = " + idCard);
-	   }
-
-	   @Override
-	   public void onDoorOpened(String deviceIndentify, boolean success) {
-		String type ;
-		if(success){
-		   type ="成功";
+		if(which==0){
+		   whichs ="0号端口";
 		}else {
-		   type="失败";
+		   whichs="1号端口";
 		}
-		AppendLog("开门结果：设备ID:   " + deviceIndentify + "   ;   开门状态 = " + type);
+		AppendLog("门锁已关闭：设备ID:   " + deviceId + "  端口： "+which+"   which   "+whichs+"  ;   关门状态 = " + type);
 	   }
 
 	   @Override
-	   public void onDoorClosed(String deviceIndentify, boolean success) {
+	   public void onDoorState(String deviceId, int which, boolean state) {
 		String type ;
-		if(success){
-		   type ="成功";
-		}else {
-		   type="失败";
-		}
-		AppendLog("门锁已关闭：设备ID:   " + deviceIndentify + "   ;   关门状态 = " + type);
-	   }
-
-	   @Override
-	   public void onDoorCheckedState(String deviceIndentify, boolean opened) {
-		String type ;
-		if(opened){
+		String whichs ;
+		if(state){
 		   type ="门锁打开状态";
 		}else {
 		   type="门锁关闭状态";
 		}
-		AppendLog("门锁状态检查：设备ID:   " + deviceIndentify + "   ;   门锁状态 = " + type);
+		if(which==0){
+		   whichs ="0号端口";
+		}else {
+		   whichs="1号端口";
+		}
+		AppendLog("门锁状态检查：设备ID:   " + deviceId + "  端口： "+which+"   which   "+whichs+"    ;   门锁状态 = " + type);
 	   }
+
+	   @Override
+	   public void onOpenLight(String deviceId, int which, boolean isSuccess) {
+
+	   }
+
+	   @Override
+	   public void onCloseLight(String deviceId, int which, boolean isSuccess) {
+
+	   }
+
+	   @Override
+	   public void onLightState(String deviceId, int which, boolean state) {
+
+	   }
+
+	   @Override
+	   public void onFirmwareVersion(String deviceId, String version) {
+
+	   }
+
+	   @Override
+	   public void onNeedUpdateFile(String deviceId) {
+
+	   }
+
+	   @Override
+	   public void onUpdateProgress(String deviceId, int percent) {
+
+	   }
+
+	   @Override
+	   public void onUpdateResult(String deviceId, boolean isSuccess) {
+
+	   }
+
 	});
    }
 
@@ -201,7 +272,7 @@ public class RegisteLockFrag extends SimpleFragment {
 		   mDate.clear();
 		   mTxtLog.setText("");
 		}
-		List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
+		List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
 		String s = "";
 		for (DeviceInfo d : deviceInfos) {
 			mDiviceId = d.getIdentification();

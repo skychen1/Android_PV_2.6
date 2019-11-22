@@ -15,7 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.libconsumables.ConsumableManager;
+import com.ruihua.reader.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -32,7 +33,6 @@ import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
@@ -251,6 +251,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		}
 	   } catch (IOException e) {
 	   }
+	}else {
+	   mTimelyOpenDoorRight.setEnabled(true);
+	   mTimelyStartBtnRight.setEnabled(true);
+	   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	   mBaseGifImageView.setImageDrawable(drawable);
 	}
 
 	Log.i(TAG,"mScanType   "+mStartScanType);
@@ -767,7 +772,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   setRemoveRunnable();
 		   for (String deviceInventoryVo : mEthDeviceIdBack) {
 			String deviceCode = deviceInventoryVo;
-			Eth002Manager.getEth002Manager().openDoor(deviceCode);
+			ConsumableManager.getManager().openDoor(deviceCode,0);
 		   }
 		} else {
 		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");

@@ -2,12 +2,15 @@ package com.ruihua.reader.net.clou;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.TransferUtils;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
+import com.ruihua.reader.net.NetReaderManager;
 import com.ruihua.reader.net.callback.ReaderHandler;
 import com.ruihua.reader.net.callback.ReaderMessageListener;
 
@@ -24,31 +27,30 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     /**
      * 持续扫描的时间，默认3秒，实际由 StartScan 方法进行赋值
      */
-    int scanTime = 3000;
+    private int scanTime = 2000;
     private Handler mHandler;
-    Map<String, List<EpcInfo>> epcs = new HashMap<>();
-    public ReaderMessageListener messageListener;
+    private HandlerThread mHandlerThread;
+    private Map<String, List<EpcInfo>> epcList = new HashMap<>();
+    private ReaderMessageListener messageListener;
     private boolean scanMode = false;
-    private long queryConnIndex = 0L;
     private long lastTipTime;
-    private int MAX_POWER = 30;
-    private int MAX_ANT = 8;
+    private int mMaxAnt = 8;
     private int antByte = 0x0;
-    long startScanTime = System.currentTimeMillis();
-    //累计获取MAC地址，3次未获取到，则主动断开
-    private int sendQueryMac;
+    private volatile boolean isCheckAnt = false;
+    private int[] ants = new int[]{0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+    private int currentAnt = 0;
+    private List<AntInfo> antList = new ArrayList<>();
+    private String filter = "";
 
     public ClouHandler() {
-        HandlerThread mHandlerThread = new HandlerThread("delay_clou_thread:::" + this.hashCode());
+        mHandlerThread = new HandlerThread("delay_clou_thread:::" + this.hashCode());
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
     }
 
     @Override
     public void processData(byte[] buf) {
-
         //计算校验码  判断校验码
-
         byte[] crcCheckBuf = new byte[buf.length - 3];
         System.arraycopy(buf, 1, crcCheckBuf, 0, crcCheckBuf.length);
         byte[] crc = DataProtocol.CalcCRC16(crcCheckBuf, crcCheckBuf.length);
@@ -63,7 +65,6 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
         //  8-11位为消息类型
         switch (buf[1] & 0xf) {
             case DataProtocol.MSG_TYPE_READER_ERROR:
-                LogUtils.e("收到错误数据：" + TransferUtils.Byte2String(buf));
                 //没有标签的时候，开扫描就会出现这个结果
                 //延时返回结果
                 sendScanResultDelay();
@@ -79,10 +80,10 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
             case DataProtocol.MSG_TYPE_READER_UPDATE:
                 break;
             case DataProtocol.MSG_TYPE_READER_TEST:
+                processReaderTest(buf);
                 break;
             default:
                 break;
-
         }
     }
 
@@ -98,8 +99,7 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
                 Log.e("扫描返回", "延时返回结果了");
                 stopScan();
                 if (messageListener != null) {
-                    //messageListener.OnUhfScanRet(true, getIdentification(), "", epcs);
-                    messageListener.onScanResult(getIdentification(), epcs);
+                    messageListener.onScanResult(getIdentification(), epcList);
                 }
             }
         }, scanTime);
@@ -116,7 +116,7 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     /**
      * 处理阅读器配置和管理信息
      *
-     * @param buf
+     * @param buf 数据
      */
     private void processReaderOption(byte[] buf) {
         switch (buf[2]) {
@@ -136,11 +136,11 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     /**
      * 处理阅读器配置和管理信息  获取MAC
      *
-     * @param buf
+     * @param buf 数据
      */
     private void processQueryMac(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null || data.length <= 0) {
+        if (data.length <= 0) {
             sendQueryMac();
             return;
         }
@@ -158,37 +158,25 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     /**
      * 处理阅读器配置和管理信息 心跳
      *
-     * @param buf
+     * @param buf 数据
      */
     private void processConnQuery(byte[] buf) {
         byte[] data = getData(buf);
-
-        if (data == null) {
-            return;
-        }
         if (data.length <= 0) {
             Log.d("接收到心跳", "没有心跳数据");
         } else {
-            /*if (sendConnQuery(data)) {
-                LogUtils.e("发送心跳回复成功");
-            }*/
             sendConnQuery(data);
         }
     }
 
     private void sendConnQuery(byte[] data) {
-        Log.e("发送心跳数据", "心跳数据为" + TransferUtils.Byte2String(data));
         byte msgType = DataProtocol.MSG_TYPE_READER_OPTION;
         byte mid = DataProtocol.MID_READER_OPTION_QUERYCONN;
-        // byte[] data = DataProtocol.ReverseLongToU32Bytes(queryConnIndex);
         sendBuf(msgType, mid, data);
     }
 
 
     private byte[] getData(byte[] buf) {
-        if (buf.length < 7) {
-            return null;
-        }
         int lenPre = buf[3] & 0xff;
         int lenAft = buf[4] & 0xff;
         int len = lenPre * 256 + lenAft;
@@ -207,7 +195,6 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     private void processRfidOperation(byte[] buf) {
         //第12位，1标识阅读器主动上传，0 标识上位机指令或阅读器响应上位机指令
         int dst = buf[1] & 0x10;
-        LogUtils.e("收到处理消息：协议的类型是：：" + buf[2] + "消息情况是：：" + dst);
         switch (buf[2]) {
             case 0x00:
                 if (dst == 0X10) {
@@ -215,7 +202,7 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
                     processRfidEpc(buf);
                 } else {
                     //==0 阅读器响应
-                    proccessRfidInfo(buf);
+                    processRfidInfo(buf);
                 }
                 break;
             case DataProtocol.MID_RFID_QUERY_ANT:
@@ -226,16 +213,21 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
                 if (dst != 0x10) {
                     processRfidOptionPower(buf);
                 } else {
-                    proccessInventoryEnd(buf);
+                    processInventoryEnd(buf);
                 }
                 break;
-
             case DataProtocol.MID_RFID_QUERY_POWER:
                 processRfidQueryPower(buf);
                 break;
             case DataProtocol.MID_RFID_INVENTORY_EPC:
                 //没有标签返回的时候就延时操作
                 sendScanResultDelay();
+                break;
+            case DataProtocol.MID_RFID_STOP:
+                if (isCheckAnt) {
+                    currentAnt++;
+                    sendNextAntPort();
+                }
                 break;
             default:
                 break;
@@ -246,57 +238,49 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
         //收到新的标签协议了就要取消延时，因为中途可能有错误数据
         cancelSendScanResultDelay();
         byte[] data = getData(buf);
-        if (data == null) {
-            return;
-        }
         if (data.length < 6) {
             return;
         }
-        String epc = "";
-        int rssi = 0;
-        String pc = "";
-        int antIndex = 0;
-        int ret = 0x00;
-        boolean getRet = false;
+        String epc;
+        int rssi;
+        String pc;
+        int antIndex;
+        int ret;
         boolean getRssi = false;
         for (int i = data.length - 1; i >= 0; i--) {
-            //数据长度不够
-            if (!getRssi && i < 7) {
+            //数据长度不够 或者已经解析完成，就退出
+            if (i < 7 || getRssi) {
                 return;
             }
-            if (!getRssi) {
-                if ((data[i - 1] != 0x01 && data[i - 1] != 0x02)) {
-                    i--;
-                    continue;
-                } else {
-                    if (data[i - 1] == 0x01) {
-                        getRssi = true;
-                        getRet = true;
-                        ret = 0;
-                        rssi = data[i];
-                        antIndex = data[i - 2];
-
-                        byte[] bpc = new byte[2];
-                        System.arraycopy(data, i - 4, bpc, 0, 2);
-                        pc = TransferUtils.Byte2String(bpc).toUpperCase();
-                        int epcLen = data.length - 5 - 2;
-                        byte[] bEpc = new byte[epcLen];
-                        System.arraycopy(data, 2, bEpc, 0, epcLen);
-                        epc = TransferUtils.Byte2String(bEpc);
-                        LogUtils.e("获取到EPC信息:EPC=" + epc + ";rssi=" + rssi + ";ant=" + antIndex + ";pc=" + pc);
-                        EpcInfo epcInfo = new EpcInfo();
-                        epcInfo.setAnt(antIndex);
-                        epcInfo.setPc(pc);
-                        epcInfo.setRssi(0 - rssi);
-                        AppendNewTag(epc, epcInfo);
-                    } else if (data[-1] == 0x02) {
-                        getRet = true;
-                        ret = data[i];
-                        if (ret != 0) {
-                            LogUtils.e("接收到错误的EPC读取结果:RET=" + data[i]);
-                            getRet = true;
-                        }
-                    }
+            if ((data[i - 1] != 0x01 && data[i - 1] != 0x02)) {
+                i--;
+                continue;
+            }
+            if (data[i - 1] == 0x01) {
+                getRssi = true;
+                rssi = data[i];
+                antIndex = data[i - 2];
+                byte[] bpc = new byte[2];
+                System.arraycopy(data, i - 4, bpc, 0, 2);
+                pc = TransferUtils.Byte2String(bpc).toUpperCase();
+                int epcLen = data.length - 5 - 2;
+                byte[] bEpc = new byte[epcLen];
+                System.arraycopy(data, 2, bEpc, 0, epcLen);
+                epc = TransferUtils.Byte2String(bEpc);
+                //如果需要过滤（过滤规则不为空），并且标签不是以规则开始的，就去掉标签
+                if (!TextUtils.isEmpty(filter) && !epc.startsWith(filter)) {
+                    return;
+                }
+                LogUtils.e("获取到EPC信息:EPC=" + epc + ";rssi=" + rssi + ";ant=" + antIndex + ";pc=" + pc);
+                EpcInfo epcInfo = new EpcInfo();
+                epcInfo.setAnt(antIndex);
+                epcInfo.setPc(pc);
+                epcInfo.setRssi(0 - rssi);
+                appendNewTag(epc, epcInfo);
+            } else if (data[i - 1] == 0x02) {
+                ret = data[i];
+                if (ret != 0) {
+                    LogUtils.e("接收到错误的EPC读取结果:RET=" + data[i]);
                 }
             }
         }
@@ -305,44 +289,38 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     /**
      * 内部方法，用于和 Colu Service 互动；
      */
-    public synchronized void AppendNewTag(String epc, EpcInfo epcInfo) {
+    private synchronized void appendNewTag(String epc, EpcInfo epcInfo) {
         if (!scanMode) {
             return;
         }
-        if (this.epcs.containsKey(epc)) {
-            this.epcs.get(epc).add(epcInfo);
+        if (this.epcList.containsKey(epc)) {
+            this.epcList.get(epc).add(epcInfo);
             if (System.currentTimeMillis() - lastTipTime > scanTime) {
                 stopScan();
                 scanMode = false;
                 if (this.messageListener != null) {
                     //发送回调
                     LogUtils.d("触发扫描完成回调");
-                    /*this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
-                    this.messageListener.OnUhfScanComplete(true, this.getIdentification());*/
-                    this.messageListener.onScanResult(this.getIdentification(), epcs);
+                    this.messageListener.onScanResult(this.getIdentification(), epcList);
                 }
             }
-
         } else {
             lastTipTime = System.currentTimeMillis();
             List<EpcInfo> tagInfos = new ArrayList<>();
             tagInfos.add(epcInfo);
-            this.epcs.put(epc, tagInfos);
+            this.epcList.put(epc, tagInfos);
             this.messageListener.onScanNewEpc(this.getIdentification(), epc, epcInfo.getAnt() + 1);
         }
     }
 
-    private void proccessRfidInfo(byte[] buf) {
+    private void processRfidInfo(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) {
-            return;
-        }
         if (data.length < 2) {
             return;
         }
-        MAX_POWER = data[1];
-        MAX_ANT = data[2];
-        LogUtils.e("获取RFID信息:最大天线数目：" + MAX_ANT + ";最大支持功率:" + MAX_POWER);
+        int mMaxPower = data[1];
+        mMaxAnt = data[2];
+        LogUtils.e("获取RFID信息:最大天线数目：" + mMaxAnt + ";最大支持功率:" + mMaxPower);
     }
 
     private void processRfidQueryAnt(byte[] buf) {
@@ -359,26 +337,18 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     }
 
     private void processRfidOptionPower(byte[] buf) {
-        // AA020100010092F3
         byte[] data = getData(buf);
-        if (data == null) {
-            return;
-        }
         if (data.length != 1) {
             return;
         }
         LogUtils.e("设置功率结果=" + (data[0] == 0x00));
         if (messageListener != null) {
-            //messageListener.OnUhfSetPowerRet(this.getIdentification(), data[0] == 0);
             messageListener.onSetPowerRet(this.getIdentification(), data[0] == 0);
         }
     }
 
-    private void proccessInventoryEnd(byte[] buf) {
+    private void processInventoryEnd(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) {
-            return;
-        }
         if (data.length != 1) {
             return;
         }
@@ -388,18 +358,13 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
             if (this.messageListener != null) {
                 //发送回调
                 LogUtils.e("触发扫描完成回调");
-                /*this.messageListener.OnUhfScanRet(true, this.getIdentification(), "", epcs);
-                this.messageListener.OnUhfScanComplete(true, this.getIdentification());*/
-                this.messageListener.onScanResult(this.getIdentification(), epcs);
+                this.messageListener.onScanResult(this.getIdentification(), epcList);
             }
         }
     }
 
     private void processRfidQueryPower(byte[] buf) {
         byte[] data = getData(buf);
-        if (data == null) {
-            return;
-        }
         if (data.length <= 0) {
             return;
         }
@@ -407,9 +372,8 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
             return;
         }
         int power = 100;
-        int tmpPower = 100;
-        int index = 0;
-        for (int i = 0; i < MAX_ANT; i++) {
+        int tmpPower;
+        for (int i = 0; i < mMaxAnt; i++) {
             int ant = (int) Math.pow(2, data[i * 2]);
             if ((antByte & ant) == ant) {
                 tmpPower = data[2 * i + 1] & 0xff;
@@ -419,8 +383,46 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
             }
         }
         if (this.messageListener != null) {
-            //this.messageListener.OnUhfQueryPowerRet(this.getIdentification(), true, power);
             this.messageListener.onQueryPowerRet(this.getIdentification(), power);
+        }
+    }
+
+    /**
+     * 解析测试指令
+     *
+     * @param buf 数据
+     */
+    private void processReaderTest(byte[] buf) {
+        switch (buf[2]) {
+            case DataProtocol.MSG_TYPE_READER_SEND_PORT:
+                //如果返回的数据是0.就表示法送载波成功，就要发送检测天线指令
+                if (buf[5] == 0) {
+                    sendCheckAnt();
+                } else {
+                    //设置失败就认为这根天线不可用，设置下一根天线的驻波
+                    AntInfo info = new AntInfo();
+                    info.setAntNum(currentAnt + 1);
+                    antList.add(info);
+                    currentAnt++;
+                    sendNextAntPort();
+                }
+                break;
+            case DataProtocol.MID_READER_OPTION_CHECK_ANT:
+                //收到检测驻波的包，解析
+                int check = DataProtocol.byte2int(new byte[]{buf[5]}) - DataProtocol.byte2int(new byte[]{buf[6]});
+                LogUtils.e("天线…" + currentAnt + "的差值是：：" + check);
+                AntInfo info = new AntInfo();
+                info.setAntNum(currentAnt + 1);
+                //如果驻波差值大于40就认为是正常的天线
+                if (check >= 40) {
+                    info.setUsable(true);
+                }
+                antList.add(info);
+                //需要停止操作，才能再设置下一根天线的载波
+                sendStop();
+                break;
+            default:
+                break;
         }
     }
 
@@ -453,26 +455,35 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
         if (timeout <= 0) {
             timeout = 2000;
         }
+        //拿到过滤规则
+        filter = NetReaderManager.getManager().getFilter();
         this.scanTime = timeout;
         scanMode = true;
-        epcs.clear();
+        epcList.clear();
         return sendStartInventory(null) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
-    protected boolean sendStartInventory(byte[] password) {
+    @Override
+    public int startScan(int timeout, byte[] ants) {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
+    }
+
+    private boolean sendStartInventory(byte[] password) {
         byte msttype = DataProtocol.MSG_TYPE_RFID_OPERATION;
         byte mid = DataProtocol.MID_RFID_INVENTORY_EPC;
-        startScanTime = System.currentTimeMillis();
         byte[] data;
         if (password == null || password.length != 4) {
             data = new byte[2];
-            data[0] = (byte) antByte; //天线
-            data[1] = 0X01;              //连续扫描 1 单次扫描 0
+            //天线
+            data[0] = (byte) antByte;
+            //连续扫描 1 单次扫描 0
+            data[1] = 0X01;
         } else {
             data = new byte[7];
             data[0] = (byte) antByte;
             data[1] = 0x01;
-            data[2] = 0x05; //密码
+            //密码
+            data[2] = 0x05;
             System.arraycopy(password, 0, data, 3, password.length);
         }
         Log.e("发送扫描指令了", "发送扫描指令了");
@@ -488,13 +499,17 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
         return sendOptionPower(power) ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
-    protected boolean sendOptionPower(byte power) {
-        // todo 发送设置功率
+    @Override
+    public int setPower(byte[] powers) {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
+    }
+
+    private boolean sendOptionPower(byte power) {
         byte msgtype = DataProtocol.MSG_TYPE_RFID_OPERATION;
         byte mid = DataProtocol.MID_RFID_OPTION_POWER;
         byte[] datatmp = new byte[1024];
         int pos = 0;
-        for (byte antIndex = 0; antIndex < MAX_ANT; antIndex++) {
+        for (byte antIndex = 0; antIndex < mMaxAnt; antIndex++) {
             int antNum = (int) Math.pow(2, antIndex);
             if ((antNum & antByte) == antNum) {
                 datatmp[pos++] = (byte) (antIndex + 1);
@@ -524,12 +539,47 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
 
     @Override
     public int checkAnts() {
-        List<Integer> ants = new ArrayList<>();
-        for (int i = 0; i < MAX_ANT; i++) {
-            ants.add(i);
+        if (scanMode) {
+            return FunctionCode.DEVICE_BUSY;
         }
-        //return ants;
-        return FunctionCode.SUCCESS;
+        scanMode = true;
+        isCheckAnt = true;
+        antList.clear();
+        currentAnt = 0;
+        return sendNextAntPort() ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
+
+    }
+
+    /**
+     * 发送载波指令
+     *
+     * @return 返回成功石板
+     */
+    private boolean sendNextAntPort() {
+        if (currentAnt >= ants.length) {
+            //回调天线
+            if (messageListener != null) {
+                messageListener.onCheckAnt(getIdentification(), antList);
+            }
+            scanMode = false;
+            isCheckAnt = false;
+            return false;
+        }
+        byte msgtype = DataProtocol.MSG_TYPE_READER_TEST;
+        byte mid = DataProtocol.MSG_TYPE_READER_SEND_PORT;
+        byte[] data = new byte[2];
+        data[0] = (byte) ants[currentAnt];
+        data[1] = 0;
+        return sendBuf(msgtype, mid, data);
+    }
+
+    /**
+     * 发送检测天线指令（驻波数据）
+     */
+    private void sendCheckAnt() {
+        byte msgtype = DataProtocol.MSG_TYPE_READER_TEST;
+        byte mid = DataProtocol.MID_READER_OPTION_CHECK_ANT;
+        sendBuf(msgtype, mid, null);
     }
 
     @Override
@@ -538,7 +588,7 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
         return FunctionCode.SUCCESS;
     }
 
-    public void sendReset() {
+    private void sendReset() {
         byte msgType = DataProtocol.MSG_TYPE_READER_OPTION;
         byte mid = DataProtocol.MID_READER_OPTION_RESET;
         sendBuf(msgType, mid, null);
@@ -546,32 +596,32 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
 
     @Override
     public int openLock() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int closeLock() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int openLight() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int closeLight() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int checkLockState() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int checkLightState() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
@@ -592,8 +642,19 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         LogUtils.e("连接断开了");
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
+        if (mHandlerThread != null) {
+            //断开连接就要退出循环，销毁
+            mHandlerThread.quit();
+            mHandlerThread = null;
+        }
+
         if (messageListener != null) {
             messageListener.onConnectState(this, getIdentification(), false);
+            messageListener = null;
         }
         super.channelInactive(ctx);
     }
@@ -601,4 +662,6 @@ public class ClouHandler extends BaseClouHandler implements ReaderHandler {
     public void registerClouMessageListener(ReaderMessageListener listener) {
         this.messageListener = listener;
     }
+
+
 }

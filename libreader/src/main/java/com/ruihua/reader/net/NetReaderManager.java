@@ -1,18 +1,17 @@
 package com.ruihua.reader.net;
 
 import android.support.annotation.IntRange;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libdevicesbase.base.DeviceType;
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.net.callback.ReaderHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * describe ：  扫描设备 管理类(包括罗丹贝尔，和鸿陆的)
@@ -48,8 +47,10 @@ public class NetReaderManager {
      * testHandler 测试数据的类，返回假数据
      */
     private ReaderCallback callback;
-    private Map<String, ReaderHandler> connectHandler = new HashMap<>();
+    private Map<String, ReaderHandler> connectHandler = new ConcurrentHashMap<>();
     private ReaderService mService;
+    private ReaderService mService2;
+    private String mFilter = "";
 
 
     /**
@@ -59,9 +60,10 @@ public class NetReaderManager {
      * @param handler        通道
      */
     public void addConnectHandler(String identification, ReaderHandler handler) {
-        if (connectHandler.containsKey(identification) && connectHandler.get(identification).equals(handler)) {
-            //查看如果以前有这个相同的设备通道，就关闭以前的那个通道
-            connectHandler.get(identification).closeChannel();
+        ReaderHandler mHandler = connectHandler.get(identification);
+        if (mHandler != null) {
+            mHandler.closeChannel();
+            mHandler = null;
         }
         //加入到集合中维护
         connectHandler.put(identification, handler);
@@ -73,16 +75,19 @@ public class NetReaderManager {
      * @param identification 标识
      */
     public void delDisConnectHandler(String identification) {
-        if (connectHandler.containsKey(identification)) {
-            connectHandler.remove(identification);
+        ReaderHandler handler = connectHandler.get(identification);
+        if (handler != null) {
+            handler.closeChannel();
+            handler = null;
         }
+        connectHandler.remove(identification);
     }
 
     public List<DeviceInfo> getConnectedDevice() {
         List<DeviceInfo> deviceInfos = new ArrayList<>();
         for (Map.Entry<String, ReaderHandler> d : connectHandler.entrySet()) {
             if (d.getValue() != null) {
-                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getRemoteIP(), d.getValue().getProducer(), d.getValue().getVersion()));
+                deviceInfos.add(new DeviceInfo(d.getKey(), d.getValue().getRemoteIP(), d.getValue().getProducer(), d.getValue().getVersion(), DeviceType.DEVICE_TYPE_RFID_READER));
             }
         }
         return deviceInfos;
@@ -95,40 +100,49 @@ public class NetReaderManager {
      * @param port 端口号。限制输入范围是0-65536
      * @param type 设备的类型（罗丹贝尔或者鸿陆）
      */
-    public void startService(@IntRange(from = 1, to = 65536) int port, int type) {
+    public int startService(@IntRange(from = 1, to = 65536) int port, int type) {
         //如果服务部存在创建该服务，只能有一个服务
         if (mService == null) {
             mService = new ReaderService(this);
             mService.startService(port, type);
-        }else {
-            Log.i("reader", "启动失败");
+            return FunctionCode.SUCCESS;
         }
+        if (mService2 == null) {
+            mService2 = new ReaderService(this);
+            mService2.startService(port, type);
+            return FunctionCode.SUCCESS;
+        }
+        return FunctionCode.ALREADY_START_SERVICE;
     }
 
     /**
      * 关闭服务，不再使用扫描设备的时候可以关闭服务
      */
-    public void stopService() {
-        if (mService == null) {
-            return;
+    public int stopService() {
+        if (mService != null) {
+            mService.stopService();
+            mService = null;
         }
-        mService.stopService();
-        mService=null;
+        if (mService2 != null) {
+            mService2.stopService();
+            mService2 = null;
+        }
+        return FunctionCode.SUCCESS;
     }
 
     /**
      * 断开某个设备的连接
      *
-     * @param deviceId
-     * @return
+     * @param deviceId 设备id
+     * @return 返回码
      */
     public int closeChannel(String deviceId) {
         //如果没有指定的设备，返回没有该设备的码
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        //根据id，调用对应通道id进行扫描
-        return connectHandler.get(deviceId).closeChannel();
+        return handler.closeChannel();
     }
 
     /**
@@ -138,13 +152,38 @@ public class NetReaderManager {
      * @param timeOut  持续扫描的时候（多久没有新标签就借宿扫描）限制输入范围是1-10
      * @return 返回码
      */
-    public int startScan(String deviceId, @IntRange(from = 1000, to = 10 * 1000) int timeOut) {
+    public int startScan(String deviceId, int timeOut) {
+        if (timeOut <= 0) {
+            return FunctionCode.PARAM_ERROR;
+        }
         //如果没有指定的设备，返回没有该设备的码
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
         //根据id，调用对应通道id进行扫描
-        return connectHandler.get(deviceId).startScan(timeOut);
+        return handler.startScan(timeOut);
+    }
+
+    /**
+     * 开始扫描的方法
+     *
+     * @param deviceId 设备的唯一标识id
+     * @param timeOut  持续扫描的时候（多久没有新标签就借宿扫描）限制输入范围是1-10
+     * @param ants     扫描使用的天线集合
+     * @return 返回码
+     */
+    public int startScan(String deviceId, int timeOut, byte[] ants) {
+        if (timeOut <= 0) {
+            return FunctionCode.PARAM_ERROR;
+        }
+        //如果没有指定的设备，返回没有该设备的码
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        //根据id，调用对应通道id进行扫描
+        return handler.startScan(timeOut, ants);
     }
 
     /**
@@ -156,10 +195,11 @@ public class NetReaderManager {
      */
     public int stopScan(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).stopScan();
+        return handler.stopScan();
     }
 
     /**
@@ -171,10 +211,30 @@ public class NetReaderManager {
      */
     public int setPower(String deviceId, @IntRange(from = 1, to = 30) int power) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).setPower((byte) power);
+        return handler.setPower((byte) power);
+    }
+
+    /**
+     * 设置设备功率（每根天线的具体参数）
+     *
+     * @param deviceId 设备唯一标识
+     * @param powers   功率（限制输入范围是1-30）
+     * @return 返回码
+     */
+    public int setPower(String deviceId, @IntRange(from = 1, to = 30) int[] powers) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        byte[] data = new byte[powers.length];
+        for (int i = 0; i < powers.length; i++) {
+            data[i] = (byte) powers[i];
+        }
+        return handler.setPower(data);
     }
 
     /**
@@ -185,10 +245,11 @@ public class NetReaderManager {
      */
     public int getPower(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).getPower();
+        return handler.getPower();
     }
 
     /**
@@ -198,11 +259,11 @@ public class NetReaderManager {
      * @return 返回码
      */
     public int checkAnt(String deviceId) {
-
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return -1;
+        return handler.checkAnts();
     }
 
     /**
@@ -213,10 +274,11 @@ public class NetReaderManager {
      */
     public int restDevice(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).reset();
+        return handler.reset();
     }
 
     /**
@@ -227,10 +289,11 @@ public class NetReaderManager {
      */
     public int openLock(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).openLock();
+        return handler.openLock();
     }
 
     /**
@@ -240,10 +303,11 @@ public class NetReaderManager {
      * @return 返回码
      */
     public int closeLock(String deviceId) {
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).closeLock();
+        return handler.closeLock();
     }
 
     /**
@@ -254,10 +318,11 @@ public class NetReaderManager {
      */
     public int checkLockState(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).checkLockState();
+        return handler.checkLockState();
     }
 
     /**
@@ -268,10 +333,11 @@ public class NetReaderManager {
      */
     public int openLight(String deviceId) {
 
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).openLight();
+        return handler.openLight();
     }
 
     /**
@@ -281,10 +347,11 @@ public class NetReaderManager {
      * @return 返回码
      */
     public int checkLightState(String deviceId) {
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).checkLightState();
+        return handler.checkLightState();
     }
 
     /**
@@ -294,11 +361,11 @@ public class NetReaderManager {
      * @return 返回码
      */
     public int closeLight(String deviceId) {
-
-        if (!connectHandler.containsKey(deviceId)) {
+        ReaderHandler handler = connectHandler.get(deviceId);
+        if (handler == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectHandler.get(deviceId).closeLight();
+        return handler.closeLight();
     }
 
     /**
@@ -308,6 +375,24 @@ public class NetReaderManager {
      */
     public ReaderCallback getCallback() {
         return callback;
+    }
+
+    /**
+     * 设置过滤规则
+     *
+     * @param filterStr 过滤的字符串
+     */
+    public void setFilter(String filterStr) {
+        this.mFilter = filterStr;
+    }
+
+    /**
+     * 获取过滤规则
+     *
+     * @return 规则字符串
+     */
+    public String getFilter() {
+        return this.mFilter;
     }
 
     /**

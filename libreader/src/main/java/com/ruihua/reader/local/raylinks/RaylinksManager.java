@@ -35,6 +35,7 @@ public class RaylinksManager implements LocalReaderOperate {
     private volatile Map<String, Integer> epcMap = new HashMap<>();
     private LocalReaderManager localReaderManager;
     private String deviceId;
+    private String filter = "";
 
     public RaylinksManager(LocalReaderManager manager) {
         localReaderManager = manager;
@@ -46,12 +47,12 @@ public class RaylinksManager implements LocalReaderOperate {
      * @return 是否成功
      */
     @Override
-    public int connect() {
+    public int connect(String port, int baud) {
         //如果fd不为-1就标识设备已经正常连接
         if (fd != -1) {
             return FunctionCode.SUCCESS;
         }
-        fd = ModuleControl.UhfReaderConnect(RaylinksConfig.COM_STR, RaylinksConfig.BAND_RATE, RaylinksConfig.FLAG_CRC);
+        fd = ModuleControl.UhfReaderConnect(port, baud, RaylinksConfig.FLAG_CRC);
         LogUtils.e("连接设备：：" + fd);
         //如果等于-1就说明设备没有连接上
         if (fd == -1) {
@@ -60,6 +61,11 @@ public class RaylinksManager implements LocalReaderOperate {
         byte[] status = new byte[1];
         boolean b = ModuleControl.UhfGetPaStatus(fd, status, RaylinksConfig.FLAG_CRC);
         if (b) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+                LogUtils.e(e.toString());
+            }
             byte[] bUid = new byte[12];
             if (ModuleControl.UhfGetReaderUID(fd, bUid, RaylinksConfig.FLAG_CRC)) {
                 deviceId = CommonTool.bytesToHexString(bUid, 12);
@@ -69,6 +75,7 @@ public class RaylinksManager implements LocalReaderOperate {
                 }
                 return FunctionCode.SUCCESS;
             } else {
+                LogUtils.e("获取id失败：：");
                 fd = -1;
                 return FunctionCode.CONNECT_FAILED;
             }
@@ -91,10 +98,11 @@ public class RaylinksManager implements LocalReaderOperate {
         }
         byte power = (byte) powerInt;
         boolean b = ModuleControl.UhfSetPower(fd, (byte) 0x01, power, RaylinksConfig.FLAG_CRC);
-        if (!b) {
-            return FunctionCode.OPERATION_FAIL;
+        //回调数据
+        if (localReaderManager.getCallback() != null) {
+            localReaderManager.getCallback().onSetPower(deviceId, b);
         }
-        return FunctionCode.SUCCESS;
+        return b ? FunctionCode.SUCCESS : FunctionCode.OPERATION_FAIL;
     }
 
 
@@ -119,6 +127,17 @@ public class RaylinksManager implements LocalReaderOperate {
         } else {
             return FunctionCode.OPERATION_FAIL;
         }
+    }
+
+    /**
+     * 检测天线
+     *
+     * @return 返回码
+     */
+    @Override
+    public int checkAnt() {
+        //睿芯联科设备没有检测天线功能
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     /**
@@ -170,7 +189,7 @@ public class RaylinksManager implements LocalReaderOperate {
      * @return 操作返回码
      */
     @Override
-    public int startScan() {
+    public int startScan(int timeOut) {
         if (fd == -1) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
@@ -186,6 +205,7 @@ public class RaylinksManager implements LocalReaderOperate {
             ModuleControl.UhfStopOperation(fd, RaylinksConfig.FLAG_CRC);
             return FunctionCode.OPERATION_FAIL;
         }
+        filter = localReaderManager.getFilter();
         loopFlag = true;
         //开启读取数据的线程
         startRead();
@@ -253,13 +273,13 @@ public class RaylinksManager implements LocalReaderOperate {
             //开启线程读取标签
             ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder().namingPattern("Raylinks-schedule-pool-%d").daemon(true).build();
             scheduled = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
-            scheduled.execute(new Runnable() {
-                @Override
-                public void run() {
-                    readTag();
-                }
-            });
         }
+        scheduled.execute(new Runnable() {
+            @Override
+            public void run() {
+                readTag();
+            }
+        });
     }
 
     /**
@@ -275,7 +295,11 @@ public class RaylinksManager implements LocalReaderOperate {
                     continue;
                 }
                 //丢弃前4位
-                tagUii = tagUii.substring(4, tagUii.length());
+                tagUii = tagUii.substring(4);
+                //如果需要过滤（过滤规则不为空），并且标签不是以规则开始的，就去掉标签
+                if (!TextUtils.isEmpty(filter) && !tagUii.startsWith(filter)) {
+                    return;
+                }
                 if (epcMap.containsKey(tagUii)) {
                     //如果是已有的标签，就++
                     Integer integer = epcMap.get(tagUii);

@@ -71,8 +71,11 @@ public class MacPopupWindow extends PopupWindow {
 		TextView textView = (TextView) view.findViewById(R.id.item_meal);
 		String trim = textView.getText().toString().trim();
 		mTextView.setText(trim);
+		String identification = mDate.get(position).getIdentification();
 		String partsIp = mDate.get(position).getRemoteIP();
-		mDate.remove(position);
+		if (!identification.contains(".")){
+		   mDate.remove(position);
+		}
 //		partsIp=partsIp.replace("/","");
 		mTextViewIp.setText(partsIp);
 

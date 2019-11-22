@@ -80,8 +80,6 @@ public class ThreadPoolProxy {
      */
     public void execute(Runnable task) {
         initThreadPoolExecutor();
-        LogUtils.e("CorePoolSize数量"+mThreadPoolExecutor.getCorePoolSize());
-        LogUtils.e("ActiveCount数量"+mThreadPoolExecutor.getActiveCount());
         if (mThreadPoolExecutor != null) {
             mThreadPoolExecutor.execute(task);
         }

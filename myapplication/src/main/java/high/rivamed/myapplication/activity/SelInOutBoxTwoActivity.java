@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
@@ -194,6 +194,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}
 	   } catch (IOException e) {
 	   }
+	}else {
+	   mTimelyOpenDoor.setEnabled(true);
+	   mTimelyStartBtn.setEnabled(true);
+	   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	   mBaseGifImageView.setImageDrawable(drawable);
 	}
    }
    private void setButtonType(Event.EventButton event) {
@@ -871,7 +876,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
 			for (String deviceInventoryVo : mEthDeviceIdBack) {
 			   String deviceCode = deviceInventoryVo;
-			   Eth002Manager.getEth002Manager().openDoor(deviceCode);
+			   ConsumableManager.getManager().openDoor(deviceCode, 0);
 			}
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");

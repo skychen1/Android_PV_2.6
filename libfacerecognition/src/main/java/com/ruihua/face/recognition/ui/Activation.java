@@ -130,7 +130,7 @@ public class Activation {
         titleParams.leftMargin = dip2px(30);
         deviceIdTv = new TextView(context);
         deviceIdTv.setTextIsSelectable(true);
-        deviceIdTv.setText("设备ID：" + device);
+        deviceIdTv.setText("设备指纹：" + device);
         deviceIdTv.setTextSize(dip2px(12));
         deviceIdTv.setTextColor(context.getResources().getColor(R.color.face_black));
         LinearLayout.LayoutParams deviceIdParams = new LinearLayout.LayoutParams(
@@ -302,7 +302,7 @@ public class Activation {
             String liscense = readFile(liscensePaht, "liscense");
             success = FileUitls.c(context, FaceSDKManager.LICENSE_NAME, list);
             if (success) {
-                toast("激活中，请稍等30秒，成功后按钮会变化！");
+                toast("激活成功");
                 FaceSDKManager.initStatus = FaceSDKManager.SDK_UNINIT;
                 FaceSDKManager.getInstance().init(context);
                 hide();
@@ -392,14 +392,7 @@ public class Activation {
             }
         });
     }
-    private void toastLong(final String text) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+
 
     private int dip2px(int dip) {
         Resources resources = context.getResources();
@@ -495,13 +488,13 @@ public class Activation {
         }
 
         if (success) {
-            toast("激活中，请稍等30秒，成功后按钮会变化！");
+            toast("激活成功");
             if (activationCallback != null) {
                 activationCallback.callback(true);
                 activationDialog.dismiss();
             }
         } else {
-//            toast("激活失败");
+            toast("激活失败");
         }
     }
 

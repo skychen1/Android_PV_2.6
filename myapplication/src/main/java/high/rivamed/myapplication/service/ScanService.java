@@ -12,6 +12,9 @@ import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.rivamed.FingerManager;
+import com.rivamed.libidcard.IdCardManager;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -28,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
@@ -57,7 +59,7 @@ import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
@@ -303,7 +305,7 @@ public class ScanService extends Service {
 	setConnectType();
 
 	EventBusUtils.register(this);
-	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", UHF_TYPE).find(BoxIdBean.class);
+	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
 	   mDeviceSizeList.add(idBean.getDevice_id());
 	}
@@ -351,7 +353,9 @@ public class ScanService extends Service {
 	   mWorkReceiver = null;
 	}
 	ReaderManager.getManager().unRegisterCallback();
-	Eth002Manager.getEth002Manager().unRegisterCallBack();
+	FingerManager.getManager().unRegisterCallback();
+	IdCardManager.getIdCardManager().unRegisterCallBack();
+	ConsumableManager.getManager().unRegisterCallback();
 	Log.i("FADDDD", "管了   ");
 	super.onDestroy();
 

@@ -6,8 +6,8 @@ import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ThreadPoolProxyFactory;
 import com.ruihua.reader.ReaderProducerType;
 import com.ruihua.reader.net.clou.ClouHandler;
-import com.ruihua.reader.net.bean.AntInfo;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
 import com.ruihua.reader.net.callback.ReaderHandler;
 import com.ruihua.reader.net.callback.ReaderMessageListener;
 import com.ruihua.reader.net.rodinbell.RodinbellHandler;
@@ -34,9 +34,10 @@ import io.netty.handler.timeout.IdleStateHandler;
  * date: 2019/2/22
  */
 public class ReaderService {
-    private EventLoopGroup boss;
-    private EventLoopGroup work;
+    private NioEventLoopGroup boss;
+    private NioEventLoopGroup work;
     private NetReaderManager manager;
+    private final Object mLock = new Object();
 
     /**
      * 构造方法，需要传入管理类， 要数据回调
@@ -77,7 +78,7 @@ public class ReaderService {
         work = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.option(ChannelOption.TCP_NODELAY, true);
+            b.childOption(ChannelOption.TCP_NODELAY, true);
             b.childOption(ChannelOption.SO_KEEPALIVE, true);
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(boss, work)
@@ -86,23 +87,23 @@ public class ReaderService {
                     .childHandler(new ChannelInitializer() {
                         @Override
                         protected void initChannel(Channel channel) {
-                            channel.config().setOption(ChannelOption.SO_KEEPALIVE, true);
-                            LogUtils.e("接收到新的链接请求" + channel.remoteAddress());
+                            LogUtils.e("接收到reader的链接请求" + channel.remoteAddress());
                             channel.config().setOption(ChannelOption.SO_RCVBUF, 1024);
+                            String ip = channel.remoteAddress().toString();
                             switch (type) {
                                 case ReaderProducerType.TYPE_NET_RODINBELL:
                                     //罗丹贝尔的数据通道，根据罗丹贝尔情况处理
                                     //添加心跳规则
-                                    channel.pipeline().addLast(new IdleStateHandler(5, 0, 0));
+                                    channel.pipeline().addLast(new IdleStateHandler(0, 0, 5));
                                     RodinbellHandler channelHandler = new RodinbellHandler();
                                     channelHandler.registerRodinbellMessageListener(new MyReaderMessageListener());
-                                    channel.pipeline().addLast(channelHandler);
+                                    channel.pipeline().addLast(ip,channelHandler);
                                     break;
                                 case ReaderProducerType.TYPE_NET_COLU:
                                     //鸿陆的处理，在此添加
                                     ClouHandler clouHandler = new ClouHandler();
                                     clouHandler.registerClouMessageListener(new MyReaderMessageListener());
-                                    channel.pipeline().addLast(clouHandler);
+                                    channel.pipeline().addLast(ip,clouHandler);
                                     break;
                                 default:
                                     break;
@@ -127,27 +128,26 @@ public class ReaderService {
 
     /**
      * 关闭服务方法
-     *
-     * @return 是否成功
      */
-    public boolean stopService() {
-        //两个处理池都不为空（理论上两个是共同存在的）F
-        //标识，如果正常关闭返回正常，如果关闭异常就返回fasle
-        boolean isClose = true;
-        if (boss != null && work != null) {
-            try {
-                boss.shutdownGracefully().sync();
-                work.shutdownGracefully().sync();
-                boss = null;
-                work = null;
-                manager = null;
-
-            } catch (Exception e) {
-                isClose = false;
-                LogUtils.e("服务关闭失败：：:port=" + e.toString());
+    public void stopService() {
+        ThreadPoolProxyFactory.getThreadPoolProxy().execute(new Runnable() {
+            @Override
+            public void run() {
+                //两个处理池都不为空（理论上两个是共同存在的）F
+                //标识，如果正常关闭返回正常，如果关闭异常就返回fasle
+                if (boss != null && work != null) {
+                    try {
+                        boss.shutdownGracefully().sync();
+                        work.shutdownGracefully().sync();
+                        boss = null;
+                        work = null;
+                        manager = null;
+                    } catch (Exception e) {
+                        LogUtils.e("服务关闭失败：：:port=" + e.toString());
+                    }
+                }
             }
-        }
-        return isClose;
+        });
     }
 
     /**
@@ -165,70 +165,99 @@ public class ReaderService {
             }
             //回调给用户层
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onConnectState(deviceId, isConnect);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onConnectState(deviceId, isConnect);
+                }
             }
         }
 
         @Override
         public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onScanResult(deviceId, result);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onScanResult(deviceId, result);
+                }
             }
         }
 
         @Override
         public void onScanNewEpc(String deviceId, String epc, int ant) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onScanNewEpc(deviceId, epc, ant);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onScanNewEpc(deviceId, epc, ant);
+                }
             }
         }
 
         @Override
         public void onSetPowerRet(String deviceId, boolean success) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onSetPower(deviceId, success);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onSetPower(deviceId, success);
+                }
             }
         }
 
         @Override
         public void onQueryPowerRet(String deviceId, int power) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onGetPower(deviceId, power);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onGetPower(deviceId, power);
+                }
+            }
+        }
+
+        @Override
+        public void onQueryPowerRet(String deviceId, int[] power) {
+            if (ReaderService.this.manager.getCallback() != null) {
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onGetPower(deviceId, power);
+                }
             }
         }
 
         @Override
         public void onCheckAnt(String deviceId, List<AntInfo> ant) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onCheckAnt(deviceId, ant);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onCheckAnt(deviceId, ant);
+                }
             }
         }
 
         @Override
         public void onLockOpen(String deviceId, boolean isSuccess) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onLockOpen(deviceId, isSuccess);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onLockOpen(deviceId, isSuccess);
+                }
             }
         }
 
         @Override
         public void onLockClose(String deviceId, boolean isSuccess) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onLockClose(deviceId, isSuccess);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onLockClose(deviceId, isSuccess);
+                }
             }
         }
 
         @Override
         public void onLightOpen(String deviceId, boolean isSuccess) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onLightOpen(deviceId, isSuccess);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onLightOpen(deviceId, isSuccess);
+                }
             }
         }
 
         @Override
         public void onLightClose(String deviceId, boolean isSuccess) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onLightClose(deviceId, isSuccess);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onLightClose(deviceId, isSuccess);
+                }
             }
         }
 
@@ -242,7 +271,9 @@ public class ReaderService {
         @Override
         public void onLightState(String deviceId, boolean isOpened) {
             if (ReaderService.this.manager.getCallback() != null) {
-                ReaderService.this.manager.getCallback().onLightState(deviceId, isOpened);
+                synchronized (mLock) {
+                    ReaderService.this.manager.getCallback().onLightState(deviceId, isOpened);
+                }
             }
         }
     }

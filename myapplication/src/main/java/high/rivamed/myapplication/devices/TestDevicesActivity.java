@@ -14,18 +14,17 @@ import android.widget.TextView;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.ruihua.face.recognition.ui.FaceGatewayActivity;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
-import com.ruihua.reader.net.bean.AntInfo;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import cn.rivamed.Eth002Manager;
-import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.utils.FaceTask;
@@ -115,7 +114,7 @@ public class TestDevicesActivity extends SimpleActivity {
         }
         mBtnQueryConnDev.performClick();
         initReader();
-        initEth002();
+//        initEth002();
     }
 
 
@@ -177,6 +176,11 @@ public class TestDevicesActivity extends SimpleActivity {
             }
 
             @Override
+            public void onGetPower(String deviceId, int[] power) {
+
+            }
+
+            @Override
             public void onGetFrequency(String deviceId, String frequency) {
                 appendLog("设备：：" + deviceId + "的频率值是::" + frequency);
             }
@@ -218,61 +222,7 @@ public class TestDevicesActivity extends SimpleActivity {
         });
     }
 
-    private void initEth002() {
-        appendLog("initEth002" );
-        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
-            @Override
-            public void onConnectState(String deviceId, boolean isConnect) {
-                if (isConnect) {
-                    eth002DeviceId = deviceId;
-                    appendLog("eth002设备已连接：ID=" + deviceId);
-                } else {
-                    eth002DeviceId = "";
-                    appendLog("eth002设备已断开:ID=" + deviceId);
-                }
-            }
 
-            @Override
-            public void onFingerFea(String deviceId, String fingerFea) {
-                appendLog("接收到指纹采集信息：" + deviceId + ":::FingerData=" + fingerFea);
-                Log.e("fff", fingerFea);
-                fingerData = fingerFea;
-            }
-
-            @Override
-            public void onFingerRegExcuted(String deviceId, boolean success) {
-                appendLog("指纹注册命令已执行：" + deviceId + ":::success=" + success);
-            }
-
-            @Override
-            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-                appendLog("接收到指纹注册结果：" + deviceId + ":::success=" + success + ":::FingerData=" + fingerData);
-                if (success) {
-                    fingerTemplate = fingerData;
-                }
-            }
-
-            @Override
-            public void onIDCard(String deviceId, String idCard) {
-                appendLog("接收到刷卡信息：" + deviceId + ":::ID=" + idCard);
-            }
-
-            @Override
-            public void onDoorOpened(String deviceIndentify, boolean success) {
-                appendLog("开门结果：" + deviceIndentify + ":::success=" + success);
-            }
-
-            @Override
-            public void onDoorClosed(String deviceIndentify, boolean success) {
-                appendLog("门锁已关闭：" + deviceIndentify + ":::success=" + success);
-            }
-
-            @Override
-            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
-                appendLog("门锁状态检查：" + deviceIndentify + ":::opened=" + opened);
-            }
-        });
-    }
 
     //    private void initFinger() {
     //        FingerManager.getFingerManager().registerCallBack(new FingerCallBack() {
@@ -417,9 +367,9 @@ public class TestDevicesActivity extends SimpleActivity {
 
             @Override
             public void onClick(View v) {
-                int ret = Eth002Manager.getEth002Manager().fingerReg(eth002DeviceId);
+//                int ret = Eth002Manager.getEth002Manager().fingerReg(eth002DeviceId);
                 //                int ret = FingerManager.getFingerManager().FingerRegister(fingerId);
-                appendLog("指纹注册命令已发送 RET=" + ret + ";请等待指纹注册执行结果");
+//                appendLog("指纹注册命令已发送 RET=" + ret + ";请等待指纹注册执行结果");
 
             }
         });
@@ -428,7 +378,7 @@ public class TestDevicesActivity extends SimpleActivity {
 
             @Override
             public void onClick(View v) {
-                int ret = Eth002Manager.getEth002Manager().openDoor(eth002DeviceId);
+                int ret = ConsumableManager.getManager().openDoor(eth002DeviceId,0);
                 //                int ret = ReaderManager.getManager().openLock(readerId);
                 appendLog("开门命令已发出 ret=" + ret);
             }
@@ -521,7 +471,7 @@ public class TestDevicesActivity extends SimpleActivity {
         mBtnQueryConnDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
+                List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedReader();
                 String device = "";
                 for (DeviceInfo de : connectedDevice) {
                     device += "\t " + de.getProduct() + "  设备id： \t" + de.getIdentification() + "\n";
@@ -551,21 +501,21 @@ public class TestDevicesActivity extends SimpleActivity {
                 //			    StringUtils.isEmpty(fingers) ? "目前暂无Finger设备连接" : ("已连接指纹设备如下：\n" + fingers));
 
                 // TODO: 2019/3/26  ETH002模块，新代码测试
-                List<DeviceInfo> connectedDeviceEth002 = Eth002Manager.getEth002Manager().getConnectedDevice();
-                String eth002 = "";
-                for (DeviceInfo df : connectedDeviceEth002) {
-                    eth002 += "\t  Eth002 设备id： \t" + df.getIdentification() + "\n";
-                    eth002DeviceId = df.getIdentification();
-                }
-                appendLog(StringUtils.isEmpty(eth002) ? "目前暂无Eth002设备连接" : ("已连接里模块设备如下：\n" + eth002));
+//                List<DeviceInfo> connectedDeviceEth002 = Eth002Manager.getEth002Manager().getConnectedDevice();
+//                String eth002 = "";
+//                for (DeviceInfo df : connectedDeviceEth002) {
+//                    eth002 += "\t  Eth002 设备id： \t" + df.getIdentification() + "\n";
+//                    eth002DeviceId = df.getIdentification();
+//                }
+//                appendLog(StringUtils.isEmpty(eth002) ? "目前暂无Eth002设备连接" : ("已连接里模块设备如下：\n" + eth002));
             }
         });
         mBtnCheckState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                int ret = Eth002Manager.getEth002Manager().checkDoorState(eth002DeviceId);
-                appendLog("检查门锁命令发送 RET=" + ret);
+//                int ret = Eth002Manager.getEth002Manager().checkDoorState(eth002DeviceId);
+//                appendLog("检查门锁命令发送 RET=" + ret);
             }
         });
 
@@ -655,7 +605,7 @@ public class TestDevicesActivity extends SimpleActivity {
         super.onDestroy();
         ReaderManager.getManager().unRegisterCallback();
         //        ReaderManager.getManager().disConnectReader(readerId);
-        Eth002Manager.getEth002Manager().unRegisterCallBack();
+//        Eth002Manager.getEth002Manager().unRegisterCallBack();
         //        RtspManager.getManager().stopEncode("rtsp://192.168.11.96:8554/live");
         //        RtspManager.getManager().stopRtsp("rtsp://192.168.11.96:8554/live");
 

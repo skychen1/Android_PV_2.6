@@ -3,12 +3,18 @@ package com.ruihua.reader.local;
 import android.support.annotation.IntRange;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libdevicesbase.base.DeviceType;
 import com.rivamed.libdevicesbase.base.FunctionCode;
+import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderProducerType;
 import com.ruihua.reader.local.callback.LocalReaderOperate;
-import com.ruihua.reader.local.corelinks.CoreLinksManager;
+import com.ruihua.reader.local.corelinks.CoreLinksConfig;
+import com.ruihua.reader.local.corelinks.CoreLinksManager1;
+import com.ruihua.reader.local.corelinks.CoreLinksManager2;
+import com.ruihua.reader.local.raylinks.RaylinksConfig;
 import com.ruihua.reader.local.raylinks.RaylinksManager;
-import com.ruihua.reader.ReaderCallback;
+import com.ruihua.reader.local.rodinbell.RodinbellConfig;
+import com.ruihua.reader.local.rodinbell.RodinbellManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +45,7 @@ public class LocalReaderManager {
      */
     private Map<String, LocalReaderOperate> connectReader = new HashMap<>();
     private ReaderCallback mCallback;
+    private String mFilter = "";
 
     /**
      * 添加连接好的设备到集合中
@@ -47,10 +54,6 @@ public class LocalReaderManager {
      * @param operate  设备通用接口
      */
     public void addConnectReader(String readerId, LocalReaderOperate operate) {
-        //如果集合中有该设备，删除该设备
-        if (connectReader.containsKey(readerId)) {
-            connectReader.remove(readerId);
-        }
         connectReader.put(readerId, operate);
     }
 
@@ -61,9 +64,7 @@ public class LocalReaderManager {
      * @param readerId 设备标识
      */
     public void delDisConnectReader(String readerId) {
-        if (connectReader.containsKey(readerId)) {
-            connectReader.remove(readerId);
-        }
+        connectReader.remove(readerId);
     }
 
     /**
@@ -75,7 +76,7 @@ public class LocalReaderManager {
         List<DeviceInfo> deviceInfos = new ArrayList<>();
         for (Map.Entry<String, LocalReaderOperate> d : connectReader.entrySet()) {
             if (d.getValue() != null) {
-                deviceInfos.add(new DeviceInfo(d.getKey(), "", d.getValue().getProducer(), d.getValue().getVersion()));
+                deviceInfos.add(new DeviceInfo(d.getKey(), "", d.getValue().getProducer(), d.getValue().getVersion(), DeviceType.DEVICE_TYPE_RFID_READER));
             }
         }
         return deviceInfos;
@@ -85,22 +86,33 @@ public class LocalReaderManager {
      * 连接本地设备， 传入设备类型
      *
      * @param type 设备厂家的类型，LocalReaderType类中列出
+     * @return 返回码
      */
-    public void connect(int type) {
+    public int connect(int type) {
         //根据传入的类型，连接对应的设备
+        int code;
         switch (type) {
             case ReaderProducerType.TYPE_LOCAL_RAYLINKS:
                 RaylinksManager raylinksManager = new RaylinksManager(this);
-                raylinksManager.connect();
+                code = raylinksManager.connect(RaylinksConfig.COM_STR, RaylinksConfig.BAND_RATE);
                 break;
             case ReaderProducerType.TYPE_LOCAL_CORELINKS:
-                CoreLinksManager coreLinksManager = new CoreLinksManager(this);
-                coreLinksManager.connect();
-                //nothing
+                CoreLinksManager1 coreLinksManager1 = new CoreLinksManager1(this);
+                code = coreLinksManager1.connect(CoreLinksConfig.READER_COM_STR, CoreLinksConfig.READER_BOUND);
+                break;
+            case ReaderProducerType.TYPE_LOCAL_CORELINKS_TWO:
+                CoreLinksManager2 coreLinksManager2 = new CoreLinksManager2(this);
+                code = coreLinksManager2.connect(CoreLinksConfig.READER_COM_STR, CoreLinksConfig.READER_BOUND);
+                break;
+            case ReaderProducerType.TYPE_LOCAL_RODINBELL:
+                RodinbellManager rodinbellManager = new RodinbellManager(this);
+                code = rodinbellManager.connect(RodinbellConfig.COM_STR, RodinbellConfig.BAND_RATE);
                 break;
             default:
+                code = FunctionCode.NOT_SUPPORT_PRODUCER_TYPE;
                 break;
         }
+        return code;
     }
 
     /**
@@ -109,10 +121,26 @@ public class LocalReaderManager {
      * @param readerId ，设备的id值
      */
     public int disConnect(String readerId) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).disConnect();
+        return operate.disConnect();
+    }
+
+    /**
+     * 关闭所有已连接的设备
+     *
+     * @return 返回码
+     */
+    public int stopAllReader() {
+        //遍历集合中所有的reader，并且关闭
+        for (LocalReaderOperate reader : connectReader.values()) {
+            reader.disConnect();
+        }
+        //清空集合
+        connectReader.clear();
+        return FunctionCode.SUCCESS;
     }
 
     /**
@@ -122,26 +150,28 @@ public class LocalReaderManager {
      * @param timeOut  超时时间
      * @return 操作返回码
      */
-    public int startScan(String readerId, @IntRange(from = 1000, to = 10 * 1000) int timeOut) {
+    public int startScan(String readerId, int timeOut) {
         //如果没有指定的设备，返回没有该设备的码
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).startScan();
+        return operate.startScan(timeOut);
     }
 
     /**
      * 重新扫描，实际是清空下部去重集合数据，能够重新扫描返回数据
      *
      * @param readerId 设备唯一标识
-     * @return
+     * @return 返回码
      */
     public int reScan(String readerId) {
         //如果没有指定的设备，返回没有该设备的码
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).reScan();
+        return operate.reScan();
     }
 
     /**
@@ -151,10 +181,11 @@ public class LocalReaderManager {
      * @return 返回码
      */
     public int stopScan(String readerId) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).stopScan();
+        return operate.stopScan();
     }
 
     /**
@@ -165,10 +196,11 @@ public class LocalReaderManager {
      * @return 返回码
      */
     public int setPower(String readerId, @IntRange(from = 1, to = 30) int power) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).setPower(power);
+        return operate.setPower(power);
     }
 
     /**
@@ -178,23 +210,39 @@ public class LocalReaderManager {
      * @return 返回码
      */
     public int getPower(String readerId) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).getPower();
+        return operate.getPower();
+    }
+
+    /**
+     * 检测设备天线
+     *
+     * @param readerId 设备id
+     * @return 返回码
+     */
+    public int checkAnt(String readerId) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
+            return FunctionCode.DEVICE_NOT_EXIST;
+        }
+        return operate.checkAnt();
     }
 
     /**
      * 重置设备
      *
-     * @param deviceId 设备唯一标识
+     * @param readerId 设备唯一标识
      * @return 返回码
      */
-    public int restDevice(String deviceId) {
-        if (!connectReader.containsKey(deviceId)) {
+    public int restDevice(String readerId) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(deviceId).reset();
+        return operate.reset();
     }
 
     /**
@@ -204,10 +252,11 @@ public class LocalReaderManager {
      * @return 返回码
      */
     public int getFrequency(String readerId) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).getFrequency();
+        return operate.getFrequency();
     }
 
     /**
@@ -218,10 +267,30 @@ public class LocalReaderManager {
      * @return 返回码
      */
     public int delOneEpc(String readerId, String epc) {
-        if (!connectReader.containsKey(readerId)) {
+        LocalReaderOperate operate = connectReader.get(readerId);
+        if (operate == null) {
             return FunctionCode.DEVICE_NOT_EXIST;
         }
-        return connectReader.get(readerId).delOneEpc(epc);
+        return operate.delOneEpc(epc);
+    }
+
+
+    /**
+     * 设置过滤规则
+     *
+     * @param filterStr 过滤的字符串
+     */
+    public void setFilter(String filterStr) {
+        this.mFilter = filterStr;
+    }
+
+    /**
+     * 获取过滤规则
+     *
+     * @return 规则字符串
+     */
+    public String getFilter() {
+        return this.mFilter;
     }
 
     /**

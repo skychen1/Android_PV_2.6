@@ -38,7 +38,7 @@ public class NetRequest {
         }
     };
 
-    public static <T> boolean request(NetRequest.RequestAdapter<T> adapter) {
+    public static <T> boolean request(RequestAdapter<T> adapter) {
         boolean requireRetry = false;
         int retryCount = adapter.getRetryCount();
         boolean code = false;

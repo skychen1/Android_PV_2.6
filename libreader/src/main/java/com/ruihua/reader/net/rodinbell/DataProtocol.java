@@ -23,17 +23,19 @@ public class DataProtocol {
      * CMD_GET_WORK_ANT  获取当前工作天线（我们将这个协议用来当做心跳包）
      * CMD_GPIO_READ  gpio口读取数据指令
      * CMD_GPIO_WRITE gpio 写入数据指令
+     * GET_RF_PORT_RETURN_LOSS 获取天线端口损耗
      */
     public static final byte BEGIN_FLAG = (byte) 0xA0;
 
     public static final byte CMD_GET_DEVICE_ID = (byte) 0x68;
     public static final byte CMD_SET_OUTPUT_POWER = (byte) 0x76;
-    public static final byte CMD_GET_OUTPUT_POWER = (byte) 0x77;
+    public static final byte CMD_GET_OUTPUT_POWER = (byte) 0x97;
     public static final byte CMD_RESET = (byte) 0x70;
     public static final byte CMD_SET_WORK_ANT = 0X74;
     public static final byte CMD_GET_WORK_ANT = 0X75;
     public static final byte CMD_GPIO_READ = (byte) 0x60;
     public static final byte CMD_GPIO_WRITE = (byte) 0x61;
+    public static final byte GET_RF_PORT_RETURN_LOSS = 0x7E;
     /**
      * 罗丹贝尔的提供两个gpio口的控制， 3和4
      * 根据高低电平来控制锁和灯的开关
@@ -62,7 +64,7 @@ public class DataProtocol {
     public static final byte CMD_SUCCESS = 0X10;
     public static final byte CMD_FAILED = 0X11;
     public static final byte ADDRESS = 0x01;
-    public static final int MAX_HART_TIME = 5;
+    public static final int MAX_HART_TIME = 4;
     protected static final byte[] ANTS = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
     /**

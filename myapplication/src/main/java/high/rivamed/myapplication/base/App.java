@@ -15,6 +15,9 @@ import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
+import com.rivamed.libidcard.IdCardManager;
+import com.rivamed.libidcard.IdCardProducerType;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
 import com.squareup.leakcanary.LeakCanary;
@@ -25,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
@@ -33,35 +35,31 @@ import high.rivamed.myapplication.http.LoggingLevel;
 import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
-import high.rivamed.myapplication.utils.SPUtils;
 import okhttp3.OkHttpClient;
-
-import static high.rivamed.myapplication.cont.Constants.READER_NAME;
-import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
-import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 
 //import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
 public class App extends Application {
 
-   public static final String TAG            = "BaseApplication";
-   public static       int    READER_TIME    = 3000;     //扫描时间
-   public static       int    ANIMATION_TIME    = 1000;     //动画延时时间
-   public static       int    COUNTDOWN_TIME = 20000;         //无操作退出时间
-   private static App instance;
-   public static PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
-   public static List<PushFormDateBean.OrdersBean> mPushFormOrders   = new ArrayList<>();
+   public static final String                            TAG               = "BaseApplication";
+   public static       int                               READER_TIME       = 3000;     //扫描时间
+   public static       int                               ANIMATION_TIME    = 1000;     //动画延时时间
+   public static       int                               COUNTDOWN_TIME    = 20000;         //无操作退出时间
+   private static      App                               instance;
+   public static       PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
+   public static       List<PushFormDateBean.OrdersBean> mPushFormOrders   = new ArrayList<>();
 
    /**
     * 缓存
     */
    private static ACache mAppCache;
 
-   public static String         MAIN_URL        = null;
-   public static boolean        mTitleConn      = false;
-   public static boolean        mTitleMsg       = false;
-   public static Context mAppContext;
+   public static String         MAIN_URL   = null;
+   public static boolean        mTitleConn = false;
+   public static boolean        mTitleMsg  = false;
+   public static Context        mAppContext;
    public static DisplayMetrics mDm;
+
    public static synchronized App getInstance() {
 	return instance;
    }
@@ -83,12 +81,12 @@ public class App extends Application {
    public void onCreate() {
 	super.onCreate();
 	if (BuildConfig.DEBUG) {
-	   	StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
-	   	StrictMode.setVmPolicy((new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
-	   	LeakCanary.install(this);
+	   StrictMode.setThreadPolicy(
+		   (new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
+	   StrictMode.setVmPolicy(
+		   (new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
+	   LeakCanary.install(this);
 	}
-
-
 
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
@@ -109,31 +107,18 @@ public class App extends Application {
 	}
    }
 
-
    public void registDevice() {
 
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
-		//设置reader的连接方式，不设置，默认为网络连接方式
-		//		ReaderManager.getManager().setConnectType(ReaderConnectType.TYPE_NET);
-		//设置是否是模拟形式，默认不是模拟
-		//		ReaderManager.getManager().setSimulation(true);
-		//连接罗丹贝尔的设备
-		if (SPUtils.getString(mAppContext, READER_NAME) == null ||
-		    SPUtils.getString(mAppContext, READER_NAME)
-			    .equals(READER_NAME_RODINBELL)) {
-		   ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
-		} else if (SPUtils.getString(mAppContext, READER_NAME) != null &&
-			     SPUtils.getString(mAppContext, READER_NAME)
-				     .equals(READER_NAME_COLU)) {
-		   ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
-		}
-		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
-		//		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
 
-		//li模块
-		Eth002Manager.getEth002Manager().startService(8012);
+		int i = ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+		Log.i("dddda","fdfdfd             "+i);
+		IdCardManager.getIdCardManager().connectIdCard(mAppContext, IdCardProducerType.TYPE_NET_AN_DE);
+		int connect = ConsumableManager.getManager().connect();
+		Log.i("dddda","connect             "+connect);
+
 	   }
 	}).start();
    }
@@ -144,12 +129,12 @@ public class App extends Application {
    private void initOkGo() {
 	OkHttpClient.Builder builder = new OkHttpClient.Builder();
 	//log相关
-//	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
-//	loggingInterceptor.setPrintLevel(
-//		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
-//	loggingInterceptor.setColorLevel(
-//		Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
-//	builder.addInterceptor(loggingInterceptor);
+	//	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
+	//	loggingInterceptor.setPrintLevel(
+	//		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
+	//	loggingInterceptor.setColorLevel(
+	//		Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
+	//	builder.addInterceptor(loggingInterceptor);
 
 	MyLoggingInterceptor interceptor = new MyLoggingInterceptor(LoggingLevel.BODY);
 	builder.addInterceptor(interceptor);                                 //添加OkGo默认debug日志
@@ -159,14 +144,15 @@ public class App extends Application {
 	//超时时间设置，默认60秒
 	builder.readTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);      //全局的读取超时时间
 	builder.writeTimeout(Constants.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);     //全局的写入超时时间
-	builder.connectTimeout(Constants.DEFAULT_CONNECTMILLISECONDS, TimeUnit.MILLISECONDS);   //全局的连接超时时间
+	builder.connectTimeout(Constants.DEFAULT_CONNECTMILLISECONDS,
+				     TimeUnit.MILLISECONDS);   //全局的连接超时时间
 
 	//自动管理cookie（或者叫session的保持），以下几种任选其一就行
 	//builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));            //使用sp保持cookie，如果cookie不过期，则一直有效
-//	builder.cookieJar(new CookieJarImpl(new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
+	//	builder.cookieJar(new CookieJarImpl(new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
 	//builder.cookieJar(new CookieJarImpl(new MemoryCookieStore()));            //使用内存保持cookie，app退出后，cookie消失
-//	builder.cookieJar(new CookieJarImpl(
-//		new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
+	//	builder.cookieJar(new CookieJarImpl(
+	//		new DBCookieStore(this)));              //使用数据库保持cookie，如果cookie不过期，则一直有效
 	// 其他统一的配置
 	// 详细说明看GitHub文档：https://github.com/jeasonlzy/
 	OkGo.getInstance().init(this)                           //必须调用初始化
@@ -191,6 +177,7 @@ public class App extends Application {
 
    /**
     * 检测app是否存活
+    *
     * @return
     */
    public int getAppSatus() {

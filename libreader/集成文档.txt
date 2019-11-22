@@ -1,28 +1,29 @@
-1£¬½«moudle£¨libdevicesbase£©ºÍ¸ÃmoudleÒ»Æğ¿¾ÖÁĞèÒªÊ¹ÓÃµÄÏîÄ¿£»
-2£¬ÔÚĞèÒªÊ¹ÓÃµÄÏîÄ¿ÒÀÀµ¸Ãmoudle£»
-3£¬ÔÚapplicationÖĞµ÷ÓÃ·½·¨´«ÈëÁ¬½ÓµÄÀàĞÍ£¬ÀàĞÍ²ÎÊıÎª¾²Ì¬³£Á¿ÀàReaderConnectTypeÖĞÑ¡Ôñ£»
-     Ä¬ÈÏÊÇÍøÂçÁ¬½Ó
-     ReaderManager.getManager().setConnectType(ReaderConnectType.TYPE_LOCAL);
-4    ÉèÖÃÊÇ·ñÊÇÄ£ÄâĞÎÊ½£¬Ä¬ÈÏ²»ÊÇÄ£Äâ£¬´«Èëtrue¾ÍÊÇÄ£ÄâÄ£Ê½£¬²»ĞèÒªÉè±¸Ò²ÄÜÔËĞĞ·µ»ØÊı¾İ
-      ReaderManager.getManager().setSimulation(true);
-5£¬ Á¬½ÓÉè±¸£º´«ÈëÉè±¸µÄ³§¼ÒÀàĞÍ£¬ÔÚ³£Á¿ÀàReaderProducerTypeÖĞÑ¡Ôñ
-     ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_LOCAL_RAYLINKS);
-6£¬ÔÚÒªÊ¹ÓÃµÄµØ·½×¢²ácallback£º ReaderManager().registerCallBack(new RodinbellCallBack() {}£»ËùÓĞµÄÊı¾İ½«»Øµ÷ÔÚ¸Ã½Ó¿ÚÖĞ£»
-7£¬ÔÚĞèÒªµÄµØ·½µ÷ÓÃ¶ÔÓ¦µÄ·½·¨ReaderManager().startScan(rodinbellId, scanTime)£»
-8£¬ËùÓĞµÄÊ¹ÓÃ·½·¨¼¯ºÏ£º
-     £¨1£©£ºstartScan£¬¿ªÊ¼É¨Ãè
-     £¨2£©£ºstopScan  £¬ Í£Ö¹É¨Ãè
-     £¨3£©£ºsetPower £¬ÉèÖÃ¹¦ÂÊ
-     £¨4£©£ºcheckAnt  £¬²éÑ¯ÌìÏß×´¿ö£¨Î´ÊµÏÖ£©
-     £¨5£©£ºopenLock  £¬¿ªËø
-     £¨6£©£ºcloseLock£¬¹ØËø
-     £¨7£©£ºcheckLockState£¬¼ì²âËø×´Ì¬
-     £¨8£©£ºopenLight£¬¿ªµÆ
-     £¨9£©£ºcloseLight  ¹ØµÆ
-     £¨10£©£ºcheckLightState  ¼ì²âµÆ×´Ì¬
+ï»¿1ï¼Œå°†moudleï¼ˆlibdevicesbaseï¼‰å’Œè¯¥moudle(libreader)ä¸€èµ·æ‹·è‡³éœ€è¦ä½¿ç”¨çš„é¡¹ç›®ï¼›
+2ï¼Œåœ¨éœ€è¦ä½¿ç”¨çš„é¡¹ç›®ä¸­ä¾èµ–è¯¥moudleï¼›
+3ï¼Œåœ¨é€‚å½“çš„ä½ç½®è°ƒç”¨è¿æ¥è®¾å¤‡æ–¹æ³•ï¼š
+     ReaderManager.getManager().connectReader(readerType)ï¼Œä¼ å…¥å¯¹åº”çš„typeï¼›
+     ReaderManager.getManager().disConnectReaderï¼ˆreaderIdï¼‰ï¼Œæ–­å¼€æŸä¸ªè®¾å¤‡ï¼Œä¸€èˆ¬ç”¨äºæœ¬åœ°ï¼ˆusbï¼Œä¸²å£ï¼‰è¿æ¥ï¼Œç½‘ç»œè¿æ¥ï¼Œæ–­å¼€åè®¾å¤‡ä¼šè‡ªåŠ¨é‡è¿ï¼›
+     
+4ï¼Œå¦‚æœéœ€è¦æ¨¡æ‹Ÿï¼Œè°ƒç”¨ è®¾ç½®æ˜¯å¦æ¨¡æ‹Ÿæ–¹æ³•
+     ReaderManager.getManager().setSimulation(true) ä¼ å…¥trueï¼Œæ­¤æ—¶å°±æ˜¯æ¨¡æ‹Ÿä¸ºä¸»ï¼Œä¸ç”¨è°ƒç”¨ä¸Šè¿°è¿æ¥æ–¹æ³•ï¼ˆåæœŸä¼šæ”¹è¿›ä¸ºè°ƒç”¨è¿æ¥æ–¹æ³•ä¼ å…¥æ¨¡æ‹Ÿtypeå°±å¯åŠ¨æ¨¡æ‹Ÿï¼‰ï¼›
+5ï¼Œåœ¨è¦ä½¿ç”¨çš„åœ°æ–¹æ³¨å†Œcallbackï¼š     ReaderManager.getManager().registerCallback(){}ï¼›æ‰€æœ‰çš„æ•°æ®å°†å›è°ƒåœ¨è¯¥æ¥å£ä¸­ï¼›
+6ï¼Œè°ƒç”¨
+     ReaderManager.getManager().getConnectedDevice() è·å–å·²è¿æ¥çš„è®¾å¤‡ï¼ˆè®¾ç½®å›è°ƒä»¥å‰è¿æ¥çš„è®¾å¤‡ä¹Ÿèƒ½çŸ¥é“ï¼‰ï¼›
+5ï¼Œåœ¨éœ€è¦çš„åœ°æ–¹è°ƒç”¨å¯¹åº”çš„æ–¹æ³•ReaderManager().startScan(rodinbellId, scanTime)ï¼Œè¿›è¡Œè®¾å¤‡æ‰«æï¼›
+6ï¼Œæ‰€æœ‰çš„è®¾å¤‡åŠŸèƒ½ä½¿ç”¨æ–¹æ³•é›†åˆï¼š
+      
+     ï¼ˆ1ï¼‰ï¼šstartScanï¼Œå¼€å§‹æ‰«æ
+     ï¼ˆ2ï¼‰ï¼šstopScan  ï¼Œ åœæ­¢æ‰«æ
+     ï¼ˆ3ï¼‰ï¼šsetPower ï¼Œè®¾ç½®åŠŸç‡
+     ï¼ˆ4ï¼‰ï¼šcheckAnt  ï¼ŒæŸ¥è¯¢å¤©çº¿çŠ¶å†µï¼ˆæœªå®ç°ï¼‰
+       //////////ä»¥ä¸‹æ–¹æ³•ä¸ºç‰¹æ®Šæ“ä½œï¼Œå¾ˆå¯èƒ½ä¸ç”¨ï¼Œå›è°ƒä¸­ä¸åšä»»ä½•æ“ä½œå³å¯/////////
+     ï¼ˆ5ï¼‰ï¼šopenLock  ï¼Œå¼€é”
+     ï¼ˆ6ï¼‰ï¼šcloseLockï¼Œå…³é”
+     ï¼ˆ7ï¼‰ï¼šcheckLockStateï¼Œæ£€æµ‹é”çŠ¶æ€
+     ï¼ˆ8ï¼‰ï¼šopenLightï¼Œå¼€ç¯
+     ï¼ˆ9ï¼‰ï¼šcloseLight  å…³ç¯
+     ï¼ˆ10ï¼‰ï¼šcheckLightState  æ£€æµ‹ç¯çŠ¶æ€
+7ï¼Œå›è°ƒçš„æ–¹æ³•ä¸å‚æ•°è¯¦æƒ…å‚çœ‹æ¥å£ReaderlCallBackï¼›
 
-9£¬»Øµ÷µÄ·½·¨Óë²ÎÊıÏêÇé²Î¿´½Ó¿ÚReaderlCallBack£»
-
-10£¬Ê¹ÓÃ·½·¨¿ÉÒÔ²Î¿¼TestDevicesActivity £»
-
-11,  ÔÚ²»ÔÙÊ¹ÓÃreaderµÄÇéÏÂ£¬Ò»¶¨Òª·´×¢²á»Øµ÷£¬·ñÔò¿ÉÄÜÄÚ´æĞ¹Â¶ ReaderManager.getManager().unRegisterCallBack();
+8ï¼Œä½¿ç”¨æ–¹æ³•å¯ä»¥å‚è€ƒdemoé¡¹ç›®çš„SplashActivityï¼ŒTypeChooseActivityï¼ŒRegisterReaderFragmentï¼›
+9, åœ¨ä¸å†ä½¿ç”¨readerçš„æƒ…ä¸‹ï¼Œä¸€å®šè¦åæ³¨å†Œå›è°ƒï¼Œå¦åˆ™å¯èƒ½å†…å­˜æ³„éœ² ReaderManager.getManager().unRegisterCallBack();

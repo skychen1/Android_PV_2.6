@@ -32,7 +32,7 @@ public class FaceLiveness {
     public static final int MASK_DEPTH = 0X0100;
 
     public static FaceLiveness getInstance() {
-        return FaceLiveness.HolderClass.instance;
+        return HolderClass.instance;
     }
 
     private static class HolderClass {

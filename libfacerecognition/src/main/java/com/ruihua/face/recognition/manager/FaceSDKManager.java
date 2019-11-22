@@ -99,6 +99,7 @@ public class FaceSDKManager {
                 }
                 Log.e("FaceSDK", "初始化授权");
                 FaceSDK.initLicense(context, key, LICENSE_NAME, false);
+                //检测授权状态
                 sdkInitStatus();
             }
         });
@@ -121,6 +122,7 @@ public class FaceSDKManager {
         if (status == AndroidLicenser.ErrorCode.SUCCESS.ordinal()) {
             Log.e("FaceSDK", "授权成功");
             Log.e("FaceSDK", "初始化sdk");
+            //初始化成功就开始授权sdk
             faceDetector.init(context);
             faceFeature.init(context);
             initLiveness(context);
@@ -132,6 +134,7 @@ public class FaceSDKManager {
             }
 
         } else if (status == AndroidLicenser.ErrorCode.LICENSE_EXPIRED.ordinal()) {
+            //授权过期
             initStatus = SDK_FAIL;
             // FileUitls.deleteLicense(context, LICENSE_NAME);
             Log.e("FaceSDK", "授权过期");
@@ -140,6 +143,7 @@ public class FaceSDKManager {
             }
             showActivation();
         } else {
+            //授权失败
             initStatus = SDK_FAIL;
             // FileUitls.deleteLicense(context, LICENSE_NAME);
             Log.e("FaceSDK", "授权失败" + status);

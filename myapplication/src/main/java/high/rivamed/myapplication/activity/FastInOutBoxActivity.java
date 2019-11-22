@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import butterknife.BindView;
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.Event;
@@ -48,7 +48,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.UHF_TYPE;
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.fragment.FastInFragment.mStartsType;
 
@@ -107,7 +107,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		for (String deviceInventoryVo : mEthDeviceIdBack) {
 		   String deviceCode = deviceInventoryVo;
 		   LogUtils.i(TAG, "deviceCode    " + deviceCode);
-		   Eth002Manager.getEth002Manager().openDoor(deviceCode);
+		   ConsumableManager.getManager().openDoor(deviceCode,0);
 		}
 	   } else {
 		ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -210,7 +210,8 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
 		.find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeanss) {
 	   String box_id = boxIdBean.getBox_id().trim();
-	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id, UHF_TYPE)
+	   List<BoxIdBean> boxIdDoor = LitePal.where("box_id = ? and name = ?", box_id,
+								   CONSUMABLE_TYPE)
 		   .find(BoxIdBean.class);
 	   for (BoxIdBean BoxIdBean : boxIdDoor) {
 		String device_id = BoxIdBean.getDevice_id();
@@ -464,7 +465,7 @@ public class FastInOutBoxActivity extends BaseSimpleActivity
    private void startScan(String deviceIndentify) {
 	EventBusUtils.postSticky(new Event.EventLoading(true));
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 UHF_TYPE).find(BoxIdBean.class);
+								 CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   String box_id = boxIdBean.getBox_id();
 	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)

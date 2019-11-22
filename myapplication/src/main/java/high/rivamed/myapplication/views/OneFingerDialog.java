@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -134,6 +135,7 @@ public class OneFingerDialog extends Dialog {
             mCloss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    AllDeviceCallBack.getInstance().initCallBack();
                     mDialog.dismiss();
                 }
             });

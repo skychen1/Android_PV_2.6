@@ -1,1 +1,1 @@
-include ':myapplication',':libdevicesbase', ':libeth002', ':libreader', ':libfacerecognition', ':libvideorecord'
+include ':myapplication', ':libdevicesbase', ':libreader', ':libfacerecognition', ':libvideorecord', ':libconsumables',':libidcard',':libfinger'

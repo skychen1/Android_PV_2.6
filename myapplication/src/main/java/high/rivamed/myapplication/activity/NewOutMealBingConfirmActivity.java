@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ruihua.libconsumables.ConsumableManager;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -35,7 +36,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.BillOrderAdapter;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
@@ -242,6 +242,11 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		}
 	   } catch (IOException e) {
 	   }
+	}else {
+	   mTimelyOpenDoor.setEnabled(false);
+	   mTimelyStartBtn.setEnabled(false);
+	   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
+	   mBaseGifImageView.setImageDrawable(drawable);
 	}
    }
    @Override
@@ -938,7 +943,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	stopScan();
 	for (String deviceInventoryVo : mEthDeviceIdBack) {
 	   String deviceCode = deviceInventoryVo;
-	   Eth002Manager.getEth002Manager().openDoor(deviceCode);
+	   ConsumableManager.getManager().openDoor(deviceCode,0);
 	}
    }
 

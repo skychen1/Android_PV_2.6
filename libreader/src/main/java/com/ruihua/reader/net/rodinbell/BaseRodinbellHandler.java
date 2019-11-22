@@ -2,13 +2,8 @@ package com.ruihua.reader.net.rodinbell;
 
 import com.rivamed.libdevicesbase.base.BaseNettyHandler;
 import com.rivamed.libdevicesbase.utils.LogUtils;
+import com.rivamed.libdevicesbase.utils.ThreadPoolProxyFactory;
 import com.rivamed.libdevicesbase.utils.TransferUtils;
-
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -18,6 +13,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 
 /**
  * describe ：罗丹贝尔通道数据处理基类（主要处理发出数据，处理发包的懂）
+ *
  * @author : Yich
  * date: 2019/2/26
  */
@@ -46,7 +42,6 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
             byte[] btAryBuffer = new byte[buf.length + mNLength];
             System.arraycopy(mBtAryBuffer, 0, btAryBuffer, 0, mNLength);
             System.arraycopy(buf, 0, btAryBuffer, mNLength, buf.length);
-            LogUtils.e("需要解析的数据" + TransferUtils.Byte2String(btAryBuffer));
             int nIndex = 0;
             int nMarkIndex = 0;
             //循环找截取数据为一个个协议数据
@@ -57,7 +52,6 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
                     if (btAryBuffer[nLoop] == DataProtocol.BEGIN_FLAG) {
                         //根据协议，数据的长度在标识头的后一位数据，拿到数据长度
                         int nLen = btAryBuffer[nLoop + 1] & 0xFF;
-                        LogUtils.e("数据长度为" + nLen);
                         //根据协议，数据的长度不可能超过39，所以屏蔽掉数据中有标识头，误以为是标识头的情况。
                         if (nLen > 39) {
                             continue;
@@ -95,7 +89,6 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
         } catch (Exception e) {
             LogUtils.e(e.toString());
         }
-
     }
 
     /**
@@ -104,8 +97,8 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
      * @param buf 一条条协议数据
      */
     private void checkData(byte[] buf) {
-        //协议最小数据是6，如果数据小于6就直接退出，防止错误数据崩溃
-        if (buf.length < 6) {
+        //协议最小数据是5，如果数据小于5就直接退出，防止错误数据崩溃
+        if (buf.length < 5) {
             LogUtils.e("数据出错，数据长度小于6：：" + TransferUtils.Byte2String(buf));
             return;
         }
@@ -160,15 +153,17 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         mChCtx = ctx;
-        ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder().namingPattern("rodinbell-schedule-pool-%d").daemon(true).build();
-        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
-        scheduled.schedule(new Runnable() {
+        ThreadPoolProxyFactory.getThreadPoolProxy().execute(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                    LogUtils.e(e.toString());
+                }
                 sendGetDeviceId();
             }
-        }, 500, TimeUnit.MILLISECONDS);
-
+        });
         super.channelActive(ctx);
     }
 
@@ -208,13 +203,13 @@ public abstract class BaseRodinbellHandler extends BaseNettyHandler {
             mChCtx.write(byteBuf);
             //flush缓冲区
             mChCtx.flush();
+//            LogUtils.e("罗丹贝尔发送数据了：："+TransferUtils.Byte2String(bufSend));
             return true;
         } catch (Exception e) {
             //nothing
         }
         return false;
     }
-
 
     /**
      * 抽象方法 具体怎么处理收到的数据

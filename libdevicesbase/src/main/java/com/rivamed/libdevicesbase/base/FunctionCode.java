@@ -30,7 +30,7 @@ public class FunctionCode {
     /**
      * 参数错误
      */
-    public static final Integer PARAM_ERROR = 4;
+    public static final int PARAM_ERROR = 4;
 
     /**
      * 连接设备失败
@@ -44,7 +44,37 @@ public class FunctionCode {
      * 设备已存在，或者已经连接打开
      */
     public static final int DEVICE_ALREADY_CONNECTED = 7;
+    /**
+     * 一种设备（如reader）一次只能启动一个服务，所以不能重复启动
+     * 已经启动了服务，需要先关闭服务
+     */
+    public static final int ALREADY_START_SERVICE = 8;
+    /**
+     * 没有支持的厂家类型
+     */
+    public static final int NOT_SUPPORT_PRODUCER_TYPE = 9;
+    /**
+     * USB权限不够，root权限
+     */
+    public static final int NO_USB_PERMISSION = 10;
+    /**
+     * 设备故障
+     */
+    public static final int DEVICE_ERROR = 11;
+    /**
+     * 蓝牙功能未打开
+     */
+    public static final int BLUE_TOOTH_NOT_OPEN = 12;
 
+    /**
+     * 升级文件错误
+     */
+    public static final int UPDATE_FILE_ERROR = 13;
+
+    /**
+     * 连接设备的时候没有找到对应的设备（查看设备是否已经插好）
+     */
+    public static final int  DEVICE_NOT_FOUND = 14;
 
     /**
      * 因其他原因导致操作失败

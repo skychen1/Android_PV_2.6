@@ -12,6 +12,9 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.6
@@ -89,6 +92,8 @@ public class LoadingDialogX extends Dialog {
 			if (mDialog != null && mDialog.isShowing()) {
 			   mLoading.stop();
 			   mHandler.removeCallbacksAndMessages(null);
+			   EventBusUtils.post(new Event.StartScanType(true, false));
+			   ToastUtils.showShortToast("readr未连接，请稍后重试！");
 			   mDialog.dismiss();
 			}
 		   }

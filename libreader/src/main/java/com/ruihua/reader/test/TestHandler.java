@@ -1,8 +1,9 @@
 package com.ruihua.reader.test;
 
+import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.ruihua.reader.ReaderManager;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.EpcInfo;
 import com.ruihua.reader.net.callback.ReaderHandler;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -87,12 +88,17 @@ public class TestHandler implements ReaderHandler {
                 isScan = false;
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
+    }
+
+    @Override
+    public int startScan(int timeout, byte[] ants) {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int stopScan() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
@@ -111,7 +117,12 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
+    }
+
+    @Override
+    public int setPower(byte[] powers) {
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
@@ -130,17 +141,17 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
     public int checkAnts() {
-        return 0;
+        return FunctionCode.DEVICE_NOT_SUPPORT;
     }
 
     @Override
     public int reset() {
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -159,7 +170,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -178,7 +189,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -197,7 +208,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -216,7 +227,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -235,7 +246,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override
@@ -254,7 +265,7 @@ public class TestHandler implements ReaderHandler {
                 }
             }
         });
-        return 0;
+        return FunctionCode.SUCCESS;
     }
 
     @Override

@@ -6,7 +6,6 @@ package com.ruihua.face.recognition.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.TextureView;
 
 import com.rivamed.libdevicesbase.utils.LogUtils;
@@ -33,10 +32,6 @@ public class RgbVideoIdentityActivity extends Activity {
      */
     public static void launch(Activity act) {
         Intent intent = new Intent(act, RgbVideoIdentityActivity.class);
-        act.startActivityForResult(intent, CODE_RECOGNISE);
-    }
-    public static void launch( Fragment act) {
-        Intent intent = new Intent(act.getContext(), RgbVideoIdentityActivity.class);
         act.startActivityForResult(intent, CODE_RECOGNISE);
     }
 
@@ -71,15 +66,19 @@ public class RgbVideoIdentityActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // 开始检测
-        FaceManager.getManager().startIdentity();
+        // 开始预览
+        FaceManager.getManager().startPreview();
+        //开始识别
+        FaceManager.getManager().starIdentity();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // 结束检测。
+        // 停止识别
         FaceManager.getManager().stopIdentity();
+        //停止预览
+        FaceManager.getManager().stopPreview();
 
     }
 

@@ -8,18 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
-import com.ruihua.reader.ReaderProducerType;
-import com.ruihua.reader.net.NetReaderManager;
-import com.ruihua.reader.net.bean.AntInfo;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -41,16 +37,11 @@ import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
-import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.READER_TIME;
-import static high.rivamed.myapplication.base.App.getAppContext;
-import static high.rivamed.myapplication.cont.Constants.READER_NAME;
-import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
-import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ANIMATION_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
 
@@ -93,12 +84,12 @@ public class RegisteReaderFrag extends SimpleFragment {
    @BindView(R.id.gone_ll)
    LinearLayout mGoneLl;
 
-   @BindView(R.id.reader_left)
-   RadioButton mReaderLeft;
-   @BindView(R.id.radioproup)
-   RadioGroup  mRadioGroup;
-   @BindView(R.id.reader_right)
-   RadioButton mReaderRight;
+//   @BindView(R.id.reader_left)
+//   RadioButton mReaderLeft;
+//   @BindView(R.id.radioproup)
+//   RadioGroup  mRadioGroup;
+//   @BindView(R.id.reader_right)
+//   RadioButton mReaderRight;
    private String mDiviceId;
    List<String> mDate = new ArrayList<>();
    private RegistReaderAdapter mAdapter;
@@ -143,49 +134,49 @@ public class RegisteReaderFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-	if (SPUtils.getString(getAppContext(), READER_NAME) == null || SPUtils.getString(getAppContext(), READER_NAME)
-		.equals(READER_NAME_RODINBELL)) {
-	   SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
-	   mRadioGroup.check(R.id.reader_right);
-	} else if (SPUtils.getString(getAppContext(), READER_NAME) != null &&
-		     SPUtils.getString(getAppContext(), READER_NAME)
-			     .equals(READER_NAME_COLU)) {
-	   mRadioGroup.check(R.id.reader_left);
-	}
+//	if (SPUtils.getString(getAppContext(), READER_NAME) == null || SPUtils.getString(getAppContext(), READER_NAME)
+//		.equals(READER_NAME_RODINBELL)) {
+//	   SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+//	   mRadioGroup.check(R.id.reader_right);
+//	} else if (SPUtils.getString(getAppContext(), READER_NAME) != null &&
+//		     SPUtils.getString(getAppContext(), READER_NAME)
+//			     .equals(READER_NAME_COLU)) {
+//	   mRadioGroup.check(R.id.reader_left);
+//	}
 	initReader();
 	mGoneLl.setVisibility(View.GONE);
-	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-		ToastUtils.showShortToast("Reader启动中，请勿频繁切换，稍后点击 开始检测");
-		switch (checkedId) {
-		   case R.id.reader_left:
-			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);
-			new Thread(new Runnable() {
-			   @Override
-			   public void run() {
-
-				NetReaderManager.getManager().stopService();
-				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
-			   }
-			}).start();
-
-			break;
-		   case R.id.reader_right:
-			SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
-
-			new Thread(new Runnable() {
-			   @Override
-			   public void run() {
-				Log.i("reader","启动罗丹");
-				NetReaderManager.getManager().stopService();
-				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
-			   }
-			}).start();
-			break;
-		}
-	   }
-	});
+//	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//	   @Override
+//	   public void onCheckedChanged(RadioGroup group, int checkedId) {
+//		ToastUtils.showShortToast("Reader启动中，请勿频繁切换，稍后点击 开始检测");
+//		switch (checkedId) {
+//		   case R.id.reader_left:
+//			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);
+//			new Thread(new Runnable() {
+//			   @Override
+//			   public void run() {
+//
+//				NetReaderManager.getManager().stopService();
+//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+//			   }
+//			}).start();
+//
+//			break;
+//		   case R.id.reader_right:
+//			SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+//
+//			new Thread(new Runnable() {
+//			   @Override
+//			   public void run() {
+//				Log.i("reader","启动罗丹");
+//				NetReaderManager.getManager().stopService();
+//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+//			   }
+//			}).start();
+//			break;
+//		}
+//	   }
+//	});
 
    }
 
@@ -256,6 +247,11 @@ public class RegisteReaderFrag extends SimpleFragment {
 	   }
 
 	   @Override
+	   public void onGetPower(String deviceId, int[] power) {
+
+	   }
+
+	   @Override
 	   public void onGetFrequency(String deviceId, String frequency) {
 		AppendLog("设备：：" + deviceId + "的频率值是::" + frequency);
 	   }
@@ -306,7 +302,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 		   mGoneLl.setVisibility(View.GONE);
 		   mTxtLog.setText("");
 		}
-		List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedDevice();
+		List<DeviceInfo> connectedDevice = ReaderManager.getManager().getConnectedReader();
 		String s = "";
 		for (DeviceInfo de : connectedDevice) {
 

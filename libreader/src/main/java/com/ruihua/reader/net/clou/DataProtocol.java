@@ -1,5 +1,9 @@
 package com.ruihua.reader.net.clou;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+
 public class DataProtocol {
 
     protected static final byte HEAD_BEGIN = (byte) 0xAA;
@@ -67,6 +71,15 @@ public class DataProtocol {
     protected static final byte MSG_TYPE_READER_TEST = 0X05;
 
     /**
+     * 发射载波，用于检测天线
+     */
+    protected static final byte MSG_TYPE_READER_SEND_PORT = 0X00;
+    /**
+     * 检测天线
+     */
+    protected static final byte MID_READER_OPTION_CHECK_ANT = 0X05;
+
+    /**
      * 读写器配置和管理信息  -- 查询读写器基本信息
      */
     protected static final byte MID_READER_OPTION_QUERY_INFO = 0X00;
@@ -83,6 +96,7 @@ public class DataProtocol {
      * 读写器配置和管理信息  --查询串口参数
      */
     protected static final byte MID_READER_OPTION_QUERY_UARTPARAM = 0X03;
+
     /**
      * 读写器配置和管理信息  --查询mac地址
      */
@@ -236,4 +250,24 @@ public class DataProtocol {
         return rt;
     }
 
+    /**
+     * s数据转换
+     *
+     * @param res 数组
+     * @return 值
+     */
+    public static int byte2int(byte[] res) {
+        DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(res));
+        int a = 0;
+        try {
+            a = dataInputStream.readUnsignedByte();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return a;
+    }
 }

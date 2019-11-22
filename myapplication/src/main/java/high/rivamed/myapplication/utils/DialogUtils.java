@@ -13,13 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.rivamed.libidcard.IdCardCallBack;
+import com.rivamed.libidcard.IdCardManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import cn.rivamed.Eth002Manager;
-import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
@@ -55,6 +55,7 @@ import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.OutBoxConnectDialog;
 import high.rivamed.myapplication.views.RegisteDialog;
+import high.rivamed.myapplication.views.RegisteTextDialog;
 import high.rivamed.myapplication.views.RvDialog2;
 import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 import high.rivamed.myapplication.views.SelectOpenCabinetDialog;
@@ -441,51 +442,22 @@ public class DialogUtils {
         });
 
         builder.create().show();
-        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
+
+        IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
             @Override
             public void onConnectState(String deviceId, boolean isConnect) {
 
             }
 
             @Override
-            public void onFingerFea(String deviceId, String fingerFea) {
-
-            }
-
-            @Override
-            public void onFingerRegExcuted(String deviceId, boolean success) {
-
-            }
-
-            @Override
-            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
-
-            }
-
-            @Override
-            public void onIDCard(String deviceId, String idCard) {
-                mIdCard[0] = idCard;
+            public void onReceiveCardNum(String cardNo) {
+                mIdCard[0] = cardNo;
                 UIUtils.runInUIThread(new Runnable() {
                     @Override
                     public void run() {
-                        builder.setSuccess("卡号: " + idCard);
+                        builder.setSuccess("卡号: " + cardNo);
                     }
                 });
-            }
-
-            @Override
-            public void onDoorOpened(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void onDoorClosed(String deviceIndentify, boolean success) {
-
-            }
-
-            @Override
-            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
-
             }
         });
 
@@ -756,5 +728,10 @@ public class DialogUtils {
         LoadingDialogX.Builder builder = new LoadingDialogX.Builder(context);
         builder.create().show();
         return builder;
+    }
+
+    public static void showRegisteTextDialog(Activity context) {
+        RegisteTextDialog.Builder builder = new RegisteTextDialog.Builder(context);
+        builder.create().show();
     }
 }

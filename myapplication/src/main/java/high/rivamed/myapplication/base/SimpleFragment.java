@@ -65,7 +65,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	//	init();
 //	countTimerView = MyTimer.getInstance(COUNTDOWN_TIME, 1000, UIUtils.getContext());
 
-	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (rootView == null && getLayoutId() > 0) {
 	   rootView = inflater.inflate(getLayoutId(), null);
@@ -141,7 +141,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    @Override
    public void onStart() {
 	super.onStart();
-	eth002DeviceIdList = DevicesUtils.getEthDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
    }
 

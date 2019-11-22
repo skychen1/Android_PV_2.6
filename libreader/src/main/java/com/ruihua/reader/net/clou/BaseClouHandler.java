@@ -44,7 +44,7 @@ public abstract class BaseClouHandler extends BaseNettyHandler {
                 //数据的长度的位置在第4位和第5位（两位）
                 if (btAryBuffer.length > nLoop + 4) {
                     //找到标识头
-                    if (btAryBuffer[nLoop] == com.ruihua.reader.net.clou.DataProtocol.HEAD_BEGIN) {
+                    if (btAryBuffer[nLoop] == DataProtocol.HEAD_BEGIN) {
                         //拿到第三和第四位的数据长度位，解析成长度
                         int leng1 = (btAryBuffer[nLoop + 3] & 0xFF) * 256;
                         int leng2 = btAryBuffer[nLoop + 4] & 0xFF;
@@ -107,7 +107,6 @@ public abstract class BaseClouHandler extends BaseNettyHandler {
                 sendQueryMac();
             }
         },500,TimeUnit.MILLISECONDS);*/
-
         super.channelActive(ctx);
     }
 
@@ -131,7 +130,7 @@ public abstract class BaseClouHandler extends BaseNettyHandler {
 
     protected synchronized boolean sendBuf(byte msgType, byte mid, byte[] data) {
         byte[] buf = new byte[(data == null ? 0 : data.length) + 7];
-        buf[0] = com.ruihua.reader.net.clou.DataProtocol.HEAD_BEGIN;
+        buf[0] = DataProtocol.HEAD_BEGIN;
         buf[1] = 0;
         {
             //485 和 上传标识 默认为0；
@@ -143,14 +142,14 @@ public abstract class BaseClouHandler extends BaseNettyHandler {
             buf[3] = 0x00;
             buf[4] = 0x00;
         } else {
-            byte[] buflen = com.ruihua.reader.net.clou.DataProtocol.ReverseIntToU16Bytes(data.length);
+            byte[] buflen = DataProtocol.ReverseIntToU16Bytes(data.length);
             System.arraycopy(buflen, 0, buf, 3, buflen.length);
             System.arraycopy(data, 0, buf, 5, data.length);
         }
         try {
             byte[] checkBuf = new byte[buf.length - 3];
             System.arraycopy(buf, 1, checkBuf, 0, checkBuf.length);
-            byte[] crc = com.ruihua.reader.net.clou.DataProtocol.CalcCRC16(checkBuf, checkBuf.length);
+            byte[] crc = DataProtocol.CalcCRC16(checkBuf, checkBuf.length);
             System.arraycopy(crc, 0, buf, buf.length - 2, crc.length);
             ByteBuf byteBuf = new UnpooledHeapByteBuf(ByteBufAllocator.DEFAULT, buf.length, buf.length);
             byteBuf.writeBytes(buf);

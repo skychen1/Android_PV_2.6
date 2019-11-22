@@ -24,6 +24,15 @@ public interface ReaderHandler {
     int startScan(int timeout);
 
     /**
+     * 开始扫描的方法，
+     *
+     * @param timeout 没有新标签的时间
+     * @param ants    扫描的天线
+     * @return 成功失败
+     */
+    int startScan(int timeout, byte[] ants);
+
+    /**
      * 停止扫描 （该方法只能在此通道服务端停止扫描操作，不能直接停止底层扫描返回）
      * 所以调用改方法以后需要延时2s以后才能进行下一次扫描
      *
@@ -38,6 +47,14 @@ public interface ReaderHandler {
      * @return 返回码
      */
     int setPower(byte power);
+
+    /**
+     * 设置设备功率(所有天线的功率值)
+     *
+     * @param powers 功率值
+     * @return 返回码
+     */
+    int setPower(byte[] powers);
 
     /**
      * 查询功率

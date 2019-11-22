@@ -1,7 +1,7 @@
 package com.ruihua.reader;
 
-import com.ruihua.reader.net.bean.AntInfo;
-import com.ruihua.reader.net.bean.EpcInfo;
+import com.ruihua.reader.bean.AntInfo;
+import com.ruihua.reader.bean.EpcInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface ReaderCallback {
      * @param deviceId  设备的唯一标识号
      * @param isConnect 连接的装态，，true为已连接，false为已断开
      */
-    void onConnectState(String deviceId, boolean isConnect);
+     void onConnectState(String deviceId, boolean isConnect);
 
     /**
      * 扫描完成结果回调
@@ -27,6 +27,7 @@ public interface ReaderCallback {
      * @param deviceId 设备的唯一标识号
      * @param result   扫描到的结果数据 (如果扫描失败结果为null) ，没有标签为空集合， 有标签就是标签的数据
      *                 map的key值为标签，list是标签扫描的信息（扫到一次为一个数据，多次为多个数据）
+     *                 如果返回的集合为null标识扫描失败
      */
     void onScanResult(String deviceId, Map<String, List<EpcInfo>> result);
 
@@ -46,19 +47,26 @@ public interface ReaderCallback {
      * @param deviceId 设备ID
      */
     void onSetPower(String deviceId, boolean success);
+    /**
+     * 获取功率结果通知
+     *
+     * @param deviceId 设备ID
+     * @param power    功率   如果返回的功率值为-1，就表示获取功率失败
+     */
+    void onGetPower(String deviceId, int power);
 
     /**
      * 获取功率结果通知
      *
      * @param deviceId 设备ID
-     * @param power    功率
+     * @param power    功率   如果返回的功率值为-1，就表示获取功率失败
      */
-    void onGetPower(String deviceId, int power);
+    void onGetPower(String deviceId, int[] power);
 
     /**
      * 获取设备频率
      *
-     * @param deviceId    设备
+     * @param deviceId  设备
      * @param frequency 频率
      */
     void onGetFrequency(String deviceId, String frequency);
@@ -67,7 +75,7 @@ public interface ReaderCallback {
      * 检查天线是否可用
      *
      * @param deviceId 设备ID
-     * @param ant      天线是否可用的集合，具体信息参看实例类
+     * @param ant      天线是否可用的集合，具体信息参看实例类  (如果返回值ant为null，表示获取失败)
      */
     void onCheckAnt(String deviceId, List<AntInfo> ant);
 

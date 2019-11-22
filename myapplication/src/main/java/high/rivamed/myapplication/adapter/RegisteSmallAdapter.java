@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -52,7 +53,10 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    public  TextView                        mLeftCode;
    public ImageView mRightDelete;
    public RadioGroup mGroup;
-   private int mBoxType =2;
+   public RadioButton registe_top;
+   public RadioButton registe_down;
+   public RadioButton registe_single;
+
    //   public RecyclerView mRecyclerView2;
 //   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
 //   public static TBaseThingDto.TBaseDeviceVo mMTBaseThingVoBean;
@@ -77,26 +81,26 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
    @Override
    protected void convert(final BaseViewHolder holder, TBaseDevices item) {
 //	mMTBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
-
 	mLeftName = (EditText) holder.getView(R.id.head_left_name);
 	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
 	mGroup = (RadioGroup) holder.getView(R.id.registe_head_rg);
-	mGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-	   @Override
-	   public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-		switch (checkedId) {
-		   case R.id.registe_top:
-			mBoxType = 0;
-		      break;
-		   case R.id.registe_down:
-			mBoxType = 1;
-			break;
-		   case R.id.registe_single:
-			mBoxType = 2;
-			break;
-		}
+	registe_top = (RadioButton) holder.getView(R.id.registe_top);
+	registe_down = (RadioButton) holder.getView(R.id.registe_down);
+	registe_single = (RadioButton) holder.getView(R.id.registe_single);
+
+	   if (item.getCabinetType().equals("1")){
+		registe_top.setChecked(true);
+		registe_down.setChecked(false);
+		registe_single.setChecked(false);
+	   }else if (item.getCabinetType().equals("-1")){
+		registe_top.setChecked(false);
+		registe_down.setChecked(true);
+		registe_single.setChecked(false);
+	   }else if (item.getCabinetType().equals("0")){
+		registe_top.setChecked(false);
+		registe_down.setChecked(false);
+		registe_single.setChecked(true);
 	   }
-	});
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
@@ -112,10 +116,14 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
 	} else {
 
-	   if (holder.getAdapterPosition() == 0) {
+	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
 		mRightDelete.setVisibility(View.GONE);
-	   } else if (item.deviceName.equals("")) {
-		mRightDelete.setVisibility(View.VISIBLE);
+	   }else {
+		if (holder.getAdapterPosition() == 0) {
+		   mRightDelete.setVisibility(View.GONE);
+		} else if (item.deviceName.equals("")) {
+		   mRightDelete.setVisibility(View.VISIBLE);
+		}
 	   }
    }
 
@@ -167,11 +175,9 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 	   view.findViewById(R.id.type_de).setVisibility(View.GONE);
 	   disableRadioGroup(mGroup);
-	   mRightDelete.setVisibility(View.GONE);
 	} else {
 	   view.findViewById(R.id.type_de).setVisibility(View.VISIBLE);
 	   enableRadioGroup(mGroup);
-	   mRightDelete.setVisibility(View.VISIBLE);
 	}
 	mHeadAdapter.addHeaderView(view);
 	mHeadAdapter.setOnItemClickListener(new OnItemClickListener() {

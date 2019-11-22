@@ -6,13 +6,12 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.ruihua.libconsumables.ConsumableManager;
 
 import java.util.List;
 
-import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.fragment.RegisteLockFrag;
 import high.rivamed.myapplication.utils.EventBusUtils;
 
 /**
@@ -49,7 +48,7 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemSettingOpen.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = Eth002Manager.getEth002Manager().openDoor(item);
+            int ret = ConsumableManager.getManager().openDoor(item);
             EventBusUtils.post(new Event.lockType(1,ret,item));
 
          }
@@ -57,7 +56,7 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemSettingStats.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = Eth002Manager.getEth002Manager().checkDoorState(item);
+            int ret = ConsumableManager.getManager().checkDoorState(item);
             EventBusUtils.post(new Event.lockType(2,ret,item));
 
          }
@@ -65,8 +64,8 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemRegisteFinger.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret =  Eth002Manager.getEth002Manager().fingerReg(item);
-            EventBusUtils.post(new Event.lockType(3,ret,item));
+//            int ret =  FingerManager.getManager().startRegisterFinger(item);
+//            EventBusUtils.post(new Event.lockType(3,ret,item));
 
          }
       });

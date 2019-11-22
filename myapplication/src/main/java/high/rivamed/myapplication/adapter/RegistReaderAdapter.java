@@ -60,7 +60,7 @@ public class RegistReaderAdapter extends BaseQuickAdapter<String, BaseViewHolder
       });
       itemStopScan.setOnClickListener(view->{
 
-         List<DeviceInfo> connectedDevices = ReaderManager.getManager().getConnectedDevice();
+         List<DeviceInfo> connectedDevices = ReaderManager.getManager().getConnectedReader();
          String ss = "";
          for (DeviceInfo de : connectedDevices) {
             String  mDiviceId = de.getIdentification();

@@ -287,7 +287,25 @@ public class ThingDto implements Serializable{
         private String            deviceId;
         private String            deviceType;
         private String            parent;
+        private String            cabinetNum;//柜子编号：同个编号表示同一个柜子
+        private String            cabinetType;//柜子类型：1：上柜 -1：下柜 0：单柜
         private List<DevicesBean> devices;
+
+        public String getCabinetNum() {
+            return cabinetNum;
+        }
+
+        public void setCabinetNum(String cabinetNum) {
+            this.cabinetNum = cabinetNum;
+        }
+
+        public String getCabinetType() {
+            return cabinetType;
+        }
+
+        public void setCabinetType(String cabinetType) {
+            this.cabinetType = cabinetType;
+        }
 
         public String getDeviceName() { return deviceName;}
 
