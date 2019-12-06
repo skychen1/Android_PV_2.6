@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.rivamed.FingerManager;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.rivamed.libdevicesbase.base.FunctionCode;
+import com.rivamed.libdevicesbase.utils.FilesUtils;
 import com.ruihua.face.recognition.FaceManager;
 import com.ruihua.face.recognition.config.FaceCode;
 import com.ruihua.face.recognition.ui.RgbDetectActivity;
@@ -37,7 +38,6 @@ import high.rivamed.myapplication.dto.RegisterWandaiDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
-import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.FileEncoder;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RxPermissionUtils;
@@ -47,6 +47,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 
+import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
@@ -131,6 +132,13 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventFingerTime(Event.EventFingerTime event) {
+	//	EventBusUtils.postSticky(new Event.EventLoading(false));
+	if (mOneFingerDialog != null) {
+	   mOneFingerDialog.mFingerTime.setText(event.time/1000+"");
+	}
+   }
 
    /**
     * 指纹注册弹出窗
@@ -139,38 +147,46 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventFingerDialog(Event.EventFingerReg event) {
-	EventBusUtils.postSticky(new Event.EventLoading(false));
-	if (event.type) {
-	   mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
-										new OnfingerprintBackListener() {
-										   @Override
-										   public void OnfingerprintBack() {
-											if (mOneFingerDialog.mDialogBtn.getText()
-												.equals("重试")) {
-											   setEth002FingerReg();
-											   mOneFingerDialog.mErrorText.setVisibility(
-												   View.GONE);
-											} else {
-											   List<String> list = new ArrayList<>();
-											   if (mFingerData != null) {
-												list.add(mFingerData);
-											   }
-											   Log.i("fadeee",
-												   "list.size()   " +
-												   list.size());
-											   if (list.size() == 1) {
-												bindFingerPrint(list);
-											   } else {
-												ToastUtils.showShort(
-													"采集失败,请重试");
-											   }
-											}
-											mOneFingerDialog.mDialog.dismiss();
-										   }
-										});
-	} else {
-	   ToastUtils.showShortToast("指纹注册发起失败，请重试！");
+//	EventBusUtils.postSticky(new Event.EventLoading(false));
+	if (mOneFingerDialog!=null){
+	   if (event.msg==0){
+		mOneFingerDialog.mFingerTitle2.setText("请抬起手指");
+	   }else {
+		mOneFingerDialog.mFingerTitle2.setText("将识别手指2次，请勿离开");
+	   }
+
 	}
+//	if (event.msg) {
+//	   mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
+//										new OnfingerprintBackListener() {
+//										   @Override
+//										   public void OnfingerprintBack() {
+//											if (mOneFingerDialog.mDialogBtn.getText()
+//												.equals("重试")) {
+//											   setEth002FingerReg();
+//											   mOneFingerDialog.mErrorText.setVisibility(
+//												   View.GONE);
+//											} else {
+//											   List<String> list = new ArrayList<>();
+//											   if (mFingerData != null) {
+//												list.add(mFingerData);
+//											   }
+//											   Log.i("fadeee",
+//												   "list.size()   " +
+//												   list.size());
+//											   if (list.size() == 1) {
+//												bindFingerPrint(list);
+//											   } else {
+//												ToastUtils.showShort(
+//													"采集失败,请重试");
+//											   }
+//											}
+//											mOneFingerDialog.mDialog.dismiss();
+//										   }
+//										});
+//	} else {
+//	   ToastUtils.showShortToast("指纹注册发起失败，请重试！");
+//	}
    }
 
    /**
@@ -181,13 +197,13 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventFingerReg(Event.EventFingerRegEnter event) {
 	mFingerData = event.fingerData;
-	if (event.type) {
+	if (event.type==0) {
 	   if (mOneFingerDialog != null) {
 		mOneFingerDialog.setSuccess();
 	   }
 	} else {
 	   if (mOneFingerDialog != null) {
-		mOneFingerDialog.setError();
+		mOneFingerDialog.setError(event.msg);
 	   }
 	}
    }
@@ -196,7 +212,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	super.initDataAndEvent(savedInstanceState);
 	//	mSettingPassLL.setVisibility(View.GONE);//隐藏底部紧急登录修改密码
-
+	FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
 	mBaseTabBack.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setVisibility(View.VISIBLE);
 	mBaseTabTvTitle.setText("登录设置");
@@ -353,11 +369,45 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
 	for (DeviceInfo info : deviceInfos) {
 	   String identification = info.getIdentification();
-	   int ret = FingerManager.getManager().startReadFinger(identification);
-	   if (ret == 0) {
-		EventBusUtils.postSticky(new Event.EventLoading(true));
-	   } else if (ret == 2) {
+	   Log.i("appSatus","appSatus   "+identification);
+	   FingerManager.getManager().stopReadFinger(identification);
+	   int ret = FingerManager.getManager().startRegisterFinger(identification, 10 * 1000, FilesUtils.getFilePath(mContext));
+	   Log.i("appSatus","ret   "+ret);
+	   if (ret == FunctionCode.SUCCESS) {
+		mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
+										   new OnfingerprintBackListener() {
+											@Override
+											public void OnfingerprintBack() {
+											   Log.i("fadeee", "OnfingerprintBack   " );
+											   if (mOneFingerDialog.mDialogBtn.getText()
+												   .equals("重试")) {
+												mOneFingerDialog.mErrorText.setVisibility(
+													View.GONE);
+												mOneFingerDialog.mDialog.dismiss();
+												setEth002FingerReg();
+
+											   } else {
+												List<String> list = new ArrayList<>();
+												if (mFingerData != null) {
+												   list.add(mFingerData);
+												}
+												Log.i("fadeee",
+													"list.size()   " +
+													list.size());
+												if (list.size() == 1) {
+												   bindFingerPrint(list);
+												} else {
+												   ToastUtils.showShort(
+													   "采集失败,请重试");
+												}
+												mOneFingerDialog.mDialog.dismiss();
+											   }
+
+											}
+										   });
+	   } else if (ret == FunctionCode.DEVICE_BUSY) {
 		ToastUtils.showShortToast("设备正在运行，请稍后重试！");
+		FingerManager.getManager().stopRegisterFinger(identification);
 	   } else {
 		ToastUtils.showShortToast("操作失败，请重试！");
 	   }

@@ -113,23 +113,37 @@ public class Event {
     */
    public static class EventFingerRegEnter {
 
-	public boolean type;
+	public int type;
 	public String fingerData;
+	public String msg;
 
-	public EventFingerRegEnter(boolean type,String fingerData) {
+	public EventFingerRegEnter(int type,String fingerData,String msg) {
 	   this.type = type;
 	   this.fingerData = fingerData;
+	   this.msg = msg;
 	}
    }
    /**
     * FingerReg发起注册
     */
+   public static class EventFingerTime {
+
+	public long time;
+
+	public EventFingerTime(long time) {
+	   this.time = time;
+	}
+   }
+
+   /**
+    * FingerReg 手指抬起的提示 0抬起，1正常
+    */
    public static class EventFingerReg {
 
-	public boolean type;
+	public int msg;
 
-	public EventFingerReg(boolean type) {
-	   this.type = type;
+	public EventFingerReg(int msg) {
+	   this.msg = msg;
 	}
    }
    /**

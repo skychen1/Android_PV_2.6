@@ -51,6 +51,8 @@ public class OneFingerDialog extends Dialog {
         private int mRightTextColor;
         public TextView mDialogBtn;
         private TextView mFingerTitle;
+        public TextView mFingerTitle2;
+        public TextView mFingerTime;
         public TextView mErrorText;
         private ImageView mFingerIcon;
         private ImageView mFingerSuccess;
@@ -104,11 +106,12 @@ public class OneFingerDialog extends Dialog {
                 mErrorText.setVisibility(View.GONE);
             }
         }
-        public void setError() {
+        public void setError(String msg) {
             if (mFingerSuccess != null) {
                 mFingerSuccess.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.hccz_ic_xx));
                 mFingerSuccess.setVisibility(View.VISIBLE);
                 mDialogBtn.setText("重试");
+//                mErrorText.setText(msg);
                 mErrorText.setVisibility(View.VISIBLE);
             }
         }
@@ -126,6 +129,8 @@ public class OneFingerDialog extends Dialog {
 
             mDialogBtn = (TextView) layout.findViewById(R.id.dialog_right);
             mFingerTitle = (TextView) layout.findViewById(R.id.finger_title);
+            mFingerTitle2 = (TextView) layout.findViewById(R.id.title2_text);
+            mFingerTime = (TextView) layout.findViewById(R.id.finger_time);
             mErrorText = (TextView) layout.findViewById(R.id.error_text);
             mCloss = (ImageView) layout.findViewById(R.id.dialog_closs);
             mFingerIcon = (ImageView) layout.findViewById(R.id.finger_icon);

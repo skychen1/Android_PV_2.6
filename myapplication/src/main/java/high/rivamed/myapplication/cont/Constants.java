@@ -99,8 +99,8 @@ public class Constants {
    public static final String SAVE_MENU_DOWN_TYPE_ALL = "SAVE_MENU_DOWN_TYPE_ALL";//权限配置项存入耗材操作选择操作是否有数据
    public static final String READER_TYPE             = "2";//reader的type
    public static final String CONSUMABLE_TYPE         = "1";//主板type
-   public static final String IC_TYPE                 = "3";//IC卡type
-   public static final String FINGER_TYPE             = "4";//指纹仪type
+   public static final String IC_TYPE                 = "4";//IC卡type
+   public static final String FINGER_TYPE             = "3";//指纹仪type
    public static final String SN_NUMBER               = "sn_number";
    public static final String THING_CODE              = "thing_code";
    public static final String SAVE_REGISTE_DATE       = "registe_date";//预注册保存到本地的数据

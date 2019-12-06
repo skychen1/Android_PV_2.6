@@ -16,7 +16,6 @@ import com.lzy.okgo.cache.CacheMode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ToastUtils;
 import com.rivamed.libidcard.IdCardManager;
-import com.rivamed.libidcard.IdCardProducerType;
 import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
@@ -36,6 +35,8 @@ import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
 import okhttp3.OkHttpClient;
+
+import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
 
 //import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
@@ -115,8 +116,10 @@ public class App extends Application {
 
 		int i = ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
 		Log.i("dddda","fdfdfd             "+i);
-		IdCardManager.getIdCardManager().connectIdCard(mAppContext, IdCardProducerType.TYPE_NET_AN_DE);
+		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
 		int connect = ConsumableManager.getManager().connect();
+		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
+
 		Log.i("dddda","connect             "+connect);
 
 	   }

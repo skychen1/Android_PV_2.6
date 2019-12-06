@@ -274,19 +274,27 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onRegisterResult(String deviceId, int code, String features, List<String> fingerPicPath, String msg) {
+		Log.i("appSatus","deviceId   "+deviceId);
+		EventBusUtils.post(new Event.EventFingerRegEnter(code,features,msg));
 //		appendLog("设备：：" + deviceId + "注册结果码是：：" + code + "\n>>>>>>>" + msg
 //			    + "\n指纹照片数据：：" + (fingerPicPath == null ? 0 : fingerPicPath.size()) + "\n特征值是：：：" + features);
 		//收到注册结果标识注册完成就开启读取
+
 	   }
 
 	   @Override
 	   public void onFingerUp(String deviceId) {
+		Log.i("appSatus","请抬起手指   "+deviceId);
 //		appendLog("设备：：" + deviceId + "请抬起手指：");
+		EventBusUtils.post(new Event.EventFingerReg(0));
 	   }
 
 	   @Override
 	   public void onRegisterTimeLeft(String deviceId, long time) {
+		Log.i("appSatus","请抬起手指   "+time);
 //		setLog("设备：：" + deviceId + "剩余注册时间：：" + time + "\n");
+		EventBusUtils.post(new Event.EventFingerTime(time));
+		EventBusUtils.post(new Event.EventFingerReg(1));
 	   }
 	});
    }

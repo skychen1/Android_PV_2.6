@@ -11,6 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libidcard.IdCardManager;
+
+import java.util.List;
+
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 
@@ -124,6 +129,10 @@ public class BindIdCardDialog extends Dialog {
             mLlSuccess.setVisibility(View.INVISIBLE);
             mRlLoading.setVisibility(View.VISIBLE);
             mTvError.setText("正在读取...");
+            List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager().getConnectedDevice();
+            for (DeviceInfo info : connectedDevice) {
+                IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
+            }
             mCloss.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -17,14 +17,24 @@
         android:text="指纹绑定"
         android:textColor="@color/color_drak_green"
         android:textSize="@dimen/textsize_18" />
+    <TextView
+        android:id="@+id/finger_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/x39"
+        android:layout_marginTop="@dimen/y20"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/color_red"
+        android:textSize="@dimen/textsize_18" />
 
     <TextView
+        android:id="@+id/title2_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/finger_title"
-        android:layout_marginTop="@dimen/x25"
+        android:layout_marginTop="@dimen/y25"
         android:paddingLeft="@dimen/x39"
-        android:text="将识别手指三次，请勿离开"
+        android:text="将识别手指2次，请勿离开"
         android:textColor="@color/color_red"
         android:textSize="@dimen/textsize_15" />
 

@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.rivamed.FingerManager;
+import com.rivamed.libidcard.IdCardManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,6 +40,7 @@ import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
@@ -59,6 +62,7 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.LoadingDialog;
 
+import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -73,6 +77,8 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_046;
+import static high.rivamed.myapplication.cont.Constants.FINGER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.IC_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
@@ -222,8 +228,16 @@ public class LoginActivity extends SimpleActivity {
 	}else {
 	   mLoginLogo.setImageBitmap(bitmap);
 	}
-
-//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
+	FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
+	BoxIdBean idBean = LitePal.where("name = ?", FINGER_TYPE).findFirst(BoxIdBean.class);
+	BoxIdBean idIc = LitePal.where("name = ?", IC_TYPE).findFirst(BoxIdBean.class);
+	if (idBean!=null){
+	   FingerManager.getManager().startReadFinger(idBean.getDevice_id());
+	}
+	if (idIc!=null){
+	   IdCardManager.getIdCardManager().startReadCard(idIc.getDevice_id());
+	}
+	//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
 	}
