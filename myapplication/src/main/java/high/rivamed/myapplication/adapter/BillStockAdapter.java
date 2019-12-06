@@ -149,7 +149,7 @@ public class BillStockAdapter extends BaseQuickAdapter<BillStockResultBean.Order
                     }
                     LogUtils.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
                     if (mTbaseDevices.size() > 0) {
-                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                        AllDeviceCallBack.getInstance().openDoor("", mTbaseDevices);
                     } else {
                         ToastUtils.showShortToast("无柜子信息！");
                     }

@@ -84,11 +84,11 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
-import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType3;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.setMoreOpenDoor;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
@@ -582,7 +582,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mBaseGifImageView.setVisibility(View.VISIBLE);
 	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 	mBaseGifImageView.setImageDrawable(drawable);
-	getDoorStatus();
+//	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	mBoxsize = mGson.fromJson(string,
 					  new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
@@ -770,10 +770,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 			mPatientId = null;
 		   }
 		   setRemoveRunnable();
-		   for (String deviceInventoryVo : mEthDeviceIdBack) {
-			String deviceCode = deviceInventoryVo;
-			ConsumableManager.getManager().openDoor(deviceCode,0);
-		   }
+		   setMoreOpenDoor();
 		} else {
 		   ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		}

@@ -72,7 +72,7 @@
 			android:layout_centerVertical="true"
 			android:layout_gravity="center_vertical"
 			android:background="@color/bg_green"
-			android:maxLength="5"
+			android:maxLength="10"
 			android:text="高值柜"
 			android:maxLines="1" android:singleLine="true"
 			android:paddingLeft="@dimen/x20"

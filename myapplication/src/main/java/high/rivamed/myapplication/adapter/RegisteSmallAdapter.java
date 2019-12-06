@@ -45,28 +45,29 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 
 public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseViewHolder> {
 
-   private boolean            mType     = false;
-   private SparseBooleanArray mExpanded = new SparseBooleanArray();
+   private boolean                         mType     = false;
+   private SparseBooleanArray              mExpanded = new SparseBooleanArray();
    public  RegisteContextAdapter           mHeadAdapter;
    private List<TBaseDevices.tBaseDevices> mList;
    public  EditText                        mLeftName;
    public  TextView                        mLeftCode;
-   public ImageView mRightDelete;
-   public RadioGroup mGroup;
-   public RadioButton registe_top;
-   public RadioButton registe_down;
-   public RadioButton registe_single;
+   public  ImageView                       mRightDelete;
+   public  RadioGroup                      mGroup;
+   public  RadioButton                     registe_top;
+   public  RadioButton                     registe_down;
+   public  RadioButton                     registe_single;
 
    //   public RecyclerView mRecyclerView2;
-//   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
-//   public static TBaseThingDto.TBaseDeviceVo mMTBaseThingVoBean;
+   //   public static List<TBaseThingDto.TBaseDeviceVo.TBaseDevice> tBaseDevice ;//柜子内部数据
+   //   public static TBaseThingDto.TBaseDeviceVo mMTBaseThingVoBean;
 
    public RegisteSmallAdapter(
 	   int layoutResId, @Nullable List<TBaseDevices> data) {
 	super(layoutResId, data);
    }
+
    public void disableRadioGroup(RadioGroup testRadioGroup) {
-//	ToastUtils.showShortToast("已经激活，点击无效！");
+	//	ToastUtils.showShortToast("已经激活，点击无效！");
 	for (int i = 0; i < testRadioGroup.getChildCount(); i++) {
 	   testRadioGroup.getChildAt(i).setEnabled(false);
 	}
@@ -80,27 +81,45 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
    @Override
    protected void convert(final BaseViewHolder holder, TBaseDevices item) {
-//	mMTBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
+	//	mMTBaseThingVoBean = new TBaseThingDto.TBaseDeviceVo();
 	mLeftName = (EditText) holder.getView(R.id.head_left_name);
 	mLeftCode = (TextView) holder.getView(R.id.gone_box_code);
 	mGroup = (RadioGroup) holder.getView(R.id.registe_head_rg);
 	registe_top = (RadioButton) holder.getView(R.id.registe_top);
 	registe_down = (RadioButton) holder.getView(R.id.registe_down);
 	registe_single = (RadioButton) holder.getView(R.id.registe_single);
-
-	   if (item.getCabinetType().equals("1")){
-		registe_top.setChecked(true);
-		registe_down.setChecked(false);
-		registe_single.setChecked(false);
-	   }else if (item.getCabinetType().equals("-1")){
-		registe_top.setChecked(false);
-		registe_down.setChecked(true);
-		registe_single.setChecked(false);
-	   }else if (item.getCabinetType().equals("0")){
-		registe_top.setChecked(false);
-		registe_down.setChecked(false);
-		registe_single.setChecked(true);
+	String trim = mLeftName.getText().toString().trim();
+	registe_single.setChecked(true);
+	mLeftName.setText(trim + "(单)");
+	mGroup.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+	   switch (checkedId) {
+		case R.id.registe_top:
+		   //		   mBoxType = "1";
+		   mLeftName.setText(trim + "(上)");
+		   break;
+		case R.id.registe_down:
+		   //		   mBoxType = "-1";
+		   mLeftName.setText(trim + "(下)");
+		   break;
+		case R.id.registe_single:
+		   //		   mBoxType = "0";
+		   mLeftName.setText(trim + "(单)");
+		   break;
 	   }
+	});
+	if (item.getCabinetType()!=null&&item.getCabinetType().equals("1")) {
+	   registe_top.setChecked(true);
+	   registe_down.setChecked(false);
+	   registe_single.setChecked(false);
+	} else if (item.getCabinetType()!=null&&item.getCabinetType().equals("2")) {
+	   registe_top.setChecked(false);
+	   registe_down.setChecked(true);
+	   registe_single.setChecked(false);
+	} else if (item.getCabinetType()!=null&&item.getCabinetType().equals("0")) {
+	   registe_top.setChecked(false);
+	   registe_down.setChecked(false);
+	   registe_single.setChecked(true);
+	}
 	final RecyclerView mRecyclerView2 = (RecyclerView) holder.getView(R.id.recyclerview2);
 	mRightDelete = (ImageView) holder.getView(R.id.right_delete);
 	final ImageView rightFold = (ImageView) holder.getView(R.id.right_fold);
@@ -116,16 +135,16 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 
 	} else {
 
-	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)){
+	   if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
 		mRightDelete.setVisibility(View.GONE);
-	   }else {
+	   } else {
 		if (holder.getAdapterPosition() == 0) {
 		   mRightDelete.setVisibility(View.GONE);
 		} else if (item.deviceName.equals("")) {
 		   mRightDelete.setVisibility(View.VISIBLE);
 		}
 	   }
-   }
+	}
 
 	rightFold.setOnClickListener(new View.OnClickListener() {
 	   @Override
@@ -152,7 +171,7 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 		LogUtils.i(TAG, "holder.getAdapterPosition()   " + holder.getAdapterPosition());
 		LogUtils.i(TAG, "RegisteFrag.mDeviceVos.size()   " + RegisteFrag.mDeviceVos.size());
 		mData.remove(holder.getAdapterPosition());
-		if (RegisteFrag.mDeviceVos.size()>holder.getAdapterPosition()){
+		if (RegisteFrag.mDeviceVos.size() > holder.getAdapterPosition()) {
 		   RegisteFrag.mDeviceVos.remove(holder.getAdapterPosition());
 		}
 		notifyItemRemoved(holder.getAdapterPosition());
@@ -160,12 +179,10 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	});
 
 	mList = item.getList();
-//	tBaseDevice = new ArrayList<>();//柜子内部数据
+	//	tBaseDevice = new ArrayList<>();//柜子内部数据
 
 	mHeadAdapter = new RegisteContextAdapter(R.layout.item_foot_small_layout, mList,
 							     mRecyclerView2, holder.getAdapterPosition());
-
-
 
 	mRecyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
 	mRecyclerView2.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
@@ -188,6 +205,5 @@ public class RegisteSmallAdapter extends BaseQuickAdapter<TBaseDevices, BaseView
 	});
 
    }
-
 
 }

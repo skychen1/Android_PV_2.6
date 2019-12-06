@@ -43,8 +43,8 @@ import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
-import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
+import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.fragment.TimelyAllFrag.mTimelyOnResume;
 import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LoginUtils.getEpcFilte;
@@ -125,16 +125,16 @@ public class AllDeviceCallBack {
    /**
     * 开柜,开柜子获得reader的标识
     *
-    * @param position
+    * @param deviceId
     * @param mTbaseDevices
     */
    public void openDoor(
-	   int position, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
+	   String deviceId, List<BoxSizeBean.DevicesBean> mTbaseDevices) {
 	mBomDoorDeviceIdList = DevicesUtils.getBomDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	stopScan();
-	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
-	String mDeviceCode = devicesBean.getDeviceId();
+//	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
+//	String mDeviceCode = devicesBean.getDeviceId();
 
 	if (mReaderIdList != null) {
 	   mReaderIdList.clear();
@@ -142,24 +142,22 @@ public class AllDeviceCallBack {
 	   mReaderIdList = new ArrayList<>();
 	}
 	LogUtils.i(TAG, " mBomDoorDeviceIdList.size   " + mBomDoorDeviceIdList.size());
-	setReaderList(mDeviceCode);
+	setReaderList(deviceId);
 
 	if (mTbaseDevices.size() > 1 && mBomDoorDeviceIdList.size() > 1) {
-	   if (position == 0) {//第一个为全部开柜
-		LogUtils.i(TAG, " position   " + position);
+	   if (deviceId.equals("")) {//第一个为全部开柜
 		//		initCallBack();
 		for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
-		   LogUtils.i(TAG,
-				  " mBomDoorDeviceIdList.get(i)   " + (String) mBomDoorDeviceIdList.get(i));
-		   ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
+		   LogUtils.i(TAG, " mBomDoorDeviceIdList.get(i)   " + (String) mBomDoorDeviceIdList.get(i));
+		   ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i));
 		}
 	   } else {
-		LogUtils.i(TAG, " DDD  mDeviceCode 1   " + mDeviceCode);
-		queryDoorId(mDeviceCode);
+//		LogUtils.i(TAG, " DDD  mDeviceCode 1   " + mDeviceCode);
+		queryDoorId(deviceId);
 	   }
 	} else {
-	   LogUtils.i(TAG, " DDD  mDeviceCode 2   " + mDeviceCode);
-	   queryDoorId(mDeviceCode);
+//	   LogUtils.i(TAG, " DDD  mDeviceCode 2   " + mDeviceCode);
+	   queryDoorId(deviceId);
 	}
 
    }
@@ -172,13 +170,14 @@ public class AllDeviceCallBack {
 	for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
 								    CONSUMABLE_TYPE).find(BoxIdBean.class);
-	   LogUtils.i(TAG, " boxIdBeans.size  " + boxIdBeans.size());
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(mBomDoorDeviceIdList.get(i))) {
-		   LogUtils.i(TAG, " mBomDoorDeviceIdList.get(i)   " + (String) mBomDoorDeviceIdList.get(i));
-		   ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
-//		   EventBusUtils.post(new Event.EventBoolean(true, (String) mBomDoorDeviceIdList.get(i)));
+		   if (boxIdBean.getCabinetType().equals("1")||boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜
+			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
+		   }else if (boxIdBean.getCabinetType().equals("2")){
+			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),1);
+		   }
 		}
 	   }
 	}
@@ -189,7 +188,7 @@ public class AllDeviceCallBack {
     *
     * @param deviceIndentify
     */
-   public void startScan(String deviceIndentify) {
+   public void startScan(String deviceIndentify,int which) {
 	LogUtils.i(TAG, "deviceIndentify    " + deviceIndentify + "    ");
 	BoxIdBean boxIdBean = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 							CONSUMABLE_TYPE)
@@ -305,45 +304,46 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onOpenDoor(String deviceId, int which, boolean isSuccess) {
 //		appendLog("设备：：" + deviceId + "开锁：：：" + which + ":::的结果是：：：" + isSuccess);
-		getDoorStatus();
+		Log.i("onDoorState","onOpenDoor 开锁：：" + deviceId + "状态：：：" + which + ":::的结果是：：：" + isSuccess);
 		if (isSuccess) {
 		   Log.i("outtccc", "柜门已开    " );
-		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId));
+		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId+which));
 		}
 		if (mEthDeviceIdBack.size() > 0) {
-		   if (!getStringType(mEthDeviceIdBack,deviceId)){
-			mEthDeviceIdBack.add(deviceId);
+		   if (!getStringType(mEthDeviceIdBack,deviceId+which)){
+			mEthDeviceIdBack.add(deviceId+which);
 		   }
 		} else {
-		   mEthDeviceIdBack.add(deviceId);
+		   mEthDeviceIdBack.add(deviceId+which);
 		}
 		mEthDeviceIdBack2.clear();
 		mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 		mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
+		getDoorStatus();
 	   }
 
 	   @Override
 	   public void onCloseDoor(String deviceId, int which, boolean isSuccess) {
-		getDoorStatus();
-		Log.i("outtccc", "柜门已关闭    " );
-		EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId));
-		LogUtils.i(TAG, "onDoorClosed  " + mEthDeviceIdBack2.size() + "   " +
-				    mEthDeviceIdBack.size());
+
+		Log.i("onDoorState","onCloseDoor设备：：" + deviceId + "状态：：：" + which + ":::的结果是：：：" + isSuccess);
+		EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId+which));
+		LogUtils.i("onDoorState", "onDoorClosed  " + mEthDeviceIdBack2.size() + "   " + mEthDeviceIdBack.size());
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
-		   startScan(deviceId);
+		   startScan(deviceId,which);
 		} else {//正常开门
 		   for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
-			if (mEthDeviceIdBack2.get(i).equals(deviceId)) {
+			if (mEthDeviceIdBack2.get(i).equals(deviceId+which)) {
 			   mEthDeviceIdBack2.remove(i);
 			}
 		   }
 		}
+		getDoorStatus();
 	   }
 
 	   @Override
 	   public void onDoorState(String deviceId, int which, boolean state) {
-//		appendLog("设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
-		EventBusUtils.postSticky(new Event.EventDoorStatus(deviceId, state));
+		Log.i("onDoorState","onDoorState设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
+		EventBusUtils.postSticky(new Event.EventDoorStatus(deviceId+which, state));
 	   }
 
 	   @Override

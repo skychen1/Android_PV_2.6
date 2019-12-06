@@ -1,6 +1,11 @@
 package high.rivamed.myapplication.adapter;
 
-import android.widget.TextView;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.RadioGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -9,6 +14,10 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BoxSizeBean;
+import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -23,28 +32,43 @@ import high.rivamed.myapplication.bean.BoxSizeBean;
  */
 
 public class HomeFastOpenAdapter
-	extends BaseQuickAdapter<BoxSizeBean.DevicesBean, BaseViewHolder> {
+	extends BaseQuickAdapter<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean, BaseViewHolder> {
 
-   TextView mFastopenTitle;
+   public HomeBoxAdapter mDataAdapter;
+   public RadioGroup  RadioGroup;
 
-   public HomeFastOpenAdapter(int layout, List<BoxSizeBean.DevicesBean> data) {
-	super(layout, data);
+   public HomeFastOpenAdapter(@Nullable List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean> data,
+					RadioGroup RadioGroup) {
+	super(R.layout.item_home_box_layout, data);
+	this.RadioGroup = RadioGroup ;
    }
 
    @Override
-   protected void convert(BaseViewHolder helper, BoxSizeBean.DevicesBean item) {
-	findId(helper);
-	if (item.getDeviceName().equals("全部")){
-	   mFastopenTitle.setText(item.getDeviceName()+"开柜");
-	}else {
-	   mFastopenTitle.setText(item.getDeviceName());
-	}
-
-   }
-
-   private void findId(BaseViewHolder helper) {
-
-	mFastopenTitle = ((TextView) helper.getView(R.id.fastopen_title));
+   protected void convert(BaseViewHolder helper, BoxSizeBean.DeviceTypeVoBean.DeviceVosBean item) {
+	RecyclerView mRecyclerView=(RecyclerView)helper.getView(R.id.recyclerviews);
+	mDataAdapter = new HomeBoxAdapter(item.getDevices());
+	mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+	mRecyclerView.setAdapter(mDataAdapter);
+	mDataAdapter.setOnItemClickListener(new OnItemClickListener() {
+	   @Override
+	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+		int id = RadioGroup.getCheckedRadioButtonId();
+		if (id == -1) {
+		   ToastUtils.showShortToast("请选择操作方式！");
+		} else {
+		   //点击柜子进行操作
+		   BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX item = (BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX) adapter
+			   .getItem(position);
+		   String deviceId = item.getDeviceId();
+		   Log.i("deviceId", "deviceId    " + deviceId + "    " + item.getDeviceName());
+		   if (!UIUtils.isFastDoubleClick3()) {
+			EventBusUtils.post(new Event.SelectOption(deviceId, id));
+		   } else {
+			ToastUtils.showShortToast("请勿频繁操作！");
+		   }
+		}
+	   }
+	});
 
    }
 }

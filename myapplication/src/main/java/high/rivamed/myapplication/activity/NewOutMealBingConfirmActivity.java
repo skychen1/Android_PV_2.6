@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ruihua.libconsumables.ConsumableManager;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -81,6 +80,7 @@ import static high.rivamed.myapplication.utils.LyDateUtils.getVosBoxIdVo;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosRemark;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.setMoreOpenDoor;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
@@ -660,14 +660,14 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			   Intent intent = new Intent(mContext, TemPatientBindActivity.class);
 			   intent.putExtra("type", TEMP_AFTERBIND);
 			   intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
-			   intent.putExtra("position", -1000);
+			   intent.putExtra("deviceId", "-1000");
 			   intent.putExtra("GoneType", "VISIBLE");
 			   startActivity(intent);
 			} else {
 			   EventBusUtils.postSticky(new Event.EventButGone(true));//禁止触摸
 			   Intent intent = new Intent(mContext, TemPatientBindActivity.class);
 			   intent.putExtra("type", TEMP_AFTERBIND);
-			   intent.putExtra("position", -1000);
+			   intent.putExtra("deviceId", "-1000");
 			   intent.putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices);
 			   intent.putExtra("GoneType", "GONE");
 			   startActivity(intent);
@@ -941,10 +941,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
    private void reOpenDoor() {
 	mLocalAllSize = mAllSize;
 	stopScan();
-	for (String deviceInventoryVo : mEthDeviceIdBack) {
-	   String deviceCode = deviceInventoryVo;
-	   ConsumableManager.getManager().openDoor(deviceCode,0);
-	}
+	setMoreOpenDoor();
    }
 
    @Override

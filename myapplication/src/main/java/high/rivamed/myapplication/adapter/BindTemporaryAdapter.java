@@ -62,23 +62,16 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
 
-        if (mSize==8){
-            if (item.getWardName()==null||item.getWardName().equals("")){
-                helper.setText(R.id.seven_eight, "/");
-            }else {
-                helper.setText(R.id.seven_eight, item.getWardName());
-            }
-            if (item.getSex()!=null){
-                mSeven_five.setText(item.getPatientName()+" - "+item.getSex());
-            }else {
-                mSeven_five.setText(item.getPatientName()!=null? item.getPatientName():"/");
-            }
+        if (mSize==10){
+            mSeven_five.setText(item.getPatientName()!=null? item.getPatientName():"/");
             mSeven_two.setText(item.getPatientWard()!=null? item.getPatientWard():"/");
             mSeven_three.setText(item.getFloor()!=null? item.getFloor():"/");
             mSeven_four.setText(item.getRoomName()!=null? item.getRoomName():"/");
-            mSeven_six.setText(item.getWardName()!=null? item.getWardName():"/");
-            mSeven_seven.setText(item.getBedNo()!=null? item.getBedNo():"/");
-            helper.setText(R.id.seven_eight,item.getSurgeryName()!=null? item.getSurgeryName():"/");
+            mSeven_six.setText(item.getSex()!=null? item.getSex():"/");
+            mSeven_seven.setText(item.getAge()!=null? item.getAge():"/");
+            helper.setText(R.id.seven_eight,item.getWardName()!=null? item.getWardName():"/");
+            helper.setText(R.id.seven_nine,item.getBedNo()!=null? item.getBedNo():"/");
+            helper.setText(R.id.seven_ten,item.getSurgeryName()!=null? item.getSurgeryName():"/");
         }else {
             if (item.getSex()!=null){
                 mSeven_two.setText(item.getPatientName()+" - "+item.getSex());

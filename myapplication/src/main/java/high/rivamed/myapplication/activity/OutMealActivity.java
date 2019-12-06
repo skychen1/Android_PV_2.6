@@ -322,7 +322,7 @@ public class OutMealActivity extends BaseSimpleActivity {
                         }
                     }
                     if (mTbaseDevicesFromEvent.size() > 0) {
-                        AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                        AllDeviceCallBack.getInstance().openDoor("", mTbaseDevicesFromEvent);
                     } else {
                         ToastUtils.showShortToast("无耗材柜数据");
                     }

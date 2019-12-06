@@ -21,6 +21,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.activity.RegisteActivity.mRegisteViewpager;
 import static high.rivamed.myapplication.base.App.mAppContext;
+import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 
 /**
@@ -81,6 +82,7 @@ public class RegisteRecoverFrag extends SimpleFragment {
 		ThingDto snRecoverBean = mGson.fromJson(result, ThingDto.class);
 		if (snRecoverBean.isOperateSuccess()){
 		   EventBusUtils.postSticky(snRecoverBean);
+		   SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
 		   mRegisteViewpager.setCurrentItem(0);
 		}else {
 		   ToastUtils.showShortToast("数据恢复失败！");

@@ -23,6 +23,15 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+   public static class SelectOption {
+	public String deviceId;
+	public int id;
+
+	public SelectOption(String deviceId,int id) {
+	   this.deviceId = deviceId;
+	   this.id = id;
+	}
+   }
    /**
     * 正在扫描:type :true是被占用无法开启扫描  start:true正在扫描
     */

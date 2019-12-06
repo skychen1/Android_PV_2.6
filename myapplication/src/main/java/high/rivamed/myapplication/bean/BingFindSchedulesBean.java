@@ -75,6 +75,7 @@ public class BingFindSchedulesBean implements Serializable {
         private String  operatingRoomNo;//手术间ID
         private String  idNo;//身份证
         private String  sex;//性别
+        private String  age;//年龄
         private String  tempPatientId;
         private boolean isCreate;
         private String medicalId;
@@ -85,7 +86,13 @@ public class BingFindSchedulesBean implements Serializable {
         private String surgeryName;
         private String patientWard ;//病舍
         private String floor ;//楼层
+        public String getAge() {
+            return age;
+        }
 
+        public void setAge(String age) {
+            this.age = age;
+        }
         public String getPatientWard() {
             return patientWard;
         }

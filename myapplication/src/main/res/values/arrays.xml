@@ -30,12 +30,14 @@
 		<item>手术间</item>
 		<item>临时患者</item>
 	</string-array>
-	<string-array name="eight_dialog_arrays">
+	<string-array name="ten_dialog_arrays">
 		<item>选择</item>
 		<item>病舍</item>
 		<item>楼层</item>
 		<item>手术室</item>
 		<item>患者姓名</item>
+		<item>性别</item>
+		<item>年龄</item>
 		<item>病区</item>
 		<item>床号</item>
 		<item>手术名称</item>

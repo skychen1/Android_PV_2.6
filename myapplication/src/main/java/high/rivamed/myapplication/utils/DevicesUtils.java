@@ -79,8 +79,7 @@ public class DevicesUtils {
    public static void getDoorStatus() {
 	List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
 	for (DeviceInfo s : deviceInfos) {
-	   ConsumableManager.getManager().checkDoorState(s.getIdentification(),0);
-//	   ConsumableManager.getManager().checkDoorState(s.getIdentification(),1);
+	   ConsumableManager.getManager().checkDoorState(s.getIdentification());
 	}
    }
 }

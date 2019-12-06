@@ -6,7 +6,8 @@
 			  android:layout_marginRight="@dimen/x30"
 			  android:gravity="center"
 			  android:id="@+id/ll"
-			  android:orientation="vertical">
+			  android:orientation="vertical"
+	>
 
 
 		<TextView
@@ -16,12 +17,28 @@
 			android:gravity="center"
 			android:padding="@dimen/y25"
 			android:drawableLeft="@drawable/bg_fastopen_icon_sel"
-			android:drawablePadding="@dimen/x20"
+			android:drawablePadding="@dimen/x10"
 			android:text="全部开柜"
 			android:maxLines="2"
 			android:background="@drawable/bg_fastopen_sel"
 			android:textColor="@color/selector_fastopen_text"
-			android:textSize="@dimen/textsize_18"/>
+			android:textSize="@dimen/textsize_18"
+			android:layout_marginBottom="@dimen/y25"
 
+			/>
 
+	<!--<TextView-->
+		<!--android:id="@+id/fastopen_title2"-->
+		<!--android:layout_width="@dimen/x250"-->
+		<!--android:layout_height="@dimen/y130"-->
+		<!--android:layout_marginTop="@dimen/y20"-->
+		<!--android:gravity="center"-->
+		<!--android:padding="@dimen/y25"-->
+		<!--android:drawableLeft="@drawable/bg_fastopen_icon_sel"-->
+		<!--android:drawablePadding="@dimen/x10"-->
+		<!--android:text="全部开柜"-->
+		<!--android:maxLines="2"-->
+		<!--android:background="@drawable/bg_fastopen_sel"-->
+		<!--android:textColor="@color/selector_fastopen_text"-->
+		<!--android:textSize="@dimen/textsize_18"/>-->
 </LinearLayout>

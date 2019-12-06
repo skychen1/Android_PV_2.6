@@ -166,7 +166,7 @@ public class OutMealTopSuitAdapter extends BaseQuickAdapter<OrderCstResultBean.S
                             mTbaseDevicesFromEvent.add(oneDoor);
                         }
                     }
-                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevicesFromEvent);
+                    AllDeviceCallBack.getInstance().openDoor("", mTbaseDevicesFromEvent);
 
                 } else {
                     ToastUtils.showShortToast("该耗材无耗材柜信息!");

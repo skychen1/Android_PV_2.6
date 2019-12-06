@@ -18,6 +18,7 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.CreatTempAdapter;
 import high.rivamed.myapplication.bean.SelectBean;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -49,10 +50,10 @@ public class CreatTempPopupWindow extends PopupWindow {
 
     private void heightMeth(int size) {
         ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
-        if (size > 8) {
-            lp.height = 370;
+        if (size > 6) {
+            lp.height = UIUtils.getContext().getResources().getDimensionPixelOffset(R.dimen.y61) * 6;
         } else {
-            lp.height = 62 * size;
+            lp.height = UIUtils.getContext().getResources().getDimensionPixelOffset(R.dimen.y61) * size;
         }
         mRecyclerView.setLayoutParams(lp);
     }

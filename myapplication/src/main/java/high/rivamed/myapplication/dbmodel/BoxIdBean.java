@@ -18,7 +18,7 @@ public class BoxIdBean extends LitePalSupport {
    private String device_id;//柜子部件的id
    private String box_id;//柜子id
    private String            cabinetNum;//柜子编号：同个编号表示同一个柜子
-   private String            cabinetType;//柜子类型：1：上柜 -1：下柜 0：单柜
+   private String            cabinetType;//柜子类型：1：上柜 2：下柜 0：单柜
 
    public String getCabinetNum() {
 	return cabinetNum;

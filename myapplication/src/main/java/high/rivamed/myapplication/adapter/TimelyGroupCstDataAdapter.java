@@ -39,10 +39,14 @@ public class TimelyGroupCstDataAdapter extends BaseQuickAdapter<InventoryVo, Bas
 	TextView seven_five =(TextView)helper.getView(R.id.seven_five);
 	TextView seven_six =(TextView)helper.getView(R.id.seven_six);
 	View mBody_line = (View) helper.getView(R.id.body_line);
-	if (item.getCountActual()!=item.getCountStock()){
+	if (item.getIsErrorOperation() != 1) {
+	   if (item.getCountActual()!=item.getCountStock()) {
+		seven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
+	   } else {
+		seven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
+	   }
+	} else {
 	   seven_five.setTextColor(mContext.getResources().getColor(R.color.color_red));
-	}else {
-	   seven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
 	}
 	if (helper.getAdapterPosition()==this.getItemCount()-1){
 	   mBody_line.setVisibility(View.GONE);

@@ -67,6 +67,7 @@ import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
+import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -139,10 +140,11 @@ public class RegisteFrag extends SimpleFragment {
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
    private       ThingDto                            mSnRecoverBean;
    public static List<ThingDto.DeviceVosBean>        mDeviceVos = new ArrayList<>();//柜子list
-   private       Thread                    mThread2;
+   private       Thread                              mThread2;
    private       String                              mBoxCode;
-   private String mBoxType ="0";
-   private RadioGroup mRadioGroup;
+   private       String                              mBoxType   = "0";
+   private       RadioGroup                          mRadioGroup;
+   private       String                              mHeadEndName;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -215,22 +217,27 @@ public class RegisteFrag extends SimpleFragment {
 	   }
 	});
    }
+
    public void getBoxSize() {
 	NetRequest.getInstance().loadBoxSize(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
-		mTitleConn=true;
+		mTitleConn = true;
 		Gson gson = new Gson();
 		BoxSizeBean boxSizeBean = gson.fromJson(result, BoxSizeBean.class);
 		List<BoxSizeBean.DevicesBean> devices = boxSizeBean.getDevices();
+
 		if (devices.size() > 1) {
 		   BoxSizeBean.DevicesBean tbaseDevicesBean = new BoxSizeBean.DevicesBean();
-//		   tbaseDevicesBean.setDeviceName("全部开柜");
+		   //		   tbaseDevicesBean.setDeviceName("全部开柜");
 		   tbaseDevicesBean.setDeviceName("全部");
 		   tbaseDevicesBean.setDeviceId("");
 		   devices.add(0, tbaseDevicesBean);
 		}
+		List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean> deviceVos = boxSizeBean.getDeviceTypeVo().getDeviceVos();
+
 		SPUtils.putString(mAppContext, BOX_SIZE_DATE, gson.toJson(devices));
+		SPUtils.putString(mAppContext, BOX_SIZE_DATE_HOME, gson.toJson(deviceVos));
 	   }
 
 	   @Override
@@ -239,6 +246,7 @@ public class RegisteFrag extends SimpleFragment {
 	   }
 	});
    }
+
    @Override
    public void onStart() {
 	super.onStart();
@@ -299,17 +307,17 @@ public class RegisteFrag extends SimpleFragment {
     * 获取logo
     */
    private void getLogos() {
-	NetRequest.getInstance().loadLogo(this,new BaseResult(){
+	NetRequest.getInstance().loadLogo(this, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogosBean logosBean = mGson.fromJson(result, LogosBean.class);
 		String loginPageLogo = logosBean.getHospitalFile().getLoginPageLogo();
 		String mainInterfaceLogo = logosBean.getHospitalFile().getMainInterfaceLogo();
-		boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo,"login_logo");
-		boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo,"home_logo");
+		boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo, "login_logo");
+		boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo, "home_logo");
 
-		Log.i("eees","图片loginPageLogo保存+     "+saveloginPageLogo);
-		Log.i("eees","图片mainInterfaceLogo保存+     "+savemainInterfaceLogo);
+		Log.i("eees", "图片loginPageLogo保存+     " + saveloginPageLogo);
+		Log.i("eees", "图片mainInterfaceLogo保存+     " + savemainInterfaceLogo);
 	   }
 	});
    }
@@ -347,7 +355,7 @@ public class RegisteFrag extends SimpleFragment {
 
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
-	Log.i("fadddde",mGson.toJson(mBaseDevices));
+	Log.i("fadddde", mGson.toJson(mBaseDevices));
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   mSwitch.setChecked(true);
 	} else {
@@ -464,7 +472,7 @@ public class RegisteFrag extends SimpleFragment {
    }
 
    //已有数据的时候   给激活之前添加界面数据
-   private void  setRegiestDate(String string) {
+   private void setRegiestDate(String string) {
 	mDeviceVos.clear();
 	ThingDto returnBean = mGson.fromJson(string, ThingDto.class);
 	List<ThingDto.DeviceVosBean> tBaseDeviceVos = returnBean.getDeviceVos();
@@ -595,6 +603,8 @@ public class RegisteFrag extends SimpleFragment {
 		boxIdBean1.setName(deviceName);
 		boxIdBean1.setBox_id(parent);
 		boxIdBean1.setDevice_id(identification);
+		boxIdBean1.setCabinetNum(b.getCabinetNum());
+		boxIdBean1.setCabinetType(b.getCabinetType());
 		boxIdBean1.save();
 	   }
 	}
@@ -602,18 +612,19 @@ public class RegisteFrag extends SimpleFragment {
 
    public ThingDto.DeviceVosBean getDeviceVos(int i) {
 	ThingDto.DeviceVosBean tBaseThingVoBean = new ThingDto.DeviceVosBean();
-	mHeadName = ((EditText) mRecyclerview.getChildAt(i).findViewById(R.id.head_left_name)).getText().toString().trim();
-	mBoxCode = ((TextView) mRecyclerview.getChildAt(i).findViewById(R.id.gone_box_code)).getText().toString().trim();
-	mRadioGroup = (RadioGroup) mRecyclerview.getChildAt(i)
-		.findViewById(R.id.registe_head_rg);
-	if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_top){
+	EditText nameText = (EditText) mRecyclerview.getChildAt(i).findViewById(R.id.head_left_name);
+	mHeadName = nameText.getText().toString().trim();
+	mBoxCode = ((TextView) mRecyclerview.getChildAt(i).findViewById(R.id.gone_box_code)).getText()
+		.toString()
+		.trim();
+	mRadioGroup = (RadioGroup) mRecyclerview.getChildAt(i).findViewById(R.id.registe_head_rg);
+	if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_top) {
 	   mBoxType = "1";
-	}else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_down){
-	   mBoxType = "-1";
-	}else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_single){
+	} else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_down) {
+	   mBoxType = "2";
+	} else if (mRadioGroup.getCheckedRadioButtonId() == R.id.registe_single) {
 	   mBoxType = "0";
 	}
-
 	tBaseThingVoBean.setDeviceName(mHeadName);
 	tBaseThingVoBean.setDeviceId(mBoxCode);
 	tBaseThingVoBean.setCabinetType(mBoxType);
@@ -643,7 +654,7 @@ public class RegisteFrag extends SimpleFragment {
 	   device.setIdentification(mFootMacStr);
 	   device.setIp(mFootIpStr);
 	   tBaseDevice.add(device);
-	   if (gone_devicetype.equals("1")){
+	   if (gone_devicetype.equals("1")) {
 		tBaseThingVoBean.setCabinetNum(mFootMacStr);
 	   }
 	}
@@ -695,12 +706,13 @@ public class RegisteFrag extends SimpleFragment {
 
    }
 
-   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn, R.id.frag_registe_txt})
+   @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn,
+	   R.id.frag_registe_txt})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
 		if (!UIUtils.isFastDoubleClick(view.getId())) {
-//		   mContext.startActivity(new Intent(mContext, RegisteBoxActivity.class));
+		   //		   mContext.startActivity(new Intent(mContext, RegisteBoxActivity.class));
 		   mRecyclerview.scrollToPosition(i);
 		   RecyclerView.LayoutManager layoutManager = mRecyclerview.getLayoutManager();
 		   LinearLayoutManager linearManager = (LinearLayoutManager) layoutManager;
@@ -725,12 +737,14 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
-		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim())*1000);
-		   if (time>=10000){
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim()) *
+				   1000);
+		   if (time >= 10000) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
 			COUNTDOWN_TIME = time;
-			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
-		   }else {
+			ToastUtils.showShortToast(
+				"设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
@@ -770,7 +784,8 @@ public class RegisteFrag extends SimpleFragment {
 				public void onSucceed(String result) {
 				   LogUtils.i(TAG, "result   " + result);
 				   ToastUtils.showShortToast("服务器已连接成功！");
-				   LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+				   LogUtils.i(TAG,
+						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
 
 				   mNameBean = mGson.fromJson(result, DeviceNameBeanX.class);
 				   mNameList = mNameBean.getDeviceDictVos();
@@ -822,8 +837,10 @@ public class RegisteFrag extends SimpleFragment {
 
 	   if (mSmallAdapter == null && y == 0) {
 		registeAddBean1.setDeviceName("1号柜");
+		registeAddBean1.setCabinetType(mBoxType);
 	   } else {
 		registeAddBean1.setDeviceName("");
+		registeAddBean1.setCabinetType(mBoxType);
 	   }
 	   registeAddBean1.setList(mTBaseDevicesSmall);
 	   mTBaseDevicesAll.add(registeAddBean1);
@@ -836,6 +853,7 @@ public class RegisteFrag extends SimpleFragment {
 	super.onDestroy();
 	//	mContext.unregisterReceiver(netWorkReceiver);
    }
+
    /**
     * 本地手术室
     */
@@ -864,7 +882,6 @@ public class RegisteFrag extends SimpleFragment {
 	});
    }
 
-
    /**
     * 所有用户的本地数据
     */
@@ -873,11 +890,11 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		Log.i("ddefad", "userBean  "+getDates());
+		Log.i("ddefad", "userBean  " + getDates());
 		new Thread(new Runnable() {
 		   @Override
 		   public void run() {
-//			setLitePalUseBean(userBean);
+			//			setLitePalUseBean(userBean);
 			saveUserData(userBean);
 		   }
 		}).start();
@@ -911,7 +928,9 @@ public class RegisteFrag extends SimpleFragment {
 		   ChildrenBeanX childrenBeanX = homeAuthorityMenuBean.getChildren().get(0);
 		   childrenBeanX.setAccountName(accountVosBean.getAccountName());
 		   if (null != homeAuthorityMenuBean.getChildren().get(0).getChildren()) {
-			List<ChildrenBean> children = homeAuthorityMenuBean.getChildren().get(0).getChildren();
+			List<ChildrenBean> children = homeAuthorityMenuBean.getChildren()
+				.get(0)
+				.getChildren();
 			for (ChildrenBean child : children) {
 			   child.setAccountName(accountVosBean.getAccountName());
 			}

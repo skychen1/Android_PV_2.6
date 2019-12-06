@@ -6,8 +6,8 @@ import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.TransferUtils;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.internal.StringUtil;
 
@@ -19,6 +19,7 @@ import io.netty.util.internal.StringUtil;
  * @author : Yich
  * data: 2019/2/21
  */
+@ChannelHandler.Sharable
 public abstract class BaseNettyHandler extends SimpleChannelInboundHandler {
 
     private static final String LOG_TAG = "BaseNettyHandler";
@@ -57,33 +58,33 @@ public abstract class BaseNettyHandler extends SimpleChannelInboundHandler {
         ctx.write(in);
     }
 
-//    /**
-//     * 接收到数据
-//     *
-//     * @param ctx 通道
-//     * @param msg 数据
-//     * @throws Exception 异常
-//     */
-//    @Override
-//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        if (!(msg instanceof ByteBuf)) {
-//            return;
-//        }
-//        //收到的所有数据都为ByteBuf类型，转换数据
-//        ByteBuf in = (ByteBuf) msg;
-//        if (in.isReadable()) {
-//            byte[] buf = new byte[in.readableBytes()];
-//            in.readBytes(buf);
-//            //转换数据为byte【】
-//            LogUtils.e("接收到消息" + TransferUtils.Byte2String(buf));
-//            //交给子类自己去解析数据
-//            receiveData(buf);
-//        }
-//        //以下代码是必须的，释放管道数据，防止内存泄露；
-//        in.retain();
-//        ctx.write(in);
-//        super.channelRead(ctx, msg);
-//    }
+    //    /**
+    //     * 接收到数据
+    //     *
+    //     * @param ctx 通道
+    //     * @param msg 数据
+    //     * @throws Exception 异常
+    //     */
+    //    @Override
+    //    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    //        if (!(msg instanceof ByteBuf)) {
+    //            return;
+    //        }
+    //        //收到的所有数据都为ByteBuf类型，转换数据
+    //        ByteBuf in = (ByteBuf) msg;
+    //        if (in.isReadable()) {
+    //            byte[] buf = new byte[in.readableBytes()];
+    //            in.readBytes(buf);
+    //            //转换数据为byte【】
+    //            LogUtils.e("接收到消息" + TransferUtils.Byte2String(buf));
+    //            //交给子类自己去解析数据
+    //            receiveData(buf);
+    //        }
+    //        //以下代码是必须的，释放管道数据，防止内存泄露；
+    //        in.retain();
+    //        ctx.write(in);
+    //        super.channelRead(ctx, msg);
+    //    }
 
     @Override
     public void channelReadComplete(final ChannelHandlerContext ctx) {

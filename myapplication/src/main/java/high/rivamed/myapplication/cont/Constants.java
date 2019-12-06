@@ -124,6 +124,7 @@ public class Constants {
    public static final String SAVE_LOGINOUT_TIME      = "SAVE_LOGINOUT_TIME";//无操作退出时间
    public static final String SYSTEMTYPE              = "HCT";//高值登录的type
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
+   public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用
    public static final String LOGCAT_OPEN             = "LOG_CAT_OPEN";//日志记录
    public static final String FACE_OPEN               = "face_OPEN";//活体检测
    public static final String FACE_UPDATE_TIME        = "face_update_time";//人脸照最新更新时间

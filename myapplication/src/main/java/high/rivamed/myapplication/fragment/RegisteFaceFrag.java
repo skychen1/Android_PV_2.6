@@ -24,6 +24,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static high.rivamed.myapplication.cont.Constants.FACE_OPEN;
+import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -141,6 +142,7 @@ public class RegisteFaceFrag extends SimpleFragment {
         } else {
             if (hasInit) {
                 if (FaceManager.getManager().initGroup()) {
+                    SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
                     //从服务器更新人脸底库并注册至本地
                     FaceTask faceTask = new FaceTask(_mActivity);
                     faceTask.setCallBack((hasRegister, msg) -> {

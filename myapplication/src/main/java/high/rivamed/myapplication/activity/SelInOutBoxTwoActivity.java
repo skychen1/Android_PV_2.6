@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
-import com.ruihua.libconsumables.ConsumableManager;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -73,12 +72,12 @@ import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
-import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType2;
 import static high.rivamed.myapplication.utils.LyDateUtils.moreStartScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.setBoxVosDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.setInventoryVoDate;
+import static high.rivamed.myapplication.utils.LyDateUtils.setMoreOpenDoor;
 import static high.rivamed.myapplication.utils.LyDateUtils.setUnNetDate;
 import static high.rivamed.myapplication.utils.LyDateUtils.startScan;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
@@ -554,7 +553,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 	mBaseGifImageView.setImageDrawable(drawable);
 	EventBusUtils.post(new Event.EventLoadingX(true));
-	getDoorStatus();
+//	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
 	mBoxsize = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
 	mHandler = new Handler();
@@ -873,11 +872,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			stopScan();
 			mLocalAllSize = mAllSize;
 			setRemoveRunnable();
-			Log.i("selII","mLocalAllSize   "+mLocalAllSize);
-			for (String deviceInventoryVo : mEthDeviceIdBack) {
-			   String deviceCode = deviceInventoryVo;
-			   ConsumableManager.getManager().openDoor(deviceCode, 0);
-			}
+			setMoreOpenDoor();
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
 		   }
@@ -900,6 +895,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	      break;
 	}
    }
+
+
 
    /**
     * 提交并退出登录

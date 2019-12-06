@@ -290,7 +290,7 @@ public class ReciveBillFrag extends SimpleFragment {
                     }
                 }
                 if (mTbaseDevices.size() > 0) {
-                    AllDeviceCallBack.getInstance().openDoor(0, mTbaseDevices);
+                    AllDeviceCallBack.getInstance().openDoor("", mTbaseDevices);
                 } else {
                     ToastUtils.showShortToast("无耗材柜数据");
                 }

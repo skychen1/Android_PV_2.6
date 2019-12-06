@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 
 import org.litepal.LitePal;
@@ -24,11 +25,11 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
@@ -54,36 +55,38 @@ public class LyDateUtils {
     */
    public static boolean getVosType(List<InventoryVo> vos, String epc) {
 	if (vos != null) {
-//	   int size = vos.size();
+	   //	   int size = vos.size();
 	   Iterator<InventoryVo> iterator = vos.iterator();
-	   while (iterator.hasNext()){
+	   while (iterator.hasNext()) {
 		InventoryVo next = iterator.next();
 		String epc1 = next.getEpc();
-		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+		if (epc == null || epc.equals("0") || epc1.equals(epc)) {
 		   return true;
-		}else {
+		} else {
 
 		}
 	   }
 	}
 	return false;
    }
+
    /**
     * 是否包含epc
     *
     * @return
     */
-   public static boolean getVosType3(List<InventoryVo> vos, String epc,int mOperationType) {
+   public static boolean getVosType3(List<InventoryVo> vos, String epc, int mOperationType) {
 	if (vos != null) {
 	   int size = vos.size();
 	   for (int x = size - 1; x >= 0; x--) {
 		String epc1 = vos.get(x).getEpc();
-		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+		if (epc == null || epc.equals("0") || epc1.equals(epc)) {
 		   return true;
-		}else {
+		} else {
 		   InventoryVo vo = vos.get(x);
 		   if ((mOperationType == 3 && vo.getOperationStatus() != 98) || mOperationType == 4) {
-			if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
+			if (vo.getIsErrorOperation() != 1 ||
+			    (vo.getIsErrorOperation() == 1 && vo.getExpireStatus() == 0)) {
 			   vo.setStatus(mOperationType + "");
 			}
 			if (mOperationType == 4 && vo.isDateNetType()) {
@@ -99,23 +102,26 @@ public class LyDateUtils {
 	}
 	return false;
    }
+
    /**
     * 是否包含epc
     *
     * @return
     */
-   public static boolean getVosType2(List<InventoryVo> vos, String epc,int mOperationType) {
+   public static boolean getVosType2(List<InventoryVo> vos, String epc, int mOperationType) {
 	if (vos != null) {
 	   int size = vos.size();
 	   for (int x = size - 1; x >= 0; x--) {
 		String epc1 = vos.get(x).getEpc();
-		if (epc==null||epc.equals("0")||epc1.equals(epc)) {
+		if (epc == null || epc.equals("0") || epc1.equals(epc)) {
 		   return true;
-		}else {
+		} else {
 		   InventoryVo vo = vos.get(x);
 		   if (mOperationType == 9 || mOperationType == 8 ||
-			 (mOperationType == 3 && vo.getOperationStatus() != 98) || (mOperationType == 4&&vo.isDateNetType())) {
-			if (vo.getIsErrorOperation() != 1||(vo.getIsErrorOperation()==1&&vo.getExpireStatus()==0)) {
+			 (mOperationType == 3 && vo.getOperationStatus() != 98) ||
+			 (mOperationType == 4 && vo.isDateNetType())) {
+			if (vo.getIsErrorOperation() != 1 ||
+			    (vo.getIsErrorOperation() == 1 && vo.getExpireStatus() == 0)) {
 			   vo.setStatus(mOperationType + "");
 			}
 			if (mOperationType == 4) {
@@ -137,8 +143,10 @@ public class LyDateUtils {
 	}
 	return false;
    }
+
    /**
     * 是否包含柜号
+    *
     * @return
     */
    public static boolean getVosBoxId(List<DeviceInventoryVo> vos, String box_id) {
@@ -151,22 +159,26 @@ public class LyDateUtils {
 	}
 	return false;
    }
+
    /**
     * 是否包含柜号
+    *
     * @return
     */
    public static boolean getVosBoxIdVo(List<InventoryVo> vos, String box_id) {
 	if (vos != null) {
 	   for (int i = 0; i < vos.size(); i++) {
-		if (null==vos.get(i).getDeviceId()||vos.get(i).getDeviceId().equals(box_id)) {
+		if (null == vos.get(i).getDeviceId() || vos.get(i).getDeviceId().equals(box_id)) {
 		   return true;
 		}
 	   }
 	}
 	return false;
    }
+
    /**
     * 是否是套餐内的
+    *
     * @return
     */
    public static boolean getVosRemark(List<BillStockResultBean.OrderDetailVo> vos, String box_id) {
@@ -179,16 +191,19 @@ public class LyDateUtils {
 	}
 	return false;
    }
+
    /**
     * 给显示的vos赋值（区分各个柜子）
+    *
     * @param box_id
     */
-   public static List<InventoryVo> setAllBoxVosDate(List<InventoryVo> mBoxInventoryVos, String box_id) {
+   public static List<InventoryVo> setAllBoxVosDate(
+	   List<InventoryVo> mBoxInventoryVos, String box_id) {
 	List<InventoryVo> cstVos = getLocalAllCstVos();
 	int size = cstVos.size();
 	if (size > 0) {
 	   Iterator<InventoryVo> iterator = cstVos.iterator();
-	   while (iterator.hasNext()){
+	   while (iterator.hasNext()) {
 		InventoryVo next = iterator.next();
 		if (!box_id.equals(next.getDeviceId())) {
 		   iterator.remove();
@@ -232,6 +247,7 @@ public class LyDateUtils {
 
    /**
     * 开始扫描
+    *
     * @param mBoxInventoryVos
     * @param mObs
     * @param deviceIndentify
@@ -239,43 +255,60 @@ public class LyDateUtils {
    public static void startScan(
 	   List<InventoryVo> mBoxInventoryVos, RxUtils.BaseEpcObservable mObs,
 	   String deviceIndentify) {
+	String deviceIdWhich = deviceIndentify.substring(deviceIndentify.length() - 1);
+	String  deviceId= deviceIndentify.substring(0, deviceIndentify.length() - 1);
+	String cabinetType = "";
+	Log.i("onDoorState", "deviceIdWhich    " + deviceIdWhich);
+	Log.i("onDoorState", "deviceId    " + deviceId);
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceId, CONSUMABLE_TYPE).find(BoxIdBean.class);
+	Log.i("onDoorState", "boxIdBeansss    " + boxIdBeans.size());
+	if (boxIdBeans.size()==2){
+	   if (deviceIdWhich.equals("0")){
+		cabinetType = "1";
+	   }else if (deviceIdWhich.equals("1")){
+		cabinetType = "2";
+	   }
+	}else if (boxIdBeans.size()==1){
+	   cabinetType = "0";
+	}
 
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-								 CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   String box_id = boxIdBean.getBox_id();
-	   List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		   .find(BoxIdBean.class);
-	   for (BoxIdBean deviceid : deviceBean) {
-		String device_id = deviceid.getDevice_id();
-		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
-		Log.i("aalldf", "startScan  "+i);
-		if (i == 2) {
-		   Log.i("aalldf", "mRunnable   开始  "+device_id);
-		   EventBusUtils.post(new Event.StartScanType(true,false));
-		   ToastUtils.showShortToast("扫描中，请扫描结束后再进行操作！");
-		}
-		if (i == 1) {
-		   EventBusUtils.post(new Event.StartScanType(true,false));
-		   ReaderManager.getManager().restDevice(device_id);
-		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
-		   ToastUtils.showShortToast("readr未连接，请稍后重试！");
-		}
-		if (i ==0){
-		   EventBusUtils.post(new Event.StartScanType(false,true));
-		   EventBusUtils.postSticky(new Event.EventLoadingX(true));
-//		   mBoxInventoryVos.clear();
-		   setAllBoxVosDate(mBoxInventoryVos, box_id);
-		   if (mObs != null&&mDoorStatusType) {
-			mObs.removeVos();
+	   if (cabinetType.equals(boxIdBean.getCabinetType())){
+		String box_id = boxIdBean.getBox_id();
+		List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+			.find(BoxIdBean.class);
+		for (BoxIdBean deviceid : deviceBean) {
+		   String device_id = deviceid.getDevice_id();
+		   int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
+		   Log.i("aalldf", "startScan  " + i);
+		   if (i == 2) {
+			Log.i("aalldf", "mRunnable   开始  " + device_id);
+			EventBusUtils.post(new Event.StartScanType(true, false));
+			ToastUtils.showShortToast("扫描中，请扫描结束后再进行操作！");
+		   }
+		   if (i == 1) {
+			EventBusUtils.post(new Event.StartScanType(true, false));
+			ReaderManager.getManager().restDevice(device_id);
+			EventBusUtils.postSticky(new Event.EventLoadingX(false));
+			ToastUtils.showShortToast("readr未连接，请稍后重试！");
+		   }
+		   if (i == 0) {
+			EventBusUtils.post(new Event.StartScanType(false, true));
+			EventBusUtils.postSticky(new Event.EventLoadingX(true));
+			//		   mBoxInventoryVos.clear();
+			setAllBoxVosDate(mBoxInventoryVos, box_id);
+			if (mObs != null && mDoorStatusType) {
+			   mObs.removeVos();
+			}
 		   }
 		}
-
 	   }
 	}
-//	return mBoxInventoryVos;
+	//	return mBoxInventoryVos;
    }
-   public static void setInventoryVoDate( List<InventoryVo> mBoxInventoryVos,List<DeviceInventoryVo> vos, int x) {
+
+   public static void setInventoryVoDate(
+	   List<InventoryVo> mBoxInventoryVos, List<DeviceInventoryVo> vos, int x) {
 	List<Inventory> list = vos.get(x).getInventories();
 	for (int i = 0; i < list.size(); i++) {
 	   if (!getVosType(mBoxInventoryVos, list.get(i).getEpc())) {
@@ -292,26 +325,34 @@ public class LyDateUtils {
 	   }
 	}
    }
+
    /**
     * 无网的扫描后的EPC信息赋值 不绑定患者
+    *
     * @param toJson
     */
-   public static InventoryDto setUnNetDate(Context mContext, Gson mGson,int mOperationType,String toJson, String result, int type) {
-	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") && (mOperationType == type)) {
+   public static InventoryDto setUnNetDate(
+	   Context mContext, Gson mGson, int mOperationType, String toJson, String result, int type) {
+	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1") &&
+	    (mOperationType == type)) {
 	   return getInventoryDto(mContext, mGson, mOperationType, toJson);
 	}
 	return null;
    }
+
    /**
     * 无网的扫描后的EPC信息赋值  绑定患者
+    *
     * @param toJson
     */
-   public static InventoryDto setUnNetDate(Context mContext, Gson mGson,int mOperationType,String toJson, String result) {
+   public static InventoryDto setUnNetDate(
+	   Context mContext, Gson mGson, int mOperationType, String toJson, String result) {
 	if (SPUtils.getString(mContext, SAVE_SEVER_IP) != null && result.equals("-1")) {
 	   return getInventoryDto(mContext, mGson, mOperationType, toJson);
 	}
 	return null;
    }
+
    @NonNull
    private static InventoryDto getInventoryDto(
 	   Context mContext, Gson mGson, int mOperationType, String toJson) {
@@ -326,13 +367,12 @@ public class LyDateUtils {
 	   String deviceId = dto.getDeviceInventoryVos().get(0).getDeviceId();
 	   List<InventoryVo> vos = LitePal.where("deviceid = ? and status = ?", deviceId, "2")
 		   .find(InventoryVo.class);
-	   BoxIdBean boxIdBean = LitePal.where("device_id = ? ", deviceId)
-		   .findFirst(BoxIdBean.class);
+	   BoxIdBean boxIdBean = LitePal.where("device_id = ? ", deviceId).findFirst(BoxIdBean.class);
 	   mInVo.addAll(vos);
 	   if (list.size() != 0) {
 		for (Inventory s : list) {
-		   InventoryVo first = LitePal.where("epc = ? and deviceid = ?", s.getEpc(),
-								 deviceId).findFirst(InventoryVo.class);
+		   InventoryVo first = LitePal.where("epc = ? and deviceid = ?", s.getEpc(), deviceId)
+			   .findFirst(InventoryVo.class);
 		   if (!getVosType(vos, s.getEpc())) {//无网放入
 			InventoryVo inventoryVo = new InventoryVo();
 			inventoryVo.setEpc(s.getEpc());
@@ -361,9 +401,10 @@ public class LyDateUtils {
 
    /**
     * 请求结束后的数据放入显示在界面上
+    *
     * @param vos
     */
-   public static void setBoxVosDate(List<InventoryVo> mBoxInventoryVos,List<InventoryVo> vos) {
+   public static void setBoxVosDate(List<InventoryVo> mBoxInventoryVos, List<InventoryVo> vos) {
 	if (mBoxInventoryVos.size() > 0) {
 	   for (int x = 0; x < vos.size(); x++) {
 		if (!getVosType(mBoxInventoryVos, vos.get(x).getEpc())) {
@@ -378,6 +419,23 @@ public class LyDateUtils {
 		inventoryVo.setDateNetType(false);
 		mBoxInventoryVos.add(inventoryVo);
 	   }
+	}
+   }
+
+   /**
+    * 重新开柜的逻辑3.0
+    */
+   public static void setMoreOpenDoor() {
+	for (String deviceInventoryVo : mEthDeviceIdBack) {
+	   String deviceIdWhich = deviceInventoryVo.substring(deviceInventoryVo.length() - 1);
+	   String  deviceId= deviceInventoryVo.substring(0, deviceInventoryVo.length() - 1);
+	   int Which =-1;
+	   if (deviceIdWhich.equals("0")){
+		Which =0;
+	   }else if (deviceIdWhich.equals("1")){
+		Which=1;
+	   }
+	   ConsumableManager.getManager().openDoor(deviceId, Which);
 	}
    }
 }

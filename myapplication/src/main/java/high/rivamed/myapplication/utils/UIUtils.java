@@ -538,7 +538,7 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y60));
 		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
@@ -585,7 +585,7 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y60));
 		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
@@ -633,7 +633,7 @@ public class UIUtils {
 		LinePagerIndicator indicator = new LinePagerIndicator(context);
 		//                indicator.setStartInterpolator(new AccelerateInterpolator());
 		//                indicator.setEndInterpolator(new DecelerateInterpolator(1.6f));
-		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y63));
+		indicator.setYOffset(getResources().getDimensionPixelOffset(R.dimen.y60));
 		indicator.setLineHeight( getResources().getDimensionPixelOffset(R.dimen.y3));
 		indicator.setColors(getResources().getColor(R.color.color_drak_green));
 		return indicator;
@@ -650,7 +650,7 @@ public class UIUtils {
 	//        titleContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 	//        titleContainer.setDividerDrawable(getResources().getDrawable(R.drawable.bg_btn_gray_nor2));
 	ViewPagerHelper.bind(mMagicIndicator, mCttimecheckViewpager);
-	mCommonNavigator.getTitleContainer().setPadding(0, (int)getResources().getDimension(R.dimen.y2), 0, 0);
+	mCommonNavigator.getTitleContainer().setPadding(0, (int)getResources().getDimension(R.dimen.y6), 0, 0);
 	mCommonNavigator.getTitleContainer()
 		.getChildAt(0)
 		.setBackgroundColor(getResources().getColor(R.color.white));

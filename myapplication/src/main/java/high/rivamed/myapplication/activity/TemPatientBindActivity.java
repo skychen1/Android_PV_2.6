@@ -106,7 +106,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @BindView(R.id.activity_down_btn_seven_ll)
    LinearLayout mActivityDownBtnSevenLl;
    public List<BoxSizeBean.DevicesBean> mTemPTbaseDevices = new ArrayList<>();
-   private int mPosition;
+   private String  mDeviceId;
 
    private String mType     = "";
    private String mGoneType = "";
@@ -165,7 +165,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		"mTemPTbaseDevices");
 	mExceptionDate = (List<ExceptionRecordBean.RowsBean>) getIntent().getSerializableExtra(
 		"ExceptionDate");
-	mPosition = getIntent().getIntExtra("position", -1);
+	mDeviceId = getIntent().getStringExtra("deviceId");
 	mException = getIntent().getBooleanExtra("Exception", false);
 	mRbKey = getIntent().getIntExtra("mRbKey", -2);
 	mType = getIntent().getStringExtra("type");
@@ -185,7 +185,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mBaseTabBack.setVisibility(View.VISIBLE);
 	}
 	//套组--界面
-	if (mPosition == -1000) {
+	if (mDeviceId.equals("-1000") ) {
 	   mDownBtnOneLL.setVisibility(View.GONE);
 	}
 	//无临时患者
@@ -220,11 +220,14 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   array = mContext.getResources().getStringArray(R.array.six_dialog_arrays2);
 	   mSearchDept.setText("查询申请科室：");
 	   mSearchRight.setHint("请输入原科室名称、拼音码");
+	   mSearchEt.setHint("请输入患者姓名、患者ID查询");
 	} else {
 	   if (UIUtils.getConfigType(mContext, CONFIG_056)) {
-		array = mContext.getResources().getStringArray(R.array.eight_dialog_arrays);
+		array = mContext.getResources().getStringArray(R.array.ten_dialog_arrays);
+		mSearchEt.setHint("请输入患者姓名、患者ID、病舍、楼层查询");
 	   }else {
 		array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+		mSearchEt.setHint("请输入患者姓名、患者ID查询");
 	   }
 	   mSearchDept.setText("查询手术间：");
 	   mSearchRight.setHint("请输入手术间名称、编号、拼音码");
@@ -575,7 +578,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		//先绑定患者
 		LogUtils.i(TAG, "先绑定患者，开门");
 		EventBusUtils.post(new Event.EventButton(true, true));
-		AllDeviceCallBack.getInstance().openDoor(mPosition, mTemPTbaseDevices);
+		AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);
 		EventBusUtils.post(new Event.EventCheckbox(vo));
 	   }
 	} else {
