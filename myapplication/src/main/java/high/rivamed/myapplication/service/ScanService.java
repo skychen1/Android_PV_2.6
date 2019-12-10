@@ -307,13 +307,16 @@ public class ScanService extends Service {
 
 	EventBusUtils.register(this);
 	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
-	for (BoxIdBean idBean : boxIdBeans) {
-	   if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
-		mDeviceSizeList.add(idBean.getDevice_id()+"0");
-	   }else if (idBean.getCabinetType().equals("2")){
-		mDeviceSizeList.add(idBean.getDevice_id()+"1");
+	if (boxIdBeans!=null){
+	   for (BoxIdBean idBean : boxIdBeans) {
+		if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
+		   mDeviceSizeList.add(idBean.getDevice_id()+"0");
+		}else if (idBean.getCabinetType().equals("2")){
+		   mDeviceSizeList.add(idBean.getDevice_id()+"1");
+		}
 	   }
 	}
+
 	initReceiver();
 	AllDeviceCallBack.getInstance().initCallBack();
 	//	new Thread(() -> AllDeviceCallBack.getInstance().initCallBack()).start();
