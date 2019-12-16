@@ -92,7 +92,10 @@ public class LoginFaceFragment extends SimpleFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED)
+
+        int initStatus = FaceManager.getManager().getInitStatus();
+        Log.i("aaaaaa", "initStatus   " + initStatus);
+        if (initStatus == FaceCode.SDK_INITED)
             FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
                 if (isSuccess) {
                     loginFace(userId);
@@ -237,7 +240,7 @@ public class LoginFaceFragment extends SimpleFragment {
                 textHint.post(() -> textHint.setText("人脸识别底库无数据"));
             } else {
                 //可以开启识别
-                FaceManager.getManager().starIdentity();
+                FaceManager.getManager().startIdentity();
                 startIdentity = true;
                 LogUtils.d(TAG, "startIdentity---::::::::::: "+startIdentity);
                 textHint.post(() -> textHint.setText(""));

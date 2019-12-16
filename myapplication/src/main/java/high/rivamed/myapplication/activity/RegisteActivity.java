@@ -63,7 +63,7 @@ public class RegisteActivity extends SimpleActivity {
    MagicIndicator mRegisteTl;
    public ImageView mBaseTabBtnConn;
    public static ViewPager mRegisteViewpager;
-   private String[] mKeys = {"设备注册/激活", "数据恢复","Reader设置","锁/IC卡/指纹仪","人脸设置"};
+   private String[] mKeys = {"设备注册/激活", "数据恢复","Reader设置","锁/灯/IC卡/指纹仪","人脸设置"};
    private RegistePagerAdapter mPagerAdapter;
    /**
     * 设备title连接状态

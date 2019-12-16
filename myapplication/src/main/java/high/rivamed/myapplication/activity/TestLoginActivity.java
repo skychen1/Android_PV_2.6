@@ -13,10 +13,13 @@ import butterknife.OnClick;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -139,6 +142,10 @@ public class TestLoginActivity extends SimpleActivity {
     */
    private void loadLogin() {
 	startActivity(new Intent(this,RegisteActivity.class));
+	AllDeviceCallBack.getInstance().closeLightStart();
+	if (mLightTimeCount!=null){
+	   mLightTimeCount.cancel();
+	}
 	finish();
    }
 }

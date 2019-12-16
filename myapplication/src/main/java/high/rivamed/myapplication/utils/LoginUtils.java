@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -34,12 +35,14 @@ import high.rivamed.myapplication.bean.VersionBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBeanX;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.views.UpDateDialog;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_013;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
@@ -228,7 +231,9 @@ public class LoginUtils {
                 //获取权限菜单数据
                 List<HomeAuthorityMenuBean> menuVos = loginResultBean.getMenuVos();
                 getAuthorityMenu(menuVos,activity, mGson, callback);
-
+                if (mLightTimeCount!=null){
+                    mLightTimeCount.cancel();
+                }
             } else {
                 if (callback != null)
                     callback.onMenu(false);
@@ -261,6 +266,9 @@ public class LoginUtils {
             SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
         }
         if (fromJson.size() > 0) {
+            if (mLightTimeCount!=null){
+                mLightTimeCount.cancel();
+            }
             MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
             Intent intent = new Intent(activity, HomeActivity.class);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -428,6 +436,25 @@ public class LoginUtils {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
+    /* 定义一个倒计时的内部类 */
+    public static class LightTimeCount extends CountDownTimer {
+
+        public LightTimeCount(
+              long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+        }
+
+        @Override
+        public void onFinish() {// 计时完毕时触发
+            Log.i("onDoorState", "onFinish     " );
+            AllDeviceCallBack.getInstance().closeLightStart();
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {// 计时过程显示
+            Log.i("onDoorState", "millisUntilFinished     " + millisUntilFinished);
+        }
+    }
     /**
      * 登录检测回调
      */

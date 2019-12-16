@@ -32,6 +32,7 @@ import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
@@ -1067,6 +1068,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			   getAllCstDate(this);
 			}
 			finish();
+
 		   }else {
 			ToastUtils.showShortToast("数据返回异常，请与实施联系！");
 			mTimelyLeft.setEnabled(true);

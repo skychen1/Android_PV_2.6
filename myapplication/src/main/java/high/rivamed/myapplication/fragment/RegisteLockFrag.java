@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -33,10 +34,16 @@ import high.rivamed.myapplication.adapter.RegistLockAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
+import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
+import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -51,6 +58,8 @@ import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
  */
 public class RegisteLockFrag extends SimpleFragment {
 
+   @BindView(R.id.frag_closslight_edit)
+   EditText mClosslightEdit;
    @BindView(R.id.frag_start)
    TextView           mFragStart;
    @BindView(R.id.recyclerview)
@@ -75,7 +84,9 @@ public class RegisteLockFrag extends SimpleFragment {
 	} else if (event.type == 2) {
 	   AppendLog("检查门锁指令已发出 ret=" + event.ret + "   ：设备ID:   " + event.item);
 	} else if (event.type == 3) {
-	   AppendLog("指纹注册命令已发送 RET=" + event.ret + ";请等待质问注册执行结果");
+	   AppendLog("开灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item + ""+event.witch);
+	} else if (event.type ==4){
+	   AppendLog("关灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
 	}
    }
 
@@ -246,12 +257,38 @@ public class RegisteLockFrag extends SimpleFragment {
 
 	   @Override
 	   public void onOpenLight(String deviceId, int which, boolean isSuccess) {
-
+		String type;
+		String whichs;
+		if (isSuccess) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+		if (which == 2) {
+		   whichs = "2号端口";
+		} else {
+		   whichs = "3号端口";
+		}
+		AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+			    "  ;   灯状态 = " + type);
 	   }
 
 	   @Override
 	   public void onCloseLight(String deviceId, int which, boolean isSuccess) {
-
+		String type;
+		String whichs;
+		if (isSuccess) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+		if (which == 2) {
+		   whichs = "2号端口";
+		} else {
+		   whichs = "3号端口";
+		}
+		AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+			    "  ;   灯状态 = " + type);
 	   }
 
 	   @Override
@@ -282,7 +319,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	});
    }
 
-   @OnClick({R.id.frag_start})
+   @OnClick({R.id.frag_start,R.id.frag_closslight_btn})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
@@ -313,7 +350,22 @@ public class RegisteLockFrag extends SimpleFragment {
 		   mRecyclerview.setAdapter(mAdapter);
 		}
 		break;
-
+	   case R.id.frag_closslight_btn:
+		try {
+		   int time = (Integer.parseInt(mClosslightEdit.getText().toString().trim()) * 1000);
+		   if (time >= 10000) {
+			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
+			CLOSSLIGHT_TIME = time;
+			mLightTimeCount=null;
+			ToastUtils.showShortToast(
+				"设置成功！登录界面无操作后 " + CLOSSLIGHT_TIME / 1000 + " s后自动关灯！");
+		   } else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
+		   }
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
+	      break;
 	}
    }
 

@@ -12,6 +12,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.rivamed.FingerManager;
 import com.ruihua.face.recognition.FaceManager;
 import com.ruihua.face.recognition.callback.InitListener;
 
@@ -29,6 +30,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
@@ -63,6 +65,7 @@ public class SplashActivity extends FragmentActivity {
 	onWindowFocusChanged(true);
 	setContentView(R.layout.activity_splash_layout);
 	Log.e("版本号：", UIUtils.getVersionName(this));
+	FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
 	initData();
    }
 
@@ -152,7 +155,7 @@ public class SplashActivity extends FragmentActivity {
 		//检测设备是否激活授权码
 		//启动页初始化人脸识别sdk
 		new Thread(() -> FaceManager.getManager()
-			.init(mAppContext, false, new InitListener() {
+			.init(mAppContext, true, new InitListener() {
 			   @Override
 			   public void initSuccess() {
 				UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化成功"));

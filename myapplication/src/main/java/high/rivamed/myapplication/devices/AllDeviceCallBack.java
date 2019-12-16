@@ -173,9 +173,9 @@ public class AllDeviceCallBack {
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
 		if (device_id.equals(mBomDoorDeviceIdList.get(i))) {
-		   if (boxIdBean.getCabinetType().equals("1")||boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜
+		   if (boxIdBean.getCabinetType().equals("1")||boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜   J24
 			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
-		   }else if (boxIdBean.getCabinetType().equals("2")){
+		   }else if (boxIdBean.getCabinetType().equals("2")){                                                  //J25
 			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),1);
 		   }
 		}
@@ -183,6 +183,35 @@ public class AllDeviceCallBack {
 	}
    }
 
+   /**
+    * 开灯
+    */
+   public void openLightStart(){
+	List<String> bomDeviceId = DevicesUtils.getBomDeviceId();
+	for (String s : bomDeviceId) {
+	   ConsumableManager.getManager().openLight(s);
+	}
+   }
+
+   /**
+    * 关灯
+    */
+   public void closeLightStart(){
+	List<String> bomDeviceId = DevicesUtils.getBomDeviceId();
+	for (String s : bomDeviceId) {
+	   ConsumableManager.getManager().closeLight(s);
+	}
+   }
+
+   /**
+    * 检测灯
+    */
+   public void StateLightStart(){
+	List<String> bomDeviceId = DevicesUtils.getBomDeviceId();
+	for (String s : bomDeviceId) {
+	   ConsumableManager.getManager().checkLightState(s);
+	}
+   }
    /**
     * 正式开始扫描
     *
@@ -255,6 +284,7 @@ public class AllDeviceCallBack {
 	FingerManager.getManager().registerCallback(new FingerCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
+		Log.i("appSatus","isConnect     "+isConnect);
 	   }
 
 	   @Override
@@ -356,17 +386,20 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onOpenLight(String deviceId, int which, boolean isSuccess) {
-//		appendLog("设备：：" + deviceId + "开灯：：：" + which + ":::的结果是：：：" + isSuccess);
+		Log.i("onDoorState","设备：：" + deviceId + "开灯：：：" + which + ":::的结果是：：：" + isSuccess);
 	   }
 
 	   @Override
 	   public void onCloseLight(String deviceId, int which, boolean isSuccess) {
-//		appendLog("设备：：" + deviceId + "关灯：：：" + which + ":::的结果是：：：" + isSuccess);
+		Log.i("onDoorState","设备：：" + deviceId + "关灯：：：" + which + ":::的结果是：：：" + isSuccess);
 	   }
 
 	   @Override
 	   public void onLightState(String deviceId, int which, boolean state) {
-//		appendLog("设备：：" + deviceId + "检测灯：：：" + which + ":::的结果是：：：" + state);
+		if (state){
+		   EventBusUtils.post(new Event.EventLightCloss(true));
+		}
+		Log.i("onDoorState","设备：：" + deviceId + "检测灯：：：" + which + ":::的结果是：：：" + state);
 	   }
 
 

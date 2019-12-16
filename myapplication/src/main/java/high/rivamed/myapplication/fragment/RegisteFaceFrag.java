@@ -148,7 +148,7 @@ public class RegisteFaceFrag extends SimpleFragment {
                     faceTask.setCallBack((hasRegister, msg) -> {
                         LogUtils.d("faceTask", "initListener: " + msg);
                         if (msg!=null){
-                            ToastUtils.showShortToast(msg);
+                            UIUtils.runInUIThread(()->  ToastUtils.showShortToast(msg));
                         }
                     });
                     faceTask.getAllFaceAndRegister();

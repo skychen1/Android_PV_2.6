@@ -30,26 +30,40 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
    public RegistLockAdapter(int layoutResId, @Nullable List<String> data) {
       super(layoutResId, data);
    }
-   private TextView     mIdText;
-   private TextView     mItemSettingOpen;
-   private TextView     mItemSettingCloss;
-   private TextView     mItemSettingStats;
-   private TextView     mItemRegisteFinger;
+   private TextView mIdText;
+   private TextView mItemDoorOpen0;
+   private TextView mItemDoorOpen1;
+   private TextView mItemSettingCloss;
+   private TextView mItemSettingStats;
+   private TextView mItemLightOpen2;
+   private TextView mItemLightOpen3;
+   private TextView mItemLightCloss;
 
 
 
    @Override
    protected void convert(BaseViewHolder helper, String item) {
       mIdText = (TextView) helper.getView(R.id.id_text);
-      mItemSettingOpen = (TextView) helper.getView(R.id.item_setting_open);
+      mItemDoorOpen0 = (TextView) helper.getView(R.id.item_door_open0);
+      mItemDoorOpen1 = (TextView) helper.getView(R.id.item_door_open1);
       mItemSettingStats = (TextView) helper.getView(R.id.item_setting_stats);
-      mItemRegisteFinger = (TextView) helper.getView(R.id.item_registe_finger);
+      mItemLightOpen2 = (TextView) helper.getView(R.id.item_light_open2);
+      mItemLightOpen3 = (TextView) helper.getView(R.id.item_light_open3);
+      mItemLightCloss = (TextView) helper.getView(R.id.item_light_closs);
       mIdText.setText(item);
-      mItemSettingOpen.setOnClickListener(new View.OnClickListener() {
+      mItemDoorOpen0.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = ConsumableManager.getManager().openDoor(item);
-            EventBusUtils.post(new Event.lockType(1,ret,item));
+            int ret = ConsumableManager.getManager().openDoor(item,0);
+            EventBusUtils.post(new Event.lockType(1,ret,item,1));
+
+         }
+      });
+      mItemDoorOpen1.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            int ret = ConsumableManager.getManager().openDoor(item,1);
+            EventBusUtils.post(new Event.lockType(1,ret,item,1));
 
          }
       });
@@ -61,14 +75,26 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
 
          }
       });
-      mItemRegisteFinger.setOnClickListener(new View.OnClickListener() {
+      mItemLightOpen2.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-//            int ret =  FingerManager.getManager().startRegisterFinger(item);
-//            EventBusUtils.post(new Event.lockType(3,ret,item));
-
+            int i = ConsumableManager.getManager().openLight(item, 2);
+            EventBusUtils.post(new Event.lockType(3,i,item,2));
          }
       });
-
+      mItemLightOpen3.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            int i = ConsumableManager.getManager().openLight(item, 3);
+            EventBusUtils.post(new Event.lockType(3,i,item,3));
+         }
+      });
+      mItemLightCloss.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            int i = ConsumableManager.getManager().closeLight(item);
+            EventBusUtils.post(new Event.lockType(4,i,item));
+         }
+      });
    }
 }

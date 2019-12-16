@@ -38,7 +38,8 @@ public class FaceConfig {
     /**
      * 人脸是被分数（大于这个分数认为是同一个人）
      */
-    public static final double FACE_RECOGNISE_SCORE = 80;
+//    public static final double FACE_RECOGNISE_SCORE = 80;
+    public static final double FACE_RECOGNISE_SCORE = 70;
 
 
 }

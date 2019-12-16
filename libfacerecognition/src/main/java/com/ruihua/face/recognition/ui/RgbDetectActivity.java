@@ -127,9 +127,9 @@ public class RgbDetectActivity extends Activity {
         final CameraImageSource cameraImageSource = new CameraImageSource(this);
         // 图片越小检测速度越快，闸机场景640 * 480 可以满足需求。实际预览值可能和该值不同。和相机所支持的预览尺寸有关。
         // 可以通过 camera.getParameters().getSupportedPreviewSizes()查看支持列表。
-        cameraImageSource.getCameraControl().setPreferredPreviewSize(1280, 720);
+        cameraImageSource.getCameraControl().setPreferredPreviewSize(640, 480);
         // 设置最小人脸，该值越小，检测距离越远，该值越大，检测性能越好。范围为80-200
-        FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(120);
+        FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(100);
         // 设置预览
         cameraImageSource.setPreviewView(previewView);
         // 设置图片源
@@ -187,14 +187,8 @@ public class RgbDetectActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // 延迟100ms开始预览，防止界面没有初始化完成开始预览会渲染失败的bug；
-        tipTv.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                faceDetectManager.start();
-            }
-        },100);
-
+        // 开始检测
+        tipTv.postDelayed(() -> faceDetectManager.start(),100);
     }
 
     @Override

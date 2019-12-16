@@ -347,9 +347,9 @@ public class RegisteFrag extends SimpleFragment {
 
 	if (BuildConfig.DEBUG) {
 	   mFragRegisteNameEdit.setText("3.0柜子");
-	   mFragRegisteModelEdit.setText("rivamed26xxx");
+	   mFragRegisteModelEdit.setText("rivamed30xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.111.68");
+	   mFragRegisteSeveripEdit.setText("192.168.111.240");
 	   mFragRegistePortEdit.setText("8018");
 	}
 

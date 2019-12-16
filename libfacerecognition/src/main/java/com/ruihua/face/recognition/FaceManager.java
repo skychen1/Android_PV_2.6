@@ -89,9 +89,8 @@ public class FaceManager {
     private ExecutorService es;
     private int liveType;
     private Paint paint;
-    private RectF rect;
+    private RectF rectF;
     private FaceDetectManager faceDetectManager;
-    private volatile boolean isIdentiting = false;
 
 
     /**
@@ -431,7 +430,7 @@ public class FaceManager {
         paint.setStyle(Paint.Style.STROKE);
         paint.setTextSize(30);
         //初始化画脸框
-        rect = new RectF();
+        rectF = new RectF();
         //初始化线程池
         es = Executors.newSingleThreadExecutor();
         initFaceDetect(context, previewView, textureView);
@@ -440,11 +439,11 @@ public class FaceManager {
     }
 
     /**
-     * 开启预览
+     * 开始识别
      *
-     * @return 开启预览是否成
+     * @return 开启识别是否成功
      */
-    public boolean startPreview() {
+    public boolean startIdentity() {
         if (faceDetectManager == null) {
             return false;
         }
@@ -454,24 +453,13 @@ public class FaceManager {
     }
 
     /**
-     * 开始识别
-     */
-    public void starIdentity() {
-        isIdentiting = true;
-    }
-
-    /**
      * 停止识别
      */
-    public void stopPreview() {
+    public void stopIdentity() {
         if (faceDetectManager == null) {
             return;
         }
         faceDetectManager.stop();
-    }
-
-    public void stopIdentity() {
-        isIdentiting = false;
     }
 
     /**
@@ -482,7 +470,7 @@ public class FaceManager {
         identityStatus = FEATURE_DATAS_UNREADY;
         paint = null;
         es = null;
-        rect = null;
+        rectF = null;
         if (faceDetectManager == null) {
             return;
         }
@@ -530,7 +518,7 @@ public class FaceManager {
             cameraImageSource.getCameraControl().setDisplayOrientation(CameraView.ORIENTATION_HORIZONTAL);
         }
         // TODO 选择使用前置摄像头
-        // cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
+//         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_FACING_FRONT);
         // TODO 选择使用usb摄像头
         cameraImageSource.getCameraControl().setCameraFacing(ICameraControl.CAMERA_USB);
         if (isMirror) {
@@ -556,18 +544,12 @@ public class FaceManager {
         faceDetectManager.setOnFaceDetectListener(new FaceDetectManager.OnFaceDetectListener() {
             @Override
             public void onDetectFace(int retCode, FaceInfo[] infos, ImageFrame frame) {
-                //如果没有识别就直接返回
-                if (isIdentiting) {
-                    //判断返回值是否正确
-                    if (retCode == FaceTracker.ErrCode.OK.ordinal() && infos != null) {
-                        asyncIdentity(frame, infos, callback);
-                    }
-                    //画脸框
-                    showFrame(previewView, textureView, frame, infos);
-                } else {
-                    //清空脸框
-                    showFrame(previewView, textureView, frame, null);
+                //判断返回值是否正确
+                if (retCode == FaceTracker.ErrCode.OK.ordinal() && infos != null) {
+                    asyncIdentity(frame, infos, callback);
                 }
+                //画脸框
+                showFrame(previewView, textureView, frame, infos);
             }
         });
     }
@@ -690,12 +672,12 @@ public class FaceManager {
         }
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         FaceInfo faceInfo = faceInfos[0];
-        if (rect == null) {
+        if (rectF == null) {
             return;
         }
-        rect.set(getFaceRect(faceInfo, imageFrame));
+        rectF.set(getFaceRect(faceInfo, imageFrame));
         // 检测图片的坐标和显示的坐标不一样，需要转换。
-        previewView.mapFromOriginalRect(rect);
+        previewView.mapFromOriginalRect(rectF);
         float yaw = Math.abs(faceInfo.headPose[0]);
         float patch = Math.abs(faceInfo.headPose[1]);
         float roll = Math.abs(faceInfo.headPose[2]);
@@ -704,10 +686,10 @@ public class FaceManager {
             paint.setColor(Color.YELLOW);
             String text = "请保持人脸正对屏幕";
             float width = paint.measureText(text) + 50;
-            float x = rect.centerX() - width / 2;
+            float x = rectF.centerX() - width / 2;
             paint.setColor(Color.RED);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawText(text, x + 25, rect.top - 20, paint);
+            canvas.drawText(text, x + 25, rectF.top - 20, paint);
             paint.setColor(Color.YELLOW);
         } else {
             // 符合检测要求，绘制绿框
@@ -715,7 +697,7 @@ public class FaceManager {
         }
         paint.setStyle(Paint.Style.STROKE);
         // 绘制框
-        canvas.drawRect(rect, paint);
+        canvas.drawRect(rectF, paint);
         textureView.unlockCanvasAndPost(canvas);
     }
 

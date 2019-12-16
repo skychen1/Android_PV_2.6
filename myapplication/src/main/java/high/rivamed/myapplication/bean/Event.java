@@ -100,8 +100,15 @@ public class Event {
 
 	public int type;
 	public int ret;
+	public int witch;
 	public String item;
 
+	public lockType(int type,int ret,String item,int witch) {
+	   this.type = type;
+	   this.ret = ret;
+	   this.item = item;
+	   this.witch = witch;
+	}
 	public lockType(int type,int ret,String item) {
 	   this.type = type;
 	   this.ret = ret;
@@ -476,7 +483,29 @@ public class Event {
 	   this.b = b;
 	}
    }
+   /**
+    * 关灯的倒计时
+    */
+   public static class EventLightCloss {
 
+	public boolean b;
+
+	public EventLightCloss(boolean b) {
+	   this.b = b;
+	}
+   }
+
+   /**
+    * 检测灯
+    */
+   public static class EventStateLightType {
+
+	public boolean b;
+
+	public EventStateLightType(boolean b) {
+	   this.b = b;
+	}
+   }
    /**
     * Loss原因
     */

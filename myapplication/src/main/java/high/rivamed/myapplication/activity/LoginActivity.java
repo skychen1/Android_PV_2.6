@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -42,6 +43,7 @@ import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.dbmodel.UserFeatureInfosBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.FingerLoginDto;
 import high.rivamed.myapplication.dto.IdCardLoginDto;
 import high.rivamed.myapplication.dto.InventoryDto;
@@ -62,12 +64,13 @@ import high.rivamed.myapplication.utils.UnNetCstUtils;
 import high.rivamed.myapplication.views.CustomViewPager;
 import high.rivamed.myapplication.views.LoadingDialog;
 
-import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
+import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_017;
@@ -154,11 +157,13 @@ public class LoginActivity extends SimpleActivity {
    public static boolean                             mConfigType043;
    public static boolean                             mConfigType044;
    public static boolean                             mConfigType045;
+
+
    //
    //   private boolean mDestroyType =true;//处理thread执行
    //   private Thread mThread3;
-//   private       ScheduledExecutorService            scheduled;
-//   private       TimerTask                           mTask;
+   //   private       ScheduledExecutorService            scheduled;
+   //   private       TimerTask                           mTask;
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventLoading(Event.EventLoading event) {
 	if (event.loading) {
@@ -188,12 +193,28 @@ public class LoginActivity extends SimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventICFinger(Event.EventICAndFinger event) {
+	AllDeviceCallBack.getInstance().openLightStart();
+	if (mLightTimeCount!=null){
+	   mLightTimeCount.cancel();
+	   mLightTimeCount.start();
+	}
 	if (event.type == 1) {
 	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date);
 	} else if (event.type == 2) {
 	   EventBusUtils.postSticky(new Event.EventLoading(true));
 	   getConfigDate(event.type, event.date.trim().replaceAll("\n", ""));
+	}
+   }
+
+   /**
+    * 关灯
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventLightCloss(Event.EventLightCloss event) {
+	if (event.b){
+	   AllDeviceCallBack.getInstance().closeLightStart();
 	}
    }
 
@@ -205,7 +226,9 @@ public class LoginActivity extends SimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onTitleConnEvent(Event.XmmppConnect event) {
 	mTitleConn = event.connect;
+	boolean s =event.connect;
 	hasNetWork(event.connect, event.net);
+	Log.i("aaaaaa", "mTitleConn   " + mTitleConn);
 	if (mTitleConn && mOnStart) {
 	   EventBusUtils.post(new Event.EventServer(true, 2));//有网后处理数据
 	}
@@ -219,23 +242,28 @@ public class LoginActivity extends SimpleActivity {
    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	File file = new File(Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
-	Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
-	Log.i("eerf","file.getPath()   "+file.getPath());
-	Log.i("eerf","bitmap   "+(bitmap==null));
-	if (bitmap ==null){
+	File file = new File(
+		Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
+	Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+	Log.i("eerf", "file.getPath()   " + file.getPath());
+	Log.i("eerf", "bitmap   " + (bitmap == null));
+	if (bitmap == null) {
 	   mLoginLogo.setImageResource(R.mipmap.bg_login_icon);
-	}else {
+	} else {
 	   mLoginLogo.setImageBitmap(bitmap);
 	}
-	FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
+
+
 	BoxIdBean idBean = LitePal.where("name = ?", FINGER_TYPE).findFirst(BoxIdBean.class);
 	BoxIdBean idIc = LitePal.where("name = ?", IC_TYPE).findFirst(BoxIdBean.class);
-	if (idBean!=null){
-	   FingerManager.getManager().startReadFinger(idBean.getDevice_id());
+	if (idBean != null) {
+	   Log.i("appSatus","FingerManager  idBean.getDevice_id()      "+idBean.getDevice_id());
+	   int i = FingerManager.getManager().startReadFinger(idBean.getDevice_id());
+	   Log.i("appSatus","FingerManager     "+i);
 	}
-	if (idIc!=null){
-	   IdCardManager.getIdCardManager().startReadCard(idIc.getDevice_id());
+	if (idIc != null) {
+	   int i = IdCardManager.getIdCardManager().startReadCard(idIc.getDevice_id());
+	   Log.i("appSatus","IdCardManager     "+i);
 	}
 	//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
@@ -245,10 +273,10 @@ public class LoginActivity extends SimpleActivity {
 	mLoginGone = findViewById(R.id.login_gone);
 
 	mFragments.add(new LoginPassWordFragment());//用户名登录
-	   if (UIUtils.getConfigType(mContext, CONFIG_034)) {
-		   faceFragment = new LoginFaceFragment();
-		   mFragments.add(faceFragment);//人脸识别登录 TODO
-	   }
+	if (UIUtils.getConfigType(mContext, CONFIG_034)) {
+	   faceFragment = new LoginFaceFragment();
+	   mFragments.add(faceFragment);//人脸识别登录 TODO
+	}
 	//	mFragments.add(new LoginPassFragment());//紧急登录
 	mLoginViewpager.setAdapter(new LoginTitleAdapter(getSupportFragmentManager()));
 	mLoginViewpager.addOnPageChangeListener(new PageChangeListener());
@@ -258,6 +286,12 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+
+	Log.i("onDoorState", "onStart   onStartonStartonStartonStart   ");
+	if (mLightTimeCount==null){
+	   mLightTimeCount = new LoginUtils.LightTimeCount(
+		   CLOSSLIGHT_TIME, 1000);
+	}
 	EventBusUtils.register(this);
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   if (mIntentService != null) {
@@ -267,15 +301,18 @@ public class LoginActivity extends SimpleActivity {
 		startService(mIntentService);
 	   }
 	}
+
 	EventBusUtils.post(new Event.EventServer(true, 1));
 	LoginUtils.getUpDateVer(this);
 	mOnStart = true;
 	mPushFormOrders.clear();
-	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V:" + UIUtils.getVersionName(this));
+	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V:" +
+				UIUtils.getVersionName(this));
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
 		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
+		AllDeviceCallBack.getInstance().StateLightStart();
 	   }
 	   getLeftDate();
 	   //	   getBoxSize();
@@ -364,42 +401,42 @@ public class LoginActivity extends SimpleActivity {
 	}
 	sTCstConfigVos = configBean.getThingConfigVos();
 	loginEnjoin(!LoginUtils.getConfigTrue(sTCstConfigVos), configType, loginType);
-//	LoginUtils.getUpDateVer(this, sTCstConfigVos,
-//					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
-//												   loginType));
+	//	LoginUtils.getUpDateVer(this, sTCstConfigVos,
+	//					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
+	//												   loginType));
 	mConfigType015 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_015);
 	mConfigType043 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_043);
 	mConfigType044 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_044);
 	mConfigType045 = UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_045);
 
 	//控制紧急登录tab的显示
-	if (mLoginPass!=null){
+	if (mLoginPass != null) {
 	   mLoginPass.setVisibility(
 		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017) ? View.VISIBLE : View.GONE);
 	}
 	//有人脸识别，显示人脸识别tab，默认选中用户名登录tab
 	//没有人脸识别，隐藏人脸识别tab，默认选中用户名登录tab
-	if (mLoginFace!=null){
+	if (mLoginFace != null) {
 	   mLoginFace.setVisibility(isConfigFace() ? View.VISIBLE : View.GONE);
 	}
-	if (mLoginViewpager!=null){
+	if (mLoginViewpager != null) {
 	   mLoginViewpager.setCurrentItem(0);
 	   //有人脸识别或紧急登录时，可滑动
 	   mLoginViewpager.setScanScroll(
 		   isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
 	}
 	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
-	   if (mLoginUnRL!=null){
+	   if (mLoginUnRL != null) {
 		mLoginUnRL.setVisibility(View.VISIBLE);
 		mTVLoginUnConfirmCst.setText("未确认耗材（0）");
 		getNoConfirm();
 	   }
 	} else {
-	   if (mLoginUnRL!=null) {
+	   if (mLoginUnRL != null) {
 		mLoginUnRL.setVisibility(View.INVISIBLE);
 	   }
 	}
-	if (mTVLoginToBePutInStorage!=null) {
+	if (mTVLoginToBePutInStorage != null) {
 	   mTVLoginToBePutInStorage.setVisibility(
 		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
 	}
@@ -422,7 +459,7 @@ public class LoginActivity extends SimpleActivity {
 	   boolean canDevice, int configType, String loginType) {
 	if (!canDevice) {//禁止
 	   if (configType == 0) {//正常登录密码登录限制
-	      if (mLoginGone!=null){
+		if (mLoginGone != null) {
 		   mLoginGone.setVisibility(View.VISIBLE);
 		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
@@ -430,20 +467,20 @@ public class LoginActivity extends SimpleActivity {
 		   faceFragment.onTabShowPreview(false);
 		}
 	   } else if (configType == 1) {//IC卡登录限制
-		if (mLoginGone!=null){
+		if (mLoginGone != null) {
 		   mLoginGone.setVisibility(View.VISIBLE);
 		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   } else if (configType == 2) {
 		//设备是否禁用
-		if (mLoginGone!=null){
+		if (mLoginGone != null) {
 		   mLoginGone.setVisibility(View.VISIBLE);
 		}
 		ToastUtils.showShortToast("正在维护，请到管理端启用");
 	   }
 	} else {
 	   if (configType == 0) {//正常登录密码登录限制
-		if (mLoginGone!=null){
+		if (mLoginGone != null) {
 		   mLoginGone.setVisibility(View.GONE);
 		}
 		if (mLoginFace.isChecked() && isConfigFace()) {
@@ -459,7 +496,7 @@ public class LoginActivity extends SimpleActivity {
 	   } else if (configType == 2) {
 		if (mTitleConn) {
 		   validateLoginFinger(loginType);
-		}else {
+		} else {
 		   EventBusUtils.postSticky(new Event.EventLoading(false));
 		   ToastUtils.showShortToast("登录失败，离线模式请使用腕带或者账号登录！");
 		}
@@ -477,7 +514,7 @@ public class LoginActivity extends SimpleActivity {
 	List<UserFeatureInfosBean> beans = LitePal.where("data = ? ", loginType)
 		.find(UserFeatureInfosBean.class);
 	LogUtils.i(TAG, " beans     " + mGson.toJson(beans));
-	if (beans!=null&&beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
+	if (beans != null && beans.size() > 0 && beans.get(0).getData().equals(loginType)) {
 	   String accountName = beans.get(0).getAccountName();
 	   List<HomeAuthorityMenuBean> fromJson = LoginUtils.setUnNetSPdate(accountName, mGson);
 	   LogUtils.i(TAG, " menus1     " + mGson.toJson(fromJson));
@@ -805,5 +842,29 @@ public class LoginActivity extends SimpleActivity {
 	}
 
 	Log.i("ccetdaF", getClass().getName() + "  onDestroy");
+   }
+
+   @Override
+   public boolean dispatchTouchEvent(MotionEvent ev) {
+	switch (ev.getAction()) {
+	   //获取触摸动作，如果ACTION_UP，计时开始。
+	   case MotionEvent.ACTION_DOWN:
+		AllDeviceCallBack.getInstance().openLightStart();
+		mLightTimeCount.cancel();
+		break;
+	   case MotionEvent.ACTION_UP:
+	      if (mLightTimeCount!=null){
+		   mLightTimeCount = new LoginUtils.LightTimeCount(
+			   CLOSSLIGHT_TIME, 1000);
+		   Log.i("onDoorState", "LightTimeCount     " );
+		   mLightTimeCount.start();
+		}else {
+		   mLightTimeCount.cancel();
+		   mLightTimeCount.start();
+		   Log.i("onDoorState", "ACTION_UP     " );
+		}
+		break;
+	}
+	return super.dispatchTouchEvent(ev);
    }
 }

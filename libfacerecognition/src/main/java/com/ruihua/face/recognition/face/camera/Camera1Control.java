@@ -101,6 +101,7 @@ public class Camera1Control implements ICameraControl {
 //        this.flashMode = flashMode;
 //        updateFlashMode(flashMode);
 //    }
+
     @Override
     public int getFlashMode() {
         return flashMode;
@@ -170,6 +171,7 @@ public class Camera1Control implements ICameraControl {
 //        }
 
 
+
         int detectRotation = 0;
         if (cameraFacing == ICameraControl.CAMERA_FACING_FRONT) {
             int rotation = ORIENTATIONS.get(displayOrientation);
@@ -181,12 +183,12 @@ public class Camera1Control implements ICameraControl {
                     detectRotation = (detectRotation + 180) % 360;
                 }
             }
-        } else if (cameraFacing == ICameraControl.CAMERA_FACING_BACK) {
+        } else if (cameraFacing == ICameraControl.CAMERA_FACING_BACK){
             int rotation = ORIENTATIONS.get(displayOrientation);
             rotation = getCameraDisplayOrientation(rotation, cameraId, camera);
             camera.setDisplayOrientation(rotation);
             detectRotation = rotation;
-        } else if (cameraFacing == ICameraControl.CAMERA_USB) {
+        } else if (cameraFacing == ICameraControl.CAMERA_USB){
             camera.setDisplayOrientation(0);
             detectRotation = 0;
         }
@@ -201,7 +203,7 @@ public class Camera1Control implements ICameraControl {
         final int temp = detectRotation;
         try {
             //if (cameraFacing == ICameraControl.CAMERA_USB) {
-            camera.setPreviewTexture(textureView.getSurfaceTexture());
+                camera.setPreviewTexture(textureView.getSurfaceTexture());
 //            } else {
 //            surfaceTexture = new SurfaceTexture(11);
 //            camera.setPreviewTexture(surfaceTexture);
@@ -215,7 +217,7 @@ public class Camera1Control implements ICameraControl {
 //                    }
 //                }
 //            });
-            // }
+       // }
 //            camera.addCallbackBuffer(new byte[size.width * size.height * 3 / 2]);
 //            camera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
 //
@@ -272,9 +274,8 @@ public class Camera1Control implements ICameraControl {
     @Override
     public void stop() {
         if (camera != null) {
-            camera.setPreviewCallback(null);
             camera.stopPreview();
-            camera.lock();
+            camera.setPreviewCallback(null);
             camera.release();
             camera = null;
         }
@@ -410,7 +411,7 @@ public class Camera1Control implements ICameraControl {
             try {
                 Camera.Parameters parameters = camera.getParameters();
                 Camera.Size optSize = getOptimalSize(width, height, camera.getParameters().getSupportedPreviewSizes());
-                Log.i("wtf", "opPreviewSize-> " + optSize.width + " " + optSize.height);
+                Log.i("wtf", "opPreviewSize-> " + optSize.width + " " +  optSize.height);
                 parameters.setPreviewSize(optSize.width, optSize.height);
                 // parameters.setPreviewFpsRange(10, 15);
                 camera.setParameters(parameters);

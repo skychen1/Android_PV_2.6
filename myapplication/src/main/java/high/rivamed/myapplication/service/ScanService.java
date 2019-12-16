@@ -130,8 +130,8 @@ public class ScanService extends Service {
 
 	   if (mThread1 != null) {
 		if (mTime - lastClickTime >= 2000) {
-		   mThread1.start();
-		   lastClickTime = mTime;
+//		   mThread1.start();
+//		   lastClickTime = mTime;
 		}
 	   } else {
 		mThread1 = new Thread(new Runnable() {

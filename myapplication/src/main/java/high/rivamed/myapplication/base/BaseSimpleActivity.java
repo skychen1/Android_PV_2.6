@@ -26,8 +26,10 @@ import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -89,12 +91,12 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
    @BindView(R.id.base_tab_rlayout)
    public RelativeLayout  mBaseTabRlayout;
 
-   public        ViewStub           mStub;
-   public        SettingPopupWindow mPopupWindow;
-   public        ImageView          mBaseTabBtnConn;
-   public static CountDownTimer     mStarts;
-   public        boolean            mIsClick;
-
+   public        ViewStub            mStub;
+   public        SettingPopupWindow  mPopupWindow;
+   public        ImageView           mBaseTabBtnConn;
+   public static CountDownTimer      mStarts;
+   public        boolean             mIsClick;
+   public static LoginUtils.LightTimeCount mLightTimeCount;
    /**
     * 开锁后禁止点击左侧菜单栏按钮(检测没有关门)
     *
@@ -250,6 +252,7 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 		   @Override
 		   public void onClick(DialogInterface dialog, int i) {
 			MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+			AllDeviceCallBack.getInstance().closeLightStart();
 			dialog.dismiss();
 			removeAllAct(mContext);
 		   }

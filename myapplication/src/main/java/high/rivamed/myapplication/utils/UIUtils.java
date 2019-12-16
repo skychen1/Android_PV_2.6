@@ -47,6 +47,7 @@ import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
 import high.rivamed.myapplication.bean.PendingTaskBean;
 import high.rivamed.myapplication.bean.SocketLeftTopBean;
 import high.rivamed.myapplication.dbmodel.ChildrenBean;
+import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 
@@ -690,5 +691,7 @@ public class UIUtils {
 	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 	activity.startActivity(intent);
 	activity.finish();
+	AllDeviceCallBack.getInstance().closeLightStart();
+
    }
 }

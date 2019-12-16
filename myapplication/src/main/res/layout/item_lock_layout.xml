@@ -41,11 +41,22 @@
 			style="@style/view_line_style"/>
 
 		<TextView
-			android:id="@+id/item_setting_open"
+			android:id="@+id/item_door_open0"
 			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x20"
-			android:layout_marginLeft="@dimen/x20"
-			android:text="开门"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:textSize="@dimen/x20"
+			android:text="开门J24上(单)"
+			/>
+
+		<View
+			style="@style/view_line_style"/>
+		<TextView
+			android:id="@+id/item_door_open1"
+			style="@style/btn_style_sel"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:text="开门J25下"
 			/>
 
 		<View
@@ -53,23 +64,41 @@
 		<TextView
 			android:id="@+id/item_setting_stats"
 			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x20"
-			android:layout_marginLeft="@dimen/x20"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
 			android:text="门锁检测"
 			/>
 		<View
 			style="@style/view_line_style"/>
 		<TextView
-			android:id="@+id/item_registe_finger"
+			android:id="@+id/item_light_open2"
 			style="@style/btn_style_sel"
-			android:layout_marginRight="@dimen/x20"
-			android:layout_marginLeft="@dimen/x20"
-			android:text="指纹注册"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:textSize="@dimen/x20"
+			android:text="开灯J17上(单)"
 			/>
 		<View
 			style="@style/view_line_style"/>
 
-
+		<TextView
+			android:id="@+id/item_light_open3"
+			style="@style/btn_style_sel"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:text="开灯J16下"
+			/>
+		<View
+			style="@style/view_line_style"/>
+		<TextView
+			android:id="@+id/item_light_closs"
+			style="@style/btn_style_sel"
+			android:layout_marginRight="@dimen/x10"
+			android:layout_marginLeft="@dimen/x10"
+			android:text="关灯"
+			/>
+		<View
+			style="@style/view_line_style"/>
 	</LinearLayout>
 
 </LinearLayout>
