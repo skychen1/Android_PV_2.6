@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
@@ -8,9 +9,14 @@ import com.rivamed.libidcard.IdCardManager;
 import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import high.rivamed.myapplication.dbmodel.BoxIdBean;
+
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -79,7 +85,16 @@ public class DevicesUtils {
    public static void getDoorStatus() {
 	List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
 	for (DeviceInfo s : deviceInfos) {
-	   ConsumableManager.getManager().checkDoorState(s.getIdentification());
+	   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", s.getIdentification(),
+								    CONSUMABLE_TYPE).find(BoxIdBean.class);
+	   if (boxIdBeans.size()>1){
+		ConsumableManager.getManager().checkDoorState(s.getIdentification());
+		Log.i("ssffff", "检测的全部门");
+	   }else {
+		ConsumableManager.getManager().checkDoorState(s.getIdentification(),0);
+		Log.i("ssffff", "检测1个门-");
+	   }
+
 	}
    }
 }

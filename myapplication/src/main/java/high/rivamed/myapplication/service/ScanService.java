@@ -130,8 +130,8 @@ public class ScanService extends Service {
 
 	   if (mThread1 != null) {
 		if (mTime - lastClickTime >= 2000) {
-//		   mThread1.start();
-//		   lastClickTime = mTime;
+		   mThread1.start();
+		   lastClickTime = mTime;
 		}
 	   } else {
 		mThread1 = new Thread(new Runnable() {
@@ -183,14 +183,15 @@ public class ScanService extends Service {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventDoorStatus(Event.EventDoorStatus event) {
-	Log.i("onDoorState","onEventDoorStatus：：" + event.type);
+	Log.i("ssffff","onEventDoorStatus：：" + event.type);
 	if (event.type) {//门没关
 	   mDoorStatusType = false;
 	   mEthDevices.clear();
 	   if (mListDevices != null) {
 		mListDevices.clear();
 	   }
-	   EventBusUtils.post(new Event.EventDoorV(false));
+	   Log.i("ssffff","false：：" + event.type);
+	   EventBusUtils.postSticky(new Event.EventDoorV(false));
 	   return;
 	}
 	if (!event.type) {//门关了
@@ -207,12 +208,12 @@ public class ScanService extends Service {
 		mDoorStatusType = true;
 		mListDevices.clear();
 		mEthDevices.clear();
-		EventBusUtils.post(new Event.EventDoorV(true));
+		EventBusUtils.postSticky(new Event.EventDoorV(true));
 	   }
 	   if (mListDevices == null) {
 		mListDevices = new ArrayList<>();
 		mDoorStatusType = true;
-		EventBusUtils.post(new Event.EventDoorV(true));
+		EventBusUtils.postSticky(new Event.EventDoorV(true));
 	   }
 	   if (mDeviceSizeList == null) {
 		mDeviceSizeList = new ArrayList<>();
@@ -302,19 +303,22 @@ public class ScanService extends Service {
    @Override
    public void onCreate() {
 	super.onCreate();
-
+	MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
 	setConnectType();
 
 	EventBusUtils.register(this);
-	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
-	if (boxIdBeans!=null){
-	   for (BoxIdBean idBean : boxIdBeans) {
-		if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
-		   mDeviceSizeList.add(idBean.getDevice_id()+"0");
-		}else if (idBean.getCabinetType().equals("2")){
-		   mDeviceSizeList.add(idBean.getDevice_id()+"1");
+	if (MAIN_URL!=null){
+	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
+	   if (boxIdBeans!=null){
+		for (BoxIdBean idBean : boxIdBeans) {
+		   if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
+			mDeviceSizeList.add(idBean.getDevice_id()+"0");
+		   }else if (idBean.getCabinetType().equals("2")){
+			mDeviceSizeList.add(idBean.getDevice_id()+"1");
+		   }
 		}
 	   }
+
 	}
 
 	initReceiver();
@@ -327,7 +331,7 @@ public class ScanService extends Service {
 	mTask = new TimerTask() {
 	   @Override
 	   public void run() {
-		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
+
 		String urls = MAIN_URL + NetApi.URL_CONNECT;
 		if (MAIN_URL != null) {
 		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {

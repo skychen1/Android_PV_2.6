@@ -189,13 +189,19 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    门关完了
     */
    private void yesClossDoor(Event.EventDoorStatus event) {
+
 	for (Object o : mDeviceSizeList) {
 	   String s = (String) o;
+	   Log.i("onDoorStates", "event.id   "+event.id);
+	   Log.i("onDoorStates", "sssss   "+s);
 	   if (s.equals(event.id) && !event.type) {
 		mEthDevices.add(s);
+		Log.i("onDoorStates", "s   "+s);
 		mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
 	   }
 	}
+//	Log.i("onDoorStates", "mDeviceSizeList.size()   "+mDeviceSizeList.size());
+//	Log.i("onDoorStates", "mListDevices.size()   "+mListDevices.size());
 	if (mDeviceSizeList.size() == mListDevices.size()) {
 	   mDoorStatus = true;
 	   mRgTopGone.setVisibility(View.GONE);
@@ -317,7 +323,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	EventBusUtils.register(this);
 	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
-	   mDeviceSizeList.add(idBean.getDevice_id()+idBean.getCabinetType());
+	   if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
+		mDeviceSizeList.add(idBean.getDevice_id()+"0");
+	   }else if (idBean.getCabinetType().equals("2")){
+		mDeviceSizeList.add(idBean.getDevice_id()+"1");
+	   }
 	}
 	getLocalAllCstVos();
    }

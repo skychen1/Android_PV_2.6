@@ -30,6 +30,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.devices.AllDeviceCallBack.mBomDoorDeviceIdList;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
@@ -426,16 +427,32 @@ public class LyDateUtils {
     * 重新开柜的逻辑3.0
     */
    public static void setMoreOpenDoor() {
-	for (String deviceInventoryVo : mEthDeviceIdBack) {
-	   String deviceIdWhich = deviceInventoryVo.substring(deviceInventoryVo.length() - 1);
-	   String  deviceId= deviceInventoryVo.substring(0, deviceInventoryVo.length() - 1);
-	   int Which =-1;
-	   if (deviceIdWhich.equals("0")){
-		Which =0;
-	   }else if (deviceIdWhich.equals("1")){
-		Which=1;
+
+	for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
+	   String deviceIds = mBomDoorDeviceIdList.get(i);
+	   int size =0;
+	   String deviceIdWhich ="";
+	   for (String deviceInventoryVo : mEthDeviceIdBack) {
+		String  deviceId= deviceInventoryVo.substring(0, deviceInventoryVo.length() - 1);
+		if (mBomDoorDeviceIdList.get(i).equals(deviceId)){
+		   deviceIdWhich = deviceInventoryVo.substring(deviceInventoryVo.length() - 1);
+		   size++;
+		}
 	   }
-	   ConsumableManager.getManager().openDoor(deviceId, Which);
+	   if (size>1){
+		int i1 = ConsumableManager.getManager().openDoor(deviceIds);
+		Log.i("ssffff","openDoor：：" + deviceIds +"    v    "+i1);
+	   }else if (size==1){
+		int Which =-1;
+		if (deviceIdWhich.equals("0")){
+		   Which =0;
+		}else if (deviceIdWhich.equals("1")){
+		   Which=1;
+		}
+		int is = ConsumableManager.getManager().openDoor(deviceIds, Which);
+		Log.i("ssffff","openDoor：：" + deviceIds +Which+"    v    "+is);
+	   }
+
 	}
    }
 }

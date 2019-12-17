@@ -158,7 +158,7 @@ public class LoginActivity extends SimpleActivity {
    public static boolean                             mConfigType044;
    public static boolean                             mConfigType045;
 
-
+   int s =0;
    //
    //   private boolean mDestroyType =true;//处理thread执行
    //   private Thread mThread3;
@@ -226,11 +226,14 @@ public class LoginActivity extends SimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onTitleConnEvent(Event.XmmppConnect event) {
 	mTitleConn = event.connect;
-	boolean s =event.connect;
+	if (!event.connect){
+	  s =1;//1记录上次的false
+	}
 	hasNetWork(event.connect, event.net);
 	Log.i("aaaaaa", "mTitleConn   " + mTitleConn);
-	if (mTitleConn && mOnStart) {
+	if (mTitleConn && s==1 && mOnStart) {
 	   EventBusUtils.post(new Event.EventServer(true, 2));//有网后处理数据
+	   s=0;//有网后设置为0
 	}
    }
 

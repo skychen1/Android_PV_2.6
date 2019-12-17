@@ -172,7 +172,7 @@ public class RegisteFrag extends SimpleFragment {
     */
    private void setSaveActive(String fromDate) {
 
-	NetRequest.getInstance().setSaveActiveDate(fromDate, _mActivity, new BaseResult() {
+	NetRequest.getInstance().setSaveActiveDate(fromDate, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
@@ -443,7 +443,7 @@ public class RegisteFrag extends SimpleFragment {
 			if (UIUtils.isFastDoubleClick(v.getId())) {
 			   return;
 			} else {
-			   DialogUtils.showRegisteDialog(mContext, _mActivity);
+			   DialogUtils.showRegisteDialog(mContext, mContext);
 			}
 		   }
 		});
@@ -549,7 +549,7 @@ public class RegisteFrag extends SimpleFragment {
    //提交预注册的数据
    private void setSaveRegister(String fromDate) {
 
-	NetRequest.getInstance().setSaveRegisteDate(fromDate, _mActivity, new BaseResult() {
+	NetRequest.getInstance().setSaveRegisteDate(fromDate, mContext, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		ThingDto thingDto = mGson.fromJson(result, ThingDto.class);
@@ -779,7 +779,7 @@ public class RegisteFrag extends SimpleFragment {
 
 	   NetRequest.getInstance()
 		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP),
-					     _mActivity, new BaseResult() {
+					     mContext, new BaseResult() {
 				@Override
 				public void onSucceed(String result) {
 				   LogUtils.i(TAG, "result   " + result);

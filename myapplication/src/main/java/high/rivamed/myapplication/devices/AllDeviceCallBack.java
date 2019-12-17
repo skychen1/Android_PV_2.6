@@ -149,7 +149,16 @@ public class AllDeviceCallBack {
 		//		initCallBack();
 		for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
 		   LogUtils.i(TAG, " mBomDoorDeviceIdList.get(i)   " + (String) mBomDoorDeviceIdList.get(i));
-		   ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i));
+		   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", mBomDoorDeviceIdList.get(i),
+									    CONSUMABLE_TYPE).find(BoxIdBean.class);
+		   if (boxIdBeans.size()>1){
+			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i));
+			Log.i("ssffff", "开门全部ddddd");
+		   }else {
+			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
+			Log.i("ssffff", "开门1个");
+		   }
+
 		}
 	   } else {
 //		LogUtils.i(TAG, " DDD  mDeviceCode 1   " + mDeviceCode);
@@ -380,7 +389,7 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onDoorState(String deviceId, int which, boolean state) {
-		Log.i("onDoorState","onDoorState设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
+		Log.i("ssffff","onDoorState设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
 		EventBusUtils.postSticky(new Event.EventDoorStatus(deviceId+which, state));
 	   }
 
@@ -444,6 +453,7 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onScanResult(String deviceId, Map<String, List<EpcInfo>> result) {
+		Log.i("resultddd","result：：onScanResult" );
 		List<String> epcs = new ArrayList<>();
 		for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
 		   String epc = filteListEpc(v.getKey());
