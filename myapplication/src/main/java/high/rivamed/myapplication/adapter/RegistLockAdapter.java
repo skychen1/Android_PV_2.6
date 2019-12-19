@@ -47,10 +47,13 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemDoorOpen0 = (TextView) helper.getView(R.id.item_door_open0);
       mItemDoorOpen1 = (TextView) helper.getView(R.id.item_door_open1);
       mItemSettingStats = (TextView) helper.getView(R.id.item_setting_stats);
-      mItemLightOpen2 = (TextView) helper.getView(R.id.item_light_open2);
       mItemLightOpen3 = (TextView) helper.getView(R.id.item_light_open3);
+      mItemLightOpen2 = (TextView) helper.getView(R.id.item_light_open2);
       mItemLightCloss = (TextView) helper.getView(R.id.item_light_closs);
       mIdText.setText(item);
+      /**
+       * j24
+       */
       mItemDoorOpen0.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -59,6 +62,9 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
 
          }
       });
+      /**
+       * j25
+       */
       mItemDoorOpen1.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -67,6 +73,9 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
 
          }
       });
+      /**
+       * 门检测
+       */
       mItemSettingStats.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -75,6 +84,9 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
 
          }
       });
+      /**
+       * j16
+       */
       mItemLightOpen2.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
@@ -82,6 +94,9 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
             EventBusUtils.post(new Event.lockType(3,i,item,2));
          }
       });
+      /**
+       * j17
+       */
       mItemLightOpen3.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
