@@ -43,7 +43,7 @@ import static android.widget.GridLayout.VERTICAL;
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
-import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -354,7 +354,7 @@ public class RegisteLockFrag extends SimpleFragment {
 		try {
 		   int time = (Integer.parseInt(mClosslightEdit.getText().toString().trim()) * 1000);
 		   if (time >= 10000) {
-			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
+			SPUtils.putInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME, time);
 			CLOSSLIGHT_TIME = time;
 			mLightTimeCount=null;
 			ToastUtils.showShortToast(

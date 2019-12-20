@@ -32,12 +32,14 @@ import high.rivamed.myapplication.utils.UIUtils;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
+import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ANIMATION_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
@@ -122,6 +124,11 @@ public class SplashActivity extends FragmentActivity {
 		   COUNTDOWN_TIME = 20000;
 		}else {
 		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
+		}
+		if (SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME)==-1){
+		   CLOSSLIGHT_TIME = 30000;
+		}else {
+		   CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
 		}
 		LogcatHelper.getInstance(getApplicationContext()).start();
 		SPUtils.putString(getApplicationContext(), "TestLoginName", "admin");

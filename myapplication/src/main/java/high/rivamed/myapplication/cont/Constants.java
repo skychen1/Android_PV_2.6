@@ -122,6 +122,7 @@ public class Constants {
    public static final String SAVE_READER_TIME        = "SAVE_READER_TIME";//READER扫描时长
    public static final String SAVE_ANIMATION_TIME     = "SAVE_ANIMATION_TIME";//READER扫描动画延时时长
    public static final String SAVE_LOGINOUT_TIME      = "SAVE_LOGINOUT_TIME";//无操作退出时间
+   public static final String SAVE_CLOSSLIGHT_TIME      = "SAVE_CLOSSLIGHT_TIME";//无操作关灯
    public static final String SYSTEMTYPE              = "HCT";//高值登录的type
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
    public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用

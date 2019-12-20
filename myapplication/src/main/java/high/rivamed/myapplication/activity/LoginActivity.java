@@ -90,6 +90,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
+import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
@@ -291,9 +292,18 @@ public class LoginActivity extends SimpleActivity {
 	super.onStart();
 
 	Log.i("onDoorState", "onStart   onStartonStartonStartonStart   ");
+	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
+	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
+		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
+		CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
+		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
+		AllDeviceCallBack.getInstance().StateLightStart();
+	   }
+	   getLeftDate();
+	   //	   getBoxSize();
+	}
 	if (mLightTimeCount==null){
-	   mLightTimeCount = new LoginUtils.LightTimeCount(
-		   CLOSSLIGHT_TIME, 1000);
+	   mLightTimeCount = new LoginUtils.LightTimeCount(CLOSSLIGHT_TIME, 1000);
 	}
 	EventBusUtils.register(this);
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
@@ -311,15 +321,7 @@ public class LoginActivity extends SimpleActivity {
 	mPushFormOrders.clear();
 	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V:" +
 				UIUtils.getVersionName(this));
-	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
-	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
-		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
-		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
-		AllDeviceCallBack.getInstance().StateLightStart();
-	   }
-	   getLeftDate();
-	   //	   getBoxSize();
-	}
+
 	initTab();
 	initlistener();
 	if (mTitleConn) {
