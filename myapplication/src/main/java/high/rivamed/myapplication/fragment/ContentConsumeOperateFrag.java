@@ -359,58 +359,59 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
    private void initListener() {
 	if (null != mTbaseDevices && mTbaseDevices.size() == 1) {
+	   String deviceId = mTbaseDevices.get(0).getDeviceId();
 	   mContentRbLyTh.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_lyth);
+		   doSelectOption(deviceId, R.id.content_rb_lyth);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbLy.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_ly);
+		   doSelectOption(deviceId, R.id.content_rb_ly);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbRk.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_rk);
+		   doSelectOption(deviceId, R.id.content_rb_rk);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbYc.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_yc);
+		   doSelectOption(deviceId, R.id.content_rb_yc);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbTb.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_tb);
+		   doSelectOption(deviceId, R.id.content_rb_tb);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbYr.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_yr);
+		   doSelectOption(deviceId, R.id.content_rb_yr);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbTuihui.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_tuihui);
+		   doSelectOption(deviceId, R.id.content_rb_tuihui);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
 	   });
 	   mContentRbTuihuo.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption("", R.id.content_rb_tuihuo);
+		   doSelectOption(deviceId, R.id.content_rb_tuihuo);
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
@@ -592,7 +593,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_010) &&
 	    getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
-	   doSelectOption("", R.id.content_rb_lyth);
+	   String deviceId = mTbaseDevices.get(0).getDeviceId();
+	   doSelectOption(deviceId, R.id.content_rb_lyth);
 	}
 
 	onSucceedDate();

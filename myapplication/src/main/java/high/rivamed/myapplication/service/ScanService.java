@@ -311,9 +311,9 @@ public class ScanService extends Service {
 	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	   if (boxIdBeans!=null){
 		for (BoxIdBean idBean : boxIdBeans) {
-		   if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
+		   if (idBean.getCabinetType()!=null&&idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
 			mDeviceSizeList.add(idBean.getDevice_id()+"0");
-		   }else if (idBean.getCabinetType().equals("2")){
+		   }else if (idBean.getCabinetType()!=null&&idBean.getCabinetType().equals("2")){
 			mDeviceSizeList.add(idBean.getDevice_id()+"1");
 		   }
 		}

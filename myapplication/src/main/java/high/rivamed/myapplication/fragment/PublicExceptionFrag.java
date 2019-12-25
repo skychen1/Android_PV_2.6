@@ -165,7 +165,12 @@ public class PublicExceptionFrag extends SimpleFragment {
 	   PAGE = 1;
 	   if (mType_page.equals(STYPE_EXCEPTION_LEFT)){
 		Log.i("FATRE","已完成关联");
-		mNoDialog = DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2, "noJump", "");
+		if (mNoDialog==null){
+		   mNoDialog = DialogUtils.showNoDialog(mContext, "已完成关联，请在异常记录中查看！", 2, "noJump", "");
+		}
+		if (!mNoDialog.mDialog.isShowing()){
+		   mNoDialog.create().show();
+		}
 		if (showDealList != null) {
 		   showDealList.clear();
 		   loadDealData();

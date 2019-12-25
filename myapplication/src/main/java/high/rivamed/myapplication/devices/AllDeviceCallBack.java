@@ -144,7 +144,7 @@ public class AllDeviceCallBack {
 	LogUtils.i(TAG, " mBomDoorDeviceIdList.size   " + mBomDoorDeviceIdList.size());
 	setReaderList(deviceId);
 
-	if (mTbaseDevices.size() > 1 && mBomDoorDeviceIdList.size() > 1) {
+	if (mTbaseDevices.size() > 1 && mBomDoorDeviceIdList.size() >= 1) {
 	   if (deviceId.equals("")) {//第一个为全部开柜
 		//		initCallBack();
 		for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
@@ -175,13 +175,17 @@ public class AllDeviceCallBack {
     * 获取设备门锁ID，并开柜
     */
    private void queryDoorId(String mDeviceCode) {
+	Log.i("ffaer", " mDeviceCode  " + mDeviceCode);
 	LogUtils.i(TAG, " mBomDoorDeviceIdList.size  " + mBomDoorDeviceIdList.size());
 	for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
 	   List<BoxIdBean> boxIdBeans = LitePal.where("box_id = ? and name = ?", mDeviceCode,
 								    CONSUMABLE_TYPE).find(BoxIdBean.class);
+	   Log.i("ffaer", " boxIdBeans  " + boxIdBeans);
 	   for (BoxIdBean boxIdBean : boxIdBeans) {
 		String device_id = boxIdBean.getDevice_id();
+		Log.i("ffaer", " device_id  " + device_id);
 		if (device_id.equals(mBomDoorDeviceIdList.get(i))) {
+		   Log.i("ffaer", " mBomDoorDeviceIdList.get(i)  " + mBomDoorDeviceIdList.get(i));
 		   if (boxIdBean.getCabinetType().equals("1")||boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜   J24
 			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
 		   }else if (boxIdBean.getCabinetType().equals("2")){                                                  //J25

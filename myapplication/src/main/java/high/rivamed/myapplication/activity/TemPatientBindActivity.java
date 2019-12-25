@@ -185,7 +185,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   mBaseTabBack.setVisibility(View.VISIBLE);
 	}
 	//套组--界面
-	if (mDeviceId.equals("-1000") ) {
+	if (mDeviceId!=null&&mDeviceId.equals("-1000") ) {
 	   mDownBtnOneLL.setVisibility(View.GONE);
 	}
 	//无临时患者

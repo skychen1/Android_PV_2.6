@@ -177,7 +177,7 @@ public class OutFormConfirmAdapter extends BaseQuickAdapter<InventoryVo, BaseVie
             mSeven_five.setTextColor(mContext.getResources().getColor(R.color.text_color_3));
             setDeleteView(item.isDelete(),swipe);
         }
-        if (menuDownType){
+        if (!menuDownType){
             swipe.setSwipeEnabled(false);
         }
     }

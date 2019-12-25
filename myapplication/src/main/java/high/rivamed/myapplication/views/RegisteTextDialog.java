@@ -55,7 +55,7 @@ public class RegisteTextDialog extends Dialog {
 	   View layout = inflater.inflate(R.layout.dialog_registetext_layout, null);
 	   mDialog.addContentView(layout,
 					  new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-									    ViewGroup.LayoutParams.MATCH_PARENT));
+									    ViewGroup.LayoutParams.WRAP_CONTENT));
 	   mContentText = (TextView) layout.findViewById(R.id.content);
 	   mDialogBtn = (TextView) layout.findViewById(R.id.dialog_btn);
 	   mContentText.setText(R.string.regist_text);

@@ -188,7 +188,7 @@ public class BillOrderAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHold
             }
             mLl.setBackgroundResource(R.color.bg_f);
         }
-        if (menuDownType){
+        if (!menuDownType){
             swipe.setSwipeEnabled(false);
         }
     }

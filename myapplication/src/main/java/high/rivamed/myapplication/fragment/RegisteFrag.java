@@ -349,8 +349,8 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragRegisteNameEdit.setText("3.0柜子");
 	   mFragRegisteModelEdit.setText("rivamed30xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.111.240");
-	   mFragRegistePortEdit.setText("8018");
+	   mFragRegisteSeveripEdit.setText("192.168.111.80");
+	   mFragRegistePortEdit.setText("8030");
 	}
 
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();

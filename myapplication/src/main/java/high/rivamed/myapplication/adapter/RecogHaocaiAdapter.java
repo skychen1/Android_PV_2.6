@@ -208,7 +208,7 @@ boolean menuDownType;
 	   mSeven_six.setText("/");
 	   mSeven_seven.setText("断网放入");
 	}
-	if (menuDownType){
+	if (!menuDownType){
 	   swipe.setSwipeEnabled(false);
 	}
    }

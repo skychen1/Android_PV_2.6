@@ -183,7 +183,7 @@ public class InBoxAllAdapter extends BaseQuickAdapter<InventoryVo, BaseViewHolde
 	   mSeven_four.setText("/");
 	   mSeven_six.setText("断网放入");
 	}
-	if (menuDownType){
+	if (!menuDownType){
 	   swipe.setSwipeEnabled(false);
 	}
    }
