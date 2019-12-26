@@ -14,6 +14,9 @@ import java.util.List;
 
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BingFindSchedulesBean;
+import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 
 /**
  * 创建临时患者
@@ -61,7 +64,11 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
         mSeven_five = ((TextView) helper.getView(R.id.seven_five));
         mSeven_six = ((TextView) helper.getView(R.id.seven_six));
         mSeven_seven = ((TextView) helper.getView(R.id.seven_seven));
-
+        if (UIUtils.getConfigType(mContext, CONFIG_012)){
+            mSeven_seven.setVisibility(View.VISIBLE);
+        }else {
+            mSeven_seven.setVisibility(View.GONE);
+        }
         if (mSize==10){
             mSeven_five.setText(item.getPatientName()!=null? item.getPatientName():"/");
             mSeven_two.setText(item.getPatientWard()!=null? item.getPatientWard():"/");
@@ -73,6 +80,13 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
             helper.setText(R.id.seven_nine,item.getBedNo()!=null? item.getBedNo():"/");
             helper.setText(R.id.seven_ten,item.getSurgeryName()!=null? item.getSurgeryName():"/");
         }else {
+            if (mSize == 8){
+                if (item.getOrderDeptName()!=null){
+                    helper.setText(R.id.seven_eight,item.getOrderDeptName());
+                }else {
+                    helper.setText(R.id.seven_eight,"/");
+                }
+            }
             if (item.getSex()!=null){
                 mSeven_two.setText(item.getPatientName()+" - "+item.getSex());
             }else {

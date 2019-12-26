@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class RvDialog2 extends Dialog {
         private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
         public RvDialog2                                   mDialog;
         private LinearLayout                               mLlMain;
-
+        private WeakReference<Activity> activitySRF = null;
         public Builder(Activity mActivity, Context context, List<BingFindSchedulesBean.PatientInfoVos> patientInfos) {
             this.mContext = context;
             this.mActivity = mActivity;
@@ -130,9 +131,10 @@ public class RvDialog2 extends Dialog {
         }
 
         public RvDialog2 create() {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+            activitySRF = new WeakReference<Activity>(mActivity);
+            LayoutInflater inflater = (LayoutInflater) activitySRF.get().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            mDialog = new RvDialog2(mContext, R.style.Dialog);
+            mDialog = new RvDialog2(activitySRF.get(), R.style.Dialog);
             mDialog.setCancelable(false);
             View layout = inflater.inflate(R.layout.dialog_rv_layout, null);
             mDialog.addContentView(layout,

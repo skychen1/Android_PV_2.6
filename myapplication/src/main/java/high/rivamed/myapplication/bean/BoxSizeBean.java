@@ -68,7 +68,7 @@ public class BoxSizeBean implements Serializable {
 
    public void setDevices(List<DevicesBean> devices) { this.devices = devices;}
 
-   public static class DeviceTypeVoBean {
+   public static class DeviceTypeVoBean  implements Serializable{
 
 	private List<DeviceVosBean> deviceVos;
 
@@ -76,7 +76,7 @@ public class BoxSizeBean implements Serializable {
 
 	public void setDeviceVos(List<DeviceVosBean> deviceVos) { this.deviceVos = deviceVos;}
 
-	public static class DeviceVosBean {
+	public static class DeviceVosBean  implements Serializable{
 
 	   /**
 	    * devices : [{"deviceId":null,"deviceName":"全部","identification":null,"ip":null,"parent":null,"remark":null,"status":0,"thingId":null,"operationTime":null,"dictId":null,"deviceType":null,"cabinetType":null,"cabinetNum":null}]
@@ -94,7 +94,7 @@ public class BoxSizeBean implements Serializable {
 
 	   public void setDevices(List<DevicesBeanX> devices) { this.devices = devices;}
 
-	   public static class DevicesBeanX {
+	   public static class DevicesBeanX  implements Serializable{
 
 		/**
 		 * deviceId : null
@@ -183,7 +183,7 @@ public class BoxSizeBean implements Serializable {
 	}
    }
 
-   public static class DevicesBean {
+   public static class DevicesBean  implements Serializable{
 
 	/**
 	 * deviceId : 4028efd06ea12378016ea1d02937000f

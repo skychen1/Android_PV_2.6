@@ -335,8 +335,11 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		mTerm = s.toString().trim();
-		PAGE =1 ;
-		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		if (mTerm.length()>0) {
+		   PAGE =1 ;
+		   LogUtils.i("kkkdrf", "mSearchEt");
+		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
+		}
 	   }
 
 	   @Override

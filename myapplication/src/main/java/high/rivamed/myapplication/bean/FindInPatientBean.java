@@ -87,7 +87,33 @@ public class FindInPatientBean {
         private String surgeryName;
         private String patientWard ;//病舍
         private String floor ;//楼层
+        private String sex ;//性别
+        private String age ;//年龄
+        private String orderDeptName ;//新加的科室
 
+        public String getOrderDeptName() {
+            return orderDeptName;
+        }
+
+        public void setOrderDeptName(String orderDeptName) {
+            this.orderDeptName = orderDeptName;
+        }
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
+
+        public String getAge() {
+            return age;
+        }
+
+        public void setAge(String age) {
+            this.age = age;
+        }
         public String getPatientWard() {
             return patientWard;
         }

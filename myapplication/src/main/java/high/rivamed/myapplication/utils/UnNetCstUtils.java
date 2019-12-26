@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import high.rivamed.myapplication.base.App;
+import high.rivamed.myapplication.bean.ExceptionResultBean;
 import high.rivamed.myapplication.bean.UnNetOperateBean;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
@@ -174,7 +175,26 @@ public class UnNetCstUtils {
 	}
 //	getAllCstDate(mGson, activity);
    }
+   /**
+    * 删除数据库已有的已经操作过的耗材（异常处理中的删除）
+    *
+    * @param result
+    */
+   public static void deleteVoException(String result) {
+	List<InventoryVo> voList = LitePal.findAll(InventoryVo.class);
+	ExceptionResultBean resultBean = sGson.fromJson(result, ExceptionResultBean.class);
+	List<String> handleVos = resultBean
+		.getEpcs();
 
+	for (String vo : handleVos) {
+	   for (int i = voList.size() - 1; i >= 0; i--) {
+		if (voList.get(i).getEpc().equals(vo)) {
+		   voList.get(i).delete();
+		}
+	   }
+	}
+	//	getAllCstDate(mGson, activity);
+   }
    /**
     * 强开删除数据库已有的已经操作过的耗材
     */

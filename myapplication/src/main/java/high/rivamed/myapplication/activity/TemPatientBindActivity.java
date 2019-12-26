@@ -69,6 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.TEMP_FIRSTBIND;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVoException;
 
 /*
  * 患者列表页面,可以创建临时患者
@@ -226,7 +227,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		array = mContext.getResources().getStringArray(R.array.ten_dialog_arrays);
 		mSearchEt.setHint("请输入患者姓名、患者ID、病舍、楼层查询");
 	   }else {
-		array = mContext.getResources().getStringArray(R.array.six_dialog_arrays);
+		array = mContext.getResources().getStringArray(R.array.seven_dialog_arrays);
 		mSearchEt.setHint("请输入患者姓名、患者ID查询");
 	   }
 	   mSearchDept.setText("查询手术间：");
@@ -272,9 +273,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		Log.i("FFASD", "charSequence   发发发");
 		mTrim = charSequence.toString().trim();
-		mAllPage = 1;
-		patientInfos.clear();
-		loadBingDate(mTrim, mTrims);
+		if (mTrim.length()>0){
+		   mAllPage = 1;
+		   patientInfos.clear();
+		   loadBingDate(mTrim, mTrims);
+		}
 	   }
 
 	   @Override
@@ -293,9 +296,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		Log.i("FFASD", "onTextChanged");
 		mTrims = s.toString().trim();
-		mAllPage = 1;
-		patientInfos.clear();
-		loadBingDate(mTrim, mTrims);
+		if (mTrims.length()>0){
+		   mAllPage = 1;
+		   patientInfos.clear();
+		   loadBingDate(mTrim, mTrims);
+		}
 	   }
 
 	   @Override
@@ -515,6 +520,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			if (null == jsonObject.getString("opFlg") ||
 			    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 			   Log.i("FATRE","ERROR_200");
+			   new Thread(() -> deleteVoException(result)).start();//数据库删除已经操作过的EPC
 			   EventBusUtils.post(new Event.EventExceptionDialog(true));
 			}else {
 			   EventBusUtils.post(new Event.EventExceptionDialog(false));
@@ -692,7 +698,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				data.setWardName(bean.getRows().get(i).getWardName());
 				data.setPatientWard(bean.getRows().get(i).getPatientWard());
 				data.setFloor(bean.getRows().get(i).getFloor());
-
+				data.setAge(bean.getRows().get(i).getAge());
+				data.setSex(bean.getRows().get(i).getSex());
+				data.setOrderDeptName(bean.getRows().get(i).getOrderDeptName());
 				patientInfos.add(data);
 			   }
 			   if (isClear && patientInfos.size() > 0) {

@@ -64,15 +64,20 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static high.rivamed.myapplication.cont.Constants.BANGDING;
+import static high.rivamed.myapplication.cont.Constants.CHU_GUI;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
+import static high.rivamed.myapplication.cont.Constants.TUI_HUO;
+import static high.rivamed.myapplication.cont.Constants.YI_CHU;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueDate;
 import static high.rivamed.myapplication.utils.ExceptionDateUtils.getTrueUnKnownDate;
+import static high.rivamed.myapplication.utils.UnNetCstUtils.deleteVoException;
 
 /**
  * 项目名称：高值
@@ -575,8 +580,8 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   //选择库房结果处理
 		   if (event.mIntentType == INTENT_TYPE) {
 			List<ExceptionRecordBean.RowsBean> trueDatess = getTrueDate(showDealList,mSearchTypeInt);
-			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context,"9");//设置值  移出
-			putExceptionDate(handleVo);
+			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context, YI_CHU);//设置值  移出
+			putExceptionDate(handleVo, YI_CHU);
 			event.dialog.dismiss();
 		   }
 		   break;
@@ -584,8 +589,8 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   //选择原因结果处理  退货
 		   if (event.mIntentType == INTENT_TYPE) {
 			List<ExceptionRecordBean.RowsBean> trueDatess = getTrueDate(showDealList,mSearchTypeInt);
-			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context,"8");//设置值  退货
-			putExceptionDate(handleVo);
+			inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDatess, event.context,TUI_HUO);//设置值  退货
+			putExceptionDate(handleVo,TUI_HUO);
 			event.dialog.dismiss();
 		   }
 		   break;
@@ -607,8 +612,8 @@ public class PublicExceptionFrag extends SimpleFragment {
 	switch (event.context) {
 	   case "0"://领用
 		List<ExceptionRecordBean.RowsBean> trueDate = getTrueDate(showDealList,mSearchTypeInt);
-		inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDate, null,"3");//设置值  领用
-		putExceptionDate(handleVo);
+		inventoryUnNormalHandleVo handleVo = setOutBoxVoDate(trueDate, null,BANGDING);//设置值  领用
+		putExceptionDate(handleVo,BANGDING);
 		event.dialog.dismiss();
 		break;
 	   case "1"://移出
@@ -647,11 +652,11 @@ public class PublicExceptionFrag extends SimpleFragment {
 	   inventoryUnNormalHandleVo.InventoryUnNormalHandleVosBean vosBean = new inventoryUnNormalHandleVo.InventoryUnNormalHandleVosBean();
 	   vosBean.setThingId(sThingCode);
 	   vosBean.setUnNormalId(bean.getUnNormalId());
-	   vosBean.setOperationStatue("7");
+	   vosBean.setOperationStatue(CHU_GUI);
 	   vosBean.setOutStatue(type);
-	   if (type!=null&&type.equals("9")) {//移出
+	   if (type!=null&&type.equals(YI_CHU)) {//移出
 		vosBean.setTargetSthId(code);
-	   }else if(type!=null&&type.equals("8")){
+	   }else if(type!=null&&type.equals(TUI_HUO)){
 		vosBean.setReturnReason(code);
 	   }
 	   vos.add(vosBean);
@@ -671,11 +676,11 @@ public class PublicExceptionFrag extends SimpleFragment {
 	switch (event.context) {
 	   case "0"://标签损坏  1
 		handleVo = setRemoveDate(trueDate, "1");
-		putExceptionDate(handleVo);
+		putExceptionDate(handleVo,"");
 		break;
 	   case "1"://取消异常标记  3
 		handleVo = setRemoveDate(trueDate, "3");
-		putExceptionDate(handleVo);
+		putExceptionDate(handleVo,"");
 		break;
 	   case "2"://出柜关联    7
 		connectOutBox();
@@ -747,7 +752,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 		.getExceptionOperateUnknow(mGson.toJson(handleVo), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			overPutEnter(result);
+			overPutEnter(result,"");
 		   }
 		});
 	dealAdapter.notifyDataSetChanged();
@@ -757,12 +762,12 @@ public class PublicExceptionFrag extends SimpleFragment {
     * 出柜、绑定患者、连续移除确认
     * @param handleVo
     */
-   private void putExceptionDate(inventoryUnNormalHandleVo handleVo) {
+   private void putExceptionDate(inventoryUnNormalHandleVo handleVo, String type) {
 	NetRequest.getInstance()
 		.getExceptionRelevance(mGson.toJson(handleVo), this, new BaseResult() {
 		   @Override
 		   public void onSucceed(String result) {
-			overPutEnter(result);
+			overPutEnter(result, type);
 		   }
 
 		   @Override
@@ -776,11 +781,14 @@ public class PublicExceptionFrag extends SimpleFragment {
    /**
     * 处理完成后的页面刷新和提示，
     */
-   private void overPutEnter(String result) {
+   private void overPutEnter(String result, String type) {
 	JSONObject jsonObject = JSON.parseObject(result);
 	if (null == jsonObject.getString("opFlg") ||
 	    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 	   Log.i("FATRE","opFlg");
+	   if (type.equals("3") || type.equals("8") || type.equals("9")) {
+		new Thread(() -> deleteVoException(result)).start();//数据库删除已经操作过的EPC
+	   }
 	   EventBusUtils.post(new Event.EventExceptionDialog(true));
 	}else {
 	   EventBusUtils.post(new Event.EventExceptionDialog(false));

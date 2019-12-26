@@ -115,6 +115,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 		mRows.clear();
 	   }
 	   mSearchEt.setText("");
+	   setTimeTextDatas();
 	   mStartTime=null;
 	   mEndTime=null;
 	   loadDate("",mStartTime,mEndTime);
@@ -158,14 +159,23 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
 
+	setTimeTextDatas();
+	mStartTime = null;
+	mEndTime = null;
+	setDate();
+   }
+
+   /**
+    * 设置初始化的时间选择器显示
+    */
+   private void setTimeTextDatas() {
+	mSearchTimeStart.setText("");
+	mSearchTimeEnd.setText("");
 	Date date = new Date();
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	String format = sdf.format(date);
 	mSearchTimeStart.setHint(PowerDateUtils.getTime(2));
 	mSearchTimeEnd.setHint(format);
-	mStartTime = null;
-	mEndTime = null;
-	setDate();
    }
 
    private void initListener() {
@@ -178,8 +188,10 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		mTrim = charSequence.toString().trim();
-		PAGE = 1;
-		loadDate(mTrim,mStartTime,mEndTime);
+		if (mTrim.length()>0){
+		   PAGE = 1;
+		   loadDate(mTrim,mStartTime,mEndTime);
+		}
 	   }
 
 	   @Override
@@ -265,6 +277,7 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
    private void loadDate(String string,String startTime, String endTime) {
 	if (PAGE == 1) {
 	   mRows.clear();
+	   mNotesAdapter.notifyDataSetChanged();
 	}
 	NetRequest.getInstance().getFindPatientDate(string,startTime, endTime,PAGE, SIZE, _mActivity, new BaseResult() {
 	   @Override
@@ -313,8 +326,9 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	});
    }
 
-   @OnClick({R.id.search_time_start, R.id.search_time_end})
+   @OnClick({R.id.base_tab_tv_name, R.id.base_tab_icon_right, R.id.base_tab_btn_msg, R.id.base_tab_tv_outlogin,R.id.search_time_start, R.id.search_time_end})
    public void onViewClicked(View view) {
+	super.onViewClicked(view);
 	switch (view.getId()) {
 	   case R.id.search_time_start:
 		DialogUtils.showTimeDialog(mContext, mSearchTimeStart);

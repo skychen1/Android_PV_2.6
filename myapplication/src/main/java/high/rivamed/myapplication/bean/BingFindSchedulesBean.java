@@ -86,6 +86,15 @@ public class BingFindSchedulesBean implements Serializable {
         private String surgeryName;
         private String patientWard ;//病舍
         private String floor ;//楼层
+        private String orderDeptName ;//新增科室
+
+        public String getOrderDeptName() {
+            return orderDeptName;
+        }
+
+        public void setOrderDeptName(String orderDeptName) {
+            this.orderDeptName = orderDeptName;
+        }
         public String getAge() {
             return age;
         }

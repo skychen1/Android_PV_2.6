@@ -40,6 +40,7 @@ import high.rivamed.myapplication.utils.UIUtils;
 import static high.rivamed.myapplication.activity.OutBoxBingActivity.mOnBtnGone;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.ACT_TYPE_CONFIRM_HAOCAI;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_BING;
@@ -85,7 +86,7 @@ public class TableTypeView extends LinearLayout {
    private static final int                 SIX        = 6;
    private static final int                 SEVEN      = 7;
    private static final int                 EIGHT      = 8;
-   private static final int                 TEN      = 10;
+   private static final int                 TEN        = 10;
    private              TextView            mSeven_one;
    private              TextView            mSeven_two;
    private              TextView            mSeven_three;
@@ -333,6 +334,11 @@ public class TableTypeView extends LinearLayout {
 			mSeven_five.setText(titeleList.get(4));
 			mSeven_six.setText(titeleList.get(5));
 			mSeven_seven.setText(titeleList.get(6));
+			if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+			   mSeven_seven.setVisibility(VISIBLE);
+			} else {
+			   mSeven_seven.setVisibility(GONE);
+			}
 			if (mTempPatientAdapter != null) {
 			   mTempPatientAdapter.notifyDataSetChanged();
 			} else {
@@ -485,8 +491,47 @@ public class TableTypeView extends LinearLayout {
 			mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
 			mRecyclerview.setAdapter(timelyProfitAdapter);
 			mLinearLayout.addView(mHeadView);
+		   } else if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
+			String mDeptType = SPUtils.getString(mContext, PATIENT_TYPE);
+			List<BingFindSchedulesBean.PatientInfoVos> patientInfos = (List<BingFindSchedulesBean.PatientInfoVos>) mObject;
+			mLayout = R.layout.item_temp_eight_layout;
+			mHeadView = mActivity.getLayoutInflater()
+				.inflate(R.layout.item_temp_eight_title_layout,
+					   (ViewGroup) mLinearLayout.getParent(), false);
+			findId();
+			mSeven_one.setText(titeleList.get(0));
+			mSeven_two.setText(titeleList.get(1));
+			mSeven_three.setText(titeleList.get(2));
+			mSeven_four.setText(titeleList.get(3));
+			mSeven_five.setText(titeleList.get(4));
+			mSeven_six.setText(titeleList.get(5));
+			mSeven_seven.setText(titeleList.get(6));
+			((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
+			if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+			   mSeven_seven.setVisibility(VISIBLE);
+			} else {
+			   mSeven_seven.setVisibility(GONE);
+			}
+			if (mTempPatientAdapter != null) {
+			   mTempPatientAdapter.notifyDataSetChanged();
+			} else {
+			   mTempPatientAdapter = new BindTemporaryAdapter(mLayout, patientInfos,
+											  mDeptType, mSize);
+			   mHeadView.setBackgroundResource(R.color.bg_green);
+			   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
+			   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+			   mRefreshLayout.setEnableAutoLoadMore(true);
+			   mRefreshLayout.setEnableRefresh(true);//是否启用下拉刷新功能
+			   mRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+			   View inflate = LayoutInflater.from(mActivity)
+				   .inflate(R.layout.recy_null, null);
+			   mTempPatientAdapter.setEmptyView(inflate);
+			   mRecyclerview.setAdapter(mTempPatientAdapter);
+			   mLinearLayout.addView(mHeadView);
+			   mTempPatientAdapter.notifyDataSetChanged();
+			}
 		   }
-		}else if (mSize == TEN) {
+		} else if (mSize == TEN) {
 		   if (mDialog != null && mDialog.equals(STYPE_DIALOG)) {//患者列表
 			String mDeptType = SPUtils.getString(mContext, PATIENT_TYPE);
 			List<BingFindSchedulesBean.PatientInfoVos> patientInfos = (List<BingFindSchedulesBean.PatientInfoVos>) mObject;

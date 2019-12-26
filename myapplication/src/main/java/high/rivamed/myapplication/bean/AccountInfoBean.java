@@ -71,7 +71,7 @@ public class AccountInfoBean implements Serializable {
          */
 
         private String accountName;
-        private String userName;
+        private String userName ;
         private String accountId;
         private String userId;
         private int isFinger;

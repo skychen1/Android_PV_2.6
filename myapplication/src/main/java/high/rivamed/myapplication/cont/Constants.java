@@ -150,4 +150,9 @@ public class Constants {
    public static final String[] EXCEPTION_DEAL_REMOVE_JUDGE    = {"标签损坏", "取消异常标记", "出柜关联"};
    //异常处理：出柜关联
    public static final String[] EXCEPTION_DEAL_OUT_BOX_CONNECT = {"领用", "移出", "退货"};
+
+   public static final String YI_CHU="9";//移出
+   public static final String TUI_HUO="8";//退货
+   public static final String CHU_GUI="7";//出柜关联
+   public static final String BANGDING="3";//绑定患者、领用
 }

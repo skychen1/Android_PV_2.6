@@ -259,10 +259,8 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setPatientId(bean.getRows().get(i).getPatientId());
 				   data.setPatientName(bean.getRows().get(i).getPatientName());
 				   data.setDeptName(bean.getRows().get(i).getDeptName());
-				   data.setDoctorName(
-					   bean.getRows().get(i).getDoctorName());
-				   data.setRoomName(
-					   bean.getRows().get(i).getRoomName());
+				   data.setDoctorName(bean.getRows().get(i).getDoctorName());
+				   data.setRoomName(bean.getRows().get(i).getRoomName());
 				   data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
 				   data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
 				   data.setSurgeryId(bean.getRows().get(i).getSurgeryId());

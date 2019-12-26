@@ -212,7 +212,9 @@ public class PublicStockFrag extends SimpleFragment {
 		   @Override
 		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 			mTrim = charSequence.toString().trim();
-			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+			if (mTrim.length()>0) {
+			   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
+			}
 		   }
 
 		   @Override
@@ -280,7 +282,9 @@ public class PublicStockFrag extends SimpleFragment {
 		   @Override
 		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 			mTrim = charSequence.toString().trim();
-			loadStockRightDate(mDeviceCode, mTrim);
+			if (mTrim.length()>0) {
+			   loadStockRightDate(mDeviceCode, mTrim);
+			}
 		   }
 
 		   @Override

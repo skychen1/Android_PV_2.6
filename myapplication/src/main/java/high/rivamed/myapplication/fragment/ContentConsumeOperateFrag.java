@@ -851,15 +851,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
 		FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
-
-		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		   mContext.startActivity(
-			   new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId",
-													   deviceId)
+		Log.i(TAG, "deviceId   " + deviceId);
+		Log.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
+		if (UIUtils.getConfigType(mContext, CONFIG_012))
+		   mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId", deviceId)
 				   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
 				   .putExtra("mRbKey", mRbKey)
 				   .putExtra("GoneType", gonetype));
-		} else {
+		else {
 		   if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
 			mContext.startActivity(
 				new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId",
