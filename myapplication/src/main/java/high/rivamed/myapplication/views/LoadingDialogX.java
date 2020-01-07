@@ -93,7 +93,7 @@ public class LoadingDialogX extends Dialog {
 			   mLoading.stop();
 			   mHandler.removeCallbacksAndMessages(null);
 			   EventBusUtils.post(new Event.StartScanType(true, false));
-			   ToastUtils.showShortToast("readr未连接，请稍后重试！");
+//			   ToastUtils.showShortToast("readr未连接，请稍后重试！");
 			   mDialog.dismiss();
 			}
 		   }

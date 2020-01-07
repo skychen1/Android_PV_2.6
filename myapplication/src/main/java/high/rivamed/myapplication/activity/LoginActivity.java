@@ -319,7 +319,7 @@ public class LoginActivity extends SimpleActivity {
 	LoginUtils.getUpDateVer(this);
 	mOnStart = true;
 	mPushFormOrders.clear();
-	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V:" +
+	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V " +
 				UIUtils.getVersionName(this));
 
 	initTab();
@@ -467,7 +467,7 @@ public class LoginActivity extends SimpleActivity {
 		if (mLoginGone != null) {
 		   mLoginGone.setVisibility(View.VISIBLE);
 		}
-		if (mLoginFace.isChecked() && isConfigFace()) {
+		if (mLoginFace!=null&&mLoginFace.isChecked() && isConfigFace()) {
 		   //设备可用切换至设备禁用时当前选中显示的是人脸识别页面，停止人脸识别的预览
 		   faceFragment.onTabShowPreview(false);
 		}
@@ -858,7 +858,7 @@ public class LoginActivity extends SimpleActivity {
 		mLightTimeCount.cancel();
 		break;
 	   case MotionEvent.ACTION_UP:
-	      if (mLightTimeCount!=null){
+	      if (mLightTimeCount==null){
 		   mLightTimeCount = new LoginUtils.LightTimeCount(
 			   CLOSSLIGHT_TIME, 1000);
 		   Log.i("onDoorState", "LightTimeCount     " );

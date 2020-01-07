@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
+import com.ruihua.reader.ReaderProducerType;
+import com.ruihua.reader.net.NetReaderManager;
 
 import org.litepal.LitePal;
 
@@ -24,10 +26,14 @@ import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mBomDoorDeviceIdList;
@@ -281,7 +287,7 @@ public class LyDateUtils {
 		for (BoxIdBean deviceid : deviceBean) {
 		   String device_id = deviceid.getDevice_id();
 		   int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
-		   Log.i("aalldf", "startScan  " + i);
+		   Log.i("dfafaeeee", "startScan  " + i);
 		   if (i == 2) {
 			Log.i("aalldf", "mRunnable   开始  " + device_id);
 			EventBusUtils.post(new Event.StartScanType(true, false));
@@ -289,9 +295,10 @@ public class LyDateUtils {
 		   }
 		   if (i == 1) {
 			EventBusUtils.post(new Event.StartScanType(true, false));
-			ReaderManager.getManager().restDevice(device_id);
+//			ReaderManager.getManager().restDevice(device_id);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
-			ToastUtils.showShortToast("readr未连接，请稍后重试！");
+			initReaderUtil();
+//			ToastUtils.showShortToast("readr未连接，请稍后重试！");
 		   }
 		   if (i == 0) {
 			EventBusUtils.post(new Event.StartScanType(false, true));
@@ -454,5 +461,20 @@ public class LyDateUtils {
 	   }
 
 	}
+   }
+   /**
+    * 断连后重连
+    */
+   public static void initReaderUtil() {
+	new Thread(() -> {
+	   NetReaderManager.getManager().stopService();
+	   if (SPUtils.getString(mAppContext, READER_NAME) == null ||
+		 SPUtils.getString(mAppContext, READER_NAME).equals(READER_NAME_RODINBELL)) {
+		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+	   } else if (SPUtils.getString(mAppContext, READER_NAME) != null &&
+			  SPUtils.getString(mAppContext, READER_NAME).equals(READER_NAME_COLU)) {
+		ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+	   }
+	}).start();
    }
 }

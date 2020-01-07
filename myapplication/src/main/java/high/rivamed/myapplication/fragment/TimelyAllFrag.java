@@ -69,6 +69,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.http.NetRequest.sThingCode;
+import static high.rivamed.myapplication.utils.LyDateUtils.initReaderUtil;
 import static high.rivamed.myapplication.utils.StringUtils.search;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 
@@ -87,7 +88,6 @@ import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 @SuppressLint("ValidFragment")
 public class TimelyAllFrag extends SimpleFragment {
 
-   private       List<BoxSizeBean.DevicesBean> mBoxList      = new ArrayList<>();
    private       List<DeviceInventoryVo>       mDeviceInventoryVos;
    private       InventoryDto                  mInventoryDto = new InventoryDto();
    private       ArrayList<String>             mBoxIdListss;
@@ -97,6 +97,17 @@ public class TimelyAllFrag extends SimpleFragment {
    public static boolean                       mTimelyOnResume;
    private       SavePadPdBean                 mPutSavePadPdDto;
 
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onConnectReaderState(Event.ConnectReaderState event) {
+	if (!mPauseS){
+	   if (event.type ) {
+		ToastUtils.showShortToast("reader重连成功，请重新扫描！");
+		EventBusUtils.post(new Event.StartScanType(true, false));
+	   }else {
+		ToastUtils.showLongToast("reader重连中，请稍后！");
+	   }
+	}
+   }
    /**
     * 重新加载数据
     *
@@ -471,8 +482,6 @@ public class TimelyAllFrag extends SimpleFragment {
 		   return;
 		} else {
 		   mEPCDate.clear();
-		   mBoxList.clear();
-		   mBoxList.addAll(mTbaseDevices);
 
 		   if (mInventoryVos != null) {
 			mInventoryVos.clear();
@@ -601,7 +610,8 @@ public class TimelyAllFrag extends SimpleFragment {
 	if (mDeviceCode == null || mDeviceCode.equals("")) {
 	   getBoxIdList();
 	   if (mReaderDeviceId.size() == 0) {
-		ToastUtils.showShort("reader未启动，请稍后重新扫描");
+//		ToastUtils.showShort("reader未启动，请稍后重新扫描");
+		initReaderUtil();
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));
 	   }
 	   for (String readerCode : mReaderDeviceId) {
@@ -609,6 +619,9 @@ public class TimelyAllFrag extends SimpleFragment {
 		if (x == 2) {
 		   ReaderManager.getManager().stopScan(readerCode);
 		   ReaderManager.getManager().startScan(readerCode, READER_TIME);
+		}
+		if (x == 1) {
+		   initReaderUtil();
 		}
 	   }
 	} else {
@@ -620,7 +633,8 @@ public class TimelyAllFrag extends SimpleFragment {
 		String device_id = boxIdBean.getDevice_id();
 		LogUtils.i(TAG, "mReaderDeviceId.size   " + mReaderDeviceId.size());
 		if (mReaderDeviceId.size() == 0) {
-		   ToastUtils.showShort("reader未启动，请稍后重新扫描");
+//		   ToastUtils.showShort("reader未启动，请稍后重新扫描");
+		   initReaderUtil();
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
 		for (int i = 0; i < mReaderDeviceId.size(); i++) {
@@ -631,6 +645,9 @@ public class TimelyAllFrag extends SimpleFragment {
 			if (x == 2) {
 			   ReaderManager.getManager().stopScan(device_id);
 			   ReaderManager.getManager().startScan(device_id, READER_TIME);
+			}
+			if (x == 1) {
+			   initReaderUtil();
 			}
 		   }
 		}

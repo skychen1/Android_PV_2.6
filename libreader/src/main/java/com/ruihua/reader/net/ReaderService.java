@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import com.rivamed.libdevicesbase.utils.LogUtils;
 import com.rivamed.libdevicesbase.utils.ThreadPoolProxyFactory;
 import com.ruihua.reader.ReaderProducerType;
-import com.ruihua.reader.net.clou.ClouHandler;
 import com.ruihua.reader.bean.AntInfo;
 import com.ruihua.reader.bean.EpcInfo;
 import com.ruihua.reader.net.callback.ReaderHandler;
 import com.ruihua.reader.net.callback.ReaderMessageListener;
+import com.ruihua.reader.net.clou.ClouHandler;
 import com.ruihua.reader.net.rodinbell.RodinbellHandler;
 
 import java.net.InetSocketAddress;
@@ -21,7 +21,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -94,7 +93,7 @@ public class ReaderService {
                                 case ReaderProducerType.TYPE_NET_RODINBELL:
                                     //罗丹贝尔的数据通道，根据罗丹贝尔情况处理
                                     //添加心跳规则
-                                    channel.pipeline().addLast(new IdleStateHandler(0, 0, 5));
+                                    channel.pipeline().addLast(new IdleStateHandler(0, 0, 2));
                                     RodinbellHandler channelHandler = new RodinbellHandler();
                                     channelHandler.registerRodinbellMessageListener(new MyReaderMessageListener());
                                     channel.pipeline().addLast(ip,channelHandler);

@@ -23,6 +23,17 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+   /**
+    * 触发重新连接reader
+    */
+   public static class ConnectReaderState {
+	public boolean type;
+
+	public ConnectReaderState(boolean type) {
+	   this.type = type;
+	}
+   }
+
    public static class SelectOption {
 	public String deviceId;
 	public int id;

@@ -211,7 +211,11 @@ public class RegisteReaderFrag extends SimpleFragment {
 	ReaderManager.getManager().registerCallback(new ReaderCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-
+		if (isConnect) {
+		   AppendLog("Reader设备已连接:::ID=" + deviceId);
+		} else {
+		   AppendLog("Reader设备已断开:::ID" + deviceId);
+		}
 	   }
 
 	   @Override

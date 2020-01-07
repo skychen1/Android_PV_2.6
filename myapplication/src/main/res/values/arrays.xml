@@ -38,7 +38,7 @@
 		<item>医生</item>
 		<item>手术间</item>
 		<item>临时患者</item>
-		<item>科室</item>
+		<item>申请科室</item>
 	</string-array>
 	<string-array name="ten_dialog_arrays">
 		<item>选择</item>

@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
-import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.bean.EpcInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -199,6 +198,17 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    private boolean mStartScanType;
    private int mEndSize =0;
 
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onConnectReaderState(Event.ConnectReaderState event) {
+	if (!mPause){
+	   if (event.type ) {
+		ToastUtils.showShortToast("reader重连成功，请重新扫描！");
+		EventBusUtils.post(new Event.StartScanType(true, false));
+	   }else {
+		ToastUtils.showLongToast("reader重连中，请稍后！");
+	   }
+	}
+   }
    /**
     * 门锁的提示
     *
@@ -745,6 +755,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   TimelyAllFrag.mPauseS = true;
 		   if (!mStartScanType){
 			mBoxInventoryVos.clear();
+			mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
 		   }
 		   mLocalAllSize = mAllSize;
 		   setRemoveRunnable();
@@ -762,7 +773,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		   mLocalAllSize = mAllSize;
 		   mTimelyRight.setText("确认并退出登录");
 		   TimelyAllFrag.mPauseS = true;
-		   mBoxInventoryVos.clear();
+		   if (mBoxInventoryVos!=null){
+			mBoxInventoryVos.clear();
+			mTypeView.mRecogHaocaiAdapter.notifyDataSetChanged();
+		   }
+
 		   mObs.removeVos();
 		   stopScan();
 		   if (mConfigType009) {

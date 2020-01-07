@@ -81,7 +81,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
             helper.setText(R.id.seven_ten,item.getSurgeryName()!=null? item.getSurgeryName():"/");
         }else {
             if (mSize == 8){
-                if (item.getOrderDeptName()!=null){
+                if (item.getOrderDeptName()!=null&&!item.getOrderDeptName().equals("")){
                     helper.setText(R.id.seven_eight,item.getOrderDeptName());
                 }else {
                     helper.setText(R.id.seven_eight,"/");
@@ -93,7 +93,7 @@ public class BindTemporaryAdapter extends BaseQuickAdapter<BingFindSchedulesBean
                 mSeven_two.setText(item.getPatientName());
             }
             mSeven_four.setText(item.getSurgeryTime());
-            mSeven_five.setText(item.getDoctorName());
+            mSeven_five.setText(item.getDoctorName()!=null&&item.getDoctorName().equals("")? "/":item.getDoctorName());
 
             if (item.getPatientId()!=null){
                 if (item.getPatientId().equals("virtual")) {

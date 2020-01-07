@@ -23,7 +23,7 @@
 		android:id="@+id/dialog_msg"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/x190"
-		android:layout_marginLeft="@dimen/x50"
+		android:layout_marginLeft="@dimen/x30"
 		android:drawableLeft="@mipmap/hccz_ic_tk_gth"
 		android:drawablePadding="@dimen/x25"
 		android:gravity="center_vertical"

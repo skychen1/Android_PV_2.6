@@ -48,6 +48,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.fragment.TimelyAllFrag.mTimelyOnResume;
 import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.LoginUtils.getEpcFilte;
+import static high.rivamed.myapplication.utils.LyDateUtils.initReaderUtil;
 import static high.rivamed.myapplication.utils.LyDateUtils.stopScan;
 import static high.rivamed.myapplication.utils.StringUtils.getStringType;
 
@@ -247,6 +248,7 @@ public class AllDeviceCallBack {
 	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	   ReaderManager.getManager().startScan(device_id, READER_TIME);
 	}
+
 	if (i == 2) {
 //	   ReaderManager.getManager().stopScan(device_id);
 //	   ReaderManager.getManager().startScan(device_id, READER_TIME);
@@ -452,7 +454,12 @@ public class AllDeviceCallBack {
 	ReaderManager.getManager().registerCallback(new ReaderCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-
+		if (isConnect) {
+		   EventBusUtils.post(new Event.ConnectReaderState(true));
+		} else {
+		   EventBusUtils.post(new Event.ConnectReaderState(false));
+		   initReaderUtil();
+		}
 	   }
 
 	   @Override

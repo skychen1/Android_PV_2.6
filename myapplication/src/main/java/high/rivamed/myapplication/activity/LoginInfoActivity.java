@@ -132,11 +132,12 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   }
 	}
    }
+
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventFingerTime(Event.EventFingerTime event) {
 	//	EventBusUtils.postSticky(new Event.EventLoading(false));
 	if (mOneFingerDialog != null) {
-	   mOneFingerDialog.mFingerTime.setText(event.time/1000+"");
+	   mOneFingerDialog.mFingerTime.setText(event.time / 1000 + "");
 	}
    }
 
@@ -147,46 +148,46 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventFingerDialog(Event.EventFingerReg event) {
-//	EventBusUtils.postSticky(new Event.EventLoading(false));
-	if (mOneFingerDialog!=null){
-	   if (event.msg==0){
+	//	EventBusUtils.postSticky(new Event.EventLoading(false));
+	if (mOneFingerDialog != null) {
+	   if (event.msg == 0) {
 		mOneFingerDialog.mFingerTitle2.setText("请抬起手指");
-	   }else {
+	   } else {
 		mOneFingerDialog.mFingerTitle2.setText("将识别手指2次，请勿离开");
 	   }
 
 	}
-//	if (event.msg) {
-//	   mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
-//										new OnfingerprintBackListener() {
-//										   @Override
-//										   public void OnfingerprintBack() {
-//											if (mOneFingerDialog.mDialogBtn.getText()
-//												.equals("重试")) {
-//											   setEth002FingerReg();
-//											   mOneFingerDialog.mErrorText.setVisibility(
-//												   View.GONE);
-//											} else {
-//											   List<String> list = new ArrayList<>();
-//											   if (mFingerData != null) {
-//												list.add(mFingerData);
-//											   }
-//											   Log.i("fadeee",
-//												   "list.size()   " +
-//												   list.size());
-//											   if (list.size() == 1) {
-//												bindFingerPrint(list);
-//											   } else {
-//												ToastUtils.showShort(
-//													"采集失败,请重试");
-//											   }
-//											}
-//											mOneFingerDialog.mDialog.dismiss();
-//										   }
-//										});
-//	} else {
-//	   ToastUtils.showShortToast("指纹注册发起失败，请重试！");
-//	}
+	//	if (event.msg) {
+	//	   mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
+	//										new OnfingerprintBackListener() {
+	//										   @Override
+	//										   public void OnfingerprintBack() {
+	//											if (mOneFingerDialog.mDialogBtn.getText()
+	//												.equals("重试")) {
+	//											   setEth002FingerReg();
+	//											   mOneFingerDialog.mErrorText.setVisibility(
+	//												   View.GONE);
+	//											} else {
+	//											   List<String> list = new ArrayList<>();
+	//											   if (mFingerData != null) {
+	//												list.add(mFingerData);
+	//											   }
+	//											   Log.i("fadeee",
+	//												   "list.size()   " +
+	//												   list.size());
+	//											   if (list.size() == 1) {
+	//												bindFingerPrint(list);
+	//											   } else {
+	//												ToastUtils.showShort(
+	//													"采集失败,请重试");
+	//											   }
+	//											}
+	//											mOneFingerDialog.mDialog.dismiss();
+	//										   }
+	//										});
+	//	} else {
+	//	   ToastUtils.showShortToast("指纹注册发起失败，请重试！");
+	//	}
    }
 
    /**
@@ -197,7 +198,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventFingerReg(Event.EventFingerRegEnter event) {
 	mFingerData = event.fingerData;
-	if (event.type==0) {
+	if (event.type == 0) {
 	   if (mOneFingerDialog != null) {
 		mOneFingerDialog.setSuccess();
 	   }
@@ -286,12 +287,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   mSettingFingerprintBindTwo.setText("绑定");
 	}
 	if (fingerNames != null && fingerNames.contains("指纹3")) {
-	   mSettingFingerprintEditThree.setTextColor(
-		   getResources().getColor(R.color.color_text_g));
+	   mSettingFingerprintEditThree.setTextColor(getResources().getColor(R.color.color_text_g));
 	   mSettingFingerprintBindThree.setText("重新绑定");
 	} else {
-	   mSettingFingerprintEditThree.setTextColor(
-		   getResources().getColor(R.color.text_color_6));
+	   mSettingFingerprintEditThree.setTextColor(getResources().getColor(R.color.text_color_6));
 	   mSettingFingerprintBindThree.setText("绑定");
 	}
    }
@@ -353,7 +352,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 								    mIsWaidai = 0;
 								    mSettingIcCardText.setText("未绑定");
 								    mSettingIcCardText.setTextColor(
-									    getResources().getColor(R.color.text_color_6));
+									    getResources().getColor(
+										    R.color.text_color_6));
 								    mSettingIcCardBind.setText("绑定");
 								 }
 							    });
@@ -369,17 +369,20 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
 	for (DeviceInfo info : deviceInfos) {
 	   String identification = info.getIdentification();
-	   Log.i("appSatus","appSatus   "+identification);
+	   Log.i("appSatus", "appSatus   " + identification);
 	   FingerManager.getManager().stopReadFinger(identification);
-	   int ret = FingerManager.getManager().startRegisterFinger(identification, 10 * 1000, FilesUtils.getFilePath(mContext));
-	   Log.i("appSatus","ret   "+ret);
+	   int ret = FingerManager.getManager()
+		   .startRegisterFinger(identification, 10 * 1000, FilesUtils.getFilePath(mContext));
+	   Log.i("appSatus", "ret   " + ret);
 	   if (ret == FunctionCode.SUCCESS) {
 		mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
 										   new OnfingerprintBackListener() {
 											@Override
 											public void OnfingerprintBack() {
-											   Log.i("fadeee", "OnfingerprintBack   " );
-											   if (mOneFingerDialog.mDialogBtn.getText()
+											   Log.i("fadeee",
+												   "OnfingerprintBack   ");
+											   if (mOneFingerDialog.mDialogBtn
+												   .getText()
 												   .equals("重试")) {
 												mOneFingerDialog.mErrorText.setVisibility(
 													View.GONE);
@@ -435,8 +438,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 			ToastUtils.showShort(data.getMsg());
 			//指纹未绑定
 			mSettingIcCardText.setText("已绑定");
-			mSettingIcCardText.setTextColor(
-				getResources().getColor(R.color.color_text_g));
+			mSettingIcCardText.setTextColor(getResources().getColor(R.color.color_text_g));
 			mSettingIcCardBind.setText("解除绑定");
 			String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA,
 									   "");
@@ -567,33 +569,38 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	}
    }
 
-	public void bindFace(String path) {
-		try {
-			String base64 = FileEncoder.encodeFileToBase64String(path);
-			NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-					// TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
-					//更新：需要先删除本地已注册人脸，再重新注册
-					if (FaceManager.getManager().getUserById(mUserId)!=null) {
-						boolean b = FaceManager.getManager().deleteFace(mUserId);
-						LogUtils.d(TAG, "删除人脸底照："+b+",userId：" + mUserId);
+   public void bindFace(String path) {
+	try {
+	   String base64 = FileEncoder.encodeFileToBase64String(path);
+	   NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+		   // TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
+		   //更新：需要先删除本地已注册人脸，再重新注册
+		   if (FaceManager.getManager().getUserById(mUserId) != null) {
+			boolean b = FaceManager.getManager().deleteFace(mUserId);
+			LogUtils.d(TAG, "删除人脸底照：" + b + ",userId：" + mUserId);
+		   }
+		   FaceManager.getManager()
+			   .registerFace(mUserId,
+					     SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
+					     faceImagePath, (code, msg) -> {
+					LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
+					if (code == FunctionCode.SUCCESS) {
+					   //刪除本地缓存人脸照
+					   new File(faceImagePath).delete();
+					   UIUtils.runInUIThread(() -> {
+						ToastUtils.showShortToast("人脸绑定成功");
+						mSettingFaceBindText.setText("已绑定");
+						mSettingFaceBindText.setTextColor(
+							getResources().getColor(R.color.color_text_g));
+						mSettingFaceBindBtn.setText("重新绑定");
+					   });
+
+					   //									ToastUtils.showShortToast("人脸绑定成功");
 					}
-					FaceManager.getManager().registerFace(mUserId,
-							SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
-							faceImagePath, (code, msg) -> {
-								LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
-								if (code== FunctionCode.SUCCESS){
-									//刪除本地缓存人脸照
-									new File(faceImagePath).delete();
-								   UIUtils.runInUIThread(()->  ToastUtils.showShortToast("人脸绑定成功"));
-								   mSettingFaceBindText.setText("已绑定");
-								   mSettingFaceBindText.setTextColor(getResources().getColor(R.color.color_text_g));
-								   mSettingFaceBindBtn.setText("重新绑定");
-//									ToastUtils.showShortToast("人脸绑定成功");
-								}
-							});
-				}
+				   });
+		}
 
 		@Override
 		public void onError(String result) {

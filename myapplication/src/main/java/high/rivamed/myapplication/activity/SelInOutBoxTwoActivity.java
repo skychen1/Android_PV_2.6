@@ -32,7 +32,6 @@ import high.rivamed.myapplication.base.BaseSimpleActivity;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HospNameBean;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
@@ -162,6 +161,19 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private List<BoxSizeBean.DevicesBean> mBoxsize;
    private boolean mStartScanType;
    private int mEndSize =0;
+
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onConnectReaderState(Event.ConnectReaderState event) {
+	if (mResume){
+	   if (event.type ) {
+		ToastUtils.showShortToast("reader重连成功，请重新扫描！");
+		EventBusUtils.post(new Event.StartScanType(true, false));
+	   }else {
+		ToastUtils.showLongToast("reader重连中，请稍后！");
+	   }
+	}
+   }
+
    /**
     * 按钮的显示转换
     *
@@ -472,6 +484,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   Drawable drawable = getResources().getDrawable(R.drawable.icon_rfid_normal);
 		   mBaseGifImageView.setImageDrawable(drawable);
 		   mEndSize=0;
+		}
+
 		if (mOperationType==2||mOperationType==7||mOperationType==10){
 		   Log.i("LOGSCAN", "入柜-有耗材的结束   ");
 		   setTitleRightNum();
@@ -488,7 +502,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   EventBusUtils.postSticky(new Event.EventLoadingX(false));
 		}
 
-		}
 
 	   }else {
 	      if (event.epc == null || event.epc.equals("0")){//无耗材结束的走向
