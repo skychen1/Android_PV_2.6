@@ -299,7 +299,7 @@ public class AllDeviceCallBack {
 	FingerManager.getManager().registerCallback(new FingerCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-		Log.i("appSatus","isConnect     "+isConnect);
+		Log.i("appSatus","isConnectdeviceId     "+isConnect+deviceId);
 	   }
 
 	   @Override

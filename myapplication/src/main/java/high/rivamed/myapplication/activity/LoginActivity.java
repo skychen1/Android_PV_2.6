@@ -257,18 +257,6 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginLogo.setImageBitmap(bitmap);
 	}
 
-
-	BoxIdBean idBean = LitePal.where("name = ?", FINGER_TYPE).findFirst(BoxIdBean.class);
-	BoxIdBean idIc = LitePal.where("name = ?", IC_TYPE).findFirst(BoxIdBean.class);
-	if (idBean != null) {
-	   Log.i("appSatus","FingerManager  idBean.getDevice_id()      "+idBean.getDevice_id());
-	   int i = FingerManager.getManager().startReadFinger(idBean.getDevice_id());
-	   Log.i("appSatus","FingerManager     "+i);
-	}
-	if (idIc != null) {
-	   int i = IdCardManager.getIdCardManager().startReadCard(idIc.getDevice_id());
-	   Log.i("appSatus","IdCardManager     "+i);
-	}
 	//	Glide.with(this).load(file).diskCacheStrategy(DiskCacheStrategy.NONE).error(R.mipmap.bg_login_icon).into(mLoginLogo);
 	if (SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP) != null) {
 	   MAIN_URL = SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP);
@@ -287,10 +275,24 @@ public class LoginActivity extends SimpleActivity {
 
    }
 
+   private void registFingerAndIc() {
+	BoxIdBean idBean = LitePal.where("name = ?", FINGER_TYPE).findFirst(BoxIdBean.class);
+	BoxIdBean idIc = LitePal.where("name = ?", IC_TYPE).findFirst(BoxIdBean.class);
+	if (idBean != null) {
+	   Log.i("appSatus", "FingerManager  idBean.getDevice_id()      " + idBean.getDevice_id());
+	   int i = FingerManager.getManager().startReadFinger(idBean.getDevice_id());
+	   Log.i("appSatus","FingerManager     "+i);
+	}
+	if (idIc != null) {
+	   int i = IdCardManager.getIdCardManager().startReadCard(idIc.getDevice_id());
+	   Log.i("appSatus","IdCardManager     "+i);
+	}
+   }
+
    @Override
    public void onStart() {
 	super.onStart();
-
+	registFingerAndIc();
 	Log.i("onDoorState", "onStart   onStartonStartonStartonStart   ");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
@@ -309,9 +311,11 @@ public class LoginActivity extends SimpleActivity {
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   if (mIntentService != null) {
 		startService(mIntentService);
+		registFingerAndIc();
 	   } else {
 		mIntentService = new Intent(this, ScanService.class);
 		startService(mIntentService);
+		registFingerAndIc();
 	   }
 	}
 

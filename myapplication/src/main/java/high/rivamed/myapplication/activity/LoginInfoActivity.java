@@ -398,7 +398,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 													"list.size()   " +
 													list.size());
 												if (list.size() == 1) {
-												   bindFingerPrint(list);
+												   bindFingerPrint(list,identification);
 												} else {
 												   ToastUtils.showShort(
 													   "采集失败,请重试");
@@ -469,7 +469,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    /*
     * 绑定指纹
     * */
-   private void bindFingerPrint(List<String> list) {
+   private void bindFingerPrint(List<String> list,String identification) {
 	mBuilder = DialogUtils.showLoading(mContext);
 	RegisterFingerDto dto = new RegisterFingerDto();
 	List<RegisterFingerDto.UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
@@ -508,6 +508,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   e.printStackTrace();
 		   ToastUtils.showShort("绑定失败");
 		}
+		FingerManager.getManager().stopRegisterFinger(identification);
 		mBuilder.mDialog.dismiss();
 	   }
 

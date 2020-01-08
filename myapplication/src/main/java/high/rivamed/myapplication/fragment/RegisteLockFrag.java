@@ -104,12 +104,16 @@ public class RegisteLockFrag extends SimpleFragment {
    public void initDataAndEvent(Bundle savedInstanceState) {
 	FingerManager.getManager().connectFinger(mContext, TYPE_NET_ZHI_ANG);
 	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
+
 	for (DeviceInfo info : deviceInfos) {
-	   FingerManager.getManager().startReadFinger(info.getIdentification());
+
+	   int i = FingerManager.getManager().startReadFinger(info.getIdentification());
+	   Log.i("appSatus","info.FingerManager()     "+info.getIdentification()+"  FingerManager    "+i);
 	}
 	List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager().getConnectedDevice();
 	for (DeviceInfo info : connectedDevice) {
-	   IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
+	   int i = IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
+	   Log.i("appSatus","info.IdCardManager()     "+info.getIdentification()+"  IdCardManager    "+i);
 	}
 
 	//	initCallBack();
@@ -165,6 +169,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	FingerManager.getManager().registerCallback(new FingerCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
+		AppendLog("指纹信息：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
 	   }
 
 	   @Override
