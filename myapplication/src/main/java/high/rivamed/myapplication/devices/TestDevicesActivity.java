@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.devices;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -13,8 +14,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.rivamed.libdevicesbase.base.DeviceInfo;
-import com.ruihua.face.recognition.ui.FaceGatewayActivity;
 import com.ruihua.libconsumables.ConsumableManager;
+import com.ruihua.libfacerecognitionv3.main.activity.MainActivity;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.bean.AntInfo;
@@ -578,7 +579,7 @@ public class TestDevicesActivity extends SimpleActivity {
         });
 
         //人脸识别
-        mBtnFace.setOnClickListener(view -> FaceGatewayActivity.launch(this));
+        mBtnFace.setOnClickListener(view -> startActivity(new Intent(this, MainActivity.class)));
         findViewById(R.id.btn_face_register).setOnClickListener(view -> {
             FaceTask faceTask = new FaceTask(this);
             faceTask.setCallBack((hasRegister, msg) -> {

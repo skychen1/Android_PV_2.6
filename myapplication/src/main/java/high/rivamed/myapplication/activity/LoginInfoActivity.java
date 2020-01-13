@@ -13,11 +13,10 @@ import com.rivamed.FingerManager;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.FilesUtils;
-import com.ruihua.face.recognition.FaceManager;
-import com.ruihua.face.recognition.config.FaceCode;
-import com.ruihua.face.recognition.ui.RgbDetectActivity;
-import com.ruihua.face.recognition.utils.GlobalFaceTypeModel;
-import com.ruihua.face.recognition.utils.PreferencesUtil;
+import com.ruihua.libfacerecognitionv3.MainActivity;
+import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
+import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
+import com.ruihua.libfacerecognitionv3.main.ui.IFaceRegister;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -51,6 +50,7 @@ import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
@@ -105,6 +105,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
    TextView  mSettingIcCardBind;
    private LoadingDialog.Builder                mBuilder;
    private String                               mUserId = "";
+   private String                               mFaceId = "";
    private LoginResultBean.AppAccountInfoVoBean mAppAccountInfoVo;
    public  int                                  mIsWaidai;
    private LoadingDialog.Builder                mLoading;
@@ -227,6 +228,8 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
 	   mAppAccountInfoVo = data.getAppAccountInfoVo();
 	   mUserId = mAppAccountInfoVo.getUserId();
+	   mFaceId = mAppAccountInfoVo.getFaceId();
+
 	   mIsWaidai = mAppAccountInfoVo.getIsWaidai();
 	   mIsFace = mAppAccountInfoVo.getIsFace();
 	   String fingerNames = mAppAccountInfoVo.getFingerNames();
@@ -521,97 +524,158 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	});
    }
 
-   private String faceImagePath;
+//	private String faceImagePath;
 
-   void onFacePhoto() {
-	//绑定人脸照
-	RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
-	   if (hasPermission) {
-		int initStatus = FaceManager.getManager().getInitStatus();
-		if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-		   ToastUtils.showShort("人脸识别SDK还未激活，请先激活");
-		   return;
-		} else if (initStatus == FaceCode.SDK_NOT_INIT) {
-		   ToastUtils.showShort("人脸识别SDK还未初始化，请先初始化");
-		   return;
-		} else if (initStatus == FaceCode.SDK_INITING) {
-		   ToastUtils.showShort("人脸识别SDK正在初始化，请稍后再试");
-		   return;
-		} else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-		   ToastUtils.showShort("人脸识别SDK初始化失败，请重新初始化");
-		   return;
-		}
-		faceImagePath = "";
-		int type = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS,
-							    GlobalFaceTypeModel.TYPE_NO_LIVENSS);
-		if (type == GlobalFaceTypeModel.TYPE_NO_LIVENSS ||
-		    type == GlobalFaceTypeModel.TYPE_RGB_LIVENSS) {
-		   FaceManager.getManager()
-			   .getFacePicture(LoginInfoActivity.this,
-						 SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID) +
-						 ".jpg");
-		}
-	   }
-	});
-   }
-
-   @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	super.onActivityResult(requestCode, resultCode, data);
-	Log.e(TAG, "onActivityResult resultCode : :" + resultCode + ",requestCode : :" + requestCode);
-	if (resultCode == RgbDetectActivity.CODE_PICK_PHOTO && data != null) {
-	   //人脸照结果
-	   faceImagePath = data.getStringExtra(RgbDetectActivity.FILE_PATH);
-	   Log.e(TAG, "onActivityResult: " + faceImagePath);
-	   if (TextUtils.isEmpty(faceImagePath)) {
-		return;
-	   }
-	   bindFace(faceImagePath);
+	void onFacePhoto() {
+		//绑定人脸照
+		RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
+			if (hasPermission) {
+				int initStatus = FaceSDKManager.initStatus;
+				if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
+					ToastUtils.showShortToast("SDK还未激活，请先激活");
+				} else if (initStatus == FaceSDKManager.SDK_INIT_FAIL) {
+					ToastUtils.showShortToast("SDK初始化失败，请重新激活初始化");
+				} else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
+					ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
+				} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
+					FaceManager.getManager().startActivityFaceRegister(this, SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,""), (code, msg) -> {
+						//其他信息提示
+						Log.e("Face", "error callback: "+code+":::" + msg);
+					});
+				}
+			}
+		});
 	}
-   }
 
-   public void bindFace(String path) {
-	try {
-	   String base64 = FileEncoder.encodeFileToBase64String(path);
-	   NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   // TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
-		   //更新：需要先删除本地已注册人脸，再重新注册
-		   if (FaceManager.getManager().getUserById(mUserId) != null) {
-			boolean b = FaceManager.getManager().deleteFace(mUserId);
-			LogUtils.d(TAG, "删除人脸底照：" + b + ",userId：" + mUserId);
-		   }
-		   FaceManager.getManager()
-			   .registerFace(mUserId,
-					     SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
-					     faceImagePath, (code, msg) -> {
-					LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
-					if (code == FunctionCode.SUCCESS) {
-					   //刪除本地缓存人脸照
-					   new File(faceImagePath).delete();
-					   UIUtils.runInUIThread(() -> {
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		FaceManager.getManager().onActivityResultIn(requestCode, resultCode, data, (code, msg) -> {
+			//这里返回注册人脸的图片路径，此处上传至服务器
+			//人脸照结果
+			Log.e("Face", "onActivityResult success: " + msg);
+			if (code==100){
+				if (TextUtils.isEmpty(msg)) {
+					return;
+				}
+				bindFace(msg);
+			}
+		});
+	}
+
+	public void bindFace(String path) {
+		try {
+			String base64 = FileEncoder.encodeFileToBase64String(path);
+			NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
+				@Override
+				public void onSucceed(String result) {
+					//刪除本地缓存人脸照
+					new File(path).delete();
+					UIUtils.runInUIThread(() -> {
 						ToastUtils.showShortToast("人脸绑定成功");
 						mSettingFaceBindText.setText("已绑定");
-						mSettingFaceBindText.setTextColor(
-							getResources().getColor(R.color.color_text_g));
+						mSettingFaceBindText.setTextColor(getResources().getColor(R.color.color_text_g));
 						mSettingFaceBindBtn.setText("重新绑定");
-					   });
+					});
+				}
 
-					   //									ToastUtils.showShortToast("人脸绑定成功");
-					}
-				   });
+				@Override
+				public void onError(String result) {
+					ToastUtils.showShort(result);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		@Override
-		public void onError(String result) {
-		   ToastUtils.showShort(result);
-		}
-	   });
-	} catch (Exception e) {
-	   e.printStackTrace();
 	}
-   }
+//   void onFacePhoto() {
+//	//绑定人脸照
+//	RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
+//	   if (hasPermission) {
+//		int initStatus = FaceManager.getManager().getInitStatus();
+//		if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
+//		   ToastUtils.showShort("人脸识别SDK还未激活，请先激活");
+//		   return;
+//		} else if (initStatus == FaceCode.SDK_NOT_INIT) {
+//		   ToastUtils.showShort("人脸识别SDK还未初始化，请先初始化");
+//		   return;
+//		} else if (initStatus == FaceCode.SDK_INITING) {
+//		   ToastUtils.showShort("人脸识别SDK正在初始化，请稍后再试");
+//		   return;
+//		} else if (initStatus == FaceCode.SDK_INIT_FAIL) {
+//		   ToastUtils.showShort("人脸识别SDK初始化失败，请重新初始化");
+//		   return;
+//		}
+//		faceImagePath = "";
+//		int type = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS,
+//							    GlobalFaceTypeModel.TYPE_NO_LIVENSS);
+//		if (type == GlobalFaceTypeModel.TYPE_NO_LIVENSS ||
+//		    type == GlobalFaceTypeModel.TYPE_RGB_LIVENSS) {
+//		   FaceManager.getManager()
+//			   .getFacePicture(LoginInfoActivity.this,
+//						 SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID) + ".jpg");
+//		}
+//	   }
+//	});
+//   }
+
+//   @Override
+//   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//	super.onActivityResult(requestCode, resultCode, data);
+//	Log.e(TAG, "onActivityResult resultCode : :" + resultCode + ",requestCode : :" + requestCode);
+//	if (resultCode == RgbDetectActivity.CODE_PICK_PHOTO && data != null) {
+//	   //人脸照结果
+//	   faceImagePath = data.getStringExtra(RgbDetectActivity.FILE_PATH);
+//	   Log.e(TAG, "onActivityResult: " + faceImagePath);
+//	   if (TextUtils.isEmpty(faceImagePath)) {
+//		return;
+//	   }
+//	   bindFace(faceImagePath);
+//	}
+//   }
+//
+//   public void bindFace(String path) {
+//	try {
+//	   String base64 = FileEncoder.encodeFileToBase64String(path);
+//	   NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
+//		@Override
+//		public void onSucceed(String result) {
+//		   // TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
+//		   //更新：需要先删除本地已注册人脸，再重新注册
+//		   if (FaceManager.getManager().getUserById(mUserId) != null) {
+//			boolean b = FaceManager.getManager().deleteFace(mUserId);
+//			LogUtils.d(TAG, "删除人脸底照：" + b + ",userId：" + mUserId);
+//		   }
+//		   FaceManager.getManager()
+//			   .registerFace(mUserId,
+//					     SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
+//					     faceImagePath, (code, msg) -> {
+//					LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
+//					if (code == FunctionCode.SUCCESS) {
+//					   //刪除本地缓存人脸照
+//					   new File(faceImagePath).delete();
+//					   UIUtils.runInUIThread(() -> {
+//						ToastUtils.showShortToast("人脸绑定成功");
+//						mSettingFaceBindText.setText("已绑定");
+//						mSettingFaceBindText.setTextColor(
+//							getResources().getColor(R.color.color_text_g));
+//						mSettingFaceBindBtn.setText("重新绑定");
+//					   });
+//
+//					   //									ToastUtils.showShortToast("人脸绑定成功");
+//					}
+//				   });
+//		}
+//
+//		@Override
+//		public void onError(String result) {
+//		   ToastUtils.showShort(result);
+//		}
+//	   });
+//	} catch (Exception e) {
+//	   e.printStackTrace();
+//	}
+//   }
 
    //提供接口
    public interface OnfingerprintBackListener {

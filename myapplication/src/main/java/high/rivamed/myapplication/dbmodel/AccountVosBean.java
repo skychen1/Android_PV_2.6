@@ -36,6 +36,7 @@ public class AccountVosBean extends LitePalSupport implements Serializable {
 
    private UserBean                      userbean;
    private String                      accountId;
+   private String                      faceId;
    private String                      userId;
    private String                      accountName;
    private String                      userName;
@@ -46,6 +47,14 @@ public class AccountVosBean extends LitePalSupport implements Serializable {
    private String                      sex;
    private List<UserFeatureInfosBean>  userFeatureInfos = new ArrayList<>();
    private List<HomeAuthorityMenuBean> menus= new ArrayList<>();
+
+   public String getFaceId() {
+      return faceId;
+   }
+
+   public void setFaceId(String faceId) {
+      this.faceId = faceId;
+   }
 
    public String getUserName() {
       return userName;

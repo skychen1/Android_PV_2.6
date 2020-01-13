@@ -187,11 +187,13 @@ public class AllDeviceCallBack {
 		Log.i("ffaer", " device_id  " + device_id);
 		if (device_id.equals(mBomDoorDeviceIdList.get(i))) {
 		   Log.i("ffaer", " mBomDoorDeviceIdList.get(i)  " + mBomDoorDeviceIdList.get(i));
-		   if (boxIdBean.getCabinetType().equals("1")||boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜   J24
-			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),0);
-		   }else if (boxIdBean.getCabinetType().equals("2")){                                                  //J25
-			ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i),1);
-		   }
+			if ( boxIdBean.getCabinetType() != null) {
+				if (boxIdBean.getCabinetType().equals("1") || boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜   J24
+					ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i), 0);
+				} else if (boxIdBean.getCabinetType().equals("2")) {                                                  //J25
+					ConsumableManager.getManager().openDoor((String) mBomDoorDeviceIdList.get(i), 1);
+				}
+			}
 		}
 	   }
 	}

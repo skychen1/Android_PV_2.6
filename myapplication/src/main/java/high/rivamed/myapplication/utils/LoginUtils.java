@@ -49,6 +49,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
@@ -176,6 +177,7 @@ public class LoginUtils {
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, beanss.getAccountName());
         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, beanss.getUserName());
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, beanss.getAccountId());
+        SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID, beanss.getFaceId());
         SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, beanss.getSex());
         List<HomeAuthorityMenuBean> menusList = beanss.getMenusList(accountName);
         if (menusList.size() > 0 && menusList.get(0).getTitle().equals("耗材操作")) {
@@ -217,6 +219,8 @@ public class LoginUtils {
                         loginResultBean.getAppAccountInfoVo().getUserName());
                 SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
                         loginResultBean.getAppAccountInfoVo().getAccountId());
+                SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID,
+                        loginResultBean.getAppAccountInfoVo().getFaceId());
                 SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
                         loginResultBean.getAppAccountInfoVo().getSex());
                 SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN,

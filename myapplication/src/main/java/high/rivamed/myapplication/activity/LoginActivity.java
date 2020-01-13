@@ -85,6 +85,7 @@ import static high.rivamed.myapplication.cont.Constants.IC_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
+import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -333,6 +334,7 @@ public class LoginActivity extends SimpleActivity {
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
+	   SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
 	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);

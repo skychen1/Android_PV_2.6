@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -13,12 +15,15 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.rivamed.FingerManager;
-import com.ruihua.face.recognition.FaceManager;
-import com.ruihua.face.recognition.callback.InitListener;
+import com.ruihua.libfacerecognitionv3.main.camera.CameraPreviewManager;
+import com.ruihua.libfacerecognitionv3.main.listener.SimpleSdkInitListener;
+import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
+import com.ruihua.libfacerecognitionv3.main.ui.IFaceLicense;
 
 import org.litepal.LitePal;
 
 import high.rivamed.myapplication.R;
+import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.service.ScanService;
@@ -59,158 +64,158 @@ import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
  */
 public class SplashActivity extends FragmentActivity {
 
-   public static Intent mIntentService;
+    public static Intent mIntentService;
+    RelativeLayout viewById;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        onWindowFocusChanged(true);
+        setContentView(R.layout.activity_splash_layout);
+          viewById = findViewById(R.id.rl);
+        Log.e("版本号：", UIUtils.getVersionName(this));
+        FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
+        initData();
+    }
 
-   @Override
-   protected void onCreate(@Nullable Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	onWindowFocusChanged(true);
-	setContentView(R.layout.activity_splash_layout);
-	Log.e("版本号：", UIUtils.getVersionName(this));
-	FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
-	initData();
-   }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        fullScreenImmersive(this.getWindow().getDecorView());
+    }
 
-   @Override
-   public void onWindowFocusChanged(boolean hasFocus) {
-	super.onWindowFocusChanged(hasFocus);
-	fullScreenImmersive(this.getWindow().getDecorView());
-   }
+    private void initData() {
+        mIntentService = new Intent(SplashActivity.this, ScanService.class);
+        Logger.addLogAdapter(new AndroidLogAdapter());
+        setDate();//设置默认值
+        initLitePal();//数据库
 
-   private void initData() {
-	mIntentService = new Intent(SplashActivity.this, ScanService.class);
-	Logger.addLogAdapter(new AndroidLogAdapter());
-	setDate();//设置默认值
-	initLitePal();//数据库
+        startAct();//页面跳转
+    }
 
-	startAct();//页面跳转
-   }
+    private void setDate() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
+                String urls = MAIN_URL + NetApi.URL_CONNECT;
+                Log.i("outtccc", "MAIN_URL     " + MAIN_URL + "  dfdfdfdfdf  ");
+                if (MAIN_URL != null) {
 
-   private void setDate() {
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
-		String urls = MAIN_URL + NetApi.URL_CONNECT;
-		Log.i("outtccc","MAIN_URL     "+MAIN_URL+"  dfdfdfdfdf  ");
-		if (MAIN_URL!=null){
+                    OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
+                        @Override
+                        public void onSuccess(Response<String> response) {
+                            Log.i("outtccc", "MAIN_URL     " + MAIN_URL + " fffffffffffffffffff  ");
+                            mTitleConn = true;
+                        }
 
-		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
-			@Override
-			public void onSuccess(Response<String> response) {
-			   Log.i("outtccc","MAIN_URL     "+MAIN_URL+" fffffffffffffffffff  ");
-			   mTitleConn = true;
-			}
+                        @Override
+                        public void onError(Response<String> response) {
+                            mTitleConn = false;
+                        }
+                    });
+                } else {
+                    mTitleConn = false;
+                }
+                if (SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME) == -1) {
+                    ANIMATION_TIME = 1000;
+                } else {
+                    ANIMATION_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME);
+                }
+                if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
+                    READER_TIME = 3000;
+                } else {
+                    READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
+                }
+                if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) == -1) {
+                    COUNTDOWN_TIME = 20000;
+                } else {
+                    COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
+                }
+                if (SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME) == -1) {
+                    CLOSSLIGHT_TIME = 30000;
+                } else {
+                    CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
+                }
+                LogcatHelper.getInstance(getApplicationContext()).start();
+                SPUtils.putString(getApplicationContext(), "TestLoginName", "admin");
+                SPUtils.putString(getApplicationContext(), "TestLoginPass", "rivamed");
+            }
+        }).start();
 
-			@Override
-			public void onError(Response<String> response) {
-			   mTitleConn = false;
-			}
-		   });
-		}else {
-		   mTitleConn = false;
-		}
-		if (SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME) == -1) {
-		   ANIMATION_TIME = 1000;
-		} else {
-		   ANIMATION_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_ANIMATION_TIME);
-		}
-		if (SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME) == -1) {
-		   READER_TIME = 3000;
-		} else {
-		   READER_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_READER_TIME);
-		}
-		if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME)==-1){
-		   COUNTDOWN_TIME = 20000;
-		}else {
-		   COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
-		}
-		if (SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME)==-1){
-		   CLOSSLIGHT_TIME = 30000;
-		}else {
-		   CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
-		}
-		LogcatHelper.getInstance(getApplicationContext()).start();
-		SPUtils.putString(getApplicationContext(), "TestLoginName", "admin");
-		SPUtils.putString(getApplicationContext(), "TestLoginPass", "rivamed");
-	   }
-	}).start();
+    }
 
-   }
+    private void initLitePal() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //创建数据库表
+                LitePal.getDatabase();
+                if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
+                    LitePal.deleteAll(BoxIdBean.class);
+                }
+            }
+        }).start();
+    }
 
-   private void initLitePal() {
-	new Thread(new Runnable() {
-	   @Override
-	   public void run() {
-		//创建数据库表
-		LitePal.getDatabase();
-		if (!SPUtils.getBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE)) {
-		   LitePal.deleteAll(BoxIdBean.class);
-		}
-	   }
-	}).start();
-   }
+    private void startAct() {
 
-   private void startAct() {
+        new Thread(() -> startService(mIntentService)).start();
 
-	new Thread(() -> startService(mIntentService)).start();
+        //人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
+        RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
+            if (hasPermission && FaceManager.getManager().hasAction()) {
+                //		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
+                //检测设备是否激活授权码
+                //启动页初始化人脸识别sdk
+                new Thread(() -> FaceManager.getManager().init(SplashActivity.this, "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_HORIZONTAL, new SimpleSdkInitListener() {
+                    @Override
+                    public void initLicenseSuccess() {
+                        //激活成功
+                    }
 
-	//人脸识别SDK初始化权限申请：存储 相机 这里elo设备点击允许存储权限页面会关闭，原因未知
-	RxPermissionUtils.checkCameraReadWritePermission(this, hasPermission -> {
-	   if (hasPermission && FaceManager.getManager().hasActivation(mAppContext)) {
-		//		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
-		//检测设备是否激活授权码
-		//启动页初始化人脸识别sdk
-		new Thread(() -> FaceManager.getManager()
-			.init(mAppContext, true, new InitListener() {
-			   @Override
-			   public void initSuccess() {
-				UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化成功"));
-				//初始化分组
-				boolean b = FaceManager.getManager().initGroup();
-				LogUtils.d("Face","runInUIThread  "+b);
-				if (!b) {
-				   UIUtils.runInUIThread(() -> ToastUtils.showShortToast("创建人脸照分组失败"));
-				   //初始化完成后跳转页面
-				   launchLogin();
-				} else {
-				   LogUtils.d("Face", "initSuccess 1  " + b);
-				   //从服务器更新人脸底库并注册至本地
-				   FaceTask faceTask = new FaceTask(SplashActivity.this);
-				   faceTask.setCallBack((hasRegister, msg) -> {
-					if (msg != null) {
-					   UIUtils.runInUIThread(() -> ToastUtils.showShortToast(msg));
-					}
-					//初始化完成后跳转页面
-					launchLogin();
-				   });
-				   LogUtils.d("Face","initSuccess 2  "+b);
-				   if (MAIN_URL!=null){
-					faceTask.getAllFaceAndRegister();
-				   }
-				   //初始化完成后跳转页面
-				   //launchLogin();
-				}
-			   }
+                    @Override
+                    public void initLicenseFail(int errorCode, String msg) {
+                        //激活失败
+                        UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK激活失败：：errorCode = " + errorCode + ":::msg：" + msg));
+                        LogUtils.d("Face", "initFail 1  ");
+                        launchLogin();
+                    }
 
-			   @Override
-			   public void initFail(int errorCode, String msg) {
-				LogUtils.d("Face", "initFail 1  ");
-				UIUtils.runInUIThread(() -> ToastUtils.showShortToast(
-					"人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
-				//初始化完成后跳转页面
-				LogUtils.d("Face", "initFail 2  ");
-				launchLogin();
-			   }
-			})).start();
-	   } else {
-		new Handler().postDelayed(this::launchLogin, 2000);
-	   }
-	});
-   }
+                    @Override
+                    public void initModelSuccess() {
+                        //初始化成功
+                        UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化成功"));
+                        //从服务器更新人脸底库并注册至本地
+                        FaceTask faceTask = new FaceTask(SplashActivity.this);
+                        faceTask.setCallBack((hasRegister, msg) -> {
+                            if (msg != null) {
+                                UIUtils.runInUIThread(() -> ToastUtils.showShortToast(msg));
+                            }
+                            //初始化完成后跳转页面
+                            launchLogin();
+                        });
+                        if (MAIN_URL != null) {
+                            faceTask.getAllFaceAndRegister();
+                        }
+                    }
 
-   private void launchLogin() {
-	startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-	finish();
-   }
+                    @Override
+                    public void initModelFail(int errorCode, String msg) {
+                        //初始化失败
+                        UIUtils.runInUIThread(() -> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
+                        //初始化完成后跳转页面
+                        LogUtils.d("Face", "initFail 2  ");
+                        launchLogin();
+                    }
+                })).start();
+            } else {
+                new Handler().postDelayed(this::launchLogin, 2000);
+            }
+        });
+    }
+
+    private void launchLogin() {
+        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+//        finish();
+    }
 }

@@ -6,24 +6,23 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.ruihua.face.recognition.FaceManager;
-import com.ruihua.face.recognition.callback.InitListener;
-import com.ruihua.face.recognition.config.FaceCode;
-import com.ruihua.face.recognition.entity.User;
-import com.ruihua.face.recognition.ui.RgbVideoIdentityActivity;
-import com.ruihua.face.recognition.utils.PreferencesUtil;
+import com.ruihua.libfacerecognitionv3.main.activity.FaceRGBCloseDebugSearchActivity;
+import com.ruihua.libfacerecognitionv3.main.camera.CameraPreviewManager;
+import com.ruihua.libfacerecognitionv3.main.listener.SimpleSdkInitListener;
+import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
+import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleFragment;
+import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.utils.FaceTask;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
-import static high.rivamed.myapplication.cont.Constants.FACE_OPEN;
 import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 
 /**
@@ -46,8 +45,8 @@ public class RegisteFaceFrag extends SimpleFragment {
     TextView fragmentBtnInit;
     @BindView(R.id.switch_btn)
     Switch switchBtn;
-    private boolean hasInit;
 
+    private boolean hasModelInit;
     public static RegisteFaceFrag newInstance() {
         Bundle args = new Bundle();
         RegisteFaceFrag fragment = new RegisteFaceFrag();
@@ -65,26 +64,7 @@ public class RegisteFaceFrag extends SimpleFragment {
 
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
-        hasInit = FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED;
-        fragmentBtnActive.setEnabled(!hasInit);
-        fragmentBtnActive.setText(hasInit ? "已初始化人脸识别SDK" : "初始化人脸识别SDK");
-        //初始化sp工具类
-        PreferencesUtil.initPrefs(UIUtils.getContext());
-        if (SPUtils.getBoolean(UIUtils.getContext(), FACE_OPEN)) {
-            switchBtn.setChecked(true);
-        } else {
-            switchBtn.setChecked(false);
-        }
-
-        switchBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
-                SPUtils.putBoolean(UIUtils.getContext(), FACE_OPEN, true);
-                //设置是否需要活体
-                FaceManager.getManager().setNeedLive(isChecked);
-            }else {
-                SPUtils.putBoolean(UIUtils.getContext(), FACE_OPEN, false);
-            }
-        });
+        hasModelInit = FaceManager.getManager().hasModelInit();
     }
 
 
@@ -94,108 +74,78 @@ public class RegisteFaceFrag extends SimpleFragment {
     }
 
 
-    @OnClick(R.id.fragment_btn_active)
-    public void onActiveClicked() {
-        if (UIUtils.isFastDoubleClick(R.id.fragment_btn_active)) {
-            return;
-        } else {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FaceManager.getManager().init(_mActivity, false, new InitListener() {
-                        @Override
-                        public void initSuccess() {
-                            UIUtils.runInUIThread(()->  ToastUtils.showShortToast("人脸识别SDK初始化成功"));
-
-                            fragmentBtnActive.post(() -> {
-                                hasInit = true;
-                                fragmentBtnActive.setEnabled(false);
-                                fragmentBtnActive.setText("已初始化成功");
-                            });
-
-                            //初始化分组
-                            boolean b = FaceManager.getManager().initGroup();
-                            if (!b) {
-                                UIUtils.runInUIThread(()->  ToastUtils.showShortToast("创建人脸照分组失败"));
-                                //初始化完成后跳转页面
-                            } else {
-                                //设置是否需要活体
-                                FaceManager.getManager().setNeedLive(switchBtn.isChecked());
-                            }
-                        }
-
-                        @Override
-                        public void initFail(int errorCode, String msg) {
-                            UIUtils.runInUIThread(()-> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
-                        }
-                    });
-                }
-            }).start();
-        }
-    }
-
-
     @OnClick(R.id.fragment_btn_init)
     public void onInitClicked() {
-        if (UIUtils.isFastDoubleClick(R.id.fragment_btn_init)) {
-            return;
-        } else {
-            if (hasInit) {
-                if (FaceManager.getManager().initGroup()) {
-                    SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
-                    //从服务器更新人脸底库并注册至本地
-                    FaceTask faceTask = new FaceTask(_mActivity);
-                    faceTask.setCallBack((hasRegister, msg) -> {
-                        LogUtils.d("faceTask", "initListener: " + msg);
-                        if (msg!=null){
-                            UIUtils.runInUIThread(()->  ToastUtils.showShortToast(msg));
-                        }
-                    });
-                    faceTask.getAllFaceAndRegister();
-                } else {
-                    ToastUtils.showShortToast("创建人脸照分组失败");
-                }
+        if (!UIUtils.isFastDoubleClick(R.id.fragment_btn_init)) {
+            if (FaceManager.getManager().hasModelInit()) {
+                initFaceList();
             } else {
-                ToastUtils.showShortToast("请先初始化人脸识别SDK");
+                FaceManager.getManager().init(getActivity(), "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_HORIZONTAL, new SimpleSdkInitListener() {
+                    @Override
+                    public void initLicenseSuccess() {
+                        //激活成功
+                    }
+
+                    @Override
+                    public void initLicenseFail(int errorCode, String msg) {
+                        //激活失败
+                        fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK激活失败：：errorCode = " + errorCode + ":::msg：" + msg));
+                    }
+
+                    @Override
+                    public void initModelSuccess() {
+                        //初始化成功
+                        fragmentBtnActive.post(() -> {
+                            ToastUtils.showShortToast("人脸识别SDK初始化成功 "  );
+                            hasModelInit = true;
+                            initFaceList();
+                        });
+                    }
+
+                    @Override
+                    public void initModelFail(int errorCode, String msg) {
+                        //初始化失败
+                        fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
+                    }
+                });
             }
         }
     }
-    @OnClick(R.id.fragment_btn_recongize)
-    void onTest(View v) {
-        int initStatus = FaceManager.getManager().getInitStatus();
-        if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-            ToastUtils.showShortToast("SDK还未激活，请先激活");
-            return;
-        } else if (initStatus == FaceCode.SDK_NOT_INIT) {
-            ToastUtils.showShortToast("SDK还未初始化完成，请先初始化");
-            return;
-        } else if (initStatus == FaceCode.SDK_INITING) {
-            ToastUtils.showShortToast("SDK正在初始化，请稍后再试");
-            return;
-        } else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-            ToastUtils.showShortToast("SDK初始化失败，请重新初始化SDK");
-            return;
-        }
-        //在开启人脸识别以前需要获取人脸照片数量，
-        //如果为0表示没有底库，是不能开启识别的；
-        if (0 == FaceManager.getManager().getFaceLibraryNum()) {
-            ToastUtils.showShortToast("人脸识别底库无数据，请先初始化人脸底库");
-            return;
-        }
-        //跳转到识别页面
-        RgbVideoIdentityActivity.launch(mContext);
+
+    private void initFaceList() {
+        SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
+        //从服务器更新人脸底库并注册至本地
+        FaceTask faceTask = new FaceTask(_mActivity);
+        faceTask.setCallBack((hasRegister, msg) -> {
+            LogUtils.d("faceTask", "initListener: " + msg);
+            if (msg != null) {
+                UIUtils.runInUIThread(() -> ToastUtils.showShortToast(msg));
+            }
+        });
+        faceTask.getAllFaceAndRegister();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //验证身份回调
-        if (requestCode == resultCode && resultCode == RgbVideoIdentityActivity.CODE_RECOGNISE && data != null) {
-            //拿到识别的人员的id
-            String userId = data.getStringExtra(RgbVideoIdentityActivity.USER_ID);
-            User user = FaceManager.getManager().getUserById(userId);
-            if (user != null) {
-                ToastUtils.showShortToast("识别到：：：" + user.getUserInfo());
+    @OnClick(R.id.fragment_btn_recongize)
+    void onTest(View v) {
+        if (!UIUtils.isFastDoubleClick(R.id.fragment_btn_recongize)) {
+            int initStatus = FaceSDKManager.initStatus;
+            if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
+                ToastUtils.showShortToast("SDK还未激活，请先激活");
+            } else if (initStatus == FaceSDKManager.SDK_INIT_FAIL) {
+                ToastUtils.showShortToast("SDK初始化失败，请重新激活初始化");
+            } else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
+                ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
+            } else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
+                //在开启人脸识别以前需要获取人脸照片数量，
+                //如果为0表示没有底库，是不能开启识别的；
+                FaceManager.getManager().queryAllUserCount(count -> {
+                    if (count > 0) {
+                        //跳转到识别页面
+                        startActivity(new Intent(getActivity(), FaceRGBCloseDebugSearchActivity.class));
+                    } else {
+                        ToastUtils.showShortToast("人脸识别底库无数据，请先初始化人脸底库");
+                    }
+                });
             }
         }
     }

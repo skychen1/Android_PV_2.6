@@ -24,11 +24,19 @@ public class AllFacePhotoBean {
     private boolean operateSuccess;
     private int id;
     private String opFlg;
+    private String endDate;
     private int pageNo;
     private int pageSize;
     private String systemType;
     private List<UsersBean> userVos;
 
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
     public boolean isOperateSuccess() {
         return operateSuccess;
@@ -110,6 +118,7 @@ public class AllFacePhotoBean {
 
         private boolean isUpdate;
         private String userId;
+        private String faceId;
         private String name;
         private String sex;
         private String updateTime;
@@ -119,6 +128,14 @@ public class AllFacePhotoBean {
         private String deptId;
         private String faceFileName;
         private String faceUpdateTime;
+
+        public String getFaceId() {
+            return faceId;
+        }
+
+        public void setFaceId(String faceId) {
+            this.faceId = faceId;
+        }
 
         public String getUserId() {
             return userId;
@@ -203,7 +220,7 @@ public class AllFacePhotoBean {
         @Override
         public boolean equals(Object obj) {
             UsersBean photoBean = (UsersBean) obj;
-            return userId.equals(photoBean.getUserId());
+            return faceId.equals(photoBean.getFaceId());
         }
     }
 }

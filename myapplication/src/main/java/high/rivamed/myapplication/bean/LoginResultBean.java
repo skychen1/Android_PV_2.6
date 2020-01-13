@@ -138,6 +138,7 @@ public class LoginResultBean implements Serializable {
         private Object          password;
         private Object          salt;
         private String          userId;
+        private String          faceId;
         private int             isFinger;
         private int             isWaidai;
         private int             isFace;
@@ -147,6 +148,14 @@ public class LoginResultBean implements Serializable {
         private Object          emergencyPwd;
         private List<RolesBean> roles;
         private String          fingerNames;
+
+        public String getFaceId() {
+            return faceId;
+        }
+
+        public void setFaceId(String faceId) {
+            this.faceId = faceId;
+        }
 
         public int getIsFace() {
             return isFace;

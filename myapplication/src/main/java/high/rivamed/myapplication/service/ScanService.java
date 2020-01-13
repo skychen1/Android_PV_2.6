@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -309,15 +310,18 @@ public class ScanService extends Service {
 	EventBusUtils.register(this);
 	if (MAIN_URL!=null){
 	   List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
-	   if (boxIdBeans!=null){
-		for (BoxIdBean idBean : boxIdBeans) {
-		   if (idBean.getCabinetType()!=null&&idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
-			mDeviceSizeList.add(idBean.getDevice_id()+"0");
-		   }else if (idBean.getCabinetType()!=null&&idBean.getCabinetType().equals("2")){
-			mDeviceSizeList.add(idBean.getDevice_id()+"1");
-		   }
-		}
-	   }
+		Log.e(TAG, "onCreate: "+new Gson().toJson(boxIdBeans) );
+        if (boxIdBeans != null) {
+            for (BoxIdBean idBean : boxIdBeans) {
+                if (idBean != null&&idBean.getCabinetType()!=null) {
+					if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
+						mDeviceSizeList.add(idBean.getDevice_id() + "0");
+					} else if (idBean.getCabinetType().equals("2")) {
+						mDeviceSizeList.add(idBean.getDevice_id() + "1");
+					}
+                }
+            }
+        }
 
 	}
 

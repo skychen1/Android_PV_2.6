@@ -111,7 +111,8 @@ dependencies {
 //    implementation project(':libeth002')
     implementation project(':libreader')
     //人脸识别
-    implementation project(':libfacerecognition')
+//    implementation project(':libfacerecognition')
+    implementation project(':libfacerecognitionv3')
     //视频录制
     implementation project(':libvideorecord')
 

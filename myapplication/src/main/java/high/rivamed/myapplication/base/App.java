@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.baidu.idl.main.facesdk.utils.PreferencesUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -34,6 +35,7 @@ import high.rivamed.myapplication.http.LoggingLevel;
 import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
+import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
 import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
@@ -95,6 +97,8 @@ public class App extends Application {
 	LitePal.initialize(mAppContext);//数据库初始化
 	registDevice();//注册硬件
 	instance = this;
+	//人脸识别sp初始化
+	PreferencesUtil.initPrefs( mAppContext);
 	initOkGo();
 	LogUtils.setDebugMode(false);
 	//设备基础module中有使用，需要注册初始化

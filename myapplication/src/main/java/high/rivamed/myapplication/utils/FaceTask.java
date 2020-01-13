@@ -3,14 +3,13 @@ package high.rivamed.myapplication.utils;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.baidu.idl.main.facesdk.utils.FileUitls;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
-import com.ruihua.face.recognition.FaceManager;
-import com.ruihua.face.recognition.config.FaceCode;
-import com.ruihua.face.recognition.utils.FileUitls;
+import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.PowerDateUtils;
 
+import static com.ruihua.libfacerecognitionv3.main.presenter.FaceManager.CODE_SUCCESS;
 import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 
 /**
@@ -48,7 +48,6 @@ public class FaceTask {
     //待注册的人脸
     private List<AllFacePhotoBean.UsersBean> updatePhotoList;
     //注册完成后缓存最新的人脸照数据
-    private String updateTime;
     private String startTime;
     private Gson mGson;
     private Activity _mActivity;
@@ -62,8 +61,7 @@ public class FaceTask {
         faceLibrary = FileUitls.getBatchFaceDirectory("cache_face_library");
         //上次更新时间
         startTime=SPUtils.getString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
-        //本次更新时间
-        updateTime= PowerDateUtils.getNowDateString2();
+
     }
 
     public void setCallBack(CallBack callBack) {
@@ -74,13 +72,15 @@ public class FaceTask {
      * 获取所有人脸信息，缓存至本地，注册至本地人脸照底库
      */
     public void getAllFaceAndRegister() {
-        NetRequest.getInstance().getAllFace(startTime,updateTime,_mActivity, new BaseResult() {
+        NetRequest.getInstance().getAllFace(startTime, _mActivity, new BaseResult() {
             @Override
             public void onSucceed(String result) {
-                //缓存本次更新时间
-                SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, updateTime);
                 updatePhotoList.clear();
                 AllFacePhotoBean facePhotoBean = mGson.fromJson(result, AllFacePhotoBean.class);
+                if (facePhotoBean.isOperateSuccess()){
+                    //缓存本次更新时间
+                    SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, facePhotoBean.getEndDate());
+                }
                 if (null == facePhotoBean||!facePhotoBean.isOperateSuccess()||facePhotoBean.getUserVos()==null||facePhotoBean.getUserVos().isEmpty()) {
                     if (callBack != null)
                         //                        callBack.finishRegister(false,"暂时没有人脸照数据");
@@ -112,7 +112,7 @@ public class FaceTask {
         }
         OkGo.<File>get(faceUrl).tag(_mActivity)//
               //                .params("systemType", SYSTEMTYPE)
-              .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getUserId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
+              .execute(new FileCallback(faceLibrary.getAbsolutePath(), updatePhotoList.get(index).getFaceId() + ".jpg") {  //文件下载时，需要指定下载的文件目录和文件名
                   @Override
                   public void onSuccess(Response<File> response) {
                       //缓存至本地，注册人脸
@@ -139,26 +139,16 @@ public class FaceTask {
      * 注册至人脸底库
      */
     private void registerFaceLibrary(AllFacePhotoBean.UsersBean facePhotoBean, File file) {
-        String userId = facePhotoBean.getUserId();
-        if (FaceManager.getManager().getUserById(userId)!=null) {
-            //更新：需要先删除本地已注册人脸，再重新注册
-            if (!FaceManager.getManager().deleteFace(userId)) {
-                LogUtils.d(TAG, "删除人脸底照失败：：" + userId);
-                //继续注册下一张
-                next();
-                return;
+        String userId = facePhotoBean.getFaceId();
+        FaceManager.getManager().inportFaceImage(userId, file.getAbsolutePath(), (code, msg) -> {
+            LogUtils.d(TAG, "LoginFace:人脸注册结果：：code=" + code + ":::msg=" + msg + ":::FaceId=" + userId+ ":::userName=" +  facePhotoBean.getName());
+            if (code==CODE_SUCCESS){
+                //注册成功即可删除缓存照片
+                file.delete();
             }
-        }
-        FaceManager.getManager().registerFace(userId, facePhotoBean.getName(), file.getAbsolutePath(),
-                (code, msg) -> {
-                    LogUtils.d(TAG, "LoginFace:人脸注册结果：：code=" + code + ":::msg=" + msg + ":::userId=" + userId+ ":::userName=" +  facePhotoBean.getName());
-                    if (code == FaceCode.CODE_REGISTER_SUCCESS) {
-                        //注册成功即可删除缓存照片
-                        file.delete();
-                    }
-                    //注册完成，继续注册下一张
-                    next();
-                });
+            //注册完成，继续注册下一张
+            next();
+        });
     }
 
     private void next() {

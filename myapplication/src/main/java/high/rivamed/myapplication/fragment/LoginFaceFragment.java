@@ -5,12 +5,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ruihua.face.recognition.FaceManager;
-import com.ruihua.face.recognition.config.FaceCode;
-import com.ruihua.face.recognition.face.TexturePreviewView;
+import com.ruihua.libfacerecognitionv3.main.camera.AutoTexturePreviewView;
+import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
+import com.ruihua.libfacerecognitionv3.main.model.SingleBaseConfig;
+import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
 
 import org.litepal.LitePal;
 
@@ -31,8 +34,8 @@ import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
-import high.rivamed.myapplication.utils.UIUtils;
 
+import static com.ruihua.libfacerecognitionv3.main.presenter.FaceManager.CODE_SUCCESS;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -43,8 +46,10 @@ import static high.rivamed.myapplication.cont.Constants.THING_CODE;
  * 描述：人脸识别登录
  */
 public class LoginFaceFragment extends SimpleFragment {
-    @BindView(R.id.preview_view)
-    TexturePreviewView previewView;
+//        @BindView(R.id.preview_view)
+    AutoTexturePreviewView previewView;
+    @BindView(R.id.rl_layout)
+    RelativeLayout relativeLayout;
     @BindView(R.id.texture_view)
     TextureView textureView;
     @BindView(R.id.tv_hint)
@@ -67,6 +72,11 @@ public class LoginFaceFragment extends SimpleFragment {
 //                    loginFace(userId);
 //                }
 //            });
+
+
+        // 注册默认开启质量检测
+        SingleBaseConfig.getBaseConfig().setQualityControl(true);
+        FaceSDKManager.getInstance().initConfig();
     }
 
     /**
@@ -75,35 +85,16 @@ public class LoginFaceFragment extends SimpleFragment {
     private void loginFace(String Id) {
         EventBusUtils.postSticky(new Event.EventLoading(true));
         Log.e(TAG, "loginFace: " + Id);
-        if (!TextUtils.isEmpty(Id)) {
-            //停止识别
-            onTabShowPreview(false);
-            userId = Id;
-            //获取配置项并登陆
-            LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) ->
-                    textHint.post(() -> {
-                        if (canLogin) {
-                            loginEnjoin(canDevice, hasNet);
-                        }
-                    }));
-        }
+        userId = Id;
+        //获取配置项并登陆
+        LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) ->
+                textHint.post(() -> {
+                    if (canLogin) {
+                        loginEnjoin(canDevice, hasNet);
+                    }
+                }));
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        int initStatus = FaceManager.getManager().getInitStatus();
-        Log.i("aaaaaa", "initStatus   " + initStatus);
-        if (initStatus == FaceCode.SDK_INITED)
-            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
-                if (isSuccess) {
-                    loginFace(userId);
-                }else {
-                    UIUtils.runInUIThread(()->  ToastUtils.showShortToast("登录失败，暂无人脸信息！"));
-                }
-            });
-    }
 
     /**
      * 是否禁止使用
@@ -164,7 +155,7 @@ public class LoginFaceFragment extends SimpleFragment {
      */
     private void loadLogin() {
         HashMap<String, String> param = new HashMap<>();
-        param.put("userId", userId);
+        param.put("faceId", userId);
         param.put("systemType", SYSTEMTYPE);
         param.put("thingId", SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(param));
@@ -211,7 +202,7 @@ public class LoginFaceFragment extends SimpleFragment {
     public void destroyFaceSDK() {
         //在确定长时间不使用人脸识别，或者需要使用人脸检测注册人脸底库时，要销毁人脸识别初始
         LogUtils.d(TAG, "destroyIdentity---::::::::::: ");
-        FaceManager.getManager().destroyIdentity();
+        FaceManager.getManager().releaseRegister();
     }
 
     //控制相机预览，开启人脸识别
@@ -220,51 +211,68 @@ public class LoginFaceFragment extends SimpleFragment {
             if (startIdentity)
                 return;
             userId = "";
-            int initStatus = FaceManager.getManager().getInitStatus();
-            if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-                textHint.post(() -> textHint.setText("人脸识别SDK还未激活，请先激活"));
-                return;
-            } else if (initStatus == FaceCode.SDK_NOT_INIT) {
-                textHint.post(() -> textHint.setText("人脸识别SDK还未初始化，请先初始化"));
-                return;
-            } else if (initStatus == FaceCode.SDK_INITING) {
-                textHint.post(() -> textHint.setText("人脸识别SDK正在初始化，请稍后再试"));
-                return;
-            } else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-                textHint.post(() -> textHint.setText("人脸识别SDK初始化失败，请重新初始化"));
-                return;
-            }
-            //在开启人脸识别以前需要获取人脸照片数量，
-            //如果为0表示没有底库，是不能开启识别的；
-            if (0 == FaceManager.getManager().getFaceLibraryNum()) {
-                textHint.post(() -> textHint.setText("人脸识别底库无数据"));
-            } else {
-                //可以开启识别
-                FaceManager.getManager().startIdentity();
-                startIdentity = true;
-                LogUtils.d(TAG, "startIdentity---::::::::::: "+startIdentity);
-                textHint.post(() -> textHint.setText(""));
+            int initStatus = FaceSDKManager.initStatus;
+            if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
+                textHint.post(() -> textHint.setText("SDK还未激活，请先激活"));
+            } else if (initStatus == FaceSDKManager.SDK_INIT_FAIL) {
+                textHint.post(() -> textHint.setText("SDK初始化失败，请重新激活初始化"));
+            } else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
+                textHint.post(() -> textHint.setText("SDK正在加载模型，请稍后再试"));
+            } else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
+                //在开启人脸识别以前需要获取人脸照片数量，
+                //如果为0表示没有底库，是不能开启识别的；
+                FaceManager.getManager().queryAllUserCount(count -> {
+                    textHint.post(() -> {
+                        //在开启人脸识别以前需要获取人脸照片数量，
+                        //如果为0表示没有底库，是不能开启识别的；
+                        if (count > 0) {
+                            //可以开启识别
+                            previewView = new AutoTexturePreviewView(getActivity());
+                            previewView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+                            relativeLayout.addView(previewView);
+                            FaceManager.getManager().initShowFrame(textureView);
+                            FaceManager.getManager().faceStartRGBSearch(getActivity(), previewView, (code, msg, user) -> {
+                                if (code == CODE_SUCCESS) {
+                                    String userId = user.getUserName();
+                                    if (!TextUtils.isEmpty(userId)) {
+                                        onTabShowPreview(false);
+                                        loginFace(userId);
+                                    }
+                                    Log.e("Face", "onTip code:" + code + " msg:" + msg + " user:" + user.toString());
+                                } else {
+                                    Log.d("Face", "onTip code:" + code + " msg:" + msg);
+                                }
+                            });
+                            startIdentity = true;
+                            LogUtils.d(TAG, "startIdentity---::::::::::: " + startIdentity);
+                            textHint.setText("");
+                        } else {
+                            textHint.setText("人脸识别底库无数据");
+                        }
+                    });
+                });
             }
         } else {
             // 停止检测
             LogUtils.d(TAG, "stopIdentity---::::::::::: ");
-            FaceManager.getManager().stopIdentity();
-            startIdentity=false;
+            FaceManager.getManager().stopPreviewAndRelease();
+            relativeLayout.removeAllViews();
+            startIdentity = false;
             textHint.post(() -> textHint.setText(""));
         }
     }
 
-
     @Override
     public void onSupportInvisible() {
         super.onSupportInvisible();
+        Log.e(TAG, "onSupportInvisible: ");
         onTabShowPreview(false);
     }
 
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
+        Log.e(TAG, "onSupportVisible: ");
         onTabShowPreview(true);
     }
-
 }

@@ -18,6 +18,7 @@
         android:paddingRight="@dimen/x30">
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/frag_registe_logcat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,6 +58,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -107,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
-                android:text="点击按钮将同步服务器人脸照并注册至本地人脸底库"
+                android:text="点击按钮初始化人脸识别SDK,同步服务器人脸照并注册至本地人脸底库"
                 android:textColor="@color/text_color_97"
                 android:textSize="@dimen/x28" />
 

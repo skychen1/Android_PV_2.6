@@ -6,18 +6,21 @@
     android:padding="@dimen/x10">
 
     <FrameLayout
+        android:id="@+id/fl_layout"
+        android:background="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.ruihua.face.recognition.face.TexturePreviewView
-            android:id="@+id/preview_view"
-            android:layout_gravity="center"
-            android:background="@color/text_color_3"
+        <RelativeLayout
+            android:id="@+id/rl_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"   />
+            android:layout_height="match_parent"/>
+       <!-- <com.ruihua.libfacerecognitionv3.main.camera.AutoTexturePreviewView
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>-->
 
         <TextureView
             android:id="@+id/texture_view"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"  />
 

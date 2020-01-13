@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -323,11 +324,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	EventBusUtils.register(this);
 	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
-	   if (idBean.getCabinetType().equals("0")||idBean.getCabinetType().equals("1")){
-		mDeviceSizeList.add(idBean.getDevice_id()+"0");
-	   }else if (idBean.getCabinetType().equals("2")){
-		mDeviceSizeList.add(idBean.getDevice_id()+"1");
-	   }
+		if (idBean != null && idBean.getCabinetType() != null) {
+			if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
+				mDeviceSizeList.add(idBean.getDevice_id() + "0");
+			} else if (idBean.getCabinetType().equals("2")) {
+				mDeviceSizeList.add(idBean.getDevice_id() + "1");
+			}
+		}
 	}
 	getLocalAllCstVos();
    }
@@ -580,15 +583,21 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	//		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
 	//	} else {
 	String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	mTbaseDevices.addAll(
-		mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	if (!TextUtils.isEmpty(strings)){
+		mTbaseDevices.addAll(
+				mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	}
 	//	}
 	String homeBoxSize = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE_HOME);
 	Log.i("outtccc", "position    " + homeBoxSize);
-	mDeviceTypeVoBeans.addAll(mGson.fromJson(homeBoxSize,
-							     new TypeToken<List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean>>() {}
-								     .getType()));
-	mDeviceTypeVoBeans.get(0).getDevices().get(0).setDeviceId("");
+	if (!TextUtils.isEmpty(homeBoxSize)){
+		mDeviceTypeVoBeans.addAll(mGson.fromJson(homeBoxSize,
+				new TypeToken<List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean>>() {}
+						.getType()));
+	}
+	if (mDeviceTypeVoBeans.size()>0){
+		mDeviceTypeVoBeans.get(0).getDevices().get(0).setDeviceId("");
+	}
 	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
 	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_010) &&
