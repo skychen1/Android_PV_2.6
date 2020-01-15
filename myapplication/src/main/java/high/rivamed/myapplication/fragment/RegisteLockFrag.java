@@ -1,11 +1,14 @@
 package high.rivamed.myapplication.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,6 +34,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistLockAdapter;
+import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -76,6 +80,7 @@ public class RegisteLockFrag extends SimpleFragment {
    public  String            fingerData;
    public  String            fingerTemplate;
    private RegistLockAdapter mAdapter;
+   private DisplayMetrics mDm;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onLockType(Event.lockType event) {
@@ -102,18 +107,11 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	FingerManager.getManager().connectFinger(mContext, TYPE_NET_ZHI_ANG);
-	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
-
-	for (DeviceInfo info : deviceInfos) {
-
-	   int i = FingerManager.getManager().startReadFinger(info.getIdentification());
-	   Log.i("appSatus","info.FingerManager()     "+info.getIdentification()+"  FingerManager    "+i);
-	}
-	List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager().getConnectedDevice();
-	for (DeviceInfo info : connectedDevice) {
-	   int i = IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
-	   Log.i("appSatus","info.IdCardManager()     "+info.getIdentification()+"  IdCardManager    "+i);
+	WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+	if (wm != null) {
+	   mDm = new DisplayMetrics();
+	   wm.getDefaultDisplay().getMetrics(App.mDm);
+	   AppendLog("获取有效屏幕分辨率:X=" + App.mDm.widthPixels + ";Y=" + App.mDm.heightPixels);
 	}
 
 	//	initCallBack();
@@ -152,7 +150,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-
+		AppendLog("IC读卡连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
 	   }
 
 	   @Override
@@ -169,7 +167,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	FingerManager.getManager().registerCallback(new FingerCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-		AppendLog("指纹信息：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
+		AppendLog("指纹连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
 	   }
 
 	   @Override
@@ -328,6 +326,7 @@ public class RegisteLockFrag extends SimpleFragment {
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
+		AppendLog("获取有效屏幕分辨率:X=" + mDm.widthPixels + ";Y=" + mDm.heightPixels);
 		if (mDate != null) {
 		   mDate.clear();
 		   mTxtLog.setText("");
@@ -341,7 +340,17 @@ public class RegisteLockFrag extends SimpleFragment {
 		}
 
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无连接" : ("已连接设备如下：\n" + s));
-
+		FingerManager.getManager().connectFinger(mContext, TYPE_NET_ZHI_ANG);
+		List<DeviceInfo> deviceFingerInfos = FingerManager.getManager().getConnectedFinger();
+		for (DeviceInfo info : deviceFingerInfos) {
+		   int i = FingerManager.getManager().startReadFinger(info.getIdentification());
+		   Log.i("appSatus","info.FingerManager()     "+info.getIdentification()+"  FingerManager    "+i);
+		}
+		List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager().getConnectedDevice();
+		for (DeviceInfo info : connectedDevice) {
+		   int i = IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
+		   Log.i("appSatus","info.IdCardManager()     "+info.getIdentification()+"  IdCardManager    "+i);
+		}
 		int mLayout = R.layout.item_lock_layout;
 		if (mAdapter != null) {
 		   mAdapter.notifyDataSetChanged();

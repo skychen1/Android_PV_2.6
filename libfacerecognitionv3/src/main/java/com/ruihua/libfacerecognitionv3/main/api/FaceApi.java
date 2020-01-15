@@ -204,7 +204,7 @@ public class FaceApi {
         }
 
         // 姓名过长
-        if (username.length() > 10) {
+        if (username.length() > 20) {
             return "姓名过长";
         }
 

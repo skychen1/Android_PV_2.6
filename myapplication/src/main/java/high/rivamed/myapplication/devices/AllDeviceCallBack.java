@@ -235,27 +235,38 @@ public class AllDeviceCallBack {
     */
    public void startScan(String deviceIndentify,int which) {
 	LogUtils.i(TAG, "deviceIndentify    " + deviceIndentify + "    ");
-	BoxIdBean boxIdBean = LitePal.where("device_id = ? and name = ?", deviceIndentify,
-							CONSUMABLE_TYPE)
-		.findFirst(BoxIdBean.class);
-
-	String box_id = boxIdBean.getBox_id();
-	BoxIdBean deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-		.findFirst(BoxIdBean.class);
-
-	String device_id = deviceBean.getDevice_id();
-	int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
-	if (i == 1) {
-	   ReaderManager.getManager().restDevice(device_id);
-	   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
-	   ReaderManager.getManager().startScan(device_id, READER_TIME);
+	String cabinetType="";
+	if (which==0){
+	   cabinetType = "1";
+	}else if (which==1){
+	   cabinetType = "2";
 	}
 
-	if (i == 2) {
-//	   ReaderManager.getManager().stopScan(device_id);
-//	   ReaderManager.getManager().startScan(device_id, READER_TIME);
+	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
+								 CONSUMABLE_TYPE).find(BoxIdBean.class);
+	for (BoxIdBean boxIdBean : boxIdBeans) {
+	   if (cabinetType.equals(boxIdBean.getCabinetType())){
+		String box_id = boxIdBean.getBox_id();
+		BoxIdBean deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
+			.findFirst(BoxIdBean.class);
+
+		String device_id = deviceBean.getDevice_id();
+		int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
+		if (i == 1) {
+		   ReaderManager.getManager().restDevice(device_id);
+		   mReaderDeviceId = DevicesUtils.getReaderDeviceId();
+		   ReaderManager.getManager().startScan(device_id, READER_TIME);
+		}
+
+		if (i == 2) {
+		   //	   ReaderManager.getManager().stopScan(device_id);
+		   //	   ReaderManager.getManager().startScan(device_id, READER_TIME);
+		}
+		LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
+
+	   }
 	}
-	LogUtils.i(TAG, "开始扫描了状态    " + i + "    " + device_id);
+
 
    }
 

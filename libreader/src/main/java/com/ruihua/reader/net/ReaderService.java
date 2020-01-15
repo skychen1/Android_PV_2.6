@@ -93,7 +93,7 @@ public class ReaderService {
                                 case ReaderProducerType.TYPE_NET_RODINBELL:
                                     //罗丹贝尔的数据通道，根据罗丹贝尔情况处理
                                     //添加心跳规则
-                                    channel.pipeline().addLast(new IdleStateHandler(0, 0, 2));
+                                    channel.pipeline().addLast(new IdleStateHandler(0, 0, 3));
                                     RodinbellHandler channelHandler = new RodinbellHandler();
                                     channelHandler.registerRodinbellMessageListener(new MyReaderMessageListener());
                                     channel.pipeline().addLast(ip,channelHandler);
