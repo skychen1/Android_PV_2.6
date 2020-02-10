@@ -143,6 +143,7 @@ public class FaceRegisterActivity extends BaseActivity implements View.OnClickLi
                 Intent intent = new Intent(FaceRegisterActivity.this, FaceRGBRegisterActivity.class);
                 intent.putExtra("group_id", groupId);
                 intent.putExtra("user_name", username);
+                intent.putExtra("user_id", username);
                 if (!TextUtils.isEmpty(userInfo)) {
                     intent.putExtra("user_info", userInfo);
                 }

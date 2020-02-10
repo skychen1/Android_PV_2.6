@@ -67,6 +67,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
     private static final int mHeight = 480;
     private boolean qualityControl;
     private String username = null;
+    private String userId = null;
     private String groupId = null;
     private String userInfo = null;
 
@@ -81,6 +82,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             username = intent.getStringExtra("user_name");
+            userId = intent.getStringExtra("user_id");
             groupId = intent.getStringExtra("group_id");
             userInfo = intent.getStringExtra("user_info");
         }
@@ -145,7 +147,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         // 摄像头图像预览
-        FaceManager.getManager().faceStartRGBRegister(this, username,   mPreviewView, new IFaceRegister() {
+        FaceManager.getManager().faceStartRGBRegister(this, userId, username, mPreviewView, new IFaceRegister() {
             @Override
             public void registerResult(int code, String msg) {
                 if (code == CODE_SUCCESS) {
@@ -379,7 +381,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
             return;
         }
 
-        if (username == null || groupId == null) {
+        if (userId == null ||username == null || groupId == null) {
             displayTip("注册信息缺失");
             return;
         }
@@ -431,7 +433,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
 
             String imageName = groupId + "-" + username + ".jpg";
             // 注册到人脸库
-            boolean isSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupId, username, imageName,
+            boolean isSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupId, userId, username, imageName,
                     userInfo, faceFeature);
             if (isSuccess) {
                 // 关闭摄像头

@@ -225,7 +225,7 @@ public class ImportFileManager {
                             } else if (ret == 128) {
                                 // 将用户信息和用户组信息保存到数据库
                                 boolean importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupName,
-                                        userName, picName, null, bytes);
+                                        userName,userName, picName, null, bytes);
 
                                 // 保存数据库成功
                                 if (importDBSuccess) {

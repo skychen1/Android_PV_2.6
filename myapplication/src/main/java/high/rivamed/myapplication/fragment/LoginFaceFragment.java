@@ -55,7 +55,7 @@ public class LoginFaceFragment extends SimpleFragment {
     @BindView(R.id.tv_hint)
     TextView textHint;
     private String TAG = "Face";
-    private String userId;
+    private String faceId;
     private boolean startIdentity;
 
     @Override
@@ -67,9 +67,9 @@ public class LoginFaceFragment extends SimpleFragment {
     public void initDataAndEvent(Bundle savedInstanceState) {
         //识别成功的回调 回调用户的编号userId，唯一标识，回调速度可能会很快，需要自己加标识控制处理；
 //        if (FaceManager.getManager().getInitStatus() == FaceCode.SDK_INITED)
-//            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, userId) -> {
+//            FaceManager.getManager().initIdentityFace(_mActivity, previewView, textureView, (isSuccess, faceId) -> {
 //                if (isSuccess) {
-//                    loginFace(userId);
+//                    loginFace(faceId);
 //                }
 //            });
 
@@ -85,7 +85,7 @@ public class LoginFaceFragment extends SimpleFragment {
     private void loginFace(String Id) {
         EventBusUtils.postSticky(new Event.EventLoading(true));
         Log.e(TAG, "loginFace: " + Id);
-        userId = Id;
+        faceId = Id;
         //获取配置项并登陆
         LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) ->
                 textHint.post(() -> {
@@ -126,7 +126,7 @@ public class LoginFaceFragment extends SimpleFragment {
      * 离线登录
      */
     private void unNetFaceLogin() {
-        List<AccountVosBean> beans = LitePal.where("accountId = ? ", userId).find(AccountVosBean.class);
+        List<AccountVosBean> beans = LitePal.where("faceId = ? ", faceId).find(AccountVosBean.class);
         LogUtils.i("LoginA", "LitePal   " + mGson.toJson(beans));
         if (beans != null && beans.size() > 0) {
             //设置离线数据:当前用户离线登陆所需数据
@@ -155,7 +155,7 @@ public class LoginFaceFragment extends SimpleFragment {
      */
     private void loadLogin() {
         HashMap<String, String> param = new HashMap<>();
-        param.put("faceId", userId);
+        param.put("faceId", faceId);
         param.put("systemType", SYSTEMTYPE);
         param.put("thingId", SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(param));
@@ -210,7 +210,7 @@ public class LoginFaceFragment extends SimpleFragment {
         if (isShow && LoginActivity.mLoginGone.getVisibility() == View.GONE) {
             if (startIdentity)
                 return;
-            userId = "";
+            faceId = "";
             int initStatus = FaceSDKManager.initStatus;
             if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
                 textHint.post(() -> textHint.setText("SDK还未激活，请先激活"));

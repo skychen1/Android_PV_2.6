@@ -315,8 +315,8 @@ public class FaceManager {
      *
      * @param userName
      */
-    public void startActivityFaceRegister(Context context, String userName, IFaceRegister listener) {
-        startActivityFaceRegister(context, userName, groupName, "", listener);
+    public void startActivityFaceRegister(Context context, String userId, String userName, IFaceRegister listener) {
+        startActivityFaceRegister(context, userId,  userName, groupName, "", listener);
     }
 
     /**
@@ -326,7 +326,7 @@ public class FaceManager {
      * @param groupId
      * @param userInfo
      */
-    public void startActivityFaceRegister(Context context, String username, String groupId, String userInfo, IFaceRegister listener) {
+    public void startActivityFaceRegister(Context context, String userId, String username, String groupId, String userInfo, IFaceRegister listener) {
         if (context == null) {
             throw new NullPointerException("context 不能为null");
         }
@@ -334,6 +334,10 @@ public class FaceManager {
             throw new NullPointerException("listener 不能为null");
         }
         //用户名
+        if (TextUtils.isEmpty(userId)) {
+            listener.registerResult(CODE_ERROR, "人脸ID不能为空");
+            return;
+        }
         if (TextUtils.isEmpty(username)) {
             listener.registerResult(CODE_ERROR, "用户名不能为空");
             return;
@@ -350,6 +354,7 @@ public class FaceManager {
         //用户组
         if (TextUtils.isEmpty(groupId)) {
             listener.registerResult(CODE_ERROR, "用户组名不能为空");
+            return;
         }
         if (groupId.length() > TEXT_LENGTH) {
             listener.registerResult(CODE_ERROR, "用户组输入长度超过限制！");
@@ -361,10 +366,10 @@ public class FaceManager {
             return;
         }
         // 获取用户
-        List<User> listUsers = FaceApi.getInstance().getUserListByUserName(groupName, username);
+        List<User> listUsers = FaceApi.getInstance().getUserListByUserId(groupName, userId);
         if (listUsers != null && listUsers.size() > 0) {
             //有重名的用户 删除已注册
-            boolean success = FaceApi.getInstance().userDeleteByName(groupName, username);
+            boolean success = FaceApi.getInstance().userDeleteByUserId(groupName, userId);
             Log.e("Face", "startActivityFaceRegister delete: " + success);
             if (!success) {
                 listener.registerResult(CODE_ERROR, "删除本地已注册人脸照失败");
@@ -383,6 +388,7 @@ public class FaceManager {
         if (liveType == 2) { // RGB
             Intent intent = new Intent(context, FaceRGBRegisterActivity.class);
             intent.putExtra("group_id", groupId);
+            intent.putExtra("user_id", userId);
             intent.putExtra("user_name", username);
             if (!TextUtils.isEmpty(userInfo)) {
                 intent.putExtra("user_info", userInfo);
@@ -418,8 +424,8 @@ public class FaceManager {
      *
      * @param userName, 用户名
      */
-    public void inportFaceImage(String userName, String path, IFaceInport listener) {
-        inportFaceImage(userName, groupName, path, listener);
+    public void inportFaceImage(String userId, String userName, String path, IFaceInport listener) {
+        inportFaceImage(userId,userName, groupName, path, listener);
     }
 
     /**
@@ -428,15 +434,18 @@ public class FaceManager {
      * @param userName, 用户名
      * @param groupId   组名
      */
-    public void inportFaceImage(String userName, String groupId, String path, IFaceInport listener) {
+    public void inportFaceImage(String userId,String userName, String groupId, String path, IFaceInport listener) {
         if (listener == null) {
             throw new NullPointerException("listener 不能为null");
         }
         // 获取用户
         // 根据姓名查询数据库与文件中对应的姓名是否相等，如果相等，则先删除旧照，再注册新照
-        List<User> listUsers = FaceApi.getInstance().getUserListByUserName(groupId, userName);
+
+        Log.e("Face", "startActivityFaceRegister delete 0: " );
+        List<User> listUsers = FaceApi.getInstance().getUserListByUserId(groupId, userId);
         if (listUsers != null && listUsers.size() > 0) {
-            boolean success = FaceApi.getInstance().userDeleteByName(groupId, userName);
+            Log.e("Face", "startActivityFaceRegister delete 2: " );
+            boolean success = FaceApi.getInstance().userDeleteByUserId(groupId, userId);
             Log.e("Face", "startActivityFaceRegister delete: " + success);
             if (!success) {
                 listener.importFaceImageResult(CODE_ERROR, "删除人脸底照失败：：" + userName);
@@ -470,7 +479,7 @@ public class FaceManager {
             } else if (ret == 128) {
                 // 将用户信息和用户组信息保存到数据库
                 boolean importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupId,
-                        userName, picName, null, bytes);
+                        userId, userName, picName, null, bytes);
                 if (importDBSuccess) {
                     listener.importFaceImageResult(CODE_SUCCESS, userName + "人脸注册成功");
                 } else {
@@ -788,6 +797,7 @@ public class FaceManager {
     private WeakReference<Context> mContextWeakReferenceRegister = null;
     private WeakReference<AutoTexturePreviewView> mAutoTexturePreviewViewWeakReferenceRegister = null;
     private String username = null;
+    private String userId = null;
     private String userInfo = null;
     private Bitmap rgbBitmap = null;
     private IFaceRegister mIFaceRegisterlistener;
@@ -807,11 +817,11 @@ public class FaceManager {
      * displayOrientation 画面方向 CameraPreviewManager.ORIENTATION_HORIZONTAL,
      * CameraPreviewManager.ORIENTATION_PORTRAIT
      */
-    public void faceStartRGBRegister(Context context, String username, AutoTexturePreviewView previewView, IFaceRegister listener) {
-        faceStartRGBRegister(context, username, groupName, "", previewView, listener);
+    public void faceStartRGBRegister(Context context, String userId,String username, AutoTexturePreviewView previewView, IFaceRegister listener) {
+        faceStartRGBRegister(context, userId,username, groupName, "", previewView, listener);
     }
 
-    public void faceStartRGBRegister(Context context, String username, String groupId, String userInfo,
+    public void faceStartRGBRegister(Context context, String userId, String username, String groupId, String userInfo,
                                      AutoTexturePreviewView previewView, IFaceRegister listener) {
         if (context == null) {
             throw new NullPointerException("context 不能为null");
@@ -821,6 +831,7 @@ public class FaceManager {
             throw new NullPointerException("username 不能为null");
         }
         this.username = username;
+        this.userId = userId;
         if (!TextUtils.isEmpty(groupId)) {
             groupName = groupId;
         }
@@ -992,7 +1003,7 @@ public class FaceManager {
 
             String imageName = groupName + "-" + username + ".jpg";
             // 注册到人脸库
-            boolean isSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupName, username, imageName,
+            boolean isSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupName, userId,username, imageName,
                     userInfo, faceFeature);
             if (isSuccess) {
                 // 关闭摄像头

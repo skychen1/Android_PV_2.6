@@ -135,6 +135,16 @@ public class FaceApi {
         return userList;
     }
     /**
+     * 根据groupId、userName查找用户
+     */
+    public List<User> getUserListByUserId(String groupId, String userId) {
+        if (TextUtils.isEmpty(groupId) || TextUtils.isEmpty(userId)) {
+            return null;
+        }
+        List<User> userList = DBManager.getInstance().queryUserByUserId(groupId, userId);
+        return userList;
+    }
+    /**
      * 根据_id查找用户
      */
     public User getUserListById(int _id) {
@@ -191,6 +201,14 @@ public class FaceApi {
         boolean ret = DBManager.getInstance().deleteUserByName(userName, groupId);
         return ret;
     }
+    public boolean userDeleteByUserId(String groupId, String  userId) {
+        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(groupId)) {
+            return false;
+        }
+
+        boolean ret = DBManager.getInstance().deleteUserByUserId(userId, groupId);
+        return ret;
+    }
 
     /**
      * 是否是有效姓名
@@ -244,7 +262,7 @@ public class FaceApi {
     }
 
 
-    public boolean registerUserIntoDBmanager(String groupName, String userName, String picName,
+    public boolean registerUserIntoDBmanager(String groupName, String uid,  String userName, String picName,
                                              String userInfo, byte[] faceFeature) {
         boolean isSuccess = false;
 
@@ -257,7 +275,7 @@ public class FaceApi {
          * 用户id（由数字、字母、下划线组成），长度限制128B
          * uid为用户的id,百度对uid不做限制和处理，应该与您的帐号系统中的用户id对应。
          */
-        final String uid = UUID.randomUUID().toString();
+//        final String uid = UUID.randomUUID().toString();
         user.setUserId(uid);
         user.setUserName(userName);
         user.setFeature(faceFeature);

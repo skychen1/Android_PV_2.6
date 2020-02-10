@@ -13,10 +13,8 @@ import com.rivamed.FingerManager;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.FilesUtils;
-import com.ruihua.libfacerecognitionv3.MainActivity;
 import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
 import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
-import com.ruihua.libfacerecognitionv3.main.ui.IFaceRegister;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -48,8 +46,6 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
@@ -538,8 +534,10 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 				} else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
 					ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
 				} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
-					FaceManager.getManager().startActivityFaceRegister(this, SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,""), (code, msg) -> {
+					FaceManager.getManager().startActivityFaceRegister(this, SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,""),
+							SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,"") ,(code, msg) -> {
 						//其他信息提示
+								ToastUtils.showShort(msg);
 						Log.e("Face", "error callback: "+code+":::" + msg);
 					});
 				}

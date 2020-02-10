@@ -140,7 +140,7 @@ public class FaceTask {
      */
     private void registerFaceLibrary(AllFacePhotoBean.UsersBean facePhotoBean, File file) {
         String userId = facePhotoBean.getFaceId();
-        FaceManager.getManager().inportFaceImage(userId, file.getAbsolutePath(), (code, msg) -> {
+        FaceManager.getManager().inportFaceImage(userId,userId, file.getAbsolutePath(), (code, msg) -> {
             LogUtils.d(TAG, "LoginFace:人脸注册结果：：code=" + code + ":::msg=" + msg + ":::FaceId=" + userId+ ":::userName=" +  facePhotoBean.getName());
             if (code==CODE_SUCCESS){
                 //注册成功即可删除缓存照片

@@ -410,6 +410,52 @@ public class DBManager {
     }
 
     /**
+     * 查询用户（根据groupId、userName）
+     */
+    public List<User> queryUserByUserId(String groupId, String userId) {
+        Cursor cursor = null;
+        List<User> users = new ArrayList<>();
+        try {
+            if (mDBHelper == null) {
+                return null;
+            }
+            SQLiteDatabase db = mDBHelper.getReadableDatabase();
+            String where = "user_id = ? and group_id = ? ";
+            String[] whereValue = {userId, groupId};
+            cursor = db.query(DBHelper.TABLE_USER, null, where, whereValue, null, null, null);
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToNext()) {
+                int dbId = cursor.getInt(cursor.getColumnIndex("_id"));
+//                String userId = cursor.getString(cursor.getColumnIndex("user_id"));
+                String userName = cursor.getString(cursor.getColumnIndex("user_name"));
+                String userInfo = cursor.getString(cursor.getColumnIndex("user_info"));
+                String faceToken = cursor.getString(cursor.getColumnIndex("face_token"));
+                byte[] feature = cursor.getBlob(cursor.getColumnIndex("feature"));
+                String imageName = cursor.getString(cursor.getColumnIndex("image_name"));
+                long updateTime = cursor.getLong(cursor.getColumnIndex("update_time"));
+                long ctime = cursor.getLong(cursor.getColumnIndex("ctime"));
+
+                User user = new User();
+                user.setId(dbId);
+                user.setUserId(userId);
+                user.setGroupId(groupId);
+                user.setUserName(userName);
+                user.setCtime(ctime);
+                user.setUpdateTime(updateTime);
+                user.setUserInfo(userInfo);
+                user.setFeature(feature);
+                user.setImageName(imageName);
+                user.setFaceToken(faceToken);
+                users.add(user);
+            }
+        } finally {
+            closeCursor(cursor);
+        }
+
+        Log.e("Face", "startActivityFaceRegister delete 1: " );
+        return users;
+    }
+
+    /**
      * 查询用户（根据dbId）
      */
     public List<User> queryUserById(int _id) {
@@ -526,6 +572,29 @@ public class DBManager {
     /**
      * 删除用户
      */
+    public boolean deleteUserByUserId(String userId, String groupId) {
+        boolean success = false;
+        try {
+            mDatabase = mDBHelper.getWritableDatabase();
+            beginTransaction(mDatabase);
+
+            if (!TextUtils.isEmpty(userId)) {
+                String where = "user_id = ? and group_id = ?";
+                String[] whereValue = { userId, groupId };
+
+                if (mDatabase.delete(DBHelper.TABLE_USER, where, whereValue) < 0) {
+                    return false;
+                }
+
+                setTransactionSuccessful(mDatabase);
+                success = true;
+            }
+
+        } finally {
+            endTransaction(mDatabase);
+        }
+        return success;
+    }
     public boolean deleteUserByName(String userName, String groupId) {
         boolean success = false;
         try {
