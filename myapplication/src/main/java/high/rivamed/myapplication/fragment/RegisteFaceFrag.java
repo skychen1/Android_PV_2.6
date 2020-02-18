@@ -23,6 +23,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
 
 /**
@@ -80,7 +81,7 @@ public class RegisteFaceFrag extends SimpleFragment {
             if (FaceManager.getManager().hasModelInit()) {
                 initFaceList();
             } else {
-                FaceManager.getManager().init(getActivity(), "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_HORIZONTAL, new SimpleSdkInitListener() {
+                FaceManager.getManager().init(getActivity(), "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
                     @Override
                     public void initLicenseSuccess() {
                         //激活成功
@@ -143,7 +144,7 @@ public class RegisteFaceFrag extends SimpleFragment {
                         //跳转到识别页面
                         startActivity(new Intent(getActivity(), FaceRGBCloseDebugSearchActivity.class));
                     } else {
-                        ToastUtils.showShortToast("人脸识别底库无数据，请先初始化人脸底库");
+			     runOnUiThread(() ->ToastUtils.showShortToast("人脸识别底库无数据，请先初始化人脸底库"));
                     }
                 });
             }

@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -59,8 +58,8 @@ import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
-import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
@@ -109,16 +108,32 @@ public class ScanService extends Service {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onServerEvent(Event.EventServer event) {
 	mTime = System.currentTimeMillis();
+	Log.i("ok","onServerEvent    "+event.type);
 	if (event.type == 1) {//登录界面每次显示更新数据
 	   if (mThread != null) {
+		Log.i("ok","event.type    "+event.type);
 		if (mTime - lastClickTime >= 2000) {
-		   mThread.start();
+		   mThread.interrupt();
+		   mThread =null;
 		   lastClickTime = mTime;
+
+		   mThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   Log.i("ok","getAllCstDate1    ");
+			   getAllCstDate(this);//重新获取在库耗材数据
+			   getUnNetUseDate();
+			   getUnEntFindOperation();
+			}
+		   });
+		   lastClickTime = mTime;
+		   mThread.start();
 		}
 	   } else {
 		mThread = new Thread(new Runnable() {
 		   @Override
 		   public void run() {
+			Log.i("ok","getAllCstDate2    ");
 			getAllCstDate(this);//重新获取在库耗材数据
 			getUnNetUseDate();
 			getUnEntFindOperation();

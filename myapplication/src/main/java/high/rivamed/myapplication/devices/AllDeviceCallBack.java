@@ -236,14 +236,18 @@ public class AllDeviceCallBack {
    public void startScan(String deviceIndentify,int which) {
 	LogUtils.i(TAG, "deviceIndentify    " + deviceIndentify + "    ");
 	String cabinetType="";
-	if (which==0){
-	   cabinetType = "1";
-	}else if (which==1){
-	   cabinetType = "2";
-	}
-
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 CONSUMABLE_TYPE).find(BoxIdBean.class);
+	if (boxIdBeans.size()==2){
+	   if (which==0){
+		cabinetType = "1";
+	   }else if (which==1){
+		cabinetType = "2";
+	   }
+	}else if (boxIdBeans.size()==1){
+	   cabinetType = "0";
+	}
+
 	for (BoxIdBean boxIdBean : boxIdBeans) {
 	   if (cabinetType.equals(boxIdBean.getCabinetType())){
 		String box_id = boxIdBean.getBox_id();

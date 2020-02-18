@@ -12,16 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceAuth;
-import com.baidu.idl.main.facesdk.callback.Callback;
 import com.baidu.idl.main.facesdk.utils.FileUitls;
 import com.ruihua.face.recognition.R;
 import com.ruihua.libfacerecognitionv3.main.listener.SdkInitListener;
-import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
 import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
-import com.ruihua.libfacerecognitionv3.main.ui.IFaceLicense;
 import com.ruihua.libfacerecognitionv3.main.utils.T;
 
 /**
@@ -59,8 +57,12 @@ public class FaceAuthDialog extends Dialog implements View.OnClickListener {
         setContentView(view);
 
         etKey = findViewById(R.id.et_key);
+
         //测试
 //        etKey.setText("P6ME-ZRHS-KALY-IK57");
+        TextView deviceId =findViewById(R.id.device_id);
+        deviceId.setText(new FaceAuth().getDeviceId(mContext));
+
         etKey.setTransformationMethod(new AllCapTransformationMethod(true));
         addLisenter();
         findViewById(R.id.tv_cancel).setOnClickListener(this);

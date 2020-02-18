@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.lzy.okgo.OkGo;
@@ -18,7 +17,6 @@ import com.rivamed.FingerManager;
 import com.ruihua.libfacerecognitionv3.main.camera.CameraPreviewManager;
 import com.ruihua.libfacerecognitionv3.main.listener.SimpleSdkInitListener;
 import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
-import com.ruihua.libfacerecognitionv3.main.ui.IFaceLicense;
 
 import org.litepal.LitePal;
 
@@ -167,7 +165,7 @@ public class SplashActivity extends FragmentActivity {
                 //		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
                 //检测设备是否激活授权码
                 //启动页初始化人脸识别sdk
-                new Thread(() -> FaceManager.getManager().init(SplashActivity.this, "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_HORIZONTAL, new SimpleSdkInitListener() {
+                new Thread(() -> FaceManager.getManager().init(SplashActivity.this, "", Constants.FACE_GROUP, false, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
                     @Override
                     public void initLicenseSuccess() {
                         //激活成功

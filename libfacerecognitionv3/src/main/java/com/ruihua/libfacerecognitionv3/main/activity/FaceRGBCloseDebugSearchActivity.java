@@ -1,7 +1,6 @@
 package com.ruihua.libfacerecognitionv3.main.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,11 +13,11 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.idl.main.facesdk.FaceInfo;
 import com.ruihua.face.recognition.R;
 import com.ruihua.libfacerecognitionv3.main.callback.CameraDataCallback;
 import com.ruihua.libfacerecognitionv3.main.callback.FaceDetectCallBack;
@@ -28,16 +27,11 @@ import com.ruihua.libfacerecognitionv3.main.manager.FaceSDKManager;
 import com.ruihua.libfacerecognitionv3.main.model.LivenessModel;
 import com.ruihua.libfacerecognitionv3.main.model.SingleBaseConfig;
 import com.ruihua.libfacerecognitionv3.main.model.User;
-import com.ruihua.libfacerecognitionv3.main.presenter.FaceManager;
-import com.ruihua.libfacerecognitionv3.main.ui.IFaceLicense;
 import com.ruihua.libfacerecognitionv3.main.utils.DensityUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.FaceOnDrawTexturViewUtil;
 import com.ruihua.libfacerecognitionv3.main.utils.FileUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.T;
 import com.ruihua.libfacerecognitionv3.main.view.CircleImageView;
-import com.baidu.idl.main.facesdk.FaceInfo;
-
-import static com.ruihua.libfacerecognitionv3.main.activity.FaceMainSearchActivity.PAGE_TYPE;
 
 /**
  * @Time 2019/06/02
