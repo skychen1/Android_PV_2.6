@@ -366,6 +366,9 @@ public class LoginInfoActivity extends BaseSimpleActivity {
     */
    private void setEth002FingerReg() {
 	List<DeviceInfo> deviceInfos = FingerManager.getManager().getConnectedFinger();
+	if (deviceInfos==null||deviceInfos.size()==0){
+	   ToastUtils.showShortToast("设备未连接，请稍后重试！");
+	}
 	for (DeviceInfo info : deviceInfos) {
 	   String identification = info.getIdentification();
 	   Log.i("appSatus", "appSatus   " + identification);
@@ -414,6 +417,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		ToastUtils.showShortToast("操作失败，请重试！");
 	   }
 	}
+
    }
 
    /*
@@ -534,6 +538,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 				} else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
 					ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
 				} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
+				   Log.i("faceddddd","status    --------------");
 					FaceManager.getManager().startActivityFaceRegister(this, SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,""),
 							SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,"") ,(code, msg) -> {
 						//其他信息提示

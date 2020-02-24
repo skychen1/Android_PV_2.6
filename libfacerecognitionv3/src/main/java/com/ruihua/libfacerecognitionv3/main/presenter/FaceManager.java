@@ -45,7 +45,6 @@ import com.ruihua.libfacerecognitionv3.main.ui.IFaceSearch;
 import com.ruihua.libfacerecognitionv3.main.utils.BitmapUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.FaceOnDrawTexturViewUtil;
 import com.ruihua.libfacerecognitionv3.main.utils.FileUtils;
-import com.ruihua.libfacerecognitionv3.main.utils.ImageUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.T;
 import com.ruihua.libfacerecognitionv3.main.view.FaceAuthDialog;
 
@@ -386,6 +385,7 @@ public class FaceManager {
         // 判断活体类型
         int liveType = SingleBaseConfig.getBaseConfig().getType();
         if (liveType == 2) { // RGB
+            Log.i("faceddddd","跳转    ");
             Intent intent = new Intent(context, FaceRGBRegisterActivity.class);
             intent.putExtra("group_id", groupId);
             intent.putExtra("user_id", userId);
@@ -959,9 +959,11 @@ public class FaceManager {
             mIFaceRegisterlistener.registerResult(CODE_ERROR, "注册信息缺失");
             return;
         }
-
+       int y = (int)(model.getFaceInfo().centerY+0.5f);
+       int x = (int)(model.getFaceInfo().centerX+0.5f);
         BDFaceImageInstance image = model.getBdFaceImageInstance();
         rgbBitmap = BitmapUtils.getInstaceBmp(image);
+        rgbBitmap= cropBitmap(rgbBitmap,x,y);
         // 获取选择的特征抽取模型
         int modelType = SingleBaseConfig.getBaseConfig().getActiveModel();
         if (modelType == 1) {
@@ -1012,7 +1014,7 @@ public class FaceManager {
                 // 压缩、保存人脸图片至300 * 300
                 File faceDir = FileUtils.getBatchImportSuccessDirectory(fileName);
                 File file = new File(faceDir, imageName);
-                ImageUtils.resize(rgbBitmap, file, 300, 300);
+//                ImageUtils.resize(rgbBitmap, file, mWidth, mHeight);
 
                 rgbBitmap.recycle();
                 rgbBitmap = null;
@@ -1042,5 +1044,12 @@ public class FaceManager {
         }
     }
 
-
+    private Bitmap cropBitmap(Bitmap bitmap,int x,int y) {
+        int w = bitmap.getWidth(); // 得到图片的宽，高
+        int h = bitmap.getHeight();
+        int cropWidth = w >= h ? h : w;// 裁切后所取的正方形区域边长
+        cropWidth /= 2;
+        return Bitmap.createBitmap(bitmap, x-150, 0, cropWidth, h, null, false);
+//        return Bitmap.createBitmap(bitmap, w/3, h/1.5f, cropWidth, cropHeight, null, false);
+    }
 }

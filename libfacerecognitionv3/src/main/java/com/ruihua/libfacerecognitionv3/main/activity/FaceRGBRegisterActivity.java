@@ -150,6 +150,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
         FaceManager.getManager().faceStartRGBRegister(this, userId, username, mPreviewView, new IFaceRegister() {
             @Override
             public void registerResult(int code, String msg) {
+
                 if (code == CODE_SUCCESS) {
                     Log.e("Face", "registerResult path: "+msg );
                     //上传至服务器，删除本地照片
@@ -159,6 +160,8 @@ public class FaceRGBRegisterActivity extends BaseActivity {
                         setResult(RESULT_OK, intent);
                         FaceRGBRegisterActivity.this.finish();
                     });
+                }else {
+                    displayTip(msg);
                 }
             }
         });
@@ -284,14 +287,13 @@ public class FaceRGBRegisterActivity extends BaseActivity {
             clearTip();
             return;
         }
-
         int liveType = SingleBaseConfig.getBaseConfig().getType();
         // 无活体
         if (Integer.valueOf(liveType) == 1) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mTrackText.setVisibility(View.GONE);
+                    mTrackText.setVisibility(View.VISIBLE);
                     mDetectText.setText("人脸采集成功");
                 }
             });
@@ -303,7 +305,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mTrackText.setVisibility(View.GONE);
+                    mTrackText.setVisibility(View.VISIBLE);
                     mDetectText.setText("活体检测判断中...");
                 }
             });
@@ -345,12 +347,11 @@ public class FaceRGBRegisterActivity extends BaseActivity {
 
 
     private void clearTip() {
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mDetectText.setText("未检测到人脸");
-                mTrackText.setVisibility(View.GONE);
+                mTrackText.setVisibility(View.VISIBLE);
             }
         });
 
@@ -358,11 +359,11 @@ public class FaceRGBRegisterActivity extends BaseActivity {
 
 
     private void displayTip(final String status) {
-
+Log.i("faceddddd","status    "+status);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mTrackText.setVisibility(View.GONE);
+                mTrackText.setVisibility(View.VISIBLE);
                 mDetectText.setText(status);
             }
         });
@@ -469,7 +470,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
                                 setResult(RESULT_OK, intent);
                                 FaceRGBRegisterActivity.this.finish();
                             }
-                        }, 1000);
+                        }, 3000);
 
                     }
                 });
@@ -509,7 +510,6 @@ public class FaceRGBRegisterActivity extends BaseActivity {
         // 若人脸小于屏幕三分一，则提示“人脸离手机太远，请调整与手机的距离”
         float ratio = (float) faceInfo.width / (float) bitMapHeight;
         if (ratio > 0.6) {
-
             displayTip("人脸离屏幕太近，请调整与屏幕的距离");
             return false;
         } else if (ratio < 0.2) {
@@ -532,4 +532,5 @@ public class FaceRGBRegisterActivity extends BaseActivity {
 
         return true;
     }
+
 }

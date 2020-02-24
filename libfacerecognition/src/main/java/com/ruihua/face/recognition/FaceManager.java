@@ -497,7 +497,7 @@ public class FaceManager {
         // 可以通过 camera.getParameters().getSupportedPreviewSizes()查看支持列表。
         cameraImageSource.getCameraControl().setPreferredPreviewSize(640, 480);
         // 设置最小人脸，该值越小，检测距离越远，该值越大，检测性能越好。范围为80-200
-        FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(100);
+        FaceSDKManager.getInstance().getFaceDetector().setMinFaceSize(50);
         // 设置预览
         cameraImageSource.setPreviewView(previewView);
         // 设置图片源

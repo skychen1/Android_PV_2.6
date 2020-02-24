@@ -220,7 +220,6 @@ public class ScanService extends Service {
 	   }
 	   if (mDeviceSizeList != null && mListDevices != null &&
 		 (mDeviceSizeList.size() == mListDevices.size())) {
-		//	   if (mDeviceSizeList.size() == mListDevices.size()) {
 		mDoorStatusType = true;
 		mListDevices.clear();
 		mEthDevices.clear();

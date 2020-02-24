@@ -340,7 +340,7 @@ public class TimeSelectorDialog extends Dialog {
             public void onClick(View v) {
                 if (isShowing()) {
                     selectTime = showTime(isShowtype);
-                    dateListener.onReturnDate(selectTime, year, month, day, hour,
+                    dateListener.onReturnDate(selectTime+":00", year, month, day, hour,
                             minute, isShowtype, mToTimestamp);
                     if (isconfirmCancelable) {
                         dismiss();

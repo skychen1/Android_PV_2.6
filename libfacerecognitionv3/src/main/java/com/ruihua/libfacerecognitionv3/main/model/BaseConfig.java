@@ -27,7 +27,7 @@ public class BaseConfig {
     // 默认为max。分为"max"、"first"、"none"三个方式，分别是最大人脸、第一个追踪到的人脸，和不检测人脸
     private String trackType = "max";
     // 默认为80px。可传入大于50px的数值，小于此大小的人脸不予检测
-    private int minimumFace = 60;
+    private int minimumFace = 50;
     // 模糊度设置，默认0.5。取值范围[0~1]，0是最清晰，1是最模糊
     private float blur = 0.5f;
     // 光照设置，默认40.取值范围[0~255], 数值越大，光线越强

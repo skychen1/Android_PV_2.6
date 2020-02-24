@@ -273,10 +273,10 @@ public class LoginUtils {
             if (mLightTimeCount!=null){
                 mLightTimeCount.cancel();
             }
-            MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
+            if (!UIUtils.isFastDoubleClick()){
+                MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
+            }
             Intent intent = new Intent(activity, HomeActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             activity.startActivity(intent);
             if (callback != null){
                 callback.onMenu(true);
@@ -437,7 +437,7 @@ public class LoginUtils {
             LogUtils.i("Login", "apkUri " + Uri.fromFile(file));
         }
         mContext.startActivity(intent);
-        android.os.Process.killProcess(android.os.Process.myPid());
+//        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     /* 定义一个倒计时的内部类 */

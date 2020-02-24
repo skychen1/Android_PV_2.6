@@ -131,7 +131,7 @@ public class FaceRGBCloseDebugSearchActivity extends BaseActivity implements Vie
     private void startTestCloseDebugRegisterFunction() {
         // TODO ： 临时放置
         CameraPreviewManager.getInstance().setCameraFacing(CameraPreviewManager.CAMERA_FACING_FRONT);
-        CameraPreviewManager.getInstance().setDisplayOrientation(CameraPreviewManager.ORIENTATION_HORIZONTAL);
+        CameraPreviewManager.getInstance().setDisplayOrientation(CameraPreviewManager.ORIENTATION_PORTRAIT);
         CameraPreviewManager.getInstance().startPreview(this, mAutoCameraPreviewView,
                 PREFER_WIDTH, PERFER_HEIGH, new CameraDataCallback() {
                     @Override
