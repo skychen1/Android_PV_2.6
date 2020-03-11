@@ -165,7 +165,7 @@ public class SplashActivity extends FragmentActivity {
                 //		   if ( FaceManager.getManager().hasActivation(SplashActivity.this)) {
                 //检测设备是否激活授权码
                 //启动页初始化人脸识别sdk
-                new Thread(() -> FaceManager.getManager().init(SplashActivity.this, "", Constants.FACE_GROUP, false, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
+                new Thread(() -> FaceManager.getManager().init(SplashActivity.this, "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
                     @Override
                     public void initLicenseSuccess() {
                         //激活成功

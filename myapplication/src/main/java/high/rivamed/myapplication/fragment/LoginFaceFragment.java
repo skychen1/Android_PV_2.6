@@ -228,6 +228,7 @@ public class LoginFaceFragment extends SimpleFragment {
                         if (count > 0) {
                             //可以开启识别
                             previewView = new AutoTexturePreviewView(getActivity());
+                            previewView.setScaleX(-1);
                             previewView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                             relativeLayout.addView(previewView);
                             FaceManager.getManager().initShowFrame(textureView);

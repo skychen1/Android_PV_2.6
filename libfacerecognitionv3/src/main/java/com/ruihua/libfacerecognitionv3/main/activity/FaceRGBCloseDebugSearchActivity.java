@@ -112,7 +112,7 @@ public class FaceRGBCloseDebugSearchActivity extends BaseActivity implements Vie
         // 单目摄像头RGB 图像预览
         mAutoCameraPreviewView = findViewById(R.id.auto_camera_preview_view);
         mAutoCameraPreviewView.setVisibility(View.VISIBLE);
-
+        mAutoCameraPreviewView.setScaleX(-1);
         mDetectText = findViewById(R.id.detect_text);
         mDetectImage = findViewById(R.id.detect_reg_image_item);
         mTrackText = findViewById(R.id.track_txt);

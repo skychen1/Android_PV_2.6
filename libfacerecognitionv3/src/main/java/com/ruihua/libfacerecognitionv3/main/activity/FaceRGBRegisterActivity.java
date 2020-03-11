@@ -102,6 +102,7 @@ public class FaceRGBRegisterActivity extends BaseActivity {
 //        setButton.setOnClickListener(this);
         // RGB预览
         mPreviewView = findViewById(R.id.auto_camera_preview_view);
+        mPreviewView.setScaleX(-1);
 //        testImageview = findViewById(R.id.test_imgView);
         // 图像预览
         mTrackText = findViewById(R.id.track_txt);
