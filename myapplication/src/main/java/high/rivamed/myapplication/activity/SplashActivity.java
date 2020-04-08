@@ -70,7 +70,7 @@ public class SplashActivity extends FragmentActivity {
         onWindowFocusChanged(true);
         setContentView(R.layout.activity_splash_layout);
           viewById = findViewById(R.id.rl);
-        Log.e("版本号：", UIUtils.getVersionName(this));
+        Log.e("版本号：", UIUtils.getVersionName(this)+"_C");
         FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
         initData();
     }

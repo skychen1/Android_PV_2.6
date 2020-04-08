@@ -81,6 +81,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_046;
 import static high.rivamed.myapplication.cont.Constants.FINGER_TYPE;
+import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.IC_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
@@ -325,7 +326,7 @@ public class LoginActivity extends SimpleActivity {
 	mOnStart = true;
 	mPushFormOrders.clear();
 	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V " +
-				UIUtils.getVersionName(this));
+				UIUtils.getVersionName(this)+"_C");
 
 	initTab();
 	initlistener();
@@ -567,6 +568,7 @@ public class LoginActivity extends SimpleActivity {
 	FingerLoginDto.UserFeatureInfoBean bean = new FingerLoginDto.UserFeatureInfoBean();
 	bean.setData(fingerFea);
 	data.setUserFeatureInfo(bean);
+	data.setDeviceType(FINGER_VERSION);//3.0柜子需要传2   2.1传1
 	data.setThingId(thingCode);
 	data.setSystemType(SYSTEMTYPE);
 	data.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));

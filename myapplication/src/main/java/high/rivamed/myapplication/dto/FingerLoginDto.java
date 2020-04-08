@@ -16,6 +16,15 @@ public class FingerLoginDto {
     private String thingId;
     private String deptId;
     private String  systemType;
+    private String  deviceType;
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
 
     public String getSystemType() {
         return systemType;

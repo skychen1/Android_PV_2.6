@@ -45,6 +45,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.OneFingerDialog;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
+import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -484,6 +485,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   bean.setData(list.get(i));
 	   userFeatureInfos.add(bean);
 	}
+	dto.setDeviceType(FINGER_VERSION);
 	dto.setUserFeatureInfos(userFeatureInfos);
 	NetRequest.getInstance().registerFinger(mGson.toJson(dto), this, new BaseResult() {
 	   @Override

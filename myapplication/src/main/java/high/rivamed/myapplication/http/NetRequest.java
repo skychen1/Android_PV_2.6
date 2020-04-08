@@ -37,6 +37,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1000;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1001;
 import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
+import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -289,6 +290,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_HOME_BOXSIZE;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
+	map.put("deviceType", FINGER_VERSION);//3.0柜子2，普通柜子是1
 	GetRequest(urls, map, tag, netResult);
    }
 

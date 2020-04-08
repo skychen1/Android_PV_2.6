@@ -11,13 +11,21 @@ import java.util.List;
 public class RegisterFingerDto {
 
     private List<UserFeatureInfosBean> userFeatureInfos = new ArrayList<>();
-
+    private String  deviceType;
     public List<UserFeatureInfosBean> getUserFeatureInfos() {
         return userFeatureInfos;
     }
 
     public void setUserFeatureInfos(List<UserFeatureInfosBean> userFeatureInfos) {
         this.userFeatureInfos = userFeatureInfos;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public static class UserFeatureInfosBean {
