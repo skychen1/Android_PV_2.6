@@ -265,6 +265,8 @@ public class FaceManager {
                     FaceSDKManager.getInstance().initModel(context, listener);
                 } else {
                     FaceSDKManager.initStatus = SDK_INIT_FAIL;
+                    PreferencesUtil.putString("activate_offline_key", "");
+                    PreferencesUtil.putString("activate_online_key", "");
                     listener.initLicenseFail(code, response);
                 }
             }
@@ -297,6 +299,8 @@ public class FaceManager {
                     FaceSDKManager.getInstance().initModel(context, listener);
                 } else {
                     FaceSDKManager.initStatus = SDK_INIT_FAIL;
+                    PreferencesUtil.putString("activate_offline_key", "");
+                    PreferencesUtil.putString("activate_online_key", "");
                     listener.initLicenseFail(code, response);
                 }
             }

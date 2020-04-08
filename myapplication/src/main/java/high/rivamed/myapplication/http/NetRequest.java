@@ -40,6 +40,7 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -914,6 +915,59 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_OPERATE_STORAGECST_COUNT;
 	PostTokenRequest(urls, json, tag, netResult);
    }
+
+   /**
+    * 开始录像（正常）
+    forcein 强开，opendoor  正常开门
+    * @param deviceId
+    * @param tag
+    * @param netResult
+    */
+   public void startRecordVideo(String deviceId, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_RECORDVIDEO;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingType", "001");//高值柜
+	map.put("sceneCode", "001");//高值柜
+	map.put("operateType", "opendoor");
+	map.put("departName", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
+	map.put("departCode",  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	map.put("thingId", deviceId);
+	PostRequest(urls, mGson.toJson(map), tag, netResult);
+   }
+   /**
+    * 开始录像（强开）
+    forcein 强开，opendoor  正常开门
+    * @param deviceId
+    * @param tag
+    * @param netResult
+    */
+   public void startForceRecordVideo(String deviceId, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_RECORDVIDEO;
+	Map<String, String> map = new HashMap<>();
+	map.put("thingType", "001");//高值柜
+	map.put("sceneCode", "001");//高值柜
+	map.put("operateType", "forcein");
+	map.put("departName", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
+	map.put("departCode",  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	map.put("thingId", deviceId);
+	PostRequest(urls, mGson.toJson(map), tag, netResult);
+   }
+
+   /**
+    * 结束录像
+    * @param businessNo
+    * @param tag
+    * @param netResult
+    */
+   public void stopRecordVideo(String  businessNo, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_STOPVIDEO;
+	Map<String, String> map = new HashMap<>();
+	map.put("sceneCode", "001");//高值柜
+	map.put("businessNo", businessNo);
+	map.put("thingType", "001");
+	PostRequest(urls, mGson.toJson(map), tag, netResult);
+   }
+
    private class MyCallBack extends StringCallback {
 
 	private String    url;

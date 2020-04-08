@@ -18,6 +18,7 @@ import com.ruihua.reader.bean.EpcInfo;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,9 @@ import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.ConfigBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.bean.StartVideoBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
+import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DevicesUtils;
@@ -75,6 +78,7 @@ public class AllDeviceCallBack {
    public static        List<String>      mReaderDeviceId;
    public static        List<String>      mBomDoorDeviceIdList;
   public static Gson                      mGson;
+   private static Map<String, String> sMap;
 
    public static AllDeviceCallBack getInstance() {
 	//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
@@ -89,7 +93,7 @@ public class AllDeviceCallBack {
 		   mEthDeviceIdBack = new ArrayList<>();
 		   mEthDeviceIdBack3 = new ArrayList<>();
 		   mEthDeviceIdBack2 = new ArrayList<>();
-
+		   sMap = new HashMap<>();
 		}
 	   }
 	}
@@ -378,6 +382,7 @@ public class AllDeviceCallBack {
 		if (isSuccess) {
 		   Log.i("outtccc", "柜门已开    " );
 		   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId+which));
+		   startVideo("opendoor",deviceId);
 		}
 		if (mEthDeviceIdBack.size() > 0) {
 		   if (!getStringType(mEthDeviceIdBack,deviceId+which)){
@@ -399,11 +404,13 @@ public class AllDeviceCallBack {
 		EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId+which));
 		LogUtils.i("onDoorState", "onDoorClosed  " + mEthDeviceIdBack2.size() + "   " + mEthDeviceIdBack.size());
 		if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
+		   startVideo("forcein",deviceId);
 		   startScan(deviceId,which);
 		} else {//正常开门
 		   for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
 			if (mEthDeviceIdBack2.get(i).equals(deviceId+which)) {
 			   mEthDeviceIdBack2.remove(i);
+			   stopVideo(deviceId);
 			}
 		   }
 		}
@@ -462,7 +469,66 @@ public class AllDeviceCallBack {
 	   }
 	});
    }
+   private void stopVideo(String deviceIndentify) {
+	String number=null;
+	for (Map.Entry<String, String> entry : sMap.entrySet()) {
+	   if (entry.getKey().equals(deviceIndentify)){
+		number = entry.getValue();
+	   }
+	}
+	if (number!=null){
+	   NetRequest.getInstance().stopRecordVideo(number,this,new BaseResult(){
+		@Override
+		public void onSucceed(String result) {
+		   Log.i("videod"," sMap1       "+sMap.size());
+		   sMap.entrySet().remove(deviceIndentify);
+		   Log.i("videod"," sMap2       "+sMap.size());
+		}
 
+		@Override
+		public void onError(String result) {
+
+		}
+	   });
+	}
+
+   }
+
+   /**
+    * 开始录像  opendoor,正常开门  ； forcein 强开
+    */
+   private void startVideo(String type,String deviceId) {
+	BoxIdBean first = LitePal.where("device_id = ?", deviceId).findFirst(BoxIdBean.class);
+	String box_id = first.getBox_id();
+	if (type.equals("opendoor")){
+	   NetRequest.getInstance().startRecordVideo(box_id,this,new BaseResult(){
+		@Override
+		public void onSucceed(String result) {
+		   StartVideoBean startVideoBean = mGson.fromJson(result, StartVideoBean.class);
+		   if (startVideoBean.isOperateSuccess()){
+			sMap.put(deviceId,startVideoBean.getBusinessNo());
+		   }
+		}
+
+		@Override
+		public void onError(String result) {
+
+		}
+	   });
+	}else {
+	   NetRequest.getInstance().startForceRecordVideo(box_id, this, new BaseResult() {
+		@Override
+		public void onSucceed(String result) {
+
+		}
+
+		@Override
+		public void onError(String result) {
+
+		}
+	   });
+	}
+   }
    /**
     * 初始化罗丹贝尔回调
     */

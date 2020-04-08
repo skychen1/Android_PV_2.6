@@ -2,10 +2,13 @@ package high.rivamed.myapplication.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.baidu.idl.main.facesdk.FaceAuth;
+import com.baidu.idl.main.facesdk.utils.PreferencesUtil;
 import com.ruihua.libfacerecognitionv3.main.activity.FaceRGBCloseDebugSearchActivity;
 import com.ruihua.libfacerecognitionv3.main.camera.CameraPreviewManager;
 import com.ruihua.libfacerecognitionv3.main.listener.SimpleSdkInitListener;
@@ -46,7 +49,8 @@ public class RegisteFaceFrag extends SimpleFragment {
     TextView fragmentBtnInit;
     @BindView(R.id.switch_btn)
     Switch switchBtn;
-
+    @BindView(R.id.text)
+    TextView text;
     private boolean hasModelInit;
     public static RegisteFaceFrag newInstance() {
         Bundle args = new Bundle();
@@ -66,6 +70,11 @@ public class RegisteFaceFrag extends SimpleFragment {
     @Override
     public void initDataAndEvent(Bundle savedInstanceState) {
         hasModelInit = FaceManager.getManager().hasModelInit();
+        final String licenseOfflineKey = PreferencesUtil.getString("activate_offline_key", "");
+        final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
+        text.setText("设备硬件指纹： " + new FaceAuth().getDeviceId(mContext) + "\n激活码：" + licenseOfflineKey + "\n" + licenseOnlineKey);
+        Log.i("rreADE", "licenseOfflineKey:   " + licenseOfflineKey);
+        Log.i("rreADE","licenseOnlineKey:   "+licenseOnlineKey);
     }
 
 

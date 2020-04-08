@@ -139,4 +139,7 @@ public interface NetApi {
 
 
     String URL_LOGIN_CSTMSG = "/consumables/inventory/rmApi/findWaitInStoreCst";//查询待入库信息信息
+
+    String URL_RECORDVIDEO = "/video/video/startRecordVideo";//开启录像
+    String URL_STOPVIDEO = "/video/video/stopRecordVideo";//结束录像
 }
