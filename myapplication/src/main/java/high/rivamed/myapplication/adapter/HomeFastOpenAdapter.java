@@ -15,9 +15,12 @@ import java.util.List;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.BoxSizeBean;
 import high.rivamed.myapplication.bean.Event;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
+
+import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -62,7 +65,11 @@ public class HomeFastOpenAdapter
 		   String deviceId = item.getDeviceId();
 		   Log.i("deviceId", "deviceId    " + deviceId + "    " + item.getDeviceName());
 		   if (!UIUtils.isFastDoubleClick3()) {
-			EventBusUtils.post(new Event.SelectOption(deviceId, id));
+			if (id == R.id.content_rb_rk && UIUtils.getConfigType(mContext, CONFIG_058)) {
+			   DialogUtils.showInBoxBillDialog(mContext, deviceId);
+			} else {
+			   EventBusUtils.post(new Event.SelectOption(deviceId, id));
+			}
 		   } else {
 			ToastUtils.showShortToast("请勿频繁操作！");
 		   }

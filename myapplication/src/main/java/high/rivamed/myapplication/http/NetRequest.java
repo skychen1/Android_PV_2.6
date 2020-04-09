@@ -15,6 +15,7 @@ import org.litepal.LitePal;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import high.rivamed.myapplication.bean.Event;
@@ -969,7 +970,27 @@ public class NetRequest {
 	map.put("thingType", "001");
 	PostRequest(urls, mGson.toJson(map), tag, netResult);
    }
-
+   /**
+    * 查询入库单
+    */
+   public void putInboxOrderDate(int page, int rows,String text,Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_OPERATE_STORAGECST_ORDER;
+	Map<String, String> map = new HashMap<>();
+	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+	map.put("filterStr", text);
+	map.put("pageSize", rows + "");
+	map.put("pageNo", page + "");
+	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
+   }
+   /**
+    * 修改入库单状态
+    */
+   public void putOrderStatus(List<String> orderids, Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_ISORDER_STATUS;
+	Map<String, List<String>> map = new HashMap<>();
+	map.put("orderIds", orderids);
+	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
+   }
    private class MyCallBack extends StringCallback {
 
 	private String    url;

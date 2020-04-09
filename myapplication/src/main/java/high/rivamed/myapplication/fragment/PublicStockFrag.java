@@ -212,14 +212,11 @@ public class PublicStockFrag extends SimpleFragment {
 		   @Override
 		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 			mTrim = charSequence.toString().trim();
-			if (mTrim.length()>0) {
-			   LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
-			}
 		   }
 
 		   @Override
 		   public void afterTextChanged(Editable editable) {
-
+			LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 		   }
 		});
 		mStockLeftRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -282,14 +279,11 @@ public class PublicStockFrag extends SimpleFragment {
 		   @Override
 		   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 			mTrim = charSequence.toString().trim();
-			if (mTrim.length()>0) {
-			   loadStockRightDate(mDeviceCode, mTrim);
-			}
 		   }
 
 		   @Override
 		   public void afterTextChanged(Editable editable) {
-
+			loadStockRightDate(mDeviceCode, mTrim);
 		   }
 		});
 	   } else {
@@ -427,8 +421,7 @@ public class PublicStockFrag extends SimpleFragment {
     * @param editString
     */
    private void LoadMiddleRgDate(String mDeviceCode, int mStopFlag, String editString) {
-	mInventoryVos.clear();
-	mDownAdapter.notifyDataSetChanged();
+
 	LogUtils.i(TAG, "mDeviceCodesss  " + mDeviceCode);
 	NetRequest.getInstance()
 		.getStockMiddleDetails(editString, mDeviceCode, mStopFlag, mContext, new BaseResult() {
@@ -437,6 +430,7 @@ public class PublicStockFrag extends SimpleFragment {
 			LogUtils.i(TAG, "LoadMiddleRgDate   " + result);
 			mInventoryDto = mGson.fromJson(result, InventoryDto.class);
 			List<InventoryVo> inventoryVos = mInventoryDto.getInventoryVos();
+			mInventoryVos.clear();
 			mInventoryVos.addAll(inventoryVos);
 			mDownAdapter.notifyDataSetChanged();
 

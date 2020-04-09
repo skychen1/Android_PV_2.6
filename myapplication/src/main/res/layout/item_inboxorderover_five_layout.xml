@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/seven_ll"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:gravity="center_vertical"
+			  android:orientation="horizontal">
+	<View
+		style="@style/view_line_style"/>
+	<TextView
+		android:id="@+id/seven_one"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="5"
+		/>
+
+	<View
+		style="@style/view_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_two"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		/>
+
+	<View
+		style="@style/view_line_style"/>
+	<TextView
+		android:id="@+id/seven_three"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		/>
+
+
+	<View
+		style="@style/view_line_style"/>
+
+
+	<TextView
+		android:id="@+id/seven_four"
+		style="@style/text_title_content_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		/>
+	<View
+		style="@style/view_line_style"/>
+
+	<!--<TextView-->
+		<!--android:id="@+id/seven_five"-->
+		<!--style="@style/text_title_content_style"-->
+		<!--android:layout_width="0dp"-->
+		<!--android:layout_weight="3"-->
+		<!--/>-->
+<LinearLayout
+	android:id="@+id/seven_five_ll"
+	android:layout_width="0dp"
+	android:layout_height="wrap_content"
+	android:layout_weight="3"
+	android:orientation="horizontal"
+	android:gravity="center">
+	<Switch
+		android:id="@+id/seven_five"
+		android:layout_width="wrap_content"
+		android:textColor="@color/bg_c"
+		android:layout_height="wrap_content"
+		android:textOff="是"
+		android:textOn="否"
+		android:track="@drawable/switch_selector_green"
+		android:thumb="@drawable/switch_white_circle_selector"
+		/>
+</LinearLayout>
+
+	<View
+		style="@style/view_line_style"/>
+
+
+</LinearLayout>

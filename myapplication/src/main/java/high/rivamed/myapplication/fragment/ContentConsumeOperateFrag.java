@@ -71,6 +71,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
@@ -165,7 +166,21 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       String                                           mYesClossId;
    private       boolean                                          mIsClick;
    private       InventoryDto                                     mFastInOutDto;
+   private       ArrayList<String>             mOrderIds;
 
+   /**
+    * 整单入库的单号
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onOrderVosEvent(Event.OrderVosEvent event) {
+	if (event.vos != null) {
+	   //	   mDto.setOrderIds(event.vos);
+	   mOrderIds = event.vos;
+	   doSelectOption(event.mDeviceId, R.id.content_rb_rk);
+	}
+   }
    /**
     * 门锁的状态检测回调
     *
@@ -379,7 +394,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   });
 	   mContentRbRk.setOnClickListener(view -> {
 		if (!UIUtils.isFastDoubleClick3()) {
-		   doSelectOption(deviceId, R.id.content_rb_rk);
+		   if (UIUtils.getConfigType(mContext, CONFIG_058)) {
+			DialogUtils.showInBoxBillDialog(mContext, deviceId);
+		   } else {
+			doSelectOption(deviceId, R.id.content_rb_rk);
+		   }
 		} else {
 		   ToastUtils.showShortToast("请勿频繁操作！");
 		}
@@ -521,11 +540,23 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 			   .putExtra("mEthId", mEthId));
 	}
 	//正常的领用或者其他正常操作
-	else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 2 || mRbKey == 9 || mRbKey == 11 ||
+	else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 9 || mRbKey == 11 ||
 		   mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
 	   mContext.startActivity(
 		   new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("mEthId", mEthId));
+	}else if (mRbKey == 2) {//入库要区分是否有入库单
+	   if (UIUtils.getConfigType(mContext, CONFIG_058)) {
+		mContext.startActivity(
+			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
+				.putExtra("mEthId", mEthId)
+				.putStringArrayListExtra("orderids", mOrderIds));
+	   }else {
+		mContext.startActivity(
+			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
+				.putExtra("mEthId", mEthId));
+	   }
+
 	}
    }
 

@@ -35,6 +35,7 @@ import high.rivamed.myapplication.bean.OrderSheetBean;
 import high.rivamed.myapplication.bean.UnRegistBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.dto.InventoryDto;
+import high.rivamed.myapplication.dto.vo.OrderVos;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.timeutil.DateListener;
@@ -43,7 +44,9 @@ import high.rivamed.myapplication.timeutil.TimeSelectorDialog;
 import high.rivamed.myapplication.views.BindIdCardDialog;
 import high.rivamed.myapplication.views.EmergencyTwoDialog;
 import high.rivamed.myapplication.views.EpcTestDialog;
+import high.rivamed.myapplication.views.InBoxBillDialog;
 import high.rivamed.myapplication.views.InBoxCountDialog;
+import high.rivamed.myapplication.views.InBoxOrderOverDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
 import high.rivamed.myapplication.views.LookUpDetailedListDialog;
@@ -720,7 +723,24 @@ public class DialogUtils {
         }
         return builder;
     }
+    /**
+     * 入库单据
+     */
+    public static InBoxBillDialog.Builder showInBoxBillDialog(Context context, String deviceId) {
+        InBoxBillDialog.Builder builder = new InBoxBillDialog.Builder(context,deviceId);
+        builder.create().show();
 
+        return builder;
+    }
+    /**
+     * 入库单据结束后的展示
+     */
+    public static InBoxOrderOverDialog.Builder showInBoxOrderOverDialog(Context context, List<OrderVos> vos) {
+        InBoxOrderOverDialog.Builder builder = new InBoxOrderOverDialog.Builder(context,vos);
+        builder.create().show();
+
+        return builder;
+    }
     /**
      * 雷达
      */

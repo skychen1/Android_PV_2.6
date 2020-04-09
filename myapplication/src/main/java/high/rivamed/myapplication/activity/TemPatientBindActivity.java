@@ -273,16 +273,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		Log.i("FFASD", "charSequence   发发发");
 		mTrim = charSequence.toString().trim();
-		if (mTrim.length()>0){
-		   mAllPage = 1;
-		   patientInfos.clear();
-		   loadBingDate(mTrim, mTrims);
-		}
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable editable) {
-
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim, mTrims);
 	   }
 	});
 
@@ -296,16 +293,13 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		Log.i("FFASD", "onTextChanged");
 		mTrims = s.toString().trim();
-		if (mTrims.length()>0){
-		   mAllPage = 1;
-		   patientInfos.clear();
-		   loadBingDate(mTrim, mTrims);
-		}
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-
+		mAllPage = 1;
+		patientInfos.clear();
+		loadBingDate(mTrim, mTrims);
 	   }
 	});
    }

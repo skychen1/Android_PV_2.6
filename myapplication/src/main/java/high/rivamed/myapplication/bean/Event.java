@@ -23,6 +23,20 @@ import high.rivamed.myapplication.dto.vo.InventoryVo;
  */
 
 public class Event {
+
+   /**
+    * 整单入库的
+    */
+   public static class OrderVosEvent {
+
+	public ArrayList<String> vos;
+	public String          mDeviceId;
+
+	public OrderVosEvent(ArrayList<String> vos, String deviceId) {
+	   this.vos = vos;
+	   this.mDeviceId = deviceId;
+	}
+   }
    /**
     * 触发重新连接reader
     */

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/seven_ll"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="horizontal">
+
+	<LinearLayout
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="2"
+		android:gravity="center">
+
+		<CheckBox
+			android:id="@+id/seven_one"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:button="@drawable/checkbox_dialog_sel"
+			android:gravity="center"
+			android:paddingLeft="@dimen/x10"
+			android:text="全选"
+			android:textColor="@color/bg_f"
+			android:textSize="@dimen/textsize_17"/>
+	</LinearLayout>
+
+	<View
+		style="@style/view_title_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_two"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="5"
+		android:text="单据号"
+		/>
+
+	<View
+		style="@style/view_title_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_three"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="4"
+		android:text="单据下发时间"
+		/>
+
+	<View
+		style="@style/view_title_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_four"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		android:text="单据耗材数量"
+		/>
+
+	<View
+		style="@style/view_title_line_style"/>
+
+	<TextView
+		android:id="@+id/seven_five"
+		style="@style/text_title_style"
+		android:layout_width="0dp"
+		android:layout_weight="3"
+		android:text="累计入库耗材数量"
+		/>
+
+
+</LinearLayout>

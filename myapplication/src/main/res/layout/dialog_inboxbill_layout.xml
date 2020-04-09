@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_dialog_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/dialog_bg"
+    android:orientation="vertical"
+	>
+<LinearLayout
+    android:id="@+id/search_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/x40"
+	android:focusable="true"
+	android:focusableInTouchMode="true"
+    android:paddingLeft="@dimen/x40">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询单号："
+		android:textSize="@dimen/textsize_17"/>
+	<EditText
+		android:id="@+id/search_et"
+		android:layout_width="@dimen/x450"
+		android:layout_height="match_parent"
+		android:background="@drawable/bg_search"
+		android:drawableLeft="@mipmap/runwate_search"
+		android:drawablePadding="@dimen/x10"
+		android:hint="请输入单号"
+		android:imeOptions="actionSearch"
+		android:paddingLeft="@dimen/x30"
+		android:singleLine="true"
+		android:textColorHint="@color/text_color_9"
+		android:textSize="@dimen/textsize_15"
+		/>
+	<TextView
+		android:id="@+id/search_btn"
+		style="@style/btn_style_sel"
+		android:text="查询"
+		/>
+
+</LinearLayout>
+
+    <include
+        android:id="@+id/public_ll"
+        layout="@layout/include_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y580"
+        android:layout_marginLeft="@dimen/x40"
+        android:layout_marginRight="@dimen/x40"
+        android:layout_marginTop="@dimen/x20"
+        android:layout_below="@+id/search_ll"
+         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_below="@+id/public_ll"
+        android:background="@color/bg_e" />
+    <!--<TextView-->
+        <!--android:id="@+id/dialog_sure"-->
+        <!--android:layout_width="@dimen/x400"-->
+        <!--android:layout_height="@dimen/x70"-->
+        <!--android:layout_below="@+id/public_ll"-->
+        <!--android:layout_marginTop="@dimen/y40"-->
+        <!--android:layout_marginBottom="@dimen/y40"-->
+        <!--android:background="@drawable/bg_btn_gray_sel2"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:text="确定"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/bg_f"-->
+        <!--android:textSize="@dimen/textsize_18"-->
+        <!--/>-->
+    <LinearLayout
+        android:id="@+id/activity_down_btn_seven_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_f"
+        android:gravity="center"
+		android:layout_marginTop="@dimen/y40"
+		android:layout_marginBottom="@dimen/y40"
+        android:orientation="horizontal"
+		android:layout_below="@+id/public_ll"
+       >
+
+        <TextView
+            android:id="@+id/dialog_left"
+			style="@style/btn_style_sel_nor"
+			android:layout_width="@dimen/x200"
+			android:layout_height="@dimen/y70"
+            android:text="取消"
+             />
+
+        <TextView
+            android:id="@+id/dialog_sure"
+			style="@style/btn_style_sel"
+			android:layout_width="@dimen/x200"
+			android:layout_height="@dimen/y70"
+            android:layout_marginLeft="@dimen/x60"
+            android:text="确定"
+           />
+    </LinearLayout>
+
+</RelativeLayout>

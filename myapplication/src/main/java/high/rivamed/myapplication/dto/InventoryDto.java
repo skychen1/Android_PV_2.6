@@ -11,6 +11,7 @@ import high.rivamed.myapplication.dto.vo.CstExpirationVo;
 import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryGroupVos;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
+import high.rivamed.myapplication.dto.vo.OrderVos;
 
 /**
  * 描述: TODO<br/>
@@ -26,6 +27,7 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     int id;
     private Inventory               inventory;
     private List<Inventory>         inventorys;
+   private List<String>            orderIds;
     private List<DeviceInventoryVo> deviceInventoryVos;
     private List<InventoryVo>       inventoryVos = new ArrayList<>();
     private List<InventoryVo>       inInventoryVos;
@@ -71,21 +73,22 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     private String  deptName;//科室
     private String  operationBeginDateTime;
     private String  updateTime;
-    private String  deptId;//科室ID
-    private String  operatingRoomNo;//手术间ID
-    private String  idNo;//身份证
-    private String  sex;//性别
-    private String  tempPatientId;
-    private String  msg;
-    private boolean isCreate;
-    private String opFlg;
-    private String medicalId;
-    private String surgeryId;
-    private String hisPatientId        ;
-    private int totalCount;
-   private List<String> unNetMoreEpcs;
-   private List<String> epcs;
-   private List<String> deviceIds;
+    private String        deptId;//科室ID
+    private String        operatingRoomNo;//手术间ID
+    private String        idNo;//身份证
+    private String        sex;//性别
+    private String        tempPatientId;
+    private String        msg;
+    private boolean       isCreate;
+    private String        opFlg;
+    private String        medicalId;
+    private String        surgeryId;
+    private String        hisPatientId        ;
+    private int           totalCount;
+   private List<String>   unNetMoreEpcs;
+   private List<String>   epcs;
+   private List<String>   deviceIds;
+   private List<OrderVos> orderVos;
    /**
     * pageNo : 1
     * pageSize : 20
@@ -104,12 +107,28 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     * fuWai : false
     */
 
-    private int                    pageNo;
-   private int                     pageSize;
+    private int           pageNo;
+   private int            pageSize;
    private int                     inTypeCount;
    private int                     cstSum;
    private List<InventoryVo>       storageCstCountVo;
    private List<InventoryGroupVos> inventoryGroupVos;
+
+   public List<OrderVos> getOrderVos() {
+      return orderVos;
+   }
+
+   public void setOrderVos(List<OrderVos> orderVos) {
+      this.orderVos = orderVos;
+   }
+
+   public List<String> getOrderIds() {
+      return orderIds;
+   }
+
+   public void setOrderIds(List<String> orderIds) {
+      this.orderIds = orderIds;
+   }
 
    public List<InventoryGroupVos> getInventoryGroupVos() {
       return inventoryGroupVos;

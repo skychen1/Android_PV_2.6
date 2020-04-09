@@ -70,6 +70,17 @@
         <item name="android:background">@drawable/bg_btn_gray_sel</item>
 
     </style>
+	<!--按钮选择样式-->
+	<style name="btn_style_sel_nor">
+		<item name="android:layout_width">@dimen/x156</item>
+		<item name="android:layout_height">@dimen/x50</item>
+		<item name="android:textSize">@dimen/x28</item>
+		<item name="android:gravity">center</item>
+		<item name="android:layout_marginLeft">@dimen/x30</item>
+		<item name="android:textColor">@color/text_color_3</item>
+		<item name="android:background">@drawable/bg_btn_gray_sel_nor</item>
+
+	</style>
     <!--按钮选择样式-->
     <style name="btn_style_exception_sel">
         <item name="android:layout_width">wrap_content</item>
@@ -140,9 +151,9 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:textSize">@dimen/textsize_16</item>
-        <item name="android:paddingRight">@dimen/x32</item>
-        <item name="android:paddingLeft">@dimen/x32</item>
-        <item name="android:layout_marginLeft">@dimen/x20</item>
+		<item name="android:paddingRight">@dimen/x30</item>
+		<item name="android:paddingLeft">@dimen/x30</item>
+		<item name="android:layout_marginLeft">@dimen/x18</item>
         <item name="android:textColor">@color/selector_runwate_text</item>
 
     </style>

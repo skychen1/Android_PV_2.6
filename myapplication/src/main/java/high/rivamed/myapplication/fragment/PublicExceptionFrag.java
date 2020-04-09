@@ -369,11 +369,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-		if (!TextUtils.isEmpty(mSearchKey)) {
 		   //加载数据
 		   PAGE = 1;
 		   loadData();
-		}
 	   }
 	});
 
@@ -514,6 +512,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 		for (ExceptionRecordBean.RowsBean row : rows) {
 		   row.setSelected(false);
 		}
+		if (PAGE == 1) {
+		   showDealList.clear();
+		}
 		showDealList.addAll(rows);
 		hasNextPage = (rows.size() > SIZE - 1);
 		dealAdapter.notifyDataSetChanged();
@@ -540,6 +541,9 @@ public class PublicExceptionFrag extends SimpleFragment {
 		   public void onSucceed(String result) {
 			ExceptionRecordBean bean = mGson.fromJson(result, ExceptionRecordBean.class);
 			List<ExceptionRecordBean.RowsBean> rows = bean.getRows();
+			if (PAGE == 1) {
+			   showRecordList.clear();
+			}
 			showRecordList.addAll(rows);
 			hasNextPage = (rows.size() > SIZE - 1);
 			recordAdapter.notifyDataSetChanged();

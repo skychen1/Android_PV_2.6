@@ -142,4 +142,7 @@ public interface NetApi {
 
     String URL_RECORDVIDEO = "/video/video/startRecordVideo";//开启录像
     String URL_STOPVIDEO = "/video/video/stopRecordVideo";//结束录像
+
+    String URL_ISORDER_STATUS   = "/order/order/updateInStockOrderStatus";//整单入库确认是否改变单号状态
+    String URL_OPERATE_STORAGECST_ORDER  = "/order/order/findInStockOrder";//查入库单的数据
 }

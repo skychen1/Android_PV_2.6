@@ -188,15 +188,12 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 		mTrim = charSequence.toString().trim();
-		if (mTrim.length()>0){
-		   PAGE = 1;
-		   loadDate(mTrim,mStartTime,mEndTime);
-		}
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable editable) {
-
+		PAGE = 1;
+		loadDate(mTrim,mStartTime,mEndTime);
 	   }
 	});
 
@@ -275,15 +272,14 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
     * @param string
     */
    private void loadDate(String string,String startTime, String endTime) {
-	if (PAGE == 1) {
-	   mRows.clear();
-	   mNotesAdapter.notifyDataSetChanged();
-	}
+
 	NetRequest.getInstance().getFindPatientDate(string,startTime, endTime,PAGE, SIZE, _mActivity, new BaseResult() {
 	   @Override
 	   public void onSucceed(String result) {
 		TakeNotesBean takeNotesBean = mGson.fromJson(result, TakeNotesBean.class);
-		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();
+		List<TakeNotesBean.RowsBean> rows = takeNotesBean.getRows();if (PAGE == 1) {
+		   mRows.clear();
+		}
 		mRows.addAll(rows);
 		hasNextPage = (rows.size() > SIZE - 1);
 		mNotesAdapter.notifyDataSetChanged();
