@@ -98,7 +98,6 @@ public class SplashActivity extends FragmentActivity {
                 String urls = MAIN_URL + NetApi.URL_CONNECT;
                 Log.i("outtccc", "MAIN_URL     " + MAIN_URL + "  dfdfdfdfdf  ");
                 if (MAIN_URL != null) {
-
                     OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
                         @Override
                         public void onSuccess(Response<String> response) {

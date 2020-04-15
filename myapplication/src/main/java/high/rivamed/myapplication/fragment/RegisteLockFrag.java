@@ -34,7 +34,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegistLockAdapter;
-import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -110,8 +109,8 @@ public class RegisteLockFrag extends SimpleFragment {
 	WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 	if (wm != null) {
 	   mDm = new DisplayMetrics();
-	   wm.getDefaultDisplay().getMetrics(App.mDm);
-	   AppendLog("获取有效屏幕分辨率:X=" + App.mDm.widthPixels + ";Y=" + App.mDm.heightPixels);
+	   wm.getDefaultDisplay().getMetrics(mDm);
+	   AppendLog("获取有效屏幕分辨率:X=" + mDm.widthPixels + ";Y=" + mDm.heightPixels);
 	}
 
 	//	initCallBack();

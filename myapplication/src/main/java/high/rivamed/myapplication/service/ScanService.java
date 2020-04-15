@@ -371,7 +371,7 @@ public class ScanService extends Service {
 	if (scheduled == null) {
 	   scheduled = Executors.newScheduledThreadPool(1);
 	}
-	scheduled.scheduleAtFixedRate(mTask, 0, 15000, TimeUnit.MILLISECONDS);
+	scheduled.scheduleAtFixedRate(mTask, 0, 6000, TimeUnit.MILLISECONDS);
 
    }
 
@@ -381,6 +381,10 @@ public class ScanService extends Service {
 	if (mWorkReceiver != null) {
 	   unregisterReceiver(mWorkReceiver);
 	   mWorkReceiver = null;
+	}
+	if (scheduled!=null){
+	   mTask.cancel();
+	   scheduled.shutdown();
 	}
 	ReaderManager.getManager().unRegisterCallback();
 	FingerManager.getManager().unRegisterCallback();
