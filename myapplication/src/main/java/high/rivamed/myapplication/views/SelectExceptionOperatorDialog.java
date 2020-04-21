@@ -7,7 +7,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -132,12 +131,12 @@ public class SelectExceptionOperatorDialog extends Dialog {
 
 		@Override
 		public void afterTextChanged(Editable s) {
-		   if (!TextUtils.isEmpty(mSearchText)) {
+//		   if (!TextUtils.isEmpty(mSearchText)) {
 			//加载数据
 			PAGE = 1;
 			mRowsOperators.clear();
 			loadData();
-		   }
+//		   }
 		}
 	   });
 	   mSmartRefreshLayout.setEnableAutoLoadMore(true);
@@ -201,6 +200,9 @@ public class SelectExceptionOperatorDialog extends Dialog {
 											ExceptionOperatorBean.class);
 		   List<ExceptionOperatorBean.PageModelBean.RowsBean> rows = operatorBean.getPageModel()
 			   .getRows();
+		   if (PAGE==1){
+			mRowsOperators.clear();
+		   }
 		   mRowsOperators.addAll(rows);
 		   hasNextPage = (rows.size() > SIZE - 1);
 		   adapter.notifyDataSetChanged();

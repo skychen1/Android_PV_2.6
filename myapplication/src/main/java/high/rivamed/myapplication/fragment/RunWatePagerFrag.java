@@ -335,16 +335,12 @@ public class RunWatePagerFrag extends SimpleFragment {
 	   @Override
 	   public void onTextChanged(CharSequence s, int start, int before, int count) {
 		mTerm = s.toString().trim();
-		if (mTerm.length()>0) {
-		   PAGE =1 ;
-		   LogUtils.i("kkkdrf", "mSearchEt");
-		   loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
-		}
 	   }
 
 	   @Override
 	   public void afterTextChanged(Editable s) {
-
+		PAGE =1 ;
+		loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 	   }
 	});
    }
@@ -440,6 +436,9 @@ public class RunWatePagerFrag extends SimpleFragment {
 
 				RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
 				List<RunWateBean.RowsBean> rows = runWateBean.getRows();
+				if (PAGE==1){
+				   mWateBeanRows.clear();
+				}
 				mWateBeanRows.addAll(rows);
 				hasNextPage = (rows.size() > SIZE - 1);
 				mWatePageAdapter.notifyDataSetChanged();
