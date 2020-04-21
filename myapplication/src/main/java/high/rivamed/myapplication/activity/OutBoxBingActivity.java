@@ -206,6 +206,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		EventBusUtils.post(new Event.StartScanType(true, false));
 	   }else {
 		ToastUtils.showLongToast("reader重连中，请稍后！");
+		if (mTimelyStartBtnRight!=null){
+		   mTimelyOpenDoorRight.setEnabled(true);
+		   mTimelyStartBtnRight.setEnabled(true);
+		}
 	   }
 	}
    }

@@ -166,6 +166,15 @@ public class UIUtils {
 	return false;
 
    }
+   public static boolean isFastDoubleClick2() {
+	long time = System.currentTimeMillis();
+	if (time - lastClickTime < 3000) {
+	   return true;
+	}
+	lastClickTime = time;
+	return false;
+
+   }
    public static boolean isFastDoubleClick3() {
 	long time = System.currentTimeMillis();
 	if (time - lastClickTime < 1500) {

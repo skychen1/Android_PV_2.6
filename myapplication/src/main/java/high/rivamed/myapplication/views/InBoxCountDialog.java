@@ -31,7 +31,6 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
-import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -63,18 +62,18 @@ public class InBoxCountDialog extends Dialog {
 	private              TextView           mDialogSure;
 	private              LinearLayout       mListTag;
 	private              SmartRefreshLayout mSmartRefreshLayout;
-	private static final int                loadTime    = 200;//上下拉加载时间
+	private static final int                loadTime = 200;//上下拉加载时间
 	private              RecyclerView       mRecyclerView;
-	private              int                PAGE        = 1;//当前页数
-	private              int                SIZE        = 20;//分页：每页数据
+	private              int                PAGE     = 1;//当前页数
+	private              int                SIZE     = 20;//分页：每页数据
 	private              InventoryDto       mDto;
 	private              InventoryDto       mPutDto;
 
-	public InBoxCountDialogAdapter mAdapter;
-	private Gson mGson;
-	public InBoxCountDialog mDialog;
+	public  InBoxCountDialogAdapter mAdapter;
+	private Gson                    mGson;
+	public  InBoxCountDialog        mDialog;
 
-	public Builder(Context context,InventoryDto putDto) {
+	public Builder(Context context, InventoryDto putDto) {
 	   this.mContext = context;
 	   this.mPutDto = putDto;
 	}
@@ -83,8 +82,7 @@ public class InBoxCountDialog extends Dialog {
 	   mGson = new Gson();
 	   LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 		   Context.LAYOUT_INFLATER_SERVICE);
-	   mDialog = new InBoxCountDialog(mContext,
-										  R.style.Dialog);
+	   mDialog = new InBoxCountDialog(mContext, R.style.Dialog);
 	   mDialog.setCancelable(false);
 	   View layout = inflater.inflate(R.layout.dialog_inboxcount_layout, null);
 	   mDialog.addContentView(layout, new ViewGroup.LayoutParams(
@@ -109,10 +107,12 @@ public class InBoxCountDialog extends Dialog {
 		   loadData();
 		}
 	   });
-	   mDialogSure.setOnClickListener(view -> {mDialog.dismiss();
-	   if (mStarts != null) {
-		mStarts.start();
-	   }});
+	   mDialogSure.setOnClickListener(view -> {
+		mDialog.dismiss();
+//		if (mStarts != null) {
+//		   mStarts.start();
+//		}
+	   });
 	   return mDialog;
 	}
 
@@ -135,8 +135,8 @@ public class InBoxCountDialog extends Dialog {
 		   }
 		   ArrayList<String> list = StringUtils.removeDuplicteUsers(strings);
 		   mNumberTitle.setText(Html.fromHtml("耗材种类：<font color='#262626'><big>" + list.size() +
-								   "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
-								  mDto.getCstSum()+ "</big></font>"));
+								  "</big>&emsp</font>耗材数量：<font color='#262626'><big>" +
+								  mDto.getCstSum() + "</big></font>"));
 		   mAdapter.notifyDataSetChanged();
 		}
 	   });

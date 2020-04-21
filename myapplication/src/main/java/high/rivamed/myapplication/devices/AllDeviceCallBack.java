@@ -540,8 +540,11 @@ public class AllDeviceCallBack {
 		if (isConnect) {
 		   EventBusUtils.post(new Event.ConnectReaderState(true));
 		} else {
-		   EventBusUtils.post(new Event.ConnectReaderState(false));
-		   initReaderUtil();
+		   if (!UIUtils.isFastDoubleClick2()){
+			EventBusUtils.post(new Event.ConnectReaderState(false));
+			Log.e("设备", "重连5" );
+			initReaderUtil();
+		   }
 		}
 	   }
 

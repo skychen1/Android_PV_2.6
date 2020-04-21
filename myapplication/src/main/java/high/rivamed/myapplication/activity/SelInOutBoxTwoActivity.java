@@ -172,6 +172,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		EventBusUtils.post(new Event.StartScanType(true, false));
 	   } else {
 		ToastUtils.showLongToast("reader重连中，请稍后！");
+		if (mTimelyStartBtn != null) {
+		   mTimelyOpenDoor.setEnabled(true);
+		   mTimelyStartBtn.setEnabled(true);
+		}
 	   }
 	}
    }

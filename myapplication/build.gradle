@@ -8,7 +8,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
 //        versionName "3.0.0.1.4"
-        versionName "2.6.15.2.0"
+        versionName "2.6.15.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -40,7 +40,7 @@ android {
             signingConfig signingConfigs.release_config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "${defaultConfig.versionName}高值柜.apk"
+                    outputFileName = "${defaultConfig.versionName}_C高值柜.apk"
                 }
             }
         }
