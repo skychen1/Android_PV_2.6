@@ -8,7 +8,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
 //        versionName "3.0.0.1.4"
-        versionName "2.6.15.2.2"
+        versionName "2.6.15.2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {

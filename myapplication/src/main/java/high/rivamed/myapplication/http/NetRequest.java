@@ -935,7 +935,7 @@ public class NetRequest {
 	map.put("departName", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
 	map.put("departCode",  SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("thingId", deviceId);
-	PostRequest(urls, mGson.toJson(map), tag, netResult);
+	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
    }
    /**
     * 开始录像（强开）

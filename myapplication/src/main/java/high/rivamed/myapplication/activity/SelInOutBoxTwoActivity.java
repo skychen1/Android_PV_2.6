@@ -1100,23 +1100,17 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
 			if (mOperationType==2&&UIUtils.getConfigType(mContext, CONFIG_058)){
-			   DialogUtils.showInBoxOrderOverDialog(mContext,fromJson.getOrderVos());
-			   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-			   if (!getSqlChangeType()) {
-				getAllCstDate(this);
+			   if (fromJson.getOrderVos().size()>0){
+				DialogUtils.showInBoxOrderOverDialog(mContext,fromJson.getOrderVos(),mIntentType);
+				UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+				if (!getSqlChangeType()) {
+				   getAllCstDate(this);
+				}
+			   }else {
+				overDataFinish(mIntentType);
 			   }
 			}else {
-			   if (mIntentType == 2) {
-				UIUtils.putOrderId(mContext);
-				removeAllAct(SelInOutBoxTwoActivity.this);
-			   } else {
-				EventBusUtils.postSticky(new Event.EventFrag("START1"));
-			   }
-			   UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
-			   if (!getSqlChangeType()) {
-				getAllCstDate(this);
-			   }
-			   finish();
+			   overDataFinish(mIntentType);
 			}
 		   } else {
 			ToastUtils.showShortToast("数据返回异常，请与实施联系！");
@@ -1136,7 +1130,22 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 
    }
-
+   /**
+    * 确认后，不走整单入库的逻辑
+    */
+   public void overDataFinish(int mIntentType){
+	if (mIntentType == 2) {
+	   UIUtils.putOrderId(mContext);
+	   removeAllAct(SelInOutBoxTwoActivity.this);
+	} else {
+	   EventBusUtils.postSticky(new Event.EventFrag("START1"));
+	}
+	UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+	if (!getSqlChangeType()) {
+	   getAllCstDate(this);
+	}
+	finish();
+   }
    /**
     * 断网常规的本地
     *
