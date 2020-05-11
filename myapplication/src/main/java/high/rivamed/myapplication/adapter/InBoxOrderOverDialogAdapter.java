@@ -38,7 +38,7 @@ public class InBoxOrderOverDialogAdapter extends BaseQuickAdapter<OrderVos, Base
       });
       helper.setText(R.id.seven_one, item.getOrderNo());
       helper.setText(R.id.seven_two, "" + item.getInventoryNum());
-      helper.setText(R.id.seven_three, "" + item.getInStockNum());
-      helper.setText(R.id.seven_four, "" + item.getCurrentNum());
+      helper.setText(R.id.seven_three, "" + item.getCurrentNum());
+      helper.setText(R.id.seven_four, "" + item.getInStockNum());
    }
 }
