@@ -52,6 +52,7 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.LOADAPK_VERSION;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
@@ -393,6 +394,7 @@ public class LoginUtils {
     private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog) {
         OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(mContext)//
                 .params("systemType", SYSTEMTYPE)
+              .params("hardwareType", LOADAPK_VERSION)
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
                     @Override
                     public void onSuccess(Response<File> response) {

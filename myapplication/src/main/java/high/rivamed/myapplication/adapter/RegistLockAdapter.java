@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.adapter;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -38,6 +39,10 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
    private TextView mItemLightOpen2;
    private TextView mItemLightOpen3;
    private TextView mItemLightCloss;
+   private TextView mItemLED3Open;
+   private TextView mItemLED3Closs;
+   private TextView mItemLED3Check;
+   private TextView mItemLock3Open;
 
 
 
@@ -50,6 +55,10 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemLightOpen3 = (TextView) helper.getView(R.id.item_light_open3);
       mItemLightOpen2 = (TextView) helper.getView(R.id.item_light_open2);
       mItemLightCloss = (TextView) helper.getView(R.id.item_light_closs);
+      mItemLED3Open = (TextView) helper.getView(R.id.item_light_open4);
+      mItemLED3Closs = (TextView) helper.getView(R.id.item_light_closs1);
+      mItemLED3Check = (TextView) helper.getView(R.id.item_light_check1);
+      mItemLock3Open = (TextView) helper.getView(R.id.item_door_open2);
       mIdText.setText(item);
       /**
        * j24
@@ -104,10 +113,40 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
             EventBusUtils.post(new Event.lockType(3,i,item,3));
          }
       });
+      /**
+       * led3关
+       */
+      mItemLED3Closs.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            int i = ConsumableManager.getManager().closeLight(item, 11);
+            Log.i("3342", "item   " + item + "   int   " + i);
+            EventBusUtils.post(new Event.lockType(3,i,item,11));
+         }
+      });
+      /**
+       * led3开
+       */
+      mItemLED3Open.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            int i = ConsumableManager.getManager().openLight(item, 11);
+            Log.i("3342", "item   " + item + "   int   " + i);
+            EventBusUtils.post(new Event.lockType(3,i,item,11));
+         }
+      });
+      mItemLED3Check.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            int i = ConsumableManager.getManager().checkLightState(item, 11);
+            Log.i("3342", "item   " + item + "   int   " + i);
+         }
+      });
       mItemLightCloss.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
             int i = ConsumableManager.getManager().closeLight(item);
+
             EventBusUtils.post(new Event.lockType(4,i,item));
          }
       });

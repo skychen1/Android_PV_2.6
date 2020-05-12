@@ -40,7 +40,7 @@ android {
             signingConfig signingConfigs.release_config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "${defaultConfig.versionName}_C高值柜.apk"
+                    outputFileName = "${defaultConfig.versionName}_C嵌入式耗材柜.apk"
                 }
             }
         }
@@ -114,8 +114,8 @@ dependencies {
     //人脸识别
 //    implementation project(':libfacerecognition')
     implementation project(':libfacerecognitionv3')
-    //视频录制
-    implementation project(':libvideorecord')
+//    //视频录制
+//    implementation project(':libvideorecord')
 
     implementation project(':libfinger')
     implementation project(':libidcard')

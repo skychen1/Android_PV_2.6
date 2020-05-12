@@ -27,9 +27,9 @@ public class OrderVos implements Serializable {
    private String orderId;
    private String createTime;
    private String orderNo;
-   private int    inventoryNum;
-   private int    inStockNum;
-   private int    currentNum;
+   private int    inventoryNum;//单据数量
+   private int    inStockNum;//累计入库
+   private int    currentNum;//本次入数量
    private boolean    isSelected;
 
    public boolean isSelected() {

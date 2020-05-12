@@ -3,6 +3,7 @@ package com.ruihua.libconsumables;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.rivamed.libdevicesbase.base.FunctionCode;
 import com.rivamed.libdevicesbase.utils.LogUtils;
@@ -253,7 +254,10 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
         if (manager.getCallback() == null) {
             return;
         }
+        Log.i("3342","result   "+result+"   which   "+which);
+
         switch (result) {
+
             case 0:
                 //开失败
                 if (which == 0 || which == 1) {
@@ -263,11 +267,18 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                     }
                     manager.getCallback().onOpenDoor(mId, which, false);
                 }
+
                 if (which == 2 || which == 3) {
                     if (isReadAll && which == 2) {
                         isReadAll = false;
                         sendOpenLight(3);
                     }
+                    manager.getCallback().onOpenLight(mId, which, false);
+                }
+                if (which==10){
+                    manager.getCallback().onOpenDoor(mId, which, false);
+                }
+                if (which==11){
                     manager.getCallback().onOpenLight(mId, which, false);
                 }
                 break;
@@ -287,6 +298,12 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                     }
                     manager.getCallback().onOpenLight(mId, which, true);
                 }
+                if (which==10){
+                    manager.getCallback().onOpenDoor(mId, which, true);
+                }
+                if (which==11){
+                    manager.getCallback().onOpenLight(mId, which, true);
+                }
                 break;
             case 2:
                 //关失败
@@ -302,6 +319,12 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                         isReadAll = false;
                         sendCloseLight(3);
                     }
+                    manager.getCallback().onCloseLight(mId, which, false);
+                }
+                if (which==10){
+                    manager.getCallback().onCloseDoor(mId, which, false);
+                }
+                if (which==11){
                     manager.getCallback().onCloseLight(mId, which, false);
                 }
                 break;
@@ -321,6 +344,12 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                     }
                     manager.getCallback().onCloseLight(mId, which, true);
                 }
+                if (which==10){
+                    manager.getCallback().onCloseDoor(mId, which, true);
+                }
+                if (which==11){
+                    manager.getCallback().onCloseLight(mId, which, true);
+                }
                 break;
             case 4:
                 //状态开
@@ -336,6 +365,12 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                         isReadAll = false;
                         sendCheckLight(3);
                     }
+                    manager.getCallback().onLightState(mId, which, true);
+                }
+                if (which==10){
+                    manager.getCallback().onDoorState(mId, which, true);
+                }
+                if (which==11){
                     manager.getCallback().onLightState(mId, which, true);
                 }
                 break;
@@ -354,6 +389,18 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
                         sendCheckLight(3);
                     }
                     manager.getCallback().onLightState(mId, which, false);
+                }
+                if (which==10){
+                    manager.getCallback().onDoorState(mId, which, false);
+                }
+                if (which==11){
+                    manager.getCallback().onLightState(mId, which, false);
+                }
+                break;
+            case 8:
+                if (which==10){
+                    //开门反馈
+                    manager.getCallback().onOpenDoor(mId,which,true);
                 }
                 break;
             default:
@@ -451,7 +498,7 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
             return FunctionCode.DEVICE_BUSY;
         }
         //如果传入的灯不是2或者3就返回
-        if (which != 2 && which != 3) {
+        if (which != 2 && which != 3 &&which != 11) {
             return FunctionCode.PARAM_ERROR;
         }
         lastSendBuf = ControlBoardProtocol.pieceCommand(ControlBoardProtocol.CONTROL, new byte[]{(byte) which, 1});
@@ -475,7 +522,7 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
             return FunctionCode.DEVICE_BUSY;
         }
         //如果传入的灯不是2或者3就返回
-        if (which != 2 && which != 3) {
+        if (which != 2 && which != 3&&which != 11) {
             return FunctionCode.PARAM_ERROR;
         }
         lastSendBuf = ControlBoardProtocol.pieceCommand(ControlBoardProtocol.CONTROL, new byte[]{(byte) which, 0});
@@ -499,7 +546,7 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
             return FunctionCode.DEVICE_BUSY;
         }
         //如果传入的灯不是2或者3就返回
-        if (which != 2 && which != 3) {
+        if (which != 2 && which != 3&&which != 11) {
             return FunctionCode.PARAM_ERROR;
         }
         lastSendBuf = ControlBoardProtocol.pieceCommand(ControlBoardProtocol.CONTROL, new byte[]{(byte) which, 3});
