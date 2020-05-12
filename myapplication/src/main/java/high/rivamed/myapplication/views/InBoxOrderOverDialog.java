@@ -29,6 +29,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -70,10 +71,12 @@ public class InBoxOrderOverDialog extends Dialog {
 	private Gson                        mGson;
 	public  InBoxOrderOverDialog        mDialog;
 	public  TextView                    mTimelyRight;
+	public  int                    mIntentType;
 
-	public Builder(Context context, List<OrderVos> vos) {
+	public Builder(Context context, List<OrderVos> vos,int mIntentType) {
 	   this.mContext = context;
 	   this.mOrderVos = vos;
+	   this.mIntentType = mIntentType;
 	}
 
 	public InBoxOrderOverDialog create() {
@@ -123,18 +126,26 @@ public class InBoxOrderOverDialog extends Dialog {
 			}else {
 			   ToastUtils.showShortToast("提交失败，单据默认不结束");
 			}
-			mDialog.dismiss();
-			((Activity)mContext).finish();
+			setDialogOver();
 		   }
 		});
 	   }else {
 		ToastUtils.showShortToast("入库单操作完成");
-		mDialog.dismiss();
-		((Activity)mContext).finish();
+		setDialogOver();
 	   }
 
 	}
-
+	/**
+	 * 单子结束后的跳转
+	 */
+	private void setDialogOver() {
+	   mDialog.dismiss();
+	   if (mIntentType == 2) {
+		removeAllAct((Activity) mContext);
+	   } else {
+		((Activity) mContext).finish();
+	   }
+	}
 	/**
 	 * 初始控件
 	 */

@@ -735,8 +735,8 @@ public class DialogUtils {
     /**
      * 入库单据结束后的展示
      */
-    public static InBoxOrderOverDialog.Builder showInBoxOrderOverDialog(Context context, List<OrderVos> vos) {
-        InBoxOrderOverDialog.Builder builder = new InBoxOrderOverDialog.Builder(context,vos);
+    public static InBoxOrderOverDialog.Builder showInBoxOrderOverDialog(Context context, List<OrderVos> vos,int mIntentType) {
+        InBoxOrderOverDialog.Builder builder = new InBoxOrderOverDialog.Builder(context,vos,mIntentType);
         builder.create().show();
 
         return builder;

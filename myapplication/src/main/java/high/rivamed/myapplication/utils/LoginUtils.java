@@ -394,7 +394,7 @@ public class LoginUtils {
     private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog) {
         OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(mContext)//
                 .params("systemType", SYSTEMTYPE)
-              .params("hardwareType", LOADAPK_VERSION)
+                .params("hardwareType", LOADAPK_VERSION)
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
                     @Override
                     public void onSuccess(Response<File> response) {
@@ -405,7 +405,6 @@ public class LoginUtils {
                     @Override
                     public void downloadProgress(Progress progress) {
                         mDialog.setProgress((int) (-progress.fraction *100));
-
                     }
 
                     @Override
