@@ -59,6 +59,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
@@ -85,6 +86,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
+import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
@@ -230,6 +232,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   //	   mEthDeviceIdBack.clear();
 	   mListDevices.clear();
 	   mEthDevices.clear();
+	   String string = SPUtils.getString(mAppContext, THING_MODEL);
+	  if (string.equals("1")) {//嵌入式
+
+	   }
 	}
    }
 

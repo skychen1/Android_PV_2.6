@@ -15,6 +15,8 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
@@ -36,6 +38,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mBomDoorDeviceIdList;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
@@ -434,7 +437,7 @@ public class LyDateUtils {
     * 重新开柜的逻辑3.0
     */
    public static void setMoreOpenDoor() {
-
+	String string = SPUtils.getString(mAppContext, THING_MODEL);
 	for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
 	   String deviceIds = mBomDoorDeviceIdList.get(i);
 	   int size =0;
@@ -456,8 +459,29 @@ public class LyDateUtils {
 		}else if (deviceIdWhich.equals("1")){
 		   Which=1;
 		}
-		int is = ConsumableManager.getManager().openDoor(deviceIds, Which);
-		Log.i("ssffff","openDoor：：" + deviceIds +Which+"    v    "+is);
+		if (string.equals("1")){//嵌入式开启电磁锁
+		   int i1 = ConsumableManager.getManager().openLight(deviceIds, 11);
+		   Log.i("ffaer", " 嵌入式开启电磁锁  " + i1);
+		   if (i1==0){
+			Timer timer = new Timer();
+			int finalWhich = Which;
+			timer.schedule(new TimerTask() {
+			   @Override
+			   public void run() {
+				int i1 = ConsumableManager.getManager().openDoor(deviceIds, finalWhich);
+				if (i1 == 0) {
+				   Log.i("ffaer", " 嵌入式开启电子锁  " + i1);
+				   timer.cancel();
+				}
+			   }
+			}, 100, 100);
+		   }
+		}else {
+		   int is = ConsumableManager.getManager().openDoor(deviceIds, Which);
+		   Log.i("ssffff","openDoor：：" + deviceIds +Which+"    v    "+is);
+		}
+
+
 	   }
 
 	}

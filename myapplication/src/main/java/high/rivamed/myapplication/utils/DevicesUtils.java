@@ -13,6 +13,8 @@ import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 
@@ -88,11 +90,39 @@ public class DevicesUtils {
 	   List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", s.getIdentification(),
 								    CONSUMABLE_TYPE).find(BoxIdBean.class);
 	   if (boxIdBeans.size()>1){
-		ConsumableManager.getManager().checkDoorState(s.getIdentification());
-		Log.i("ssffff", "检测的全部门");
+
+		int i = ConsumableManager.getManager().checkDoorState(s.getIdentification());
+		Log.i("onDoorState", "检测的全部门    "+i);
+		if (i==2){
+		   Timer timer = new Timer();
+		   timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+			   int i1 = ConsumableManager.getManager().checkDoorState(s.getIdentification());
+			   if (i1 == 0) {
+				timer.cancel();
+			   }
+			}
+		   }, 100, 100);
+		}
+
 	   }else {
-		ConsumableManager.getManager().checkDoorState(s.getIdentification(),0);
-		Log.i("ssffff", "检测1个门-");
+		int i = ConsumableManager.getManager().checkDoorState(s.getIdentification(), 0);
+		Log.i("onDoorState", "检测1个门-    "+i);
+		if (i==2){
+		   Timer timer = new Timer();
+		   timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+			   int i1 = ConsumableManager.getManager().checkDoorState(s.getIdentification(),0);
+			   if (i1 == 0) {
+				Log.i("onDoorState", "检测1个门-    "+i1);
+				timer.cancel();
+			   }
+			}
+		   }, 100, 100);
+		}
+
 	   }
 
 	}

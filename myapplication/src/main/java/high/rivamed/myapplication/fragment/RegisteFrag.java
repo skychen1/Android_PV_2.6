@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -83,9 +84,12 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.http.NetApi.URL_CLOSE;
 import static high.rivamed.myapplication.http.NetApi.URL_OPEN;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
+import static high.rivamed.myapplication.utils.UIUtils.disableRadioGroup;
+import static high.rivamed.myapplication.utils.UIUtils.enableRadioGroup;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -103,22 +107,26 @@ import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 public class RegisteFrag extends SimpleFragment {
 
    String TAG = "RegisteFrag";
+   @BindView(R.id.rg_device_type)
+   RadioGroup  mRgDeviceType;
    @BindView(R.id.frag_registe_name_edit)
-   EditText mFragRegisteNameEdit;
-   @BindView(R.id.frag_registe_model_edit)
-   EditText mFragRegisteModelEdit;
+   EditText    mFragRegisteNameEdit;
+   @BindView(R.id.rb_standard_pv)
+   RadioButton mRbStandardPv;
+   @BindView(R.id.rb_embed_pv)
+   RadioButton mRbEmbedPv;
    @BindView(R.id.frag_registe_number_edit)
-   EditText mFragRegisteNumberEdit;
+   EditText    mFragRegisteNumberEdit;
    @BindView(R.id.frag_registe_localip_edit)
-   EditText mFragRegisteLocalipEdit;
+   EditText    mFragRegisteLocalipEdit;
    @BindView(R.id.frag_registe_severip_edit)
-   EditText mFragRegisteSeveripEdit;
+   EditText    mFragRegisteSeveripEdit;
    @BindView(R.id.frag_registe_port_edit)
-   EditText mFragRegistePortEdit;
+   EditText    mFragRegistePortEdit;
    @BindView(R.id.frag_registe_right)
-   TextView mFragRegisteRight;
+   TextView    mFragRegisteRight;
    @BindView(R.id.frag_registe_left)
-   TextView mFragRegisteLeft;
+   TextView    mFragRegisteLeft;
    @BindView(R.id.frag_registe_loginout_edit)
    EditText mFragRegisteLoginoutEdit;
    public RecyclerView mRecyclerview;
@@ -143,6 +151,7 @@ public class RegisteFrag extends SimpleFragment {
    private       Thread                              mThread2;
    private       String                              mBoxCode;
    private       String                              mBoxType   = "0";
+   private String                              mThingModel = "0";//设备类型，默认标准耗材柜
    private       RadioGroup                          mRadioGroup;
    private       String                              mHeadEndName;
 
@@ -182,8 +191,11 @@ public class RegisteFrag extends SimpleFragment {
 		   ToastUtils.showShortToast(thingDto.getMsg());
 		   mFragmentBtnOne.setText("已激活");
 		   mFragmentBtnOne.setEnabled(false);
+		   disableRadioGroup(mRgDeviceType);
 		   getBoxSize();
 		   getLogos();
+		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
+					   thingDto.getThingSnVo().getThingModel());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
@@ -250,6 +262,11 @@ public class RegisteFrag extends SimpleFragment {
    @Override
    public void onStart() {
 	super.onStart();
+	if (SPUtils.getBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE)) {
+	   disableRadioGroup(mRgDeviceType);
+	} else {
+	   enableRadioGroup(mRgDeviceType);
+	}
 	if (WifiUtils.isWifi(mContext) == 1) {
 	   mFragRegisteLocalipEdit.setText(WifiUtils.getLocalIpAddress(mContext));   //获取WIFI IP地址显示
 	} else if (WifiUtils.isWifi(mContext) == 2) {
@@ -268,6 +285,8 @@ public class RegisteFrag extends SimpleFragment {
 	//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
+	SPUtils.putString(UIUtils.getContext(), THING_MODEL,
+				mSnRecoverBean.getThingSnVo().getThingModel());
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
 				mSnRecoverBean.getThing().getDeptName());
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE,
@@ -292,7 +311,7 @@ public class RegisteFrag extends SimpleFragment {
 	deleteLitepal();
 	LitePal.deleteDatabase("rivamedhigh");
 	LitePal.initialize(mAppContext);//数据库初始化
-
+	disableRadioGroup(mRgDeviceType);
 	setRegiestDate(s);
 	putDbDate(mSnRecoverBean);
 	getLogos();
@@ -339,23 +358,20 @@ public class RegisteFrag extends SimpleFragment {
 
 	mRecyclerview = mContext.findViewById(R.id.recyclerviewc);
 	Log.i(TAG, "SAVE_DEPT_NAME    " + SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_NAME));
-	mFragRegisteNameEdit.setHint("2.6.7高值柜");
-	mFragRegisteModelEdit.setHint("rivamed");
+	mFragRegisteNameEdit.setHint("2.6.15高值柜");
 	mFragRegisteNumberEdit.setHint("1");
 	mFragRegisteSeveripEdit.setHint("192.168.1.1");
 	mFragRegistePortEdit.setHint("8016");
 
 	if (BuildConfig.DEBUG) {
 	   mFragRegisteNameEdit.setText("3.0柜子");
-	   mFragRegisteModelEdit.setText("rivamed30xxx");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.111.80");
-	   mFragRegistePortEdit.setText("8030");
+	   mFragRegisteSeveripEdit.setText("192.168.10.25");
+	   mFragRegistePortEdit.setText("8018");
 	}
 
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
-	Log.i("fadddde", mGson.toJson(mBaseDevices));
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   mSwitch.setChecked(true);
 	} else {
@@ -363,8 +379,27 @@ public class RegisteFrag extends SimpleFragment {
 	}
 	initData();
 	initListener();
+	initDeviceSelected();
    }
-
+   /**
+    * 设备类型选择
+    */
+   private void initDeviceSelected() {
+	mRgDeviceType.setOnCheckedChangeListener((group, checkedId) -> {
+	   switch (checkedId) {
+		case R.id.rb_standard_pv:
+		   //TODO 标准
+		   mThingModel = "0";
+		   break;
+		case R.id.rb_embed_pv:
+		   //TODO 嵌入式
+		   mThingModel = "1";
+		   break;
+		default:
+		   break;
+	   }
+	});
+   }
    private void initListener() {
 	mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	   @Override
@@ -478,7 +513,11 @@ public class RegisteFrag extends SimpleFragment {
 	List<ThingDto.DeviceVosBean> tBaseDeviceVos = returnBean.getDeviceVos();
 	ThingDto.ThingBean mThing = returnBean.getThing();
 	mFragRegisteNameEdit.setText(mThing.getThingName());
-	mFragRegisteModelEdit.setText(mThing.getThingModel());
+	if (mThing.getThingModel().equals("0")){
+	   mRbStandardPv.setChecked(true);
+	}else if (mThing.getThingModel().equals("1")){
+	   mRbEmbedPv.setChecked(true);
+	}
 	mFragRegisteNumberEdit.setText(mThing.getSn());
 
 	mFragRegisteSeveripEdit.setText(SPUtils.getString(mContext, SAVE_SEVER_IP_TEXT));
@@ -558,6 +597,8 @@ public class RegisteFrag extends SimpleFragment {
 		   mFragmentBtnOne.setEnabled(true);
 		   mRecyclerview.scrollToPosition(i);
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
+		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
+					   thingDto.getThing().getThingModel());
 		   mFragmentBtnOne.setText("激 活");
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, thingDto.getThing().getSn());
@@ -678,9 +719,13 @@ public class RegisteFrag extends SimpleFragment {
 	hospitalInfoVo.setOptRoomId(operationRoomNo);
 	hospitalInfoVo.setDeptName(deptName);
 	TBaseThingDto.setHospitalInfoVo(hospitalInfoVo);
-
+	if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_standard_pv) {
+	   mThingModel = "0";
+	} else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
+	   mThingModel = "1";
+	}
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
-	tBaseThing.setThingModel(mFragRegisteModelEdit.getText().toString().trim());
+	tBaseThing.setThingModel(mThingModel);
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
 	//	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());

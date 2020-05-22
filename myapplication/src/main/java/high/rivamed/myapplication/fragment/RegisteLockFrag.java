@@ -37,6 +37,7 @@ import high.rivamed.myapplication.adapter.RegistLockAdapter;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
+import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
@@ -91,6 +92,12 @@ public class RegisteLockFrag extends SimpleFragment {
 	   AppendLog("开灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item + ""+event.witch);
 	} else if (event.type ==4){
 	   AppendLog("关灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
+	}else if (event.type ==9){
+	   AppendLog("电磁锁关闭令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
+	}else if (event.type ==10){
+	   AppendLog("电磁锁开启令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
+	}else if (event.type ==11){
+	   AppendLog("电磁锁检测令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
 	}
    }
 
@@ -106,6 +113,7 @@ public class RegisteLockFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+	EventBusUtils.register(this);
 	WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 	if (wm != null) {
 	   mDm = new DisplayMetrics();
@@ -150,6 +158,9 @@ public class RegisteLockFrag extends SimpleFragment {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
 		AppendLog("IC读卡连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
+		if (isConnect){
+		   IdCardManager.getIdCardManager().startReadCard(deviceId);
+		}
 	   }
 
 	   @Override
@@ -167,6 +178,9 @@ public class RegisteLockFrag extends SimpleFragment {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
 		AppendLog("指纹连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
+		if (isConnect){
+		   FingerManager.getManager().startReadFinger(deviceId);
+		}
 	   }
 
 	   @Override
@@ -218,7 +232,7 @@ public class RegisteLockFrag extends SimpleFragment {
 		} else {
 		   whichs = "1号端口";
 		}
-		AppendLog("开门结果：设备ID:   " + deviceId + "  端口： " + whichs + " ;   开门状态 = " + type);
+		AppendLog("开门结果：设备ID:   " + deviceId + "  端口： " +which +"  which  "+ whichs + " ;   开门状态 = " + type);
 	   }
 
 	   @Override
@@ -268,11 +282,18 @@ public class RegisteLockFrag extends SimpleFragment {
 		}
 		if (which == 2) {
 		   whichs = "2号端口";
-		} else {
+		   AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		} else if (which ==3){
 		   whichs = "3号端口";
+		   AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		}else if (which==11){//电磁锁
+		   whichs = "11号端口";
+		   AppendLog("电磁锁开启状态：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   锁状态 = " + type);
 		}
-		AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
-			    "  ;   灯状态 = " + type);
+
 	   }
 
 	   @Override
@@ -286,15 +307,45 @@ public class RegisteLockFrag extends SimpleFragment {
 		}
 		if (which == 2) {
 		   whichs = "2号端口";
-		} else {
+		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		} else if (which ==3){
 		   whichs = "3号端口";
+		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		}else if (which==11){//电磁锁
+		   whichs = "11号端口";
+		   AppendLog("电磁锁关闭状态：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   锁状态 = " + type);
+		} else {
+		   whichs = which+"端口";
+		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
 		}
-		AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
-			    "  ;   灯状态 = " + type);
+
 	   }
 
 	   @Override
 	   public void onLightState(String deviceId, int which, boolean state) {
+		String type;
+		String whichs;
+		if (state) {
+		   type = "开";
+		} else {
+		   type = "关";
+		}
+		if (which == 2) {
+		   whichs = "2号端口";
+		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		} else if (which ==3){
+		   whichs = "3号端口";
+		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
+				 "  ;   灯状态 = " + type);
+		}else if (which ==11){
+		   AppendLog("电磁锁状态：设备ID:   " + deviceId + "  端口： " + which +
+				 "  ;   灯状态 = " + type);
+		}
 
 	   }
 

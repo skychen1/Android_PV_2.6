@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.charts.BarChart;
 import com.rivamed.FingerManager;
 import com.rivamed.libidcard.IdCardManager;
+import com.ruihua.libconsumables.ConsumableManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -280,7 +281,10 @@ public class LoginActivity extends SimpleActivity {
    private void registFingerAndIc() {
 	BoxIdBean idBean = LitePal.where("name = ?", FINGER_TYPE).findFirst(BoxIdBean.class);
 	BoxIdBean idIc = LitePal.where("name = ?", IC_TYPE).findFirst(BoxIdBean.class);
+
 	if (idBean != null) {
+	   int i1 = ConsumableManager.getManager().closeLight(idBean.getDevice_id(), 11);
+	   Log.i("appSatus", "电磁锁关闭      " + i1);
 	   Log.i("appSatus", "FingerManager  idBean.getDevice_id()      " + idBean.getDevice_id());
 	   int i = FingerManager.getManager().startReadFinger(idBean.getDevice_id());
 	   Log.i("appSatus","FingerManager     "+i);
@@ -295,6 +299,7 @@ public class LoginActivity extends SimpleActivity {
    public void onStart() {
 	super.onStart();
 	registFingerAndIc();
+
 	Log.i("onDoorState", "onStart   onStartonStartonStartonStart   ");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {

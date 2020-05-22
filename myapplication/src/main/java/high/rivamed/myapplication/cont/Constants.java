@@ -132,6 +132,7 @@ public class Constants {
    public static final String FACE_OPEN               = "face_OPEN";//活体检测
    public static final String FACE_UPDATE_TIME        = "face_update_time";//人脸照最新更新时间
    public static final String PATIENT_TYPE            = "PatientType";///2,3手术，1是非手术
+   public static final String THING_MODEL             = "THING_MODEL";//设备类型
    public static final String FINGER_VERSION            = "2";//3.0传2，2.1传1
    public static final String LOADAPK_VERSION            = "3.0";//3.0
 

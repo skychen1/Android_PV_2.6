@@ -88,8 +88,10 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemSettingStats.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            int ret = ConsumableManager.getManager().checkDoorState(item);
-            EventBusUtils.post(new Event.lockType(2,ret,item));
+//            int i = ConsumableManager.getManager().checkDoorState(item);
+            int i = ConsumableManager.getManager().checkDoorState(item, 10);
+            Log.i("ffaer", " checkDoorState  " + item+"   "+i);
+                        EventBusUtils.post(new Event.lockType(2,i,item));
 
          }
       });
@@ -121,7 +123,7 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
          public void onClick(View v) {
             int i = ConsumableManager.getManager().closeLight(item, 11);
             Log.i("3342", "item   " + item + "   int   " + i);
-            EventBusUtils.post(new Event.lockType(3,i,item,11));
+            EventBusUtils.post(new Event.lockType(9,i,item,11));
          }
       });
       /**
@@ -130,9 +132,11 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
       mItemLED3Open.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
+
             int i = ConsumableManager.getManager().openLight(item, 11);
+
             Log.i("3342", "item   " + item + "   int   " + i);
-            EventBusUtils.post(new Event.lockType(3,i,item,11));
+            EventBusUtils.post(new Event.lockType(10,i,item,11));
          }
       });
       mItemLED3Check.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +144,7 @@ public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder>
          public void onClick(View view) {
             int i = ConsumableManager.getManager().checkLightState(item, 11);
             Log.i("3342", "item   " + item + "   int   " + i);
+            EventBusUtils.post(new Event.lockType(11,i,item,11));
          }
       });
       mItemLightCloss.setOnClickListener(new View.OnClickListener() {

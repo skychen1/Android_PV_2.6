@@ -35,7 +35,6 @@ import high.rivamed.myapplication.http.LoggingLevel;
 import high.rivamed.myapplication.http.MyLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
-import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
 import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;

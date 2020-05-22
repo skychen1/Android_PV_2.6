@@ -474,7 +474,7 @@ public class ConsumableHandler extends BaseConsumableHandler implements Consumab
             return FunctionCode.DEVICE_BUSY;
         }
         //如果传入的锁不是0或者1就返回
-        if (which != 0 && which != 1) {
+        if (which != 0 && which != 1&&which!=10) {
             return FunctionCode.PARAM_ERROR;
         }
         lastSendBuf = ControlBoardProtocol.pieceCommand(ControlBoardProtocol.CONTROL, new byte[]{(byte) which, 3});
