@@ -3,6 +3,8 @@ package high.rivamed.myapplication.base;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
@@ -24,7 +26,6 @@ import high.rivamed.myapplication.activity.LoginInfoActivity;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.bean.Event;
-import high.rivamed.myapplication.devices.AllDeviceCallBack;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -257,6 +258,23 @@ public abstract class BaseSimpleFragment extends SimpleFragment {
 	   }
 	});
    }
+   /* 定义一个倒计时的内部类 */
+   protected class TimeCountOver extends CountDownTimer {
 
+	public TimeCountOver(
+		long millisInFuture, long countDownInterval) {
+	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+	}
+
+	@Override
+	public void onFinish() {// 计时完毕时触发
+	   EventBusUtils.post(new Event.EventOverHome(true));
+	}
+
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
+	   Log.i("343ww", "millisUntilFinished     " + millisUntilFinished);
+	}
+   }
 }
 

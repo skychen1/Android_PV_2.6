@@ -145,4 +145,6 @@ public interface NetApi {
 
     String URL_ISORDER_STATUS   = "/order/order/updateInStockOrderStatus";//整单入库确认是否改变单号状态
     String URL_OPERATE_STORAGECST_ORDER  = "/order/order/findInStockOrder";//查入库单的数据
+
+    String URL_FLOORLIST   = "/consumables/inventory/findInventoryFloorList";//库存预警低于下限查询
 }

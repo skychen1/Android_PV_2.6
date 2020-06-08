@@ -1574,9 +1574,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("") &&
 		    mTimelyRight.isEnabled()) {
-		   mStarts.cancel();
-		   mStarts.start();
-
+		   if (mStarts!=null){
+			mStarts.cancel();
+			mStarts.start();
+		   }
 		}
 		break;
 	   //否则其他动作计时取消
@@ -1626,8 +1627,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	Log.i("outtccc", getClass().getName() + "  onDestroy");
 
 	EventBusUtils.unregister(this);
-	mStarts.cancel();
-	mStarts = null;
+	if (mStarts!=null){
+	   mStarts.cancel();
+	   mStarts = null;
+	}
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();
 	mObs.removeVos();

@@ -38,10 +38,17 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
    @BindView(R.id.home_stock_viewpager)
   public ViewPager       mHomeStockViewpager;
    private ArrayList<Fragment> mFragments = new ArrayList<>();
+   private static final String TYPE  = "TYPE";
+   private boolean mABoolean;
 
-   public static ContentStockStatusFrag newInstance() {
+   /**
+    * @param type :true是登录状态显示，false非登录状态显示
+    * @return
+    */
+   public static ContentStockStatusFrag newInstance(boolean type) {
 	Bundle args = new Bundle();
 	ContentStockStatusFrag fragment = new ContentStockStatusFrag();
+	args.putBoolean(TYPE, type);
 	fragment.setArguments(args);
 	return fragment;
    }
@@ -71,14 +78,28 @@ public class ContentStockStatusFrag extends BaseSimpleFragment {
 
    private void initData() {
 
-	mBaseTabBtnLeft.setVisibility(View.VISIBLE);
-	mRgGroup.setVisibility(View.VISIBLE);
-	mBaseTabLl.setVisibility(View.VISIBLE);
+	Bundle arguments = getArguments();
+	mABoolean = arguments.getBoolean(TYPE);
+	if (mABoolean){
+	   mBaseTabBtnLeft.setVisibility(View.VISIBLE);
+	   mRgGroup.setVisibility(View.VISIBLE);
+	   mBaseTabLl.setVisibility(View.VISIBLE);
 	   mBaseTabBtnLeft.setText(SPUtils.getString(mContext, SAVE_DEPT_NAME)+" - "+SPUtils.getString(mContext, SAVE_STOREHOUSE_NAME));
-
+	}else {
+	   mBaseTabBack.setVisibility(View.VISIBLE);
+	   mBaseTabTvName.setVisibility(View.GONE);
+	   mBaseTabBtnMsg.setVisibility(View.GONE);
+	   mBaseTabIconRight.setVisibility(View.GONE);
+	   mBaseTabOutLogin.setVisibility(View.GONE);
+	   mRgGroup.setVisibility(View.VISIBLE);
+	   mBaseTabLl.setVisibility(View.VISIBLE);
+	}
    }
 
    private void initListener() {
+	mBaseTabBack.setOnClickListener(view -> {
+	   mContext.finish();
+	});
 	mRgGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(RadioGroup group, int checkedId) {

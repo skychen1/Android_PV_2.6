@@ -32,7 +32,6 @@ public class Coder {
 		try {
 			
 			String shaPassword= Coder.shaDigest(Coder.shaDigest("000000"), "F3uJ1rZsLljRRyDn");
-		   Log.e("xxb",shaPassword);
 			//  shaPassword=3576311414e73b9b208438a28200b6bcb7b090ea
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

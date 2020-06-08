@@ -111,7 +111,7 @@ public class LogcatHelper {
 	   if (SPUtils.getBoolean(UIUtils.getContext(),LOGCAT_OPEN)){
 	      cmds = "logcat | grep \"(" + mPID + ")\"";
 	   }else {
-		cmds = "logcat *:e *:w ";
+		cmds = "logcat *:e | grep \"(" + mPID + ")\"";
 	   }
 //	   cmds = "logcat OkGo:i *:e *:w | grep \"(" + mPID + ")\"";
 //	   cmds = "logcat *:i ";

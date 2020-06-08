@@ -74,7 +74,7 @@
         For example:
         <storage value="external"></storage>
     -->
-
-    <storage value="internal" />
+    <storage value="external" />
+    <!--<storage value="internal" />-->
 
 </litepal>

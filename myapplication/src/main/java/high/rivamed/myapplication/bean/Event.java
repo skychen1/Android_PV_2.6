@@ -509,6 +509,17 @@ public class Event {
 	}
    }
    /**
+    * 主页倒计时结束发起
+    */
+   public static class EventOverHome {
+
+	public boolean b;
+
+	public EventOverHome(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
     * 关灯的倒计时
     */
    public static class EventLightCloss {

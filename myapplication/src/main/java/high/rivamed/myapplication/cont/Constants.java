@@ -72,6 +72,8 @@ public class Constants {
    public static final String CONFIG_046 = "046";//启用查看未入库耗材
    public static final String CONFIG_056 = "056";//启用查看手术排班患者病区床号
    public static final String CONFIG_058 = "058_ZDRK";//是否开启整单入库
+   public static final String CONFIG_059 = "059_VIDEO";//是否开启视频录制
+   public static final String CONFIG_060 = "060";//是否开启库存下限
 
    public static final String LEFT_MENU_HCCZ = "耗材操作";//耗材操作
    public static final String LEFT_MENU_HCLS = "耗材流水";//耗材流水
@@ -125,6 +127,8 @@ public class Constants {
    public static final String SAVE_ANIMATION_TIME     = "SAVE_ANIMATION_TIME";//READER扫描动画延时时长
    public static final String SAVE_LOGINOUT_TIME      = "SAVE_LOGINOUT_TIME";//无操作退出时间
    public static final String SAVE_CLOSSLIGHT_TIME      = "SAVE_CLOSSLIGHT_TIME";//无操作关灯
+   public static final String SAVE_REMOVE_LOGFILE_TIME = "SAVE_REMOVE_LOGFILE_TIME";//删除多少天之前的日志
+   public static final String SAVE_HOME_LOGINOUT_TIME = "SAVE_HOME_LOGINOUT_TIME";//首页无操作退出时间
    public static final String SYSTEMTYPE              = "HCT";//高值登录的type
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
    public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用
@@ -133,6 +137,8 @@ public class Constants {
    public static final String FACE_UPDATE_TIME        = "face_update_time";//人脸照最新更新时间
    public static final String PATIENT_TYPE            = "PatientType";///2,3手术，1是非手术
    public static final String FINGER_VERSION            = "2";//3.0传2，2.1传1
+   public static final String HOME_LOGO = "HOME_LOGO";///主页的logo地址
+   public static final String LOGIN_LOGO = "LOGIN_LOGO";///登录的logo地址
    public static final String LOADAPK_VERSION            = "3.0";//3.0
 
    public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN

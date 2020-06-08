@@ -1,6 +1,7 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,19 +65,25 @@ import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
+import static high.rivamed.myapplication.cont.Constants.HOME_LOGO;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_LOGO;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ACTIVATION_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_HOME_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_REMOVE_LOGFILE_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
@@ -121,6 +129,10 @@ public class RegisteFrag extends SimpleFragment {
    TextView mFragRegisteLeft;
    @BindView(R.id.frag_registe_loginout_edit)
    EditText mFragRegisteLoginoutEdit;
+   @BindView(R.id.frag_registe_loginout_edit2)
+   EditText mFragRegisteLoginoutEdit2;
+   @BindView(R.id.frag_registe_loginout_edit5)
+   EditText mFragRegisteLoginoutEdit5;
    public RecyclerView mRecyclerview;
    @BindView(R.id.switch_btn)
    Switch   mSwitch;
@@ -315,7 +327,14 @@ public class RegisteFrag extends SimpleFragment {
 		String mainInterfaceLogo = logosBean.getHospitalFile().getMainInterfaceLogo();
 		boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo, "login_logo");
 		boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo, "home_logo");
-
+		File login_logo = new File(
+			Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
+		File home_logo = new File(
+			Environment.getExternalStorageDirectory() + "/home_logo" + "/home_logo.png");
+		String login_logoPath = login_logo.getPath();
+		String home_logoPath = home_logo.getPath();
+		SPUtils.putString(mContext, LOGIN_LOGO, login_logoPath);
+		SPUtils.putString(mContext, HOME_LOGO, home_logoPath);
 		Log.i("eees", "图片loginPageLogo保存+     " + saveloginPageLogo);
 		Log.i("eees", "图片mainInterfaceLogo保存+     " + savemainInterfaceLogo);
 	   }
@@ -352,7 +371,9 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragRegisteSeveripEdit.setText("192.168.111.80");
 	   mFragRegistePortEdit.setText("8030");
 	}
-
+	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000+"");
+	mFragRegisteLoginoutEdit2.setText( HOME_COUNTDOWN_TIME / 1000+"");
+	mFragRegisteLoginoutEdit5.setText(REMOVE_LOGFILE_TIME+"");
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();
 	Log.i("fadddde", mGson.toJson(mBaseDevices));
@@ -707,7 +728,7 @@ public class RegisteFrag extends SimpleFragment {
    }
 
    @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn,
-	   R.id.frag_registe_txt})
+	   R.id.frag_registe_txt,R.id.frag_registe_loginout_btn2, R.id.frag_registe_loginout_btn5})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -746,6 +767,35 @@ public class RegisteFrag extends SimpleFragment {
 				"设置成功！操作界面无操作后 " + COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
 		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
+		   }
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
+		break;
+	   case R.id.frag_registe_loginout_btn2:
+		try {
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit2.getText().toString().trim())*1000);
+		   if (time>=5000){
+			SPUtils.putInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME, time);
+			HOME_COUNTDOWN_TIME = time;
+			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + HOME_COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   }else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于5秒，请重新设置！");
+		   }
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
+		break;
+	   case R.id.frag_registe_loginout_btn5:
+		try {
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit5.getText().toString().trim()));
+		   if (time >= 2) {
+			SPUtils.putInt(UIUtils.getContext(), SAVE_REMOVE_LOGFILE_TIME, time);
+			REMOVE_LOGFILE_TIME = time;
+			ToastUtils.showShortToast(
+				"设置成功！删除 " + REMOVE_LOGFILE_TIME + " 天之前的日志！");
+		   } else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于2天，请重新设置！");
 		   }
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");

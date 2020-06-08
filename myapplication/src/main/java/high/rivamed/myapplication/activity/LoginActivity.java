@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -67,6 +68,7 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import static high.rivamed.myapplication.activity.SplashActivity.mIntentService;
 import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -80,6 +82,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_043;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_044;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_045;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_046;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_060;
 import static high.rivamed.myapplication.cont.Constants.FINGER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.IC_TYPE;
@@ -95,6 +98,7 @@ import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_HOME_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
@@ -138,8 +142,18 @@ public class LoginActivity extends SimpleActivity {
    TextView        mTextGuo;
    @BindView(R.id.login_uninbox)
    TextView        mTVLoginToBePutInStorage;
+   @BindView(R.id.right_top_text)
+   TextView         mRightTopText;
+   @BindView(R.id.right_down_text)
+   TextView         mRightDownText;
    @BindView(R.id.login_unconfirmcst)
    TextView        mTVLoginUnConfirmCst;
+   @BindView(R.id.right_r)
+   RelativeLayout  mRightRl;
+   @BindView(R.id.right_top)
+   LinearLayout    mRightTopL;
+   @BindView(R.id.right_down_l)
+   LinearLayout    mRightDownL;
    @BindView(R.id.login_unrl)
    RelativeLayout  mLoginUnRL;
    @BindView(R.id.left_jin_text)
@@ -303,6 +317,9 @@ public class LoginActivity extends SimpleActivity {
 		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
 		AllDeviceCallBack.getInstance().StateLightStart();
 	   }
+	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME) != -1) {
+		HOME_COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME);
+	   }
 	   getLeftDate();
 	   //	   getBoxSize();
 	}
@@ -359,12 +376,24 @@ public class LoginActivity extends SimpleActivity {
 		InventoryDto socketRightBean = mGson.fromJson(result, InventoryDto.class);
 		List<InventoryVo> inventoryVos = socketRightBean.getInventoryVos();
 		if (inventoryVos.size() > 0) {
-		   mTVLoginUnConfirmCst.setText("未确认耗材 (" + inventoryVos.size() + ")");
+		   mRightTopText.setText(inventoryVos.size() +"");
 		}
 	   }
 	});
    }
-
+   /**
+    * 获取低于下限
+    */
+   private void getFloorList() {
+	NetRequest.getInstance().getFloorList( mContext, new BaseResult() {
+	   @Override
+	   public void onSucceed(String result) {
+		InventoryDto fromJson = mGson.fromJson(result, InventoryDto.class);
+		String cstKinds = fromJson.getCstKinds()+"";
+		mRightDownText.setText(cstKinds);
+	   }
+	});
+   }
    /**
     * 获取配置项
     */
@@ -437,17 +466,36 @@ public class LoginActivity extends SimpleActivity {
 	   mLoginViewpager.setScanScroll(
 		   isConfigFace() || UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_017));
 	}
+	if (!UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_060)&&!UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
+	   mRightRl.setVisibility(View.GONE);
+	} else {
+	   mRightRl.setVisibility(View.VISIBLE);
+	}
+
 	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_026)) {
-	   if (mLoginUnRL != null) {
-		mLoginUnRL.setVisibility(View.VISIBLE);
-		mTVLoginUnConfirmCst.setText("未确认耗材（0）");
+	   if (mRightTopL!=null){
+		mRightTopL.setVisibility(View.VISIBLE);
+		mRightTopText.setText("0");
 		getNoConfirm();
 	   }
 	} else {
-	   if (mLoginUnRL != null) {
-		mLoginUnRL.setVisibility(View.INVISIBLE);
+	   if (mRightTopL!=null) {
+		mRightTopL.setVisibility(View.GONE);
 	   }
 	}
+	if (UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_060)) {
+	   if (mRightDownL!=null){
+		mRightDownL.setVisibility(View.VISIBLE);
+		mRightDownText.setText("0");
+		getFloorList();
+		Log.i("3434s","ddddd   "+mRightDownText.getText());
+	   }
+	} else {
+	   if (mRightDownL!=null) {
+		mRightDownL.setVisibility(View.GONE);
+	   }
+	}
+
 	if (mTVLoginToBePutInStorage != null) {
 	   mTVLoginToBePutInStorage.setVisibility(
 		   UIUtils.getConfigLoginType(sTCstConfigVos, CONFIG_046) ? View.VISIBLE : View.GONE);
@@ -654,16 +702,16 @@ public class LoginActivity extends SimpleActivity {
 		ToastUtils.showShortToast("网络异常，请检查网络!");
 	   }
 	});
-	/**
-	 * 未确认耗材
-	 */
-	mTVLoginUnConfirmCst.setOnClickListener(view -> {
-	   if (mTitleConn) {
-		startActivity(new Intent(LoginActivity.this, LoginUnconfirmActivity.class));
-	   } else {
-		ToastUtils.showShortToast("网络异常，请检查网络!");
-	   }
-	});
+//	/**
+//	 * 未确认耗材
+//	 */
+//	mTVLoginUnConfirmCst.setOnClickListener(view -> {
+//	   if (mTitleConn) {
+//		startActivity(new Intent(LoginActivity.this, LoginUnconfirmActivity.class));
+//	   } else {
+//		ToastUtils.showShortToast("网络异常，请检查网络!");
+//	   }
+//	});
 	/**
 	 * 未入库耗材
 	 */
@@ -863,7 +911,9 @@ public class LoginActivity extends SimpleActivity {
 	   //获取触摸动作，如果ACTION_UP，计时开始。
 	   case MotionEvent.ACTION_DOWN:
 		AllDeviceCallBack.getInstance().openLightStart();
-		mLightTimeCount.cancel();
+		if (mLightTimeCount!=null){
+		   mLightTimeCount.cancel();
+		}
 		break;
 	   case MotionEvent.ACTION_UP:
 	      if (mLightTimeCount==null){

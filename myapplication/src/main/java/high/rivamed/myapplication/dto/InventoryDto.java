@@ -38,6 +38,7 @@ public class InventoryDto extends LitePalSupport implements Serializable {
     private String                  configPatientCollar;
     private String                  thingId;
     private String                  deviceId;
+   private int    cstKinds;//下限
     private int    operation;
     private String requestResult;
     private int    type;    //0 放入 1取出
@@ -113,6 +114,13 @@ public class InventoryDto extends LitePalSupport implements Serializable {
    private int                     cstSum;
    private List<InventoryVo>       storageCstCountVo;
    private List<InventoryGroupVos> inventoryGroupVos;
+   public int getCstKinds() {
+      return cstKinds;
+   }
+
+   public void setCstKinds(int cstKinds) {
+      this.cstKinds = cstKinds;
+   }
 
    public List<OrderVos> getOrderVos() {
       return orderVos;

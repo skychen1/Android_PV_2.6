@@ -532,6 +532,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_PATIENTS_FIND;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	map.put("thingId", sThingCode);
 	map.put("patientNameOrId", optienNameOrId);
 	map.put("operationOrDept", deptName);
 	map.put("pageNo", pageNo + "");
@@ -993,6 +994,15 @@ public class NetRequest {
 	map.put("orderIds", orderids);
 	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
    }
+   /**
+    * 获取低于下限数量
+    */
+   public void getFloorList(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_FLOORLIST;
+	Map<String,String> map = new HashMap<>();
+	map.put("thingId", sThingCode);
+	PostRequest(urls, mGson.toJson(map), tag, netResult);
+   }
    private class MyCallBack extends StringCallback {
 
 	private String    url;
@@ -1030,10 +1040,10 @@ public class NetRequest {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
 
-	   LogUtils.w(TAG, "onError 请求URL： " + url+mTitleConn);
-	   LogUtils.w(TAG, "onError 请求URL： " + response.code());
-	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
-	   LogUtils.w(TAG, "onError 返回Body： " + response.body());
+	   LogUtils.e(TAG, "onError 请求URL： " + url+mTitleConn);
+	   LogUtils.e(TAG, "onError 请求URL： " + response.code());
+	   LogUtils.e(TAG, "onError 请求Body： " + mGson.toJson(date));
+	   LogUtils.e(TAG, "onError 返回Body： " + response.body());
 	}
 
 	@Override
@@ -1053,9 +1063,9 @@ public class NetRequest {
 		} else {
 		   String opFlg = jsonObject.getString("opFlg");
 		   if (opFlg.equals(ERROR_1010)) {
-			LogUtils.w(TAG, "请求URL： " + url);
-			LogUtils.w(TAG, "请求Body： " + mGson.toJson(date));
-			LogUtils.w(TAG, "返回Body： " + response.body());
+			LogUtils.e(TAG, "请求URL： " + url);
+			LogUtils.e(TAG, "请求Body： " + mGson.toJson(date));
+			LogUtils.e(TAG, "返回Body： " + response.body());
 			ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
 			if (netResult != null) {
 			   netResult.onSucceed(response.body());
@@ -1070,9 +1080,9 @@ public class NetRequest {
 		   }
 		}
 	   } catch (Exception e) {
-		LogUtils.w(TAG, "Exception 请求URL： " + url);
-		LogUtils.w(TAG, "Exception 请求Body： " + mGson.toJson(date));
-		LogUtils.w(TAG, "Exception 返回Body： " + response.body());
+		LogUtils.e(TAG, "Exception 请求URL： " + url);
+		LogUtils.e(TAG, "Exception 请求Body： " + mGson.toJson(date));
+		LogUtils.e(TAG, "Exception 返回Body： " + response.body());
 		e.printStackTrace();
 	   }
 	}
@@ -1255,11 +1265,11 @@ public class NetRequest {
 	   } else {
 		ToastUtils.showShortToast("请求失败  (" + response.code() + ")");
 	   }
-	   LogUtils.w(TAG, "onError 请求URL： " + url);
-	   LogUtils.w(TAG, "onError 请求URL： " + response.code());
-	   LogUtils.w(TAG, "onError 请求Body： " + mGson.toJson(date));
-	   LogUtils.w(TAG, "onError 请求文件： " + file.getAbsolutePath());
-	   LogUtils.w(TAG, "onError 返回Body： " + response.body());
+	   LogUtils.e(TAG, "onError 请求URL： " + url);
+	   LogUtils.e(TAG, "onError 请求URL： " + response.code());
+	   LogUtils.e(TAG, "onError 请求Body： " + mGson.toJson(date));
+	   LogUtils.e(TAG, "onError 请求文件： " + file.getAbsolutePath());
+	   LogUtils.e(TAG, "onError 返回Body： " + response.body());
 	}
 
 	@Override
@@ -1277,10 +1287,10 @@ public class NetRequest {
 		} else {
 		   String opFlg = jsonObject.getString("opFlg");
 		   if (opFlg.equals(ERROR_1010)) {
-			LogUtils.w(TAG, "请求URL： " + url);
-			LogUtils.w(TAG, "请求Body： " + mGson.toJson(date));
-			LogUtils.w(TAG, "onError 请求文件： " + file.getAbsolutePath());
-			LogUtils.w(TAG, "返回Body： " + response.body());
+			LogUtils.e(TAG, "请求URL： " + url);
+			LogUtils.e(TAG, "请求Body： " + mGson.toJson(date));
+			LogUtils.e(TAG, "onError 请求文件： " + file.getAbsolutePath());
+			LogUtils.e(TAG, "返回Body： " + response.body());
 			ToastUtils.showShortToast("后台系统异常，请联系实施人员！");
 			if (netResult != null) {
 			   netResult.onSucceed(response.body());
@@ -1294,9 +1304,9 @@ public class NetRequest {
 		   }
 		}
 	   } catch (Exception e) {
-		LogUtils.w(TAG, "Exception 请求URL： " + url);
-		LogUtils.w(TAG, "Exception 请求Body： " + mGson.toJson(date));
-		LogUtils.w(TAG, "Exception 返回Body： " + response.body());
+		LogUtils.e(TAG, "Exception 请求URL： " + url);
+		LogUtils.e(TAG, "Exception 请求Body： " + mGson.toJson(date));
+		LogUtils.e(TAG, "Exception 返回Body： " + response.body());
 		e.printStackTrace();
 	   }
 	}
