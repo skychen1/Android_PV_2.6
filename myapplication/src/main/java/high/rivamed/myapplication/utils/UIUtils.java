@@ -155,14 +155,17 @@ public class UIUtils {
    }
 
    private static long lastClickTime = 0L;
+   private static long lastClickTime1 = 0L;
+   private static long lastClickTime2 = 0L;
+   private static long lastClickTime3 = 0L;
    private static int  lastButtonId  = -1;
 
    public static boolean isFastDoubleClick() {
 	long time = System.currentTimeMillis();
-	if (time - lastClickTime < 2000) {
+	if (time - lastClickTime1 < 2000) {
 	   return true;
 	}
-	lastClickTime = time;
+	lastClickTime1 = time;
 	return false;
 
    }
@@ -177,19 +180,19 @@ public class UIUtils {
    }
    public static boolean isFastDoubleClick3() {
 	long time = System.currentTimeMillis();
-	if (time - lastClickTime < 1500) {
+	if (time - lastClickTime2 < 1500) {
 	   return true;
 	}
-	lastClickTime = time;
+	lastClickTime2 = time;
 	return false;
 
    }
    public static boolean isFastDoubleClick(int buttonId) {
 	long time = System.currentTimeMillis();
-	if (lastButtonId == buttonId && time - lastClickTime < 3000) {
+	if (lastButtonId == buttonId && time - lastClickTime3 < 3000) {
 	   return true;
 	}
-	lastClickTime = time;
+	lastClickTime3 = time;
 	lastButtonId = buttonId;
 	return false;
    }

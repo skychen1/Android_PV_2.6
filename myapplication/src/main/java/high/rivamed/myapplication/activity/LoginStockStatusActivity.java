@@ -1,11 +1,10 @@
 package high.rivamed.myapplication.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.fragment.StockMiddleInforFrag;
+import high.rivamed.myapplication.base.SimpleActivity;
+import high.rivamed.myapplication.fragment.ContentStockStatusFrag;
 
 /**
  * 项目名称:    Android_PV_2.6.4New
@@ -18,28 +17,29 @@ import high.rivamed.myapplication.fragment.StockMiddleInforFrag;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class LoginStockStatusActivity extends BaseSimpleActivity {
+public class LoginStockStatusActivity extends SimpleActivity {
 
 
    @Override
-   protected int getContentLayoutId() {
+   public int getLayoutId() {
 	return R.layout.activity_stock_loginlayout;
    }
-
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
-	super.initDataAndEvent(savedInstanceState);
-	mBaseTabBack.setVisibility(View.VISIBLE);
-	mBaseTabTvName.setVisibility(View.GONE);
-	mBaseTabBtnMsg.setVisibility(View.GONE);
-	mBaseTabIconRight.setVisibility(View.GONE);
-	mBaseTabOutLogin.setVisibility(View.GONE);
-	mBaseTabTvTitle.setText("库存详情");
+
 	getSupportFragmentManager()
 		.beginTransaction()
-		.add(R.id.login_stock_bg,new StockMiddleInforFrag())
+		.add(R.id.login_stock_bg, ContentStockStatusFrag.newInstance(false))
 		.commit();
    }
 
+   @Override
+   public void onBindViewBefore() {
 
+   }
+
+   @Override
+   public Object newP() {
+	return null;
+   }
 }

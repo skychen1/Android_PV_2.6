@@ -115,7 +115,6 @@ public class TimelyAllFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	Log.e("FAFAS", "START4   " + event.type);
 	if (event.type.equals("START4")) {
 	   mPauseS = false;
 	   if (mBuilder != null) {
@@ -231,7 +230,6 @@ public class TimelyAllFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onCallBackEvent(Event.EventDeviceCallBack event) {
 
-	Log.e("FAFAS", "epc   " + event.deviceId + "     " + event.epcs);
 	if (!mPauseS) {
 
 	   List<BoxIdBean> boxIdBeanss = LitePal.where("device_id = ?", event.deviceId)

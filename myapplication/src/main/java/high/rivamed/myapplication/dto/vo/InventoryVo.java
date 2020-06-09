@@ -17,6 +17,7 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String       deviceName;
    private String       status;
    private String       tempPatientId;
+   private String       stockMin;
    private boolean      isCreate;
 
    // 0 已过期
@@ -66,6 +67,14 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private boolean dateNetType;//判断是否是本地的还是(查询出来的false)
    private String barcode;
    private String noConfirmCount;
+
+   public String getStockMin() {
+	return stockMin;
+   }
+
+   public void setStockMin(String stockMin) {
+	this.stockMin = stockMin;
+   }
 
    public int getStockNum() {
 	return stockNum;

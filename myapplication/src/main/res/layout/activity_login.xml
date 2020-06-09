@@ -11,9 +11,9 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:orientation="horizontal"
 		android:layout_marginBottom="@dimen/y55"
-		android:layout_marginTop="@dimen/y55"
-		android:orientation="horizontal">
+		android:layout_marginTop="@dimen/y55">
 
 		<ImageView
 			android:id="@+id/login_logo"
@@ -51,13 +51,13 @@
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_centerVertical="true"
-			android:layout_marginLeft="@dimen/x210"
 			android:orientation="vertical"
 			>
 
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/x210"
 				android:orientation="horizontal">
 				<!--login_unknow_icon-->
 				<TextView
@@ -104,98 +104,15 @@
 				</RelativeLayout>
 			</LinearLayout>
 
-			<RelativeLayout
+			<View
 				android:layout_width="@dimen/x716"
 				android:layout_height="@dimen/y423"
+				android:layout_marginLeft="@dimen/x178"
 				android:layout_marginTop="@dimen/y244"
 				android:background="@mipmap/login_left_bg">
 
-				<LinearLayout
-					android:id="@+id/left_top"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginLeft="@dimen/x424"
-					android:layout_marginTop="@dimen/y45"
-					android:orientation="vertical">
 
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="过期耗材"
-						android:textColor="@color/text_color_3"
-						android:textSize="@dimen/x24"/>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/x54"
-						android:layout_marginTop="@dimen/y20"
-						android:orientation="horizontal">
-
-						<ImageView
-							android:layout_width="@dimen/x52"
-							android:layout_height="@dimen/x52"
-							android:src="@mipmap/login_guo"/>
-
-						<TextView
-							android:id="@+id/left_guo_text"
-							android:layout_width="@dimen/x104"
-							android:layout_height="wrap_content"
-							android:layout_marginLeft="@dimen/x25"
-							android:gravity="center"
-							android:includeFontPadding="false"
-							android:maxLines="1"
-							android:text=""
-							android:textColor="#fe5422"
-							android:textSize="@dimen/x54"
-							android:textStyle="bold"
-							/>
-					</LinearLayout>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/left_top"
-					android:layout_marginLeft="@dimen/x424"
-					android:layout_marginTop="@dimen/y25"
-					android:orientation="vertical">
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="近效期耗材"
-						android:textColor="@color/text_color_3"
-						android:textSize="@dimen/x24"/>
-
-					<LinearLayout
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/x54"
-						android:layout_marginTop="@dimen/y20"
-						android:orientation="horizontal">
-
-						<ImageView
-							android:layout_width="@dimen/x52"
-							android:layout_height="@dimen/x52"
-							android:src="@mipmap/login_jin"/>
-
-						<TextView
-							android:id="@+id/left_jin_text"
-							android:layout_width="@dimen/x104"
-							android:layout_height="wrap_content"
-							android:layout_marginLeft="@dimen/x25"
-							android:gravity="center"
-							android:includeFontPadding="false"
-							android:maxLines="1"
-							android:text=""
-							android:textColor="#94C444"
-							android:textSize="@dimen/x54"
-							android:textStyle="bold"
-							/>
-					</LinearLayout>
-
-
-				</LinearLayout>
-			</RelativeLayout>
+			</View>
 
 			<TextView
 				android:id="@+id/login_stock_status"
@@ -203,9 +120,9 @@
 				android:layout_height="wrap_content"
 				android:layout_alignParentBottom="true"
 				android:layout_marginBottom="@dimen/x50"
-				android:layout_marginLeft="@dimen/x30"
+				android:layout_marginLeft="@dimen/x210"
 				android:padding="@dimen/y15"
-				android:text="查看库存详情  〉"
+				android:text="查看库存状态  〉"
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
 
@@ -222,8 +139,192 @@
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
 		</RelativeLayout>
+		<RelativeLayout
+			android:id="@+id/left_r"
+			android:layout_width="@dimen/x234"
+			android:layout_height="@dimen/y342"
+			android:layout_marginTop="@dimen/y260"
+			android:layout_marginLeft="@dimen/x566"
+			android:paddingTop="@dimen/y45"
+			android:background="@mipmap/login_left_brand">
+			<LinearLayout
+				android:id="@+id/left_top"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:orientation="vertical">
 
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="过期耗材"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x24"/>
 
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/x54"
+					android:layout_marginTop="@dimen/y20"
+					android:orientation="horizontal">
+
+					<ImageView
+						android:layout_width="@dimen/x52"
+						android:layout_height="@dimen/x52"
+						android:src="@mipmap/login_guo"/>
+
+					<TextView
+						android:id="@+id/left_guo_text"
+						android:layout_width="@dimen/x104"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/x25"
+						android:gravity="center"
+						android:includeFontPadding="false"
+						android:maxLines="1"
+						android:text=""
+						android:textColor="#fe5422"
+						android:textSize="@dimen/x54"
+						android:textStyle="bold"
+						/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/left_top"
+				android:layout_centerHorizontal="true"
+				android:layout_marginTop="@dimen/y25"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="近效期耗材"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x24"/>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/x54"
+					android:layout_marginTop="@dimen/y20"
+					android:orientation="horizontal">
+
+					<ImageView
+						android:layout_width="@dimen/x52"
+						android:layout_height="@dimen/x52"
+						android:src="@mipmap/login_jin"/>
+
+					<TextView
+						android:id="@+id/left_jin_text"
+						android:layout_width="@dimen/x104"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/x25"
+						android:gravity="center"
+						android:includeFontPadding="false"
+						android:maxLines="1"
+						android:text=""
+						android:textColor="#94C444"
+						android:textSize="@dimen/x54"
+						android:textStyle="bold"
+						/>
+				</LinearLayout>
+			</LinearLayout>
+
+		</RelativeLayout>
+		<RelativeLayout
+			android:id="@+id/right_r"
+			android:layout_width="@dimen/x234"
+			android:layout_height="@dimen/y342"
+			android:layout_marginTop="@dimen/y260"
+			android:layout_toRightOf="@+id/left_r"
+			android:layout_marginLeft="@dimen/x5"
+			android:paddingTop="@dimen/y45"
+			android:background="@mipmap/login_left_brand">
+			<LinearLayout
+				android:id="@+id/right_top"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:layout_marginBottom="@dimen/y25"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="未确认耗材数"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x24"/>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/x54"
+					android:layout_marginTop="@dimen/y20"
+					android:orientation="horizontal">
+
+					<ImageView
+						android:layout_width="@dimen/x52"
+						android:layout_height="@dimen/x52"
+						android:src="@mipmap/login_right_top"/>
+
+					<TextView
+						android:id="@+id/right_top_text"
+						android:layout_width="@dimen/x104"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/x25"
+						android:gravity="center"
+						android:includeFontPadding="false"
+						android:maxLines="1"
+						android:text=""
+						android:textColor="@color/text_color_1b"
+						android:textSize="@dimen/x54"
+						android:textStyle="bold"
+						/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/right_down_l"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/right_top"
+				android:layout_centerHorizontal="true"
+
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="达下限耗材品类"
+					android:textColor="@color/text_color_3"
+					android:textSize="@dimen/x24"/>
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/x54"
+					android:layout_marginTop="@dimen/y20"
+					android:orientation="horizontal">
+
+					<ImageView
+						android:layout_width="@dimen/x52"
+						android:layout_height="@dimen/x52"
+						android:src="@mipmap/login_right_down"/>
+
+					<TextView
+						android:id="@+id/right_down_text"
+						android:layout_width="@dimen/x104"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/x25"
+						android:gravity="center"
+						android:includeFontPadding="false"
+						android:maxLines="1"
+						android:textColor="@color/text_color_c4"
+						android:textSize="@dimen/x54"
+						android:textStyle="bold"
+						/>
+				</LinearLayout>
+			</LinearLayout>
+
+		</RelativeLayout>
 		<LinearLayout
 			android:layout_width="@dimen/x670"
 			android:layout_height="@dimen/y610"
@@ -398,10 +499,10 @@
 		android:id="@+id/down_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:drawablePadding="@dimen/x20"
 		android:layout_gravity="center"
 		android:drawableLeft="@mipmap/login_down_icon"
-		android:drawablePadding="@dimen/x20"
-		android:gravity="center"
 		android:paddingBottom="@dimen/y65"
 		android:paddingTop="@dimen/y75"
 		android:text="智能耗材管理柜 RM-SM-"

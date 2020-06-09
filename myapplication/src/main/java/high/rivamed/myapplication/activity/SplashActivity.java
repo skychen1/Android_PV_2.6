@@ -37,15 +37,19 @@ import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ANIMATION_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_HOME_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_READER_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_REMOVE_LOGFILE_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.utils.UIUtils.fullScreenImmersive;
 
@@ -133,6 +137,16 @@ public class SplashActivity extends FragmentActivity {
                 } else {
                     CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
                 }
+                if (SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME)==-1){
+                    HOME_COUNTDOWN_TIME = 60000;
+                }else {
+                    HOME_COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME);
+                }
+		   if (SPUtils.getInt(UIUtils.getContext(), SAVE_REMOVE_LOGFILE_TIME)==-1){
+			REMOVE_LOGFILE_TIME = 30;
+		   }else {
+			REMOVE_LOGFILE_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_REMOVE_LOGFILE_TIME);
+		   }
                 LogcatHelper.getInstance(getApplicationContext()).start();
                 SPUtils.putString(getApplicationContext(), "TestLoginName", "admin");
                 SPUtils.putString(getApplicationContext(), "TestLoginPass", "rivamed");

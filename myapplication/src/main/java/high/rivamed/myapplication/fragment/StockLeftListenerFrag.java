@@ -86,7 +86,6 @@ public class StockLeftListenerFrag extends SimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	LogUtils.i(TAG, "START3   " + event.type);
 	if (event.type.equals("START3")) {
 	   getLeftDate();
 	}
@@ -94,9 +93,7 @@ public class StockLeftListenerFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-//	mBuilder = DialogUtils.showLoading(mContext);
-	LogUtils.i(TAG, "START3 fafafa  " );
-//	getLeftDate();/
+	getLeftDate();
    }
 
 

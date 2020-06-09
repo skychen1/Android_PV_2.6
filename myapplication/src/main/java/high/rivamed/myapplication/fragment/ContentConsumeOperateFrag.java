@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,6 +30,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.activity.FastInOutBoxActivity;
+import high.rivamed.myapplication.activity.HomeActivity;
 import high.rivamed.myapplication.activity.OutBoxBingActivity;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.OutMealActivity;
@@ -60,6 +62,7 @@ import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
 import static high.rivamed.myapplication.base.App.mAppContext;
+import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
@@ -169,7 +172,26 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       boolean                                          mIsClick;
    private       InventoryDto                                     mFastInOutDto;
    private       ArrayList<String>             mOrderIds;
+   private TimeCountOver mCountOver;
+   private String mStart1 ="START1";
+   private Boolean mHomeShowState;
 
+
+   /**
+    * 主页倒计时结束发起
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventOverHome(Event.EventOverHome event) {
+	if (event.b) {
+	   Log.i("343ww","EventOverHome");
+	   if (mCountOver!=null){
+		mCountOver.cancel();
+		MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
+		UIUtils.removeAllAct(mContext);
+	   }
+	}
+   }
    /**
     * 整单入库的单号
     *
@@ -247,6 +269,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mEthDevices.clear();
 	if (mListDevices != null) {
 	   mListDevices.clear();
+	}
+	if (mCountOver!=null){
+	   mCountOver.cancel();
 	}
 	Log.i("ssffff", "没关门");
 	UIUtils.disableRadioGroup(mContentRg);
@@ -331,6 +356,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	Log.i("outtccc", "EventFrag  " + mRbKey);
+	mStart1 = event.type;
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
 	   mEthDeviceIdBack.clear();
@@ -494,11 +520,42 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mContentRbTuihuo.setVisibility(View.GONE);
 	}
    }
+   private HomeActivity.MyTouchListener myTouchListener = new HomeActivity.MyTouchListener() {
+	@Override
+	public void onTouch(MotionEvent ev) {
+	   switch (ev.getAction()) {
+		case MotionEvent.ACTION_UP://门关、本界面
+		   if (mDoorStatus){
+			if (mCountOver!=null){
+			   mCountOver.start();
+			}
+		   }else {
+			if (mCountOver!=null){
+			   mCountOver.cancel();
+			}
+		   }
+		   break;
+		default://切换到其他界面、门锁打开停止
+		   if (mCountOver!=null){
+			mCountOver.cancel();
+		   }
+		   break;
+	   }
+	}
+   };
 
    @Override
    public void onResume() {
 	super.onResume();
-
+	if (mCountOver==null){
+	   mCountOver = new TimeCountOver(HOME_COUNTDOWN_TIME, 1000);
+	   mCountOver.start();
+	}else {
+	   mCountOver.cancel();
+	   mCountOver.start();
+	}
+	((HomeActivity) this.getActivity())
+		.registerMyTouchListener(myTouchListener);
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   if (mLoading.mHandler != null) {
@@ -1054,6 +1111,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void onStop() {
 	super.onStop();
+	if (mCountOver!=null){
+	   mCountOver.cancel();
+	}
 	if (mBuilder != null) {
 	   if (mBuilder.mHandler != null) {
 		mBuilder.mHandler.removeCallbacksAndMessages(null);
@@ -1078,5 +1138,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	EventBusUtils.unregister(this);
 	mEthDevices = null;
 	mListDevices = null;
+	if (mOrderIds != null) {
+	   mOrderIds.clear();
+	}
+	if (mCountOver!=null){
+	   mCountOver.cancel();
+	}
    }
 }

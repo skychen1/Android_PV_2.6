@@ -2,6 +2,8 @@ package high.rivamed.myapplication.utils;
 
 import java.io.File;
 
+import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
+
 public class LogFileUtils {
 
     public static void RemoveLogFile(String path) {
@@ -9,7 +11,7 @@ public class LogFileUtils {
         if (!file.exists()) {
             file.mkdirs();
         }
-        deleteFilesByTimeOfDay(file, 2);
+        deleteFilesByTimeOfDay(file, REMOVE_LOGFILE_TIME);
     }
 
     private static long getFileSize(File dir) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -35,13 +36,13 @@ import me.yokeyword.fragmentation.SupportFragment;
 
 import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCCZ;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_YCCL;
-import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -91,7 +92,7 @@ public class HomeActivity extends SimpleActivity {
    private ArrayList<String> mEthDevices     = new ArrayList<>();
    private List<String>      mDeviceSizeList = new ArrayList<>();
    private ArrayList<String> mListDevices;
-
+   private MyTouchListener myTouchListener;//实现接口
    @Override
    protected void onCreate(@Nullable Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -189,7 +190,7 @@ public class HomeActivity extends SimpleActivity {
 	if (firstFragment == null) {
 	   mFragments[CONSUME] = ContentConsumeOperateFrag.newInstance();
 	   mFragments[RUNWATE] = ContentRunWateFrag.newInstance();
-	   mFragments[STOCK] = ContentStockStatusFrag.newInstance();
+	   mFragments[STOCK] = ContentStockStatusFrag.newInstance(true);
 	   mFragments[CHECK] = ContentTimelyCheckFrag.newInstance();
 	   mFragments[SYJL] = ContentTakeNotesFrag.newInstance();
 	   mFragments[YCCL] = ContentExceptionDealFrag.newInstance();
@@ -273,7 +274,30 @@ public class HomeActivity extends SimpleActivity {
 	   super.onBackPressedSupport();
 	}
    }
+   @Override
+   public boolean dispatchTouchEvent(MotionEvent ev) {
+	//将触摸事件传递给回调函数
+	if (null != myTouchListener) {
+	   myTouchListener.onTouch(ev);
+	}
+	return super.dispatchTouchEvent(ev);
+   }
 
+   /**
+    * 用于注册回调事件
+    */
+   public void registerMyTouchListener(MyTouchListener myTouchListener) {
+	this.myTouchListener = myTouchListener;
+   }
+
+   /**
+    * 定义一个接口
+    * @author fox
+    *
+    */
+   public interface MyTouchListener {
+	public void onTouch(MotionEvent ev);
+   }
    @Override
    public Object newP() {
 	return null;

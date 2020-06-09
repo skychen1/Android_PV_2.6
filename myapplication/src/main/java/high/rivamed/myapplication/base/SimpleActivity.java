@@ -80,7 +80,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onTitleConnEvent(Event.XmmppConnect event) {
-	Log.e("xxb", "SimpleActivity     " + event.connect);
 	mTitleConn = event.connect;
 	mNet = event.net;
 	hasNetWork(mTitleConn,mNet);
@@ -91,7 +90,6 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onLogEvent(Event.EventLogType event) {
-//	Log.e("xxb", "EventLogType     " +event.type);
 	hasLogWork(event.type);
    }
 

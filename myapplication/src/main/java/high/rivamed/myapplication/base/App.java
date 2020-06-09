@@ -43,14 +43,16 @@ import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
 
 public class App extends Application {
 
-   public static final String                            TAG               = "BaseApplication";
-   public static       int                               READER_TIME       = 3000;     //扫描时间
-   public static       int                               ANIMATION_TIME    = 1000;     //动画延时时间
-   public static       int                               COUNTDOWN_TIME    = 20000;         //无操作退出时间
-   public static       int                               CLOSSLIGHT_TIME    = 30000;         //无操作关灯
+   public static final String                            TAG                 = "BaseApplication";
+   public static       int                               READER_TIME         = 3000;     //扫描时间
+   public static       int                               ANIMATION_TIME      = 1000;     //动画延时时间
+   public static       int                               COUNTDOWN_TIME      = 20000;         //无操作退出时间
+   public static       int                               CLOSSLIGHT_TIME     = 30000;         //无操作关灯
+   public static       int                               HOME_COUNTDOWN_TIME = 60000;         //无操作退出时间
+   public static       int                               REMOVE_LOGFILE_TIME = 30;         //天
    private static      App                               instance;
-   public static       PushFormDateBean                  mPushFormDateBean = new PushFormDateBean();
-   public static       List<PushFormDateBean.OrdersBean> mPushFormOrders   = new ArrayList<>();
+   public static       PushFormDateBean                  mPushFormDateBean   = new PushFormDateBean();
+   public static       List<PushFormDateBean.OrdersBean> mPushFormOrders     = new ArrayList<>();
 
    /**
     * 缓存
@@ -97,7 +99,7 @@ public class App extends Application {
 	registDevice();//注册硬件
 	instance = this;
 	//人脸识别sp初始化
-	PreferencesUtil.initPrefs( mAppContext);
+	PreferencesUtil.initPrefs(mAppContext);
 	initOkGo();
 	LogUtils.setDebugMode(false);
 	//设备基础module中有使用，需要注册初始化
@@ -119,12 +121,12 @@ public class App extends Application {
 	   public void run() {
 
 		int i = ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
-		Log.i("dddda","fdfdfd             "+i);
+		Log.i("dddda", "fdfdfd             " + i);
 		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
 		int connect = ConsumableManager.getManager().connect();
 		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
 
-		Log.i("dddda","connect             "+connect);
+		Log.i("dddda", "connect             " + connect);
 
 	   }
 	}).start();

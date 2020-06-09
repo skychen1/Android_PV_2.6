@@ -207,7 +207,7 @@ public class LoginFaceFragment extends SimpleFragment {
 
     //控制相机预览，开启人脸识别
     public void onTabShowPreview(boolean isShow) {
-        if (isShow && LoginActivity.mLoginGone.getVisibility() == View.GONE) {
+        if (isShow && (LoginActivity.mLoginGone==null||LoginActivity.mLoginGone.getVisibility() == View.GONE)) {
             if (startIdentity)
                 return;
             faceId = "";

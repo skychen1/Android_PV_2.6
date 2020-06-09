@@ -46,6 +46,11 @@ public class LogUtils {
 	   Logger.t(tag).w(s);
 	}
    }
+   public static void e(String tag, String s) {
+	if (isDebug) {
+	   Logger.t(tag).e(s);
+	}
+   }
 
 	/*public static void w(Object o) {
 		if(isDebug) {

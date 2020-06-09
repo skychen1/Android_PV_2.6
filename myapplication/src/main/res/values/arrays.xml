@@ -21,6 +21,19 @@
 		<item>柜号</item>
 		<item>最近效期</item>
 	</string-array>
+	<string-array name="five_arrays2">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>库存数量</item>
+		<item>柜号</item>
+		<item>库存下限</item>
+	</string-array>
+	<string-array name="four_arrays2">
+		<item>名称</item>
+		<item>规格型号</item>
+		<item>库存数量</item>
+		<item>柜号</item>
+	</string-array>
 	<string-array name="six_dialog_arrays">
 		<item>选择</item>
 		<item>患者姓名</item>

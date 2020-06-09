@@ -1533,8 +1533,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("") &&
 		    mTimelyRight.isEnabled() && mTimelyRight.getVisibility() == View.VISIBLE) {
-		   mStarts.cancel();
-		   mStarts.start();
+		   if (mStarts!=null){
+			mStarts.cancel();
+			mStarts.start();
+		   }
 		}
 		break;
 	   //否则其他动作计时取消
