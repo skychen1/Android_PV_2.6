@@ -51,10 +51,12 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
 import static android.widget.GridLayout.VERTICAL;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_051;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_052;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 
 /**
  * 项目名称:    Android_PV_2.6
@@ -191,14 +193,18 @@ public class RunWatePagerFrag extends SimpleFragment {
    }
 
    private void initDate() {
-	if (UIUtils.getConfigType(mContext, CONFIG_019)) {
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
 	   mSearchTypeUse.setVisibility(View.VISIBLE);
-	} else if (UIUtils.getConfigType(mContext, CONFIG_007)) {
+	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW02)) {
 	   mSearchTypeBindUse.setVisibility(View.VISIBLE);
 	   mSearchTypeUse.setVisibility(View.GONE);
-	} else if (!UIUtils.getConfigType(mContext, CONFIG_007) &&
-		     !UIUtils.getConfigType(mContext, CONFIG_019)) {
+	} else if (!UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
+		     !UIUtils.getConfigType(mContext, CONFIG_BPOW02) &&
+		     !UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&
+		     !UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 	   mSearchTypeBindUse.setVisibility(View.GONE);
 	   mSearchTypeUse.setVisibility(View.VISIBLE);
 	}
@@ -425,20 +431,17 @@ public class RunWatePagerFrag extends SimpleFragment {
 
    private void loadRunWateDate(
 	   String deviceCode, String term, String startTime, String endTime, String status) {
-      if (PAGE==1){
-	   mWateBeanRows.clear();
-	}
 	NetRequest.getInstance()
 		.loadRunWate(String.valueOf(PAGE), String.valueOf(SIZE), deviceCode, term, startTime,
 				 endTime, status, mContext, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
-
-				RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
-				List<RunWateBean.RowsBean> rows = runWateBean.getRows();
 				if (PAGE==1){
 				   mWateBeanRows.clear();
 				}
+				RunWateBean runWateBean = mGson.fromJson(result, RunWateBean.class);
+				List<RunWateBean.RowsBean> rows = runWateBean.getRows();
+
 				mWateBeanRows.addAll(rows);
 				hasNextPage = (rows.size() > SIZE - 1);
 				mWatePageAdapter.notifyDataSetChanged();

@@ -19,12 +19,12 @@ public class ConfigBean implements Serializable{
    /**
     * id : 0
     * thingId : 40288297677830f50167783478140000
-    * thingConfigVos : [{"code":"009","configId":null,"configName":"是否先开柜门后绑定患者","thingId":"40288297677830f50167783478140000","value":"1"},{"code":"012","configId":null,"configName":"是否启用绑定临时患者领用耗材","thingId":"40288297677830f50167783478140000","value":"2"},{"code":"016","configId":null,"configName":"是否开启功能开柜","thingId":"40288297677830f50167783478140000","value":"3"}]
+    * configVos : [{"code":"009","configId":null,"name":"是否先开柜门后绑定患者","thingId":"40288297677830f50167783478140000","value":"1"},{"code":"012","configId":null,"name":"是否启用绑定临时患者领用耗材","thingId":"40288297677830f50167783478140000","value":"2"},{"code":"016","configId":null,"name":"是否开启功能开柜","thingId":"40288297677830f50167783478140000","value":"3"}]
     */
 
-   private int id;
-   private String thingId;
-   private List<ThingConfigVosBean> thingConfigVos;
+   private int                 id;
+   private String              thingId;
+   private List<ConfigVosBean> configVos;
 
    public int getId() { return id;}
 
@@ -34,24 +34,24 @@ public class ConfigBean implements Serializable{
 
    public void setThingId(String thingId) { this.thingId = thingId;}
 
-   public List<ThingConfigVosBean> getThingConfigVos() { return thingConfigVos;}
+   public List<ConfigVosBean> getConfigVos() { return configVos;}
 
-   public void setThingConfigVos(
-	   List<ThingConfigVosBean> thingConfigVos) { this.thingConfigVos = thingConfigVos;}
+   public void setConfigVos(
+	   List<ConfigVosBean> configVos) { this.configVos = configVos;}
 
-   public static class ThingConfigVosBean {
+   public static class ConfigVosBean {
 
 	/**
 	 * code : 009
 	 * configId : null
-	 * configName : 是否先开柜门后绑定患者
+	 * name : 是否先开柜门后绑定患者
 	 * thingId : 40288297677830f50167783478140000
 	 * value : 1
 	 */
 
 	private String code;
 	private Object configId;
-	private String configName;
+	private String name;
 	private String thingId;
 	private String value;
 
@@ -63,9 +63,9 @@ public class ConfigBean implements Serializable{
 
 	public void setConfigId(Object configId) { this.configId = configId;}
 
-	public String getConfigName() { return configName;}
+	public String getName() { return name;}
 
-	public void setConfigName(String configName) { this.configName = configName;}
+	public void setName(String name) { this.name = name;}
 
 	public String getThingId() { return thingId;}
 

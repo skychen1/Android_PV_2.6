@@ -10,7 +10,7 @@ public class CreatTempPatientResultBean {
     /**
      * operateSuccess : true
      * id : 0
-     * ttransOperationSchedule : {"ackIndicator":null,"anesStartTime":null,"anesthesiaDoctorCode":null,"anesthesiaDoctorName":null,"anesthesiaMethod":null,"arriveDateTime":null,"bedNum":null,"patientId":"virtual","commitIndicator":0,"createDateTime":null,"emergercyIndicator":0,"endDataTime":null,"greenchannelIndicator":1,"hisOperationState":null,"operatingDeptCode":"245","operatingDeptName":null,"operatingRoomNo":"1号","operatingRoomNoName":null,"operationBeginDateTime":null,"operationCatchdrugNo":0,"operationName":null,"operationState":0,"operationSurgeonCode":null,"operationSurgeonName":null,"patientName":"刘得到-男-133232324444","patientNamePinyin":"ldd","scheduleDateTime":"2018-08-26 00:00:00","returnDateTime":null,"roomOperationSequence":null,"scheduleDateTime":null,"scheduleId":null,"updateDateTime":"2018-08-26 13:33:32","visitId":null,"name":"刘得到","idNo":"133232324444","sex":"男","lpatsInId":null,"loperPatsId":null}
+     * ttransOperationSchedule : {"ackIndicator":null,"anesStartTime":null,"anesthesiaDoctorCode":null,"anesthesiaDoctorName":null,"anesthesiaMethod":null,"arriveDateTime":null,"bedNum":null,"patientId":"virtual","commitIndicator":0,"createDateTime":null,"emergercyIndicator":0,"endDataTime":null,"greenchannelIndicator":1,"hisOperationState":null,"operatingDeptCode":"245","operatingDeptName":null,"operatingRoomNo":"1号","operatingRoomNoName":null,"operationBeginDateTime":null,"operationCatchdrugNo":0,"operationName":null,"operationState":0,"operationSurgeonCode":null,"operationSurgeonName":null,"patientName":"刘得到-男-133232324444","patientNamePinyin":"ldd","scheduleDateTime":"2018-08-26 00:00:00","returnDateTime":null,"roomOperationSequence":null,"scheduleDateTime":null,"scheduleId":null,"updateDateTime":"2018-08-26 13:33:32","visitId":null,"name":"刘得到","idCard":"133232324444","sex":"男","lpatsInId":null,"loperPatsId":null}
      */
 
     private boolean operateSuccess;
@@ -77,7 +77,7 @@ public class CreatTempPatientResultBean {
          * updateDateTime : 2018-08-26 13:33:32
          * visitId : null
          * name : 刘得到
-         * idNo : 133232324444
+         * idCard : 133232324444
          * sex : 男
          * lpatsInId : null
          * loperPatsId : null
@@ -104,7 +104,7 @@ public class CreatTempPatientResultBean {
         private Object operationBeginDateTime;
         private int operationCatchdrugNo;
         private Object operationName;
-        private int operationState;
+        private int    operationState;
         private Object operationSurgeonCode;
         private Object operationSurgeonName;
         private String patientName;
@@ -116,7 +116,7 @@ public class CreatTempPatientResultBean {
         private String updateDateTime;
         private Object visitId;
         private String name;
-        private String idNo;
+        private String idCard;
         private String sex;
         private Object lpatsInId;
         private Object loperPatsId;
@@ -387,12 +387,12 @@ public class CreatTempPatientResultBean {
             this.name = name;
         }
 
-        public String getIdNo() {
-            return idNo;
+        public String getIdCard() {
+            return idCard;
         }
 
-        public void setIdNo(String idNo) {
-            this.idNo = idNo;
+        public void setIdCard(String idCard) {
+            this.idCard = idCard;
         }
 
         public String getSex() {

@@ -19,7 +19,7 @@ public class HospNameBean extends Movie implements Serializable {
    /**
     * id : 0
     * hospIds : []
-    * deptVos : [{"branchAlias":"院区1","branchCode":"111"},{"branchAlias":"院区2","branchCode":"222"}]
+    * deptVos : [{"branchAlias":"院区1","branchId":"111"},{"branchAlias":"院区2","branchId":"222"}]
     */
 
    private int id;
@@ -49,13 +49,13 @@ public class HospNameBean extends Movie implements Serializable {
 
 	/**
 	 * branchAlias : 院区1
-	 * branchCode : 111
+	 * branchId : 111
 	 * deptName:
 	 * deptId:
 	 */
 
 	private String branchAlias;
-	private String branchCode;
+	private String branchId;
 	private String deptName;
 	private String deptId;
 
@@ -79,9 +79,9 @@ public class HospNameBean extends Movie implements Serializable {
 
 	public void setBranchAlias(String branchAlias) { this.branchAlias = branchAlias;}
 
-	public String getBranchCode() { return branchCode;}
+	public String getBranchId() { return branchId;}
 
-	public void setBranchCode(String branchCode) { this.branchCode = branchCode;}
+	public void setBranchId(String branchId) { this.branchId = branchId;}
    }
 
 

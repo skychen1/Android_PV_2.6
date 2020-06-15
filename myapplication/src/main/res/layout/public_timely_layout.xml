@@ -259,6 +259,16 @@
             android:layout_marginRight="@dimen/x30"
             android:layout_alignParentRight="true"
             android:text="耗 材 组"/>
+        <TextView
+            android:id="@+id/web_btn"
+            style="@style/btn_style_sel"
+            android:layout_width="wrap_content"
+            android:paddingLeft="@dimen/x30"
+            android:paddingRight="@dimen/x30"
+            android:visibility="gone"
+            android:layout_toLeftOf="@+id/group_btn"
+            android:layout_marginRight="@dimen/x30"
+            android:text="管 理 端"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"

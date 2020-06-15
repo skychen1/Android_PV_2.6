@@ -45,7 +45,8 @@ import high.rivamed.myapplication.views.TableTypeView;
 import static high.rivamed.myapplication.activity.FastInOutBoxActivity.mFastViewpager;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_IN;
@@ -456,7 +457,7 @@ public class FastInFragment extends SimpleFragment {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
 		  mDtoOperation != 8) ||
-		 (mDtoOperation == 3 && UIUtils.getConfigType(mContext, CONFIG_007) &&
+		 (mDtoOperation == 3 &&( UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||UIUtils.getConfigType(mContext, CONFIG_BPOW02))&&
 		  b.getPatientName() == null)) {
 		if (mDtoOperation == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		    b.getExpireStatus() != 0) {

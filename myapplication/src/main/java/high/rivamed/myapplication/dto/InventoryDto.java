@@ -89,6 +89,8 @@ public class InventoryDto extends LitePalSupport implements Serializable {
    private List<String>   unNetMoreEpcs;
    private List<String>   epcs;
    private List<String>   deviceIds;
+   private String            checkType;
+   private String            checkFrom;
    private List<OrderVos> orderVos;
    /**
     * pageNo : 1
@@ -114,6 +116,22 @@ public class InventoryDto extends LitePalSupport implements Serializable {
    private int                     cstSum;
    private List<InventoryVo>       storageCstCountVo;
    private List<InventoryGroupVos> inventoryGroupVos;
+
+   public String getCheckType() {
+      return checkType;
+   }
+
+   public void setCheckType(String checkType) {
+      this.checkType = checkType;
+   }
+
+   public String getCheckFrom() {
+      return checkFrom;
+   }
+
+   public void setCheckFrom(String checkFrom) {
+      this.checkFrom = checkFrom;
+   }
    public int getCstKinds() {
       return cstKinds;
    }

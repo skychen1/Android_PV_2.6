@@ -304,9 +304,9 @@ public class UIUtils {
 	//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
 	ConfigBean configBean = sGson.fromJson(string, ConfigBean.class);
 	if (configBean != null) {
-	   List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+	   List<ConfigBean.ConfigVosBean> tCstConfigVos = configBean.getConfigVos();
 	   if (tCstConfigVos!=null){
-		for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
+		for (ConfigBean.ConfigVosBean configType : tCstConfigVos) {
 		   if (code.equals(configType.getCode())) {
 			return true;
 		   }
@@ -322,10 +322,10 @@ public class UIUtils {
     * @param code
     * @return
     */
-   public static boolean getConfigLoginType( List<ConfigBean.ThingConfigVosBean> tCstConfigVos, String code) {
+   public static boolean getConfigLoginType(List<ConfigBean.ConfigVosBean> tCstConfigVos, String code) {
 	//	LogUtils.i("ContentConsumeOperateFrag","SAVE_CONFIG_STRING   "+string);
 	   if (tCstConfigVos!=null){
-		for (ConfigBean.ThingConfigVosBean configType : tCstConfigVos) {
+		for (ConfigBean.ConfigVosBean configType : tCstConfigVos) {
 		   if (code.equals(configType.getCode())) {
 			return true;
 		   }

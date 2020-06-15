@@ -313,4 +313,32 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 	   }
 	}
    }
+   /* 定义一个倒计时的内部类 */
+   protected class TimeCountNoEpc extends CountDownTimer {
+
+	TextView textView;
+	TextView leftText;
+
+	public TimeCountNoEpc(
+		long millisInFuture, long countDownInterval, TextView textView) {
+	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+	   this.textView = textView;
+	}
+
+	@Override
+	public void onFinish() {// 计时完毕时触发
+	   EventBusUtils.post(new Event.EventOverNoEpc(true));
+
+	}
+
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
+	   Log.i("ffadef", "millisUntilFinished     " + millisUntilFinished);
+	   if (millisUntilFinished / 1000 <= 35) {
+		textView.setText("退出登录 " + "( " + millisUntilFinished / 1000 + " s )");
+	   } else {
+		textView.setText("退出登录");
+	   }
+	}
+   }
 }

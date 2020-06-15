@@ -333,7 +333,7 @@ public class PublicStockFrag extends SimpleFragment {
 	   @Override
 	   public void onRefresh(RefreshLayout refreshLayout) {
 		//刷新
-		LoadMiddleRgDate(mDeviceCode, mStopFlag, null);
+		LoadMiddleRgDate(mDeviceCode, mStopFlag, mTrim);
 		refreshLayout.finishRefresh(200);
 	   }
 	});

@@ -35,7 +35,7 @@ public class HospPopTwoAdapter extends BaseQuickAdapter<HospNameBean.DeptVosBean
    protected void convert(BaseViewHolder helper, HospNameBean.DeptVosBean item) {
       findId(helper);
       mMeal.setText(item.getBranchAlias());
-      mGoneMeal.setText(item.getBranchCode());
+      mGoneMeal.setText(item.getBranchId());
    }
 
    private void findId(BaseViewHolder helper) {

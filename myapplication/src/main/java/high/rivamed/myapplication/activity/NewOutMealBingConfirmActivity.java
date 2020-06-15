@@ -67,10 +67,11 @@ import high.rivamed.myapplication.views.OpenDoorDialog;
 import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.mTitleConn;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -291,8 +292,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	   if (event.bing) {//绑定的按钮转换
 		for (InventoryVo b : mBoxInventoryVos) {
 		   if (mDoorStatusType) {
-			if (UIUtils.getConfigType(mContext, CONFIG_009) &&
-			    !UIUtils.getConfigType(mContext, CONFIG_019) &&
+			if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
+			    !UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&!UIUtils.getConfigType(mContext, CONFIG_BPOW05)&&
 			    ((b.getPatientId() == null || b.getPatientId().equals("")) ||
 			     (b.getPatientName() == null || b.getPatientName().equals("")))) {
 			   mDownBtnOne.setEnabled(false);
@@ -314,7 +315,8 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 			if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 			    (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 			     b.getExpireStatus() == 0) ||
-			    (UIUtils.getConfigType(mContext, CONFIG_007) && b.getPatientName() == null)) {
+			    ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+				UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&b.getPatientName() == null)) {
 			   mDownBtnOne.setEnabled(false);
 			   mTimelyOpenDoor.setEnabled(true);
 			   mLyBingBtn.setEnabled(true);
@@ -551,8 +553,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	mDownBtnOneLL.setVisibility(View.VISIBLE);
 	String[] array;
 
-	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-	     UIUtils.getConfigType(mContext, CONFIG_019))) {
+	if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW05))) {
 	   mBindPatient.setVisibility(View.VISIBLE);
 	   mDownBtnOne.setEnabled(false);
 	   array = mContext.getResources().getStringArray(R.array.eight_bindmeal_arrays);
@@ -683,8 +687,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 
    private void initView() {
 	String[] array;
-	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-	     UIUtils.getConfigType(mContext, CONFIG_019))) {
+	if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW05))) {
 	   array = mContext.getResources().getStringArray(R.array.eight_bindmeal_arrays);
 	   mLayout = R.layout.item_formcon_eight_layout;
 	   mTitleLayout = R.layout.item_formcon_eight_title_layout;
@@ -704,8 +710,10 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_four)).setText(titeleList.get(4));
 	((TextView) mHeadView.findViewById(R.id.seven_five)).setText(titeleList.get(5));
 
-	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-	     UIUtils.getConfigType(mContext, CONFIG_019))) {
+	if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW05))) {
 	   ((TextView) mHeadView.findViewById(R.id.seven_seven)).setText(titeleList.get(6));
 	   ((TextView) mHeadView.findViewById(R.id.seven_six)).setText(titeleList.get(7));
 	} else {
@@ -921,7 +929,7 @@ public class NewOutMealBingConfirmActivity extends BaseSimpleActivity {
 		item.setOperationScheduleId(event.vo.getOperationScheduleId());
 		item.setOperatingRoomName(event.vo.getOperatingRoomName());
 		item.setOperatingRoomNo(event.vo.getOperatingRoomNo());
-		item.setIdNo(event.vo.getIdNo());
+		item.setIdCard(event.vo.getIdCard());
 		item.setSurgeryTime(event.vo.getSurgeryTime());
 		item.setSex(event.vo.getSex());
 		item.setCreate(event.vo.isCreate());

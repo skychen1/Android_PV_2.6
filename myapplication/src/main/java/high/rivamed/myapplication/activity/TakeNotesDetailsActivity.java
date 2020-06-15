@@ -78,6 +78,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    private int  mLayout;
    private TakeNotesEpcAdapter mNotesEpcAdapter;
    private String mPatientId;
+   private String mHisPatientId;
    private int mStatus;
    private List<TakeNotesDetailsBean.JournalUseRecordDetailVos> mDetailVos =new ArrayList<>();
    private String mPatientName;
@@ -90,6 +91,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
    public void onPidEvent(Event.EventPatientId event) {
 	mPatientName = event.patientName;
 	mPatientId = event.patientId;
+	mHisPatientId = event.hisPatientId;
 	mStatus = event.status;
 
    }
@@ -99,8 +101,8 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
     * @param patientId
     * @param status
     */
-   private void loadDate(String patientId, int status) {
-	NetRequest.getInstance().getFindEpcDetails(patientId, status, this, new BaseResult(){
+   private void loadDate(String patientId,String mHisPatientId,int status) {
+	NetRequest.getInstance().getFindEpcDetails(patientId,mHisPatientId, status, this, new BaseResult(){
 	   @Override
 	   public void onSucceed(String result) {
 		LogUtils.i(TAG, "result   " + result);
@@ -162,7 +164,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 		switch (checkedId) {
 		   case R.id.take_left_ly://最终领用
 			mStatus=3;
-			loadDate(mPatientId,mStatus);
+//			loadDate(mPatientId,mStatus);
 			break;
 //		   case R.id.take_left_tu://退回
 //			mStatus=7;
@@ -191,7 +193,7 @@ public class TakeNotesDetailsActivity extends BaseSimpleActivity {
 	((TextView) mHeadView.findViewById(R.id.seven_eight)).setText(titeleList.get(7));
 	mHeadView.setBackgroundResource(R.color.bg_green);
 	mLinearLayout.addView(mHeadView);
-	loadDate(mPatientId,mStatus);
+	loadDate(mPatientId,mHisPatientId,mStatus);
 
 	mBaseTabBack.setOnClickListener(new View.OnClickListener() {
 	   @Override

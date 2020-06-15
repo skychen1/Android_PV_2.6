@@ -34,7 +34,7 @@ public class ExceptionRecordAdapter extends BaseQuickAdapter<ExceptionRecordBean
         helper.setText(R.id.nine_record_six, item.getDeviceName());
         helper.setText(R.id.nine_record_seven1, item.getUnNormalContent()).setTextColor(R.id.nine_record_seven1,UIUtils.getColor(R.color.color_y));
         helper.setText(R.id.nine_record_eight, item.getOperationResult());
-        helper.setText(R.id.nine_record_nine, item.getUnNormalOperationTime());
+        helper.setText(R.id.nine_record_nine, item.getOperationTime());
 
     }
 }

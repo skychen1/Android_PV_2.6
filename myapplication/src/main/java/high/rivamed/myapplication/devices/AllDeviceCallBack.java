@@ -756,14 +756,14 @@ public class AllDeviceCallBack {
     */
    private void filteEpc(String deviceId, String epc) {
 	if (mConfigType043 && !mConfigType044 && !mConfigType045) {//屏蔽位数
-	   ConfigBean.ThingConfigVosBean epcFilte = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epcFilte = getEpcFilte(sTCstConfigVos, CONFIG_043);
 	   int integer = Integer.parseInt(epcFilte.getValue());
 	   if (epc.length() == integer) {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
 	} else if (mConfigType043 && mConfigType044 && !mConfigType045) {//屏蔽位数和前X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
 	   try {
 		int integer = Integer.parseInt(epc43.getValue());
 		String value44 = epc44.getValue();
@@ -774,9 +774,9 @@ public class AllDeviceCallBack {
 		e.printStackTrace();
 	   }
 	} else if (mConfigType043 && mConfigType044 && mConfigType045) {//屏蔽位数屏蔽前X位和后X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 
 	   try {
 		int integer = Integer.parseInt(epc43.getValue());
@@ -793,8 +793,8 @@ public class AllDeviceCallBack {
 		e.printStackTrace();
 	   }
 	} else if (mConfigType043 && !mConfigType044 && mConfigType045) {//屏蔽位数和后X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value45 = epc45.getValue();
 
@@ -802,8 +802,8 @@ public class AllDeviceCallBack {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
 	} else if (!mConfigType043 && mConfigType044 && mConfigType045) {//屏蔽前X位和后X位
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
 	   if (epc.startsWith(value44) && epc.endsWith(value45)) {
@@ -811,13 +811,13 @@ public class AllDeviceCallBack {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
 	} else if (!mConfigType043 && mConfigType044 && !mConfigType045){
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
 	   String value44 = epc44.getValue();
 	   if (!epc.startsWith(value44)) {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
 	   }
 	} else if (!mConfigType043 && !mConfigType044 && mConfigType045) {
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value45 = epc45.getValue();
 	   if (!epc.endsWith(value45)) {
 		EventBusUtils.post(new Event.EventOneEpcDeviceCallBack(deviceId, epc));
@@ -834,23 +834,23 @@ public class AllDeviceCallBack {
     */
    private String filteListEpc(String epc) {
 	if (mConfigType043 && !mConfigType044 && !mConfigType045) {//屏蔽位数
-	   ConfigBean.ThingConfigVosBean epcFilte = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epcFilte = getEpcFilte(sTCstConfigVos, CONFIG_043);
 	   int integer = Integer.parseInt(epcFilte.getValue());
 	   if (epc.length() == integer) {
 		return epc;
 	   }
 	} else if (mConfigType043 && mConfigType044 && !mConfigType045) {//屏蔽位数和前X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value44 = epc44.getValue();
 	   if (epc.length() == integer && !epc.startsWith(value44)) {
 		return epc;
 	   }
 	} else if (mConfigType043 && mConfigType044 && mConfigType045) {//屏蔽位数屏蔽前X位和后X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
@@ -861,16 +861,16 @@ public class AllDeviceCallBack {
 		}
 	   }
 	} else if (mConfigType043 && !mConfigType044 && mConfigType045) {//屏蔽位数和后X位
-	   ConfigBean.ThingConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc43 = getEpcFilte(sTCstConfigVos, CONFIG_043);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   int integer = Integer.parseInt(epc43.getValue());
 	   String value45 = epc45.getValue();
 	   if (epc.length() == integer && !epc.endsWith(value45)) {
 		return epc;
 	   }
 	} else if (!mConfigType043 && mConfigType044 && mConfigType045) {//屏蔽前X位和后X位
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value44 = epc44.getValue();
 	   String value45 = epc45.getValue();
 	   if (epc.startsWith(value44) && epc.endsWith(value45)) {
@@ -878,13 +878,13 @@ public class AllDeviceCallBack {
 		return epc;
 	   }
 	} else if (!mConfigType043 && mConfigType044 && !mConfigType045) {
-	   ConfigBean.ThingConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
+	   ConfigBean.ConfigVosBean epc44 = getEpcFilte(sTCstConfigVos, CONFIG_044);
 	   String value44 = epc44.getValue();
 	   if (!epc.startsWith(value44)) {
 		return epc;
 	   }
 	} else if (!mConfigType043 && !mConfigType044 && mConfigType045) {
-	   ConfigBean.ThingConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
+	   ConfigBean.ConfigVosBean epc45 = getEpcFilte(sTCstConfigVos, CONFIG_045);
 	   String value45 = epc45.getValue();
 	   if (!epc.endsWith(value45)) {
 		return epc;

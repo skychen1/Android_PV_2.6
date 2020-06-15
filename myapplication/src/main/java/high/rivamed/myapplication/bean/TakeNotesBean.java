@@ -19,7 +19,7 @@ public class TakeNotesBean implements Serializable {
    /**
     * pageNo : 1
     * pageSize : 20
-    * rows : [{"patientId":"4028829366c2ad720166c2e1787d0009","cstNo":null,"patientName":"啦啦啦啦啦啦啦","gender":"未知","deptName":null,"doctorName":"","operationSurgeonCode":null,"scheduleTime":"2018-11-02 18:17:09","operationName":null,"roomName":"","operationBeginDateTime":"2018-10-30 10:55:00","status":null,"loperPatsId":null}]
+    * rows : [{"patientIndexId":"4028829366c2ad720166c2e1787d0009","cstNo":null,"patientName":"啦啦啦啦啦啦啦","gender":"未知","deptName":null,"doctorName":"","operationSurgeonCode":null,"scheduleTime":"2018-11-02 18:17:09","operationName":null,"roomName":"","operationBeginDateTime":"2018-10-30 10:55:00","status":null,"loperPatsId":null}]
     * total : 1
     */
 
@@ -47,7 +47,7 @@ public class TakeNotesBean implements Serializable {
    public static class RowsBean {
 
 	/**
-	 * patientId : 4028829366c2ad720166c2e1787d0009
+	 * patientIndexId : 4028829366c2ad720166c2e1787d0009
 	 * cstNo : null
 	 * patientName : 啦啦啦啦啦啦啦
 	 * gender : 未知
@@ -62,7 +62,7 @@ public class TakeNotesBean implements Serializable {
 	 * loperPatsId : null
 	 */
 
-	private String patientId;
+	private String patientIndexId;
 	private Object cstNo;
 	private String patientName;
 	private String gender;
@@ -84,9 +84,9 @@ public class TakeNotesBean implements Serializable {
 	public void setHisPatientId(String hisPatientId) {
 	   this.hisPatientId = hisPatientId;
 	}
-	public String getPatientId() { return patientId;}
+	public String getPatientIndexId() { return patientIndexId;}
 
-	public void setPatientId(String patientId) { this.patientId = patientId;}
+	public void setPatientIndexId(String patientIndexId) { this.patientIndexId = patientIndexId;}
 
 	public Object getCstNo() { return cstNo;}
 

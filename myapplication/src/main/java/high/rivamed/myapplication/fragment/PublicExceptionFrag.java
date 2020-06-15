@@ -66,8 +66,11 @@ import high.rivamed.myapplication.views.SelectExceptionOperatorDialog;
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 import static high.rivamed.myapplication.cont.Constants.BANGDING;
 import static high.rivamed.myapplication.cont.Constants.CHU_GUI;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_EXCEPTION_LEFT;
@@ -94,6 +97,8 @@ public class PublicExceptionFrag extends SimpleFragment {
    EditText           searchEt;
    @BindView(R.id.search_iv_delete)
    ImageView          searchIvDelete;
+   @BindView(R.id.exception_num)
+   TextView           exceptionNum;
    @BindView(R.id.search_time_start)
    TextView           searchTimeStart;
    @BindView(R.id.search_time_end)
@@ -290,7 +295,10 @@ public class PublicExceptionFrag extends SimpleFragment {
 	if (mType_page.equals(STYPE_EXCEPTION_LEFT)) {
 	   //异常处理
 	   exceptionSearchLy.setVisibility(View.VISIBLE);
-	   if (UIUtils.getConfigType(mContext, CONFIG_007)) {
+	   if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+		 UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+		 UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+		 UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 		exceptionBindBtn.setVisibility(View.VISIBLE);
 		searchTypeUnbind.setVisibility(View.VISIBLE);
 	   } else {
@@ -509,6 +517,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 	   public void onSucceed(String result) {
 		ExceptionRecordBean bean = mGson.fromJson(result, ExceptionRecordBean.class);
 		List<ExceptionRecordBean.RowsBean> rows = bean.getRows();
+		exceptionNum.setText("异常耗材数量："+bean.getTotal());
 		for (ExceptionRecordBean.RowsBean row : rows) {
 		   row.setSelected(false);
 		}
@@ -824,7 +833,10 @@ public class PublicExceptionFrag extends SimpleFragment {
     * 该异常处理中不再出现，异常记录中增加一条处理记录   7
     */
    private void connectOutBox() {
-	boolean hasNext = UIUtils.getConfigType(mContext, CONFIG_007) ? true : false;
+	boolean hasNext = UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+				UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+				UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+				UIUtils.getConfigType(mContext, CONFIG_BPOW05) ? true : false;
 	DialogUtils.showOutBoxConnectDialog(_mActivity, hasNext, 2, 0);
    }
 

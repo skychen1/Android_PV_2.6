@@ -309,13 +309,14 @@ public class ContentTakeNotesFrag extends BaseSimpleFragment {
 	   @Override
 	   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 		if (mRows == null || null == mRows.get(position) ||
-		    null == mRows.get(position).getPatientId()) {
+		    null == mRows.get(position).getPatientIndexId()) {
 		   ToastUtils.showShortToast("数据异常");
 		} else {
-		   String patientId = mRows.get(position).getPatientId();
+		   String patientId = mRows.get(position).getPatientIndexId();
 		   String patientName = mRows.get(position).getPatientName();
+		   String hisPatientId = mRows.get(position).getHisPatientId();
 		   int status = 3;
-		   EventBusUtils.postSticky(new Event.EventPatientId(patientId, status, patientName));
+		   EventBusUtils.postSticky(new Event.EventPatientId(patientId,hisPatientId, status, patientName));
 		   mContext.startActivity(new Intent(mContext, TakeNotesDetailsActivity.class));
 		}
 	   }

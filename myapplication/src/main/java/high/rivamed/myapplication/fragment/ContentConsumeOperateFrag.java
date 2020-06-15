@@ -61,21 +61,21 @@ import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
-import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_011;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_DB;
 import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_LY;
@@ -596,7 +596,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   new Intent(mContext, FastInOutBoxActivity.class).putExtra("mEthId", mEthId));
 	}
 	//后绑定患者
-	else if (UIUtils.getConfigType(mContext, CONFIG_009) && (mRbKey == 3 || mRbKey == 4)) {
+	else if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) && (mRbKey == 3 || mRbKey == 4)) {
 	   mContext.startActivity(
 		   new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("bindType", TEMP_AFTERBIND)
@@ -694,7 +694,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
 	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
-	    !UIUtils.getConfigType(mContext, CONFIG_010) &&
+	    (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||UIUtils.getConfigType(mContext, CONFIG_BPOW04))&&
 	    getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
 	   String deviceId = mTbaseDevices.get(0).getDeviceId();
 	   doSelectOption(deviceId, R.id.content_rb_lyth);
@@ -900,9 +900,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void lingYongAndBack(String deviceId, int mkey) {
 	mRbKey = mkey;
 
-	if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-	     UIUtils.getConfigType(mContext, CONFIG_019)) &&
-	    UIUtils.getConfigType(mContext, CONFIG_010) &&
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) &&
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW02) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者再开柜，不启动临时患者
 	   LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
@@ -912,9 +911,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		errorBind(deviceId, "GONE");
 	   }
-	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			UIUtils.getConfigType(mContext, CONFIG_019)) &&
-		     UIUtils.getConfigType(mContext, CONFIG_010) &&
+	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) &&
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW02) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者，启动临时患者
 	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
@@ -924,16 +922,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		errorBind(deviceId, "VISIBLE");
 	   }
-	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			UIUtils.getConfigType(mContext, CONFIG_019)) &&
-		     UIUtils.getConfigType(mContext, CONFIG_009) &&
+	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
 		     !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，不启用临时患者
 	   LogUtils.i(TAG, "后绑定患者，不启用临时患者");
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);
-	} else if ((UIUtils.getConfigType(mContext, CONFIG_007) ||
-			UIUtils.getConfigType(mContext, CONFIG_019)) &&
-		     UIUtils.getConfigType(mContext, CONFIG_009) &&
+	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，启用临时患者
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);

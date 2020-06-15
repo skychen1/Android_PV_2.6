@@ -40,6 +40,7 @@ import high.rivamed.myapplication.activity.TimelyDetailsActivity;
 import high.rivamed.myapplication.activity.TimelyGroupCstActivity;
 import high.rivamed.myapplication.activity.TimelyLossActivity;
 import high.rivamed.myapplication.activity.TimelyProfitActivity;
+import high.rivamed.myapplication.activity.WebIntentActivity;
 import high.rivamed.myapplication.adapter.TimelyAllAdapter;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.base.SimpleFragment;
@@ -68,7 +69,6 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_026;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetRequest.sThingCode;
 import static high.rivamed.myapplication.utils.LyDateUtils.initReaderUtil;
 import static high.rivamed.myapplication.utils.StringUtils.search;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
@@ -95,7 +95,7 @@ public class TimelyAllFrag extends SimpleFragment {
    private       List<Inventory>               mEpcList;
    private       int                           mEpcsNumber   = 0;
    public static boolean                       mTimelyOnResume;
-   private       SavePadPdBean                 mPutSavePadPdDto;
+//   private       SavePadPdBean                 mPutSavePadPdDto;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onConnectReaderState(Event.ConnectReaderState event) {
@@ -128,6 +128,8 @@ public class TimelyAllFrag extends SimpleFragment {
 
    private static final String TAG = "TimelyAllFrag";
    private              String mDeviceCode;
+   @BindView(R.id.web_btn)
+   TextView mWebBtn;
    @BindView(R.id.timely_loss)
    TextView mTimelyLoss;
    @BindView(R.id.timely_start_btn)
@@ -290,6 +292,7 @@ public class TimelyAllFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
+	mWebBtn.setVisibility(View.GONE);
 	mBuilder = DialogUtils.showRader(mContext);
 	mBuilder.mLoading.stop();
 	mBuilder.mDialog.dismiss();
@@ -471,7 +474,7 @@ public class TimelyAllFrag extends SimpleFragment {
    }
 
    @OnClick({R.id.timely_start_btn, R.id.timely_profit, R.id.timely_loss, R.id.timely_put_btn,
-	   R.id.group_btn})
+	   R.id.group_btn,R.id.web_btn})
    public void onViewClicked(View view) {
 	mPauseS = false;
 	switch (view.getId()) {
@@ -549,10 +552,10 @@ public class TimelyAllFrag extends SimpleFragment {
 		break;
 	   case R.id.timely_put_btn://提交盘点单
 		if (!UIUtils.isFastDoubleClick(R.id.timely_put_btn)) {
-		   if (mPutSavePadPdDto != null) {
+		   if (mInventoryDto != null) {
 			mTimelyPutBtn.setEnabled(false);
 			NetRequest.getInstance()
-				.putSavePadPdDate(mGson.toJson(mPutSavePadPdDto), this, new BaseResult() {
+				.putSavePadPdDate(mGson.toJson(mInventoryDto), this, new BaseResult() {
 				   @Override
 				   public void onSucceed(String result) {
 					mTimelyPutBtn.setEnabled(true);
@@ -587,6 +590,10 @@ public class TimelyAllFrag extends SimpleFragment {
 		   intent.putExtra("mDeviceCode",mDeviceCode);
 		   mContext.startActivity(intent);
 		}
+		break;
+	   case R.id.web_btn:
+		Intent intent = new Intent(mContext, WebIntentActivity.class);
+		mContext.startActivity(intent);
 		break;
 	}
    }
@@ -706,12 +713,10 @@ public class TimelyAllFrag extends SimpleFragment {
 		   setScanTimelyDate(mCstInventoryDto, epcs, deviceId);
 
 		   if (mDeviceCode == null || mDeviceCode.equals("") || mTbaseDevices.size() == 1) {
-			mPutSavePadPdDto = new SavePadPdBean();
-			mPutSavePadPdDto.setSthId(
-				SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
-			mPutSavePadPdDto.setThingId(sThingCode);
-			mPutSavePadPdDto.setDeviceIds(mCstInventoryDto.getDeviceIds());
-			mPutSavePadPdDto.setEpcs(mCstInventoryDto.getEpcs());
+			mInventoryDto.setSthId(SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
+			mInventoryDto.setCheckFrom("3");
+			mInventoryDto.setCheckType("1");
+
 		   }
 		}
 		EventBusUtils.postSticky(new Event.EventLoadingX(false));

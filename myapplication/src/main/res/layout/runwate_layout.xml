@@ -221,12 +221,12 @@
 					android:id="@+id/search_type_jf"
 					style="@style/runwate_btn_style"
 					android:visibility="gone"
-					android:text="请求计费"/>
+					android:text="计费提报"/>
 				<RadioButton
 					android:id="@+id/search_type_tf"
 					style="@style/runwate_btn_style"
 					android:visibility="gone"
-					android:text="请求退费"/>
+					android:text="退费提报"/>
 				<RadioButton
 					android:id="@+id/search_type_yc"
 					style="@style/runwate_btn_style"

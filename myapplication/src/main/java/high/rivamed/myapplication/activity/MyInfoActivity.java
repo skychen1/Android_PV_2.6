@@ -7,17 +7,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import butterknife.BindView;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.BaseSimpleActivity;
-import high.rivamed.myapplication.bean.LoginResultBean;
-import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.bean.UserInfoBean;
+import high.rivamed.myapplication.http.BaseResult;
+import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
@@ -68,37 +67,38 @@ public class MyInfoActivity extends BaseSimpleActivity {
     }
 
     private void initData() {
-        try {
-            String accountData = SPUtils.getString(getApplicationContext(), KEY_ACCOUNT_DATA, "");
-            LogUtils.i(TAG,"accountData   "+accountData);
-            LoginResultBean data = mGson.fromJson(accountData, LoginResultBean.class);
-            LoginResultBean.AppAccountInfoVoBean appAccountInfoVo = data.getAppAccountInfoVo();
-	     List<LoginResultBean.AppAccountInfoVoBean.RolesBean> roles = appAccountInfoVo.getRoles();
-	     String roleName = "";
-            for (int i = 0; i < roles.size(); i++) {
-                roleName = roleName + roles.get(i).getRoleName();
-                if (i < roles.size() - 1) {
-                    roleName = roleName + "/";
+        NetRequest.getInstance().findUserInfo(this, new BaseResult(){
+            @Override
+            public void onSucceed(String result) {
+                UserInfoBean userInfoBean = mGson.fromJson(result, UserInfoBean.class);
+                if (userInfoBean.isOperateSuccess()){
+                    setInfoDate(userInfoBean);
+                }else {
+                    ToastUtils.showShortToast("数据返回异常");
                 }
             }
-            mSettingAccountName.setText(appAccountInfoVo.getAccountName());
-            mSettingName.setText(appAccountInfoVo.getUserName());
-            mSettingPosition.setText(roleName);
-            mBaseTabTvName.setText(appAccountInfoVo.getUserName());
-            if (appAccountInfoVo.getSex().equals("女")){
-                Glide.with(this)
-                      .load(R.mipmap.hccz_mrtx_nv)
-                      .error(R.mipmap.hccz_mrtx_nv)
-                      .into(mBaseTabIconRight);
-            }else {
-                Glide.with(this)
-                      .load(R.mipmap.hccz_mrtx_nan)
-                      .error(R.mipmap.hccz_mrtx_nv)
-                      .into(mBaseTabIconRight);
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            @Override
+            public void onError(String result) {
+
+            }
+        });
+    }
+    private void setInfoDate(UserInfoBean userInfoBean) {
+        mSettingAccountName.setText(userInfoBean.getAccountName());
+        mSettingName.setText(userInfoBean.getUserName());
+        mSettingPosition.setText(userInfoBean.getRoleNames());
+        mBaseTabTvName.setText(userInfoBean.getUserName());
+        if (userInfoBean.getSex().equals("女")){
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nv)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
+        }else {
+            Glide.with(this)
+                  .load(R.mipmap.hccz_mrtx_nan)
+                  .error(R.mipmap.hccz_mrtx_nv)
+                  .into(mBaseTabIconRight);
         }
     }
 

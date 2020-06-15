@@ -17,12 +17,19 @@ public class ExceptionRecordBean implements Serializable {
      * rows : [{"cstName":"麻醉咽喉镜窥视片","cstSpec":"中号","epc":"00021820180608000023","expiryDate":"2019-11-01","deviceName":"2柜子","operation":"强开出柜","countStock":0,"countActual":0,"count":0,"operationStatus":0,"isErrorOperation":0,"deleteCount":0,"sortNum":30,"unNormalSource":"7","operationTime":"2019-06-19"},{"cstName":"人类免疫缺陷病毒P24抗原检测试剂盒","cstSpec":"1234","epc":"00022120180612000109","expiryDate":"2019-07-13","deviceName":"2柜子","operation":"强开出柜","countStock":0,"countActual":0,"count":0,"operationStatus":0,"isErrorOperation":0,"deleteCount":0,"sortNum":30,"unNormalSource":"7","operationTime":"2019-06-24"}]
      * total : 66
      */
-
+    private boolean operateSuccess;
     private int pageNo;
     private int pageSize;
     private int total;
     private List<RowsBean> rows;
 
+    public boolean isOperateSuccess() {
+        return operateSuccess;
+    }
+
+    public void setOperateSuccess(boolean operateSuccess) {
+        this.operateSuccess = operateSuccess;
+    }
     public int getPageNo() { return pageNo;}
 
     public void setPageNo(int pageNo) { this.pageNo = pageNo;}

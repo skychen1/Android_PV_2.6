@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -47,14 +48,17 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
+import high.rivamed.myapplication.utils.MusicPlayer;
 import high.rivamed.myapplication.utils.RxUtils;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
@@ -101,6 +105,7 @@ public class ScanService extends Service {
    private       long                      mTime;
    private       ScheduledExecutorService  scheduled;
    private       TimerTask                 mTask;
+   private TimeCountNoClossDoor mTimeCountNoClossDoor;
 
    /**
     * @param event
@@ -199,7 +204,11 @@ public class ScanService extends Service {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onEventDoorStatus(Event.EventDoorStatus event) {
-	Log.i("ssffff","onEventDoorStatus：：" + event.type);
+	if (mTimeCountNoClossDoor==null){
+	   mTimeCountNoClossDoor = new TimeCountNoClossDoor(VOICE_NOCLOSSDOOR_TIME,
+									    1000);
+	}
+
 	if (event.type) {//门没关
 	   mDoorStatusType = false;
 	   mEthDevices.clear();
@@ -208,6 +217,9 @@ public class ScanService extends Service {
 	   }
 	   Log.i("ssffff","false：：" + event.type);
 	   EventBusUtils.postSticky(new Event.EventDoorV(false));
+	   mTimeCountNoClossDoor.cancel();
+	   mTimeCountNoClossDoor.start();
+	   Log.i("ffadef", "门没关     " );
 	   return;
 	}
 	if (!event.type) {//门关了
@@ -224,11 +236,15 @@ public class ScanService extends Service {
 		mListDevices.clear();
 		mEthDevices.clear();
 		EventBusUtils.postSticky(new Event.EventDoorV(true));
+		Log.i("ffadef", "门关了2   " );
+		mTimeCountNoClossDoor.cancel();
 	   }
 	   if (mListDevices == null) {
 		mListDevices = new ArrayList<>();
 		mDoorStatusType = true;
 		EventBusUtils.postSticky(new Event.EventDoorV(true));
+		Log.i("ffadef", "门关了3   " );
+		mTimeCountNoClossDoor.cancel();
 	   }
 	   if (mDeviceSizeList == null) {
 		mDeviceSizeList = new ArrayList<>();
@@ -349,7 +365,7 @@ public class ScanService extends Service {
 	mTask = new TimerTask() {
 	   @Override
 	   public void run() {
-
+		MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
 		String urls = MAIN_URL + NetApi.URL_CONNECT;
 		if (MAIN_URL != null) {
 		   OkGo.<String>get(urls).tag(this).execute(new StringCallback() {
@@ -533,5 +549,25 @@ public class ScanService extends Service {
 	LitePal.saveAll(homeAuthorityMenuBeanS);
 	boolean save = accountVosBean.save();
 	Log.i("ddefad", "userBean完成  " + save + "     " + getDates());
+   }
+   /* 定义一个倒计时的内部类 */
+   protected class TimeCountNoClossDoor extends CountDownTimer {
+
+
+	public TimeCountNoClossDoor(
+		long millisInFuture, long countDownInterval) {
+	   super(millisInFuture, countDownInterval);// 参数依次为总时长,和计时的时间间隔
+	}
+
+	@Override
+	public void onFinish() {// 计时完毕时触发
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.PLEASE_CLOSSDOOR);
+	   start();
+	}
+
+	@Override
+	public void onTick(long millisUntilFinished) {// 计时过程显示
+	   Log.i("ffadef", "millisUntilFinished     " + millisUntilFinished);
+	}
    }
 }

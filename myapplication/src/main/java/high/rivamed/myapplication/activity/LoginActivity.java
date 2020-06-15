@@ -71,6 +71,7 @@ import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
@@ -94,6 +95,8 @@ import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_TYPE_FINGER;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_TYPE_IC;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
@@ -104,6 +107,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
@@ -170,7 +174,7 @@ public class LoginActivity extends SimpleActivity {
    private       boolean                             mOnStart = false;
    private       LoginFaceFragment                   faceFragment;
    private       LoadingDialog.Builder               mLoading;
-   public static List<ConfigBean.ThingConfigVosBean> sTCstConfigVos;
+   public static List<ConfigBean.ConfigVosBean> sTCstConfigVos;
    public static boolean                             mConfigType015;
    public static boolean                             mConfigType043;
    public static boolean                             mConfigType044;
@@ -325,6 +329,9 @@ public class LoginActivity extends SimpleActivity {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME) != -1) {
 		HOME_COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME);
 	   }
+	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_NOEPC_LOGINOUT_TIME)!=-1){
+		NOEPC_LOGINOUT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_NOEPC_LOGINOUT_TIME);
+	   }
 	   getLeftDate();
 	   //	   getBoxSize();
 	}
@@ -445,7 +452,7 @@ public class LoginActivity extends SimpleActivity {
 	if (configBean == null) {
 	   return;
 	}
-	sTCstConfigVos = configBean.getThingConfigVos();
+	sTCstConfigVos = configBean.getConfigVos();
 	loginEnjoin(!LoginUtils.getConfigTrue(sTCstConfigVos), configType, loginType);
 	//	LoginUtils.getUpDateVer(this, sTCstConfigVos,
 	//					(canLogin, canDevice, hasNet) -> loginEnjoin(canDevice, configType,
@@ -597,7 +604,9 @@ public class LoginActivity extends SimpleActivity {
 	bean.setType("2");
 	data.setUserFeatureInfo(bean);
 	data.setThingId(SPUtils.getString(mContext, THING_CODE));
+	data.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	data.setSystemType(SYSTEMTYPE);
+	data.setLoginType(LOGIN_TYPE_IC);
 	LogUtils.i(TAG, "mGson.toJson(data)   " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginIdCard(mGson.toJson(data), this, new BaseResult() {
 	   @Override
@@ -624,6 +633,7 @@ public class LoginActivity extends SimpleActivity {
 	data.setDeviceType(FINGER_VERSION);//3.0柜子需要传2   2.1传1
 	data.setThingId(thingCode);
 	data.setSystemType(SYSTEMTYPE);
+	data.setLoginType(LOGIN_TYPE_FINGER);
 	data.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	LogUtils.i("Login", "THING_CODE validateLoginFinger  " + mGson.toJson(data));
 	NetRequest.getInstance().validateLoginFinger(mGson.toJson(data), this, new BaseResult() {

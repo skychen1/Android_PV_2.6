@@ -46,7 +46,7 @@
 					android:layout_alignParentTop="true"
 					android:layout_gravity="center_vertical"
 					android:layout_marginLeft="@dimen/x70"
-					android:text="名字"
+					android:text=""
 					android:textColor="@color/text_color_3"
 					android:textSize="@dimen/x48"
 					android:textStyle="bold"/>

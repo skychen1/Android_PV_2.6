@@ -3,6 +3,8 @@ package high.rivamed.myapplication.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import high.rivamed.myapplication.dto.vo.InventoryVo;
+
 /**
  * 项目名称:    Android_PV_2.6.7.0
  * 创建者:      DanMing
@@ -15,10 +17,13 @@ import java.util.List;
  * 更新描述：   ${TODO}
  */
 public class SavePadPdBean implements Serializable {
-   private List<String> epcs;
-   private List<String> deviceIds;
-   private String sthId;
-   private String thingId;
+   private List<String>      epcs;
+   private List<String>      deviceIds;
+   private String            sthId;
+   private String            thingId;
+   private String            checkType;
+   private String            checkFrom;
+   private List<InventoryVo> inventoryVos;
    /**
     * operateSuccess : true
     * id : 0
@@ -26,13 +31,39 @@ public class SavePadPdBean implements Serializable {
     * pageNo : 1
     * pageSize : 20
     * epcs : []
+   * checkType：（必传）盘点类型:{0.柜外,1.柜内}
+    * checkFrom：（必传）盘点单来源,0自动服务生成,1手持机pda,2web 3:柜子端
     */
 
-   private boolean      operateSuccess;
-   private int    id;
-   private String opFlg;
-   private int    pageNo;
-   private int    pageSize;
+   private boolean           operateSuccess;
+   private int               id;
+   private String            opFlg;
+   private int               pageNo;
+   private int               pageSize;
+
+   public String getCheckType() {
+      return checkType;
+   }
+
+   public void setCheckType(String checkType) {
+      this.checkType = checkType;
+   }
+
+   public String getCheckFrom() {
+      return checkFrom;
+   }
+
+   public void setCheckFrom(String checkFrom) {
+      this.checkFrom = checkFrom;
+   }
+
+   public List<InventoryVo> getInventoryVos() {
+      return inventoryVos;
+   }
+
+   public void setInventoryVos(List<InventoryVo> inventoryVos) {
+      this.inventoryVos = inventoryVos;
+   }
 
    public List<String> getEpcs() {
 	return epcs;

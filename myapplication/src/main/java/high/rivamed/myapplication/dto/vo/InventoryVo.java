@@ -49,8 +49,9 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String batchNumber;
    private int    deletetatus;//0不移除    1移除
 
+   private String  updator;//名字
    private String  name;//名字
-   private String  idNo;//身份证
+   private String  idCard;//身份证
    private String  deptId;//科室ID
    private String  operatingRoomNo;//手术间ID
    private String  operatingRoomName;//手术间名字
@@ -65,8 +66,16 @@ public class InventoryVo extends LitePalSupport implements Serializable {
    private String  renewTime;
    private String  updateDateTime;
    private boolean dateNetType;//判断是否是本地的还是(查询出来的false)
-   private String barcode;
+   private String  barcode;
    private String noConfirmCount;
+
+   public String getUpdator() {
+	return updator;
+   }
+
+   public void setUpdator(String updator) {
+	this.updator = updator;
+   }
 
    public String getStockMin() {
 	return stockMin;
@@ -236,12 +245,12 @@ public class InventoryVo extends LitePalSupport implements Serializable {
 	this.cstId = cstId;
    }
 
-   public String getIdNo() {
-	return idNo;
+   public String getIdCard() {
+	return idCard;
    }
 
-   public void setIdNo(String idNo) {
-	this.idNo = idNo;
+   public void setIdCard(String idCard) {
+	this.idCard = idCard;
    }
 
    public String getDeptId() {

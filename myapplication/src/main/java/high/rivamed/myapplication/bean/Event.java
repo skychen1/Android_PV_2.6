@@ -421,11 +421,13 @@ public class Event {
    public static class EventPatientId {
 
 	public String patientId;
+	public String hisPatientId;
 	public String patientName;
 	public int    status;
 
-	public EventPatientId(String patientId, int status,String patientName) {
+	public EventPatientId(String patientId,String hisPatientId,  int status,String patientName) {
 	   this.patientId = patientId;
+	   this.hisPatientId = hisPatientId;
 	   this.status = status;
 	   this.patientName = patientName;
 	}
@@ -505,6 +507,17 @@ public class Event {
 	public boolean b;
 
 	public EventOverPut(boolean b) {
+	   this.b = b;
+	}
+   }
+   /**
+    * 耗材倒计时结束发起
+    */
+   public static class EventOverNoEpc {
+
+	public boolean b;
+
+	public EventOverNoEpc(boolean b) {
 	   this.b = b;
 	}
    }

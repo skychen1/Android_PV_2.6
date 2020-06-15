@@ -19,7 +19,7 @@ public class ThingDto implements Serializable{
     /**
      * id : 0
      * thing : {"thingId":"40288297673554f20167355be8720000","sthId":"40288b5f670febb90167100456270000","thingName":"2.6.3柜子","thingModel":"1","macAddress":"","status":"1","sn":"191919","remark":"","activation":"1","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","createTime":"2018-12-03 07:24:30","sthName":"中央一库房"}
-     * thingSnVo : {"thingId":"40288297673554f20167355be8720000","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","macAddress":"","roomNo":null,"roomName":null,"remark":"","sn":"191919","status":"1","sthId":"40288b5f670febb90167100456270000","sthName":"中央一库房","thingName":"2.6.3柜子","thingModel":"1","createTime":"2018-12-03","activation":"1","branchCode":"111"}
+     * thingSnVo : {"thingId":"40288297673554f20167355be8720000","deptId":"40287281674eaca301674ebd649d0003","deptName":"产科","macAddress":"","roomNo":null,"roomName":null,"remark":"","sn":"191919","status":"1","sthId":"40288b5f670febb90167100456270000","sthName":"中央一库房","thingName":"2.6.3柜子","thingModel":"1","createTime":"2018-12-03","activation":"1","branchId":"111"}
      * deviceVos : [{"deviceName":"柜1","deviceId":"40288297673554f20167355be8a30001","deviceType":"10","parent":"-1","devices":[{"deviceId":"40288297673554f20167355be8ac0002","deviceName":"网络多功能集控设备","deviceType":"1","identification":"0","ip":"192.168.100.134","parent":"40288297673554f20167355be8a30001","remark":"","status":1,"thingId":"40288297673554f20167355be8720000","operationTime":"2018-12-03","dictId":"ff80818166c7b5d00166c8f7f8260010"},{"deviceId":"40288297673554f20167355be8af0003","deviceName":"罗丹贝尔-reader","deviceType":"2","identification":"0","ip":"192.168.100.192","parent":"40288297673554f20167355be8a30001","remark":"","status":1,"thingId":"40288297673554f20167355be8720000","operationTime":"2018-12-03","dictId":"ff80818166c7b5d00166c8fbcbf50014"}]},{"deviceName":"柜2","deviceId":"40288297673554f20167355be8af0004","deviceType":"10","parent":"-1","devices":[{"deviceId":"40288297673554f20167355be8b20005","deviceName":"网络多功能集控设备","deviceType":"1","identification":"0","ip":"192.168.100.122","parent":"40288297673554f20167355be8af0004","remark":"","status":1,"thingId":"40288297673554f20167355be8720000","operationTime":"2018-12-03","dictId":"ff80818166c7b5d00166c8f7f8260010"},{"deviceId":"40288297673554f20167355be8b50006","deviceName":"reader","deviceType":"2","identification":"0","ip":"192.168.100.13","parent":"40288297673554f20167355be8af0004","remark":"","status":1,"thingId":"40288297673554f20167355be8720000","operationTime":"2018-12-03","dictId":"ff80818166c7b5d00166c8fb579d0013"}]}]
      * sn : 191919
      */
@@ -100,6 +100,15 @@ public class ThingDto implements Serializable{
         private String sthName;
         private String thingType;
         private String localIp;
+        private String                   systemType;
+
+        public String getSystemType() {
+            return systemType;
+        }
+
+        public void setSystemType(String systemType) {
+            this.systemType = systemType;
+        }
 
         public String getLocalIp() {
             return localIp;
@@ -188,7 +197,7 @@ public class ThingDto implements Serializable{
          * thingModel : 1
          * createTime : 2018-12-03
          * activation : 1
-         * branchCode : 111
+         * branchId : 111
          */
 
         private String thingId;
@@ -206,7 +215,7 @@ public class ThingDto implements Serializable{
         private String thingModel;
         private String createTime;
         private String activation;
-        private String branchCode;
+        private String branchId;
 
         public String getThingId() { return thingId;}
 
@@ -268,9 +277,9 @@ public class ThingDto implements Serializable{
 
         public void setActivation(String activation) { this.activation = activation;}
 
-        public String getBranchCode() { return branchCode;}
+        public String getBranchId() { return branchId;}
 
-        public void setBranchCode(String branchCode) { this.branchCode = branchCode;}
+        public void setBranchId(String branchId) { this.branchId = branchId;}
     }
 
     public static class DeviceVosBean {
@@ -415,7 +424,7 @@ public class ThingDto implements Serializable{
         private String sthId;
         private String deptId;
         private String optRoomId;
-        private String branchCode;
+        private String branchId;
         private String deptName;
 
         public String getSthId() {
@@ -442,12 +451,12 @@ public class ThingDto implements Serializable{
             this.optRoomId = optRoomId;
         }
 
-        public String getBranchCode() {
-            return branchCode;
+        public String getBranchId() {
+            return branchId;
         }
 
-        public void setBranchCode(String branchCode) {
-            this.branchCode = branchCode;
+        public void setBranchId(String branchId) {
+            this.branchId = branchId;
         }
 
         public String getDeptName() {

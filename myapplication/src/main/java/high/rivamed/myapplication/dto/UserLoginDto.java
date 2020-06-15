@@ -13,7 +13,24 @@ public class UserLoginDto {
 
     private String thingId;
     private String systemType;
+    private String deptId;
+    private String loginType;
 
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
     public String getThingId() {
         return thingId;
     }

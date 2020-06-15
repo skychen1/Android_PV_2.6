@@ -43,8 +43,10 @@ import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.TableTypeView;
 
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
@@ -452,7 +454,10 @@ public class FastOutFragment extends SimpleFragment {
 	if (getExceedTime(voList,1)) {
 	   return;
 	}
-	if (UIUtils.getConfigType(mContext, CONFIG_007) || UIUtils.getConfigType(mContext, CONFIG_019)) {//绑定患者
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {//绑定患者
 	   setBindLy(mTCstInventoryDtoJson);
 	} else {//直接领取
 	   setLy(mTCstInventoryDtoJson);

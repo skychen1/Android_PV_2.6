@@ -138,7 +138,7 @@
 
             </RadioGroup>
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/search_ly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,19 +154,29 @@
             <TextView
                 android:id="@+id/exception_outlink_btn"
                 style="@style/btn_style_exception_sel"
+                android:layout_toRightOf="@+id/exception_unknow_btn"
                 android:text="出柜关联处理"
                 />
             <TextView
                 android:id="@+id/exception_bind_btn"
                 style="@style/btn_style_exception_sel"
+                android:layout_toRightOf="@+id/exception_outlink_btn"
                 android:text="绑定患者处理"
                 />
             <TextView
                 android:id="@+id/exception_yichu_btn"
                 style="@style/btn_style_exception_sel"
+                android:layout_toRightOf="@+id/exception_bind_btn"
                 android:text="移除处理"
                 />
-        </LinearLayout>
+            <TextView
+                android:id="@+id/exception_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="@dimen/textsize_17"
+                android:textColor="@color/text_color_3"/>
+        </RelativeLayout>
         <include
             layout="@layout/include_recyclerview"
             android:layout_width="match_parent"

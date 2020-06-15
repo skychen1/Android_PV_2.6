@@ -34,8 +34,10 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCCZ;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_HCLS;
@@ -162,8 +164,10 @@ public class HomeActivity extends SimpleActivity {
 	   mContentTimelyCheck.setVisibility(View.GONE);
 	}
 	if (UIUtils.getMenuLeftType(this, LEFT_MENU_SYJL) &&
-	    (UIUtils.getConfigType(mContext, CONFIG_007) ||
-	     UIUtils.getConfigType(mContext, CONFIG_019))) {//使用记录
+	    (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW05))) {//使用记录
 	   mContentSyjl.setVisibility(View.VISIBLE);
 	} else {
 	   mContentSyjl.setVisibility(View.GONE);

@@ -59,8 +59,7 @@ public class StockRightAdapter
 	mSeven_five.setText(item.getExpiryDate());
 	mSeven_six.setText(item.getDeviceName());
 	mSeven_seven.setText(item.getUpdateTime());
-	mSeven_eight.setText(item.getName());
-	mSeven_eight.setText(item.getName());
+	mSeven_eight.setText(item.getUpdator());
 	helper.setText(R.id.seven_nine,"展开");
 	helper.getView(R.id.seven_nine).setOnClickListener(view ->{
 	   OnlyCodePopupWindow window = new OnlyCodePopupWindow(mContext, item.getBarcode());

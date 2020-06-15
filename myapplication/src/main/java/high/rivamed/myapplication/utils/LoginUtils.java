@@ -87,7 +87,7 @@ public class LoginUtils {
                     public void onSucceed(String result) {
                         SPUtils.putString(UIUtils.getContext(), SAVE_CONFIG_STRING, result);
                         ConfigBean configBean = new Gson().fromJson(result, ConfigBean.class);
-                        List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                        List<ConfigBean.ConfigVosBean> tCstConfigVos = configBean.getConfigVos();
 //                    if (tCstConfigVos.size()!=0){
                         loginEnjoin(tCstConfigVos, true, callback);
 //                        getUpDateVer(mContext, tCstConfigVos, callback);
@@ -102,7 +102,7 @@ public class LoginUtils {
                             String string = SPUtils.getString(UIUtils.getContext(), SAVE_CONFIG_STRING);
                             LogUtils.i("LoginA", "string   " + string);
                             ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
-                            List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                            List<ConfigBean.ConfigVosBean> tCstConfigVos = configBean.getConfigVos();
                             callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
                         } else {
                             callback.onLogin(false, false, false);
@@ -118,7 +118,7 @@ public class LoginUtils {
                 LogUtils.i("LoginA", "string   " + string);
                 ConfigBean configBean = new Gson().fromJson(string, ConfigBean.class);
                 if (string!=null){
-                    List<ConfigBean.ThingConfigVosBean> tCstConfigVos = configBean.getThingConfigVos();
+                    List<ConfigBean.ConfigVosBean> tCstConfigVos = configBean.getConfigVos();
                     callback.onLogin(true, !getConfigTrue(tCstConfigVos), false);
                 }else {
                     ToastUtils.showShortToast("请到管理端开启配置项！");
@@ -305,24 +305,24 @@ public class LoginUtils {
     /**
      * 登录检测回调：检测1.是否能够登录 2.设备是否禁用 3.登录模式：有网还是离线
      */
-    private static void loginEnjoin(List<ConfigBean.ThingConfigVosBean> tCstConfigVos, boolean hasNet, LoginCallback callback) {
+    private static void loginEnjoin(List<ConfigBean.ConfigVosBean> tCstConfigVos, boolean hasNet, LoginCallback callback) {
         callback.onLogin(true, !getConfigTrue(tCstConfigVos), hasNet);
     }
 
     /**
      * 检测设备是否禁用
      */
-    public static boolean getConfigTrue(List<ConfigBean.ThingConfigVosBean> tCstConfigVos) {
+    public static boolean getConfigTrue(List<ConfigBean.ConfigVosBean> tCstConfigVos) {
         if (tCstConfigVos==null||tCstConfigVos.size() == 0)
             return false;
-        Iterator<ConfigBean.ThingConfigVosBean> iterator = tCstConfigVos.iterator();
+        Iterator<ConfigBean.ConfigVosBean> iterator = tCstConfigVos.iterator();
         while (iterator.hasNext()){
-            ConfigBean.ThingConfigVosBean next = iterator.next();
+            ConfigBean.ConfigVosBean next = iterator.next();
             if (next.getCode().equals(CONFIG_013)) {
                 return true;
             }
         }
-//        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
+//        for (ConfigBean.ConfigVosBean s : tCstConfigVos) {
 //            if (s.getCode().equals(CONFIG_013)) {
 //                return true;
 //            }
@@ -335,17 +335,17 @@ public class LoginUtils {
      * @param tCstConfigVos
      * @return
      */
-    public static ConfigBean.ThingConfigVosBean getEpcFilte(List<ConfigBean.ThingConfigVosBean> tCstConfigVos,String CONFIG_x) {
+    public static ConfigBean.ConfigVosBean getEpcFilte(List<ConfigBean.ConfigVosBean> tCstConfigVos, String CONFIG_x) {
         if (tCstConfigVos==null||tCstConfigVos.size() == 0)
             return null;
-        Iterator<ConfigBean.ThingConfigVosBean> iterator = tCstConfigVos.iterator();
+        Iterator<ConfigBean.ConfigVosBean> iterator = tCstConfigVos.iterator();
         while (iterator.hasNext()){
-            ConfigBean.ThingConfigVosBean next = iterator.next();
+            ConfigBean.ConfigVosBean next = iterator.next();
             if (next.getCode().equals(CONFIG_x)) {
                 return next;
             }
         }
-//        for (ConfigBean.ThingConfigVosBean s : tCstConfigVos) {
+//        for (ConfigBean.ConfigVosBean s : tCstConfigVos) {
 //            if (s.getCode().equals(CONFIG_x)) {
 //                return s;
 //            }

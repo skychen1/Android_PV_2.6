@@ -202,7 +202,7 @@ public class NetRequest {
     * 用户登录:userId
     */
    public void userLoginByUserId(String account, Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_USER_LOGIN_BY_USER_ID;
+	String urls = MAIN_URL + NetApi.URL_USER_LOGIN;
 	PostRequest(urls, account, tag, netResult);
    }
 
@@ -211,9 +211,24 @@ public class NetRequest {
     */
    public void registerFinger(String json, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_USER_REGISTER_FINGER;
-	PostRequest(urls, json, tag, netResult);
+	PostTokenRequest(urls, json, tag, netResult);
    }
 
+   /**
+    * 登录设置
+    */
+   public void userLoginInfo(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_USER_LOGININFO;
+	GetTokenRequest(urls, null, tag, netResult);
+   }
+
+   /**
+    * 查询个人信息
+    */
+   public void findUserInfo(Object tag, NetResult netResult) {
+	String urls = MAIN_URL + NetApi.URL_USER_FINDUSERINFO;
+	GetTokenRequest(urls, null, tag, netResult);
+   }
    /**
     * 绑定腕带
     */
@@ -234,7 +249,7 @@ public class NetRequest {
     * 指纹登录
     */
    public void validateLoginFinger(String json, Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_USER_VALIDATELOGIN_FINGER;
+	String urls = MAIN_URL + NetApi.URL_USER_LOGIN;
 	PostRequest(urls, json, tag, netResult);
    }
 
@@ -253,7 +268,7 @@ public class NetRequest {
     * IdCard登录
     */
    public void validateLoginIdCard(String json, Object tag, NetResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_USER_VALIDATELOGINWRIST;
+	String urls = MAIN_URL + NetApi.URL_USER_LOGIN;
 	PostRequest(urls, json, tag, netResult);
    }
 
@@ -403,6 +418,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_TEST_FIND_BYDEPT;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", deptId);
+	map.put("sthType", "1");
 	GetRequest(urls, map, tag, netResult);
 
    }
@@ -483,7 +499,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_OPERATE_DB_YES;
 	Map<String, String> map = new HashMap<>();
 	map.put("deptId", deptId);
-	map.put("branchCode", branchCode);
+	map.put("branchId", branchCode);
 	GetTokenRequest(urls, map, tag, netResult);
    }
 
@@ -547,9 +563,9 @@ public class NetRequest {
 	   String optienNameOrId, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FIND_TEMP_PATIENTS;
 	Map<String, String> map = new HashMap<>();
-	map.put("thingId", sThingCode);
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	map.put("patientNameOrId", optienNameOrId);
-	GetTokenRequest(urls, map, tag, netResult);
+	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
    }
 
    /**
@@ -582,7 +598,8 @@ public class NetRequest {
    public void findThingConfigDate(Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_THING_CONFIG_FIND;
 	Map<String, String> map = new HashMap<>();
-	map.put("thingId", sThingCode);
+	map.put("nodeId", sThingCode);//thingid改成nodeid
+	map.put("systemType", SYSTEMTYPE);//配置项
 	GetRequest(urls, map, tag, netResult);
    }
 
@@ -606,10 +623,11 @@ public class NetRequest {
    /**
     * 使用记录详情
     */
-   public void getFindEpcDetails(String patientId, int status, Object tag, NetResult netResult) {
+   public void getFindEpcDetails(String patientId,String mHisPatientId , int status, Object tag, NetResult netResult) {
 	String urls = MAIN_URL + NetApi.URL_FIND_EPC_DETAILS;
 	Map<String, String> map = new HashMap<>();
-	map.put("patientId", patientId);
+	map.put("patientindexid", patientId);
+	map.put("hisPatientId", mHisPatientId);
 	map.put("status", status + "");
 	map.put("thingId", sThingCode);
 
@@ -892,7 +910,8 @@ public class NetRequest {
 	map.put("term", name);
 	map.put("pageNo", page+"");
 	map.put("pageSize", size+"");
-	GetRequest(urls, map, tag, netResult);
+	map.put("deptId", SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
+	GetTokenRequest(urls, map, tag, netResult);
    }
 
    /**

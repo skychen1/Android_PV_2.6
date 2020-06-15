@@ -60,9 +60,9 @@ import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.BANGDING;
 import static high.rivamed.myapplication.cont.Constants.CHU_GUI;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_010;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_019;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_056;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
@@ -204,7 +204,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mStockSearch.setVisibility(View.VISIBLE);
 	mStockSearchRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-	if (UIUtils.getConfigType(mContext, CONFIG_010)&&UIUtils.getConfigType(mContext, CONFIG_019)) {//先绑定患者,可绑定可不绑定
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {//先绑定患者,可绑定可不绑定
 	   mDialogRight.setText("确认绑定");
 	   mDialogLeft.setText("不绑定患者");
 	} else {
@@ -326,7 +326,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Override
    protected void onDestroy() {
 	mRbKey = -3;
-	Log.i("outtccc", "关门的接收   onDestroy " + mRbKey);
 	patientInfos.clear();
 	mTrim = "";
 	if (mBuilder != null) {
@@ -349,7 +348,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   mTypeView.mTempPatientAdapter.mSelectedPos);
 	   InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
 	   vo.setCreate(patientInfoVos.isCreate());
-	   vo.setIdNo(patientInfoVos.getIdNo());
+	   vo.setIdCard(patientInfoVos.getIdNo());
 	   vo.setSurgeryTime(patientInfoVos.getSurgeryTime());
 	   vo.setOperatingRoomName(patientInfoVos.getRoomName());
 	   vo.setSex(patientInfoVos.getSex());
@@ -379,7 +378,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   case R.id.base_tab_icon_right:
 
 	   case R.id.base_tab_tv_name:
-		if (UIUtils.getConfigType(mContext, CONFIG_010)) {//先绑定患者
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+		    UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {//先绑定患者
 		   if (mEthDeviceIdBack2.size() == 0) {
 			mPopupWindow = new SettingPopupWindow(mContext);
 			mPopupWindow.showPopupWindow(view);
@@ -402,7 +402,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.base_tab_tv_outlogin:
-		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+		    UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 		   if (mEthDeviceIdBack2.size() == 0) {
 			TwoDialog.Builder builder = new TwoDialog.Builder(mContext, 1);
 			builder.setTwoMsg("您确认要退出登录吗?");
@@ -428,7 +429,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.base_tab_back:
-		if (UIUtils.getConfigType(mContext, CONFIG_010)) {
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) ||
+		    UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 		   if (mEthDeviceIdBack2.size() == 0) {
 			finish();
 		   } else {
@@ -471,19 +473,17 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.dialog_left://取消
-		if (UIUtils.getConfigType(mContext, CONFIG_010) && !mException &&
-		    !UIUtils.getConfigType(mContext, CONFIG_019)) {
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) && !mException ) {
 		   if (mEthDeviceIdBack2.size() == 0) {
 			finish();
 		   } else {
 			ToastUtils.showShort("请关闭柜门！");
 		   }
-		} else if (UIUtils.getConfigType(mContext, CONFIG_010) && !mException &&
-			     UIUtils.getConfigType(mContext, CONFIG_019)) {
+		} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) && !mException ) {
 		   //Todo 不绑定患者的流程
 		   EventBusUtils.post(new Event.EventButton(true, true));
 		   AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);
-		} else if (mException && UIUtils.getConfigType(mContext, CONFIG_019)) {
+		} else if (mException && UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
 		   setExceptinEnter(false);//不绑定
 		} else {
 		   finish();
@@ -622,7 +622,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 				InventoryVo vvo = new InventoryVo();
 				vvo.setPatientName(schedule.getName());
 				vvo.setCreate(schedule.isCreate());
-				vvo.setIdNo(schedule.getIdNo());
+				vvo.setIdCard(schedule.getIdNo());
 				vvo.setSurgeryTime(schedule.getSurgeryTime());
 				vvo.setOperatingRoomNo(schedule.getOperatingRoomNo());
 				vvo.setOperatingRoomName(schedule.getOperatingRoomNoName());
@@ -734,6 +734,9 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 						    FindInPatientBean bean = mGson.fromJson(result,
 													  FindInPatientBean.class);
 						    setTemporaryBing(mDeptType);
+						    if (mAllPage==1){
+							 patientInfos.clear();
+						    }
 						    if (bean != null && bean.getRows() != null &&
 							  bean.getRows().size() > 0) {
 

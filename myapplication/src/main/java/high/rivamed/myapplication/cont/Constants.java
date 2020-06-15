@@ -51,9 +51,8 @@ public class Constants {
    public static final int ACT_TYPE_ALL_IN         = 12;//入柜 快速开柜
 
    //配置项的code
-   public static final String CONFIG_007 = "007";//是否启用绑定患者领用耗材
-   public static final String CONFIG_009 = "009";//是否先开柜门后绑定患者
-   public static final String CONFIG_010 = "010";//是否先绑定患者后开柜门
+   public static final String CONFIG_BPOW01 = "BPOW01";//是否先开柜门后绑定患者
+   public static final String CONFIG_BPOW02 = "BPOW02";//是否先绑定患者后开柜门
    public static final String CONFIG_011 = "011";//是否允许快速开柜
    public static final String CONFIG_012 = "012";//是否启用绑定临时患者领用耗材
    public static final String CONFIG_013 = "013";//设备禁用
@@ -61,7 +60,8 @@ public class Constants {
    public static final String CONFIG_015 = "015";//是否启用请领单领用
    public static final String CONFIG_016 = "016";//是否启用功能开柜
    public static final String CONFIG_017 = "017";//是否启用紧急登录
-   public static final String CONFIG_019 = "019";//启用可绑定患者或者可不绑定患者
+   public static final String CONFIG_BPOW04 = "BPOW04";//启用可绑定患者或者可不绑定患者,先开柜门后绑定患者
+   public static final String CONFIG_BPOW05 = "BPOW05";//启用可绑定患者或者可不绑定患者,先绑定患者后开柜门
    public static final String CONFIG_026 = "026";//启用未确认耗材
    public static final String CONFIG_034 = "034";//启用人脸识别登录
    public static final String CONFIG_051 = "051";//启用是否是否领用时请求计费
@@ -129,6 +129,8 @@ public class Constants {
    public static final String SAVE_CLOSSLIGHT_TIME      = "SAVE_CLOSSLIGHT_TIME";//无操作关灯
    public static final String SAVE_REMOVE_LOGFILE_TIME = "SAVE_REMOVE_LOGFILE_TIME";//删除多少天之前的日志
    public static final String SAVE_HOME_LOGINOUT_TIME = "SAVE_HOME_LOGINOUT_TIME";//首页无操作退出时间
+   public static final String SAVE_NOEPC_LOGINOUT_TIME = "SAVE_NOEPC_LOGINOUT_TIME";//未扫描到操作耗材退出时间
+   public static final String SAVE_VOICE_NOCLOSSDOOR_TIME = "SAVE_VOICE_NOCLOSSDOOR_TIME";//未扫描到操作耗材退出时间
    public static final String SYSTEMTYPE              = "HCT";//高值登录的type
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
    public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用
@@ -168,4 +170,9 @@ public class Constants {
    public static final String TUI_HUO="8";//退货
    public static final String CHU_GUI="7";//出柜关联
    public static final String BANGDING="3";//绑定患者、领用
+
+   public static final String LOGIN_TYPE_PASSWORD = "1";//账号密码登录type
+   public static final String LOGIN_TYPE_FINGER   = "2";//指纹登录type
+   public static final String LOGIN_TYPE_IC       = "3";//腕带登录type
+   public static final String LOGIN_TYPE_FACE     = "6";//人脸登录type
 }

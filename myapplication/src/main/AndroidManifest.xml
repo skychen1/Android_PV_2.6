@@ -146,6 +146,9 @@
         <activity
             android:name=".activity.TimelyGroupCstActivity"
             android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.WebIntentActivity"
+            android:screenOrientation="sensorLandscape" />
         <receiver android:name=".http.ContentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

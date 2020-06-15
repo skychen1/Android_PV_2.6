@@ -49,7 +49,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentTop="true"
-						android:text="名字"
+						android:text=""
 						android:textColor="@color/text_color_3"
 						android:textSize="@dimen/x48"
 						android:textStyle="bold"/>

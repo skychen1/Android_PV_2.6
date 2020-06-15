@@ -57,12 +57,13 @@ import pl.droidsonroids.gif.GifDrawable;
 
 import static high.rivamed.myapplication.base.App.ANIMATION_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_007;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_009;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.SAVE_BRANCH_CODE;
@@ -163,6 +164,20 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private List<BoxSizeBean.DevicesBean> mBoxsize;
    private boolean                       mStartScanType;
    private int                           mEndSize            = 0;
+   private TimeCountNoEpc                mNoEpcTime;
+   private boolean                       mOutType            = false;
+
+   /**
+    * 未扫描到耗材的最后的处理退出登录
+    *
+    * @param event
+    */
+   @Subscribe(threadMode = ThreadMode.MAIN)
+   public void onEventOverNoEpc(Event.EventOverNoEpc event) {
+	if (event.b) {
+	   removeAllAct(SelInOutBoxTwoActivity.this);
+	}
+   }
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onConnectReaderState(Event.ConnectReaderState event) {
@@ -232,7 +247,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		String patientName = b.getPatientName();
 		int deleteCount = b.getDeleteCount();
 		int isErrorOperation = b.getIsErrorOperation();
-		if (UIUtils.getConfigType(mContext, CONFIG_009) &&
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
 		    ((patientId == null || patientId.equals("")) ||
 		     (patientName == null || patientName.equals(""))) || !mDoorStatusType) {
 		   setFalseEnabled(false);
@@ -241,7 +256,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		}
 		if ((isErrorOperation == 1 && deleteCount == 0) ||
 		    (isErrorOperation == 1 && deleteCount == 0 && b.getExpireStatus() == 0) ||
-		    (UIUtils.getConfigType(mContext, CONFIG_007) && patientName == null) ||
+		    ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+			UIUtils.getConfigType(mContext, CONFIG_BPOW02)) && patientName == null) ||
 		    !mDoorStatusType) {
 		   setFalseEnabled(false);
 		   setAllTextVis(mDoorStatusType);
@@ -596,7 +612,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	mOperationType = getIntent().getIntExtra("OperationType", -3);
 	mClossEthId = getIntent().getStringExtra("mEthId");
-	if (UIUtils.getConfigType(mContext, CONFIG_058)){
+	if (UIUtils.getConfigType(mContext, CONFIG_058)) {
 	   mOrderIds = getIntent().getStringArrayListExtra("orderids");
 	}
 	Log.i("outtccc", "mOperationType   " + mOperationType);
@@ -628,7 +644,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		mDto.setOperation(mOperationType);
 		mDto.setDeviceInventoryVos(vos);
 		mDto.setSthId(SPUtils.getString(mContext, SAVE_STOREHOUSE_CODE));
-		if (mOrderIds!=null){
+		if (mOrderIds != null) {
 		   mDto.setOrderIds(mOrderIds);
 		}
 		if (mTitleConn) {
@@ -770,7 +786,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    private void setHandlerToastAndFinish() {
 
 	if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
-	   mHandler.postDelayed(mRunnableW, 3000);
+	   mHandler.postDelayed(mRunnableW, 1000);
 	} else {
 	   setRemoveRunnable();
 	}
@@ -780,18 +796,6 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 没有数据就跳转到主界面
     */
    private void setRunnable() {
-	mRunnable = new Runnable() {
-	   @Override
-	   public void run() {
-		if (mBoxInventoryVos.size() == 0 && mDoorStatusType && mResume) {
-		   EventBusUtils.postSticky(new Event.EventFrag("START1"));
-		   finish();
-		} else {
-		   mHandler.removeCallbacks(mRunnable);
-		}
-	   }
-	};
-
 	mRunnableW = new Runnable() {
 	   @Override
 	   public void run() {
@@ -801,8 +805,16 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   if (!UIUtils.isFastDoubleClick()) {
 			MusicPlayer.getInstance().play(MusicPlayer.Type.NO_EVERY);
 		   }
-		   ToastUtils.showShortToast("未扫描到操作的耗材,即将返回主界面，请重新操作");
-		   mHandler.postDelayed(mRunnable, 1000);
+		   ToastUtils.showShortToast("未扫描到操作的耗材,请重新操作");
+		   mTimelyLeft.setEnabled(true);
+		   mTimelyRight.setEnabled(true);
+		   mTimelyLeft.setText("返回主界面");
+		   mTimelyRight.setText("退出登录");
+		   mOutType = true;
+		   if (mNoEpcTime == null) {
+			mNoEpcTime = new TimeCountNoEpc(NOEPC_LOGINOUT_TIME, 1000, mTimelyRight);
+		   }
+		   mNoEpcTime.start();
 		} else {
 		   setRemoveRunnable();
 		}
@@ -845,29 +857,33 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   mFirstFinishLoading = false;
 		   mLastFinishLoading = false;
 		   if (mDoorStatusType) {
-			mIntentType = 1;
-			stopScan();
-			setRemoveRunnable();
-			if (mInventoryVos != null) {
-			   mTimelyLeft.setEnabled(false);
-			   mTimelyRight.setEnabled(false);
-			   if (mStarts != null) {
-				mStarts.cancel();
-				mTimelyRight.setText("确认并退出登录");
-			   }
-			   if (mOperationType == 9) {//移出
-				setYcDate(mIntentType);
-			   } else if (mOperationType == 11) {//调拨
-				setDbDate(mIntentType);
-			   } else if (mOperationType == 8) {//退货
-				setThDate(mIntentType);
-			   } else if (mOperationType == 4) {//领用退回
-				setLyThDate(mIntentType);
-			   } else {
-				setDate(mIntentType);//其他操作
-			   }
+			if (mOutType) {
+			   finish();
 			} else {
-			   ToastUtils.showShortToast("数据异常");
+			   mIntentType = 1;
+			   stopScan();
+			   setRemoveRunnable();
+			   if (mInventoryVos != null) {
+				mTimelyLeft.setEnabled(false);
+				mTimelyRight.setEnabled(false);
+				if (mStarts != null) {
+				   mStarts.cancel();
+				   mTimelyRight.setText("确认并退出登录");
+				}
+				if (mOperationType == 9) {//移出
+				   setYcDate(mIntentType);
+				} else if (mOperationType == 11) {//调拨
+				   setDbDate(mIntentType);
+				} else if (mOperationType == 8) {//退货
+				   setThDate(mIntentType);
+				} else if (mOperationType == 4) {//领用退回
+				   setLyThDate(mIntentType);
+				} else {
+				   setDate(mIntentType);//其他操作
+				}
+			   } else {
+				ToastUtils.showShortToast("数据异常");
+			   }
 			}
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -881,19 +897,23 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 		   mFirstFinishLoading = false;
 		   mLastFinishLoading = false;
 		   if (mDoorStatusType) {
-			stopScan();
-			setRemoveRunnable();
-			mIntentType = 2;
-			if (mInventoryVos != null) {
-			   mTimelyLeft.setEnabled(false);
-			   mTimelyRight.setEnabled(false);
-			   if (mStarts != null) {
-				mStarts.cancel();
-				mTimelyRight.setText("确认并退出登录");
-			   }
-			   putDateOutLogin(mIntentType);
+			if (mOutType) {
+			   EventBusUtils.post(new Event.EventOverNoEpc(true));
 			} else {
-			   ToastUtils.showShortToast("数据异常");
+			   stopScan();
+			   setRemoveRunnable();
+			   mIntentType = 2;
+			   if (mInventoryVos != null) {
+				mTimelyLeft.setEnabled(false);
+				mTimelyRight.setEnabled(false);
+				if (mStarts != null) {
+				   mStarts.cancel();
+				   mTimelyRight.setText("确认并退出登录");
+				}
+				putDateOutLogin(mIntentType);
+			   } else {
+				ToastUtils.showShortToast("数据异常");
+			   }
 			}
 		   } else {
 			ToastUtils.showShortToast("请关闭柜门，再进行操作！");
@@ -1082,7 +1102,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	dto.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE));
 	dto.setInventoryVos(mBoxInventoryVos);
 	dto.setOperation(mOperationType);
-	if (mOperationType==2&&UIUtils.getConfigType(mContext, CONFIG_058)){
+	if (mOperationType == 2 && UIUtils.getConfigType(mContext, CONFIG_058)) {
 	   dto.setOrderIds(mOrderIds);
 	}
 	dto.setThingId(SPUtils.getString(UIUtils.getContext(), THING_CODE));
@@ -1099,17 +1119,19 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 
 			MusicPlayer.playSoundByOperation(mOperationType);//播放操作成功提示音
 			new Thread(() -> deleteVo(result)).start();//数据库删除已经操作过的EPC
-			if (mOperationType==2&&UIUtils.getConfigType(mContext, CONFIG_058)){
-			   if (fromJson.getOrderVos().size()>0){
-				DialogUtils.showInBoxOrderOverDialog(mContext,fromJson.getOrderVos(),mIntentType);
-				UnNetCstUtils.putUnNetOperateYes(SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
+			if (mOperationType == 2 && UIUtils.getConfigType(mContext, CONFIG_058)) {
+			   if (fromJson.getOrderVos().size() > 0) {
+				DialogUtils.showInBoxOrderOverDialog(mContext, fromJson.getOrderVos(),
+										 mIntentType);
+				UnNetCstUtils.putUnNetOperateYes(
+					SelInOutBoxTwoActivity.this);//提交离线耗材和重新获取在库耗材数据
 				if (!getSqlChangeType()) {
 				   getAllCstDate(this);
 				}
-			   }else {
+			   } else {
 				overDataFinish(mIntentType);
 			   }
-			}else {
+			} else {
 			   overDataFinish(mIntentType);
 			}
 		   } else {
@@ -1130,10 +1152,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 
    }
+
    /**
     * 确认后，不走整单入库的逻辑
     */
-   public void overDataFinish(int mIntentType){
+   public void overDataFinish(int mIntentType) {
 	if (mIntentType == 2) {
 	   UIUtils.putOrderId(mContext);
 	   removeAllAct(SelInOutBoxTwoActivity.this);
@@ -1146,6 +1169,7 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	}
 	finish();
    }
+
    /**
     * 断网常规的本地
     *
@@ -1350,7 +1374,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   if ((b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0) ||
 		 (b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 && b.getExpireStatus() == 0 &&
 		  mOperationType != 8) || ((mOperationType == 3 || mOperationType == 4) &&
-						   UIUtils.getConfigType(mContext, CONFIG_007) &&
+						   (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+						    UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&
 						   b.getPatientName() == null)) {
 		if (mOperationType == 8 && b.getIsErrorOperation() == 1 && b.getDeleteCount() == 0 &&
 		    b.getExpireStatus() == 0) {
@@ -1505,12 +1530,14 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     * 取消runnable
     */
    private void setRemoveRunnable() {
+	mOutType = false;
+	if (mNoEpcTime != null) {
+	   mNoEpcTime.cancel();
+	}
 	if (mHandler != null && mRunnableW != null) {
 	   mHandler.removeCallbacks(mRunnableW);
 	}
-	if (mHandler != null && mRunnable != null) {
-	   mHandler.removeCallbacks(mRunnable);
-	}
+
    }
 
    /**
@@ -1573,8 +1600,8 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   case MotionEvent.ACTION_UP:
 		if (SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA) != null &&
 		    !SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_DATA).equals("") &&
-		    mTimelyRight.isEnabled()) {
-		   if (mStarts!=null){
+		    mTimelyRight.isEnabled()&&!mOutType) {
+		   if (mStarts != null) {
 			mStarts.cancel();
 			mStarts.start();
 		   }
@@ -1627,9 +1654,12 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	Log.i("outtccc", getClass().getName() + "  onDestroy");
 
 	EventBusUtils.unregister(this);
-	if (mStarts!=null){
+	if (mStarts != null) {
 	   mStarts.cancel();
 	   mStarts = null;
+	}
+	if (mNoEpcTime != null) {
+	   mNoEpcTime.cancel();
 	}
 	mBoxInventoryVos.clear();
 	mEthDeviceIdBack.clear();

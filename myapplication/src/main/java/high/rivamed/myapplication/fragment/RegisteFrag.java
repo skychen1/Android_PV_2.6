@@ -68,7 +68,9 @@ import high.rivamed.myapplication.utils.WifiUtils;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
+import static high.rivamed.myapplication.base.App.VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
@@ -82,6 +84,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_HOME_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_LOGINOUT_TIME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_ONE_REGISTE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REGISTE_DATE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_REMOVE_LOGFILE_TIME;
@@ -90,7 +93,9 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.http.NetApi.URL_CLOSE;
@@ -139,6 +144,10 @@ public class RegisteFrag extends SimpleFragment {
    EditText mFragRegisteLoginoutEdit;
    @BindView(R.id.frag_registe_loginout_edit2)
    EditText mFragRegisteLoginoutEdit2;
+   @BindView(R.id.frag_registe_loginout_edit3)
+   EditText mFragRegisteLoginoutEdit3;
+   @BindView(R.id.frag_registe_loginout_edit4)
+   EditText mFragRegisteLoginoutEdit4;
    @BindView(R.id.frag_registe_loginout_edit5)
    EditText mFragRegisteLoginoutEdit5;
    public RecyclerView mRecyclerview;
@@ -211,7 +220,7 @@ public class RegisteFrag extends SimpleFragment {
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
-					   thingDto.getThingSnVo().getBranchCode());
+					   thingDto.getThingSnVo().getBranchId());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE,
 					   thingDto.getThingSnVo().getDeptId());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
@@ -304,7 +313,7 @@ public class RegisteFrag extends SimpleFragment {
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE,
 				mSnRecoverBean.getThing().getDeptId());
 	SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
-				mSnRecoverBean.getThingSnVo().getBranchCode());
+				mSnRecoverBean.getThingSnVo().getBranchId());
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE,
 				mSnRecoverBean.getThingSnVo().getSthId());
 	SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
@@ -342,7 +351,7 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		LogosBean logosBean = mGson.fromJson(result, LogosBean.class);
-		String loginPageLogo = logosBean.getHospitalFile().getLoginPageLogo();
+		String loginPageLogo = logosBean.getHospitalFile().getHospLogo();
 		String mainInterfaceLogo = logosBean.getHospitalFile().getMainInterfaceLogo();
 		boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo, "login_logo");
 		boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo, "home_logo");
@@ -735,7 +744,7 @@ public class RegisteFrag extends SimpleFragment {
 	ThingDto.HospitalInfoVo hospitalInfoVo = new ThingDto.HospitalInfoVo();
 
 	hospitalInfoVo.setDeptId(deptId);
-	hospitalInfoVo.setBranchCode(branchCode);
+	hospitalInfoVo.setBranchId(branchCode);
 	hospitalInfoVo.setSthId(storehouseCode);
 	hospitalInfoVo.setOptRoomId(operationRoomNo);
 	hospitalInfoVo.setDeptName(deptName);
@@ -751,6 +760,7 @@ public class RegisteFrag extends SimpleFragment {
 	//	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
+	tBaseThing.setSystemType(SYSTEMTYPE);
 	TBaseThingDto.setThing(tBaseThing);
 	LogUtils.i(TAG, " mDeviceVos.size()     " + mDeviceVos.size());
 	if (mRecyclerview.getAdapter().getItemCount() != mDeviceVos.size()) {
@@ -773,7 +783,7 @@ public class RegisteFrag extends SimpleFragment {
    }
 
    @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn,
-	   R.id.frag_registe_txt,R.id.frag_registe_loginout_btn2, R.id.frag_registe_loginout_btn5})
+	   R.id.frag_registe_txt,R.id.frag_registe_loginout_btn2,R.id.frag_registe_loginout_btn3,R.id.frag_registe_loginout_btn4, R.id.frag_registe_loginout_btn5})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -826,6 +836,34 @@ public class RegisteFrag extends SimpleFragment {
 			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + HOME_COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
 		   }else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于5秒，请重新设置！");
+		   }
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
+		break;
+	   case R.id.frag_registe_loginout_btn3:
+		try {
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit3.getText().toString().trim())*1000);
+		   if (time>=3000){
+			SPUtils.putInt(UIUtils.getContext(), SAVE_NOEPC_LOGINOUT_TIME, time);
+			NOEPC_LOGINOUT_TIME = time;
+			ToastUtils.showShortToast("设置成功！未扫描到操作耗材后 " + NOEPC_LOGINOUT_TIME / 1000 + " s后自动退出登录！");
+		   }else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于3秒，请重新设置！");
+		   }
+		} catch (Exception ex) {
+		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		}
+		break;
+	   case R.id.frag_registe_loginout_btn4:
+		try {
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit4.getText().toString().trim())*1000);
+		   if (time>=60000){
+			SPUtils.putInt(UIUtils.getContext(), SAVE_VOICE_NOCLOSSDOOR_TIME, time);
+			VOICE_NOCLOSSDOOR_TIME= time;
+			ToastUtils.showShortToast("设置成功！未关柜门后 " + VOICE_NOCLOSSDOOR_TIME / 1000 + " s后开始语音提示！");
+		   }else {
+			ToastUtils.showShortToast("设置失败，时间必须大于等于60秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
 		   ToastUtils.showShortToast("设置失败，请填写时间！");

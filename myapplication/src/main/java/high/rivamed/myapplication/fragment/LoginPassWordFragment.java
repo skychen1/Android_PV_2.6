@@ -1,6 +1,8 @@
 package high.rivamed.myapplication.fragment;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -8,6 +10,7 @@ import android.widget.Toast;
 
 import org.litepal.LitePal;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -18,12 +21,15 @@ import high.rivamed.myapplication.activity.LoginActivity;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.bean.HomeAuthorityMenuBean;
+import high.rivamed.myapplication.bean.LogosBean;
 import high.rivamed.myapplication.dbmodel.AccountVosBean;
 import high.rivamed.myapplication.dto.UserLoginDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.Coder;
+import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.FileUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -31,6 +37,10 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.cont.Constants.HOME_LOGO;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_LOGO;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_TYPE_PASSWORD;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -51,6 +61,8 @@ public class LoginPassWordFragment extends SimpleFragment {
     EditText mLoginName;
     @BindView(R.id.login_password)
     EditText mLoginPassword;
+    @BindView(R.id.login_help)
+    TextView mLoginHelp;
     @BindView(R.id.login_button)
     TextView mLoginButton;
     private String mUserPhone;
@@ -75,25 +87,58 @@ public class LoginPassWordFragment extends SimpleFragment {
 
     }
 
-   @OnClick(R.id.login_button)
-   public void onViewClicked() {
-	if (UIUtils.isFastDoubleClick(R.id.login_button)) {
-	   return;
-	} else {
-	   if (isvalidate()) {
-             EventBusUtils.postSticky(new Event.EventLoading(true));
-           //获取配置项并登陆
-           LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) -> {
-               if (canLogin) {
-                   loginEnjoin(canDevice,hasNet);
+   @OnClick({R.id.login_button,R.id.login_help})
+   public void onViewClicked(View view) {
+       switch (view.getId()) {
+           case R.id.login_button:
+               if (!UIUtils.isFastDoubleClick(R.id.login_button)) {
+                   if (isvalidate()) {
+                       EventBusUtils.postSticky(new Event.EventLoading(true));
+                       //获取配置项并登陆
+                       LoginUtils.getConfigDate(mContext, (canLogin, canDevice, hasNet) -> {
+                           if (canLogin) {
+                               loginEnjoin(canDevice,hasNet);
+                           }
+                       });
+                   } else {
+                       Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+                   }
                }
-           });
-	   } else {
-		Toast.makeText(mContext, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-	   }
-	}
-   }
+               break;
+           case R.id.login_help:
+               if (!UIUtils.isFastDoubleClick(R.id.login_help)){
+                   getLogos();
+               }
+               break;
+       }
 
+   }
+    private void getLogos() {
+        NetRequest.getInstance().loadLogo(this, new BaseResult() {
+            @Override
+            public void onSucceed(String result) {
+                LogosBean logosBean = mGson.fromJson(result, LogosBean.class);
+                String loginPageLogo = logosBean.getHospitalFile().getHospLogo();
+                String mainInterfaceLogo = logosBean.getHospitalFile().getMainInterfaceLogo();
+                String helpInfo = logosBean.getHospitalFile().getHospital().getLoginHelpInfo();
+                DialogUtils.showLoginHelpDialog(mContext, helpInfo);
+                boolean saveloginPageLogo = FileUtils.savePicture(loginPageLogo, "login_logo");
+                boolean savemainInterfaceLogo = FileUtils.savePicture(mainInterfaceLogo,
+                                                                      "home_logo");
+                File login_logo = new File(
+                      Environment.getExternalStorageDirectory() + "/login_logo" + "/login_logo.png");
+                File home_logo = new File(
+                      Environment.getExternalStorageDirectory() + "/home_logo" + "/home_logo.png");
+                String login_logoPath = login_logo.getPath();
+                String home_logoPath = home_logo.getPath();
+                SPUtils.putString(mContext, LOGIN_LOGO, login_logoPath);
+                SPUtils.putString(mContext, HOME_LOGO, home_logoPath);
+                Log.i("eees", "图片loginPageLogo保存+     " + saveloginPageLogo);
+                Log.i("eees", "图片mainInterfaceLogo保存+     " + savemainInterfaceLogo);
+            }
+        });
+
+    }
     /**
      * 是否禁止使用
      *
@@ -157,6 +202,8 @@ public class LoginPassWordFragment extends SimpleFragment {
         accountBean.setPassword(mPassword);
         userLoginDto.setAccount(accountBean);
         userLoginDto.setSystemType(SYSTEMTYPE);
+        userLoginDto.setLoginType(LOGIN_TYPE_PASSWORD);
+        userLoginDto.setDeptId(SPUtils.getString(mContext, SAVE_DEPT_CODE));
         userLoginDto.setThingId(SPUtils.getString(mContext, THING_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(userLoginDto));
         NetRequest.getInstance().userLogin(mGson.toJson(userLoginDto), _mActivity, new BaseResult() {

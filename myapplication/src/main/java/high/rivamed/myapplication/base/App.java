@@ -43,16 +43,18 @@ import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
 
 public class App extends Application {
 
-   public static final String                            TAG                 = "BaseApplication";
-   public static       int                               READER_TIME         = 3000;     //扫描时间
-   public static       int                               ANIMATION_TIME      = 1000;     //动画延时时间
-   public static       int                               COUNTDOWN_TIME      = 20000;         //无操作退出时间
-   public static       int                               CLOSSLIGHT_TIME     = 30000;         //无操作关灯
-   public static       int                               HOME_COUNTDOWN_TIME = 60000;         //无操作退出时间
-   public static       int                               REMOVE_LOGFILE_TIME = 30;         //天
+   public static final String                            TAG                    = "BaseApplication";
+   public static       int                               READER_TIME            = 3000;     //扫描时间
+   public static       int                               ANIMATION_TIME         = 1000;     //动画延时时间
+   public static       int                               COUNTDOWN_TIME         = 20000;         //无操作退出时间
+   public static       int                               CLOSSLIGHT_TIME        = 30000;         //无操作关灯
+   public static       int                               HOME_COUNTDOWN_TIME    = 60000;         //无操作退出时间
+   public static       int                               REMOVE_LOGFILE_TIME    = 30;         //天
+   public static       int                               NOEPC_LOGINOUT_TIME    = 20000;         //未扫描到耗材退出
+   public static       int                               VOICE_NOCLOSSDOOR_TIME = 600000;         //没关门提示
    private static      App                               instance;
-   public static       PushFormDateBean                  mPushFormDateBean   = new PushFormDateBean();
-   public static       List<PushFormDateBean.OrdersBean> mPushFormOrders     = new ArrayList<>();
+   public static       PushFormDateBean                  mPushFormDateBean      = new PushFormDateBean();
+   public static       List<PushFormDateBean.OrdersBean> mPushFormOrders        = new ArrayList<>();
 
    /**
     * 缓存

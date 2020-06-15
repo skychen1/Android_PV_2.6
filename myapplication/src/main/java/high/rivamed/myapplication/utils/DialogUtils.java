@@ -49,6 +49,7 @@ import high.rivamed.myapplication.views.InBoxCountDialog;
 import high.rivamed.myapplication.views.InBoxOrderOverDialog;
 import high.rivamed.myapplication.views.LoadingDialog;
 import high.rivamed.myapplication.views.LoadingDialogX;
+import high.rivamed.myapplication.views.LoginHelpDialog;
 import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
@@ -86,7 +87,10 @@ import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 public class DialogUtils {
 
     public static String sTimes;
-
+    public static void showLoginHelpDialog(Activity context,String string) {
+        LoginHelpDialog.Builder builder = new LoginHelpDialog.Builder(context, string);
+        builder.create().show();
+    }
     /**
      * 紧急登录密码修改
      */
@@ -146,7 +150,7 @@ public class DialogUtils {
 //                    } else {
 //                        ContentConsumeOperateFrag.mPause = false;
 //                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-//                        String id = patientInfos.get(checkedPosition).getPatientId();
+//                        String id = patientInfos.get(checkedPosition).getPatientIndexId();
 //                        String name = patientInfos.get(checkedPosition).getPatientName();
 //                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
 //                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();
@@ -175,7 +179,7 @@ public class DialogUtils {
 ////                                checkedPosition)
 ////                                .findViewById(R.id.seven_three)).getText().toString();
 //                        String operationScheduleId = patientInfos.get(checkedPosition).getOperationScheduleId();
-//                        String id = patientInfos.get(checkedPosition).getPatientId();
+//                        String id = patientInfos.get(checkedPosition).getPatientIndexId();
 //                        String name = patientInfos.get(checkedPosition).getPatientName();
 //                        String mTempPatientId = patientInfos.get(checkedPosition).getTempPatientId();
 //                        String mMedicalId = patientInfos.get(checkedPosition).getMedicalId();

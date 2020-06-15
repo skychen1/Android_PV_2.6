@@ -36,6 +36,8 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static com.ruihua.libfacerecognitionv3.main.presenter.FaceManager.CODE_SUCCESS;
+import static high.rivamed.myapplication.cont.Constants.LOGIN_TYPE_FACE;
+import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
@@ -157,7 +159,9 @@ public class LoginFaceFragment extends SimpleFragment {
         HashMap<String, String> param = new HashMap<>();
         param.put("faceId", faceId);
         param.put("systemType", SYSTEMTYPE);
+        param.put("loginType",LOGIN_TYPE_FACE);
         param.put("thingId", SPUtils.getString(mContext, THING_CODE));
+        param.put("deptId", SPUtils.getString(mContext, SAVE_DEPT_CODE));
         LogUtils.i("Login", "THING_CODE   " + mGson.toJson(param));
         NetRequest.getInstance().userLoginByUserId(mGson.toJson(param), _mActivity, new BaseResult() {
             @Override
