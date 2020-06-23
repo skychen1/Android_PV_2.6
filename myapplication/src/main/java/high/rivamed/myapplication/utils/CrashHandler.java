@@ -208,7 +208,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 				   + ".log";
 	   if (Environment.getExternalStorageState().equals(
 		   Environment.MEDIA_MOUNTED)) {
-		String path =Environment.getExternalStorageDirectory() + "/"+"RuiHua_CrashLogDir";
+		String path =Environment.getExternalStorageDirectory() + "/"+"Rivamed_CrashLogs";
 		File dir = new File(path);
 		if (!dir.exists()) {
 		   dir.mkdirs();
