@@ -47,7 +47,6 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
-import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
@@ -541,8 +540,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 					ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
 				} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
 				   Log.i("faceddddd","status    --------------");
-					FaceManager.getManager().startActivityFaceRegister(this, SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,""),
-							SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,"") ,(code, msg) -> {
+					FaceManager.getManager().startActivityFaceRegister(this, mFaceId, mFaceId,(code, msg) -> {
 						//其他信息提示
 								ToastUtils.showShort(msg);
 						Log.e("Face", "error callback: "+code+":::" + msg);
@@ -558,7 +556,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		FaceManager.getManager().onActivityResultIn(requestCode, resultCode, data, (code, msg) -> {
 			//这里返回注册人脸的图片路径，此处上传至服务器
 			//人脸照结果
-			Log.e("Face", "onActivityResult success: " + msg);
+			Log.e("Face", "onActivityResult success: " +code +"     "+ msg);
 			if (code==100){
 				if (TextUtils.isEmpty(msg)) {
 					return;

@@ -24,7 +24,16 @@ public class VersionBean implements Serializable{
    private int id;
    private SystemVersionBean systemVersion;
    private String            systemType;
+   private String            apkFtpUrl;
    private boolean            operateSuccess;
+
+   public String getApkFtpUrl() {
+      return apkFtpUrl;
+   }
+
+   public void setApkFtpUrl(String apkFtpUrl) {
+      this.apkFtpUrl = apkFtpUrl;
+   }
 
    public boolean isOperateSuccess() {
       return operateSuccess;

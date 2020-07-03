@@ -71,6 +71,7 @@ import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mPushFormOrders;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
@@ -90,7 +91,6 @@ import static high.rivamed.myapplication.cont.Constants.IC_TYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_ICON;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
@@ -105,7 +105,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 
@@ -357,7 +356,6 @@ public class LoginActivity extends SimpleActivity {
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, "");
-	   SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_ICON, "");
 	   SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, "");
 	   SPUtils.putBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL, false);
@@ -493,7 +491,6 @@ public class LoginActivity extends SimpleActivity {
 		mRightDownL.setVisibility(View.VISIBLE);
 		mRightDownText.setText("0");
 		getFloorList();
-		Log.i("3434s","ddddd   "+mRightDownText.getText());
 	   }
 	} else {
 	   if (mRightDownL!=null) {

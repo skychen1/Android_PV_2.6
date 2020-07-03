@@ -36,7 +36,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 
 import static com.ruihua.libfacerecognitionv3.main.presenter.FaceManager.CODE_SUCCESS;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**

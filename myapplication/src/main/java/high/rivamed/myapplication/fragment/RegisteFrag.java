@@ -14,9 +14,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.Response;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -69,6 +66,7 @@ import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
@@ -93,8 +91,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
-import static high.rivamed.myapplication.http.NetApi.URL_CLOSE;
-import static high.rivamed.myapplication.http.NetApi.URL_OPEN;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.UIUtils.disableRadioGroup;
 import static high.rivamed.myapplication.utils.UIUtils.enableRadioGroup;
@@ -206,6 +202,11 @@ public class RegisteFrag extends SimpleFragment {
 		   disableRadioGroup(mRgDeviceType);
 		   getBoxSize();
 		   getLogos();
+		   if (thingDto.getThing().getThingModel().equals("1")){
+			SYSTEMTYPE ="EHCT";//嵌入式
+		   }else {
+			SYSTEMTYPE ="HCT";//耗材柜
+		   }
 		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
 					   thingDto.getThingSnVo().getThingModel());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
@@ -294,6 +295,11 @@ public class RegisteFrag extends SimpleFragment {
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
+	if (mSnRecoverBean.getThing().getThingModel().equals("1")){
+	   SYSTEMTYPE ="EHCT";//嵌入式
+	}else {
+	   SYSTEMTYPE ="HCT";//耗材柜
+	}
 	//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
@@ -385,8 +391,8 @@ public class RegisteFrag extends SimpleFragment {
 	if (BuildConfig.DEBUG) {
 	   mFragRegisteNameEdit.setText("3.0柜子");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.10.25");
-	   mFragRegistePortEdit.setText("8018");
+	   mFragRegisteSeveripEdit.setText("192.168.111.80");
+	   mFragRegistePortEdit.setText("8019");
 	}
 	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000+"");
 	mFragRegisteLoginoutEdit2.setText( HOME_COUNTDOWN_TIME / 1000+"");
@@ -411,10 +417,12 @@ public class RegisteFrag extends SimpleFragment {
 		case R.id.rb_standard_pv:
 		   //TODO 标准
 		   mThingModel = "0";
+		   SYSTEMTYPE ="HCT";//高值柜
 		   break;
 		case R.id.rb_embed_pv:
 		   //TODO 嵌入式
 		   mThingModel = "1";
+		   SYSTEMTYPE ="EHCT";//嵌入式
 		   break;
 		default:
 		   break;
@@ -426,49 +434,17 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (isChecked) {
-		   OkGo.<String>get(MAIN_URL + URL_OPEN).tag(mContext).execute(new StringCallback() {
-			@Override
-			public void onSuccess(Response<String> response) {
-			   ToastUtils.showShortToast(getString(R.string.log_open));
-			   Log.i(TAG, "responseURL_OPEN   " + response.body());
-			   LogcatHelper.getInstance(App.getAppContext()).stop();
-			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   EventBusUtils.post(new Event.EventLogType(true));
-			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, true);
-			}
-
-			@Override
-			public void onError(Response<String> response) {
-			   super.onError(response);
-			   ToastUtils.showShortToast(getString(R.string.log_open));
-			   LogcatHelper.getInstance(App.getAppContext()).stop();
-			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   EventBusUtils.post(new Event.EventLogType(true));
-			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, true);
-			}
-		   });
+		   ToastUtils.showShortToast(getString(R.string.log_open));
+		   LogcatHelper.getInstance(App.getAppContext()).stop();
+		   LogcatHelper.getInstance(App.getAppContext()).start();
+		   EventBusUtils.post(new Event.EventLogType(true));
+		   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, true);
 		} else {
-		   OkGo.<String>get(MAIN_URL + URL_CLOSE).tag(mContext).execute(new StringCallback() {
-			@Override
-			public void onSuccess(Response<String> response) {
-			   ToastUtils.showShortToast(getString(R.string.log_closs));
-			   Log.i(TAG, "responseURL_CLOSE   " + response.body());
-			   EventBusUtils.post(new Event.EventLogType(false));
-			   LogcatHelper.getInstance(App.getAppContext()).stop();
-			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, false);
-			}
-
-			@Override
-			public void onError(Response<String> response) {
-			   super.onError(response);
-			   ToastUtils.showShortToast(getString(R.string.log_closs));
-			   EventBusUtils.post(new Event.EventLogType(false));
-			   LogcatHelper.getInstance(App.getAppContext()).stop();
-			   LogcatHelper.getInstance(App.getAppContext()).start();
-			   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, false);
-			}
-		   });
+		   ToastUtils.showShortToast(getString(R.string.log_closs));
+		   EventBusUtils.post(new Event.EventLogType(false));
+		   LogcatHelper.getInstance(App.getAppContext()).stop();
+		   LogcatHelper.getInstance(App.getAppContext()).start();
+		   SPUtils.putBoolean(UIUtils.getContext(), LOGCAT_OPEN, false);
 		}
 	   }
 	});
@@ -742,8 +718,10 @@ public class RegisteFrag extends SimpleFragment {
 	TBaseThingDto.setHospitalInfoVo(hospitalInfoVo);
 	if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_standard_pv) {
 	   mThingModel = "0";
+	   SYSTEMTYPE ="HCT";//高值柜
 	} else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
 	   mThingModel = "1";
+	   SYSTEMTYPE ="EHCT";//嵌入式
 	}
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mThingModel);
@@ -751,7 +729,9 @@ public class RegisteFrag extends SimpleFragment {
 	//	tBaseThing.setThingType("1");
 	tBaseThing.setSn(mFragRegisteNumberEdit.getText().toString().trim());
 	tBaseThing.setThingId(SPUtils.getString(mContext, THING_CODE));
+//	tBaseThing.setSystemType(SYSTEMTYPE);
 	TBaseThingDto.setThing(tBaseThing);
+
 	LogUtils.i(TAG, " mDeviceVos.size()     " + mDeviceVos.size());
 	if (mRecyclerview.getAdapter().getItemCount() != mDeviceVos.size()) {
 	   RecyclerView.LayoutManager layoutManager = mRecyclerview.getLayoutManager();

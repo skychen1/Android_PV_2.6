@@ -100,6 +100,15 @@ public class ThingDto implements Serializable{
         private String sthName;
         private String thingType;
         private String localIp;
+        private String                   systemType;
+
+        public String getSystemType() {
+            return systemType;
+        }
+
+        public void setSystemType(String systemType) {
+            this.systemType = systemType;
+        }
 
         public String getLocalIp() {
             return localIp;
