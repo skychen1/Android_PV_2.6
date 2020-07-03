@@ -90,38 +90,41 @@ public class RegisteFaceFrag extends SimpleFragment {
             if (FaceManager.getManager().hasModelInit()) {
                 initFaceList();
             } else {
-                FaceManager.getManager().init(getActivity(), "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
-                    @Override
-                    public void initLicenseSuccess() {
-                        //激活成功
-                    }
-
-                    @Override
-                    public void initLicenseFail(int errorCode, String msg) {
-                        //激活失败
-                        fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK激活失败：：errorCode = " + errorCode + ":::msg：" + msg));
-                    }
-
-                    @Override
-                    public void initModelSuccess() {
-                        //初始化成功
-                        fragmentBtnActive.post(() -> {
-                            ToastUtils.showShortToast("人脸识别SDK初始化成功 "  );
-                            hasModelInit = true;
-                            initFaceList();
-                        });
-                    }
-
-                    @Override
-                    public void initModelFail(int errorCode, String msg) {
-                        //初始化失败
-                        fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
-                    }
-                });
+                initFace();
             }
         }
     }
+    private void initFace() {
+        FaceManager.getManager().init(getActivity(), "", Constants.FACE_GROUP, true, CameraPreviewManager.CAMERA_FACING_FRONT, CameraPreviewManager.ORIENTATION_PORTRAIT, new SimpleSdkInitListener() {
+            @Override
+            public void initLicenseSuccess() {
+                //激活成功
+            }
 
+            @Override
+            public void initLicenseFail(int errorCode, String msg) {
+                //激活失败
+                fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK激活失败：：errorCode = " + errorCode + ":::msg：" + msg));
+
+            }
+
+            @Override
+            public void initModelSuccess() {
+                //初始化成功
+                fragmentBtnActive.post(() -> {
+                    ToastUtils.showShortToast("人脸识别SDK初始化成功 "  );
+                    hasModelInit = true;
+                    initFaceList();
+                });
+            }
+
+            @Override
+            public void initModelFail(int errorCode, String msg) {
+                //初始化失败
+                fragmentBtnActive.post(() -> ToastUtils.showShortToast("人脸识别SDK初始化失败：：errorCode = " + errorCode + ":::msg：" + msg));
+            }
+        });
+    }
     private void initFaceList() {
         SPUtils.putString(UIUtils.getContext(), FACE_UPDATE_TIME, "");
         //从服务器更新人脸底库并注册至本地

@@ -46,7 +46,8 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
-import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
+import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
+import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -375,8 +376,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 													"list.size()   " +
 													list.size());
 												if (list.size() == 1) {
-												   bindFingerPrint(list,
-															 identification);
+												   bindFingerPrint(list,identification);
 												} else {
 												   ToastUtils.showShort(
 													   "采集失败,请重试");
@@ -489,35 +489,30 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	});
    }
 
-   //	private String faceImagePath;
+//	private String faceImagePath;
 
-   void onFacePhoto() {
-	//绑定人脸照
-	RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
-	   if (hasPermission) {
-		int initStatus = FaceSDKManager.initStatus;
-		if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
-		   ToastUtils.showShortToast("SDK还未激活，请先激活");
-		} else if (initStatus == FaceSDKManager.SDK_INIT_FAIL) {
-		   ToastUtils.showShortToast("SDK初始化失败，请重新激活初始化");
-		} else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
-		   ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
-		} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
-		   Log.i("faceddddd", "status    --------------");
-		   FaceManager.getManager()
-			   .startActivityFaceRegister(this,
-								SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,
-											""),
-								SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID,
-											""), (code, msg) -> {
-					//其他信息提示
-					ToastUtils.showShort(msg);
-					Log.e("Face", "error callback: " + code + ":::" + msg);
-				   });
-		}
-	   }
-	});
-   }
+	void onFacePhoto() {
+		//绑定人脸照
+		RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
+			if (hasPermission) {
+				int initStatus = FaceSDKManager.initStatus;
+				if (initStatus == FaceSDKManager.SDK_UNACTIVATION) {
+					ToastUtils.showShortToast("SDK还未激活，请先激活");
+				} else if (initStatus == FaceSDKManager.SDK_INIT_FAIL) {
+					ToastUtils.showShortToast("SDK初始化失败，请重新激活初始化");
+				} else if (initStatus == FaceSDKManager.SDK_INIT_SUCCESS) {
+					ToastUtils.showShortToast("SDK正在加载模型，请稍后再试");
+				} else if (initStatus == FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
+				   Log.i("faceddddd","status    --------------");
+					FaceManager.getManager().startActivityFaceRegister(this, mFaceId, mFaceId,(code, msg) -> {
+						//其他信息提示
+								ToastUtils.showShort(msg);
+						Log.e("Face", "error callback: "+code+":::" + msg);
+					});
+				}
+			}
+		});
+	}
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {

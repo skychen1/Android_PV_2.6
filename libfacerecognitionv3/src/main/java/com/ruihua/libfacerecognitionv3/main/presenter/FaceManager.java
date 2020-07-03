@@ -45,6 +45,7 @@ import com.ruihua.libfacerecognitionv3.main.ui.IFaceSearch;
 import com.ruihua.libfacerecognitionv3.main.utils.BitmapUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.FaceOnDrawTexturViewUtil;
 import com.ruihua.libfacerecognitionv3.main.utils.FileUtils;
+import com.ruihua.libfacerecognitionv3.main.utils.ImageUtils;
 import com.ruihua.libfacerecognitionv3.main.utils.T;
 import com.ruihua.libfacerecognitionv3.main.view.FaceAuthDialog;
 
@@ -1018,7 +1019,7 @@ public class FaceManager {
                 // 压缩、保存人脸图片至300 * 300
                 File faceDir = FileUtils.getBatchImportSuccessDirectory(fileName);
                 File file = new File(faceDir, imageName);
-//                ImageUtils.resize(rgbBitmap, file, mWidth, mHeight);
+                ImageUtils.resize(rgbBitmap, file, mWidth, mHeight);
 
                 rgbBitmap.recycle();
                 rgbBitmap = null;

@@ -159,6 +159,7 @@ public class TestLoginActivity extends SimpleActivity {
 	if (mHits2[0] >= (SystemClock.uptimeMillis() - DURATION2)) {
 	   mHits2 = new long[COUNTS2];//重新初始化数组
 	   startActivity(new Intent(this, RegisteActivity.class));
+	   finish();
 	}
    }
 }

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.views.UpDateDialog;
 
-import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
 import static high.rivamed.myapplication.cont.Constants.ACCESS_TOKEN;
@@ -49,7 +50,6 @@ import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_s_NAME;
-import static high.rivamed.myapplication.cont.Constants.KEY_FACE_ID;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 import static high.rivamed.myapplication.cont.Constants.LOADAPK_VERSION;
@@ -60,9 +60,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.http.NetApi.URL_UPDATE;
 
 /**
  * 项目名称：高值
@@ -146,7 +144,7 @@ public class LoginUtils {
                         String netVersion = versionBean.getSystemVersion().getVersion();
                         if (netVersion != null && 1 == StringUtils.compareVersion(netVersion, localVersion)) {
                             String mDesc = versionBean.getSystemVersion().getDescription();
-                            showUpdateDialog(mContext,mDesc);
+                            showUpdateDialog(mContext,mDesc,versionBean.getApkFtpUrl());
                         } else {
                             // 不需要更新
 //                            loginEnjoin(tCstConfigVos, true);
@@ -178,7 +176,6 @@ public class LoginUtils {
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_NAME, beanss.getAccountName());
         SPUtils.putString(UIUtils.getContext(), KEY_USER_NAME, beanss.getUserName());
         SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID, beanss.getAccountId());
-        SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID, beanss.getFaceId());
         SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX, beanss.getSex());
         List<HomeAuthorityMenuBean> menusList = beanss.getMenusList(accountName);
         if (menusList.size() > 0 && menusList.get(0).getTitle().equals("耗材操作")) {
@@ -220,8 +217,6 @@ public class LoginUtils {
                         loginResultBean.getAppAccountInfoVo().getUserName());
                 SPUtils.putString(UIUtils.getContext(), KEY_ACCOUNT_ID,
                         loginResultBean.getAppAccountInfoVo().getAccountId());
-                SPUtils.putString(UIUtils.getContext(), KEY_FACE_ID,
-                        loginResultBean.getAppAccountInfoVo().getFaceId());
                 SPUtils.putString(UIUtils.getContext(), KEY_USER_SEX,
                         loginResultBean.getAppAccountInfoVo().getSex());
                 SPUtils.putString(UIUtils.getContext(), ACCESS_TOKEN,
@@ -274,9 +269,7 @@ public class LoginUtils {
             if (mLightTimeCount!=null){
                 mLightTimeCount.cancel();
             }
-            if (!UIUtils.isFastDoubleClick()){
-                MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
-            }
+            MusicPlayer.getInstance().play(MusicPlayer.Type.LOGIN_SUC);
             Intent intent = new Intent(activity, HomeActivity.class);
             activity.startActivity(intent);
             if (callback != null){
@@ -356,7 +349,7 @@ public class LoginUtils {
     /**
      * apk更新的dialog
      */
-    private static void showUpdateDialog(Activity mContext, String mDesc) {
+    private static void showUpdateDialog(Activity mContext, String mDesc,String downUrl) {
         UpDateDialog.Builder builder = new UpDateDialog.Builder(mContext);
         builder.setTitle(UIUtils.getString(R.string.ver_title));
         builder.setMsg(mDesc);
@@ -367,7 +360,7 @@ public class LoginUtils {
         });
         builder.setRight(UIUtils.getString(R.string.ver_ok), (dialog, i) -> {
             //更新
-            downloadNewVersion(mContext);//未下载就开始下载
+            downloadNewVersion(mContext,downUrl);//未下载就开始下载
             dialog.dismiss();
         });
 
@@ -377,7 +370,7 @@ public class LoginUtils {
     /**
      * apk下载进度条
      */
-    private static void downloadNewVersion(Activity mContext) {
+    private static void downloadNewVersion(Activity mContext,String downUrl) {
         // 1.显示进度的dialog
         ProgressDialog mDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT);
         mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -385,14 +378,14 @@ public class LoginUtils {
         mDialog.setMax(100);
         mDialog.show();
 
-        loadUpDataVersion(mContext, mDialog);
+        loadUpDataVersion(mContext, mDialog,downUrl);
     }
 
     /**
      * apk下载
      */
-    private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog) {
-        OkGo.<File>get(MAIN_URL + URL_UPDATE).tag(mContext)//
+    private static void loadUpDataVersion(Activity mContext, final ProgressDialog mDialog,String dowmUrl) {
+        OkGo.<File>get(dowmUrl).tag(mContext)//
                 .params("systemType", SYSTEMTYPE)
                 .params("hardwareType", LOADAPK_VERSION)
                 .execute(new FileCallback(FileUtils.getDiskCacheDir(mContext), "RivamedPV.apk") {  //文件下载时，需要指定下载的文件目录和文件名
@@ -404,7 +397,10 @@ public class LoginUtils {
 
                     @Override
                     public void downloadProgress(Progress progress) {
-                        mDialog.setProgress((int) (-progress.fraction *100));
+                        String downloadLength = Formatter.formatFileSize(mContext, progress.currentSize);
+                        String totalLength = Formatter.formatFileSize(mContext, progress.totalSize);
+                        mDialog.setProgress((int) (progress.fraction * 100));
+                        mDialog.setProgressNumberFormat(downloadLength + "/" + totalLength);
                     }
 
                     @Override

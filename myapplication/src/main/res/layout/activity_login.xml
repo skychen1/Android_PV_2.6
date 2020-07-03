@@ -135,6 +135,7 @@
 				android:layout_marginLeft="@dimen/x30"
 				android:layout_toRightOf="@+id/login_stock_status"
 				android:padding="@dimen/y15"
+				android:visibility="gone"
 				android:text="查看未入库耗材  〉"
 				android:textColor="@color/toast_text"
 				android:textSize="@dimen/x36"/>
@@ -239,6 +240,7 @@
 			android:layout_toRightOf="@+id/left_r"
 			android:layout_marginLeft="@dimen/x5"
 			android:paddingTop="@dimen/y45"
+			android:visibility="gone"
 			android:background="@mipmap/login_left_brand">
 			<LinearLayout
 				android:id="@+id/right_top"

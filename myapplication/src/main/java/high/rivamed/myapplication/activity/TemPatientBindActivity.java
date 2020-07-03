@@ -499,7 +499,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			} else {
 			   ToastUtils.showShort("请关闭柜门！");
 			}
-
 		   }
 		}
 		break;
@@ -512,6 +511,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
     * @param type false标识不绑定患者     true标识绑定患者
     */
    private void setExceptinEnter(boolean type) {
+	mDialogRight.setEnabled(false);
 	if (type) {
 	   if (mExceptionDate != null && mExceptionDate.size() > 0) {
 
@@ -542,6 +542,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			NetRequest.getInstance().getExceptionRelevance(json, this, new BaseResult() {
 			   @Override
 			   public void onSucceed(String result) {
+				mDialogRight.setEnabled(true);
 				JSONObject jsonObject = JSON.parseObject(result);
 				if (null == jsonObject.getString("opFlg") ||
 				    jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
@@ -557,6 +558,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 			   @Override
 			   public void onError(String result) {
 				super.onError(result);
+				mDialogRight.setEnabled(true);
 				EventBusUtils.post(new Event.EventExceptionDialog(false));
 				finish();
 			   }
@@ -581,6 +583,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	   NetRequest.getInstance().getExceptionRelevance(mGson.toJson(handleVo), this, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
+		   mDialogRight.setEnabled(true);
 		   JSONObject jsonObject = JSON.parseObject(result);
 		   if (null == jsonObject.getString("opFlg") || jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
 			new Thread(() -> deleteVoException(result)).start();//数据库删除已经操作过的EPC
@@ -594,6 +597,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		@Override
 		public void onError(String result) {
 		   super.onError(result);
+		   mDialogRight.setEnabled(true);
 		   EventBusUtils.post(new Event.EventExceptionDialog(false));
 		}
 	   });
@@ -709,7 +713,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		for (BingFindSchedulesBean.PatientInfoVos s : patientInfos) {
 		   s.setSelected(false);
 		}
-		patientInfos.get(0).setSelected(true);
 		mTypeView.mTempPatientAdapter.notifyDataSetChanged();
 		mTypeView.mRecyclerview.scrollToPosition(0);
 	   }

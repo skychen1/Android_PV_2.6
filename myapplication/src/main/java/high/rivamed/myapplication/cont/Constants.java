@@ -120,7 +120,6 @@ public class Constants {
    public static final String KEY_ACCOUNT_NAME        = "KEY_ACCOUNT_NAME";//用户名字
    public static final String KEY_USER_SEX            = "key_user_sex";//用户性别
    public static final String KEY_ACCOUNT_ID          = "key_account_id";//用户ID
-   public static final String KEY_FACE_ID          = "KEY_FACE_ID";//用户人脸ID
    public static final String SAVE_STOREHOUSE_NAME    = "save_storehouse_name";//库房名字
    public static final String SAVE_RECEIVE_ORDERID    = "save_receive_orderid";//医嘱单ID
    public static final String SAVE_READER_TIME        = "SAVE_READER_TIME";//READER扫描时长

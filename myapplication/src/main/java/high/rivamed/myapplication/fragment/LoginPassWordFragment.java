@@ -37,11 +37,11 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.HOME_LOGO;
 import static high.rivamed.myapplication.cont.Constants.LOGIN_LOGO;
 import static high.rivamed.myapplication.cont.Constants.LOGIN_TYPE_PASSWORD;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 
 /**

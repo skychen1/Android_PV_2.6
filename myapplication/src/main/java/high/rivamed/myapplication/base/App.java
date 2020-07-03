@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,19 +19,17 @@ import com.rivamed.libidcard.IdCardManager;
 import com.ruihua.libconsumables.ConsumableManager;
 import com.ruihua.reader.ReaderManager;
 import com.ruihua.reader.ReaderProducerType;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
-import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
-import high.rivamed.myapplication.http.LoggingLevel;
-import high.rivamed.myapplication.http.MyLoggingInterceptor;
+import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
 import okhttp3.OkHttpClient;
@@ -60,7 +57,7 @@ public class App extends Application {
     * 缓存
     */
    private static ACache mAppCache;
-
+   public static String         SYSTEMTYPE   = "HCT";//HCT高值，EHCT嵌入式
    public static String         MAIN_URL   = null;
    public static boolean        mTitleConn = false;
    public static boolean        mTitleMsg  = false;
@@ -87,13 +84,13 @@ public class App extends Application {
    @Override
    public void onCreate() {
 	super.onCreate();
-	if (BuildConfig.DEBUG) {
-	   StrictMode.setThreadPolicy(
-		   (new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
-	   StrictMode.setVmPolicy(
-		   (new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
-	   LeakCanary.install(this);
-	}
+//	if (BuildConfig.DEBUG) {
+//	   StrictMode.setThreadPolicy(
+//		   (new StrictMode.ThreadPolicy.Builder()).detectAll().penaltyLog().build());
+//	   StrictMode.setVmPolicy(
+//		   (new android.os.StrictMode.VmPolicy.Builder()).detectAll().penaltyLog().build());
+//	   LeakCanary.install(this);
+//	}
 
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
@@ -140,15 +137,15 @@ public class App extends Application {
    private void initOkGo() {
 	OkHttpClient.Builder builder = new OkHttpClient.Builder();
 	//log相关
-	//	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
-	//	loggingInterceptor.setPrintLevel(
-	//		HttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
-	//	loggingInterceptor.setColorLevel(
-	//		Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
-	//	builder.addInterceptor(loggingInterceptor);
+	MyHttpLoggingInterceptor loggingInterceptor = new MyHttpLoggingInterceptor("OkGo");
+		loggingInterceptor.setPrintLevel(
+			MyHttpLoggingInterceptor.Level.BODY);        //log打印级别，决定了log显示的详细程度
+		loggingInterceptor.setColorLevel(
+			Level.INFO);                               //log颜色级别，决定了log在控制台显示的颜色
+		builder.addInterceptor(loggingInterceptor);
 
-	MyLoggingInterceptor interceptor = new MyLoggingInterceptor(LoggingLevel.BODY);
-	builder.addInterceptor(interceptor);                                 //添加OkGo默认debug日志
+//	MyLoggingInterceptor interceptor = new MyLoggingInterceptor(LoggingLevel.BODY);
+//	builder.addInterceptor(interceptor);                                 //添加OkGo默认debug日志
 	//第三方的开源库，使用通知显示当前请求的log，不过在做文件下载的时候，这个库好像有问题，对文件判断不准确
 	//builder.addInterceptor(new ChuckInterceptor(this));
 
