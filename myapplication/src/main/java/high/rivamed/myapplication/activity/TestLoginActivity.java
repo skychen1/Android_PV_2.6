@@ -2,6 +2,7 @@ package high.rivamed.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -14,7 +15,6 @@ import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.base.SimpleActivity;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.devices.TestDevicesActivity;
 import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UIUtils;
@@ -49,6 +49,9 @@ public class TestLoginActivity extends SimpleActivity {
    RelativeLayout mLoginAll;
    private String mUserPhone;
    private String mPassword;
+   final static int  COUNTS2   = 3;// 点击次数  2s内点击3次进入注册界面
+   final static long DURATION2 = 1200;// 规定有效时间
+   long[] mHits2 = new long[COUNTS2];
    @Override
    public int getLayoutId() {
 	return R.layout.test_login_layout;
@@ -57,12 +60,12 @@ public class TestLoginActivity extends SimpleActivity {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
       /*
-      跳转到小鹏的测试界面
+      我们自己使用，不输入密码直接进工程模式
        */
 	mIntentRight.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View view) {
-		startActivity(new Intent(TestLoginActivity.this, TestDevicesActivity.class));
+		continuousClick2();
 	   }
 	});
 	if (BuildConfig.DEBUG) {
@@ -147,5 +150,15 @@ public class TestLoginActivity extends SimpleActivity {
 	   mLightTimeCount.cancel();
 	}
 	finish();
+   }
+   private void continuousClick2() {
+	//每次点击时，数组向前移动一位
+	System.arraycopy(mHits2, 1, mHits2, 0, mHits2.length - 1);
+	//为数组最后一位赋值
+	mHits2[mHits2.length - 1] = SystemClock.uptimeMillis();
+	if (mHits2[0] >= (SystemClock.uptimeMillis() - DURATION2)) {
+	   mHits2 = new long[COUNTS2];//重新初始化数组
+	   startActivity(new Intent(this, RegisteActivity.class));
+	}
    }
 }
