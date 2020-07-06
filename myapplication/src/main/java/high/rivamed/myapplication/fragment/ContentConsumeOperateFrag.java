@@ -316,7 +316,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (!mPause && event.isMute) {
 	   Log.i("outtccc", "开门的接收    " + mRbKey);
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (event.openDoorType){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
+	   }
+
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }

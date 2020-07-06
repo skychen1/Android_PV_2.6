@@ -222,7 +222,11 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
    public void onDialogEvent(Event.PopupEvent event) {
 	Log.i("ttadrf", "event.isMute   "+event.isMute);
 	if (event.isMute) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (event.openDoorType){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
+	   }
 	   mTimelyOpenDoorRight.setEnabled(false);
 	   mTimelyStartBtnRight.setEnabled(false);
 	   if (mBuildero == null) {

@@ -311,7 +311,11 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (event.openDoorType){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
+	   }
 	   if (mBuildero == null) {
 		mBuildero = DialogUtils.showOpenDoorDialog(SelInOutBoxTwoActivity.this, event.mString);
 	   }
