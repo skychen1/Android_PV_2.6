@@ -320,6 +320,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
+	   if (mCountOver != null) {
+		mCountOver.cancel();
+	   }
 	}
 	if (!mPause && !event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_CLOSED);
@@ -549,10 +552,18 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	super.onResume();
 	if (mCountOver==null){
 	   mCountOver = new TimeCountOver(HOME_COUNTDOWN_TIME, 1000);
-	   mCountOver.start();
+	   if (mDoorStatus){
+		mCountOver.start();
+	   }else {
+		mCountOver.cancel();
+	   }
 	}else {
-	   mCountOver.cancel();
-	   mCountOver.start();
+	   if (mDoorStatus){
+		mCountOver.cancel();
+		mCountOver.start();
+	   }else {
+		mCountOver.cancel();
+	   }
 	}
 	((HomeActivity) this.getActivity())
 		.registerMyTouchListener(myTouchListener);
