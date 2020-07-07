@@ -479,7 +479,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		   } else {
 			ToastUtils.showShort("请关闭柜门！");
 		   }
-		} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) && !mException ) {
+		} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) && !mException && mTemPTbaseDevices!=null ) {
 		   //Todo 不绑定患者的流程
 		   EventBusUtils.post(new Event.EventButton(true, true));
 		   AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);

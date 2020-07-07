@@ -599,6 +599,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_THING_CONFIG_FIND;
 	Map<String, String> map = new HashMap<>();
 	map.put("nodeId", sThingCode);//thingid改成nodeid
+	map.put("grade", "3");//'配置级别: 0 全局、1:科室、2: 库房、3:设备',
 	map.put("systemType", SYSTEMTYPE);//配置项
 	GetRequest(urls, map, tag, netResult);
    }
