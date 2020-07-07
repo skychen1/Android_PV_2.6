@@ -729,15 +729,21 @@ public class Event {
    public static class PopupEvent {
 
 	public boolean isMute;
+	public boolean openDoorType;
 	public String  mString;
 	public String  mEthId;
 
-	public PopupEvent(boolean isMute, String trim, String EthId) {
+	public PopupEvent(boolean isMute,boolean openDoorType,String trim, String EthId) {
+	   this.isMute = isMute;
+	   this.openDoorType = openDoorType;
+	   this.mString = trim;
+	   this.mEthId = EthId;
+	}
+	public PopupEvent(boolean isMute,String trim, String EthId) {
 	   this.isMute = isMute;
 	   this.mString = trim;
 	   this.mEthId = EthId;
 	}
-
    }
 
    public static class activationEvent {

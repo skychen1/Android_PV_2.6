@@ -140,7 +140,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (event.openDoorType){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
+	   }
 	   Log.i("outtccc", "getTaskId   " + getTaskId() + "   " + getClass().getName());
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);

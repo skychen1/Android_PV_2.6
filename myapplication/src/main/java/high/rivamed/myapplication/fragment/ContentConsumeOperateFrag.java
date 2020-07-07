@@ -316,9 +316,17 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (!mPause && event.isMute) {
 	   Log.i("outtccc", "开门的接收    " + mRbKey);
-	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   if (event.openDoorType){
+		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
+	   }else {
+		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
+	   }
+
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
+	   }
+	   if (mCountOver != null) {
+		mCountOver.cancel();
 	   }
 	}
 	if (!mPause && !event.isMute) {
@@ -549,10 +557,18 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	super.onResume();
 	if (mCountOver==null){
 	   mCountOver = new TimeCountOver(HOME_COUNTDOWN_TIME, 1000);
-	   mCountOver.start();
+	   if (mDoorStatus){
+		mCountOver.start();
+	   }else {
+		mCountOver.cancel();
+	   }
 	}else {
-	   mCountOver.cancel();
-	   mCountOver.start();
+	   if (mDoorStatus){
+		mCountOver.cancel();
+		mCountOver.start();
+	   }else {
+		mCountOver.cancel();
+	   }
 	}
 	((HomeActivity) this.getActivity())
 		.registerMyTouchListener(myTouchListener);
@@ -900,8 +916,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private void lingYongAndBack(String deviceId, int mkey) {
 	mRbKey = mkey;
 
-	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) &&
-	    UIUtils.getConfigType(mContext, CONFIG_BPOW02) &&
+	if ((UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW02) )&&
 	    !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者再开柜，不启动临时患者
 	   LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
@@ -911,8 +927,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		errorBind(deviceId, "GONE");
 	   }
-	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) &&
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW02) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者，启动临时患者
 	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
@@ -922,14 +938,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   } else {
 		errorBind(deviceId, "VISIBLE");
 	   }
-	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
 		     !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，不启用临时患者
 	   LogUtils.i(TAG, "后绑定患者，不启用临时患者");
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);
-	} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW04) &&
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW01) &&
+	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
+		     UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，启用临时患者
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);

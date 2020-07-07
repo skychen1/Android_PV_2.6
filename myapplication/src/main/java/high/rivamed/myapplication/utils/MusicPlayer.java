@@ -31,7 +31,8 @@ public class MusicPlayer {
         public final static int DOOR_CLOSED = 12;//柜门已关闭
         public final static int SUCCESS = 13;//耗材操作成功
         public final static int NO_EVERY = 14;//未扫描到操作耗材
-        public final static int PLEASE_CLOSSDOOR = 15;//请关闭柜门
+        public final static int PLEASE_CLOSSDOOR = 16;//请关闭柜门
+        public final static int QRS_MOREOPEN = 15;//请关闭右侧门后关闭左侧门
     }
 
     private SoundPool mSp;
@@ -56,6 +57,7 @@ public class MusicPlayer {
         sSpMap.put(Type.SUCCESS, mSp.load(mContext, R.raw.succes, 1));
         sSpMap.put(Type.NO_EVERY, mSp.load(mContext, R.raw.no_every, 1));
         sSpMap.put(Type.PLEASE_CLOSSDOOR, mSp.load(mContext, R.raw.clossdoor, 1));
+        sSpMap.put(Type.QRS_MOREOPEN, mSp.load(mContext, R.raw.qrs_openmore, 1));
 
     }
 

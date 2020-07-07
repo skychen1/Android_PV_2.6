@@ -73,19 +73,20 @@ import static high.rivamed.myapplication.utils.StringUtils.getStringType;
  */
 public class AllDeviceCallBack {
 
-   private static final String            TAG = "AllDeviceCallBack";
+   private static final String              TAG           = "AllDeviceCallBack";
    // 设置本类为单例模式
-   private static       AllDeviceCallBack instances;
-   public static        ArrayList<String> mEthDeviceIdBack;
-   public static        ArrayList<String> mEthDeviceIdBack2;
-   public static        ArrayList<String> mEthDeviceIdBack3;
-   public static        List<String>      mReaderIdList;
-   public static        List<String>      mReaderDeviceId;
-   public static        List<String>      mBomDoorDeviceIdList;
-  public static Gson                      mGson;
-   private static Map<String, String> sMap;
-   private Timer mTimer;
-   private boolean mForceinType =false;
+   private static       AllDeviceCallBack   instances;
+   public static        ArrayList<String>   mEthDeviceIdBack;
+   public static        ArrayList<String>   mEthDeviceIdBack2;
+   public static        ArrayList<String>   mEthDeviceIdBack3;
+   public static        List<String>        mReaderIdList;
+   public static        List<String>        mReaderDeviceId;
+   public static        List<String>        mBomDoorDeviceIdList;
+   public static        Gson                mGson;
+   private static       Map<String, String> sMap;
+   private              Timer               mTimer;
+   private              boolean             mForceinType  = false;
+   public               boolean             mOpenDoorType = true;
 
    public static AllDeviceCallBack getInstance() {
 	//	sReaderType = UIUtils.getConfigReaderType(UIUtils.getContext(), CONFIG_000);
@@ -106,7 +107,6 @@ public class AllDeviceCallBack {
 	}
 	return instances;
    }
-
 
    public void setReaderList(String mDeviceCode) {
 	if (mDeviceCode == null) {
@@ -201,31 +201,33 @@ public class AllDeviceCallBack {
 			if ( boxIdBean.getCabinetType() != null) {
 				if (boxIdBean.getCabinetType().equals("1") || boxIdBean.getCabinetType().equals("0")) {//上柜或者单柜   J24
 
-				   if (string.equals("1")){//嵌入式开启电磁锁
-					int i1 = ConsumableManager.getManager().openLight(id, 11);
-					Log.i("ffaer", " 嵌入式开启电磁锁  " + i1);
-					if (mTimer==null&&i1==0){
-					   mTimer = new Timer();
-					   mTimer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-						   int i1 = ConsumableManager.getManager().openDoor(id, 0);
-						   if (i1 == 0) {
-							Log.i("ffaer", " 嵌入式开启电子锁  " + i1);
-							mTimer.cancel();
-							mTimer=null;
-						   }
-						}
-					   }, 100, 100);
+			   if (string.equals("1")) {//嵌入式开启电磁锁
+				int i1 = ConsumableManager.getManager().openLight(id, 11);
+				Log.i("ffaer", " 嵌入式开启电磁锁  " + i1);
+				if (mTimer == null && i1 == 0) {
+				   mTimer = new Timer();
+				   mTimer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+					   mOpenDoorType = true;
+					   int i1 = ConsumableManager.getManager().openDoor(id, 0);
+					   if (i1 == 0) {
+						Log.i("ffaer", " 嵌入式开启电子锁  " + i1);
+						mTimer.cancel();
+						mTimer = null;
+					   }
 					}
-				   }else {
-					int i1 = ConsumableManager.getManager().openDoor(id, 0);
-					Log.i("ffaer", " 正常锁  " + i1);
-				   }
-				} else if (boxIdBean.getCabinetType().equals("2")) {                                                  //J25
-					ConsumableManager.getManager().openDoor(id, 1);
+				   }, 100, 100);
 				}
+			   } else {
+				int i1 = ConsumableManager.getManager().openDoor(id, 0);
+				Log.i("ffaer", " 正常锁  " + i1);
+			   }
+			} else if (boxIdBean.getCabinetType()
+				.equals("2")) {                                                  //J25
+			   ConsumableManager.getManager().openDoor(id, 1);
 			}
+		   }
 		}
 	   }
 	}
@@ -256,7 +258,7 @@ public class AllDeviceCallBack {
    /**
     * 检测灯
     */
-   public void StateLightStart(){
+   public void StateLightStart() {
 	List<String> bomDeviceId = DevicesUtils.getBomDeviceId();
 	for (String s : bomDeviceId) {
 	   ConsumableManager.getManager().checkLightState(s);
@@ -322,8 +324,8 @@ public class AllDeviceCallBack {
 	IdCardManager.getIdCardManager().registerCallBack(new IdCardCallBack() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-		Log.i("appSatus","initIC   "+isConnect);
-		if (isConnect){
+		Log.i("appSatus", "initIC   " + isConnect);
+		if (isConnect) {
 		   IdCardManager.getIdCardManager().startReadCard(deviceId);
 		}
 	   }
@@ -417,13 +419,14 @@ public class AllDeviceCallBack {
 		String string = SPUtils.getString(mAppContext, THING_MODEL);
 		if (string.equals("1")) {//嵌入式
 		   //强开的可能出现第二次开门 .mForceinType=true标识强开
-		   if (!mForceinType){
-			if (isSuccess&&which==0) {
-			   Log.i("outtccc", "柜门已开    " );
-			   EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId+which));
-			   if (UIUtils.getConfigType(mAppContext, CONFIG_059)) {
+		   if (!mForceinType) {
+			if (isSuccess && which == 0) {
+			   Log.i("outtccc", "柜门已开    ");
+			   EventBusUtils.post(new Event.PopupEvent(true, mOpenDoorType,"柜门已开", deviceId + which));
+			   if (UIUtils.getConfigType(mAppContext, CONFIG_059) && mOpenDoorType) {
 				startVideo("opendoor", deviceId);
 			   }
+			   mOpenDoorType = true;
 			   if (mEthDeviceIdBack.size() > 0) {
 				if (!getStringType(mEthDeviceIdBack,deviceId+which)){
 				   mEthDeviceIdBack.add(deviceId+which);
@@ -447,11 +450,11 @@ public class AllDeviceCallBack {
 
 		   }
 		   if (mEthDeviceIdBack.size() > 0) {
-			if (!getStringType(mEthDeviceIdBack,deviceId+which)){
-			   mEthDeviceIdBack.add(deviceId+which);
+			if (!getStringType(mEthDeviceIdBack, deviceId + which)) {
+			   mEthDeviceIdBack.add(deviceId + which);
 			}
 		   } else {
-			mEthDeviceIdBack.add(deviceId+which);
+			mEthDeviceIdBack.add(deviceId + which);
 		   }
 		   mEthDeviceIdBack2.clear();
 		   mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
@@ -501,12 +504,14 @@ public class AllDeviceCallBack {
 	   @Override
 	   public void onDoorState(String deviceId, int which, boolean state) {
 		String string = SPUtils.getString(mAppContext, THING_MODEL);
-		Log.i("onDoorState","onDoorState设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
-		if (string.equals("0")){//标准柜子
-		   EventBusUtils.postSticky(new Event.EventDoorStatus(deviceId+which, state));
-		}else if (string.equals("1")){//嵌入式
-		   if (which==10){
-		      if (state){
+		Log.i("onDoorState",
+			"onDoorState设备：：" + deviceId + "检测锁的状态：：：" + which + ":::的结果是：：：" + state);
+		if (string.equals("0")) {//标准柜子
+		   EventBusUtils.postSticky(new Event.EventDoorStatus(deviceId + which, state));
+		} else if (string.equals("1")) {//嵌入式
+		   if (which == 10) {
+			if (state) {
+			   mOpenDoorType = false;
 			   int i = ConsumableManager.getManager().openDoor(deviceId, 0);
 			   Log.i("onDoorState","右门门状态是开，强开的第2次 开门    "+ i);
 			}else {
@@ -553,7 +558,6 @@ public class AllDeviceCallBack {
 		}
 		Log.i("onDoorState","设备：：" + deviceId + "检测灯：：：" + which + ":::的结果是：：：" + state);
 	   }
-
 
 	   @Override
 	   public void onFirmwareVersion(String deviceId, String version) {
