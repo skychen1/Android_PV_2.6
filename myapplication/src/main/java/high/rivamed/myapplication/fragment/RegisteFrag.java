@@ -404,6 +404,8 @@ public class RegisteFrag extends SimpleFragment {
 	}
 	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000+"");
 	mFragRegisteLoginoutEdit2.setText( HOME_COUNTDOWN_TIME / 1000+"");
+	mFragRegisteLoginoutEdit3.setText( NOEPC_LOGINOUT_TIME / 1000+"");
+	mFragRegisteLoginoutEdit4.setText( VOICE_NOCLOSSDOOR_TIME / 1000+"");
 	mFragRegisteLoginoutEdit5.setText(REMOVE_LOGFILE_TIME+"");
 	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
 	mBaseDevices = generateData();

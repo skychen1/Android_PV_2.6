@@ -377,7 +377,7 @@ public class RegisteDialog extends Dialog {
 			   setAdapterDate(mHospDept, textview, goneview, type);
 
 			   LogUtils.i(TAG, "result getHospDept   " + result);
-			   if (mHospDept.getDeptVos() == null || mHospDept.getDeptVos().size() == 0) {
+			   if (mHospDept.getHospitalBranchs() == null || mHospDept.getHospitalBranchs().size() == 0) {
 				return;
 			   }
 

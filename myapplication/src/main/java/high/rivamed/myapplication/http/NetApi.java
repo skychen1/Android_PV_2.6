@@ -23,7 +23,7 @@ public interface NetApi {
     String URL_TEST_SNQUERY = "/hvc-dept/base/thing/rmApi/findEquipmentInfo";//SN码查询   新
     String URL_TEST_REGISTE = "/hvc-dept/base/thing/rmApi/save";//预注册   新
     String URL_TEST_ACTIVE = "/hvc-dept/base/thing/rmApi/active";//设备激活    新
-    String URL_TEST_FIND_BRANCH = "/bdm/base/dept/rmApi/findBranchs";//查询院区信息   新
+    String URL_TEST_FIND_BRANCH = "/bdm/base/hospitalBranch/rmApi/findBranchs";//查询院区信息   新
     String URL_TEST_FIND_DEPT = "/bdm/base/dept/rmApi/findDepts";//根据院区编码查询科室信息   新
     String URL_TEST_FIND_BYDEPT = "/bdm/base/storehouse/rmApi/findStoreHouseDtoByDeptId";//根据科室查询库房情况    新
 
@@ -83,7 +83,8 @@ public interface NetApi {
     String URL_TEMP_PATIENT_CONN_PATIENT = "/hvc-dept/patient/patientIndex/tempPatientLinkInPatient";//临时患者与在院患者进行关联    新
 
     //查询配置项
-    String URL_THING_CONFIG_FIND = "/bdm/dict/config/rmApi/findConfig";//查询所有的配置项   新
+//    String URL_THING_CONFIG_FIND = "/bdm/dict/config/rmApi/findConfig";//查询所有的配置项   新
+    String URL_THING_CONFIG_FIND = "/bdm/dict/config/rmApi/findDeviceAllConfig";//查询所有的配置项   新
 
     //使用记录
     String URL_FIND_PATIENT = "/hvc-dept/sth/inventoryJournal/padFindPatientUseRecord";//患者的列表  新

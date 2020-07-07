@@ -19,14 +19,22 @@ public class HospNameBean extends Movie implements Serializable {
    /**
     * id : 0
     * hospIds : []
-    * deptVos : [{"branchAlias":"院区1","branchId":"111"},{"branchAlias":"院区2","branchId":"222"}]
+    * hospitalBranchs : [{"branchName":"院区1","branchId":"111"},{"branchName":"院区2","branchId":"222"}]
     */
 
-   private int id;
-   private List<String>           hospIds;
-   private List<DeptVosBean> deptVos;
-   private List<StoreHousesBean> storehouses;
+   private int                       id;
+   private List<String>              hospIds;
+   private List<HospitalBranchsBean> hospitalBranchs;
+   private List<DeptVosBean>         deptVos;
+   private List<StoreHousesBean>     storehouses;
+   public List<DeptVosBean> getDeptVos() {
+	return deptVos;
+   }
 
+   public void setDeptVos(
+	   List<DeptVosBean> deptVos) {
+	this.deptVos = deptVos;
+   }
    public HospNameBean(String one) {
 	super(one);
    }
@@ -39,22 +47,50 @@ public class HospNameBean extends Movie implements Serializable {
 
    public void setHospIds(List<String> hospIds) { this.hospIds = hospIds;}
 
-   public List<DeptVosBean> getDeptVos() { return deptVos;}
+   public List<HospitalBranchsBean> getHospitalBranchs() { return hospitalBranchs;}
 
-   public void setDeptVos(List<DeptVosBean> deptVos) { this.deptVos = deptVos;}
-
-
+   public void setHospitalBranchs(List<HospitalBranchsBean> hospitalBranchs) { this.hospitalBranchs = hospitalBranchs;}
 
    public static class DeptVosBean {
 
 	/**
-	 * branchAlias : 院区1
+	 * branchName : 院区1
 	 * branchId : 111
 	 * deptName:
 	 * deptId:
 	 */
 
-	private String branchAlias;
+	private String deptName;
+	private String deptId;
+
+	public String getDeptName() {
+	   return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+	   this.deptName = deptName;
+	}
+
+	public String getDeptId() {
+	   return deptId;
+	}
+
+	public void setDeptId(String deptId) {
+	   this.deptId = deptId;
+	}
+
+   }
+
+   public static class HospitalBranchsBean {
+
+	/**
+	 * branchName : 院区1
+	 * branchId : 111
+	 * deptName:
+	 * deptId:
+	 */
+
+	private String branchName;
 	private String branchId;
 	private String deptName;
 	private String deptId;
@@ -75,9 +111,9 @@ public class HospNameBean extends Movie implements Serializable {
 	   this.deptId = deptId;
 	}
 
-	public String getBranchAlias() { return branchAlias;}
+	public String getBranchName() { return branchName;}
 
-	public void setBranchAlias(String branchAlias) { this.branchAlias = branchAlias;}
+	public void setBranchName(String branchName) { this.branchName = branchName;}
 
 	public String getBranchId() { return branchId;}
 
@@ -131,7 +167,7 @@ public class HospNameBean extends Movie implements Serializable {
 
 
 
-//------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------
    /**
     * id : 0
     * deptId : 22

@@ -45,6 +45,7 @@ import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_KCZT;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SSPD;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_SYJL;
 import static high.rivamed.myapplication.cont.Constants.LEFT_MENU_YCCL;
+import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -136,6 +137,7 @@ public class HomeActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
+	getDoorStatus();
 	EventBusUtils.register(this);
    }
 

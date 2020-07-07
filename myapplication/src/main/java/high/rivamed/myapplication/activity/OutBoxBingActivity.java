@@ -877,7 +877,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
 		if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
-		   String deptType = bean.getRows().get(0).getDeptType();
 		   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
 			startActivity(
 				new Intent(OutBoxBingActivity.this, TemPatientBindActivity.class).putExtra(

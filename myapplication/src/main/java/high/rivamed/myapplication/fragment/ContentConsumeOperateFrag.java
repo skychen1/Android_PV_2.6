@@ -91,6 +91,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
+import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 import static high.rivamed.myapplication.utils.UIUtils.getMenuOnlyType;
 import static high.rivamed.myapplication.utils.UnNetCstUtils.getLocalAllCstVos;
@@ -173,8 +174,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       InventoryDto                                     mFastInOutDto;
    private       ArrayList<String>             mOrderIds;
    private TimeCountOver mCountOver;
-   private String mStart1 ="START1";
-   private Boolean mHomeShowState;
 
 
    /**
@@ -243,7 +242,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 //	Log.i("onDoorStates", "mDeviceSizeList.size()   "+mDeviceSizeList.size());
 //	Log.i("onDoorStates", "mListDevices.size()   "+mListDevices.size());
 	if (mDeviceSizeList.size() == mListDevices.size()) {
-	   mDoorStatus = true;
+	   mDoorStatusType = true;
 	   mRgTopGone.setVisibility(View.GONE);
 	   mRgMiddleGone.setVisibility(View.GONE);
 	   mRgDownGone.setVisibility(View.GONE);
@@ -265,7 +264,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    没关门
     */
    private void noClossDoor() {
-	mDoorStatus = false;
+	mDoorStatusType = false;
 	mEthDevices.clear();
 	if (mListDevices != null) {
 	   mListDevices.clear();
@@ -364,7 +363,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
 	Log.i("outtccc", "EventFrag  " + mRbKey);
-	mStart1 = event.type;
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
 	   mEthDeviceIdBack.clear();
@@ -533,7 +531,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	public void onTouch(MotionEvent ev) {
 	   switch (ev.getAction()) {
 		case MotionEvent.ACTION_UP://门关、本界面
-		   if (mDoorStatus){
+		   if (mDoorStatusType){
 			if (mCountOver!=null){
 			   mCountOver.start();
 			}
@@ -557,13 +555,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	super.onResume();
 	if (mCountOver==null){
 	   mCountOver = new TimeCountOver(HOME_COUNTDOWN_TIME, 1000);
-	   if (mDoorStatus){
+	   if (mDoorStatusType){
 		mCountOver.start();
 	   }else {
 		mCountOver.cancel();
 	   }
 	}else {
-	   if (mDoorStatus){
+	   if (mDoorStatusType){
 		mCountOver.cancel();
 		mCountOver.start();
 	   }else {
@@ -1022,7 +1020,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   R.id.fastopen_title_guanlian, R.id.base_tab_robot, R.id.rg_down_gone, R.id.rg_top_gone,
 	   R.id.rg_middle_gone})
    public void onViewClicked(View view) {
-	if (mDoorStatus) {
+	if (mDoorStatusType) {
 	   super.onViewClicked(view);
 	   switch (view.getId()) {
 		//		case R.id.base_tab_icon_right:

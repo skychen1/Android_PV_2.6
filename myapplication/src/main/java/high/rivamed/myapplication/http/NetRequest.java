@@ -362,6 +362,7 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_STOCKUNCON_RIGHT;
 	Map<String, String> map = new HashMap<>();
 	map.put("thingId", sThingCode);
+	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	map.put("deviceId", deviceCode);
 	map.put("nameOrSpecQueryCon", mTrim);
 	GetRequest(urls, map, tag, netResult);
@@ -830,24 +831,6 @@ public class NetRequest {
 	Map<String, String> map = new HashMap<>();
 	map.put("sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));
 	GetTokenRequest(urls, map, tag, netResult);
-   }
-
-   /**
-    * 开/关柜 上传视频录制文件
-    */
-   public void uploadVideoFile(
-	   String deviceCode, File file, String startDate, String endDate, Object tag,
-	   FileUpResult netResult) {
-	String urls = MAIN_URL + NetApi.URL_VIDEO_UPLOAD_RECORD;
-	Map<String, String> map = new HashMap<>();
-	map.put("video.startDate", startDate);
-	map.put("video.endDate", endDate);
-	map.put("video.creator",
-		  SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_ID));//登录人accountId
-	map.put("video.thingId", sThingCode);//设备ID
-	map.put("video.sthId", SPUtils.getString(UIUtils.getContext(), SAVE_STOREHOUSE_CODE));//库房code
-	map.put("video.deviceId", deviceCode);//柜子ID
-	PostTokenRequestWithFile(urls, map, "file", file, tag, netResult);
    }
 
    /**

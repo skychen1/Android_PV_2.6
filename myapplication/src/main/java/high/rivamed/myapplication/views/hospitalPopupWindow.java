@@ -52,7 +52,7 @@ public class hospitalPopupWindow extends PopupWindow {
 	mView = LayoutInflater.from(context).inflate(R.layout.mac_popupwindow, null);
 	mRecyclerView = (RecyclerView) mView.findViewById(R.id.search_rv);
 	if (type==2){
-	   List<HospNameBean.DeptVosBean> tbaseInfo = hospNameBean.getDeptVos();
+	   List<HospNameBean.HospitalBranchsBean> tbaseInfo = hospNameBean.getHospitalBranchs();
 	   mHospPopTwoAdapter = new HospPopTwoAdapter(R.layout.item_mac_single, tbaseInfo);
 	   mRecyclerView.setAdapter(mHospPopTwoAdapter);
 	   LogUtils.i("RegisteDialog", "tbaseInfo.size()    "+tbaseInfo.size());
