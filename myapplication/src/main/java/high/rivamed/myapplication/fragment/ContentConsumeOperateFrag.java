@@ -46,7 +46,6 @@ import high.rivamed.myapplication.bean.FindInPatientBean;
 import high.rivamed.myapplication.bean.RobotBean;
 import high.rivamed.myapplication.dbmodel.BoxIdBean;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
-import high.rivamed.myapplication.dto.InventoryDto;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.DialogUtils;
@@ -62,7 +61,6 @@ import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
-import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
@@ -89,7 +87,6 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
-import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
@@ -165,13 +162,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       int                                              mAllPage           = 1;
    private       int                                              mRows              = 20;
    private       LoadingDialog.Builder                            mLoading;
-   private       boolean                                          mDoorStatus        = true;
    private       ArrayList<String>                                mEthDevices        = new ArrayList<>();
    private       List<String>                                     mDeviceSizeList    = new ArrayList<>();
    private       ArrayList<String>                                mListDevices;
-   private       String                                           mYesClossId;
-   private       boolean                                          mIsClick;
-   private       InventoryDto                                     mFastInOutDto;
    private       ArrayList<String>             mOrderIds;
    private TimeCountOver mCountOver;
 
@@ -183,7 +176,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventOverHome(Event.EventOverHome event) {
 	if (event.b) {
-	   Log.i("343ww","EventOverHome");
 	   if (mCountOver!=null){
 		mCountOver.cancel();
 		MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
@@ -199,7 +191,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onOrderVosEvent(Event.OrderVosEvent event) {
 	if (event.vos != null) {
-	   //	   mDto.setOrderIds(event.vos);
 	   mOrderIds = event.vos;
 	   doSelectOption(event.mDeviceId, R.id.content_rb_rk);
 	}
@@ -231,16 +222,12 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	for (Object o : mDeviceSizeList) {
 	   String s = (String) o;
-	   Log.i("onDoorStates", "event.id   "+event.id);
-	   Log.i("onDoorStates", "sssss   "+s);
 	   if (s.equals(event.id) && !event.type) {
 		mEthDevices.add(s);
 		Log.i("onDoorStates", "s   "+s);
 		mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
 	   }
 	}
-//	Log.i("onDoorStates", "mDeviceSizeList.size()   "+mDeviceSizeList.size());
-//	Log.i("onDoorStates", "mListDevices.size()   "+mListDevices.size());
 	if (mDeviceSizeList.size() == mListDevices.size()) {
 	   mDoorStatusType = true;
 	   mRgTopGone.setVisibility(View.GONE);
@@ -253,10 +240,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   //	   mEthDeviceIdBack.clear();
 	   mListDevices.clear();
 	   mEthDevices.clear();
-	   String string = SPUtils.getString(mAppContext, THING_MODEL);
-	  if (string.equals("1")) {//嵌入式
-
-	   }
 	}
    }
 
@@ -343,16 +326,6 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   }
 	   Log.i("outtccc", "event.mEthId    " + mRbKey);
 	}
-	//	if (event.isMute) {
-	//	   if (mBuilder == null) {
-	//		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
-	//	   }
-	//	} else {
-	//	   if (mBuilder != null) {
-	//		mBuilder.mDialog.dismiss();
-	//		mBuilder = null;
-	//	   }
-	//	}
    }
 
    /**
@@ -362,12 +335,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
     */
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onStartFrag(Event.EventFrag event) {
-	Log.i("outtccc", "EventFrag  " + mRbKey);
 	if (event.type.equals("START1")) {
 	   TimelyAllFrag.mPauseS = true;
 	   mEthDeviceIdBack.clear();
 	} else {
-	   LogUtils.i(TAG, "UnRegisterDeviceCallBack");
 	}
    }
 
@@ -610,7 +581,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   new Intent(mContext, FastInOutBoxActivity.class).putExtra("mEthId", mEthId));
 	}
 	//后绑定患者
-	else if (UIUtils.getConfigType(mContext, CONFIG_BPOW01) && (mRbKey == 3 || mRbKey == 4)) {
+	else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01)|| UIUtils.getConfigType(mContext, CONFIG_BPOW04)) && (mRbKey == 3 || mRbKey == 4)) {
 	   mContext.startActivity(
 		   new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("bindType", TEMP_AFTERBIND)
@@ -653,32 +624,34 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 
 	//是否启用功能开柜
-	if (UIUtils.getConfigType(mContext, CONFIG_016)) {
+
+	//是否启用套餐领用
+	if (UIUtils.getConfigType(mContext, CONFIG_014)) {
 	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
-
-	   //是否启用套餐领用
-	   if (UIUtils.getConfigType(mContext, CONFIG_014)) {
-		mFunctionTitleMeal.setVisibility(View.VISIBLE);
-	   } else {
-		mFunctionTitleMeal.setVisibility(View.GONE);
-	   }
-
-	   //是否启用请领单领用
-	   if (UIUtils.getConfigType(mContext, CONFIG_015)) {
-		mFastopenTitleForm.setVisibility(View.VISIBLE);
-	   } else {
-		mFastopenTitleForm.setVisibility(View.GONE);
-	   }
-
-	   //是否启用关联患者
-	   if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-		mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
-	   } else {
-		mFastopenTitleGuanlian.setVisibility(View.GONE);
-	   }
+	   mFunctionTitleMeal.setVisibility(View.VISIBLE);
 	} else {
 	   mConsumeOpenallMiddle.setVisibility(View.GONE);
+	   mFunctionTitleMeal.setVisibility(View.GONE);
 	}
+
+	//是否启用请领单领用
+	if (UIUtils.getConfigType(mContext, CONFIG_015)) {
+	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
+	   mFastopenTitleForm.setVisibility(View.VISIBLE);
+	} else {
+	   mFunctionTitleMeal.setVisibility(View.GONE);
+	   mFastopenTitleForm.setVisibility(View.GONE);
+	}
+
+	//是否启用关联患者
+	if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+	   mFunctionTitleMeal.setVisibility(View.VISIBLE);
+	   mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
+	} else {
+	   mFunctionTitleMeal.setVisibility(View.GONE);
+	   mFastopenTitleGuanlian.setVisibility(View.GONE);
+	}
+
 	loadDate();
    }
 

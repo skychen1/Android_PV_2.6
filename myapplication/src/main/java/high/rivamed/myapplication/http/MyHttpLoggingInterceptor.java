@@ -48,193 +48,208 @@ import okio.Buffer;
  */
 public class MyHttpLoggingInterceptor implements Interceptor {
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+   private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    private volatile Level printLevel = Level.NONE;
-    private java.util.logging.Level colorLevel;
-    private Logger logger;
+   private volatile Level                   printLevel = Level.NONE;
+   private          java.util.logging.Level colorLevel;
+   private          Logger                  logger;
 
-    public enum Level {
-        NONE,       //不打印log
-        BASIC,      //只打印 请求首行 和 响应首行
-        HEADERS,    //打印请求和响应的所有 Header
-        BODY,       //打印请求url+入参+反参
-        ALL         //所有数据全部打印
-    }
+   public enum Level {
+	NONE,       //不打印log
+	BASIC,      //只打印 请求首行 和 响应首行
+	HEADERS,    //打印请求和响应的所有 Header
+	BODY,       //打印请求url+入参+反参
+	ALL         //所有数据全部打印
+   }
 
-    public MyHttpLoggingInterceptor(String tag) {
-        logger = Logger.getLogger(tag);
-    }
+   public MyHttpLoggingInterceptor(String tag) {
+	logger = Logger.getLogger(tag);
+   }
 
-    public void setPrintLevel(Level level) {
-        if (printLevel == null) throw new NullPointerException("printLevel == null. Use Level.NONE instead.");
-        printLevel = level;
-    }
+   public void setPrintLevel(Level level) {
+	if (printLevel == null) {
+	   throw new NullPointerException("printLevel == null. Use Level.NONE instead.");
+	}
+	printLevel = level;
+   }
 
-    public void setColorLevel(java.util.logging.Level level) {
-        colorLevel = level;
-    }
+   public void setColorLevel(java.util.logging.Level level) {
+	colorLevel = level;
+   }
 
-    private void log(String message) {
-        logger.log(colorLevel, message);
-    }
+   private void log(String message) {
+	logger.log(colorLevel, message);
+   }
 
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
-        if (printLevel == Level.NONE) {
-            return chain.proceed(request);
-        }
+   @Override
+   public Response intercept(Chain chain) throws IOException {
+	Request request = chain.request();
+	if (printLevel == Level.NONE) {
+	   return chain.proceed(request);
+	}
 
-        //请求日志拦截
-        logForRequest(request, chain.connection());
+	//请求日志拦截
+	logForRequest(request, chain.connection());
 
-        //执行请求，计算请求时间
-        long startNs = System.nanoTime();
-        Response response;
-        try {
-            response = chain.proceed(request);
-        } catch (Exception e) {
-            log("<-- HTTP FAILED: " + e);
-            throw e;
-        }
-        long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
+	//执行请求，计算请求时间
+	long startNs = System.nanoTime();
+	Response response;
+	try {
+	   response = chain.proceed(request);
+	} catch (Exception e) {
+	   log("<-- HTTP FAILED: " + e);
+	   throw e;
+	}
+	long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
-        //响应日志拦截
-        return logForResponse(response, tookMs);
-    }
+	//响应日志拦截
+	return logForResponse(response, tookMs);
+   }
 
-    private void logForRequest(Request request, Connection connection) throws IOException {
-        boolean logBody = (printLevel == Level.ALL);
-        boolean logMy = (printLevel == Level.BODY);
-        boolean logHeaders = (printLevel == Level.ALL || printLevel == Level.BODY || printLevel == Level.HEADERS);
-        RequestBody requestBody = request.body();
-        boolean hasRequestBody = requestBody != null;
-        Protocol protocol = connection != null ? connection.protocol() : Protocol.HTTP_1_1;
+   private void logForRequest(Request request, Connection connection) throws IOException {
+	boolean logBody = (printLevel == Level.ALL);
+	boolean logMy = (printLevel == Level.BODY);
+	boolean logHeaders = (printLevel == Level.ALL || printLevel == Level.BODY ||
+				    printLevel == Level.HEADERS);
+	RequestBody requestBody = request.body();
+	boolean hasRequestBody = requestBody != null;
+	Protocol protocol = connection != null ? connection.protocol() : Protocol.HTTP_1_1;
 
-        try {
-            log("┏━================================请求开始=================================");
-            String requestStartMessage = "\t" + request.method() + ' ' + request.url() + ' ' + protocol;
-            log(requestStartMessage);
+	try {
 
-            if (logHeaders) {
-                if (hasRequestBody&&!logMy) {
-                    // Request body headers are only present when installed as a network interceptor. Force
-                    // them to be included (when available) so there values are known.
-                    if (requestBody.contentType() != null) {
-                        log("\tContent-Type: " + requestBody.contentType());
-                    }
-                    if (requestBody.contentLength() != -1) {
-                        log("\tContent-Length: " + requestBody.contentLength());
-                    }
-                }
-                Headers headers = request.headers();
-                for (int i = 0, count = headers.size(); i < count; i++) {
-                    String name = headers.name(i);
-                    // Skip headers from the request body as they are explicitly logged above.
-                    if (logMy&&name.equals("tokenId")){
-                        log("\t" + name + ": " + headers.value(i));
-                    }else if (!logMy&&!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
-                            log("\t" + name + ": " + headers.value(i));
-                    }
-                }
-                if ( (logBody||logMy)&&hasRequestBody) {
-                    if (isPlaintext(requestBody.contentType())) {
-                        bodyToString(request);
-                    } else {
-                        log("\tbody: maybe [binary body], omitted!");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            OkLogger.printStackTrace(e);
-        } finally {
-            log("┗━================================请求结束=================================");
-        }
-    }
 
-    private Response logForResponse(Response response, long tookMs) {
-        Response.Builder builder = response.newBuilder();
-        Response clone = builder.build();
-        ResponseBody responseBody = clone.body();
-        boolean logMy = (printLevel == Level.BODY);
-        boolean logBody = (printLevel == Level.ALL);
-        boolean logHeaders = (printLevel == Level.ALL || printLevel == Level.BODY || printLevel == Level.HEADERS);
+	   if (logHeaders) {
 
-        try {
-            log("┏━================================返回开始=================================");
+		log("┏━================================请求开始=================================");
+		String requestStartMessage =
+			"\t" + request.method() + ' ' + request.url() + ' ' + protocol;
+		log(requestStartMessage);
+		if ((logBody || logMy) && hasRequestBody) {
+		   if (isPlaintext(requestBody.contentType())) {
+			bodyToString(request);
+		   } else {
+			log("\tbody: maybe [binary body], omitted!");
+		   }
+		}
+		if (hasRequestBody && !logMy) {
+		   // Request body headers are only present when installed as a network interceptor. Force
+		   // them to be included (when available) so there values are known.
+		   if (requestBody.contentType() != null) {
+			log("\tContent-Type: " + requestBody.contentType());
+		   }
+		   if (requestBody.contentLength() != -1) {
+			log("\tContent-Length: " + requestBody.contentLength());
+		   }
+		}
+		Headers headers = request.headers();
+		for (int i = 0, count = headers.size(); i < count; i++) {
+		   String name = headers.name(i);
+		   // Skip headers from the request body as they are explicitly logged above.
+		   if (logMy && name.equals("tokenId")) {
+			log("\t" + name + ": " + headers.value(i));
+		   } else if (!logMy && !"Content-Type".equalsIgnoreCase(name) &&
+				  !"Content-Length".equalsIgnoreCase(name)) {
+			log("\t" + name + ": " + headers.value(i));
+		   }
+		}
+	   }
+	} catch (Exception e) {
+	   OkLogger.printStackTrace(e);
+	} finally {
+	   log("┗━================================请求结束=================================");
+	}
+   }
 
-            log(	"\t" + clone.code() + ' ' + clone.message() + ' ' + clone.request().url() + " (" + tookMs + "ms）");
-            if (logHeaders) {
-                Headers headers = clone.headers();
-                for (int i = 0, count = headers.size(); i < count; i++) {
+   private Response logForResponse(Response response, long tookMs) {
+	Response.Builder builder = response.newBuilder();
+	Response clone = builder.build();
+	ResponseBody responseBody = clone.body();
+	boolean logMy = (printLevel == Level.BODY);
+	boolean logBody = (printLevel == Level.ALL);
+	boolean logHeaders = (printLevel == Level.ALL || printLevel == Level.BODY ||
+				    printLevel == Level.HEADERS);
 
-                    if(logMy){
-                        if (headers.name(i).equals("tokenId")){
-                            log("\t" + headers.name(i) + ": " + headers.value(i));
-                        }
-                    }else {
-                        log("\t" + headers.name(i) + ": " + headers.value(i));
-                    }
-                }
-                if ((logBody ||logMy)&& HttpHeaders.hasBody(clone)) {
-                    if (responseBody == null) return response;
+	try {
 
-                    if (isPlaintext(responseBody.contentType())) {
-                        byte[] bytes = IOUtils.toByteArray(responseBody.byteStream());
-                        MediaType contentType = responseBody.contentType();
-                        String body = new String(bytes, getCharset(contentType));
-                        log("\t返回body:" + body);
-                        responseBody = ResponseBody.create(responseBody.contentType(), bytes);
-                        return response.newBuilder().body(responseBody).build();
-                    } else {
-                        log("\tbody: maybe [binary body], omitted!");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            OkLogger.printStackTrace(e);
-        } finally {
-            log("┗━================================返回结束=================================");
-        }
-        return response;
-    }
+	   if (logHeaders) {
+		Headers headers = clone.headers();
+		if (!logMy) {
+		   for (int i = 0, count = headers.size(); i < count; i++) {
+			log("\t" + headers.name(i) + ": " + headers.value(i));
+		   }
+		}
 
-    private static Charset getCharset(MediaType contentType) {
-        Charset charset = contentType != null ? contentType.charset(UTF8) : UTF8;
-        if (charset == null) charset = UTF8;
-        return charset;
-    }
+		if ((logBody || logMy) && HttpHeaders.hasBody(clone)) {
+		   if (responseBody == null) {
+			return response;
+		   }
+		   if (isPlaintext(responseBody.contentType())) {
+			byte[] bytes = IOUtils.toByteArray(responseBody.byteStream());
+			MediaType contentType = responseBody.contentType();
+			String body = new String(bytes, getCharset(contentType));
+			log("┏━================================返回开始=================================");
+			log("\t" + clone.code() + ' ' + clone.message() + ' ' + clone.request().url() +
+			    " (" + tookMs + "ms）");
+			log("\t返回body:" + body);
+			log("┗━================================返回结束=================================");
+			responseBody = ResponseBody.create(responseBody.contentType(), bytes);
+			return response.newBuilder().body(responseBody).build();
+		   } else {
+			log("\tbody: maybe [binary body], omitted!");
+		   }
+		}
+	   }
+	} catch (Exception e) {
+	   OkLogger.printStackTrace(e);
+	} finally {
+	   //            log("┗━================================返回结束=================================");
+	}
+	return response;
+   }
 
-    /**
-     * Returns true if the body in question probably contains human readable text. Uses a small sample
-     * of code points to detect unicode control characters commonly used in binary file signatures.
-     */
-    private static boolean isPlaintext(MediaType mediaType) {
-        if (mediaType == null) return false;
-        if (mediaType.type() != null && mediaType.type().equals("text")) {
-            return true;
-        }
-        String subtype = mediaType.subtype();
-        if (subtype != null) {
-            subtype = subtype.toLowerCase();
-            if (subtype.contains("x-www-form-urlencoded") || subtype.contains("json") || subtype.contains("xml") || subtype.contains("html")) //
-                return true;
-        }
-        return false;
-    }
+   private static Charset getCharset(MediaType contentType) {
+	Charset charset = contentType != null ? contentType.charset(UTF8) : UTF8;
+	if (charset == null) {
+	   charset = UTF8;
+	}
+	return charset;
+   }
 
-    private void bodyToString(Request request) {
-        try {
-            Request copy = request.newBuilder().build();
-            RequestBody body = copy.body();
-            if (body == null) return;
-            Buffer buffer = new Buffer();
-            body.writeTo(buffer);
-            Charset charset = getCharset(body.contentType());
-            log("\t请求body:" + buffer.readString(charset));
-        } catch (Exception e) {
-            OkLogger.printStackTrace(e);
-        }
-    }
+   /**
+    * Returns true if the body in question probably contains human readable text. Uses a small sample
+    * of code points to detect unicode control characters commonly used in binary file signatures.
+    */
+   private static boolean isPlaintext(MediaType mediaType) {
+	if (mediaType == null) {
+	   return false;
+	}
+	if (mediaType.type() != null && mediaType.type().equals("text")) {
+	   return true;
+	}
+	String subtype = mediaType.subtype();
+	if (subtype != null) {
+	   subtype = subtype.toLowerCase();
+	   if (subtype.contains("x-www-form-urlencoded") || subtype.contains("json") || subtype.contains("xml") || subtype.contains("html")) //
+	   {
+		return true;
+	   }
+	}
+	return false;
+   }
+
+   private void bodyToString(Request request) {
+	try {
+	   Request copy = request.newBuilder().build();
+	   RequestBody body = copy.body();
+	   if (body == null) {
+		return;
+	   }
+	   Buffer buffer = new Buffer();
+	   body.writeTo(buffer);
+	   Charset charset = getCharset(body.contentType());
+	   log("\t请求body:" + buffer.readString(charset));
+	} catch (Exception e) {
+	   OkLogger.printStackTrace(e);
+	}
+   }
 }

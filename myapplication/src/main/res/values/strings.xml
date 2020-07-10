@@ -1,5 +1,5 @@
 <resources>
-    <string name="myapplication_name">嵌入式高值柜v3.0</string>
+    <string name="myapplication_name">高值柜v3.0</string>
 
     <!--bugly-->
     <string name="bugly_val">b8f3fdae17</string>

@@ -232,7 +232,6 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    /**
     * 门锁的提示
-    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)

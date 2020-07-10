@@ -145,8 +145,8 @@ public class AllDeviceCallBack {
 	mBomDoorDeviceIdList = DevicesUtils.getBomDeviceId();
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	stopScan();
-//	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
-//	String mDeviceCode = devicesBean.getDeviceId();
+	//	BoxSizeBean.DevicesBean devicesBean = mTbaseDevices.get(position);
+	//	String mDeviceCode = devicesBean.getDeviceId();
 
 	if (mReaderIdList != null) {
 	   mReaderIdList.clear();
@@ -269,23 +269,23 @@ public class AllDeviceCallBack {
     *
     * @param deviceIndentify
     */
-   public void startScan(String deviceIndentify,int which) {
+   public void startScan(String deviceIndentify, int which) {
 	LogUtils.i(TAG, "deviceIndentify    " + deviceIndentify + "    ");
-	String cabinetType="";
+	String cabinetType = "";
 	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify,
 								 CONSUMABLE_TYPE).find(BoxIdBean.class);
-	if (boxIdBeans.size()==2){
-	   if (which==0){
+	if (boxIdBeans.size() == 2) {
+	   if (which == 0) {
 		cabinetType = "1";
-	   }else if (which==1){
+	   } else if (which == 1) {
 		cabinetType = "2";
 	   }
-	}else if (boxIdBeans.size()==1){
+	} else if (boxIdBeans.size() == 1) {
 	   cabinetType = "0";
 	}
 
 	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   if (cabinetType.equals(boxIdBean.getCabinetType())){
+	   if (cabinetType.equals(boxIdBean.getCabinetType())) {
 		String box_id = boxIdBean.getBox_id();
 		BoxIdBean deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
 			.findFirst(BoxIdBean.class);
@@ -354,8 +354,8 @@ public class AllDeviceCallBack {
 	FingerManager.getManager().registerCallback(new FingerCallback() {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
-		Log.i("appSatus","isConnectdeviceId     "+isConnect+deviceId);
-		if (isConnect){
+		Log.i("appSatus", "isConnectdeviceId     " + isConnect + deviceId);
+		if (isConnect) {
 		   FingerManager.getManager().startReadFinger(deviceId);
 		}
 	   }
@@ -394,8 +394,8 @@ public class AllDeviceCallBack {
 
 	   @Override
 	   public void onRegisterTimeLeft(String deviceId, long time) {
-		Log.i("appSatus","请抬起手指   "+time);
-//		setLog("设备：：" + deviceId + "剩余注册时间：：" + time + "\n");
+		Log.i("appSatus", "请抬起手指   " + time);
+		//		setLog("设备：：" + deviceId + "剩余注册时间：：" + time + "\n");
 		EventBusUtils.post(new Event.EventFingerTime(time));
 		EventBusUtils.post(new Event.EventFingerReg(1));
 	   }
@@ -428,25 +428,25 @@ public class AllDeviceCallBack {
 			   }
 			   mOpenDoorType = true;
 			   if (mEthDeviceIdBack.size() > 0) {
-				if (!getStringType(mEthDeviceIdBack,deviceId+which)){
-				   mEthDeviceIdBack.add(deviceId+which);
+				if (!getStringType(mEthDeviceIdBack, deviceId + which)) {
+				   mEthDeviceIdBack.add(deviceId + which);
 				}
 			   } else {
-				mEthDeviceIdBack.add(deviceId+which);
+				mEthDeviceIdBack.add(deviceId + which);
 			   }
 			   mEthDeviceIdBack2.clear();
 			   mEthDeviceIdBack2.addAll(mEthDeviceIdBack);
 			   mEthDeviceIdBack3.addAll(mEthDeviceIdBack);
 			}
-		   }else {
-			Log.i("onDoorState","我是强开后未检测到门状态，第2次   开门    ");
+		   } else {
+			Log.i("onDoorState", "我是强开后未检测到门状态，第2次   开门    ");
 		   }
-		}else{
+		} else {
 		   if (isSuccess) {
-			Log.i("outtccc", "柜门已开    " );
+			Log.i("outtccc", "柜门已开    ");
 
-			EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId+which));
-			startVideo("opendoor",deviceId);
+			EventBusUtils.post(new Event.PopupEvent(true, true,"柜门已开", deviceId + which));
+			startVideo("opendoor", deviceId);
 
 		   }
 		   if (mEthDeviceIdBack.size() > 0) {
@@ -472,11 +472,11 @@ public class AllDeviceCallBack {
 		   if (which==0){
 			if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0){
 			   //todo 我是强开
-			   Log.i("onDoorState","我是强开的第一次 关门，开始检测右门门状态    ");
+			   Log.i("onDoorState", "我是强开的第一次 关门，开始检测右门门状态    ");
 			   mForceinType = true;
 			}
 			int i = ConsumableManager.getManager().checkDoorState(deviceId, 10);
-			Log.i("onDoorState","嵌入式关门开始检测  ： ：  " + i );
+			Log.i("onDoorState", "嵌入式关门开始检测  ： ：  " + i);
 		   }
 
 		}else {//标准柜体
@@ -486,10 +486,10 @@ public class AllDeviceCallBack {
 			if (UIUtils.getConfigType(mAppContext, CONFIG_059)) {
 			   startVideo("forcein", deviceId);
 			}
-			startScan(deviceId,which);
+			startScan(deviceId, which);
 		   } else {//正常开门
 			for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
-			   if (mEthDeviceIdBack2.get(i).equals(deviceId+which)) {
+			   if (mEthDeviceIdBack2.get(i).equals(deviceId + which)) {
 				mEthDeviceIdBack2.remove(i);
 				if (UIUtils.getConfigType(mAppContext, CONFIG_059)) {
 				   stopVideo(deviceId);
@@ -513,93 +513,93 @@ public class AllDeviceCallBack {
 			if (state) {
 			   mOpenDoorType = false;
 			   int i = ConsumableManager.getManager().openDoor(deviceId, 0);
-			   Log.i("onDoorState","右门门状态是开，强开的第2次 开门    "+ i);
-			}else {
-//			   EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId+which));
+			   Log.i("onDoorState", "右门门状态是开，强开的第2次 开门    " + i);
+			} else {
+			   //			   EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId+which));
 			   int i1 = ConsumableManager.getManager().closeLight(deviceId, 11);
-			   Log.i("onDoorState","closeLight 关电磁锁：：    "+ i1);
+			   Log.i("onDoorState", "closeLight 关电磁锁：：    " + i1);
 			   getDoorStatus();
 			}
-		   }else if (which==0){
-		      if (!state){
-			   EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId+which));
+		   } else if (which == 0) {
+			if (!state) {
+			   EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId + which));
 			   if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
-				Log.i("onDoorState","我是强开的关闭逻辑  开始扫描了    ");
-				startVideo("forcein",deviceId);
-				startScan(deviceId,which);
+				Log.i("onDoorState", "我是强开的关闭逻辑  开始扫描了    ");
+				startVideo("forcein", deviceId);
+				startScan(deviceId, which);
 			   } else {//正常开门
 				for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
-				   if (mEthDeviceIdBack2.get(i).equals(deviceId+which)) {
+				   if (mEthDeviceIdBack2.get(i).equals(deviceId + which)) {
 					mEthDeviceIdBack2.remove(i);
 					stopVideo(deviceId);
 				   }
 				}
 			   }
 			}
-			EventBusUtils.post(new Event.EventDoorStatus(deviceId+which, state));
+			EventBusUtils.post(new Event.EventDoorStatus(deviceId + which, state));
 		   }
 		}
 	   }
 
 	   @Override
 	   public void onOpenLight(String deviceId, int which, boolean isSuccess) {
-		Log.i("onDoorState","设备：：" + deviceId + "开灯：：：" + which + ":::的结果是：：：" + isSuccess);
+		Log.i("onDoorState", "设备：：" + deviceId + "开灯：：：" + which + ":::的结果是：：：" + isSuccess);
 	   }
 
 	   @Override
 	   public void onCloseLight(String deviceId, int which, boolean isSuccess) {
-		Log.i("onDoorState","设备：：" + deviceId + "关灯：：：" + which + ":::的结果是：：：" + isSuccess);
+		Log.i("onDoorState", "设备：：" + deviceId + "关灯：：：" + which + ":::的结果是：：：" + isSuccess);
 	   }
 
 	   @Override
 	   public void onLightState(String deviceId, int which, boolean state) {
-		if (state){
+		if (state) {
 		   EventBusUtils.post(new Event.EventLightCloss(true));
 		}
-		Log.i("onDoorState","设备：：" + deviceId + "检测灯：：：" + which + ":::的结果是：：：" + state);
+		Log.i("onDoorState", "设备：：" + deviceId + "检测灯：：：" + which + ":::的结果是：：：" + state);
 	   }
 
 	   @Override
 	   public void onFirmwareVersion(String deviceId, String version) {
-//		appendLog("设备：：" + deviceId + "获取到版本号：：：" + version);
+		//		appendLog("设备：：" + deviceId + "获取到版本号：：：" + version);
 	   }
 
 	   @Override
 	   public void onNeedUpdateFile(String deviceId) {
-//		appendLog("设备：：" + deviceId + "需要升级文件！！！！");
-//		String filePath = FilesUtils.getFilePath(mContext) + "/boot.bin";
-//		com.rivamed.libdevicesbase.utils.LogUtils.e("文件路径是：：：" + filePath);
-//		int i = ConsumableManager.getManager().sendUpdateFile(deviceId, filePath);
-//		if (i != FunctionCode.SUCCESS) {
-//		   com.rivamed.libdevicesbase.utils.LogUtils.e("发送升级文件出错" + i);
-//		}
+		//		appendLog("设备：：" + deviceId + "需要升级文件！！！！");
+		//		String filePath = FilesUtils.getFilePath(mContext) + "/boot.bin";
+		//		com.rivamed.libdevicesbase.utils.LogUtils.e("文件路径是：：：" + filePath);
+		//		int i = ConsumableManager.getManager().sendUpdateFile(deviceId, filePath);
+		//		if (i != FunctionCode.SUCCESS) {
+		//		   com.rivamed.libdevicesbase.utils.LogUtils.e("发送升级文件出错" + i);
+		//		}
 	   }
 
 	   @Override
 	   public void onUpdateProgress(String deviceId, int percent) {
-//		appendLog("设备：：" + deviceId + "已升级的进度：：：" + percent + "%");
+		//		appendLog("设备：：" + deviceId + "已升级的进度：：：" + percent + "%");
 	   }
 
 	   @Override
 	   public void onUpdateResult(String deviceId, boolean isSuccess) {
-//		appendLog("设备：：" + deviceId + "升级" + (isSuccess ? "成功！！！！！" : "失败！！！！"));
+		//		appendLog("设备：：" + deviceId + "升级" + (isSuccess ? "成功！！！！！" : "失败！！！！"));
 	   }
 	});
    }
    private void stopVideo(String deviceIndentify) {
-	String number=null;
+	String number = null;
 	for (Map.Entry<String, String> entry : sMap.entrySet()) {
-	   if (entry.getKey().equals(deviceIndentify)){
+	   if (entry.getKey().equals(deviceIndentify)) {
 		number = entry.getValue();
 	   }
 	}
-	if (number!=null){
-	   NetRequest.getInstance().stopRecordVideo(number,this,new BaseResult(){
+	if (number != null) {
+	   NetRequest.getInstance().stopRecordVideo(number, this, new BaseResult() {
 		@Override
 		public void onSucceed(String result) {
-		   Log.i("videod"," sMap1       "+sMap.size());
+		   Log.i("videod", " sMap1       " + sMap.size());
 		   sMap.entrySet().remove(deviceIndentify);
-		   Log.i("videod"," sMap2       "+sMap.size());
+		   Log.i("videod", " sMap2       " + sMap.size());
 		}
 
 		@Override
@@ -614,7 +614,7 @@ public class AllDeviceCallBack {
    /**
     * 开始录像  opendoor,正常开门  ； forcein 强开
     */
-   private void startVideo(String type,String deviceId) {
+   private void startVideo(String type, String deviceId) {
 	BoxIdBean first = LitePal.where("device_id = ?", deviceId).findFirst(BoxIdBean.class);
 	String box_id = first.getBox_id();
 	if (type.equals("opendoor")) {
@@ -672,7 +672,7 @@ public class AllDeviceCallBack {
 		List<String> epcs = new ArrayList<>();
 		for (Map.Entry<String, List<EpcInfo>> v : result.entrySet()) {
 		   String epc = filteListEpc(v.getKey());
-		   if (epc!=null){
+		   if (epc != null) {
 			epcs.add(epc);
 		   }
 		}
