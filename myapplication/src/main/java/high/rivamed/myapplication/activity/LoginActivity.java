@@ -106,6 +106,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
+import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
 
 /**
@@ -325,6 +326,7 @@ public class LoginActivity extends SimpleActivity {
 		HOME_COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME);
 	   }
 	   getLeftDate();
+	   getDoorStatus();//检测柜门
 	   //	   getBoxSize();
 	}
 	if (mLightTimeCount==null){

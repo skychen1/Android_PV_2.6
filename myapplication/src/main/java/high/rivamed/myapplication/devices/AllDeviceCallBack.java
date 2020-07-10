@@ -451,7 +451,7 @@ public class AllDeviceCallBack {
 		   if (isSuccess) {
 			Log.i("outtccc", "柜门已开    ");
 
-			EventBusUtils.post(new Event.PopupEvent(true, "柜门已开", deviceId + which));
+			EventBusUtils.post(new Event.PopupEvent(true, true,"柜门已开", deviceId + which));
 			startVideo("opendoor", deviceId);
 
 		   }
