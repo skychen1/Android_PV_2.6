@@ -31,6 +31,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.utils.StringUtils;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.base.BaseSimpleActivity.mStarts;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -72,10 +73,12 @@ public class InBoxCountDialog extends Dialog {
 	public  InBoxCountDialogAdapter mAdapter;
 	private Gson                    mGson;
 	public  InBoxCountDialog        mDialog;
+	public  TextView                mTimelyRight;
 
-	public Builder(Context context, InventoryDto putDto) {
+	public Builder(Context context, InventoryDto putDto, TextView mTimelyRight) {
 	   this.mContext = context;
 	   this.mPutDto = putDto;
+	   this.mTimelyRight = mTimelyRight;
 	}
 
 	public InBoxCountDialog create() {
@@ -109,9 +112,9 @@ public class InBoxCountDialog extends Dialog {
 	   });
 	   mDialogSure.setOnClickListener(view -> {
 		mDialog.dismiss();
-//		if (mStarts != null) {
-//		   mStarts.start();
-//		}
+		if (mStarts != null && mTimelyRight.isEnabled()) {
+		   mStarts.start();
+		}
 	   });
 	   return mDialog;
 	}

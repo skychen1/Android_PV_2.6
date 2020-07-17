@@ -1535,6 +1535,9 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
     */
    private void setRemoveRunnable() {
 	mOutType = false;
+	if (mTimelyLeft!=null){
+	   mTimelyLeft.setText("确定");
+	}
 	if (mNoEpcTime != null) {
 	   mNoEpcTime.cancel();
 	}

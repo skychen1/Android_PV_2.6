@@ -77,7 +77,7 @@ public class LoginPassWordFragment extends SimpleFragment {
     public void initDataAndEvent(Bundle savedInstanceState) {
 
         if (BuildConfig.DEBUG) {
-            mLoginName.setText("admin");
+            mLoginName.setText("ldm");
             mLoginPassword.setText("000000");
         }
     }

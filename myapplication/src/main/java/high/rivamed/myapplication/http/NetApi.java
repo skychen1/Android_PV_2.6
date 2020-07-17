@@ -16,7 +16,6 @@ public interface NetApi {
 
     //版本检测和下载
     String URL_GET_VER = "/bdm/base/systemVersion/rmApi/getApkInfo";//获取版本信息    新
-    String URL_UPDATE = "/bdm/base/systemVersion/rmApi/downLoadApk";//下载    新
     String URL_LOGO = "/bdm/base/hospitalFile/rmApi/findByHospitalId";//LOGO    新
     //工程模式
     String URL_TEST_FINDDEVICE = "/hvc-dept/base/deviceDict/rmApi/findDevice";//根据部件类型查名字   新
@@ -38,9 +37,7 @@ public interface NetApi {
     String URL_USER_UNNET_LOGIN = "/bdm/login/validateLoginPasswordOffline";//离线登录换Token    新
     String URL_REFRESH_TOKEN = "/bdm/login/refreshToken";//token刷新换取   新
     String URL_USER_REGISTER_FINGER = "/bdm/base/userFeatureInfo/registerFinger";//绑定指纹    新
-//    String URL_USER_VALIDATELOGIN_FINGER = "/rmApi/restLogin/validateLoginFinger";//指纹登录    新
     String URL_USER_RESET_PASSWORD = "/bdm/base/account/resetPassword";//重置密码    新
-//    String URL_USER_VALIDATELOGINWRIST = "/rmApi/restLogin/validateLoginWrist";//腕带登录    新
     String URL_USER_REGISTERWAIDAI = "/bdm/base/userFeatureInfo/registerWaidai";//腕带绑定    新
     String URL_USER_UNREGISTERWAIDAI = "/bdm/base/userFeatureInfo/untieWaidai";//腕带解绑    新
     String URL_USER_EMERGENCY_PWD = "/bdm/base/account/bindEmergencyPwd";//紧急登录密码修改    新
@@ -116,15 +113,10 @@ public interface NetApi {
 
     String URL_ROBOT = "/hvc-dept/clrApi/base/clrRobot/callRobot";//召唤机器人
 
-    //搜集日志
-    String URL_OPEN = "/hvc-dept/rmApi/openLog";//日志收集开启
-    String URL_CLOSE = "/hvc-dept/rmApi/closeLog";//日志收集关闭
 
     String URL_CONNECT = "/bdm/base/account/rmApi/connect";//测试连接提示
 
 
-    //视频上传
-    String URL_VIDEO_UPLOAD_RECORD="/hvc-dept/video/video/videoUpload";
     //人脸识别初始化:获取所有人脸
     String URL_FACE_GET_ALL="/bdm/login/faceRecognition";
     //人脸绑定

@@ -35,20 +35,13 @@ public class Constants {
    public static final String STYPE_LOSS_TYPE             = "stype_loss_type";//盘亏
    public static final String STYPE_PROFIT_TYPE           = "stype_profit_type";//盘盈
    public static final int    ACTIVITY                    = 1;
-   public static final int    FRAGMENT                    = 2;
    public static final String ACT_TYPE_CONFIRM_HAOCAI     = "act_type_confirm_haocai";//确认耗材领用界面
-   public static final String CONTENT_ALLROOMS            = "CONTENT_ALLROOMS";//所有的手术间id
-   public static final String CONTENT_ALLUSERS            = "CONTENT_ALLUSERS";//所有的用户信息id
 
    public static final String TEMP_AFTERBIND = "afterBind";//后绑定患者
    public static final String TEMP_FIRSTBIND = "firstBind";//后绑定患者
 
    public static final String STYPE_EXCEPTION_LEFT  = "exception_left";//异常处理
    public static final String STYPE_EXCEPTION_RIGHT = "exception_right";//异常处理-异常记录
-
-   public static final int ACT_TYPE_HCCZ_OUT       = 4;
-   public static final int ACT_TYPE_TEMPORARY_BING = 9;//创建临时患者
-   public static final int ACT_TYPE_ALL_IN         = 12;//入柜 快速开柜
 
    //配置项的code
    public static final String CONFIG_BPOW01 = "BPOW01";//是否先开柜门后绑定患者
@@ -58,7 +51,6 @@ public class Constants {
    public static final String CONFIG_013 = "013";//设备禁用
    public static final String CONFIG_014 = "014";//是否启用套餐领用
    public static final String CONFIG_015 = "015";//是否启用请领单领用
-   public static final String CONFIG_016 = "016";//是否启用功能开柜
    public static final String CONFIG_017 = "017";//是否启用紧急登录
    public static final String CONFIG_BPOW04 = "BPOW04";//启用可绑定患者或者可不绑定患者,先开柜门后绑定患者
    public static final String CONFIG_BPOW05 = "BPOW05";//启用可绑定患者或者可不绑定患者,先绑定患者后开柜门
@@ -130,18 +122,16 @@ public class Constants {
    public static final String SAVE_HOME_LOGINOUT_TIME = "SAVE_HOME_LOGINOUT_TIME";//首页无操作退出时间
    public static final String SAVE_NOEPC_LOGINOUT_TIME = "SAVE_NOEPC_LOGINOUT_TIME";//未扫描到操作耗材退出时间
    public static final String SAVE_VOICE_NOCLOSSDOOR_TIME = "SAVE_VOICE_NOCLOSSDOOR_TIME";//未扫描到操作耗材退出时间
-   public static final String SYSTEMTYPE              = "HCT";//高值登录的type
+   public static final String SYSTEMTYPES              = "HCT3.0";//高值登录的type
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
    public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用
    public static final String LOGCAT_OPEN             = "LOG_CAT_OPEN";//日志记录
-   public static final String FACE_OPEN               = "face_OPEN";//活体检测
    public static final String FACE_UPDATE_TIME        = "face_update_time";//人脸照最新更新时间
    public static final String PATIENT_TYPE            = "PatientType";///2,3手术，1是非手术
    public static final String THING_MODEL             = "THING_MODEL";//设备类型
    public static final String FINGER_VERSION            = "2";//3.0传2，2.1传1
    public static final String HOME_LOGO = "HOME_LOGO";///主页的logo地址
    public static final String LOGIN_LOGO = "LOGIN_LOGO";///登录的logo地址
-   public static final String LOADAPK_VERSION            = "3.0";//3.0
 
    public static final String ACCESS_TOKEN  = "ACCESS_TOKEN";//用户TOKEN
    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";//刷新TOKEN

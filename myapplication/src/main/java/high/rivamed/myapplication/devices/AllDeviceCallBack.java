@@ -446,8 +446,9 @@ public class AllDeviceCallBack {
 			Log.i("outtccc", "柜门已开    ");
 
 			EventBusUtils.post(new Event.PopupEvent(true, true,"柜门已开", deviceId + which));
-			startVideo("opendoor", deviceId);
-
+			if (UIUtils.getConfigType(mAppContext, CONFIG_059)){
+			   startVideo("opendoor", deviceId);
+			}
 		   }
 		   if (mEthDeviceIdBack.size() > 0) {
 			if (!getStringType(mEthDeviceIdBack, deviceId + which)) {
@@ -525,13 +526,17 @@ public class AllDeviceCallBack {
 			   EventBusUtils.post(new Event.PopupEvent(false, "关闭", deviceId + which));
 			   if (mEthDeviceIdBack2.size() == 0 && mEthDeviceIdBack.size() == 0) {//强开
 				Log.i("onDoorState", "我是强开的关闭逻辑  开始扫描了    ");
-				startVideo("forcein", deviceId);
+				if (UIUtils.getConfigType(mAppContext, CONFIG_059)) {
+				   startVideo("forcein", deviceId);
+				}
 				startScan(deviceId, which);
 			   } else {//正常开门
 				for (int i = 0; i < mEthDeviceIdBack2.size(); i++) {
 				   if (mEthDeviceIdBack2.get(i).equals(deviceId + which)) {
 					mEthDeviceIdBack2.remove(i);
-					stopVideo(deviceId);
+					if (UIUtils.getConfigType(mAppContext, CONFIG_059)) {
+					   stopVideo(deviceId);
+					}
 				   }
 				}
 			   }

@@ -112,7 +112,6 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 	super.onActivityCreated(savedInstanceState);
 	bindEvent();
-
 	initDataAndEvent(savedInstanceState);
    }
 

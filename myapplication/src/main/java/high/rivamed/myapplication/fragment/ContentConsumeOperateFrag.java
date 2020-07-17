@@ -68,7 +68,6 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_011;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_012;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_014;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
-import static high.rivamed.myapplication.cont.Constants.CONFIG_016;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
@@ -165,24 +164,25 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    private       ArrayList<String>                                mEthDevices        = new ArrayList<>();
    private       List<String>                                     mDeviceSizeList    = new ArrayList<>();
    private       ArrayList<String>                                mListDevices;
-   private       ArrayList<String>             mOrderIds;
-   private TimeCountOver mCountOver;
-
+   private       ArrayList<String>                                mOrderIds;
+   private       TimeCountOver                                    mCountOver;
 
    /**
     * 主页倒计时结束发起
+    *
     * @param event
     */
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onEventOverHome(Event.EventOverHome event) {
 	if (event.b) {
-	   if (mCountOver!=null){
+	   if (mCountOver != null) {
 		mCountOver.cancel();
 		MusicPlayer.getInstance().play(MusicPlayer.Type.LOGOUT_SUC);
 		UIUtils.removeAllAct(mContext);
 	   }
 	}
    }
+
    /**
     * 整单入库的单号
     *
@@ -195,6 +195,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   doSelectOption(event.mDeviceId, R.id.content_rb_rk);
 	}
    }
+
    /**
     * 门锁的状态检测回调
     *
@@ -215,6 +216,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onSelectOption(Event.SelectOption event) {
 	doSelectOption(event.deviceId, event.id);
    }
+
    /*
    门关完了
     */
@@ -224,7 +226,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   String s = (String) o;
 	   if (s.equals(event.id) && !event.type) {
 		mEthDevices.add(s);
-		Log.i("onDoorStates", "s   "+s);
+		Log.i("onDoorStates", "s   " + s);
 		mListDevices = StringUtils.removeDuplicteUsers(mEthDevices);
 	   }
 	}
@@ -252,7 +254,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mListDevices != null) {
 	   mListDevices.clear();
 	}
-	if (mCountOver!=null){
+	if (mCountOver != null) {
 	   mCountOver.cancel();
 	}
 	Log.i("ssffff", "没关门");
@@ -298,9 +300,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (!mPause && event.isMute) {
 	   Log.i("outtccc", "开门的接收    " + mRbKey);
-	   if (event.openDoorType){
+	   if (event.openDoorType) {
 		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   }else {
+	   } else {
 		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
 	   }
 
@@ -348,13 +350,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	EventBusUtils.register(this);
 	List<BoxIdBean> boxIdBeans = LitePal.where("name = ?", CONSUMABLE_TYPE).find(BoxIdBean.class);
 	for (BoxIdBean idBean : boxIdBeans) {
-		if (idBean != null && idBean.getCabinetType() != null) {
-			if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
-				mDeviceSizeList.add(idBean.getDevice_id() + "0");
-			} else if (idBean.getCabinetType().equals("2")) {
-				mDeviceSizeList.add(idBean.getDevice_id() + "1");
-			}
+	   if (idBean != null && idBean.getCabinetType() != null) {
+		if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
+		   mDeviceSizeList.add(idBean.getDevice_id() + "0");
+		} else if (idBean.getCabinetType().equals("2")) {
+		   mDeviceSizeList.add(idBean.getDevice_id() + "1");
 		}
+	   }
 	}
 	getLocalAllCstVos();
    }
@@ -497,23 +499,24 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mContentRbTuihuo.setVisibility(View.GONE);
 	}
    }
+
    private HomeActivity.MyTouchListener myTouchListener = new HomeActivity.MyTouchListener() {
 	@Override
 	public void onTouch(MotionEvent ev) {
 	   switch (ev.getAction()) {
 		case MotionEvent.ACTION_UP://门关、本界面
-		   if (mDoorStatusType){
-			if (mCountOver!=null){
+		   if (mDoorStatusType) {
+			if (mCountOver != null) {
 			   mCountOver.start();
 			}
-		   }else {
-			if (mCountOver!=null){
+		   } else {
+			if (mCountOver != null) {
 			   mCountOver.cancel();
 			}
 		   }
 		   break;
 		default://切换到其他界面、门锁打开停止
-		   if (mCountOver!=null){
+		   if (mCountOver != null) {
 			mCountOver.cancel();
 		   }
 		   break;
@@ -524,23 +527,22 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void onResume() {
 	super.onResume();
-	if (mCountOver==null){
+	if (mCountOver == null) {
 	   mCountOver = new TimeCountOver(HOME_COUNTDOWN_TIME, 1000);
-	   if (mDoorStatusType){
+	   if (mDoorStatusType) {
 		mCountOver.start();
-	   }else {
+	   } else {
 		mCountOver.cancel();
 	   }
-	}else {
-	   if (mDoorStatusType){
+	} else {
+	   if (mDoorStatusType) {
 		mCountOver.cancel();
 		mCountOver.start();
-	   }else {
+	   } else {
 		mCountOver.cancel();
 	   }
 	}
-	((HomeActivity) this.getActivity())
-		.registerMyTouchListener(myTouchListener);
+	((HomeActivity) this.getActivity()).registerMyTouchListener(myTouchListener);
 	if (mLoading != null) {
 	   mLoading.mAnimationDrawable.stop();
 	   if (mLoading.mHandler != null) {
@@ -581,27 +583,30 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		   new Intent(mContext, FastInOutBoxActivity.class).putExtra("mEthId", mEthId));
 	}
 	//后绑定患者
-	else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01)|| UIUtils.getConfigType(mContext, CONFIG_BPOW04)) && (mRbKey == 3 || mRbKey == 4)) {
+	else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+		    UIUtils.getConfigType(mContext, CONFIG_BPOW04)) && (mRbKey == 3 || mRbKey == 4)) {
 	   mContext.startActivity(
 		   new Intent(mContext, OutBoxBingActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("bindType", TEMP_AFTERBIND)
 			   .putExtra("mEthId", mEthId));
 	}
 	//正常的领用或者其他正常操作
-	else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 9 || mRbKey == 11 ||
-		   mRbKey == 10 || mRbKey == 7 || mRbKey == 8) {
+	else if (mRbKey == 3 || mRbKey == 4 || mRbKey == 9 || mRbKey == 11 || mRbKey == 10 ||
+		   mRbKey == 7 || mRbKey == 8) {
 	   mContext.startActivity(
 		   new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
 			   .putExtra("mEthId", mEthId));
-	}else if (mRbKey == 2) {//入库要区分是否有入库单
+	} else if (mRbKey == 2) {//入库要区分是否有入库单
 	   if (UIUtils.getConfigType(mContext, CONFIG_058)) {
 		mContext.startActivity(
-			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
+			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType",
+													mRbKey)
 				.putExtra("mEthId", mEthId)
 				.putStringArrayListExtra("orderids", mOrderIds));
-	   }else {
+	   } else {
 		mContext.startActivity(
-			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType", mRbKey)
+			new Intent(mContext, SelInOutBoxTwoActivity.class).putExtra("OperationType",
+													mRbKey)
 				.putExtra("mEthId", mEthId));
 	   }
 
@@ -664,24 +669,27 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	//		   mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
 	//	} else {
 	String strings = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	if (!TextUtils.isEmpty(strings)){
-		mTbaseDevices.addAll(
-				mGson.fromJson(strings, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
+	if (!TextUtils.isEmpty(strings)) {
+	   mTbaseDevices.addAll(mGson.fromJson(strings,
+							   new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType()));
 	}
 	//	}
 	String homeBoxSize = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE_HOME);
 	Log.i("outtccc", "position    " + homeBoxSize);
-	if (!TextUtils.isEmpty(homeBoxSize)){
-		mDeviceTypeVoBeans.addAll(mGson.fromJson(homeBoxSize,
-				new TypeToken<List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean>>() {}
-						.getType()));
+	if (!TextUtils.isEmpty(homeBoxSize)) {
+	   mDeviceTypeVoBeans.addAll(mGson.fromJson(homeBoxSize,
+								  new TypeToken<List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean>>() {}
+									  .getType()));
 	}
-	if (mDeviceTypeVoBeans.size()>0){
-		mDeviceTypeVoBeans.get(0).getDevices().get(0).setDeviceId("");
+	if (mDeviceTypeVoBeans.size() > 0) {
+	   mDeviceTypeVoBeans.get(0).getDevices().get(0).setDeviceId("");
 	}
 	//柜子唯一，无功能开柜，不能先绑定患者，只有领用/退回功能
-	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_016) &&
-	    (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||UIUtils.getConfigType(mContext, CONFIG_BPOW04))&&
+	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_012) &&
+	    !UIUtils.getConfigType(mContext, CONFIG_014) &&
+	    !UIUtils.getConfigType(mContext, CONFIG_015) &&
+	    (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)) &&
 	    getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
 	   String deviceId = mTbaseDevices.get(0).getDeviceId();
 	   doSelectOption(deviceId, R.id.content_rb_lyth);
@@ -700,7 +708,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
 	layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-	mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(mDeviceTypeVoBeans,mContentRg);
+	mHomeFastOpenTopAdapter = new HomeFastOpenAdapter(mDeviceTypeVoBeans, mContentRg);
 	mConsumeOpenallRv.setLayoutManager(layoutManager);
 	mConsumeOpenallRv.setAdapter(mHomeFastOpenTopAdapter);
 
@@ -725,32 +733,32 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	   mConsumeDownRv.setVisibility(View.GONE);
 	}
 
-	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(mDeviceTypeVoBeans,mContentRg);
+	mHomeFastOpenDownAdapter = new HomeFastOpenAdapter(mDeviceTypeVoBeans, mContentRg);
 	mConsumeDownRv.setLayoutManager(layoutManager2);
 	mConsumeDownRv.setAdapter(mHomeFastOpenDownAdapter);
 
-//	mHomeFastOpenDownAdapter.mDataAdapter.setOnItemClickListener(
-//		new BaseQuickAdapter.OnItemClickListener() {
-//		   @Override
-//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//
-//			if (id == -1) {
-//			   ToastUtils.showShortToast("请选择操作方式！");
-//			} else {
-//			   //点击柜子进行操作
-//			   BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX item = (BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX) adapter
-//				   .getItem(position);
-//			   String deviceId = item.getDeviceId();
-//			   Log.i("deviceId", "deviceId    " + deviceId+"    "+item.getDeviceName() );
-//			   if (!UIUtils.isFastDoubleClick3()) {
-//
-//				doSelectOption(position, id);
-//			   } else {
-//				ToastUtils.showShortToast("请勿频繁操作！");
-//			   }
-//			}
-//		   }
-//		});
+	//	mHomeFastOpenDownAdapter.mDataAdapter.setOnItemClickListener(
+	//		new BaseQuickAdapter.OnItemClickListener() {
+	//		   @Override
+	//		   public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+	//
+	//			if (id == -1) {
+	//			   ToastUtils.showShortToast("请选择操作方式！");
+	//			} else {
+	//			   //点击柜子进行操作
+	//			   BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX item = (BoxSizeBean.DeviceTypeVoBean.DeviceVosBean.DevicesBeanX) adapter
+	//				   .getItem(position);
+	//			   String deviceId = item.getDeviceId();
+	//			   Log.i("deviceId", "deviceId    " + deviceId+"    "+item.getDeviceName() );
+	//			   if (!UIUtils.isFastDoubleClick3()) {
+	//
+	//				doSelectOption(position, id);
+	//			   } else {
+	//				ToastUtils.showShortToast("请勿频繁操作！");
+	//			   }
+	//			}
+	//		   }
+	//		});
 	boolean aBoolean = SPUtils.getBoolean(UIUtils.getContext(), SAVE_MENU_DOWN_TYPE_ALL);
 	if (aBoolean) {
 	   setDownType();//设置选择操作的权限
@@ -888,7 +896,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	mRbKey = mkey;
 
 	if ((UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
-	    UIUtils.getConfigType(mContext, CONFIG_BPOW02) )&&
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者再开柜，不启动临时患者
 	   LogUtils.i(TAG, "先绑定患者再开柜，不启动临时患者");
@@ -899,7 +907,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		errorBind(deviceId, "GONE");
 	   }
 	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&
+			UIUtils.getConfigType(mContext, CONFIG_BPOW02)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //先绑定患者，启动临时患者
 	   LogUtils.i(TAG, "先绑定患者，启动临时患者");
@@ -910,13 +918,13 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		errorBind(deviceId, "VISIBLE");
 	   }
 	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
+			UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
 		     !UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，不启用临时患者
 	   LogUtils.i(TAG, "后绑定患者，不启用临时患者");
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);
 	} else if ((UIUtils.getConfigType(mContext, CONFIG_BPOW04) ||
-		     UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
+			UIUtils.getConfigType(mContext, CONFIG_BPOW01)) &&
 		     UIUtils.getConfigType(mContext, CONFIG_012)) {
 	   //后绑定患者，启用临时患者
 	   AllDeviceCallBack.getInstance().openDoor(deviceId, mTbaseDevices);
@@ -939,12 +947,14 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 		FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
 		Log.i(TAG, "deviceId   " + deviceId);
 		Log.i(TAG, "mTbaseDevices   " + mTbaseDevices.size());
-		if (UIUtils.getConfigType(mContext, CONFIG_012))
-		   mContext.startActivity(new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId", deviceId)
+		if (UIUtils.getConfigType(mContext, CONFIG_012)) {
+		   mContext.startActivity(
+			   new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId",
+													   deviceId)
 				   .putExtra("mTemPTbaseDevices", (Serializable) mTbaseDevices)
 				   .putExtra("mRbKey", mRbKey)
 				   .putExtra("GoneType", gonetype));
-		else {
+		} else {
 		   if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
 			mContext.startActivity(
 				new Intent(mContext, TemPatientBindActivity.class).putExtra("deviceId",
@@ -1094,7 +1104,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    @Override
    public void onStop() {
 	super.onStop();
-	if (mCountOver!=null){
+	if (mCountOver != null) {
 	   mCountOver.cancel();
 	}
 	if (mBuilder != null) {
@@ -1124,7 +1134,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mOrderIds != null) {
 	   mOrderIds.clear();
 	}
-	if (mCountOver!=null){
+	if (mCountOver != null) {
 	   mCountOver.cancel();
 	}
    }

@@ -719,7 +719,7 @@ public class DialogUtils {
      * 入库统计
      */
     public static InBoxCountDialog.Builder showInBoxCountDialog(Context context, InventoryDto dto,TextView mTimelyRight) {
-        InBoxCountDialog.Builder builder = new InBoxCountDialog.Builder(context, dto);
+        InBoxCountDialog.Builder builder = new InBoxCountDialog.Builder(context, dto,mTimelyRight);
         builder.create().show();
         if (mStarts != null) {
             mStarts.cancel();

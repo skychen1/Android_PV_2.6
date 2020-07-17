@@ -92,15 +92,15 @@
 							android:textColor="@color/text_color_58"
 							android:textSize="@dimen/textsize_17"/>
 
-						<RadioButton
-							android:id="@+id/rb_embed_pv"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_marginLeft="@dimen/x50"
-							android:buttonTint="@color/text_color_58"
-							android:text="嵌入高值柜"
-							android:textColor="@color/text_color_58"
-							android:textSize="@dimen/textsize_17"/>
+						<!--<RadioButton-->
+							<!--android:id="@+id/rb_embed_pv"-->
+							<!--android:layout_width="wrap_content"-->
+							<!--android:layout_height="wrap_content"-->
+							<!--android:layout_marginLeft="@dimen/x50"-->
+							<!--android:buttonTint="@color/text_color_58"-->
+							<!--android:text="嵌入高值柜"-->
+							<!--android:textColor="@color/text_color_58"-->
+							<!--android:textSize="@dimen/textsize_17"/>-->
 					</RadioGroup>
 
 				</RelativeLayout>

@@ -683,6 +683,9 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
    private void setRemoveRunnable() {
 	mOutType = false;
+	if (mTimelyLeft!=null){
+	   mTimelyLeft.setText("确定");
+	}
 	if (mNoEpcTime != null) {
 	   mNoEpcTime.cancel();
 	}

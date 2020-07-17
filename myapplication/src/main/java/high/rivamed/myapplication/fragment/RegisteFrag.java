@@ -93,6 +93,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
@@ -121,8 +122,8 @@ public class RegisteFrag extends SimpleFragment {
    EditText    mFragRegisteNameEdit;
    @BindView(R.id.rb_standard_pv)
    RadioButton mRbStandardPv;
-   @BindView(R.id.rb_embed_pv)
-   RadioButton mRbEmbedPv;
+//   @BindView(R.id.rb_embed_pv)
+//   RadioButton mRbEmbedPv;
    @BindView(R.id.frag_registe_number_edit)
    EditText    mFragRegisteNumberEdit;
    @BindView(R.id.frag_registe_localip_edit)
@@ -210,11 +211,11 @@ public class RegisteFrag extends SimpleFragment {
 		   disableRadioGroup(mRgDeviceType);
 		   getBoxSize();
 		   getLogos();
-		   if (thingDto.getThing().getThingModel().equals("1")){
-			SYSTEMTYPE ="EHCT";//嵌入式
-		   }else {
-			SYSTEMTYPE ="HCT";//耗材柜
-		   }
+//		   if (thingDto.getThing().getThingModel().equals("1")){
+//			SYSTEMTYPE ="EHCT";//嵌入式
+//		   }else {
+			SYSTEMTYPE =SYSTEMTYPES;//耗材柜
+//		   }
 		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
 					   thingDto.getThingSnVo().getThingModel());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
@@ -303,11 +304,11 @@ public class RegisteFrag extends SimpleFragment {
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
-	if (mSnRecoverBean.getThing().getThingModel().equals("1")){
-	   SYSTEMTYPE ="EHCT";//嵌入式
-	}else {
-	   SYSTEMTYPE ="HCT";//耗材柜
-	}
+//	if (mSnRecoverBean.getThing().getThingModel().equals("1")){
+//	   SYSTEMTYPE ="EHCT";//嵌入式
+//	}else {
+	   SYSTEMTYPE =SYSTEMTYPES;//耗材柜
+//	}
 	//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
@@ -400,7 +401,7 @@ public class RegisteFrag extends SimpleFragment {
 	   mFragRegisteNameEdit.setText("3.0柜子");
 	   mFragRegisteNumberEdit.setText("1");
 	   mFragRegisteSeveripEdit.setText("192.168.111.80");
-	   mFragRegistePortEdit.setText("8019");
+	   mFragRegistePortEdit.setText("9527");
 	}
 	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000+"");
 	mFragRegisteLoginoutEdit2.setText( HOME_COUNTDOWN_TIME / 1000+"");
@@ -427,13 +428,13 @@ public class RegisteFrag extends SimpleFragment {
 		case R.id.rb_standard_pv:
 		   //TODO 标准
 		   mThingModel = "0";
-		   SYSTEMTYPE ="HCT";//高值柜
+		   SYSTEMTYPE =SYSTEMTYPES;//高值柜
 		   break;
-		case R.id.rb_embed_pv:
-		   //TODO 嵌入式
-		   mThingModel = "1";
-		   SYSTEMTYPE ="EHCT";//嵌入式
-		   break;
+//		case R.id.rb_embed_pv:
+//		   //TODO 嵌入式
+//		   mThingModel = "1";
+//		   SYSTEMTYPE ="EHCT";//嵌入式
+//		   break;
 		default:
 		   break;
 	   }
@@ -523,7 +524,7 @@ public class RegisteFrag extends SimpleFragment {
 	if (mThing.getThingModel().equals("0")){
 	   mRbStandardPv.setChecked(true);
 	}else if (mThing.getThingModel().equals("1")){
-	   mRbEmbedPv.setChecked(true);
+//	   mRbEmbedPv.setChecked(true);
 	}
 	mFragRegisteNumberEdit.setText(mThing.getSn());
 
@@ -728,11 +729,12 @@ public class RegisteFrag extends SimpleFragment {
 	TBaseThingDto.setHospitalInfoVo(hospitalInfoVo);
 	if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_standard_pv) {
 	   mThingModel = "0";
-	   SYSTEMTYPE ="HCT";//高值柜
-	} else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
-	   mThingModel = "1";
-	   SYSTEMTYPE ="EHCT";//嵌入式
+	   SYSTEMTYPE =SYSTEMTYPES;//高值柜
 	}
+//	else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
+//	   mThingModel = "1";
+//	   SYSTEMTYPE ="EHCT";//嵌入式
+//	}
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mThingModel);
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());

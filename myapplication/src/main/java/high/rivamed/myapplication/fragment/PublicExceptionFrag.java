@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -130,7 +131,7 @@ public class PublicExceptionFrag extends SimpleFragment {
    @BindView(R.id.exception_bind_btn)
    TextView           exceptionBindBtn;
    @BindView(R.id.search_ly)
-   LinearLayout       exceptionSearchLy;
+   RelativeLayout     exceptionSearchLy;
 
    private static final int loadTime    = 200;//上下拉加载时间
    private static final int INTENT_TYPE = 222;//用于选择原因、库房、科室
@@ -282,6 +283,7 @@ public class PublicExceptionFrag extends SimpleFragment {
 
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
+
 	EventBusUtils.register(this);
 	Log.i("FATRE","initDataAndEvent.type      ");
 	Bundle arguments = getArguments();

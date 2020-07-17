@@ -35,6 +35,7 @@ import high.rivamed.myapplication.utils.CrashHandler;
 import okhttp3.OkHttpClient;
 
 import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES;
 
 //import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
@@ -57,7 +58,7 @@ public class App extends Application {
     * 缓存
     */
    private static ACache mAppCache;
-   public static String         SYSTEMTYPE   = "HCT";//HCT高值，EHCT嵌入式
+   public static String         SYSTEMTYPE   = SYSTEMTYPES;
    public static String         MAIN_URL   = null;
    public static boolean        mTitleConn = false;
    public static boolean        mTitleMsg  = false;

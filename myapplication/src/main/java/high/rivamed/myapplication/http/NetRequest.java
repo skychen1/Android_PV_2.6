@@ -41,7 +41,6 @@ import static high.rivamed.myapplication.cont.Constants.ERROR_1010;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
 import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_ID;
-import static high.rivamed.myapplication.cont.Constants.LOADAPK_VERSION;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
@@ -186,7 +185,6 @@ public class NetRequest {
 	String urls = MAIN_URL + NetApi.URL_GET_VER;
 	Map<String, String> map = new HashMap<>();
 	map.put("systemType", SYSTEMTYPE);
-	map.put("hardwareType", LOADAPK_VERSION);
 	GetRequest(urls, map, tag, netResult);
    }
 
@@ -619,7 +617,7 @@ public class NetRequest {
 	map.put("pageSize", rows + "");
 	map.put("pageNo", page + "");
 	map.put("thingId", sThingCode);
-	GetTokenRequest(urls, map, tag, netResult);
+	PostTokenRequest(urls, mGson.toJson(map), tag, netResult);
    }
 
    /**
