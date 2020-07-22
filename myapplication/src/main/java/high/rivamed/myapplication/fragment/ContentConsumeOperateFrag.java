@@ -650,10 +650,10 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 
 	//是否启用关联患者
 	if (UIUtils.getConfigType(mContext, CONFIG_012)) {
-	   mFunctionTitleMeal.setVisibility(View.VISIBLE);
+	   mConsumeOpenallMiddle.setVisibility(View.VISIBLE);
 	   mFastopenTitleGuanlian.setVisibility(View.VISIBLE);
 	} else {
-	   mFunctionTitleMeal.setVisibility(View.GONE);
+	   mConsumeOpenallMiddle.setVisibility(View.GONE);
 	   mFastopenTitleGuanlian.setVisibility(View.GONE);
 	}
 
