@@ -38,7 +38,6 @@ import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.FileEncoder;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.RxPermissionUtils;
-import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
@@ -46,8 +45,6 @@ import high.rivamed.myapplication.views.OneFingerDialog;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
-import static high.rivamed.myapplication.cont.Constants.KEY_ACCOUNT_DATA;
-import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -60,9 +57,9 @@ import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class LoginInfoActivity extends BaseSimpleActivity {
+public class LoginInfoActivity3 extends BaseSimpleActivity {
 
-   private static final String TAG = "LoginInfoActivity";
+   private static final String TAG = "LoginInfoActivity3";
    @BindView(R.id.setting_password)
    TextView  mSettingPassword;
    @BindView(R.id.setting_password_edit)
@@ -272,7 +269,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 
    @Override
    protected int getContentLayoutId() {
-	return R.layout.setting_logininfo_layout;
+	return R.layout.setting_logininfo_layout3;
    }
 
    @OnClick({R.id.setting_face_bind_btn, R.id.setting_ic_card_bind, R.id.base_tab_back,
@@ -304,7 +301,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		break;
 	   case R.id.setting_ic_card_bind:
 		if (mIsWaidai == 0) {
-		   DialogUtils.showBindIdCardDialog(mContext, new OnBindIdCardListener() {
+		   DialogUtils.showBindIdCardDialog3(mContext, new OnBindIdCardListener() {
 			@Override
 			public void OnBindIdCard(String idCard) {
 			   if (!TextUtils.isEmpty(idCard)) {
@@ -320,7 +317,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   bean.setUserId(mUserId);
 		   bean.setType("2");
 		   dto.setUserFeatureInfo(bean);
-		   DialogUtils.showUnRegistDialog(this, "解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto),
+		   DialogUtils.showUnRegistDialog3(this, "解绑腕带后将无法继续使用，是否确定解绑？", mGson.toJson(dto),
 							    new SetEditTextListener() {
 								 @Override
 								 public void OnSetEditText() {
@@ -353,7 +350,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   .startRegisterFinger(identification, 10 * 1000, FilesUtils.getFilePath(mContext));
 	   Log.i("appSatus", "ret   " + ret);
 	   if (ret == FunctionCode.SUCCESS) {
-		mOneFingerDialog = DialogUtils.showOneFingerDialog(mContext, mFingerTxt,
+		mOneFingerDialog = DialogUtils.showOneFingerDialog3(mContext, mFingerTxt,
 										   new OnfingerprintBackListener() {
 											@Override
 											public void OnfingerprintBack() {
@@ -466,7 +463,7 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 		   if (data.isOperateSuccess()) {
 			ToastUtils.showShort(data.getMsg());
 			//指纹未绑定
-			String fingerNames = data.getFingerNames();
+			String fingerNames = data.getAppAccountInfoVo().getFingerNames();
 			setFingerType(fingerNames);
 		   } else {
 			ToastUtils.showShort(data.getMsg());
@@ -555,94 +552,6 @@ public class LoginInfoActivity extends BaseSimpleActivity {
 	   e.printStackTrace();
 	}
    }
-//   void onFacePhoto() {
-//	//绑定人脸照
-//	RxPermissionUtils.checkCameraPermission(this, hasPermission -> {
-//	   if (hasPermission) {
-//		int initStatus = FaceManager.getManager().getInitStatus();
-//		if (initStatus == FaceCode.SDK_NOT_ACTIVE) {
-//		   ToastUtils.showShort("人脸识别SDK还未激活，请先激活");
-//		   return;
-//		} else if (initStatus == FaceCode.SDK_NOT_INIT) {
-//		   ToastUtils.showShort("人脸识别SDK还未初始化，请先初始化");
-//		   return;
-//		} else if (initStatus == FaceCode.SDK_INITING) {
-//		   ToastUtils.showShort("人脸识别SDK正在初始化，请稍后再试");
-//		   return;
-//		} else if (initStatus == FaceCode.SDK_INIT_FAIL) {
-//		   ToastUtils.showShort("人脸识别SDK初始化失败，请重新初始化");
-//		   return;
-//		}
-//		faceImagePath = "";
-//		int type = PreferencesUtil.getInt(GlobalFaceTypeModel.TYPE_LIVENSS,
-//							    GlobalFaceTypeModel.TYPE_NO_LIVENSS);
-//		if (type == GlobalFaceTypeModel.TYPE_NO_LIVENSS ||
-//		    type == GlobalFaceTypeModel.TYPE_RGB_LIVENSS) {
-//		   FaceManager.getManager()
-//			   .getFacePicture(LoginInfoActivity.this,
-//						 SPUtils.getString(UIUtils.getContext(), KEY_FACE_ID) + ".jpg");
-//		}
-//	   }
-//	});
-//   }
-
-//   @Override
-//   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//	super.onActivityResult(requestCode, resultCode, data);
-//	Log.e(TAG, "onActivityResult resultCode : :" + resultCode + ",requestCode : :" + requestCode);
-//	if (resultCode == RgbDetectActivity.CODE_PICK_PHOTO && data != null) {
-//	   //人脸照结果
-//	   faceImagePath = data.getStringExtra(RgbDetectActivity.FILE_PATH);
-//	   Log.e(TAG, "onActivityResult: " + faceImagePath);
-//	   if (TextUtils.isEmpty(faceImagePath)) {
-//		return;
-//	   }
-//	   bindFace(faceImagePath);
-//	}
-//   }
-//
-//   public void bindFace(String path) {
-//	try {
-//	   String base64 = FileEncoder.encodeFileToBase64String(path);
-//	   NetRequest.getInstance().bindFace(base64, this, new BaseResult() {
-//		@Override
-//		public void onSucceed(String result) {
-//		   // TODO 此处应该先判断是否已经绑定人脸照且已经本地注册过了人脸，需要删除后再重新注册
-//		   //更新：需要先删除本地已注册人脸，再重新注册
-//		   if (FaceManager.getManager().getUserById(mUserId) != null) {
-//			boolean b = FaceManager.getManager().deleteFace(mUserId);
-//			LogUtils.d(TAG, "删除人脸底照：" + b + ",userId：" + mUserId);
-//		   }
-//		   FaceManager.getManager()
-//			   .registerFace(mUserId,
-//					     SPUtils.getString(UIUtils.getContext(), KEY_ACCOUNT_NAME),
-//					     faceImagePath, (code, msg) -> {
-//					LogUtils.d("Face", "人脸注册结果：：code=" + code + ":::msg=" + msg);
-//					if (code == FunctionCode.SUCCESS) {
-//					   //刪除本地缓存人脸照
-//					   new File(faceImagePath).delete();
-//					   UIUtils.runInUIThread(() -> {
-//						ToastUtils.showShortToast("人脸绑定成功");
-//						mSettingFaceBindText.setText("已绑定");
-//						mSettingFaceBindText.setTextColor(
-//							getResources().getColor(R.color.color_text_g));
-//						mSettingFaceBindBtn.setText("重新绑定");
-//					   });
-//
-//					   //									ToastUtils.showShortToast("人脸绑定成功");
-//					}
-//				   });
-//		}
-//
-//		@Override
-//		public void onError(String result) {
-//		   ToastUtils.showShort(result);
-//		}
-//	   });
-//	} catch (Exception e) {
-//	   e.printStackTrace();
-//	}
-//   }
 
 //提供接口
 public interface OnfingerprintBackListener {

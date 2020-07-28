@@ -57,7 +57,6 @@ public class MusicPlayer {
         sSpMap.put(Type.SUCCESS, mSp.load(mContext, R.raw.succes, 1));
         sSpMap.put(Type.NO_EVERY, mSp.load(mContext, R.raw.no_every, 1));
         sSpMap.put(Type.PLEASE_CLOSSDOOR, mSp.load(mContext, R.raw.clossdoor, 1));
-        sSpMap.put(Type.QRS_MOREOPEN, mSp.load(mContext, R.raw.qrs_openmore, 1));
 
     }
 

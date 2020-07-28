@@ -46,8 +46,10 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 
 /*
@@ -149,9 +151,12 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				startActivity(new Intent(getApplicationContext(), MyInfoActivity.class));
 				break;
 			   case 1:
-				startActivity(new Intent(getApplicationContext(), LoginInfoActivity.class));
+				if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+				   startActivity(new Intent(getApplicationContext(), LoginInfoActivity3.class));
+				}else {
+				   startActivity(new Intent(getApplicationContext(), LoginInfoActivity2.class));
+				}
 				break;
-
 			}
 		   }
 		});

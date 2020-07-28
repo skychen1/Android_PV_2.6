@@ -17,11 +17,15 @@ import com.rivamed.libidcard.IdCardCallBack;
 import com.rivamed.libidcard.IdCardManager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.rivamed.Eth002Manager;
+import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginInfoActivity;
+import high.rivamed.myapplication.activity.LoginInfoActivity2;
+import high.rivamed.myapplication.activity.LoginInfoActivity3;
 import high.rivamed.myapplication.activity.OutFormActivity;
 import high.rivamed.myapplication.activity.PatientConnActivity;
 import high.rivamed.myapplication.bean.BillStockResultBean;
@@ -210,12 +214,11 @@ public class DialogUtils {
 
     /**
      * 腕带解绑
-     *
      * @param context
      * @param title
      */
-    public static void showUnRegistDialog(Context context, String title, String date,
-                                          LoginInfoActivity.SetEditTextListener mSetEditTextListener) {
+    public static void showUnRegistDialog3(Context context, String title, String date,
+                                          LoginInfoActivity3.SetEditTextListener mSetEditTextListener) {
         OneDialog.Builder builder = new OneDialog.Builder(context);
         builder.setMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
@@ -249,7 +252,46 @@ public class DialogUtils {
         builder.create().show();
 
     }
+    /**
+     * 腕带解绑
+     * @param context
+     * @param title
+     */
+    public static void showUnRegistDialog2(Context context, String title, String date,
+                                          LoginInfoActivity2.SetEditTextListener mSetEditTextListener) {
+        OneDialog.Builder builder = new OneDialog.Builder(context);
+        builder.setMsg(title);
+        builder.setRight("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                if (title.equals("解绑腕带后将无法继续使用，是否确定解绑？")) {
+                    NetRequest.getInstance().unRegisterIdCard(date, context, new BaseResult() {
+                        @Override
+                        public void onSucceed(String result) {
+                            LogUtils.i("SHOW", "result   " + result);
+                            Gson gson = new Gson();
+                            UnRegistBean unRegistBean = gson.fromJson(result, UnRegistBean.class);
+                            if (unRegistBean.isOperateSuccess()) {
+                                mSetEditTextListener.OnSetEditText();
+                            }
+                            Toast.makeText(context, unRegistBean.getMsg(), Toast.LENGTH_SHORT).show();
+                            String accountData = SPUtils.getString(context, KEY_ACCOUNT_DATA,
+                                                                   "");
+                            LoginResultBean data2 = gson.fromJson(accountData, LoginResultBean.class);
+                            data2.getAppAccountInfoVo().setIsWaidai(0);
+                            SPUtils.putString(context, KEY_ACCOUNT_DATA, gson.toJson(data2));
+                            dialog.dismiss();
+                        }
+                    });
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
 
+        builder.create().show();
+
+    }
     /**
      * @param context
      * @param title
@@ -420,8 +462,15 @@ public class DialogUtils {
 
     }
 
-    public static OneFingerDialog.Builder showOneFingerDialog(
-            Context context,String title, LoginInfoActivity.OnfingerprintBackListener onfingerprintBackListener) {
+    /**
+     * 3.0柜子
+     * @param context
+     * @param title
+     * @param onfingerprintBackListener
+     * @return
+     */
+    public static OneFingerDialog.Builder showOneFingerDialog3(
+            Context context,String title, LoginInfoActivity3.OnfingerprintBackListener onfingerprintBackListener) {
 
         OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
         builder.setTwoMsg(title);
@@ -435,8 +484,94 @@ public class DialogUtils {
         return builder;
     }
 
-    public static void showBindIdCardDialog(
-            Context context, LoginInfoActivity.OnBindIdCardListener onBindIdCardListener) {
+    /**
+     * 2.1柜子
+     * @param context
+     * @param onfingerprintBackListener
+     * @return
+     */
+    public static void showOneFingerDialog2(
+          Context context, LoginInfoActivity2.OnfingerprintBackListener onfingerprintBackListener) {
+
+        int[] times = {0};
+        List<String> fingerList = new ArrayList<String>();
+        OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+        builder.setRight("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                onfingerprintBackListener.OnfingerprintBack(fingerList);
+                dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
+            }
+        });
+
+        builder.create().show();
+        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
+            @Override
+            public void onConnectState(String deviceId, boolean isConnect) {
+
+            }
+
+            @Override
+            public void onFingerFea(String deviceId, String fingerFea) {
+                times[0]++;
+                String myfingerFea = fingerFea.trim().replaceAll("\n", "");
+                if (times[0] == 1) {
+                    fingerList.add(myfingerFea);
+                    //					ToastUtils.showShort("请再次按下");
+                } else if (times[0] == 2) {
+                    fingerList.add(myfingerFea);
+                    //					ToastUtils.showShort("请第三次按下");
+                } else if (times[0] == 3) {
+                    fingerList.add(myfingerFea);
+                    //					ToastUtils.showShort("采集成功!请按确定键!");
+                    UIUtils.runInUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            builder.setSuccess();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFingerRegExcuted(String deviceId, boolean success) {
+
+            }
+
+            @Override
+            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+
+            }
+
+            @Override
+            public void onIDCard(String deviceId, String idCard) {
+            }
+
+            @Override
+            public void onDoorOpened(String deviceIndentify, boolean success) {
+
+            }
+
+            @Override
+            public void onDoorClosed(String deviceIndentify, boolean success) {
+
+            }
+
+            @Override
+            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
+
+            }
+        });
+    }
+
+    /**
+     * 3.0柜子
+     * @param context
+     * @param onBindIdCardListener
+     */
+    public static void showBindIdCardDialog3(
+            Context context, LoginInfoActivity3.OnBindIdCardListener onBindIdCardListener) {
         final String[] mIdCard = {""};
         BindIdCardDialog.Builder builder = new BindIdCardDialog.Builder(context);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
@@ -465,6 +600,74 @@ public class DialogUtils {
                         builder.setSuccess("卡号: " + cardNo);
                     }
                 });
+            }
+        });
+    }
+
+    /**
+     * 2.1柜子
+     * @param context
+     * @param onBindIdCardListener
+     */
+    public static void showBindIdCardDialog2(
+          Context context, LoginInfoActivity2.OnBindIdCardListener onBindIdCardListener) {
+        final String[] mIdCard = {""};
+        BindIdCardDialog.Builder builder = new BindIdCardDialog.Builder(context);
+        builder.setRight("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                onBindIdCardListener.OnBindIdCard(mIdCard[0]);
+                dialog.dismiss();
+                AllDeviceCallBack.getInstance().initCallBack();
+            }
+        });
+
+        builder.create().show();
+        Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
+            @Override
+            public void onConnectState(String deviceId, boolean isConnect) {
+
+            }
+
+            @Override
+            public void onFingerFea(String deviceId, String fingerFea) {
+
+            }
+
+            @Override
+            public void onFingerRegExcuted(String deviceId, boolean success) {
+
+            }
+
+            @Override
+            public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+
+            }
+
+            @Override
+            public void onIDCard(String deviceId, String idCard) {
+                mIdCard[0] = idCard;
+                UIUtils.runInUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.setSuccess("卡号: " + idCard);
+                    }
+                });
+            }
+
+            @Override
+            public void onDoorOpened(String deviceIndentify, boolean success) {
+
+            }
+
+            @Override
+            public void onDoorClosed(String deviceIndentify, boolean success) {
+
+            }
+
+            @Override
+            public void onDoorCheckedState(String deviceIndentify, boolean opened) {
+
             }
         });
 

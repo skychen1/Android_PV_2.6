@@ -27,6 +27,8 @@ import high.rivamed.myapplication.utils.MyTimer;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
+
 /**
  * 项目名称:    Rivamed_High_2.5
  * 创建者:      DanMing
@@ -65,7 +67,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
 	//	init();
 //	countTimerView = MyTimer.getInstance(COUNTDOWN_TIME, 1000, UIUtils.getContext());
 
-	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId(SYSTEMTYPE);
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (rootView == null && getLayoutId() > 0) {
 	   rootView = inflater.inflate(getLayoutId(), null);
@@ -140,7 +142,7 @@ public abstract class SimpleFragment<P extends IPresent> extends SupportFragment
    @Override
    public void onStart() {
 	super.onStart();
-	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId(SYSTEMTYPE);
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
    }
 

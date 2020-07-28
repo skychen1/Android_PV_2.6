@@ -50,8 +50,10 @@ import high.rivamed.myapplication.views.SettingPopupWindow;
 import high.rivamed.myapplication.views.TwoDialog;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack3;
@@ -262,7 +264,11 @@ public class OutMealActivity extends BaseSimpleActivity {
                                 mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
                                 break;
                             case 1:
-                                mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+                                if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+                                    mContext.startActivity(new Intent(mContext, LoginInfoActivity3.class));
+                                }else {
+                                    mContext.startActivity(new Intent(mContext, LoginInfoActivity2.class));
+                                }
                                 break;
 
                         }

@@ -25,7 +25,15 @@ public class DeviceInfo implements Serializable {
     private boolean isStart = false;
     private int mType;
 
+    private  DeviceType deviceType;
 
+    public DeviceType getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(DeviceType deviceType) {
+        this.deviceType = deviceType;
+    }
     public int getType() {
         return mType;
     }
@@ -95,5 +103,18 @@ public class DeviceInfo implements Serializable {
         this.version = version;
         this.mType = type;
     }
-
+    public enum DeviceType {
+        /**
+         * 通用标识为 超高频阅读器
+         */
+        UHFREADER,
+        /**
+         * 导引屏
+         */
+        Hmi,
+        /***
+         * ETH002 类型的设备，包含 两种类型 V2,V2.6
+         */
+        Eth002
+    }
 }

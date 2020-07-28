@@ -61,6 +61,7 @@ import high.rivamed.myapplication.views.OpenDoorDialog;
 
 import static high.rivamed.myapplication.activity.HomeActivity.mHomeRgGone;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE_HOME;
@@ -85,6 +86,7 @@ import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YR;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_NAME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
@@ -300,12 +302,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
    public void onDialogEvent(Event.PopupEvent event) {
 	if (!mPause && event.isMute) {
 	   Log.i("outtccc", "开门的接收    " + mRbKey);
-	   if (event.openDoorType) {
-		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   } else {
-		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
-	   }
-
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
@@ -352,7 +349,11 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (BoxIdBean idBean : boxIdBeans) {
 	   if (idBean != null && idBean.getCabinetType() != null) {
 		if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
-		   mDeviceSizeList.add(idBean.getDevice_id() + "0");
+		   if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+			mDeviceSizeList.add(idBean.getDevice_id() + "0");
+		   }else {
+			mDeviceSizeList.add(idBean.getDevice_id());
+		   }
 		} else if (idBean.getCabinetType().equals("2")) {
 		   mDeviceSizeList.add(idBean.getDevice_id() + "1");
 		}

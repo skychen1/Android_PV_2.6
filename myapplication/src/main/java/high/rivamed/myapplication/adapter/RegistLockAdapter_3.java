@@ -26,9 +26,9 @@ import high.rivamed.myapplication.utils.EventBusUtils;
  * 更新时间：   $$Date$$
  * 更新描述：   ${TODO}
  */
-public class RegistLockAdapter  extends BaseQuickAdapter<String, BaseViewHolder> {
+public class RegistLockAdapter_3 extends BaseQuickAdapter<String, BaseViewHolder> {
 
-   public RegistLockAdapter(int layoutResId, @Nullable List<String> data) {
+   public RegistLockAdapter_3(int layoutResId, @Nullable List<String> data) {
       super(layoutResId, data);
    }
    private TextView mIdText;

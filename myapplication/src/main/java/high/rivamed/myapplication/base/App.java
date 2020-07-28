@@ -27,15 +27,23 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.bean.PushFormDateBean;
 import high.rivamed.myapplication.cont.Constants;
 import high.rivamed.myapplication.http.MyHttpLoggingInterceptor;
 import high.rivamed.myapplication.utils.ACache;
 import high.rivamed.myapplication.utils.CrashHandler;
+import high.rivamed.myapplication.utils.SPUtils;
+import high.rivamed.myapplication.utils.UIUtils;
 import okhttp3.OkHttpClient;
 
 import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
+import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SYSTEMTYPE;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_2;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 
 //import com.ayvytr.okhttploginterceptor.LoggingLevel;
 
@@ -58,7 +66,7 @@ public class App extends Application {
     * 缓存
     */
    private static ACache mAppCache;
-   public static String         SYSTEMTYPE   = SYSTEMTYPES;
+   public static String         SYSTEMTYPE =null ;
    public static String         MAIN_URL   = null;
    public static boolean        mTitleConn = false;
    public static boolean        mTitleMsg  = false;
@@ -96,11 +104,18 @@ public class App extends Application {
 	mAppContext = getApplicationContext();
 	mPushFormDateBean.setOrders(mPushFormOrders);
 	LitePal.initialize(mAppContext);//数据库初始化
-	registDevice();//注册硬件
+
 	instance = this;
-	//人脸识别sp初始化
 	PreferencesUtil.initPrefs(mAppContext);
 	initOkGo();
+	Log.i("ererere","  SYSTEMTYPE 111     "+SYSTEMTYPE+"    "+SPUtils.getString(UIUtils.getContext(), SAVE_SYSTEMTYPE));
+	if (SPUtils.getString(UIUtils.getContext(), SAVE_SYSTEMTYPE)!=null){
+	   SYSTEMTYPE = SPUtils.getString(UIUtils.getContext(), SAVE_SYSTEMTYPE);
+	}else {
+	   SYSTEMTYPE = SYSTEMTYPES_2;
+	}
+	registDevice(SYSTEMTYPE);//注册硬件
+	Log.i("ererere","  SYSTEMTYPE 222     "+SYSTEMTYPE);
 	LogUtils.setDebugMode(false);
 	//设备基础module中有使用，需要注册初始化
 	ToastUtils.register(this);
@@ -114,19 +129,29 @@ public class App extends Application {
 	}
    }
 
-   public void registDevice() {
+   public void registDevice(String SYSTEMTYPE) {
 
 	new Thread(new Runnable() {
 	   @Override
 	   public void run() {
+	      if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+		   int i = ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+		   Log.i("dddda", "fdfdfd             " + i);
+		   IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
+		   int connect = ConsumableManager.getManager().connect();
+		   Log.i("dddda", "connect             " + connect);
+		}else {
+		   if (SPUtils.getString(mAppContext, READER_NAME) == null ||
+			 SPUtils.getString(mAppContext, READER_NAME).equals(READER_NAME_RODINBELL)) {
+			ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+		   } else if (SPUtils.getString(mAppContext, READER_NAME) != null &&
+				  SPUtils.getString(mAppContext, READER_NAME).equals(READER_NAME_COLU)) {
+			ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+		   }
+		   //li模块
+		   Eth002Manager.getEth002Manager().startService(8012);
+		}
 
-		int i = ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
-		Log.i("dddda", "fdfdfd             " + i);
-		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
-		int connect = ConsumableManager.getManager().connect();
-		IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
-
-		Log.i("dddda", "connect             " + connect);
 
 	   }
 	}).start();

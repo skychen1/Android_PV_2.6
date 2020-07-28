@@ -57,6 +57,7 @@ import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.service.ScanService;
 import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
+import high.rivamed.myapplication.utils.FaceTask;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.LoginUtils;
 import high.rivamed.myapplication.utils.SPUtils;
@@ -109,6 +110,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE_ALL;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_LEFT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
 import static high.rivamed.myapplication.utils.DevicesUtils.getDoorStatus;
 import static high.rivamed.myapplication.utils.ToastUtils.cancel;
@@ -181,6 +183,8 @@ public class LoginActivity extends SimpleActivity {
    public static boolean                             mConfigType045;
 
    int s =0;
+   private FaceTask mFaceTask;
+
    //
    //   private boolean mDestroyType =true;//处理thread执行
    //   private Thread mThread3;
@@ -316,15 +320,18 @@ public class LoginActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-	registFingerAndIc();
-
+	if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+	   registFingerAndIc();
+	}
 	Log.i("onDoorState", "onStart   onStartonStartonStartonStart   ");
 	if (MAIN_URL != null && SPUtils.getString(UIUtils.getContext(), THING_CODE) != null) {
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME) != -1) {
 		COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME);
 		CLOSSLIGHT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME);
 		Log.i("outtccc", "COUNTDOWN_TIME  LOG     " + COUNTDOWN_TIME);
-		AllDeviceCallBack.getInstance().StateLightStart();
+		if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+		   AllDeviceCallBack.getInstance().StateLightStart();
+		}
 	   }
 	   if (SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME) != -1) {
 		HOME_COUNTDOWN_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME);
@@ -333,8 +340,16 @@ public class LoginActivity extends SimpleActivity {
 		NOEPC_LOGINOUT_TIME = SPUtils.getInt(UIUtils.getContext(), SAVE_NOEPC_LOGINOUT_TIME);
 	   }
 	   getLeftDate();
-	   getDoorStatus();//检测柜门
+	   getDoorStatus(SYSTEMTYPE);//检测柜门
 	   //	   getBoxSize();
+	   if (mFaceTask==null){
+		mFaceTask = new FaceTask(this);
+		mFaceTask.getAllFaceAndRegister();
+	   }else {
+		mFaceTask.getAllFaceAndRegister();
+	   }
+
+
 	}
 	if (mLightTimeCount==null){
 	   mLightTimeCount = new LoginUtils.LightTimeCount(CLOSSLIGHT_TIME, 1000);
@@ -343,11 +358,15 @@ public class LoginActivity extends SimpleActivity {
 	if (!UIUtils.isServiceRunning(this, "high.rivamed.myapplication.service.ScanService")) {
 	   if (mIntentService != null) {
 		startService(mIntentService);
-		registFingerAndIc();
+		if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+		   registFingerAndIc();
+		}
 	   } else {
 		mIntentService = new Intent(this, ScanService.class);
 		startService(mIntentService);
-		registFingerAndIc();
+		if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+		   registFingerAndIc();
+		}
 	   }
 	}
 
@@ -356,7 +375,7 @@ public class LoginActivity extends SimpleActivity {
 	mOnStart = true;
 	mPushFormOrders.clear();
 	mDownText.setText("Copyright © Rivamed Corporation, All Rights Reserved  V " +
-				UIUtils.getVersionName(this)+"_C");
+				UIUtils.getVersionName(this));
 
 	initTab();
 	initlistener();

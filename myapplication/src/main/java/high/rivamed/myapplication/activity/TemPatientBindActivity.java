@@ -56,17 +56,20 @@ import high.rivamed.myapplication.views.TableTypeView;
 import high.rivamed.myapplication.views.TempPatientDialog;
 import high.rivamed.myapplication.views.TwoDialog;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.ACTIVITY;
 import static high.rivamed.myapplication.cont.Constants.BANGDING;
 import static high.rivamed.myapplication.cont.Constants.CHU_GUI;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_056;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.ERROR_200;
 import static high.rivamed.myapplication.cont.Constants.PATIENT_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_DEPT_CODE;
 import static high.rivamed.myapplication.cont.Constants.STYPE_DIALOG;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.cont.Constants.TEMP_AFTERBIND;
 import static high.rivamed.myapplication.cont.Constants.TEMP_FIRSTBIND;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack2;
@@ -140,11 +143,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onDialogEvent(Event.PopupEvent event) {
 	if (event.isMute) {
-	   if (event.openDoorType){
-		MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   }else {
-		MusicPlayer.getInstance().play(MusicPlayer.Type.QRS_MOREOPEN);
-	   }
+	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
 	   Log.i("outtccc", "getTaskId   " + getTaskId() + "   " + getClass().getName());
 	   if (mBuilder == null) {
 		mBuilder = DialogUtils.showOpenDoorDialog(mContext, event.mString);
@@ -208,7 +207,7 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mStockSearch.setVisibility(View.VISIBLE);
 	mStockSearchRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {//先绑定患者,可绑定可不绑定
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05)||UIUtils.getConfigType(mContext, CONFIG_BPOW04)) {//先绑定患者,可绑定可不绑定
 	   mDialogRight.setText("确认绑定");
 	   mDialogLeft.setText("不绑定患者");
 	} else {
@@ -395,7 +394,11 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 					mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
 					break;
 				   case 1:
-					mContext.startActivity(new Intent(mContext, LoginInfoActivity.class));
+					if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+					   mContext.startActivity(new Intent(mContext, LoginInfoActivity3.class));
+					}else {
+					   mContext.startActivity(new Intent(mContext, LoginInfoActivity2.class));
+					}
 					break;
 				}
 			   }
@@ -518,7 +521,6 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mDialogRight.setEnabled(false);
 	if (type) {
 	   if (mExceptionDate != null && mExceptionDate.size() > 0) {
-
 		if (mTypeView.mTempPatientAdapter.mSelectedPos == -1) {
 		   ToastUtils.showShortToast("您未选择患者");
 		} else {

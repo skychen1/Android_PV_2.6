@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
+import com.rivamed.libidcard.IdCardManager;
+import com.ruihua.libconsumables.ConsumableManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.BuildConfig;
 import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.adapter.RegisteSmallAdapter;
@@ -62,13 +65,14 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.utils.WifiUtils;
 
+import static com.rivamed.libidcard.IdCardProducerType.TYPE_NET_AN_DE;
 import static high.rivamed.myapplication.base.App.COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.HOME_COUNTDOWN_TIME;
 import static high.rivamed.myapplication.base.App.MAIN_URL;
 import static high.rivamed.myapplication.base.App.NOEPC_LOGINOUT_TIME;
 import static high.rivamed.myapplication.base.App.REMOVE_LOGFILE_TIME;
-import static high.rivamed.myapplication.base.App.VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
+import static high.rivamed.myapplication.base.App.VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.BOX_SIZE_DATE;
@@ -91,11 +95,12 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP_TEXT;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_CODE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_STOREHOUSE_NAME;
+import static high.rivamed.myapplication.cont.Constants.SAVE_SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.cont.Constants.SN_NUMBER;
-import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_2;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.cont.Constants.THING_CODE;
-import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.UIUtils.disableRadioGroup;
 import static high.rivamed.myapplication.utils.UIUtils.enableRadioGroup;
@@ -122,8 +127,8 @@ public class RegisteFrag extends SimpleFragment {
    EditText    mFragRegisteNameEdit;
    @BindView(R.id.rb_standard_pv)
    RadioButton mRbStandardPv;
-//   @BindView(R.id.rb_embed_pv)
-//   RadioButton mRbEmbedPv;
+   @BindView(R.id.rb_embed_pv)
+   RadioButton mRbEmbedPv;
    @BindView(R.id.frag_registe_number_edit)
    EditText    mFragRegisteNumberEdit;
    @BindView(R.id.frag_registe_localip_edit)
@@ -137,15 +142,15 @@ public class RegisteFrag extends SimpleFragment {
    @BindView(R.id.frag_registe_left)
    TextView    mFragRegisteLeft;
    @BindView(R.id.frag_registe_loginout_edit)
-   EditText mFragRegisteLoginoutEdit;
+   EditText    mFragRegisteLoginoutEdit;
    @BindView(R.id.frag_registe_loginout_edit2)
-   EditText mFragRegisteLoginoutEdit2;
+   EditText    mFragRegisteLoginoutEdit2;
    @BindView(R.id.frag_registe_loginout_edit3)
-   EditText mFragRegisteLoginoutEdit3;
+   EditText    mFragRegisteLoginoutEdit3;
    @BindView(R.id.frag_registe_loginout_edit4)
-   EditText mFragRegisteLoginoutEdit4;
+   EditText    mFragRegisteLoginoutEdit4;
    @BindView(R.id.frag_registe_loginout_edit5)
-   EditText mFragRegisteLoginoutEdit5;
+   EditText    mFragRegisteLoginoutEdit5;
    public RecyclerView mRecyclerview;
    @BindView(R.id.switch_btn)
    Switch   mSwitch;
@@ -164,13 +169,11 @@ public class RegisteFrag extends SimpleFragment {
    private       DeviceNameBeanX                     mNameBean;
    private       List<DeviceNameBeanX.DeviceDictVos> mNameList;
    private       ThingDto                            mSnRecoverBean;
-   public static List<ThingDto.DeviceVosBean>        mDeviceVos = new ArrayList<>();//柜子list
-   private       Thread                              mThread2;
+   public static List<ThingDto.DeviceVosBean>        mDeviceVos  = new ArrayList<>();//柜子list
    private       String                              mBoxCode;
-   private       String                              mBoxType   = "0";
-   private String                              mThingModel = "0";//设备类型，默认标准耗材柜
+   private       String                              mBoxType    = "0";
+   private       String                              mThingModel = SYSTEMTYPES_2;//设备类型，默认标准耗材柜
    private       RadioGroup                          mRadioGroup;
-   private       String                              mHeadEndName;
 
    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
    public void onActivationEvent(Event.dialogEvent event) {
@@ -211,13 +214,13 @@ public class RegisteFrag extends SimpleFragment {
 		   disableRadioGroup(mRgDeviceType);
 		   getBoxSize();
 		   getLogos();
-//		   if (thingDto.getThing().getThingModel().equals("1")){
-//			SYSTEMTYPE ="EHCT";//嵌入式
-//		   }else {
-			SYSTEMTYPE =SYSTEMTYPES;//耗材柜
-//		   }
-		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
-					   thingDto.getThingSnVo().getThingModel());
+		   if (thingDto.getThing().getThingModel().equals(SYSTEMTYPES_3)) {
+			SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_3);
+			SYSTEMTYPE = SYSTEMTYPES_3;
+		   } else {
+			SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_2);
+			SYSTEMTYPE = SYSTEMTYPES_2;
+		   }
 		   SPUtils.putString(UIUtils.getContext(), SAVE_STOREHOUSE_NAME,
 					   thingDto.getThingSnVo().getSthName());
 		   SPUtils.putString(UIUtils.getContext(), SAVE_BRANCH_CODE,
@@ -268,7 +271,8 @@ public class RegisteFrag extends SimpleFragment {
 		   tbaseDevicesBean.setDeviceId("");
 		   devices.add(0, tbaseDevicesBean);
 		}
-		List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean> deviceVos = boxSizeBean.getDeviceTypeVo().getDeviceVos();
+		List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean> deviceVos = boxSizeBean.getDeviceTypeVo()
+			.getDeviceVos();
 
 		SPUtils.putString(mAppContext, BOX_SIZE_DATE, gson.toJson(devices));
 		SPUtils.putString(mAppContext, BOX_SIZE_DATE_HOME, gson.toJson(deviceVos));
@@ -304,16 +308,16 @@ public class RegisteFrag extends SimpleFragment {
 	String s = mGson.toJson(event);
 	SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, s);
 	LogUtils.i(TAG, "我是恢复的   " + s);
-//	if (mSnRecoverBean.getThing().getThingModel().equals("1")){
-//	   SYSTEMTYPE ="EHCT";//嵌入式
-//	}else {
-	   SYSTEMTYPE =SYSTEMTYPES;//耗材柜
-//	}
+	if (mSnRecoverBean.getThing().getThingModel().equals(SYSTEMTYPES_3)) {
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_3);
+	   SYSTEMTYPE = SYSTEMTYPES_3;
+	} else {
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_2);
+	   SYSTEMTYPE = SYSTEMTYPES_2;
+	}
 	//	SPUtils.putString(getAppContext(),BOX_SIZE_DATE,"");
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
 	SPUtils.putBoolean(UIUtils.getContext(), SAVE_ACTIVATION_REGISTE, true);//激活
-	SPUtils.putString(UIUtils.getContext(), THING_MODEL,
-				mSnRecoverBean.getThingSnVo().getThingModel());
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_NAME,
 				mSnRecoverBean.getThing().getDeptName());
 	SPUtils.putString(UIUtils.getContext(), SAVE_DEPT_CODE,
@@ -400,16 +404,17 @@ public class RegisteFrag extends SimpleFragment {
 	if (BuildConfig.DEBUG) {
 	   mFragRegisteNameEdit.setText("3.0柜子");
 	   mFragRegisteNumberEdit.setText("1");
-	   mFragRegisteSeveripEdit.setText("192.168.111.80");
+	   mFragRegisteSeveripEdit.setText("192.168.10.146");
 	   mFragRegistePortEdit.setText("9527");
 	}
-	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000+"");
-	mFragRegisteLoginoutEdit2.setText( HOME_COUNTDOWN_TIME / 1000+"");
-	mFragRegisteLoginoutEdit3.setText( NOEPC_LOGINOUT_TIME / 1000+"");
-	mFragRegisteLoginoutEdit4.setText( VOICE_NOCLOSSDOOR_TIME / 1000+"");
-	mFragRegisteLoginoutEdit5.setText(REMOVE_LOGFILE_TIME+"");
-	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
+	mFragRegisteLoginoutEdit.setText(COUNTDOWN_TIME / 1000 + "");
+	mFragRegisteLoginoutEdit2.setText(HOME_COUNTDOWN_TIME / 1000 + "");
+	mFragRegisteLoginoutEdit3.setText(NOEPC_LOGINOUT_TIME / 1000 + "");
+	mFragRegisteLoginoutEdit4.setText(VOICE_NOCLOSSDOOR_TIME / 1000 + "");
+	mFragRegisteLoginoutEdit5.setText(REMOVE_LOGFILE_TIME + "");
+	mDeviceInfos = DevicesUtils.QueryConnectedDevice(SYSTEMTYPE);
 	mBaseDevices = generateData();
+//	setButtonIdSystemType();
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   mSwitch.setChecked(true);
 	} else {
@@ -419,6 +424,23 @@ public class RegisteFrag extends SimpleFragment {
 	initListener();
 	initDeviceSelected();
    }
+
+   /**
+    * 按照选中的button设置system
+    */
+   private void setButtonIdSystemType() {
+	if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_standard_pv) {
+	   mThingModel = SYSTEMTYPES_2;
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_2);
+	   SYSTEMTYPE = SYSTEMTYPES_2;//高值柜
+	   Log.i("ererere","  SYSTEMTYPE  ddddadadad      "+SYSTEMTYPE);
+	} else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
+	   mThingModel = SYSTEMTYPES_3;
+	   SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, SYSTEMTYPES_3);
+	   SYSTEMTYPE = SYSTEMTYPES_3;
+	}
+   }
+
    /**
     * 设备类型选择
     */
@@ -426,20 +448,46 @@ public class RegisteFrag extends SimpleFragment {
 	mRgDeviceType.setOnCheckedChangeListener((group, checkedId) -> {
 	   switch (checkedId) {
 		case R.id.rb_standard_pv:
-		   //TODO 标准
-		   mThingModel = "0";
-		   SYSTEMTYPE =SYSTEMTYPES;//高值柜
+		   //TODO 标准2.1
+		   new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   //li模块
+			   Eth002Manager.getEth002Manager().startService(8012);
+			}
+		   }).start();
+		   setSystemTypeDate(SYSTEMTYPES_2);
 		   break;
-//		case R.id.rb_embed_pv:
-//		   //TODO 嵌入式
-//		   mThingModel = "1";
-//		   SYSTEMTYPE ="EHCT";//嵌入式
-//		   break;
+		case R.id.rb_embed_pv:
+		   //TODO 3.0
+		   new Thread(new Runnable() {
+			@Override
+			public void run() {
+			   IdCardManager.getIdCardManager().connectIdCard(mAppContext, TYPE_NET_AN_DE);
+			   int connect = ConsumableManager.getManager().connect();
+			   Log.i("dddda", "connect             " + connect);
+			}
+		   }).start();
+		   setSystemTypeDate(SYSTEMTYPES_3);
+		   break;
 		default:
 		   break;
 	   }
 	});
    }
+
+   /**
+    * 设置对应system的值
+    *
+    * @param systemtypes
+    */
+   private void setSystemTypeDate(String systemtypes) {
+	mThingModel = systemtypes;
+	SPUtils.putString(UIUtils.getContext(), SAVE_SYSTEMTYPE, systemtypes);
+	SYSTEMTYPE = systemtypes;//高值柜
+	Log.i("ererere","  SYSTEMTYPE    "+SYSTEMTYPE);
+   }
+
    private void initListener() {
 	mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	   @Override
@@ -521,10 +569,14 @@ public class RegisteFrag extends SimpleFragment {
 	List<ThingDto.DeviceVosBean> tBaseDeviceVos = returnBean.getDeviceVos();
 	ThingDto.ThingBean mThing = returnBean.getThing();
 	mFragRegisteNameEdit.setText(mThing.getThingName());
-	if (mThing.getThingModel().equals("0")){
+	if (mThing.getThingModel().equals(SYSTEMTYPES_2)) {
 	   mRbStandardPv.setChecked(true);
-	}else if (mThing.getThingModel().equals("1")){
-//	   mRbEmbedPv.setChecked(true);
+	   mThingModel = SYSTEMTYPES_2;
+	   SYSTEMTYPE = SYSTEMTYPES_2;
+	} else if (mThing.getThingModel().equals(SYSTEMTYPES_3)) {
+	   mRbEmbedPv.setChecked(true);
+	   mThingModel = SYSTEMTYPES_3;
+	   SYSTEMTYPE = SYSTEMTYPES_3;
 	}
 	mFragRegisteNumberEdit.setText(mThing.getSn());
 
@@ -605,8 +657,6 @@ public class RegisteFrag extends SimpleFragment {
 		   mFragmentBtnOne.setEnabled(true);
 		   mRecyclerview.scrollToPosition(i);
 		   SPUtils.putBoolean(UIUtils.getContext(), SAVE_ONE_REGISTE, true);
-		   SPUtils.putString(UIUtils.getContext(), THING_MODEL,
-					   thingDto.getThing().getThingModel());
 		   mFragmentBtnOne.setText("激 活");
 		   SPUtils.putString(UIUtils.getContext(), SAVE_REGISTE_DATE, result);
 		   SPUtils.putString(UIUtils.getContext(), SN_NUMBER, thingDto.getThing().getSn());
@@ -727,14 +777,7 @@ public class RegisteFrag extends SimpleFragment {
 	hospitalInfoVo.setOptRoomId(operationRoomNo);
 	hospitalInfoVo.setDeptName(deptName);
 	TBaseThingDto.setHospitalInfoVo(hospitalInfoVo);
-	if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_standard_pv) {
-	   mThingModel = "0";
-	   SYSTEMTYPE =SYSTEMTYPES;//高值柜
-	}
-//	else if (mRgDeviceType.getCheckedRadioButtonId() == R.id.rb_embed_pv) {
-//	   mThingModel = "1";
-//	   SYSTEMTYPE ="EHCT";//嵌入式
-//	}
+	setButtonIdSystemType();
 	tBaseThing.setThingName(mFragRegisteNameEdit.getText().toString().trim());
 	tBaseThing.setThingModel(mThingModel);
 	tBaseThing.setLocalIp(mFragRegisteLocalipEdit.getText().toString().trim());
@@ -765,7 +808,8 @@ public class RegisteFrag extends SimpleFragment {
    }
 
    @OnClick({R.id.frag_registe_right, R.id.frag_registe_left, R.id.frag_registe_loginout_btn,
-	   R.id.frag_registe_txt,R.id.frag_registe_loginout_btn2,R.id.frag_registe_loginout_btn3,R.id.frag_registe_loginout_btn4, R.id.frag_registe_loginout_btn5})
+	   R.id.frag_registe_txt, R.id.frag_registe_loginout_btn2, R.id.frag_registe_loginout_btn3,
+	   R.id.frag_registe_loginout_btn4, R.id.frag_registe_loginout_btn5})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_registe_right:
@@ -795,8 +839,7 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn:
 		try {
-		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim()) *
-				   1000);
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit.getText().toString().trim()) * 1000);
 		   if (time >= 10000) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_LOGINOUT_TIME, time);
 			COUNTDOWN_TIME = time;
@@ -811,12 +854,14 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn2:
 		try {
-		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit2.getText().toString().trim())*1000);
-		   if (time>=5000){
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit2.getText().toString().trim()) *
+				   1000);
+		   if (time >= 5000) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_HOME_LOGINOUT_TIME, time);
 			HOME_COUNTDOWN_TIME = time;
-			ToastUtils.showShortToast("设置成功！操作界面无操作后 " + HOME_COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
-		   }else {
+			ToastUtils.showShortToast(
+				"设置成功！主界面无操作后 " + HOME_COUNTDOWN_TIME / 1000 + " s后自动退出登录！");
+		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于5秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
@@ -825,12 +870,14 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn3:
 		try {
-		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit3.getText().toString().trim())*1000);
-		   if (time>=3000){
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit3.getText().toString().trim()) *
+				   1000);
+		   if (time >= 3000) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_NOEPC_LOGINOUT_TIME, time);
 			NOEPC_LOGINOUT_TIME = time;
-			ToastUtils.showShortToast("设置成功！未扫描到操作耗材后 " + NOEPC_LOGINOUT_TIME / 1000 + " s后自动退出登录！");
-		   }else {
+			ToastUtils.showShortToast(
+				"设置成功！未扫描到操作耗材后 " + NOEPC_LOGINOUT_TIME / 1000 + " s后自动退出登录！");
+		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于3秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
@@ -839,12 +886,14 @@ public class RegisteFrag extends SimpleFragment {
 		break;
 	   case R.id.frag_registe_loginout_btn4:
 		try {
-		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit4.getText().toString().trim())*1000);
-		   if (time>=60000){
+		   int time = (Integer.parseInt(mFragRegisteLoginoutEdit4.getText().toString().trim()) *
+				   1000);
+		   if (time >= 60000) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_VOICE_NOCLOSSDOOR_TIME, time);
-			VOICE_NOCLOSSDOOR_TIME= time;
-			ToastUtils.showShortToast("设置成功！未关柜门后 " + VOICE_NOCLOSSDOOR_TIME / 1000 + " s后开始语音提示！");
-		   }else {
+			VOICE_NOCLOSSDOOR_TIME = time;
+			ToastUtils.showShortToast(
+				"设置成功！未关柜门后 " + VOICE_NOCLOSSDOOR_TIME / 1000 + " s后开始语音提示！");
+		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于60秒，请重新设置！");
 		   }
 		} catch (Exception ex) {
@@ -857,8 +906,7 @@ public class RegisteFrag extends SimpleFragment {
 		   if (time >= 2) {
 			SPUtils.putInt(UIUtils.getContext(), SAVE_REMOVE_LOGFILE_TIME, time);
 			REMOVE_LOGFILE_TIME = time;
-			ToastUtils.showShortToast(
-				"设置成功！删除 " + REMOVE_LOGFILE_TIME + " 天之前的日志！");
+			ToastUtils.showShortToast("设置成功！删除 " + REMOVE_LOGFILE_TIME + " 天之前的日志！");
 		   } else {
 			ToastUtils.showShortToast("设置失败，时间必须大于等于2天，请重新设置！");
 		   }
@@ -873,7 +921,7 @@ public class RegisteFrag extends SimpleFragment {
     * 填写服务器后进行绑定服务器，获取设备名称
     */
    private void getDeviceName() {
-	mDeviceInfos = DevicesUtils.QueryConnectedDevice();
+	mDeviceInfos = DevicesUtils.QueryConnectedDevice(SYSTEMTYPE);
 
 	if (mFragRegisteSeveripEdit.getText().toString().trim().length() == 0 ||
 	    mFragRegistePortEdit.getText().toString().trim().length() == 0) {
@@ -893,22 +941,22 @@ public class RegisteFrag extends SimpleFragment {
 	   Log.i(TAG, "MAIN_URLMAIN_URL   " + url);
 
 	   NetRequest.getInstance()
-		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP),
-					     mContext, new BaseResult() {
-				@Override
-				public void onSucceed(String result) {
-				   LogUtils.i(TAG, "result   " + result);
-				   ToastUtils.showShortToast("服务器已连接成功！");
-				   LogUtils.i(TAG,
-						  "SPUtils   " + SPUtils.getString(mContext, SAVE_SEVER_IP));
+		   .getDeviceInfosDate(SPUtils.getString(UIUtils.getContext(), SAVE_SEVER_IP), mContext,
+					     new BaseResult() {
+						  @Override
+						  public void onSucceed(String result) {
+						     LogUtils.i(TAG, "result   " + result);
+						     ToastUtils.showShortToast("服务器已连接成功！");
+						     LogUtils.i(TAG, "SPUtils   " + SPUtils.getString(mContext,
+															SAVE_SEVER_IP));
 
-				   mNameBean = mGson.fromJson(result, DeviceNameBeanX.class);
-				   mNameList = mNameBean.getDeviceDictVos();
-				   mBaseDevices = generateData();
-				   initData();
-				}
+						     mNameBean = mGson.fromJson(result, DeviceNameBeanX.class);
+						     mNameList = mNameBean.getDeviceDictVos();
+						     mBaseDevices = generateData();
+						     initData();
+						  }
 
-			   });
+					     });
 	}
    }
 

@@ -88,19 +88,19 @@
 							android:layout_height="wrap_content"
 							android:buttonTint="@color/text_color_58"
 							android:checked="true"
-							android:text="标准高值柜"
+							android:text="2.1硬件"
 							android:textColor="@color/text_color_58"
 							android:textSize="@dimen/textsize_17"/>
 
-						<!--<RadioButton-->
-							<!--android:id="@+id/rb_embed_pv"-->
-							<!--android:layout_width="wrap_content"-->
-							<!--android:layout_height="wrap_content"-->
-							<!--android:layout_marginLeft="@dimen/x50"-->
-							<!--android:buttonTint="@color/text_color_58"-->
-							<!--android:text="嵌入高值柜"-->
-							<!--android:textColor="@color/text_color_58"-->
-							<!--android:textSize="@dimen/textsize_17"/>-->
+						<RadioButton
+							android:id="@+id/rb_embed_pv"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginLeft="@dimen/x50"
+							android:buttonTint="@color/text_color_58"
+							android:text="3.0硬件"
+							android:textColor="@color/text_color_58"
+							android:textSize="@dimen/textsize_17"/>
 					</RadioGroup>
 
 				</RelativeLayout>
@@ -380,6 +380,56 @@
 						/>
 				</RelativeLayout>
 				<RelativeLayout
+					android:id="@+id/frag_registe_loginout2"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/y60"
+					android:layout_marginTop="@dimen/y30"
+					android:orientation="horizontal"
+					>
+
+					<TextView
+						android:id="@+id/text2"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerVertical="true"
+						android:text="主界面"
+						android:textColor="@color/text_color_58"
+						android:textSize="@dimen/textsize_16"/>
+
+					<EditText
+						android:id="@+id/frag_registe_loginout_edit2"
+						android:layout_width="@dimen/x120"
+						android:layout_height="match_parent"
+						android:layout_toRightOf="@+id/text2"
+						android:background="@drawable/bg_password_line_nor"
+						android:hint="60"
+						android:inputType="number"
+						android:paddingLeft="@dimen/x10"
+						android:paddingRight="@dimen/x10"
+						android:singleLine="true"
+						android:textColor="@color/text_color_58"
+						android:textSize="@dimen/textsize_15"
+						/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerVertical="true"
+						android:layout_toRightOf="@+id/frag_registe_loginout_edit2"
+						android:text="  秒后无操作自动退出(默认60s)"
+						android:textColor="@color/text_color_58"
+						android:textSize="@dimen/textsize_16"/>
+
+					<TextView
+						android:id="@+id/frag_registe_loginout_btn2"
+						style="@style/btn_style_sel"
+						android:layout_width="@dimen/x100"
+						android:layout_alignParentRight="true"
+						android:layout_marginTop="@dimen/y5"
+						android:text="确认"
+						/>
+				</RelativeLayout>
+				<RelativeLayout
 					android:id="@+id/frag_registe_loginout3"
 					android:layout_width="match_parent"
 					android:layout_height="@dimen/y60"
@@ -479,56 +529,7 @@
 						android:text="确认"
 						/>
 				</RelativeLayout>
-				<RelativeLayout
-					android:id="@+id/frag_registe_loginout2"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/y60"
-					android:layout_marginTop="@dimen/y30"
-					android:orientation="horizontal"
-					>
 
-					<TextView
-						android:id="@+id/text2"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerVertical="true"
-						android:text="主界面"
-						android:textColor="@color/text_color_58"
-						android:textSize="@dimen/textsize_16"/>
-
-					<EditText
-						android:id="@+id/frag_registe_loginout_edit2"
-						android:layout_width="@dimen/x120"
-						android:layout_height="match_parent"
-						android:layout_toRightOf="@+id/text2"
-						android:background="@drawable/bg_password_line_nor"
-						android:hint="60"
-						android:inputType="number"
-						android:paddingLeft="@dimen/x10"
-						android:paddingRight="@dimen/x10"
-						android:singleLine="true"
-						android:textColor="@color/text_color_58"
-						android:textSize="@dimen/textsize_15"
-						/>
-
-					<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerVertical="true"
-						android:layout_toRightOf="@+id/frag_registe_loginout_edit2"
-						android:text="  秒后无操作自动退出(默认60s)"
-						android:textColor="@color/text_color_58"
-						android:textSize="@dimen/textsize_16"/>
-
-					<TextView
-						android:id="@+id/frag_registe_loginout_btn2"
-						style="@style/btn_style_sel"
-						android:layout_width="@dimen/x100"
-						android:layout_alignParentRight="true"
-						android:layout_marginTop="@dimen/y5"
-						android:text="确认"
-						/>
-				</RelativeLayout>
 				<RelativeLayout
 					android:id="@+id/frag_registe_loginout5"
 					android:layout_width="match_parent"

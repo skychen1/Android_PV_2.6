@@ -56,8 +56,8 @@ public class Constants {
    public static final String CONFIG_BPOW05 = "BPOW05";//启用可绑定患者或者可不绑定患者,先绑定患者后开柜门
    public static final String CONFIG_026 = "026";//启用未确认耗材
    public static final String CONFIG_034 = "034";//启用人脸识别登录
-   public static final String CONFIG_051 = "051";//启用是否是否领用时请求计费
-   public static final String CONFIG_052 = "052";//启用是否退回时请求退费
+   public static final String CONFIG_051 = "HD002";//启用是否是否领用时请求计费
+   public static final String CONFIG_052 = "HD001";//启用是否退回时请求退费
    public static final String CONFIG_043 = "043";//启用非x位的epc过滤
    public static final String CONFIG_044 = "044";//启用前x位epc为y的过滤
    public static final String CONFIG_045 = "045";//启用后x位epc为y的过滤
@@ -85,6 +85,7 @@ public class Constants {
    public static final String DOWN_MENU_YICHU = "移除";//移除
 
    //sp存入的key
+   public static final String SAVE_SYSTEMTYPE          = "SAVE_SYSTEMTYPE";//存入3.0和2.1的判断
    public static final String SAVE_SEVER_IP           = "SAVE_SEVER_IPxxx";//存入服务器IP加端口
    public static final String SAVE_SEVER_IP_TEXT      = "SAVE_SEVER_IP_TEXT";//存入服务器IP
    public static final String SAVE_SEVER_CODE         = "SAVE_SEVER_CODE";//存入服务器端口
@@ -122,13 +123,15 @@ public class Constants {
    public static final String SAVE_HOME_LOGINOUT_TIME = "SAVE_HOME_LOGINOUT_TIME";//首页无操作退出时间
    public static final String SAVE_NOEPC_LOGINOUT_TIME = "SAVE_NOEPC_LOGINOUT_TIME";//未扫描到操作耗材退出时间
    public static final String SAVE_VOICE_NOCLOSSDOOR_TIME = "SAVE_VOICE_NOCLOSSDOOR_TIME";//未扫描到操作耗材退出时间
-   public static final String SYSTEMTYPES              = "HCT3.0";//高值登录的type
+   public static final String SYSTEMTYPES_3              = "HCT3.0";//高值登录的type
+   public static final String SYSTEMTYPES_2              = "HCT";//高值登录的type
+
    public static final String BOX_SIZE_DATE           = "BOX_SIZE_DATE";//柜子的信息
    public static final String BOX_SIZE_DATE_HOME           = "BOX_SIZE_DATE_HOME";//柜子的信息,s首页用
    public static final String LOGCAT_OPEN             = "LOG_CAT_OPEN";//日志记录
    public static final String FACE_UPDATE_TIME        = "face_update_time";//人脸照最新更新时间
    public static final String PATIENT_TYPE            = "PatientType";///2,3手术，1是非手术
-   public static final String THING_MODEL             = "THING_MODEL";//设备类型
+//   public static final String THING_MODEL             = "THING_MODEL";//设备类型
    public static final String FINGER_VERSION            = "2";//3.0传2，2.1传1
    public static final String HOME_LOGO = "HOME_LOGO";///主页的logo地址
    public static final String LOGIN_LOGO = "LOGIN_LOGO";///登录的logo地址

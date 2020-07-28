@@ -15,9 +15,8 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import cn.rivamed.Eth002Manager;
 import high.rivamed.myapplication.base.App;
 import high.rivamed.myapplication.bean.BillStockResultBean;
 import high.rivamed.myapplication.bean.Event;
@@ -28,6 +27,7 @@ import high.rivamed.myapplication.dto.vo.DeviceInventoryVo;
 import high.rivamed.myapplication.dto.vo.InventoryVo;
 
 import static high.rivamed.myapplication.base.App.READER_TIME;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
@@ -38,7 +38,7 @@ import static high.rivamed.myapplication.cont.Constants.READER_NAME_COLU;
 import static high.rivamed.myapplication.cont.Constants.READER_NAME_RODINBELL;
 import static high.rivamed.myapplication.cont.Constants.READER_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
-import static high.rivamed.myapplication.cont.Constants.THING_MODEL;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mBomDoorDeviceIdList;
 import static high.rivamed.myapplication.devices.AllDeviceCallBack.mEthDeviceIdBack;
 import static high.rivamed.myapplication.service.ScanService.mDoorStatusType;
@@ -265,28 +265,36 @@ public class LyDateUtils {
    public static void startScan(
 	   List<InventoryVo> mBoxInventoryVos, RxUtils.BaseEpcObservable mObs,
 	   String deviceIndentify) {
-	String deviceIdWhich = deviceIndentify.substring(deviceIndentify.length() - 1);
-	String  deviceId= deviceIndentify.substring(0, deviceIndentify.length() - 1);
+	List<BoxIdBean> boxIdBeans ;
 	String cabinetType = "";
-	Log.i("onDoorState", "deviceIdWhich    " + deviceIdWhich);
-	Log.i("onDoorState", "deviceId    " + deviceId);
-	List<BoxIdBean> boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceId, CONSUMABLE_TYPE).find(BoxIdBean.class);
-	Log.i("onDoorState", "boxIdBeansss    " + boxIdBeans.size());
-	if (boxIdBeans.size()==2){
-	   if (deviceIdWhich.equals("0")){
-		cabinetType = "1";
-	   }else if (deviceIdWhich.equals("1")){
-		cabinetType = "2";
+      if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+	   String deviceIdWhich = deviceIndentify.substring(deviceIndentify.length() - 1);
+	   String deviceId = deviceIndentify.substring(0, deviceIndentify.length() - 1);
+	   Log.i("onDoorState", "deviceIdWhich    " + deviceIdWhich);
+	   Log.i("onDoorState", "deviceId    " + deviceId);
+
+	   boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceId,
+								    CONSUMABLE_TYPE).find(BoxIdBean.class);
+	   Log.i("onDoorState", "boxIdBeansss    " + boxIdBeans.size());
+	   if (boxIdBeans.size() == 2) {
+		if (deviceIdWhich.equals("0")) {
+		   cabinetType = "1";
+		} else if (deviceIdWhich.equals("1")) {
+		   cabinetType = "2";
+		}
+	   } else if (boxIdBeans.size() == 1) {
+		cabinetType = "0";
 	   }
-	}else if (boxIdBeans.size()==1){
+	}else {
+	   boxIdBeans = LitePal.where("device_id = ? and name = ?", deviceIndentify, CONSUMABLE_TYPE).find(BoxIdBean.class);
 	   cabinetType = "0";
 	}
 
 	for (BoxIdBean boxIdBean : boxIdBeans) {
-	   if (cabinetType.equals(boxIdBean.getCabinetType())){
+	   if (cabinetType.equals(boxIdBean.getCabinetType())) {
 		String box_id = boxIdBean.getBox_id();
-		List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id, READER_TYPE)
-			.find(BoxIdBean.class);
+		List<BoxIdBean> deviceBean = LitePal.where("box_id = ? and name = ?", box_id,
+									 READER_TYPE).find(BoxIdBean.class);
 		for (BoxIdBean deviceid : deviceBean) {
 		   String device_id = deviceid.getDevice_id();
 		   int i = ReaderManager.getManager().startScan(device_id, READER_TIME);
@@ -298,15 +306,12 @@ public class LyDateUtils {
 		   }
 		   if (i == 1) {
 			EventBusUtils.post(new Event.StartScanType(true, false));
-//			ReaderManager.getManager().restDevice(device_id);
 			EventBusUtils.postSticky(new Event.EventLoadingX(false));
 			initReaderUtil();
-//			ToastUtils.showShortToast("readr未连接，请稍后重试！");
 		   }
 		   if (i == 0) {
 			EventBusUtils.post(new Event.StartScanType(false, true));
 			EventBusUtils.postSticky(new Event.EventLoadingX(true));
-			//		   mBoxInventoryVos.clear();
 			setAllBoxVosDate(mBoxInventoryVos, box_id);
 			if (mObs != null && mDoorStatusType) {
 			   mObs.removeVos();
@@ -437,55 +442,40 @@ public class LyDateUtils {
     * 重新开柜的逻辑3.0
     */
    public static void setMoreOpenDoor() {
-	String string = SPUtils.getString(mAppContext, THING_MODEL);
-	for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
-	   String deviceIds = mBomDoorDeviceIdList.get(i);
-	   int size =0;
-	   String deviceIdWhich ="";
-	   for (String deviceInventoryVo : mEthDeviceIdBack) {
-		String  deviceId= deviceInventoryVo.substring(0, deviceInventoryVo.length() - 1);
-		if (mBomDoorDeviceIdList.get(i).equals(deviceId)){
-		   deviceIdWhich = deviceInventoryVo.substring(deviceInventoryVo.length() - 1);
-		   size++;
-		}
-	   }
-	   if (size>1){
-		int i1 = ConsumableManager.getManager().openDoor(deviceIds);
-		Log.i("ssffff","openDoor：：" + deviceIds +"    v    "+i1);
-	   }else if (size==1){
-		int Which =-1;
-		if (deviceIdWhich.equals("0")){
-		   Which =0;
-		}else if (deviceIdWhich.equals("1")){
-		   Which=1;
-		}
-		if (string.equals("1")){//嵌入式开启电磁锁
-		   int i1 = ConsumableManager.getManager().openLight(deviceIds, 11);
-		   Log.i("ffaer", " 嵌入式开启电磁锁  " + i1);
-		   if (i1==0){
-			Timer timer = new Timer();
-			int finalWhich = Which;
-			timer.schedule(new TimerTask() {
-			   @Override
-			   public void run() {
-				int i1 = ConsumableManager.getManager().openDoor(deviceIds, finalWhich);
-				if (i1 == 0) {
-				   Log.i("ffaer", " 嵌入式开启电子锁  " + i1);
-				   timer.cancel();
-				}
-			   }
-			}, 100, 100);
+	//	String string = SPUtils.getString(mAppContext, THING_MODEL);
+	if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+	   for (int i = 0; i < mBomDoorDeviceIdList.size(); i++) {
+		String deviceIds = mBomDoorDeviceIdList.get(i);
+		int size = 0;
+		String deviceIdWhich = "";
+		for (String deviceInventoryVo : mEthDeviceIdBack) {
+		   String deviceId = deviceInventoryVo.substring(0, deviceInventoryVo.length() - 1);
+		   if (mBomDoorDeviceIdList.get(i).equals(deviceId)) {
+			deviceIdWhich = deviceInventoryVo.substring(deviceInventoryVo.length() - 1);
+			size++;
 		   }
-		}else {
-		   int is = ConsumableManager.getManager().openDoor(deviceIds, Which);
-		   Log.i("ssffff","openDoor：：" + deviceIds +Which+"    v    "+is);
 		}
-
-
+		if (size > 1) {
+		   int i1 = ConsumableManager.getManager().openDoor(deviceIds);
+		   Log.i("ssffff", "openDoor：：" + deviceIds + "    v    " + i1);
+		} else if (size == 1) {
+		   int Which = -1;
+		   if (deviceIdWhich.equals("0")) {
+			Which = 0;
+		   } else if (deviceIdWhich.equals("1")) {
+			Which = 1;
+		   }
+		   ConsumableManager.getManager().openDoor(deviceIds, Which);
+		}
 	   }
-
+	}else {
+	   for (String deviceInventoryVo : mEthDeviceIdBack) {
+		String deviceCode = deviceInventoryVo;
+		Eth002Manager.getEth002Manager().openDoor(deviceCode);
+	   }
 	}
    }
+
    /**
     * 断连后重连
     */

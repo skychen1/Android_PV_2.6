@@ -14,8 +14,10 @@ import android.widget.TextView;
 import com.rivamed.libdevicesbase.base.DeviceInfo;
 import com.ruihua.reader.ReaderCallback;
 import com.ruihua.reader.ReaderManager;
+import com.ruihua.reader.ReaderProducerType;
 import com.ruihua.reader.bean.AntInfo;
 import com.ruihua.reader.bean.EpcInfo;
+import com.ruihua.reader.net.NetReaderManager;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -84,12 +86,12 @@ public class RegisteReaderFrag extends SimpleFragment {
    @BindView(R.id.gone_ll)
    LinearLayout mGoneLl;
 
-//   @BindView(R.id.reader_left)
-//   RadioButton mReaderLeft;
-//   @BindView(R.id.radioproup)
-//   RadioGroup  mRadioGroup;
-//   @BindView(R.id.reader_right)
-//   RadioButton mReaderRight;
+   //   @BindView(R.id.reader_left)
+   //   RadioButton mReaderLeft;
+   //   @BindView(R.id.radioproup)
+   //   RadioGroup  mRadioGroup;
+   //   @BindView(R.id.reader_right)
+   //   RadioButton mReaderRight;
    private String mDiviceId;
    List<String> mDate = new ArrayList<>();
    private RegistReaderAdapter mAdapter;
@@ -109,6 +111,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 	   AppendLog("启动持续扫描,设备ID=" + event.readerId + "，扫描完成后" + READER_TIME + " ms 停止扫描;");
 	}
    }
+
    /**
     * adapter显示
     *
@@ -117,7 +120,7 @@ public class RegisteReaderFrag extends SimpleFragment {
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onHomeNoClicks(Event.EventTestStopScan event) {
 	int i = ReaderManager.getManager().stopScan(event.readerId);
-	AppendLog("停止扫描,设备ID=" + event.readerId +"   "+i);
+	AppendLog("停止扫描,设备ID=" + event.readerId + "   " + i);
 
    }
 
@@ -134,49 +137,51 @@ public class RegisteReaderFrag extends SimpleFragment {
    @Override
    public void initDataAndEvent(Bundle savedInstanceState) {
 	EventBusUtils.register(this);
-//	if (SPUtils.getString(getAppContext(), READER_NAME) == null || SPUtils.getString(getAppContext(), READER_NAME)
-//		.equals(READER_NAME_RODINBELL)) {
-//	   SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
-//	   mRadioGroup.check(R.id.reader_right);
-//	} else if (SPUtils.getString(getAppContext(), READER_NAME) != null &&
-//		     SPUtils.getString(getAppContext(), READER_NAME)
-//			     .equals(READER_NAME_COLU)) {
-//	   mRadioGroup.check(R.id.reader_left);
+//	if (SYSTEMTYPE.equals(SYSTEMTYPES_2)) {
+//	   if (SPUtils.getString(getAppContext(), READER_NAME) == null ||
+//		 SPUtils.getString(getAppContext(), READER_NAME).equals(READER_NAME_RODINBELL)) {
+//		SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+////		mRadioGroup.check(R.id.reader_right);
+//	   } else if (SPUtils.getString(getAppContext(), READER_NAME) != null &&
+//			  SPUtils.getString(getAppContext(), READER_NAME).equals(READER_NAME_COLU)) {
+////		mRadioGroup.check(R.id.reader_left);
+//	   }
 //	}
+
 	initReader();
 	mGoneLl.setVisibility(View.GONE);
-//	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//	   @Override
-//	   public void onCheckedChanged(RadioGroup group, int checkedId) {
-//		ToastUtils.showShortToast("Reader启动中，请勿频繁切换，稍后点击 开始检测");
-//		switch (checkedId) {
-//		   case R.id.reader_left:
-//			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);
-//			new Thread(new Runnable() {
-//			   @Override
-//			   public void run() {
-//
-//				NetReaderManager.getManager().stopService();
-//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
-//			   }
-//			}).start();
-//
-//			break;
-//		   case R.id.reader_right:
-//			SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
-//
-//			new Thread(new Runnable() {
-//			   @Override
-//			   public void run() {
-//				Log.i("reader","启动罗丹");
-//				NetReaderManager.getManager().stopService();
-//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
-//			   }
-//			}).start();
-//			break;
-//		}
-//	   }
-//	});
+	//	mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+	//	   @Override
+	//	   public void onCheckedChanged(RadioGroup group, int checkedId) {
+	//		ToastUtils.showShortToast("Reader启动中，请勿频繁切换，稍后点击 开始检测");
+	//		switch (checkedId) {
+	//		   case R.id.reader_left:
+	//			SPUtils.putString(mContext, READER_NAME, READER_NAME_COLU);
+	//			new Thread(new Runnable() {
+	//			   @Override
+	//			   public void run() {
+	//
+	//				NetReaderManager.getManager().stopService();
+	//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_COLU);
+	//			   }
+	//			}).start();
+	//
+	//			break;
+	//		   case R.id.reader_right:
+	//			SPUtils.putString(mContext, READER_NAME, READER_NAME_RODINBELL);
+	//
+	//			new Thread(new Runnable() {
+	//			   @Override
+	//			   public void run() {
+	//				Log.i("reader","启动罗丹");
+	//				NetReaderManager.getManager().stopService();
+	//				ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+	//			   }
+	//			}).start();
+	//			break;
+	//		}
+	//	   }
+	//	});
 
    }
 
@@ -215,6 +220,11 @@ public class RegisteReaderFrag extends SimpleFragment {
 		   AppendLog("Reader设备已连接:::ID=" + deviceId);
 		} else {
 		   AppendLog("Reader设备已断开:::ID" + deviceId);
+		   new Thread(() -> {
+			NetReaderManager.getManager().stopService();
+			AppendLog("重新连接");
+			ReaderManager.getManager().connectReader(ReaderProducerType.TYPE_NET_RODINBELL);
+		   }).start();
 		}
 	   }
 
@@ -231,9 +241,9 @@ public class RegisteReaderFrag extends SimpleFragment {
 
 	   @Override
 	   public void onScanNewEpc(String deviceId, String epc, int ant) {
-				String string;
-				string = ("\t EPC数量:1" + "个:" + epc + ", 被第" + ant + "根天线扫到");
-				AppendLog(string);
+		String string;
+		string = ("\t EPC数量:1" + "个:" + epc + ", 被第" + ant + "根天线扫到");
+		AppendLog(string);
 	   }
 
 	   @Override
@@ -297,7 +307,7 @@ public class RegisteReaderFrag extends SimpleFragment {
 	});
    }
 
-   @OnClick({R.id.frag_start, R.id.item_setting_time,R.id.item_setting_time2})
+   @OnClick({R.id.frag_start, R.id.item_setting_time, R.id.item_setting_time2})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
@@ -317,9 +327,9 @@ public class RegisteReaderFrag extends SimpleFragment {
 			  "\n";
 		}
 		AppendLog(StringUtils.isEmpty(s) ? "目前暂无reader连接" : ("已连接设备如下：\n" + s));
-		mGoneLl.setVisibility(StringUtils.isEmpty(s) ?View.GONE :View.VISIBLE);
-		mItemTimeText2.setHint("动画延时:"+ANIMATION_TIME+"ms");
-		mItemTimeText.setHint("扫描时间:"+READER_TIME+"ms");
+		mGoneLl.setVisibility(StringUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+		mItemTimeText2.setHint("动画延时:" + ANIMATION_TIME + "ms");
+		mItemTimeText.setHint("扫描时间:" + READER_TIME + "ms");
 
 		int mLayout = R.layout.item_reader_layout;
 		if (mAdapter != null) {

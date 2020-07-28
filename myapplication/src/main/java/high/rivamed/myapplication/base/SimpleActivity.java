@@ -39,6 +39,7 @@ import high.rivamed.myapplication.utils.SPUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportActivity;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.LOGCAT_OPEN;
 
@@ -104,7 +105,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
 	//	   applyNet();
 	mContext = this;
 	mGson = new Gson();
-	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId(SYSTEMTYPE);
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (getLayoutId() > 0) {
 	   setContentView(getLayoutId());
@@ -250,7 +251,7 @@ public abstract class SimpleActivity<P extends IPresent> extends SupportActivity
    @Override
    public void onStart() {
 	super.onStart();
-	eth002DeviceIdList = DevicesUtils.getBomDeviceId();
+	eth002DeviceIdList = DevicesUtils.getBomDeviceId(SYSTEMTYPE);
 	mReaderDeviceId = DevicesUtils.getReaderDeviceId();
 	if (SPUtils.getBoolean(UIUtils.getContext(), LOGCAT_OPEN)) {
 	   hasLogWork(true);

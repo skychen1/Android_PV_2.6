@@ -32,8 +32,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.rivamed.Eth002Manager;
+import cn.rivamed.callback.Eth002CallBack;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.adapter.RegistLockAdapter;
+import high.rivamed.myapplication.adapter.RegistLockAdapter_2;
+import high.rivamed.myapplication.adapter.RegistLockAdapter_3;
 import high.rivamed.myapplication.base.SimpleFragment;
 import high.rivamed.myapplication.bean.Event;
 import high.rivamed.myapplication.devices.AllDeviceCallBack;
@@ -46,8 +49,10 @@ import high.rivamed.myapplication.utils.UIUtils;
 import static android.widget.GridLayout.VERTICAL;
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.base.App.CLOSSLIGHT_TIME;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.BaseSimpleActivity.mLightTimeCount;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 
 /**
  * 项目名称:    Android_PV_2.6.6_416D
@@ -63,7 +68,7 @@ import static high.rivamed.myapplication.cont.Constants.SAVE_CLOSSLIGHT_TIME;
 public class RegisteLockFrag extends SimpleFragment {
 
    @BindView(R.id.frag_closslight_edit)
-   EditText mClosslightEdit;
+   EditText           mClosslightEdit;
    @BindView(R.id.frag_start)
    TextView           mFragStart;
    @BindView(R.id.recyclerview)
@@ -76,11 +81,13 @@ public class RegisteLockFrag extends SimpleFragment {
    ScrollView         mScrollLog;
    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
    List<String>     mDate            = new ArrayList<>();
-   private String            mDiviceId;
-   public  String            fingerData;
-   public  String            fingerTemplate;
-   private RegistLockAdapter mAdapter;
-   private DisplayMetrics mDm;
+   private String              mDiviceId;
+   public  String              fingerData;
+   public  String              fingerTemplate;
+   private RegistLockAdapter_3 mAdapter_3;
+   private RegistLockAdapter_2 mAdapter_2;
+   private DisplayMetrics      mDm;
+   private DividerItemDecoration mDividerItemDecoration;
 
    @Subscribe(threadMode = ThreadMode.MAIN)
    public void onLockType(Event.lockType event) {
@@ -89,15 +96,15 @@ public class RegisteLockFrag extends SimpleFragment {
 	} else if (event.type == 2) {
 	   AppendLog("检查门锁指令已发出 ret=" + event.ret + "   ：设备ID:   " + event.item);
 	} else if (event.type == 3) {
-	   AppendLog("开灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item + ""+event.witch);
-	} else if (event.type ==4){
-	   AppendLog("关灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
-	}else if (event.type ==9){
-	   AppendLog("电磁锁关闭令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
-	}else if (event.type ==10){
-	   AppendLog("电磁锁开启令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
-	}else if (event.type ==11){
-	   AppendLog("电磁锁检测令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item );
+	   AppendLog("开灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item + "" + event.witch);
+	} else if (event.type == 4) {
+	   AppendLog("关灯命令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item);
+	} else if (event.type == 9) {
+	   AppendLog("电磁锁关闭令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item);
+	} else if (event.type == 10) {
+	   AppendLog("电磁锁开启令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item);
+	} else if (event.type == 11) {
+	   AppendLog("电磁锁检测令已发送 RET=" + event.ret + "   ：设备ID:   " + event.item);
 	}
    }
 
@@ -122,9 +129,13 @@ public class RegisteLockFrag extends SimpleFragment {
 	}
 
 	//	initCallBack();
-	initBom();
-	initFinger();
-	initIC();
+	if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+	   initBom();
+	   initFinger();
+	   initIC();
+	} else {
+	   initEth002();
+	}
    }
 
    @Override
@@ -150,6 +161,88 @@ public class RegisteLockFrag extends SimpleFragment {
 	});
    }
 
+   private void initEth002() {
+	Eth002Manager.getEth002Manager().registerCallBack(new Eth002CallBack() {
+	   @Override
+	   public void onConnectState(String deviceId, boolean isConnect) {
+		if (!isConnect) {
+		   AppendLog("设备已断开：设备ID:   " + deviceId + "；");
+		}
+	   }
+
+	   @Override
+	   public void onFingerFea(String deviceId, String fingerFea) {
+		AppendLog("接收到指纹采集信息：设备ID:   " + deviceId + "   ;   FingerData = " + fingerFea);
+		fingerData = fingerFea;
+	   }
+
+	   @Override
+	   public void onFingerRegExcuted(String deviceId, boolean success) {
+		String type;
+		if (success) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+
+		AppendLog("指纹注册命令已执行：设备ID:   " + deviceId + "   ;   操作状态 = " + type);
+	   }
+
+	   @Override
+	   public void onFingerRegisterRet(String deviceId, boolean success, String fingerData) {
+		String type;
+		if (success) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+		AppendLog("接收到指纹注册结果：设备ID:   " + deviceId + "   ;   操作状态 = " + type +
+			    "   ;   FingerData = " + fingerData);
+		if (success) {
+		   fingerTemplate = fingerData;
+		}
+	   }
+
+	   @Override
+	   public void onIDCard(String deviceId, String idCard) {
+		AppendLog("接收到刷卡信息：设备ID:   " + deviceId + "   ;   ID = " + idCard);
+	   }
+
+	   @Override
+	   public void onDoorOpened(String deviceIndentify, boolean success) {
+		String type;
+		if (success) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+		AppendLog("开门结果：设备ID:   " + deviceIndentify + "   ;   开门状态 = " + type);
+	   }
+
+	   @Override
+	   public void onDoorClosed(String deviceIndentify, boolean success) {
+		String type;
+		if (success) {
+		   type = "成功";
+		} else {
+		   type = "失败";
+		}
+		AppendLog("门锁已关闭：设备ID:   " + deviceIndentify + "   ;   关门状态 = " + type);
+	   }
+
+	   @Override
+	   public void onDoorCheckedState(String deviceIndentify, boolean opened) {
+		String type;
+		if (opened) {
+		   type = "门锁打开状态";
+		} else {
+		   type = "门锁关闭状态";
+		}
+		AppendLog("门锁状态检查：设备ID:   " + deviceIndentify + "   ;   门锁状态 = " + type);
+	   }
+	});
+   }
+
    /**
     * IC卡
     */
@@ -158,7 +251,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
 		AppendLog("IC读卡连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
-		if (isConnect){
+		if (isConnect) {
 		   IdCardManager.getIdCardManager().startReadCard(deviceId);
 		}
 	   }
@@ -178,7 +271,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	   @Override
 	   public void onConnectState(String deviceId, boolean isConnect) {
 		AppendLog("指纹连接：设备ID:   " + deviceId + "   ;   isConnect = " + isConnect);
-		if (isConnect){
+		if (isConnect) {
 		   FingerManager.getManager().startReadFinger(deviceId);
 		}
 	   }
@@ -232,7 +325,8 @@ public class RegisteLockFrag extends SimpleFragment {
 		} else {
 		   whichs = "1号端口";
 		}
-		AppendLog("开门结果：设备ID:   " + deviceId + "  端口： " +which +"  which  "+ whichs + " ;   开门状态 = " + type);
+		AppendLog("开门结果：设备ID:   " + deviceId + "  端口： " + which + "  which  " + whichs +
+			    " ;   开门状态 = " + type);
 	   }
 
 	   @Override
@@ -284,11 +378,11 @@ public class RegisteLockFrag extends SimpleFragment {
 		   whichs = "2号端口";
 		   AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		} else if (which ==3){
+		} else if (which == 3) {
 		   whichs = "3号端口";
 		   AppendLog("灯已打开：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		}else if (which==11){//电磁锁
+		} else if (which == 11) {//电磁锁
 		   whichs = "11号端口";
 		   AppendLog("电磁锁开启状态：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   锁状态 = " + type);
@@ -309,16 +403,16 @@ public class RegisteLockFrag extends SimpleFragment {
 		   whichs = "2号端口";
 		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		} else if (which ==3){
+		} else if (which == 3) {
 		   whichs = "3号端口";
 		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		}else if (which==11){//电磁锁
+		} else if (which == 11) {//电磁锁
 		   whichs = "11号端口";
 		   AppendLog("电磁锁关闭状态：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   锁状态 = " + type);
 		} else {
-		   whichs = which+"端口";
+		   whichs = which + "端口";
 		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
 		}
@@ -338,13 +432,12 @@ public class RegisteLockFrag extends SimpleFragment {
 		   whichs = "2号端口";
 		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		} else if (which ==3){
+		} else if (which == 3) {
 		   whichs = "3号端口";
 		   AppendLog("灯已关闭：设备ID:   " + deviceId + "  端口： " + which + "   which   " + whichs +
 				 "  ;   灯状态 = " + type);
-		}else if (which ==11){
-		   AppendLog("电磁锁状态：设备ID:   " + deviceId + "  端口： " + which +
-				 "  ;   灯状态 = " + type);
+		} else if (which == 11) {
+		   AppendLog("电磁锁状态：设备ID:   " + deviceId + "  端口： " + which + "  ;   灯状态 = " + type);
 		}
 
 	   }
@@ -372,7 +465,7 @@ public class RegisteLockFrag extends SimpleFragment {
 	});
    }
 
-   @OnClick({R.id.frag_start,R.id.frag_closslight_btn})
+   @OnClick({R.id.frag_start, R.id.frag_closslight_btn})
    public void onViewClicked(View view) {
 	switch (view.getId()) {
 	   case R.id.frag_start:
@@ -381,63 +474,104 @@ public class RegisteLockFrag extends SimpleFragment {
 		   mDate.clear();
 		   mTxtLog.setText("");
 		}
-		List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
-		String s = "";
-		for (DeviceInfo d : deviceInfos) {
-		   mDiviceId = d.getIdentification();
-		   mDate.add(mDiviceId);
-		   s += "\t  设备类型 \t" + d.getProduct() + ";\t\t设备ID \t" + d.getIdentification() + "\n";
-		}
+		if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+		   List<DeviceInfo> deviceInfos = ConsumableManager.getManager().getConnectedDevice();
+		   String s = "";
+		   for (DeviceInfo d : deviceInfos) {
+			mDiviceId = d.getIdentification();
+			mDate.add(mDiviceId);
+			s += "\t  设备类型 \t" + d.getProduct() + ";\t\t设备ID \t" + d.getIdentification() +
+			     "\n";
+		   }
+		   AppendLog(StringUtils.isEmpty(s) ? "目前暂无连接" : ("已连接设备如下：\n" + s));
+		   FingerManager.getManager().connectFinger(mContext, TYPE_NET_ZHI_ANG);
+		   List<DeviceInfo> deviceFingerInfos = FingerManager.getManager().getConnectedFinger();
+		   for (DeviceInfo info : deviceFingerInfos) {
+			int i = FingerManager.getManager().startReadFinger(info.getIdentification());
+			Log.i("appSatus", "info.FingerManager()     " + info.getIdentification() +
+						"  FingerManager    " + i);
+		   }
+		   List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager()
+			   .getConnectedDevice();
+		   for (DeviceInfo info : connectedDevice) {
+			int i = IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
+			Log.i("appSatus", "info.IdCardManager()     " + info.getIdentification() +
+						"  IdCardManager    " + i);
+		   }
+		   mAdapter_2=null;
+		   if (mAdapter_3!=null){
+		      mAdapter_3.notifyDataSetChanged();
+		   }else {
+			int mLayout = R.layout.item_lock_layout_3;
+			mAdapter_3 = new RegistLockAdapter_3(mLayout, mDate);
+			setRAdapterLayout();
+			mRecyclerview.setAdapter(mAdapter_3);
+		   }
 
-		AppendLog(StringUtils.isEmpty(s) ? "目前暂无连接" : ("已连接设备如下：\n" + s));
-		FingerManager.getManager().connectFinger(mContext, TYPE_NET_ZHI_ANG);
-		List<DeviceInfo> deviceFingerInfos = FingerManager.getManager().getConnectedFinger();
-		for (DeviceInfo info : deviceFingerInfos) {
-		   int i = FingerManager.getManager().startReadFinger(info.getIdentification());
-		   Log.i("appSatus","info.FingerManager()     "+info.getIdentification()+"  FingerManager    "+i);
-		}
-		List<DeviceInfo> connectedDevice = IdCardManager.getIdCardManager().getConnectedDevice();
-		for (DeviceInfo info : connectedDevice) {
-		   int i = IdCardManager.getIdCardManager().startReadCard(info.getIdentification());
-		   Log.i("appSatus","info.IdCardManager()     "+info.getIdentification()+"  IdCardManager    "+i);
-		}
-		int mLayout = R.layout.item_lock_layout;
-		if (mAdapter != null) {
-		   mAdapter.notifyDataSetChanged();
 		} else {
-		   mAdapter = new RegistLockAdapter(mLayout, mDate);
-		   mRecyclerview.addItemDecoration(new DividerItemDecoration(mContext, VERTICAL));
-		   mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-		   mRefreshLayout.setEnableAutoLoadMore(false);
-		   mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
-		   mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
-		   mRecyclerview.setAdapter(mAdapter);
+		   List<DeviceInfo> deviceInfos = Eth002Manager.getEth002Manager().getConnectedDevice();
+		   String s = "";
+		   for (DeviceInfo d : deviceInfos) {
+			mDiviceId = d.getIdentification();
+			mDate.add(mDiviceId);
+			s += "\t  设备类型 \t" + d.getProduct() + ";\t\t设备ID \t" + d.getIdentification() +
+			     "\n";
+		   }
+		   AppendLog(StringUtils.isEmpty(s) ? "目前暂无连接" : ("已连接设备如下：\n" + s));
+		   mAdapter_3=null;
+		   if (mAdapter_2!=null){
+			mAdapter_2.notifyDataSetChanged();
+		   }else {
+			int mLayout = R.layout.item_lock_layout_2;
+			mAdapter_2 = new RegistLockAdapter_2(mLayout, mDate);
+			setRAdapterLayout();
+			mRecyclerview.setAdapter(mAdapter_2);
+		   }
 		}
 		break;
 	   case R.id.frag_closslight_btn:
-		try {
-		   int time = (Integer.parseInt(mClosslightEdit.getText().toString().trim()) * 1000);
-		   if (time >= 10000) {
-			SPUtils.putInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME, time);
-			CLOSSLIGHT_TIME = time;
-			mLightTimeCount=null;
-			ToastUtils.showShortToast(
-				"设置成功！登录界面无操作后 " + CLOSSLIGHT_TIME / 1000 + " s后自动关灯！");
-		   } else {
-			ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
+		if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+		   try {
+			int time = (Integer.parseInt(mClosslightEdit.getText().toString().trim()) * 1000);
+			if (time >= 10000) {
+			   SPUtils.putInt(UIUtils.getContext(), SAVE_CLOSSLIGHT_TIME, time);
+			   CLOSSLIGHT_TIME = time;
+			   mLightTimeCount = null;
+			   ToastUtils.showShortToast(
+				   "设置成功！登录界面无操作后 " + CLOSSLIGHT_TIME / 1000 + " s后自动关灯！");
+			} else {
+			   ToastUtils.showShortToast("设置失败，时间必须大于等于10秒，请重新设置！");
+			}
+		   } catch (Exception ex) {
+			ToastUtils.showShortToast("设置失败，请填写时间！");
 		   }
-		} catch (Exception ex) {
-		   ToastUtils.showShortToast("设置失败，请填写时间！");
+		} else {
+		   ToastUtils.showShortToast("此功能只支持3.0控制板");
 		}
-	      break;
+
+		break;
 	}
+   }
+
+   private void setRAdapterLayout() {
+      if (mDividerItemDecoration!=null){
+	   mRecyclerview.removeItemDecoration(mDividerItemDecoration);
+	}
+	mDividerItemDecoration = new DividerItemDecoration(mContext, VERTICAL);
+	mRecyclerview.addItemDecoration(mDividerItemDecoration);
+	mRecyclerview.setLayoutManager(new LinearLayoutManager(mContext));
+	mRefreshLayout.setEnableAutoLoadMore(false);
+	mRefreshLayout.setEnableRefresh(false);//是否启用下拉刷新功能
+	mRefreshLayout.setEnableLoadMore(false);//是否启用上拉加载功能
    }
 
    @Override
    public void onDestroyView() {
-	FingerManager.getManager().unRegisterCallback();
-	IdCardManager.getIdCardManager().unRegisterCallBack();
-	AllDeviceCallBack.getInstance().initCallBack();
+	if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+	   FingerManager.getManager().unRegisterCallback();
+	   IdCardManager.getIdCardManager().unRegisterCallBack();
+	   AllDeviceCallBack.getInstance().initCallBack();
+	}
 	super.onDestroyView();
    }
 }

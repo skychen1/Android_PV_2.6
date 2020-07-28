@@ -19,7 +19,6 @@ import high.rivamed.myapplication.R;
 import high.rivamed.myapplication.bean.AllFacePhotoBean;
 import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetRequest;
-import high.rivamed.myapplication.timeutil.PowerDateUtils;
 
 import static com.ruihua.libfacerecognitionv3.main.presenter.FaceManager.CODE_SUCCESS;
 import static high.rivamed.myapplication.cont.Constants.FACE_UPDATE_TIME;
@@ -156,10 +155,9 @@ public class FaceTask {
             index++;
             cacheFace();
         } else {
-            LogUtils.d("Face", "人脸照注册完成11111");
+            FaceManager.getManager().initDatabases();
             if (callBack != null)
                 callBack.finishRegister(true, "人脸照注册完成");
-            LogUtils.d("Face", "人脸照注册完成");
             _mActivity = null;
         }
     }

@@ -22,7 +22,15 @@ public class RegisterFingerBean implements Serializable {
     private String msg;
     private String fingerNames;
     private List<UserFeatureInfosBean> userFeatureInfos;
+    private LoginInfoBean.AppAccountInfoVoBean appAccountInfoVo;
+    public LoginInfoBean.AppAccountInfoVoBean getAppAccountInfoVo() {
+        return appAccountInfoVo;
+    }
 
+    public void setAppAccountInfoVo(
+          LoginInfoBean.AppAccountInfoVoBean appAccountInfoVo) {
+        this.appAccountInfoVo = appAccountInfoVo;
+    }
     public String getFingerNames() {
         return fingerNames;
     }

@@ -65,7 +65,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".activity.LoginInfoActivity"
+            android:name=".activity.LoginInfoActivity3"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.LoginInfoActivity2"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape" />
         <activity

@@ -78,7 +78,7 @@ public class SplashActivity extends FragmentActivity {
         onWindowFocusChanged(true);
         setContentView(R.layout.activity_splash_layout);
           viewById = findViewById(R.id.rl);
-        Log.e("版本号：", UIUtils.getVersionName(this)+"_C");
+        Log.e("版本号：", UIUtils.getVersionName(this)+"_M");
         FingerManager.getManager().connectFinger(this, TYPE_NET_ZHI_ANG);
         initData();
     }
@@ -99,9 +99,11 @@ public class SplashActivity extends FragmentActivity {
     }
 
     private void setDate() {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                LogcatHelper.getInstance(getApplicationContext()).stop();
                 MAIN_URL = SPUtils.getString(mAppContext, SAVE_SEVER_IP);
                 String urls = MAIN_URL + NetApi.URL_CONNECT;
                 Log.i("outtccc", "MAIN_URL     " + MAIN_URL + "  dfdfdfdfdf  ");

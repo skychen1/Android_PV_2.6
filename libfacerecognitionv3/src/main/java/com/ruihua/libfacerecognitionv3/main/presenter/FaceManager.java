@@ -20,6 +20,7 @@ import com.baidu.idl.main.facesdk.FaceInfo;
 import com.baidu.idl.main.facesdk.callback.Callback;
 import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
 import com.baidu.idl.main.facesdk.model.BDFaceSDKCommon;
+import com.baidu.idl.main.facesdk.model.Feature;
 import com.baidu.idl.main.facesdk.utils.PreferencesUtil;
 import com.ruihua.libfacerecognitionv3.main.activity.FaceRGBRegisterActivity;
 import com.ruihua.libfacerecognitionv3.main.api.FaceApi;
@@ -51,7 +52,11 @@ import com.ruihua.libfacerecognitionv3.main.view.FaceAuthDialog;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -432,7 +437,28 @@ public class FaceManager {
     public void inportFaceImage(String userId, String userName, String path, IFaceInport listener) {
         inportFaceImage(userId,userName, groupName, path, listener);
     }
+    private ExecutorService es = Executors.newSingleThreadExecutor();
+    private Future          future;
 
+    /**
+     * 数据库发现变化时候，重新把数据库中的人脸信息添加到内存中，id+feature
+     */
+    public void initDatabases() {
+        if (future != null && !future.isDone()) {
+            future.cancel(true);
+        }
+        future = es.submit(() -> {
+            ArrayList<Feature> features = new ArrayList<>();
+            List<User> listUser = FaceApi.getInstance().getUserList(groupName);
+            for (int j = 0; j < listUser.size(); j++) {
+                Feature feature = new Feature();
+                feature.setId(listUser.get(j).getId());
+                feature.setFeature(listUser.get(j).getFeature());
+                features.add(feature);
+            }
+            FaceSDKManager.getInstance().getFaceFeature().featurePush(features);
+        });
+    }
     /**
      * 导入人脸图片
      *

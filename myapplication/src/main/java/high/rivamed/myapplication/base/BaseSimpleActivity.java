@@ -22,7 +22,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import high.rivamed.myapplication.R;
-import high.rivamed.myapplication.activity.LoginInfoActivity;
+import high.rivamed.myapplication.activity.LoginInfoActivity2;
+import high.rivamed.myapplication.activity.LoginInfoActivity3;
 import high.rivamed.myapplication.activity.MessageActivity;
 import high.rivamed.myapplication.activity.MyInfoActivity;
 import high.rivamed.myapplication.bean.Event;
@@ -38,10 +39,12 @@ import high.rivamed.myapplication.views.TwoDialog;
 import pl.droidsonroids.gif.GifImageView;
 
 import static high.rivamed.myapplication.activity.LoginActivity.mConfigType015;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.base.App.mTitleMsg;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_NAME;
 import static high.rivamed.myapplication.cont.Constants.KEY_USER_SEX;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.utils.UIUtils.removeAllAct;
 import static high.rivamed.myapplication.utils.UIUtils.setMessagersV;
 
@@ -231,9 +234,12 @@ public abstract class BaseSimpleActivity extends SimpleActivity {
 				startActivity(new Intent(BaseSimpleActivity.this, MyInfoActivity.class));
 				break;
 			   case 1:
-				startActivity(new Intent(BaseSimpleActivity.this, LoginInfoActivity.class));
+				if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+				   startActivity(new Intent(BaseSimpleActivity.this, LoginInfoActivity3.class));
+				}else {
+				   startActivity(new Intent(BaseSimpleActivity.this, LoginInfoActivity2.class));
+				}
 				break;
-
 			}
 		   }
 		});

@@ -34,6 +34,7 @@ import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import me.yokeyword.fragmentation.SupportFragment;
 
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
@@ -137,7 +138,7 @@ public class HomeActivity extends SimpleActivity {
    @Override
    public void onStart() {
 	super.onStart();
-	getDoorStatus();
+	getDoorStatus(SYSTEMTYPE);
 	EventBusUtils.register(this);
    }
 

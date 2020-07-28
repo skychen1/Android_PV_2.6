@@ -400,11 +400,11 @@ public class RunWatePagerFrag extends SimpleFragment {
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_jf://计费请求
-			mStatus = "31";
+			mStatus = "19";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_tf://退费请求
-			mStatus = "32";
+			mStatus = "33";
 			loadRunWateDate(mDeviceCode, mTerm, mStartTime, mEndTime, mStatus);
 			break;
 		   case R.id.search_type_yc://移除

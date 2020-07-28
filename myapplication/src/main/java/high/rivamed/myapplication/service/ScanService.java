@@ -48,7 +48,6 @@ import high.rivamed.myapplication.http.BaseResult;
 import high.rivamed.myapplication.http.NetApi;
 import high.rivamed.myapplication.http.NetRequest;
 import high.rivamed.myapplication.receiver.NetWorkReceiver;
-import high.rivamed.myapplication.utils.DialogUtils;
 import high.rivamed.myapplication.utils.EventBusUtils;
 import high.rivamed.myapplication.utils.LogUtils;
 import high.rivamed.myapplication.utils.MusicPlayer;
@@ -58,12 +57,14 @@ import high.rivamed.myapplication.utils.StringUtils;
 import high.rivamed.myapplication.utils.UnNetCstUtils;
 
 import static high.rivamed.myapplication.base.App.MAIN_URL;
+import static high.rivamed.myapplication.base.App.SYSTEMTYPE;
 import static high.rivamed.myapplication.base.App.VOICE_NOCLOSSDOOR_TIME;
 import static high.rivamed.myapplication.base.App.getAppContext;
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mTitleConn;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
 import static high.rivamed.myapplication.cont.Constants.SAVE_SEVER_IP;
+import static high.rivamed.myapplication.cont.Constants.SYSTEMTYPES_3;
 import static high.rivamed.myapplication.timeutil.PowerDateUtils.getDates;
 import static high.rivamed.myapplication.utils.LyDateUtils.getVosType;
 import static high.rivamed.myapplication.utils.LyDateUtils.setAllBoxVosDate;
@@ -208,7 +209,7 @@ public class ScanService extends Service {
 	   mTimeCountNoClossDoor = new TimeCountNoClossDoor(VOICE_NOCLOSSDOOR_TIME,
 									    1000);
 	}
-
+	Log.i("ssffff", "触发了     " );
 	if (event.type) {//门没关
 	   mDoorStatusType = false;
 	   mEthDevices.clear();
@@ -219,7 +220,7 @@ public class ScanService extends Service {
 	   EventBusUtils.postSticky(new Event.EventDoorV(false));
 	   mTimeCountNoClossDoor.cancel();
 	   mTimeCountNoClossDoor.start();
-	   Log.i("ffadef", "门没关     " );
+	   Log.i("ssffff", "门没关     " );
 	   return;
 	}
 	if (!event.type) {//门关了
@@ -236,14 +237,14 @@ public class ScanService extends Service {
 		mListDevices.clear();
 		mEthDevices.clear();
 		EventBusUtils.postSticky(new Event.EventDoorV(true));
-		Log.i("ffadef", "门关了2   " );
+		Log.i("ssffff", "门关了2   " );
 		mTimeCountNoClossDoor.cancel();
 	   }
 	   if (mListDevices == null) {
 		mListDevices = new ArrayList<>();
 		mDoorStatusType = true;
 		EventBusUtils.postSticky(new Event.EventDoorV(true));
-		Log.i("ffadef", "门关了3   " );
+		Log.i("ssffff", "门关了3   " );
 		mTimeCountNoClossDoor.cancel();
 	   }
 	   if (mDeviceSizeList == null) {
@@ -345,7 +346,11 @@ public class ScanService extends Service {
             for (BoxIdBean idBean : boxIdBeans) {
                 if (idBean != null&&idBean.getCabinetType()!=null) {
 					if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
+					   if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
 						mDeviceSizeList.add(idBean.getDevice_id() + "0");
+					   }else {
+						mDeviceSizeList.add(idBean.getDevice_id());
+					   }
 					} else if (idBean.getCabinetType().equals("2")) {
 						mDeviceSizeList.add(idBean.getDevice_id() + "1");
 					}
