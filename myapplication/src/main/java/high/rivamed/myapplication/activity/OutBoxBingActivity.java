@@ -239,8 +239,8 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	Log.i("ttadrf", "event.isMute   " + event.isMute);
 	if (event.isMute) {
 	   MusicPlayer.getInstance().play(MusicPlayer.Type.DOOR_OPEN);
-	   mTimelyOpenDoorRight.setEnabled(false);
-	   mTimelyStartBtnRight.setEnabled(false);
+//	   mTimelyOpenDoorRight.setEnabled(false);
+//	   mTimelyStartBtnRight.setEnabled(false);
 	   if (mBuildero == null) {
 		mBuildero = DialogUtils.showOpenDoorDialog(mContext, event.mString);
 	   }
@@ -277,10 +277,10 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
-		if (mTimelyStartBtnRight != null) {
-		   mTimelyOpenDoorRight.setEnabled(false);
-		   mTimelyStartBtnRight.setEnabled(false);
-		}
+//		if (mTimelyStartBtnRight != null) {
+//		   mTimelyOpenDoorRight.setEnabled(false);
+//		   mTimelyStartBtnRight.setEnabled(false);
+//		}
 	   } catch (IOException e) {
 	   }
 	} else {

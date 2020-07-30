@@ -27,7 +27,7 @@ import high.rivamed.myapplication.bean.BingFindSchedulesBean;
 public class BingDialogOutAdapter
 	extends BaseQuickAdapter<BingFindSchedulesBean.PatientInfoVos, BaseViewHolder> {
 
-   private int                                        mSelectedPos = 0;
+   private int                                        mSelectedPos = -1;
    private int                                        mSize;
    private List<BingFindSchedulesBean.PatientInfoVos> patientInfos;
 
@@ -38,21 +38,21 @@ public class BingDialogOutAdapter
 	this.mSize = size;
    }
 
-   public int getCheckedPosition() {
-	return mSelectedPos;
-   }
+//   public int getCheckedPosition() {
+//	return mSelectedPos;
+//   }
 
    @Override
    protected void convert(
 	   BaseViewHolder helper, BingFindSchedulesBean.PatientInfoVos item) {
-	if (mSelectedPos == 0) {
-	   patientInfos.get(mSelectedPos).setSelected(true);
-	}
-	for (int i = 0; i < patientInfos.size(); i++) {
-	   if (patientInfos.get(i).isSelected()) {
-		mSelectedPos = i;
-	   }
-	}
+//	if (mSelectedPos == 0) {
+//	   patientInfos.get(mSelectedPos).setSelected(true);
+//	}
+//	for (int i = 0; i < patientInfos.size(); i++) {
+//	   if (patientInfos.get(i).isSelected()) {
+//		mSelectedPos = i;
+//	   }
+//	}
 	((LinearLayout) helper.getView(R.id.seven_ll)).setBackgroundResource(R.color.bg_f);
 	CheckBox mCheckBox = ((CheckBox) helper.getView(R.id.seven_one));
 
@@ -72,7 +72,9 @@ public class BingDialogOutAdapter
 	helper.itemView.setOnClickListener(new View.OnClickListener() {
 	   @Override
 	   public void onClick(View view) {
-		patientInfos.get(mSelectedPos).setSelected(false);
+		if (mSelectedPos!=-1){
+		   patientInfos.get(mSelectedPos).setSelected(false);
+		}
 		//设置新的Item勾选状态
 		mSelectedPos = position;
 		patientInfos.get(mSelectedPos).setSelected(true);
@@ -83,7 +85,9 @@ public class BingDialogOutAdapter
 	mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	   @Override
 	   public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-		patientInfos.get(mSelectedPos).setSelected(false);
+		if (mSelectedPos!=-1){
+		   patientInfos.get(mSelectedPos).setSelected(false);
+		}
 		//设置新的Item勾选状态
 		mSelectedPos = position;
 		patientInfos.get(mSelectedPos).setSelected(true);

@@ -72,6 +72,7 @@ import static high.rivamed.myapplication.cont.Constants.CONFIG_015;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_058;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW01;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW02;
+import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW03;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW04;
 import static high.rivamed.myapplication.cont.Constants.CONFIG_BPOW05;
 import static high.rivamed.myapplication.cont.Constants.CONSUMABLE_TYPE;
@@ -349,9 +350,9 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	for (BoxIdBean idBean : boxIdBeans) {
 	   if (idBean != null && idBean.getCabinetType() != null) {
 		if (idBean.getCabinetType().equals("0") || idBean.getCabinetType().equals("1")) {
-		   if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
+		   if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
 			mDeviceSizeList.add(idBean.getDevice_id() + "0");
-		   }else {
+		   } else {
 			mDeviceSizeList.add(idBean.getDevice_id());
 		   }
 		} else if (idBean.getCabinetType().equals("2")) {
@@ -676,7 +677,7 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	}
 	//	}
 	String homeBoxSize = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE_HOME);
-	Log.i("outtccc", "position    " + homeBoxSize);
+	Log.i("outtccc", "position    " + mTbaseDevices.size());
 	if (!TextUtils.isEmpty(homeBoxSize)) {
 	   mDeviceTypeVoBeans.addAll(mGson.fromJson(homeBoxSize,
 								  new TypeToken<List<BoxSizeBean.DeviceTypeVoBean.DeviceVosBean>>() {}
@@ -689,7 +690,8 @@ public class ContentConsumeOperateFrag extends BaseSimpleFragment {
 	if (mTbaseDevices.size() == 1 && !UIUtils.getConfigType(mContext, CONFIG_012) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_014) &&
 	    !UIUtils.getConfigType(mContext, CONFIG_015) &&
-	    (UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
+	    (UIUtils.getConfigType(mContext, CONFIG_BPOW03) ||
+	     UIUtils.getConfigType(mContext, CONFIG_BPOW01) ||
 	     UIUtils.getConfigType(mContext, CONFIG_BPOW04)) &&
 	    getMenuOnlyType(mContext, DOWN_MENU_LYTH)) {
 	   String deviceId = mTbaseDevices.get(0).getDeviceId();

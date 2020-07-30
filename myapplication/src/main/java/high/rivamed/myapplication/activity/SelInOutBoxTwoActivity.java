@@ -223,10 +223,10 @@ public class SelInOutBoxTwoActivity extends BaseSimpleActivity {
 	   try {
 		gifDrawable = new GifDrawable(getResources(), R.drawable.icon_rfid_scan);
 		mBaseGifImageView.setImageDrawable(gifDrawable);
-		if (mTimelyStartBtn != null) {
-		   mTimelyOpenDoor.setEnabled(false);
-		   mTimelyStartBtn.setEnabled(false);
-		}
+//		if (mTimelyStartBtn != null) {
+//		   mTimelyOpenDoor.setEnabled(false);
+//		   mTimelyStartBtn.setEnabled(false);
+//		}
 	   } catch (IOException e) {
 	   }
 	} else {

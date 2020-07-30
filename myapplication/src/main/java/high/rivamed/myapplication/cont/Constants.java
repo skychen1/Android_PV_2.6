@@ -52,6 +52,7 @@ public class Constants {
    public static final String CONFIG_014 = "014";//是否启用套餐领用
    public static final String CONFIG_015 = "015";//是否启用请领单领用
    public static final String CONFIG_017 = "017";//是否启用紧急登录
+   public static final String CONFIG_BPOW03 = "BPOW03";//不绑定患者
    public static final String CONFIG_BPOW04 = "BPOW04";//启用可绑定患者或者可不绑定患者,先开柜门后绑定患者
    public static final String CONFIG_BPOW05 = "BPOW05";//启用可绑定患者或者可不绑定患者,先绑定患者后开柜门
    public static final String CONFIG_026 = "026";//启用未确认耗材

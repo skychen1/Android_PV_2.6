@@ -60,7 +60,7 @@ public interface NetApi {
     String URL_OPERATE_INOUTBOX_YES_LYTH = "/hvc-dept/sth/inventory/operateTwoOutOrBackInventory";//查询后入柜出柜的确认操作     领用/退回新加接口确认操作
     String URL_OPERATE_DB_YES = "/hvc-dept/rmApi/store/tCstBaseStorehouse/findAllStorehouse";//查询非本科室的库房Dialog    调拨查  暂停使用
     String URL_OPERATE_STORAGECST_COUNT = "/hvc-dept/sth/inventory/storageCstCount";//查入库统计的数据
-    String URL_OPERATE_STORAGECST_ORDER  = "/order/order/findInStockOrder";//查入库单的数据
+    String URL_OPERATE_STORAGECST_ORDER  = "/hvc-dept/order/order/findInStockOrder";//查入库单的数据
 
     //快速开柜
     String URL_QUERY_ALL_YES = "/hvc-dept/sth/inventory/fastOperateTCstInventories";//快速开柜确认    新

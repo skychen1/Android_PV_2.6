@@ -172,7 +172,7 @@ public class TempPatientDialog extends Dialog {
             mAddressThree.setText("未知");
 
             UIUtils.setInputLenWithNoBlank(mAddressOne, 16);
-            UIUtils.setInputLenWithNoBlank(mAddressFour, 33);
+            UIUtils.setInputLenWithNoBlank(mAddressFour, 18);
 
             mAddressTwo.setOnClickListener(new View.OnClickListener() {
                 @Override

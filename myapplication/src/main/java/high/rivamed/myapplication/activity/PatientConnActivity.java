@@ -218,9 +218,9 @@ public class PatientConnActivity extends BaseSimpleActivity {
 		if (bingFindSchedulesBean != null && bingFindSchedulesBean.getPatientInfoVos() != null) {
 		   patientInfos.clear();
 		   patientInfos.addAll(bingFindSchedulesBean.getPatientInfoVos());
-		   if (patientInfos.size() > 0) {
-			patientInfos.get(0).setSelected(true);
-		   }
+//		   if (patientInfos.size() > 0) {
+//			patientInfos.get(0).setSelected(true);
+//		   }
 		   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
 		}
 	   }
@@ -275,9 +275,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setWardName(bean.getRows().get(i).getWardName());
 				   mPatientInfos.add(data);
 				}
-				if (isClear && mPatientInfos.size() > 0) {
-				   mPatientInfos.get(0).setSelected(true);
-				}
+
 				if (mBuilder != null && mBuilder.mDialog.isShowing()) {
 				   RvDialog2.sTableTypeView2.mBingOutAdapter.notifyDataSetChanged();
 				} else {
@@ -343,9 +341,9 @@ public class PatientConnActivity extends BaseSimpleActivity {
 				   data.setWardName(bean.getRows().get(i).getWardName());
 				   mPatientInfos.add(data);
 				}
-				if (isClear && mPatientInfos.size() > 0) {
-				   mPatientInfos.get(0).setSelected(true);
-				}
+//				if (isClear && mPatientInfos.size() > 0) {
+//				   mPatientInfos.get(0).setSelected(true);
+//				}
 				mBuilder = DialogUtils.showRvDialog2(PatientConnActivity.this, mContext,
 										 mPatientInfos,
 										 new OnClickBackListener() {
@@ -404,8 +402,7 @@ public class PatientConnActivity extends BaseSimpleActivity {
 	bean.setPatientId(mPatientInfos.get(position).getPatientId());
 	bean.setMedicalId(mPatientInfos.get(position).getMedicalId());
 	bean.setSurgeryId(mPatientInfos.get(position).getSurgeryId());
-	bean.setTempPatientId(
-		patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
+	bean.setTempPatientId(patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos).getTempPatientId());
 	LogUtils.i(TAG, "mGson.toJson(bean)   " + mGson.toJson(bean));
 	NetRequest.getInstance()
 		.tempPatientConnPatient(mGson.toJson(bean), this, new BaseResult() {

@@ -207,7 +207,8 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 	mStockSearch.setVisibility(View.VISIBLE);
 	mStockSearchRight.setVisibility(View.VISIBLE);
 	mActivityDownBtnSevenLl.setVisibility(View.VISIBLE);
-	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05)||UIUtils.getConfigType(mContext, CONFIG_BPOW04)) {//先绑定患者,可绑定可不绑定
+	if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
+	    UIUtils.getConfigType(mContext, CONFIG_BPOW04)) {//先绑定患者,可绑定可不绑定
 	   mDialogRight.setText("确认绑定");
 	   mDialogLeft.setText("不绑定患者");
 	} else {
@@ -394,10 +395,12 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 					mContext.startActivity(new Intent(mContext, MyInfoActivity.class));
 					break;
 				   case 1:
-					if (SYSTEMTYPE.equals(SYSTEMTYPES_3)){
-					   mContext.startActivity(new Intent(mContext, LoginInfoActivity3.class));
-					}else {
-					   mContext.startActivity(new Intent(mContext, LoginInfoActivity2.class));
+					if (SYSTEMTYPE.equals(SYSTEMTYPES_3)) {
+					   mContext.startActivity(
+						   new Intent(mContext, LoginInfoActivity3.class));
+					} else {
+					   mContext.startActivity(
+						   new Intent(mContext, LoginInfoActivity2.class));
 					}
 					break;
 				}
@@ -480,17 +483,19 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		}
 		break;
 	   case R.id.dialog_left://取消
-		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) && !mException ) {
+		if (UIUtils.getConfigType(mContext, CONFIG_BPOW02) && !mException) {
 		   if (mEthDeviceIdBack2.size() == 0) {
 			finish();
 		   } else {
 			ToastUtils.showShort("请关闭柜门！");
 		   }
-		} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) && !mException && mTemPTbaseDevices!=null ) {
+		} else if (UIUtils.getConfigType(mContext, CONFIG_BPOW05) && !mException &&
+			     mTemPTbaseDevices != null) {
 		   //Todo 不绑定患者的流程
 		   EventBusUtils.post(new Event.EventButton(true, true));
 		   AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);
-		} else if (mException && UIUtils.getConfigType(mContext, CONFIG_BPOW05)) {
+		} else if (mException && (UIUtils.getConfigType(mContext, CONFIG_BPOW05) ||
+						  UIUtils.getConfigType(mContext, CONFIG_BPOW04))) {
 		   setExceptinEnter(false);//不绑定
 		} else {
 		   finish();
@@ -586,224 +591,213 @@ public class TemPatientBindActivity extends BaseSimpleActivity {
 		vos.add(vosBean);
 	   }
 	   handleVo.setInventoryUnNormalHandleVos(vos);
-	   NetRequest.getInstance().getExceptionRelevance(mGson.toJson(handleVo), this, new BaseResult() {
-		@Override
-		public void onSucceed(String result) {
-		   mDialogRight.setEnabled(true);
-		   JSONObject jsonObject = JSON.parseObject(result);
-		   if (null == jsonObject.getString("opFlg") || jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
-			new Thread(() -> deleteVoException(result)).start();//数据库删除已经操作过的EPC
-			EventBusUtils.post(new Event.EventExceptionDialog(true));
-		   } else {
-			EventBusUtils.post(new Event.EventExceptionDialog(false));
-		   }
-		   finish();
-		}
+	   NetRequest.getInstance()
+		   .getExceptionRelevance(mGson.toJson(handleVo), this, new BaseResult() {
+			@Override
+			public void onSucceed(String result) {
+			   mDialogRight.setEnabled(true);
+			   JSONObject jsonObject = JSON.parseObject(result);
+			   if (null == jsonObject.getString("opFlg") ||
+				 jsonObject.getString("opFlg").equals(ERROR_200)) {//正常
+				new Thread(() -> deleteVoException(result)).start();//数据库删除已经操作过的EPC
+				EventBusUtils.post(new Event.EventExceptionDialog(true));
+			   } else {
+				EventBusUtils.post(new Event.EventExceptionDialog(false));
+			   }
+			   finish();
+			}
 
-		@Override
-		public void onError(String result) {
-		   super.onError(result);
-		   mDialogRight.setEnabled(true);
-		   EventBusUtils.post(new Event.EventExceptionDialog(false));
-		}
-	   });
+			@Override
+			public void onError(String result) {
+			   super.onError(result);
+			   mDialogRight.setEnabled(true);
+			   EventBusUtils.post(new Event.EventExceptionDialog(false));
+			}
+		   });
 	}
    }
-	/**
-	 * 确定按钮的逻辑
-	 */
-	private void setRightEnter () {
-	   if (patientInfos != null && patientInfos.size() > 0) {
-		if (mTypeView.mTempPatientAdapter.mSelectedPos==-1){
-		   ToastUtils.showShortToast("您未选择患者");
-		}else {
-		   BingFindSchedulesBean.PatientInfoVos patientInfoVos = patientInfos.get(mTypeView.mTempPatientAdapter.mSelectedPos);
-		   InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
-		   vo.setBindType(mType);
-		   Log.i("ffad", "ccccc    " + mGson.toJson(vo));
-		   if (null != mType && mType.equals(TEMP_AFTERBIND)) {
-			//后绑定患者
-			if (patientInfoVos.getPatientId().equals("virtual")) {
-			   if (mPatientBean == null) {
-				EventBusUtils.post(new Event.EventButton(true, true));
-				EventBusUtils.post(new Event.EventCheckbox(vo));
-			   } else {
-				CreatTempPatientBean.TTransOperationScheduleBean schedule = mPatientBean.getTTransOperationSchedule();
-				InventoryVo vvo = new InventoryVo();
-				vvo.setPatientName(schedule.getName());
-				vvo.setCreate(schedule.isCreate());
-				vvo.setIdCard(schedule.getIdNo());
-				vvo.setSurgeryTime(schedule.getSurgeryTime());
-				vvo.setOperatingRoomNo(schedule.getOperatingRoomNo());
-				vvo.setOperatingRoomName(schedule.getOperatingRoomNoName());
-				vvo.setSex(schedule.getSex());
-				vvo.setDeptId(schedule.getDeptId());
-				vvo.setMedicalId(schedule.getMedicalId());
 
-				vvo.setBindType(mType);
-				vvo.setPatientId(patientInfoVos.getPatientId());
-				EventBusUtils.post(new Event.EventCheckbox(vvo));
-
-			   }
-			} else {
+   /**
+    * 确定按钮的逻辑
+    */
+   private void setRightEnter() {
+	if (patientInfos != null && patientInfos.size() > 0) {
+	   if (mTypeView.mTempPatientAdapter.mSelectedPos == -1) {
+		ToastUtils.showShortToast("您未选择患者");
+	   } else {
+		BingFindSchedulesBean.PatientInfoVos patientInfoVos = patientInfos.get(
+			mTypeView.mTempPatientAdapter.mSelectedPos);
+		InventoryVo vo = setBingPatientInfoDate(patientInfoVos);
+		vo.setBindType(mType);
+		Log.i("ffad", "ccccc    " + mGson.toJson(vo));
+		if (null != mType && mType.equals(TEMP_AFTERBIND)) {
+		   //后绑定患者
+		   if (patientInfoVos.getPatientId().equals("virtual")) {
+			if (mPatientBean == null) {
 			   EventBusUtils.post(new Event.EventButton(true, true));
 			   EventBusUtils.post(new Event.EventCheckbox(vo));
+			} else {
+			   CreatTempPatientBean.TTransOperationScheduleBean schedule = mPatientBean.getTTransOperationSchedule();
+			   InventoryVo vvo = new InventoryVo();
+			   vvo.setPatientName(schedule.getName());
+			   vvo.setCreate(schedule.isCreate());
+			   vvo.setIdCard(schedule.getIdNo());
+			   vvo.setSurgeryTime(schedule.getSurgeryTime());
+			   vvo.setOperatingRoomNo(schedule.getOperatingRoomNo());
+			   vvo.setOperatingRoomName(schedule.getOperatingRoomNoName());
+			   vvo.setSex(schedule.getSex());
+			   vvo.setDeptId(schedule.getDeptId());
+			   vvo.setMedicalId(schedule.getMedicalId());
+
+			   vvo.setBindType(mType);
+			   vvo.setPatientId(patientInfoVos.getPatientId());
+			   EventBusUtils.post(new Event.EventCheckbox(vvo));
+
 			}
-			finish();
 		   } else {
-			//先绑定患者
-			LogUtils.i(TAG, "先绑定患者，开门");
 			EventBusUtils.post(new Event.EventButton(true, true));
-			AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);
 			EventBusUtils.post(new Event.EventCheckbox(vo));
 		   }
+		   finish();
+		} else {
+		   //先绑定患者
+		   LogUtils.i(TAG, "先绑定患者，开门");
+		   EventBusUtils.post(new Event.EventButton(true, true));
+		   AllDeviceCallBack.getInstance().openDoor(mDeviceId, mTemPTbaseDevices);
+		   EventBusUtils.post(new Event.EventCheckbox(vo));
 		}
-	   } else {
-		ToastUtils.showShort("暂无数据，请创建后再试！");
 	   }
+	} else {
+	   ToastUtils.showShort("暂无数据，请创建后再试！");
+	}
+   }
+
+   @NonNull
+   private InventoryVo setBingPatientInfoDate(
+	   BingFindSchedulesBean.PatientInfoVos patientInfoVos) {
+	InventoryVo vo = new InventoryVo();
+	vo.setPatientName(patientInfoVos.getPatientName());
+	vo.setPatientId(patientInfoVos.getPatientId());
+	vo.setTempPatientId(patientInfoVos.getTempPatientId());
+	vo.setOperationScheduleId(patientInfoVos.getOperationScheduleId());
+	vo.setOperatingRoomNo(patientInfoVos.getOperatingRoomNo());
+	vo.setMedicalId(patientInfoVos.getMedicalId());
+
+	if (patientInfoVos.getSurgeryId() != null) {
+	   vo.setSurgeryId(patientInfoVos.getSurgeryId());
+	}
+	if (patientInfoVos.getHisPatientId() != null) {
+	   vo.setHisPatientId(patientInfoVos.getHisPatientId());
 	}
 
-	@NonNull private InventoryVo setBingPatientInfoDate (BingFindSchedulesBean.PatientInfoVos
-	patientInfoVos){
-	   InventoryVo vo = new InventoryVo();
-	   vo.setPatientName(patientInfoVos.getPatientName());
-	   vo.setPatientId(patientInfoVos.getPatientId());
-	   vo.setTempPatientId(patientInfoVos.getTempPatientId());
-	   vo.setOperationScheduleId(patientInfoVos.getOperationScheduleId());
-	   vo.setOperatingRoomNo(patientInfoVos.getOperatingRoomNo());
-	   vo.setMedicalId(patientInfoVos.getMedicalId());
+	return vo;
+   }
 
-	   if (patientInfoVos.getSurgeryId() != null) {
-		vo.setSurgeryId(patientInfoVos.getSurgeryId());
+   /*
+    * 创建临时患者
+    * */
+   private void creatTemPatient(Event.tempPatientEvent event) {
+	mPatientBean = new CreatTempPatientBean();
+	CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
+	bean.setName(event.userName);
+	bean.setIdNo(event.idCard);//身份证
+	bean.setSurgeryTime(event.time);
+	bean.setOperatingRoomNo(event.operatingRoomNo);
+	bean.setOperatingRoomNoName(event.roomNum);
+	bean.setSex(event.userSex);
+	bean.setCreate(true);
+	bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
+	bean.setMedicalId("virtual");
+	//	bean.setDeptType(mDeptType);
+	mPatientBean.setTTransOperationSchedule(bean);
+	if (patientInfos != null) {
+	   BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
+	   data2.setPatientId("virtual");
+	   data2.setPatientName(event.userName);
+	   data2.setCreate(true);
+	   data2.setIdNo(event.idCard);//身份证
+	   data2.setSurgeryTime(event.time);
+	   data2.setOperatingRoomNo(event.operatingRoomNo);
+	   data2.setRoomName(event.roomNum);
+	   data2.setSex(event.userSex);
+	   data2.setMedicalId("virtual");
+	   data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
+	   //	   data2.setDeptType(mDeptType);
+	   patientInfos.add(0, data2);
+	   ToastUtils.showShort("创建成功");
+	   event.dialog.dismiss();
+	   for (BingFindSchedulesBean.PatientInfoVos s : patientInfos) {
+		s.setSelected(false);
 	   }
-	   if (patientInfoVos.getHisPatientId() != null) {
-		vo.setHisPatientId(patientInfoVos.getHisPatientId());
-	   }
-
-	   return vo;
-	}
-
-	/*
-	 * 创建临时患者
-	 * */
-	private void creatTemPatient (Event.tempPatientEvent event){
-	   mPatientBean = new CreatTempPatientBean();
-	   CreatTempPatientBean.TTransOperationScheduleBean bean = new CreatTempPatientBean.TTransOperationScheduleBean();
-	   bean.setName(event.userName);
-	   bean.setIdNo(event.idCard);//身份证
-	   bean.setSurgeryTime(event.time);
-	   bean.setOperatingRoomNo(event.operatingRoomNo);
-	   bean.setOperatingRoomNoName(event.roomNum);
-	   bean.setSex(event.userSex);
-	   bean.setCreate(true);
-	   bean.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
-	   bean.setMedicalId("virtual");
-	   //	bean.setDeptType(mDeptType);
-	   mPatientBean.setTTransOperationSchedule(bean);
-	   if (patientInfos != null) {
-		BingFindSchedulesBean.PatientInfoVos data2 = new BingFindSchedulesBean.PatientInfoVos();
-		data2.setPatientId("virtual");
-		data2.setPatientName(event.userName);
-		data2.setCreate(true);
-		data2.setIdNo(event.idCard);//身份证
-		data2.setSurgeryTime(event.time);
-		data2.setOperatingRoomNo(event.operatingRoomNo);
-		data2.setRoomName(event.roomNum);
-		data2.setSex(event.userSex);
-		data2.setMedicalId("virtual");
-		data2.setDeptId(SPUtils.getString(UIUtils.getContext(), SAVE_DEPT_CODE, ""));
-		//	   data2.setDeptType(mDeptType);
-		patientInfos.add(0, data2);
-		ToastUtils.showShort("创建成功");
-		event.dialog.dismiss();
-		for (BingFindSchedulesBean.PatientInfoVos s : patientInfos) {
-		   s.setSelected(false);
-		}
-		mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-		mTypeView.mRecyclerview.scrollToPosition(0);
-	   }
-
-	}
-
-	/**
-	 * 获取需要绑定的患者
-	 */
-	private void loadBingDate (String optienNameOrId, String deptName){
-	   if (mTypeView != null && mTypeView.mTempPatientAdapter != null) {
-		mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-	   }
-	   NetRequest.getInstance()
-		   .findSchedulesDate(optienNameOrId, deptName, mAllPage, mRows, this,
-					    new BaseResult() {
-						 @Override
-						 public void onSucceed(String result) {
-
-						    LogUtils.i(TAG, "result   " + result);
-						    LogUtils.i(TAG, "mDeptType   " + mDeptType);
-						    FindInPatientBean bean = mGson.fromJson(result,
-													  FindInPatientBean.class);
-						    setTemporaryBing(mDeptType);
-						    if (mAllPage==1){
-							 patientInfos.clear();
-						    }
-						    if (bean != null && bean.getRows() != null &&
-							  bean.getRows().size() > 0) {
-
-							 for (int i = 0; i < bean.getRows().size(); i++) {
-							    BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
-							    data.setPatientId(
-								    bean.getRows().get(i).getPatientId());
-							    data.setTempPatientId(
-								    bean.getRows().get(i).getTempPatientId());
-							    data.setPatientName(
-								    bean.getRows().get(i).getPatientName());
-							    data.setDeptName(bean.getRows().get(i).getDeptName());
-							    data.setDoctorName(
-								    bean.getRows().get(i).getDoctorName());
-							    data.setRoomName(bean.getRows().get(i).getRoomName());
-							    data.setSurgeryTime(
-								    bean.getRows().get(i).getSurgeryTime());
-							    data.setUpdateTime(
-								    bean.getRows().get(i).getUpdateTime());
-							    data.setSurgeryId(
-								    bean.getRows().get(i).getSurgeryId());
-							    data.setSurgeryName(
-								    bean.getRows().get(i).getSurgeryName());
-							    data.setMedicalId(
-								    bean.getRows().get(i).getMedicalId());
-							    data.setHisPatientId(
-								    bean.getRows().get(i).getHisPatientId());
-							    data.setOperatingRoomNo(
-								    bean.getRows().get(i).getOperatingRoomNo());
-							    data.setDeptType(bean.getRows().get(i).getDeptType());
-							    data.setBedNo(bean.getRows().get(i).getBedNo());
-							    data.setWardName(bean.getRows().get(i).getWardName());
-							    data.setPatientWard(
-								    bean.getRows().get(i).getPatientWard());
-							    data.setFloor(bean.getRows().get(i).getFloor());
-							    data.setAge(bean.getRows().get(i).getAge());
-							    data.setSex(bean.getRows().get(i).getSex());
-							    data.setOrderDeptName(
-								    bean.getRows().get(i).getOrderDeptName());
-							    patientInfos.add(data);
-							 }
-
-							 mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-						    } else {
-							 if (mAllPage == 1 && mTypeView != null &&
-							     mTypeView.mTempPatientAdapter != null) {
-							    mTypeView.mTempPatientAdapter.getData().clear();
-							    mTypeView.mTempPatientAdapter.notifyDataSetChanged();
-							 }
-						    }
-						 }
-
-						 @Override
-						 public void onError(String result) {
-						    super.onError(result);
-						    setTemporaryBing("2");
-						 }
-					    });
+	   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+	   mTypeView.mRecyclerview.scrollToPosition(0);
 	}
 
    }
+
+   /**
+    * 获取需要绑定的患者
+    */
+   private void loadBingDate(String optienNameOrId, String deptName) {
+	if (mTypeView != null && mTypeView.mTempPatientAdapter != null) {
+	   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+	}
+	NetRequest.getInstance()
+		.findSchedulesDate(optienNameOrId, deptName, mAllPage, mRows, this, new BaseResult() {
+		   @Override
+		   public void onSucceed(String result) {
+
+			LogUtils.i(TAG, "result   " + result);
+			LogUtils.i(TAG, "mDeptType   " + mDeptType);
+			FindInPatientBean bean = mGson.fromJson(result, FindInPatientBean.class);
+			setTemporaryBing(mDeptType);
+			if (mAllPage == 1) {
+			   patientInfos.clear();
+			}
+			if (bean != null && bean.getRows() != null && bean.getRows().size() > 0) {
+
+			   for (int i = 0; i < bean.getRows().size(); i++) {
+				BingFindSchedulesBean.PatientInfoVos data = new BingFindSchedulesBean.PatientInfoVos();
+				data.setPatientId(bean.getRows().get(i).getPatientId());
+				data.setTempPatientId(bean.getRows().get(i).getTempPatientId());
+				data.setPatientName(bean.getRows().get(i).getPatientName());
+				data.setDeptName(bean.getRows().get(i).getDeptName());
+				data.setDoctorName(bean.getRows().get(i).getDoctorName());
+				data.setRoomName(bean.getRows().get(i).getRoomName());
+				data.setSurgeryTime(bean.getRows().get(i).getSurgeryTime());
+				data.setUpdateTime(bean.getRows().get(i).getUpdateTime());
+				data.setSurgeryId(bean.getRows().get(i).getSurgeryId());
+				data.setSurgeryName(bean.getRows().get(i).getSurgeryName());
+				data.setMedicalId(bean.getRows().get(i).getMedicalId());
+				data.setHisPatientId(bean.getRows().get(i).getHisPatientId());
+				data.setOperatingRoomNo(bean.getRows().get(i).getOperatingRoomNo());
+				data.setDeptType(bean.getRows().get(i).getDeptType());
+				data.setBedNo(bean.getRows().get(i).getBedNo());
+				data.setWardName(bean.getRows().get(i).getWardName());
+				data.setPatientWard(bean.getRows().get(i).getPatientWard());
+				data.setFloor(bean.getRows().get(i).getFloor());
+				data.setAge(bean.getRows().get(i).getAge());
+				data.setSex(bean.getRows().get(i).getSex());
+				data.setOrderDeptName(bean.getRows().get(i).getOrderDeptName());
+				patientInfos.add(data);
+			   }
+
+			   mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			} else {
+			   if (mAllPage == 1 && mTypeView != null &&
+				 mTypeView.mTempPatientAdapter != null) {
+				mTypeView.mTempPatientAdapter.getData().clear();
+				mTypeView.mTempPatientAdapter.notifyDataSetChanged();
+			   }
+			}
+		   }
+
+		   @Override
+		   public void onError(String result) {
+			super.onError(result);
+			setTemporaryBing("2");
+		   }
+		});
+   }
+
+}

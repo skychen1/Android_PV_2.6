@@ -1053,7 +1053,7 @@ public class RegisteFrag extends SimpleFragment {
 	   @Override
 	   public void onSucceed(String result) {
 		UserBean userBean = mGson.fromJson(result, UserBean.class);
-		Log.i("ddefad", "userBean  " + getDates());
+		LogUtils.i("ddefad", "userBean  " + result);
 		new Thread(new Runnable() {
 		   @Override
 		   public void run() {
@@ -1074,6 +1074,7 @@ public class RegisteFrag extends SimpleFragment {
 	for (AccountVosBean accountVosBean : userBean.getAccountVos()) {
 	   List<UserFeatureInfosBean> userFeatureInfosList = new ArrayList<>();
 	   for (UserFeatureInfosBean userFeatureInfosBean : accountVosBean.getUserFeatureInfos()) {
+	      Log.i("ddefad","accountVosBean.getAccountName()   "+userBean.getAccountVos().size()+"   "+accountVosBean.getAccountName());
 		userFeatureInfosBean.setAccountName(accountVosBean.getAccountName());
 		userFeatureInfosList.add(userFeatureInfosBean);
 	   }
