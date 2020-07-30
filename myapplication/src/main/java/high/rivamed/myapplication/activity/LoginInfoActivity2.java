@@ -37,7 +37,7 @@ import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.OneFingerDialog;
+import high.rivamed.myapplication.views.OneFingerDialog3;
 
 /**
  * 项目名称:    Rivamed_High_2.5
@@ -96,7 +96,7 @@ public class LoginInfoActivity2 extends BaseSimpleActivity {
    public  int                                mIsWaidai;
    private LoadingDialog.Builder              mLoading;
    private String                             mFingerTxt;
-   private OneFingerDialog.Builder            mOneFingerDialog;
+   private OneFingerDialog3.Builder           mOneFingerDialog;
    private String                             mFingerData;
    private int                                mIsFace;
    private String                             mFingerNames;

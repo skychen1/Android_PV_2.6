@@ -617,8 +617,7 @@ public class OutBoxBingActivity extends BaseSimpleActivity {
 	mBaseGifImageView.setImageDrawable(drawable);
 	//	getDoorStatus();
 	String string = SPUtils.getString(UIUtils.getContext(), BOX_SIZE_DATE);
-	mBoxsize = mGson.fromJson(string,
-					  new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
+	mBoxsize = mGson.fromJson(string, new TypeToken<List<BoxSizeBean.DevicesBean>>() {}.getType());
 	EventBusUtils.postSticky(new Event.EventLoadingX(true));
 	mConfigTypeBPOW04 = UIUtils.getConfigType(mContext, CONFIG_BPOW04);
 	mConfigTypeBPOW05 = UIUtils.getConfigType(mContext, CONFIG_BPOW05);

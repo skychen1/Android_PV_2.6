@@ -24,39 +24,39 @@ import high.rivamed.myapplication.devices.AllDeviceCallBack;
  * 更新描述：   ${TODO}
  */
 
-public class OneFingerDialog extends Dialog {
+public class OneFingerDialog3 extends Dialog {
 
-    public OneFingerDialog(Context context) {
+    public OneFingerDialog3(Context context) {
         super(context);
     }
 
-    public OneFingerDialog(Context context, int theme) {
+    public OneFingerDialog3(Context context, int theme) {
         super(context, theme);
     }
 
     public static class Builder {
 
 
-        private Context mContext;
-        private String mMsgTwo;
-        private String mMsgText;
-        private String mLeftText;
-        private String mRightText;
-        private OnClickListener mLeftBtn;
-        private OnClickListener mRightBtn;
-        private TextView mRigtht;
-        private TextView mLeft;
-        private ImageView mCloss;
-        private int mLeftTextColor = -1;
-        private int mRightTextColor;
-        public TextView mDialogBtn;
-        private TextView mFingerTitle;
-        public TextView mFingerTitle2;
-        public TextView mFingerTime;
-        public TextView mErrorText;
-        private ImageView mFingerIcon;
-        private ImageView mFingerSuccess;
-        public OneFingerDialog mDialog;
+        private Context          mContext;
+        private String           mMsgTwo;
+        private String           mMsgText;
+        private String           mLeftText;
+        private String           mRightText;
+        private OnClickListener  mLeftBtn;
+        private OnClickListener  mRightBtn;
+        private TextView         mRigtht;
+        private TextView         mLeft;
+        private ImageView        mCloss;
+        private int              mLeftTextColor = -1;
+        private int              mRightTextColor;
+        public  TextView         mDialogBtn;
+        private TextView         mFingerTitle;
+        public  TextView         mFingerTitle2;
+        public  TextView         mFingerTime;
+        public  TextView         mErrorText;
+        private ImageView        mFingerIcon;
+        private ImageView        mFingerSuccess;
+        public  OneFingerDialog3 mDialog;
 
         public Builder(Context context) {
             this.mContext = context;
@@ -116,12 +116,12 @@ public class OneFingerDialog extends Dialog {
             }
         }
 
-        public OneFingerDialog create() {
+        public OneFingerDialog3 create() {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            mDialog = new OneFingerDialog(mContext, R.style.Dialog);
+            mDialog = new OneFingerDialog3(mContext, R.style.Dialog);
             mDialog.setCancelable(false);
-            View layout = inflater.inflate(R.layout.dialog_one_finger_layout, null);
+            View layout = inflater.inflate(R.layout.dialog_one_finger_layout3, null);
             mDialog.addContentView(layout,
                                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));

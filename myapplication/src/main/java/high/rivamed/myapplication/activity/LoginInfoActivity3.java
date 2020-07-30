@@ -41,7 +41,7 @@ import high.rivamed.myapplication.utils.RxPermissionUtils;
 import high.rivamed.myapplication.utils.ToastUtils;
 import high.rivamed.myapplication.utils.UIUtils;
 import high.rivamed.myapplication.views.LoadingDialog;
-import high.rivamed.myapplication.views.OneFingerDialog;
+import high.rivamed.myapplication.views.OneFingerDialog3;
 
 import static com.rivamed.FingerType.TYPE_NET_ZHI_ANG;
 import static high.rivamed.myapplication.cont.Constants.FINGER_VERSION;
@@ -103,7 +103,7 @@ public class LoginInfoActivity3 extends BaseSimpleActivity {
    public  int                                mIsWaidai;
    private LoadingDialog.Builder              mLoading;
    private String                             mFingerTxt;
-   private OneFingerDialog.Builder            mOneFingerDialog;
+   private OneFingerDialog3.Builder           mOneFingerDialog;
    private String                             mFingerData;
    private int                                mIsFace;
    private String                             mFingerNames;

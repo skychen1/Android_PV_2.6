@@ -58,7 +58,8 @@ import high.rivamed.myapplication.views.LookUpDetailedListDialog;
 import high.rivamed.myapplication.views.LossScuseDialog;
 import high.rivamed.myapplication.views.NoDialog;
 import high.rivamed.myapplication.views.OneDialog;
-import high.rivamed.myapplication.views.OneFingerDialog;
+import high.rivamed.myapplication.views.OneFingerDialog2;
+import high.rivamed.myapplication.views.OneFingerDialog3;
 import high.rivamed.myapplication.views.OnePassWordDialog;
 import high.rivamed.myapplication.views.OpenDoorDialog;
 import high.rivamed.myapplication.views.OutBoxConnectDialog;
@@ -469,10 +470,10 @@ public class DialogUtils {
      * @param onfingerprintBackListener
      * @return
      */
-    public static OneFingerDialog.Builder showOneFingerDialog3(
+    public static OneFingerDialog3.Builder showOneFingerDialog3(
             Context context,String title, LoginInfoActivity3.OnfingerprintBackListener onfingerprintBackListener) {
 
-        OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+        OneFingerDialog3.Builder builder = new OneFingerDialog3.Builder(context);
         builder.setTwoMsg(title);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
@@ -495,7 +496,7 @@ public class DialogUtils {
 
         int[] times = {0};
         List<String> fingerList = new ArrayList<String>();
-        OneFingerDialog.Builder builder = new OneFingerDialog.Builder(context);
+        OneFingerDialog2.Builder builder = new OneFingerDialog2.Builder(context);
         builder.setRight("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
