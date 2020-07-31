@@ -53,6 +53,7 @@ import high.rivamed.myapplication.http.NetRequest;
 
 import static high.rivamed.myapplication.base.App.mAppContext;
 import static high.rivamed.myapplication.base.App.mPushFormDateBean;
+import static high.rivamed.myapplication.cont.Constants.DOWN_MENU_YICHU;
 import static high.rivamed.myapplication.cont.Constants.REFRESH_TOKEN;
 import static high.rivamed.myapplication.cont.Constants.SAVE_CONFIG_STRING;
 import static high.rivamed.myapplication.cont.Constants.SAVE_MENU_DOWN_TYPE;
@@ -389,6 +390,15 @@ public class UIUtils {
 		if (title.equals(mType.getTitle())) {
 		   return true;
 		}
+	   }
+	}
+	if (fromJson != null && fromJson.size() == 2) {
+	   List<String> s =new ArrayList<>();
+	   for (ChildrenBean bean : fromJson) {
+		s.add(bean.getTitle());
+	   }
+	   if (s.contains(DOWN_MENU_YICHU)&&s.contains(title)){
+		return true;
 	   }
 	}
 	return false;
